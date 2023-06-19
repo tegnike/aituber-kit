@@ -56,26 +56,25 @@ export class Model {
    * https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm_animation-1.0/README.ja.md
    */
   public async loadAnimation(vrmAnimation: VRMAnimation): Promise<void> {
-    const { vrm, mixer } = this;
-    if (vrm == null || mixer == null) {
-      throw new Error("You have to load VRM first");
-    }
-
-    const clip = vrmAnimation.createAnimationClip(vrm);
-    const action = mixer.clipAction(clip);
-    action.play();
-  }
-
-  public async loadFbxAnimation(clip: THREE.AnimationClip): Promise<void> {
-
     if (this.vrm == null || this.mixer == null) {
       throw new Error("You have to load VRM first");
     }
 
     this.mixer = new THREE.AnimationMixer(this.vrm.scene); // reset animation mixer, otherwise funny merge
 
-    const { vrm, mixer } = this;
-    const action = mixer.clipAction(clip);
+    const clip = vrmAnimation.createAnimationClip(this.vrm);
+    const action = this.mixer.clipAction(clip);
+    action.play();
+  }
+
+  public async loadFbxAnimation(clip: THREE.AnimationClip): Promise<void> {
+    if (this.vrm == null || this.mixer == null) {
+      throw new Error("You have to load VRM first");
+    }
+
+    this.mixer = new THREE.AnimationMixer(this.vrm.scene); // reset animation mixer, otherwise funny merge
+
+    const action = this.mixer.clipAction(clip);
     action.play();
   }
 
