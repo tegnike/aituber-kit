@@ -5,13 +5,13 @@ export const GitHubLink = () => {
     <div className="absolute right-0 z-10 m-24">
       <a
         draggable={false}
-        href="https://github.com/pixiv/ChatVRM"
+        href="https://github.com/susurobo/ChatVRM-animate"
         rel="noopener noreferrer"
         target="_blank"
       >
         <div className="p-8 rounded-16 bg-[#1F2328] hover:bg-[#33383E] active:bg-[565A60] flex">
           <img
-            alt="https://github.com/pixiv/ChatVRM"
+            alt="https://github.com/susurobo/ChatVRM-animate"
             height={24}
             width={24}
             src={buildUrl("/github-mark-white.svg")}

@@ -1,6 +1,6 @@
 # ChatVRM-animate
 
-ChatVRM-animateは、ブラウザウィンドウにドラッグ＆ドロップすることで、.vrmaおよびM.fbx (Mixamoなど) アニメーションを読み込むことができるChatVRMのフォークです。
+ChatVRM-animateは、ブラウザウィンドウにドロップすることで、.vrmaおよびM.fbx (Mixamoなど) アニメーションを読み込むことができるChatVRMのフォークです。
 
 - FBX アニメーション
     - [@pixiv/three-vrm/examples/humanoidAnimation](https://github.com/pixiv/three-vrm/tree/dev/packages/three-vrm/examples/humanoidAnimation)
