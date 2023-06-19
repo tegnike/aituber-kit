@@ -1,4 +1,11 @@
-# ChatVRM
+# ChatVRM-animate
+
+ChatVRM-animateは、ブラウザウィンドウにドラッグ＆ドロップすることで、.vrmaおよびM.fbx (Mixamoなど) アニメーションを読み込むことができるChatVRMのフォークです。
+
+- FBX アニメーション
+    - [@pixiv/three-vrm/examples/humanoidAnimation] https://github.com/pixiv/three-vrm/tree/dev/packages/three-vrm/examples/humanoidAnimation
+
+## ChatVRM
 
 ChatVRMはブラウザで簡単に3Dキャラクターと会話ができるデモアプリケーションです。
 
@@ -15,8 +22,7 @@ ChatVRMの各機能は主に以下の技術を使用しています。
 - 3Dキャラクターの表示
     - [@pixiv/three-vrm](https://github.com/pixiv/three-vrm)
 
-
-## デモ
+## デモ: オリジナルのChatVRM
 
 GitHub Pagesでデモを公開しています。
 
@@ -27,7 +33,7 @@ GitHub Pagesでデモを公開しています。
 ローカル環境で実行する場合はこのリポジトリをクローンするか、ダウンロードしてください。
 
 ```bash
-git clone git@github.com:pixiv/ChatVRM.git
+git@github.com:susurobo/ChatVRM-animate.git
 ```
 
 必要なパッケージをインストールしてください。

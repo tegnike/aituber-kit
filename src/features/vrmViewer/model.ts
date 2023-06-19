@@ -66,6 +66,19 @@ export class Model {
     action.play();
   }
 
+  public async loadFbxAnimation(clip: THREE.AnimationClip): Promise<void> {
+
+    if (this.vrm == null || this.mixer == null) {
+      throw new Error("You have to load VRM first");
+    }
+
+    this.mixer = new THREE.AnimationMixer(this.vrm.scene); // reset animation mixer, otherwise funny merge
+
+    const { vrm, mixer } = this;
+    const action = mixer.clipAction(clip);
+    action.play();
+  }
+
   /**
    * 音声を再生し、リップシンクを行う
    */

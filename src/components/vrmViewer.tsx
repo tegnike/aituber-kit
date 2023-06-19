@@ -30,10 +30,14 @@ export default function VrmViewer() {
           }
 
           const file_type = file.name.split(".").pop();
+          const blob = new Blob([file], { type: "application/octet-stream" });
+          const url = window.URL.createObjectURL(blob);
           if (file_type === "vrm") {
-            const blob = new Blob([file], { type: "application/octet-stream" });
-            const url = window.URL.createObjectURL(blob);
             viewer.loadVrm(url);
+          } else if (file_type === "vrma") {
+            viewer.loadVrma(url);
+          } else if (file_type === "fbx") {
+            viewer.loadFbx(url);
           }
         });
       }
