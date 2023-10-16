@@ -26,6 +26,8 @@ type Props = {
   onClickResetChatLog: () => void;
   onClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  webSocketMode: boolean;
+  changeWebSocketMode: (show: boolean) => void;
 };
 export const Settings = ({
   openAiKey,
@@ -42,6 +44,8 @@ export const Settings = ({
   onClickResetChatLog,
   onClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  webSocketMode,
+  changeWebSocketMode,
 }: Props) => {
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
@@ -55,6 +59,24 @@ export const Settings = ({
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">設定</div>
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">
+              外部連携モード（WebSocket）
+            </div>
+            <div className="my-8">
+              {webSocketMode ? (
+                <TextButton
+                  onClick={() => changeWebSocketMode(false)}>
+                  状態：ON
+                </TextButton>
+              ) : (
+                <TextButton
+                  onClick={() => changeWebSocketMode(true)}>
+                  状態：OFF
+                </TextButton>
+              )}
+            </div>
+          </div>
           <div className="my-24">
             <div className="my-16 typography-20 font-bold">OpenAI API キー</div>
             <input

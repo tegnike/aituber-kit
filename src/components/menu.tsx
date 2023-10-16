@@ -21,6 +21,8 @@ type Props = {
   handleClickResetChatLog: () => void;
   handleClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (key: string) => void;
+  webSocketMode: boolean;
+  changeWebSocketMode: (show: boolean) => void;
 };
 export const Menu = ({
   openAiKey,
@@ -36,6 +38,8 @@ export const Menu = ({
   handleClickResetChatLog,
   handleClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  webSocketMode,
+  changeWebSocketMode,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -143,6 +147,8 @@ export const Menu = ({
           onClickResetChatLog={handleClickResetChatLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
+          webSocketMode={webSocketMode}
+          changeWebSocketMode={changeWebSocketMode}
         />
       )}
       {!showChatLog && assistantMessage && (
