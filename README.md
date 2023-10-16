@@ -1,64 +1,39 @@
-# ChatVRM
+# 美少女OPInterpreter フロントサイド 公開用
+[English version](./en_README.md)
 
-ChatVRMはブラウザで簡単に3Dキャラクターと会話ができるデモアプリケーションです。
+## 関連
 
-VRMファイルをインポートしてキャラクターに合わせた声の調整や、感情表現を含んだ返答文の生成などを行うことができます。
+- サーバーサイドリポジトリ -> [tegnike/nike-open-interpreter](https://github.com/tegnike/nike-open-interpreter)
 
-ChatVRMの各機能は主に以下の技術を使用しています。
+## できること
 
-- ユーザーの音声の認識
-    - [Web Speech API(SpeechRecognition)](https://developer.mozilla.org/ja/docs/Web/API/SpeechRecognition)
-- 返答文の生成
-    - [ChatGPT API](https://platform.openai.com/docs/api-reference/chat)
-- 読み上げ音声の生成
-    - [Koemotion/Koeiromap API](https://koemotion.rinna.co.jp/)
-- 3Dキャラクターの表示
-    - [@pixiv/three-vrm](https://github.com/pixiv/three-vrm)
+1. ChatVRMも全機能がそのまま使えます。
+2. 加えて、WebSocketでサーバー側にメッセージを送信して、レスポンスを取得することができます。
 
+## 事前準備
 
-## デモ
+1. 本リポジトリはWebSocketでの動作を前提としているため、ご自身の環境に合わせて接続先を準備してください。
+2. 接続URLはデフォルトで`ws://127.0.0.1:8000/ws`です。
 
-Glitchでデモを公開しています。
+## 実行方法
 
-[https://chatvrm.glitch.me](https://chatvrm.glitch.me)
-
-## 実行
-ローカル環境で実行する場合はこのリポジトリをクローンするか、ダウンロードしてください。
-
-```bash
-git clone git@github.com:pixiv/ChatVRM.git
-```
-
-必要なパッケージをインストールしてください。
+1. パッケージインストール
 ```bash
 npm install
 ```
 
-パッケージのインストールが完了した後、以下のコマンドで開発用のWebサーバーを起動します。
+2. サーバー起動
 ```bash
 npm run dev
 ```
 
-実行後、以下のURLにアクセスして動作を確認して下さい。
-
+3. URLを開く
 [http://localhost:3000](http://localhost:3000) 
 
+## コード解説
 
----
+未対応
 
-## ChatGPT API
+## その他
 
-ChatVRMでは返答文の生成にChatGPT APIを使用しています。
-
-ChatGPT APIの仕様や利用規約については以下のリンクや公式サイトをご確認ください。
-
-- [https://platform.openai.com/docs/api-reference/chat](https://platform.openai.com/docs/api-reference/chat)
-- [https://openai.com/policies/api-data-usage-policies](https://openai.com/policies/api-data-usage-policies)
-
-
-## Koeiromap API
-ChatVRMでは返答文の音声読み上げにKoemotionのKoeiromap APIを使用しています。
-
-Koeiromap APIの仕様や利用規約については以下のリンクや公式サイトをご確認ください。
-
-- [https://koemotion.rinna.co.jp/](https://koemotion.rinna.co.jp/)
+1. ライセンスは[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)に準拠します。
