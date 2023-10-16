@@ -38,6 +38,7 @@ export default function Home() {
       setSystemPrompt(params.systemPrompt);
       setKoeiroParam(params.koeiroParam);
       setChatLog(params.chatLog);
+      setCodeLog(params.codeLog);
     }
   }, []);
 
@@ -45,10 +46,10 @@ export default function Home() {
     process.nextTick(() =>
       window.localStorage.setItem(
         "chatVRMParams",
-        JSON.stringify({ systemPrompt, koeiroParam, chatLog })
+        JSON.stringify({ systemPrompt, koeiroParam, chatLog, codeLog })
       )
     );
-  }, [systemPrompt, koeiroParam, chatLog]);
+  }, [systemPrompt, koeiroParam, chatLog, codeLog]);
 
   const handleChangeChatLog = useCallback(
     (targetIndex: number, text: string) => {
@@ -104,6 +105,8 @@ export default function Home() {
         setChatProcessing(true);
 
         if (role !== undefined && role !== "user") {
+          // WebSocketからの返答を処理
+
           if (role == "assistant") {
             let aiText = `${"[neutral]"} ${newMessage}`;
             try {
@@ -139,6 +142,8 @@ export default function Home() {
             console.log("error role:", role)
           }
         } else {
+          // WebSocketで送信する処理
+
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             // ユーザーの発言を追加して表示
             const updateLog: Message[] = [
@@ -334,8 +339,6 @@ export default function Home() {
       <MessageInputContainer
         isChatProcessing={chatProcessing}
         onChatProcessStart={handleSendChat}
-        isVoicePlaying={isVoicePlaying}
-        setIsVoicePlaying={setIsVoicePlaying}
       />
       <Menu
         openAiKey={openAiKey}
