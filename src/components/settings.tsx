@@ -15,15 +15,18 @@ type Props = {
   openAiKey: string;
   systemPrompt: string;
   chatLog: Message[];
+  codeLog: Message[];
   koeiroParam: KoeiroParam;
   koeiromapKey: string;
   onClickClose: () => void;
   onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onChangeChatLog: (index: number, text: string) => void;
+  onChangeCodeLog: (index: number, text: string) => void;
   onChangeKoeiroParam: (x: number, y: number) => void;
   onClickOpenVrmFile: () => void;
   onClickResetChatLog: () => void;
+  onClickResetCodeLog: () => void;
   onClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   webSocketMode: boolean;
@@ -32,6 +35,7 @@ type Props = {
 export const Settings = ({
   openAiKey,
   chatLog,
+  codeLog,
   systemPrompt,
   koeiroParam,
   koeiromapKey,
@@ -39,9 +43,11 @@ export const Settings = ({
   onChangeSystemPrompt,
   onChangeAiKey,
   onChangeChatLog,
+  onChangeCodeLog,
   onChangeKoeiroParam,
   onClickOpenVrmFile,
   onClickResetChatLog,
+  onClickResetCodeLog,
   onClickResetSystemPrompt,
   onChangeKoeiromapKey,
   webSocketMode,
@@ -235,6 +241,7 @@ export const Settings = ({
                         value={value.content}
                         onChange={(event) => {
                           onChangeChatLog(index, event.target.value);
+                          onChangeCodeLog(index, event.target.value);
                         }}
                       ></input>
                     </div>

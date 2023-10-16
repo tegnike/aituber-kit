@@ -38,6 +38,7 @@ export async function synthesizeVoiceApi(
     body: JSON.stringify(body),
   });
   const data = (await res.json()) as any;
+  const audio = data.audio;
 
-  return { audio: data.audio };
+  return { audio: audio };
 }

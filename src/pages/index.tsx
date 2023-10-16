@@ -25,8 +25,10 @@ export default function Home() {
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
+  const [codeLog, setCodeLog] = useState<Message[]>([]);
   const [assistantMessage, setAssistantMessage] = useState("");
   const [webSocketMode, changeWebSocketMode] = useState(true);
+  const [isVoicePlaying, setIsVoicePlaying] = useState(false);
 
   useEffect(() => {
     if (window.localStorage.getItem("chatVRMParams")) {
@@ -59,6 +61,17 @@ export default function Home() {
     [chatLog]
   );
 
+  const handleChangeCodeLog = useCallback(
+    async (targetIndex: number, text: string) => {
+      const newCodeLog = codeLog.map((v: Message, i) => {
+        return i === targetIndex ? { role: v.role, content: text} : v;
+      });
+
+      setCodeLog(newCodeLog);
+    },
+    [codeLog]
+  );
+
   /**
    * 文ごとに音声を直列でリクエストしながら再生する
    */
@@ -82,45 +95,58 @@ export default function Home() {
     async (text: string, role?: string) => {
       const newMessage = text;
 
-      if (newMessage == null) return;
+      if (newMessage == null) {
+        return;
+      }
 
       if (webSocketMode) {
         console.log("websocket mode: true")
         setChatProcessing(true);
-        const messageLog: Message[] = [
-          ...chatLog,
-        ]
 
         if (role !== undefined && role !== "user") {
-          let receivedMessage = newMessage;
-          let aiText = `${"[happy]"} ${receivedMessage}`;
-          try {
-            const aiTalks = textsToScreenplay([aiText], koeiroParam);
+          if (role == "assistant") {
+            let aiText = `${"[neutral]"} ${newMessage}`;
+            try {
+              const aiTalks = textsToScreenplay([aiText], koeiroParam);
 
-            // 文ごとに音声を生成 & 再生、返答を表示
-            handleSpeakAi(aiTalks[0], () => {
-              setAssistantMessage(receivedMessage);
-            });
-          } catch (e) {
+              // 文ごとに音声を生成 & 再生、返答を表示
+              handleSpeakAi(aiTalks[0], async () => {
+                // アシスタントの返答をログに追加
+                const updateLog: Message[] = [
+                  ...codeLog,
+                  { role: "assistant", content: newMessage },
+                ];
+                setChatLog(updateLog);
+                setCodeLog(updateLog);
+
+                setAssistantMessage(newMessage);
+                setIsVoicePlaying(false);
+                setChatProcessing(false);
+              });
+            } catch (e) {
+              setIsVoicePlaying(false);
+              setChatProcessing(false);
+            }
+          } else if (role == "code" || role == "output" || role == "executing"){ // コードコメントの処理
+            // ループ完了後にAI応答をコードログに追加
+            const updateLog: Message[] = [
+              ...codeLog,
+              { role: role, content: newMessage },
+            ];
+            setCodeLog(updateLog);
             setChatProcessing(false);
-            console.error(e);
+          } else { // その他のコメントの処理（現想定では使用されないはず）
+            console.log("error role:", role)
           }
-
-          // アシスタントの返答をログに追加
-          const updateLog: Message[] = [
-            ...messageLog,
-            { role: "assistant", content: aiText },
-          ];
-          setChatLog(updateLog);
-          setChatProcessing(false);
         } else {
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             // ユーザーの発言を追加して表示
             const updateLog: Message[] = [
-              ...messageLog,
+              ...codeLog,
               { role: "user", content: newMessage },
             ];
             setChatLog(updateLog);
+            setCodeLog(updateLog);
 
             // WebSocket送信
             wsRef.current.send(JSON.stringify({content: newMessage, type: "chat"}));
@@ -232,7 +258,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [webSocketMode, chatLog, koeiroParam, handleSpeakAi, openAiKey, systemPrompt]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, openAiKey, chatLog, systemPrompt]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
@@ -272,6 +298,7 @@ export default function Home() {
 
     const reconnectInterval = setInterval(() => {
       if (webSocketMode && ws.readyState !== WebSocket.OPEN && ws.readyState !== WebSocket.CONNECTING) {
+        setChatProcessing(false);
         console.log("再接続を試みます。");
         ws.close();
         ws = setupWebsocket();
@@ -286,12 +313,13 @@ export default function Home() {
   }, [webSocketMode]);
 
   useEffect(() => {
-    if (tmpMessages.length > 0) {
+    if (tmpMessages.length > 0 && !isVoicePlaying) {
       const message = tmpMessages[0];
+      if (message.role == "assistant") { setIsVoicePlaying(true) };
       setTmpMessages((tmpMessages) => tmpMessages.slice(1));
       handleSendChat(message.text, message.role);
     }
-  }, [tmpMessages, handleSendChat]);
+  }, [tmpMessages, isVoicePlaying, handleSendChat]);
 
   return (
     <div className={"font-M_PLUS_2"}>
@@ -306,23 +334,28 @@ export default function Home() {
       <MessageInputContainer
         isChatProcessing={chatProcessing}
         onChatProcessStart={handleSendChat}
+        isVoicePlaying={isVoicePlaying}
+        setIsVoicePlaying={setIsVoicePlaying}
       />
       <Menu
         openAiKey={openAiKey}
         systemPrompt={systemPrompt}
         chatLog={chatLog}
+        codeLog={codeLog}
         koeiroParam={koeiroParam}
         assistantMessage={assistantMessage}
         koeiromapKey={koeiromapKey}
         onChangeAiKey={setOpenAiKey}
         onChangeSystemPrompt={setSystemPrompt}
         onChangeChatLog={handleChangeChatLog}
+        onChangeCodeLog={handleChangeCodeLog}
         onChangeKoeiromapParam={setKoeiroParam}
         handleClickResetChatLog={() => setChatLog([])}
+        handleClickResetCodeLog={() => setCodeLog([])}
         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
         onChangeKoeiromapKey={setKoeiromapKey}
-        webSocketMode={webSocketMode}//追加分
-        changeWebSocketMode={changeWebSocketMode} //追加分
+        webSocketMode={webSocketMode}
+        changeWebSocketMode={changeWebSocketMode}
       />
       <GitHubLink />
     </div>

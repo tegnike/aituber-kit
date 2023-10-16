@@ -3,7 +3,7 @@ import { KoeiroParam } from "../constants/koeiroParam";
 
 // ChatGPT API
 export type Message = {
-  role: "assistant" | "system" | "user";
+  role: string; // "assistant" | "system" | "user";
   content: string;
 };
 

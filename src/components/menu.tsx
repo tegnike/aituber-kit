@@ -2,6 +2,7 @@ import { IconButton } from "./iconButton";
 import { Message } from "@/features/messages/messages";
 import { KoeiroParam } from "@/features/constants/koeiroParam";
 import { ChatLog } from "./chatLog";
+import { CodeLog } from "./codeLog";
 import React, { useCallback, useContext, useRef, useState } from "react";
 import { Settings } from "./settings";
 import { ViewerContext } from "@/features/vrmViewer/viewerContext";
@@ -11,14 +12,17 @@ type Props = {
   openAiKey: string;
   systemPrompt: string;
   chatLog: Message[];
+  codeLog: Message[];
   koeiroParam: KoeiroParam;
   assistantMessage: string;
   koeiromapKey: string;
   onChangeSystemPrompt: (systemPrompt: string) => void;
   onChangeAiKey: (key: string) => void;
   onChangeChatLog: (index: number, text: string) => void;
+  onChangeCodeLog: (index: number, text: string) => void;
   onChangeKoeiromapParam: (param: KoeiroParam) => void;
   handleClickResetChatLog: () => void;
+  handleClickResetCodeLog: () => void;
   handleClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (key: string) => void;
   webSocketMode: boolean;
@@ -28,14 +32,17 @@ export const Menu = ({
   openAiKey,
   systemPrompt,
   chatLog,
+  codeLog,
   koeiroParam,
   assistantMessage,
   koeiromapKey,
   onChangeSystemPrompt,
   onChangeAiKey,
   onChangeChatLog,
+  onChangeCodeLog,
   onChangeKoeiromapParam,
   handleClickResetChatLog,
+  handleClickResetCodeLog,
   handleClickResetSystemPrompt,
   onChangeKoeiromapKey,
   webSocketMode,
@@ -115,14 +122,14 @@ export const Menu = ({
           {showChatLog ? (
             <IconButton
               iconName="24/CommentOutline"
-              label="会話ログ"
+              label={webSocketMode ? "コードログ" : "会話ログ"}
               isProcessing={false}
               onClick={() => setShowChatLog(false)}
             />
           ) : (
             <IconButton
               iconName="24/CommentFill"
-              label="会話ログ"
+              label={webSocketMode ? "コードログ" : "会話ログ"}
               isProcessing={false}
               disabled={chatLog.length <= 0}
               onClick={() => setShowChatLog(true)}
@@ -130,11 +137,16 @@ export const Menu = ({
           )}
         </div>
       </div>
-      {showChatLog && <ChatLog messages={chatLog} />}
+      {
+        webSocketMode ? 
+          (showChatLog && <CodeLog messages={codeLog} />) :
+          (showChatLog && <ChatLog messages={chatLog} />)
+      }
       {showSettings && (
         <Settings
           openAiKey={openAiKey}
           chatLog={chatLog}
+          codeLog={codeLog}
           systemPrompt={systemPrompt}
           koeiroParam={koeiroParam}
           koeiromapKey={koeiromapKey}
@@ -142,9 +154,11 @@ export const Menu = ({
           onChangeAiKey={handleAiKeyChange}
           onChangeSystemPrompt={handleChangeSystemPrompt}
           onChangeChatLog={onChangeChatLog}
+          onChangeCodeLog={onChangeCodeLog}
           onChangeKoeiroParam={handleChangeKoeiroParam}
           onClickOpenVrmFile={handleClickOpenVrmFile}
           onClickResetChatLog={handleClickResetChatLog}
+          onClickResetCodeLog={handleClickResetCodeLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
           webSocketMode={webSocketMode}
