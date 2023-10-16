@@ -35,7 +35,6 @@ type Props = {
 export const Settings = ({
   openAiKey,
   chatLog,
-  codeLog,
   systemPrompt,
   koeiroParam,
   koeiromapKey,
@@ -47,7 +46,6 @@ export const Settings = ({
   onChangeKoeiroParam,
   onClickOpenVrmFile,
   onClickResetChatLog,
-  onClickResetCodeLog,
   onClickResetSystemPrompt,
   onChangeKoeiromapKey,
   webSocketMode,

@@ -9,8 +9,6 @@ type Props = {
   ) => void;
   onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  isVoicePlaying: boolean;
-  setIsVoicePlaying: (value: boolean) => void;
 };
 export const MessageInput = ({
   userMessage,
