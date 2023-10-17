@@ -36,8 +36,8 @@ export const ChatLog = ({ messages }: Props) => {
 
 const Chat = ({ role, message }: { role: string; message: string }) => {
   const roleColor =
-    role === "assistant" ? "bg-secondary text-white " : "bg-base text-primary";
-  const roleText = role === "assistant" ? "text-secondary" : "text-primary";
+    role !== "user" ? "bg-secondary text-white " : "bg-base text-primary";
+  const roleText = role !== "user" ? "text-secondary" : "text-primary";
   const offsetX = role === "user" ? "pl-40" : "pr-40";
 
   return (
@@ -45,7 +45,7 @@ const Chat = ({ role, message }: { role: string; message: string }) => {
       <div
         className={`px-24 py-8 rounded-t-8 font-bold tracking-wider ${roleColor}`}
       >
-        {role === "assistant" ? "CHARACTER" : "YOU"}
+        {role !== "user" ? "CHARACTER" : "YOU"}
       </div>
       <div className="px-24 py-16 bg-white rounded-b-8">
         <div className={`typography-16 font-bold ${roleText}`}>{message}</div>
