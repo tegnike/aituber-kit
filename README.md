@@ -32,7 +32,9 @@ npm run dev
 
 ## コード解説
 
-未対応
+下記に詳細を記載しました。
+
+- [美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
 
 ## その他
 

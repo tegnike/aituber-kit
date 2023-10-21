@@ -32,7 +32,9 @@ npm run dev
 
 ## Code Explanation
 
-Not provided.
+I've detailed it in the link below:
+
+- https://note.com/nike_cha_n/n/nabcfeb7aaf3f
 
 ## Additional Notes
 
