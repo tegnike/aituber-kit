@@ -21,7 +21,9 @@ export default function Home() {
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
   const [openAiKey, setOpenAiKey] = useState("");
+  const [selectVoice, setselectVoice] = useState("koeiromap");
   const [koeiromapKey, setKoeiromapKey] = useState("");
+  const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
@@ -82,9 +84,9 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void
     ) => {
-      speakCharacter(screenplay, viewer, koeiromapKey, onStart, onEnd);
+      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, googleTtsType, onStart, onEnd);
     },
-    [viewer, koeiromapKey]
+    [viewer, selectVoice, koeiromapKey, googleTtsType]
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -348,6 +350,7 @@ export default function Home() {
         koeiroParam={koeiroParam}
         assistantMessage={assistantMessage}
         koeiromapKey={koeiromapKey}
+        googleTtsType={googleTtsType}
         onChangeAiKey={setOpenAiKey}
         onChangeSystemPrompt={setSystemPrompt}
         onChangeChatLog={handleChangeChatLog}
@@ -357,8 +360,11 @@ export default function Home() {
         handleClickResetCodeLog={() => setCodeLog([])}
         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
         onChangeKoeiromapKey={setKoeiromapKey}
+        onChangeGoogleTtsType={setGoogleTtsType}
         webSocketMode={webSocketMode}
         changeWebSocketMode={changeWebSocketMode}
+        selectVoice={selectVoice}
+        setselectVoice={setselectVoice}
       />
       <GitHubLink />
     </div>

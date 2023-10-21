@@ -1,5 +1,6 @@
 import { wait } from "@/utils/wait";
 import { synthesizeVoiceApi } from "./synthesizeVoice";
+import { synthesizeVoiceGoogleApi } from "./synthesizeVoiceGoogle";
 import { Viewer } from "../vrmViewer/viewer";
 import { Screenplay } from "./messages";
 import { Talk } from "./messages";
@@ -12,7 +13,9 @@ const createSpeakCharacter = () => {
   return (
     screenplay: Screenplay,
     viewer: Viewer,
+    selectVoice: string,
     koeiroApiKey: string,
+    googleTtsType: string,
     onStart?: () => void,
     onComplete?: () => void
   ) => {
@@ -22,9 +25,16 @@ const createSpeakCharacter = () => {
         await wait(1000 - (now - lastTime));
       }
 
-      const buffer = await fetchAudio(screenplay.talk, koeiroApiKey).catch(
-        () => null
-      );
+      let buffer;
+      if (selectVoice == "koeiro") {
+        buffer = await fetchAudio(screenplay.talk, koeiroApiKey).catch(
+          () => null
+        );
+      } else if (selectVoice == "google") {
+        buffer = await fetchAudioGoogle(screenplay.talk, googleTtsType).catch(
+          () => null
+        );
+      }
       lastTime = Date.now();
       return buffer;
     });
@@ -67,4 +77,18 @@ export const fetchAudio = async (
   const resAudio = await fetch(url);
   const buffer = await resAudio.arrayBuffer();
   return buffer;
+};
+
+export const fetchAudioGoogle = async (
+  talk: Talk,
+  ttsType: string
+): Promise<ArrayBuffer> => {
+  const ttsVoice = await synthesizeVoiceGoogleApi(
+    talk.message,
+    ttsType
+  );
+  const uint8Array = new Uint8Array(ttsVoice.audio.data);
+  const arrayBuffer: ArrayBuffer = uint8Array.buffer;
+  
+  return arrayBuffer;
 };

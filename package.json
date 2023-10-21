@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@charcoal-ui/icons": "^2.6.0",
+    "@google-cloud/text-to-speech": "^5.0.1",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@types/dom-speech-recognition": "^0.0.1",
     "eslint": "8.36.0",

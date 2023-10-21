@@ -16,6 +16,7 @@ type Props = {
   koeiroParam: KoeiroParam;
   assistantMessage: string;
   koeiromapKey: string;
+  googleTtsType: string;
   onChangeSystemPrompt: (systemPrompt: string) => void;
   onChangeAiKey: (key: string) => void;
   onChangeChatLog: (index: number, text: string) => void;
@@ -25,8 +26,11 @@ type Props = {
   handleClickResetCodeLog: () => void;
   handleClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (key: string) => void;
+  onChangeGoogleTtsType: (key: string) => void;
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
+  selectVoice: string;
+  setselectVoice: (show: string) => void;
 };
 export const Menu = ({
   openAiKey,
@@ -36,6 +40,7 @@ export const Menu = ({
   koeiroParam,
   assistantMessage,
   koeiromapKey,
+  googleTtsType,
   onChangeSystemPrompt,
   onChangeAiKey,
   onChangeChatLog,
@@ -45,8 +50,11 @@ export const Menu = ({
   handleClickResetCodeLog,
   handleClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  onChangeGoogleTtsType,
   webSocketMode,
   changeWebSocketMode,
+  selectVoice,
+  setselectVoice,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -72,6 +80,13 @@ export const Menu = ({
       onChangeKoeiromapKey(event.target.value);
     },
     [onChangeKoeiromapKey]
+  );
+
+  const handleChangeGoogleTtsType = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGoogleTtsType(event.target.value);
+    },
+    [onChangeGoogleTtsType]
   );
 
   const handleChangeKoeiroParam = useCallback(
@@ -150,6 +165,7 @@ export const Menu = ({
           systemPrompt={systemPrompt}
           koeiroParam={koeiroParam}
           koeiromapKey={koeiromapKey}
+          googleTtsType={googleTtsType}
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={handleAiKeyChange}
           onChangeSystemPrompt={handleChangeSystemPrompt}
@@ -161,8 +177,11 @@ export const Menu = ({
           onClickResetCodeLog={handleClickResetCodeLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
+          onChangeGoogleTtsType={handleChangeGoogleTtsType}
           webSocketMode={webSocketMode}
           changeWebSocketMode={changeWebSocketMode}
+          selectVoice = {selectVoice}
+          setselectVoice = {setselectVoice}
         />
       )}
       {!showChatLog && assistantMessage && (
