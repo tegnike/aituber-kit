@@ -125,23 +125,32 @@ export const Settings = ({
               )}
             </div>
           </div>
-          <div className="my-24">
-            <div className="my-16 typography-20 font-bold">{t('OpenAI_API_Key_Label')}</div>
-            <input
-              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-              type="text"
-              placeholder="sk-..."
-              value={openAiKey}
-              onChange={onChangeAiKey}
-            />
-            <div>
-              {t('APIKeyInstruction')}<br />
-              <Link url="https://platform.openai.com/account/api-keys" label="OpenAI's Site" />
-            </div>
-            <div className="my-16">
-              {t('ChatGPTInfo')}
-            </div>
-          </div>
+          {(() => {
+            if (!webSocketMode) {
+              return (
+                <>
+                  <div className="my-24">
+                    <div className="my-16 typography-20 font-bold">{t('OpenAI_API_Key_Label')}</div>
+                    <input
+                      className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      type="text"
+                      placeholder="sk-..."
+                      value={openAiKey}
+                      onChange={onChangeAiKey}
+                    />
+                    <div>
+                      {t('APIKeyInstruction')}<br />
+                      <Link url="https://platform.openai.com/account/api-keys" label="OpenAI's Site" />
+                    </div>
+                    <div className="my-16">
+                      {t('ChatGPTInfo')}
+                    </div>
+                  </div>
+                </>
+              )
+              }
+            })()
+          }
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
               {t('CharacterModelLabel')}
@@ -150,21 +159,30 @@ export const Settings = ({
               <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
             </div>
           </div>
-          <div className="my-40">
-            <div className="my-8">
-              <div className="my-16 typography-20 font-bold">
-                {t('CharacterSettingsPrompt')}
-              </div>
-              <TextButton onClick={onClickResetSystemPrompt}>
-                {t('CharacterSettingsReset')}
-              </TextButton>
-            </div>
-            <textarea
-              value={systemPrompt}
-              onChange={onChangeSystemPrompt}
-              className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
-            ></textarea>
-          </div>
+          {(() => {
+            if (!webSocketMode) {
+              return (
+                <>
+                  <div className="my-40">
+                    <div className="my-8">
+                      <div className="my-16 typography-20 font-bold">
+                        {t('CharacterSettingsPrompt')}
+                      </div>
+                      <TextButton onClick={onClickResetSystemPrompt}>
+                        {t('CharacterSettingsReset')}
+                      </TextButton>
+                    </div>
+                    <textarea
+                      value={systemPrompt}
+                      onChange={onChangeSystemPrompt}
+                      className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
+                    ></textarea>
+                  </div>
+                </>
+              )
+              }
+            })()
+          }
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">{t('SyntheticVoiceEngineChoice')}</div>
             <div>{t('VoiceEngineInstruction')}</div>

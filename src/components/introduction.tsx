@@ -37,7 +37,17 @@ export const Introduction = ({
             このアプリケーションについて
           </div>
           <div>
-            Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。
+            Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。<br />
+            設定は左上のメニューボタンから変更できます。
+          </div>
+        </div>
+        <div className="my-24">
+          <div className="my-8 font-bold typography-20 text-secondary ">
+            About This Application
+          </div>
+          <div>
+            Enjoy conversations with a 3D character right in your web browser, using microphone or text input and voice synthesis. You can also change the character (VRM), adjust its personality, and modify its voice.<br />
+            Settings can be changed from the menu button in the top left.
           </div>
         </div>
         <div className="my-24">
@@ -145,7 +155,7 @@ export const Introduction = ({
             }}
             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
           >
-            APIキーを入力してはじめる
+           閉じる（CLOSE）
           </button>
         </div>
       </div>
