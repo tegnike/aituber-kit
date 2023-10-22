@@ -7,6 +7,7 @@ import React, { useCallback, useContext, useRef, useState } from "react";
 import { Settings } from "./settings";
 import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 import { AssistantText } from "./assistantText";
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   openAiKey: string;
@@ -30,7 +31,9 @@ type Props = {
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
-  setselectVoice: (show: string) => void;
+  setSelectVoice: (show: string) => void;
+  selectLanguage: string;
+  setSelectLanguage: (show: string) => void;
 };
 export const Menu = ({
   openAiKey,
@@ -54,12 +57,15 @@ export const Menu = ({
   webSocketMode,
   changeWebSocketMode,
   selectVoice,
-  setselectVoice,
+  setSelectVoice,
+  selectLanguage,
+  setSelectLanguage,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
   const { viewer } = useContext(ViewerContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
 
   const handleChangeSystemPrompt = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -129,22 +135,21 @@ export const Menu = ({
       <div className="absolute z-10 m-24">
         <div className="grid grid-flow-col gap-[8px]">
           <IconButton
-            iconName="24/Menu"
-            label="設定"
+            iconName="24/Settings"
             isProcessing={false}
             onClick={() => setShowSettings(true)}
           ></IconButton>
           {showChatLog ? (
             <IconButton
               iconName="24/CommentOutline"
-              label={webSocketMode ? "コードログ" : "会話ログ"}
+              label={webSocketMode ? t('CodeLog') : t('ChatLog')}
               isProcessing={false}
               onClick={() => setShowChatLog(false)}
             />
           ) : (
             <IconButton
               iconName="24/CommentFill"
-              label={webSocketMode ? "コードログ" : "会話ログ"}
+              label={webSocketMode ? t('CodeLog') : t('ChatLog')}
               isProcessing={false}
               disabled={chatLog.length <= 0}
               onClick={() => setShowChatLog(true)}
@@ -181,7 +186,9 @@ export const Menu = ({
           webSocketMode={webSocketMode}
           changeWebSocketMode={changeWebSocketMode}
           selectVoice = {selectVoice}
-          setselectVoice = {setselectVoice}
+          setSelectVoice = {setSelectVoice}
+          selectLanguage = {selectLanguage}
+          setSelectLanguage = {setSelectLanguage}
         />
       )}
       {!showChatLog && assistantMessage && (

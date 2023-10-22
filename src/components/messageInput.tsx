@@ -1,4 +1,5 @@
 import { IconButton } from "./iconButton";
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   userMessage: string;
@@ -18,6 +19,8 @@ export const MessageInput = ({
   onClickMicButton,
   onClickSendButton,
 }: Props) => {
+  const { t } = useTranslation();
+
   return (
     <div className="absolute bottom-0 z-20 w-screen">
       <div className="bg-base text-black">
@@ -32,7 +35,7 @@ export const MessageInput = ({
             />
             <input
               type="text"
-              placeholder="聞きたいことをいれてね"
+              placeholder={t('EnterYourQuestion')}
               onChange={onChangeUserMessage}
               disabled={isChatProcessing}
               className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"

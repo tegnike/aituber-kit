@@ -15,13 +15,16 @@ import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
+import "@/lib/i18n";
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
   const [openAiKey, setOpenAiKey] = useState("");
-  const [selectVoice, setselectVoice] = useState("koeiromap");
+  const [selectVoice, setSelectVoice] = useState("koeiromap");
+  const [selectLanguage, setSelectLanguage] = useState("Japanese");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
@@ -31,6 +34,7 @@ export default function Home() {
   const [assistantMessage, setAssistantMessage] = useState("");
   const [webSocketMode, changeWebSocketMode] = useState(true);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (window.localStorage.getItem("chatVRMParams")) {
@@ -158,14 +162,14 @@ export default function Home() {
             // WebSocket送信
             wsRef.current.send(JSON.stringify({content: newMessage, type: "chat"}));
           } else {
-            setAssistantMessage("外部アシスタントと接続されていません");
+            setAssistantMessage(t('NotConnectedToExternalAssistant'));
             setChatProcessing(false);
           }
         }
       } else {
         // ChatVERM original mode
         if (!openAiKey) {
-          setAssistantMessage("APIキーが入力されていません");
+          setAssistantMessage(t('APIKeyNotEntered'));
           return;
         }
 
@@ -306,7 +310,7 @@ export default function Home() {
     const reconnectInterval = setInterval(() => {
       if (webSocketMode && ws.readyState !== WebSocket.OPEN && ws.readyState !== WebSocket.CONNECTING) {
         setChatProcessing(false);
-        console.log("再接続を試みます。");
+        console.log("try reconnecting...");
         ws.close();
         ws = setupWebsocket();
         wsRef.current = ws;
@@ -364,7 +368,9 @@ export default function Home() {
         webSocketMode={webSocketMode}
         changeWebSocketMode={changeWebSocketMode}
         selectVoice={selectVoice}
-        setselectVoice={setselectVoice}
+        setSelectVoice={setSelectVoice}
+        selectLanguage={selectLanguage}
+        setSelectLanguage={setSelectLanguage}
       />
       <GitHubLink />
     </div>

@@ -10,6 +10,8 @@ import {
   PRESET_D,
 } from "@/features/constants/koeiroParam";
 import { Link } from "./link";
+import i18n from "i18next";
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   openAiKey: string;
@@ -34,7 +36,9 @@ type Props = {
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
-  setselectVoice: (show: string) => void;
+  setSelectVoice: (show: string) => void;
+  selectLanguage: string;
+  setSelectLanguage: (show: string) => void;
 };
 export const Settings = ({
   openAiKey,
@@ -58,8 +62,12 @@ export const Settings = ({
   webSocketMode,
   changeWebSocketMode,
   selectVoice,
-  setselectVoice,
+  setSelectVoice,
+  selectLanguage,
+  setSelectLanguage,
 }: Props) => {
+  const { t } = useTranslation();
+
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
       <div className="absolute m-24">
@@ -71,27 +79,54 @@ export const Settings = ({
       </div>
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
-          <div className="my-24 typography-32 font-bold">設定</div>
+          <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
-              外部連携モード（WebSocket）
+              言語設定 - Language
+            </div>
+            <div className="my-8">
+              {(() => {
+                if (selectLanguage === "Japanese") {
+                  return (
+                    <TextButton onClick={() => { 
+                        setSelectLanguage("English")
+                        setSelectVoice("google")
+                        i18n.changeLanguage('en');
+                    }}>
+                      日本語 - Japanese
+                    </TextButton>
+                  );
+                } else {
+                  return (
+                    <TextButton onClick={() => { 
+                        setSelectLanguage("Japanese")
+                        i18n.changeLanguage('ja');
+                    }}>
+                      英語 - English
+                    </TextButton>
+                  );
+                }
+              })()}
+            </div>
+          </div>
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">
+              {t('ExternalConnectionMode')}
             </div>
             <div className="my-8">
               {webSocketMode ? (
-                <TextButton
-                  onClick={() => changeWebSocketMode(false)}>
-                  状態：ON
+                <TextButton onClick={() => changeWebSocketMode(false)}>
+                  {t('StatusOn')}
                 </TextButton>
               ) : (
-                <TextButton
-                  onClick={() => changeWebSocketMode(true)}>
-                  状態：OFF
+                <TextButton onClick={() => changeWebSocketMode(true)}>
+                  {t('StatusOff')}
                 </TextButton>
               )}
             </div>
           </div>
           <div className="my-24">
-            <div className="my-16 typography-20 font-bold">OpenAI API キー</div>
+            <div className="my-16 typography-20 font-bold">{t('OpenAI_API_Key_Label')}</div>
             <input
               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
               type="text"
@@ -100,76 +135,68 @@ export const Settings = ({
               onChange={onChangeAiKey}
             />
             <div>
-              APIキーは
-              <Link
-                url="https://platform.openai.com/account/api-keys"
-                label="OpenAIのサイト"
-              />
-              で取得できます。取得したAPIキーをフォームに入力してください。
+              {t('APIKeyInstruction')}<br />
+              <Link url="https://platform.openai.com/account/api-keys" label="OpenAI's Site" />
             </div>
             <div className="my-16">
-              ChatGPT
-              APIはブラウザから直接アクセスしています。また、APIキーや会話内容はピクシブのサーバには保存されません。
-              <br />
-              ※利用しているモデルはChatGPT API (GPT-3.5)です。
+              {t('ChatGPTInfo')}
             </div>
           </div>
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
-              キャラクターモデル
+              {t('CharacterModelLabel')}
             </div>
             <div className="my-8">
-              <TextButton onClick={onClickOpenVrmFile}>VRMを開く</TextButton>
+              <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
             </div>
           </div>
           <div className="my-40">
             <div className="my-8">
               <div className="my-16 typography-20 font-bold">
-                キャラクター設定（システムプロンプト）
+                {t('CharacterSettingsPrompt')}
               </div>
               <TextButton onClick={onClickResetSystemPrompt}>
-                キャラクター設定リセット
+                {t('CharacterSettingsReset')}
               </TextButton>
             </div>
-
             <textarea
               value={systemPrompt}
               onChange={onChangeSystemPrompt}
-              className="px-16 py-8  bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
+              className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
             ></textarea>
           </div>
           <div className="my-40">
-          <div className="my-16 typography-20 font-bold">合成音声エンジンの選択</div>
-            <div>使用する合成音声エンジンをKoeiromapとGoogle Cloud Text-to-Speechから選択してください。</div>
+            <div className="my-16 typography-20 font-bold">{t('SyntheticVoiceEngineChoice')}</div>
+            <div>{t('VoiceEngineInstruction')}</div>
             <div className="my-8">
               {(() => {
                 if (selectVoice === "koeiromap") {
                   return (
-                    <TextButton onClick={() => setselectVoice("google")}>
-                      現在：koeiro APIを使用する
+                    <TextButton onClick={() => setSelectVoice("google")}>
+                      {t('UsingKoeiromap')}
                     </TextButton>
                   );
                 } else {
                   return (
-                    <TextButton onClick={() => setselectVoice("koeiromap")}>
-                      現在：Google TTSを使用する（English）
+                    <TextButton onClick={() => setSelectVoice("koeiromap")}>
+                      {t('UsingGoogleTTS')}
                     </TextButton>
                   );
                 }
-            })()}
+              })()}
             </div>
             <div>&nbsp;</div>
-            <div className="my-16 typography-20 font-bold">声の調整</div>
+            <div className="my-16 typography-20 font-bold">{t('VoiceAdjustment')}</div>
             {(() => {
                 if (selectVoice === "koeiromap") {
                   return (
                     <>
                       <div>
-                        KoemotionのKoeiromap APIを使用しています。詳しくは
+                        KoemotionのKoeiromap APIを使用しています。詳しくは下記をご覧ください。<br />
                         <Link
                           url="https://koemotion.rinna.co.jp"
                           label="https://koemotion.rinna.co.jp" />
-                        をご覧ください。
+                        
                       </div>
                       <div className="mt-16 font-bold">API キー</div><div className="mt-8">
                         <input
@@ -238,18 +265,19 @@ export const Settings = ({
                   return (
                     <>
                       <div>
-                        Google Cloud Text-to-Speechを使用しています。多言語に対応可能です。
-                        認証用のJSONファイルを下記から取得し、リポジトリのルートフォルダに credentials.json という名称で配置してください。<br />
+                        {t('UsingGoogleTTSInfo')}
+                        {t('AuthFileInstruction')}<br />
                         <Link
                           url="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account"
                           label="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account" />
                         <br /><br />
-                        言語モデルは下記のURLから選択してください。<br />
+                        {t('LanguageModelInstruction')}<br />
                         <Link
                           url="https://cloud.google.com/text-to-speech/docs/voices"
                           label="https://cloud.google.com/text-to-speech/docs/voices" />
                       </div>
-                      <div className="mt-16 font-bold">Language Select</div><div className="mt-8">
+                      <div className="mt-16 font-bold">{t('LanguageSelectLabel')}</div>
+                      <div className="mt-8">
                         <input
                           className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
                           type="text"
@@ -266,12 +294,12 @@ export const Settings = ({
           {chatLog.length > 0 && (
             <div className="my-40">
               <div className="my-8 grid-cols-2">
-                <div className="my-16 typography-20 font-bold">会話履歴</div>
+                <div className="my-16 typography-20 font-bold">{t('ConversationHistory')}</div>
                 <TextButton onClick={() => { 
                   onClickResetChatLog();
                   onClickResetCodeLog(); 
                 }}>
-                  会話履歴リセット
+                  {t('ConversationHistoryReset')}
                 </TextButton>
               </div>
               <div className="my-8">
