@@ -39,6 +39,7 @@ type Props = {
   setSelectVoice: (show: string) => void;
   selectLanguage: string;
   setSelectLanguage: (show: string) => void;
+  setSelectVoiceLanguage: (show: string) => void;
 };
 export const Settings = ({
   openAiKey,
@@ -65,6 +66,7 @@ export const Settings = ({
   setSelectVoice,
   selectLanguage,
   setSelectLanguage,
+  setSelectVoiceLanguage,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -91,6 +93,7 @@ export const Settings = ({
                     <TextButton onClick={() => { 
                         setSelectLanguage("English")
                         setSelectVoice("google")
+                        setSelectVoiceLanguage("en-US")
                         i18n.changeLanguage('en');
                     }}>
                       日本語 - Japanese
@@ -100,6 +103,8 @@ export const Settings = ({
                   return (
                     <TextButton onClick={() => { 
                         setSelectLanguage("Japanese")
+                        setSelectVoice("koeiromap")
+                        setSelectVoiceLanguage("ja-JP")
                         i18n.changeLanguage('ja');
                     }}>
                       英語 - English
@@ -283,18 +288,18 @@ export const Settings = ({
                   return (
                     <>
                       <div>
-                        {t('UsingGoogleTTSInfo')}
+                        {t('GoogleTTSInfo')}
                         {t('AuthFileInstruction')}<br />
                         <Link
                           url="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account"
                           label="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account" />
                         <br /><br />
-                        {t('LanguageModelInstruction')}<br />
+                        {t('LanguageModelURL')}<br />
                         <Link
                           url="https://cloud.google.com/text-to-speech/docs/voices"
                           label="https://cloud.google.com/text-to-speech/docs/voices" />
                       </div>
-                      <div className="mt-16 font-bold">{t('LanguageSelectLabel')}</div>
+                      <div className="mt-16 font-bold">{t('LanguageChoice')}</div>
                       <div className="mt-8">
                         <input
                           className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"

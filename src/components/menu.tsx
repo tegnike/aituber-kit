@@ -34,6 +34,7 @@ type Props = {
   setSelectVoice: (show: string) => void;
   selectLanguage: string;
   setSelectLanguage: (show: string) => void;
+  setSelectVoiceLanguage: (show: string) => void;
 };
 export const Menu = ({
   openAiKey,
@@ -60,6 +61,7 @@ export const Menu = ({
   setSelectVoice,
   selectLanguage,
   setSelectLanguage,
+  setSelectVoiceLanguage,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -189,6 +191,7 @@ export const Menu = ({
           setSelectVoice = {setSelectVoice}
           selectLanguage = {selectLanguage}
           setSelectLanguage = {setSelectLanguage}
+          setSelectVoiceLanguage = {setSelectVoiceLanguage}
         />
       )}
       {!showChatLog && assistantMessage && (

@@ -25,6 +25,7 @@ export default function Home() {
   const [openAiKey, setOpenAiKey] = useState("");
   const [selectVoice, setSelectVoice] = useState("koeiromap");
   const [selectLanguage, setSelectLanguage] = useState("Japanese");
+  const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
@@ -345,6 +346,7 @@ export default function Home() {
       <MessageInputContainer
         isChatProcessing={chatProcessing}
         onChatProcessStart={handleSendChat}
+        selectVoiceLanguage={selectVoiceLanguage}
       />
       <Menu
         openAiKey={openAiKey}
@@ -371,6 +373,7 @@ export default function Home() {
         setSelectVoice={setSelectVoice}
         selectLanguage={selectLanguage}
         setSelectLanguage={setSelectLanguage}
+        setSelectVoiceLanguage={setSelectVoiceLanguage}
       />
       <GitHubLink />
     </div>
