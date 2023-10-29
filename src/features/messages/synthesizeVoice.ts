@@ -28,6 +28,7 @@ export async function synthesizeVoiceApi(
     speakerY: speakerY,
     style: reducedStyle,
     apiKey: apiKey,
+    type: "koeiromap",
   };
 
   const res = await fetch("/api/tts", {
@@ -38,7 +39,6 @@ export async function synthesizeVoiceApi(
     body: JSON.stringify(body),
   });
   const data = (await res.json()) as any;
-  const audio = data.audio;
 
-  return { audio: audio };
+  return { audio: data.audio };
 }

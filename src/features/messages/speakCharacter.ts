@@ -26,7 +26,7 @@ const createSpeakCharacter = () => {
       }
 
       let buffer;
-      if (selectVoice == "koeiro") {
+      if (selectVoice == "koeiromap") {
         buffer = await fetchAudio(screenplay.talk, koeiroApiKey).catch(
           () => null
         );
