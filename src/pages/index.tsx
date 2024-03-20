@@ -38,6 +38,15 @@ export default function Home() {
   const { t } = useTranslation();
 
   useEffect(() => {
+    const storedData = window.localStorage.getItem("chatVRMParams");
+    if (storedData) {
+      const params = JSON.parse(storedData);
+      // codeLogがundefinedまたは配列でない場合は、空の配列をセットする
+      setCodeLog(Array.isArray(params.codeLog) ? params.codeLog : []);
+    }
+  }, []);
+
+  useEffect(() => {
     if (window.localStorage.getItem("chatVRMParams")) {
       const params = JSON.parse(
         window.localStorage.getItem("chatVRMParams") as string
