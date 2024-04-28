@@ -12,6 +12,7 @@ import {
 import { Link } from "./link";
 import i18n from "i18next";
 import { useTranslation } from 'react-i18next';
+import speakers from './speakers.json';
 
 type Props = {
   openAiKey: string;
@@ -20,6 +21,7 @@ type Props = {
   codeLog: Message[];
   koeiroParam: KoeiroParam;
   koeiromapKey: string;
+  voicevoxSpeaker: string;
   googleTtsType: string;
   onClickClose: () => void;
   onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -32,6 +34,7 @@ type Props = {
   onClickResetCodeLog: () => void;
   onClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeVoicevoxSpeaker: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onChangeGoogleTtsType: (event: React.ChangeEvent<HTMLInputElement>) => void;
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
@@ -47,6 +50,7 @@ export const Settings = ({
   systemPrompt,
   koeiroParam,
   koeiromapKey,
+  voicevoxSpeaker,
   googleTtsType,
   onClickClose,
   onChangeSystemPrompt,
@@ -59,6 +63,7 @@ export const Settings = ({
   onClickResetCodeLog,
   onClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
   webSocketMode,
   changeWebSocketMode,
@@ -195,8 +200,14 @@ export const Settings = ({
               {(() => {
                 if (selectVoice === "koeiromap") {
                   return (
-                    <TextButton onClick={() => setSelectVoice("google")}>
+                    <TextButton onClick={() => setSelectVoice("voicevox")}>
                       {t('UsingKoeiromap')}
+                    </TextButton>
+                  );
+                } else if (selectVoice === "voicevox") {
+                  return (
+                    <TextButton onClick={() => setSelectVoice("google")}>
+                      {t('UsingVoiceVox')}
                     </TextButton>
                   );
                 } else {
@@ -282,6 +293,30 @@ export const Settings = ({
                           } }
                         ></input>
                       </div>
+                    </>
+                  );
+                } else if (selectVoice === "voicevox") {
+                  return (
+                    <>
+                      <div>
+                        VOICEVOXを使用しています。ローカルAPIを使用するので下記のサイトから環境にあったアプリをダウンロードし、起動しておく必要があります。<br />
+                        <Link
+                          url="https://voicevox.hiroshiba.jp/"
+                          label="https://voicevox.hiroshiba.jp/" />
+                      </div>
+                      <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
+                      <select
+                        value={voicevoxSpeaker}
+                        onChange={onChangeVoicevoxSpeaker}
+                        className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      >
+                        <option value="">選択してください</option>
+                        {speakers.map((speaker) => (
+                          <option key={speaker.id} value={speaker.id}>
+                            {speaker.speaker}
+                          </option>
+                        ))}
+                      </select>
                     </>
                   );
                 } else {
