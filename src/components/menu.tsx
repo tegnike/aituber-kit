@@ -20,6 +20,9 @@ type Props = {
   koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
+  youtubeMode: boolean;
+  youtubeApiKey: string;
+  youtubeLiveId: string;
   onChangeSystemPrompt: (systemPrompt: string) => void;
   onChangeAiKey: (key: string) => void;
   onChangeChatLog: (index: number, text: string) => void;
@@ -31,6 +34,9 @@ type Props = {
   onChangeKoeiromapKey: (key: string) => void;
   onChangeVoicevoxSpeaker: (speaker: string) => void;
   onChangeGoogleTtsType: (key: string) => void;
+  onChangeYoutubeMode: (mode: boolean) => void;
+  onChangeYoutubeApiKey: (key: string) => void;
+  onChangeYoutubeLiveId: (key: string) => void;
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
@@ -49,6 +55,9 @@ export const Menu = ({
   koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
+  youtubeMode,
+  youtubeApiKey,
+  youtubeLiveId,
   onChangeSystemPrompt,
   onChangeAiKey,
   onChangeChatLog,
@@ -60,6 +69,9 @@ export const Menu = ({
   onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
+  onChangeYoutubeMode,
+  onChangeYoutubeApiKey,
+  onChangeYoutubeLiveId,
   webSocketMode,
   changeWebSocketMode,
   selectVoice,
@@ -109,6 +121,20 @@ export const Menu = ({
     [onChangeGoogleTtsType]
   );
 
+  const handleYoutubeApiKeyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeYoutubeApiKey(event.target.value);
+    },
+    [onChangeYoutubeApiKey]
+  );
+
+  const handleYoutubeLiveIdChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeYoutubeLiveId(event.target.value);
+    },
+    [onChangeYoutubeLiveId]
+  );
+
   const handleChangeKoeiroParam = useCallback(
     (x: number, y: number) => {
       onChangeKoeiromapParam({
@@ -119,6 +145,15 @@ export const Menu = ({
     [onChangeKoeiromapParam]
   );
 
+  const handleWebSocketMode = useCallback(
+    (show: boolean) => {
+      changeWebSocketMode(show);
+      if (webSocketMode) {
+        onChangeYoutubeMode(false);
+      }
+    },
+    [changeWebSocketMode, webSocketMode, onChangeYoutubeMode]
+  );
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
@@ -190,6 +225,9 @@ export const Menu = ({
           koeiromapKey={koeiromapKey}
           voicevoxSpeaker={voicevoxSpeaker}
           googleTtsType={googleTtsType}
+          youtubeMode={youtubeMode}
+          youtubeApiKey={youtubeApiKey}
+          youtubeLiveId={youtubeLiveId}
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={handleAiKeyChange}
           onChangeSystemPrompt={handleChangeSystemPrompt}
@@ -203,8 +241,11 @@ export const Menu = ({
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
           onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
           onChangeGoogleTtsType={handleChangeGoogleTtsType}
+          onChangeYoutubeMode={onChangeYoutubeMode}
+          onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
+          onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
           webSocketMode={webSocketMode}
-          changeWebSocketMode={changeWebSocketMode}
+          onChangeWebSocketMode={handleWebSocketMode}
           selectVoice = {selectVoice}
           setSelectVoice = {setSelectVoice}
           selectLanguage = {selectLanguage}

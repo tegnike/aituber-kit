@@ -23,6 +23,9 @@ type Props = {
   koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
+  youtubeMode: boolean;
+  youtubeApiKey: string;
+  youtubeLiveId: string;
   onClickClose: () => void;
   onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -36,8 +39,11 @@ type Props = {
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeVoicevoxSpeaker: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onChangeGoogleTtsType: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeYoutubeMode: (mode: boolean) => void;
+  onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
   webSocketMode: boolean;
-  changeWebSocketMode: (show: boolean) => void;
+  onChangeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
   setSelectVoice: (show: string) => void;
   selectLanguage: string;
@@ -53,6 +59,9 @@ export const Settings = ({
   koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
+  youtubeMode,
+  youtubeApiKey,
+  youtubeLiveId,
   onClickClose,
   onChangeSystemPrompt,
   onChangeAiKey,
@@ -66,8 +75,11 @@ export const Settings = ({
   onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
+  onChangeYoutubeMode,
+  onChangeYoutubeApiKey,
+  onChangeYoutubeLiveId,
   webSocketMode,
-  changeWebSocketMode,
+  onChangeWebSocketMode,
   selectVoice,
   setSelectVoice,
   selectLanguage,
@@ -127,11 +139,11 @@ export const Settings = ({
             </div>
             <div className="my-8">
               {webSocketMode ? (
-                <TextButton onClick={() => changeWebSocketMode(false)}>
+                <TextButton onClick={() => onChangeWebSocketMode(false)}>
                   {t('StatusOn')}
                 </TextButton>
               ) : (
-                <TextButton onClick={() => changeWebSocketMode(true)}>
+                <TextButton onClick={() => onChangeWebSocketMode(true)}>
                   {t('StatusOff')}
                 </TextButton>
               )}
@@ -158,11 +170,50 @@ export const Settings = ({
                       {t('ChatGPTInfo')}
                     </div>
                   </div>
+                  <div className="my-40">
+                    <div className="my-16 typography-20 font-bold">
+                      {t('YoutubeMode')}
+                    </div>
+                    <div className="my-8">
+                      {youtubeMode ? (
+                        <TextButton onClick={() => onChangeYoutubeMode(false)}>
+                          {t('StatusOn')}
+                        </TextButton>
+                      ) : (
+                        <TextButton onClick={() => onChangeYoutubeMode(true)}>
+                          {t('StatusOff')}
+                        </TextButton>
+                      )}
+                    </div>
+                  </div>
+                  <div className="my-8">
+                    {(() => {
+                      if (youtubeMode) {
+                        return (
+                          <>
+                            <div className="my-16 typography-20 font-bold">{t('YoutubeAPIKey')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={youtubeApiKey}
+                              onChange={onChangeYoutubeApiKey} />
+                            <div className="my-16 typography-20 font-bold">{t('YoutubeLiveID')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={youtubeLiveId}
+                              onChange={onChangeYoutubeLiveId} />
+                          </>
+                        );
+                      }
+                    })()}
+                  </div>
                 </>
               )
-              }
-            })()
-          }
+            }
+          })()}
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
               {t('CharacterModelLabel')}
