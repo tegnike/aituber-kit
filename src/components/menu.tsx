@@ -8,6 +8,7 @@ import { Settings } from "./settings";
 import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 import { AssistantText } from "./assistantText";
 import { useTranslation } from 'react-i18next';
+import { testVoice } from "@/features/messages/speakCharacter";
 
 type Props = {
   openAiKey: string;
@@ -122,6 +123,10 @@ export const Menu = ({
     fileInputRef.current?.click();
   }, []);
 
+  const handleClickTestVoice = (speaker: string) => {
+    testVoice(viewer, speaker);
+  };
+
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
@@ -205,6 +210,7 @@ export const Menu = ({
           selectLanguage = {selectLanguage}
           setSelectLanguage = {setSelectLanguage}
           setSelectVoiceLanguage = {setSelectVoiceLanguage}
+          onClickTestVoice={handleClickTestVoice}
         />
       )}
       {!showChatLog && assistantMessage && (

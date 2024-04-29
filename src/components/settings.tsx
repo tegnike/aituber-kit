@@ -43,6 +43,7 @@ type Props = {
   selectLanguage: string;
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
+  onClickTestVoice: (speaker: string) => void;
 };
 export const Settings = ({
   openAiKey,
@@ -72,6 +73,7 @@ export const Settings = ({
   selectLanguage,
   setSelectLanguage,
   setSelectVoiceLanguage,
+  onClickTestVoice,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -305,18 +307,23 @@ export const Settings = ({
                           label="https://voicevox.hiroshiba.jp/" />
                       </div>
                       <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
-                      <select
-                        value={voicevoxSpeaker}
-                        onChange={onChangeVoicevoxSpeaker}
-                        className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
-                      >
-                        <option value="">選択してください</option>
-                        {speakers.map((speaker) => (
-                          <option key={speaker.id} value={speaker.id}>
-                            {speaker.speaker}
-                          </option>
-                        ))}
-                      </select>
+                        <div className="flex items-center">
+                          <select
+                            value={voicevoxSpeaker}
+                            onChange={onChangeVoicevoxSpeaker}
+                            className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          >
+                            <option value="">選択してください</option>
+                            {speakers.map((speaker) => (
+                              <option key={speaker.id} value={speaker.id}>
+                                {speaker.speaker}
+                              </option>
+                            ))}
+                          </select>
+                          <TextButton onClick={() => onClickTestVoice(voicevoxSpeaker)} className="ml-16">
+                            ボイスを試聴する
+                          </TextButton>
+                        </div>
                     </>
                   );
                 } else {

@@ -128,3 +128,25 @@ export const fetchAudioGoogle = async (
   
   return arrayBuffer;
 };
+
+export const testVoice = async (
+  viewer: Viewer,
+  voicevoxSpeaker: string
+) => {
+  const talk: Talk = {
+    message: "ボイスボックスを使用します",
+    speakerX: 0,
+    speakerY: 0,
+    style: "talk",
+  };
+  const buffer = await fetchAudioVoiceVox(talk, voicevoxSpeaker).catch(
+    () => null  
+  );
+  if (buffer) {
+    const screenplay: Screenplay = {
+      expression: "happy",
+      talk: talk
+    };
+    await viewer.model?.speak(buffer, screenplay);
+  }
+};
