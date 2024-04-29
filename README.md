@@ -9,6 +9,10 @@
 2. AITuber配信
 3. WebSocketモード
 
+下記の記事に詳細な使用方法を記載しました。
+
+https://note.com/nike_cha_n/n/ne98acb25e00f
+
 ### 共通事前準備
 
 1. パッケージインストールします。
