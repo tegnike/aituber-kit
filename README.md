@@ -11,7 +11,8 @@
 
 下記の記事に詳細な使用方法を記載しました。
 
-https://note.com/nike_cha_n/n/ne98acb25e00f
+[![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/nike-ChatVRM/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+
 
 ### 共通事前準備
 
