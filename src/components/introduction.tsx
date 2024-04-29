@@ -95,8 +95,8 @@ export const Introduction = ({
             <br />
             リポジトリ：
             <Link
-              url={"https://github.com/pixiv/ChatVRM"}
-              label={"https://github.com/pixiv/ChatVRM"}
+              url={"https://github.com/tegnike/nike-ChatVRM"}
+              label={"https://github.com/tegnike/nike-ChatVRM"}
             />
           </div>
         </div>
