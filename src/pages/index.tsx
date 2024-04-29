@@ -27,6 +27,7 @@ export default function Home() {
   const [selectLanguage, setSelectLanguage] = useState("Japanese");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
+  const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
@@ -98,9 +99,9 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void
     ) => {
-      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, googleTtsType, onStart, onEnd);
+      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, onStart, onEnd);
     },
-    [viewer, selectVoice, koeiromapKey, googleTtsType]
+    [viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType]
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -365,6 +366,7 @@ export default function Home() {
         koeiroParam={koeiroParam}
         assistantMessage={assistantMessage}
         koeiromapKey={koeiromapKey}
+        voicevoxSpeaker={voicevoxSpeaker}
         googleTtsType={googleTtsType}
         onChangeAiKey={setOpenAiKey}
         onChangeSystemPrompt={setSystemPrompt}
@@ -375,6 +377,7 @@ export default function Home() {
         handleClickResetCodeLog={() => setCodeLog([])}
         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
         onChangeKoeiromapKey={setKoeiromapKey}
+        onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
         onChangeGoogleTtsType={setGoogleTtsType}
         webSocketMode={webSocketMode}
         changeWebSocketMode={changeWebSocketMode}

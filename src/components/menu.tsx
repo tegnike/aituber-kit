@@ -8,6 +8,7 @@ import { Settings } from "./settings";
 import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 import { AssistantText } from "./assistantText";
 import { useTranslation } from 'react-i18next';
+import { testVoice } from "@/features/messages/speakCharacter";
 
 type Props = {
   openAiKey: string;
@@ -17,6 +18,7 @@ type Props = {
   koeiroParam: KoeiroParam;
   assistantMessage: string;
   koeiromapKey: string;
+  voicevoxSpeaker: string;
   googleTtsType: string;
   onChangeSystemPrompt: (systemPrompt: string) => void;
   onChangeAiKey: (key: string) => void;
@@ -27,6 +29,7 @@ type Props = {
   handleClickResetCodeLog: () => void;
   handleClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (key: string) => void;
+  onChangeVoicevoxSpeaker: (speaker: string) => void;
   onChangeGoogleTtsType: (key: string) => void;
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
@@ -44,6 +47,7 @@ export const Menu = ({
   koeiroParam,
   assistantMessage,
   koeiromapKey,
+  voicevoxSpeaker,
   googleTtsType,
   onChangeSystemPrompt,
   onChangeAiKey,
@@ -54,6 +58,7 @@ export const Menu = ({
   handleClickResetCodeLog,
   handleClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
   webSocketMode,
   changeWebSocketMode,
@@ -90,6 +95,13 @@ export const Menu = ({
     [onChangeKoeiromapKey]
   );
 
+  const handleVoicevoxSpeakerChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChangeVoicevoxSpeaker(event.target.value);
+    },
+    [onChangeVoicevoxSpeaker]
+  );
+
   const handleChangeGoogleTtsType = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGoogleTtsType(event.target.value);
@@ -110,6 +122,10 @@ export const Menu = ({
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
+  const handleClickTestVoice = (speaker: string) => {
+    testVoice(viewer, speaker);
+  };
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,6 +188,7 @@ export const Menu = ({
           systemPrompt={systemPrompt}
           koeiroParam={koeiroParam}
           koeiromapKey={koeiromapKey}
+          voicevoxSpeaker={voicevoxSpeaker}
           googleTtsType={googleTtsType}
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={handleAiKeyChange}
@@ -184,6 +201,7 @@ export const Menu = ({
           onClickResetCodeLog={handleClickResetCodeLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
+          onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
           onChangeGoogleTtsType={handleChangeGoogleTtsType}
           webSocketMode={webSocketMode}
           changeWebSocketMode={changeWebSocketMode}
@@ -192,6 +210,7 @@ export const Menu = ({
           selectLanguage = {selectLanguage}
           setSelectLanguage = {setSelectLanguage}
           setSelectVoiceLanguage = {setSelectVoiceLanguage}
+          onClickTestVoice={handleClickTestVoice}
         />
       )}
       {!showChatLog && assistantMessage && (
