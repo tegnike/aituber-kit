@@ -17,6 +17,7 @@ import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
 import "@/lib/i18n";
 import { useTranslation } from 'react-i18next';
+import { fetchAndProcessComments } from "@/features/youtube/youtubeComments";
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
@@ -28,6 +29,9 @@ export default function Home() {
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
+  const [youtubeMode, setYoutubeMode] = useState(false);
+  const [youtubeApiKey, setYoutubeApiKey] = useState("");
+  const [youtubeLiveId, setYoutubeLiveId] = useState("");
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
@@ -36,6 +40,7 @@ export default function Home() {
   const [webSocketMode, changeWebSocketMode] = useState(true);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const { t } = useTranslation();
+  const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
 
   useEffect(() => {
     const storedData = window.localStorage.getItem("chatVRMParams");
@@ -342,6 +347,16 @@ export default function Home() {
     }
   }, [tmpMessages, isVoicePlaying, handleSendChat]);
 
+  // YouTubeコメントを取得する処理
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchAndProcessComments(youtubeLiveId, youtubeApiKey, handleSendChat);
+    }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS);
+  
+    // クリーンアップ関数
+    return () => clearInterval(intervalId);
+  }, [youtubeLiveId, youtubeApiKey, handleSendChat]);
+
   return (
     <div className={"font-M_PLUS_2"}>
       <Meta />
@@ -366,11 +381,17 @@ export default function Home() {
         assistantMessage={assistantMessage}
         koeiromapKey={koeiromapKey}
         googleTtsType={googleTtsType}
+        youtubeMode={youtubeMode}
+        youtubeApiKey={youtubeApiKey}
+        youtubeLiveId={youtubeLiveId}
         onChangeAiKey={setOpenAiKey}
         onChangeSystemPrompt={setSystemPrompt}
         onChangeChatLog={handleChangeChatLog}
         onChangeCodeLog={handleChangeCodeLog}
         onChangeKoeiromapParam={setKoeiroParam}
+        onChangeYoutubeMode={setYoutubeMode}
+        onChangeYoutubeApiKey={setYoutubeApiKey}
+        onChangeYoutubeLiveId={setYoutubeLiveId}
         handleClickResetChatLog={() => setChatLog([])}
         handleClickResetCodeLog={() => setCodeLog([])}
         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}

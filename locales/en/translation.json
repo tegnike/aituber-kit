@@ -1,6 +1,9 @@
 {
   "Settings": "Settings",
   "ExternalConnectionMode": "External Connection Mode (WebSocket)",
+  "YoutubeMode": "YouTube Mode",
+  "YoutubeAPIKey": "YouTube API Key",
+  "YoutubeLiveID": "YouTube Live ID",
   "StatusOn": "Status: ON",
   "StatusOff": "Status: OFF",
   "OpenAI_API_Key_Label": "OpenAI API Key",
