@@ -34,7 +34,7 @@ export default function Home() {
   const [chatLog, setChatLog] = useState<Message[]>([]);
   const [codeLog, setCodeLog] = useState<Message[]>([]);
   const [assistantMessage, setAssistantMessage] = useState("");
-  const [webSocketMode, changeWebSocketMode] = useState(true);
+  const [webSocketMode, changeWebSocketMode] = useState(false);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const { t } = useTranslation();
 
