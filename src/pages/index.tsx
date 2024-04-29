@@ -24,11 +24,11 @@ export default function Home() {
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
   const [openAiKey, setOpenAiKey] = useState("");
-  const [selectVoice, setSelectVoice] = useState("koeiromap");
+  const [selectVoice, setSelectVoice] = useState("voicevox");
   const [selectLanguage, setSelectLanguage] = useState("Japanese");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
-  const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("");
+  const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
   const [youtubeMode, setYoutubeMode] = useState(false);
   const [youtubeApiKey, setYoutubeApiKey] = useState("");

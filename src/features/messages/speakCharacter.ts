@@ -144,7 +144,7 @@ export const testVoice = async (
   );
   if (buffer) {
     const screenplay: Screenplay = {
-      expression: "happy",
+      expression: "neutral",
       talk: talk
     };
     await viewer.model?.speak(buffer, screenplay);
