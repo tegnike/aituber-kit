@@ -28,6 +28,7 @@ export default function Home() {
   const [selectLanguage, setSelectLanguage] = useState("Japanese");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
+  const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
   const [youtubeMode, setYoutubeMode] = useState(false);
   const [youtubeApiKey, setYoutubeApiKey] = useState("");
@@ -37,7 +38,7 @@ export default function Home() {
   const [chatLog, setChatLog] = useState<Message[]>([]);
   const [codeLog, setCodeLog] = useState<Message[]>([]);
   const [assistantMessage, setAssistantMessage] = useState("");
-  const [webSocketMode, changeWebSocketMode] = useState(true);
+  const [webSocketMode, changeWebSocketMode] = useState(false);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
@@ -103,9 +104,9 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void
     ) => {
-      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, googleTtsType, onStart, onEnd);
+      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, onStart, onEnd);
     },
-    [viewer, selectVoice, koeiromapKey, googleTtsType]
+    [viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType]
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -380,6 +381,7 @@ export default function Home() {
         koeiroParam={koeiroParam}
         assistantMessage={assistantMessage}
         koeiromapKey={koeiromapKey}
+        voicevoxSpeaker={voicevoxSpeaker}
         googleTtsType={googleTtsType}
         youtubeMode={youtubeMode}
         youtubeApiKey={youtubeApiKey}
@@ -396,6 +398,7 @@ export default function Home() {
         handleClickResetCodeLog={() => setCodeLog([])}
         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
         onChangeKoeiromapKey={setKoeiromapKey}
+        onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
         onChangeGoogleTtsType={setGoogleTtsType}
         webSocketMode={webSocketMode}
         changeWebSocketMode={changeWebSocketMode}

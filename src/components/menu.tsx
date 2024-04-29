@@ -8,6 +8,7 @@ import { Settings } from "./settings";
 import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 import { AssistantText } from "./assistantText";
 import { useTranslation } from 'react-i18next';
+import { testVoice } from "@/features/messages/speakCharacter";
 
 type Props = {
   openAiKey: string;
@@ -17,6 +18,7 @@ type Props = {
   koeiroParam: KoeiroParam;
   assistantMessage: string;
   koeiromapKey: string;
+  voicevoxSpeaker: string;
   googleTtsType: string;
   youtubeMode: boolean;
   youtubeApiKey: string;
@@ -30,6 +32,7 @@ type Props = {
   handleClickResetCodeLog: () => void;
   handleClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (key: string) => void;
+  onChangeVoicevoxSpeaker: (speaker: string) => void;
   onChangeGoogleTtsType: (key: string) => void;
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (key: string) => void;
@@ -50,6 +53,7 @@ export const Menu = ({
   koeiroParam,
   assistantMessage,
   koeiromapKey,
+  voicevoxSpeaker,
   googleTtsType,
   youtubeMode,
   youtubeApiKey,
@@ -63,6 +67,7 @@ export const Menu = ({
   handleClickResetCodeLog,
   handleClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
@@ -100,6 +105,13 @@ export const Menu = ({
       onChangeKoeiromapKey(event.target.value);
     },
     [onChangeKoeiromapKey]
+  );
+
+  const handleVoicevoxSpeakerChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChangeVoicevoxSpeaker(event.target.value);
+    },
+    [onChangeVoicevoxSpeaker]
   );
 
   const handleChangeGoogleTtsType = useCallback(
@@ -145,6 +157,10 @@ export const Menu = ({
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
+  const handleClickTestVoice = (speaker: string) => {
+    testVoice(viewer, speaker);
+  };
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -207,6 +223,7 @@ export const Menu = ({
           systemPrompt={systemPrompt}
           koeiroParam={koeiroParam}
           koeiromapKey={koeiromapKey}
+          voicevoxSpeaker={voicevoxSpeaker}
           googleTtsType={googleTtsType}
           youtubeMode={youtubeMode}
           youtubeApiKey={youtubeApiKey}
@@ -222,6 +239,7 @@ export const Menu = ({
           onClickResetCodeLog={handleClickResetCodeLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
+          onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
           onChangeGoogleTtsType={handleChangeGoogleTtsType}
           onChangeYoutubeMode={onChangeYoutubeMode}
           onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
@@ -233,6 +251,7 @@ export const Menu = ({
           selectLanguage = {selectLanguage}
           setSelectLanguage = {setSelectLanguage}
           setSelectVoiceLanguage = {setSelectVoiceLanguage}
+          onClickTestVoice={handleClickTestVoice}
         />
       )}
       {!showChatLog && assistantMessage && (

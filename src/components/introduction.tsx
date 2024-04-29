@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link } from "./link";
+import { IconButton } from "./iconButton";
 
 type Props = {
   openAiKey: string;
@@ -30,8 +31,14 @@ export const Introduction = ({
   );
 
   return opened ? (
-    <div className="absolute z-40 w-full h-full px-24 py-40  bg-black/30 font-M_PLUS_2">
-      <div className="mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
+    <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
+      <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
+      <IconButton
+          iconName="24/Close"
+          isProcessing={false}
+          onClick={() => setOpened(false)}
+          className="absolute top-8 right-8 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
+        ></IconButton>
         <div className="my-24">
           <div className="my-8 font-bold typography-20 text-secondary ">
             このアプリケーションについて
@@ -88,8 +95,8 @@ export const Introduction = ({
             <br />
             リポジトリ：
             <Link
-              url={"https://github.com/pixiv/ChatVRM"}
-              label={"https://github.com/pixiv/ChatVRM"}
+              url={"https://github.com/tegnike/nike-ChatVRM"}
+              label={"https://github.com/tegnike/nike-ChatVRM"}
             />
           </div>
         </div>
