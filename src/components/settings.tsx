@@ -164,7 +164,7 @@ export const Settings = ({
                     />
                     <div>
                       {t('APIKeyInstruction')}<br />
-                      <Link url="https://platform.openai.com/account/api-keys" label="OpenAI's Site" />
+                      <Link url="https://platform.openai.com/account/api-keys" label="OpenAI" />
                     </div>
                     <div className="my-16">
                       {t('ChatGPTInfo')}
@@ -250,27 +250,15 @@ export const Settings = ({
             <div className="my-16 typography-20 font-bold">{t('SyntheticVoiceEngineChoice')}</div>
             <div>{t('VoiceEngineInstruction')}</div>
             <div className="my-8">
-              {(() => {
-                if (selectVoice === "koeiromap") {
-                  return (
-                    <TextButton onClick={() => setSelectVoice("voicevox")}>
-                      {t('UsingKoeiromap')}
-                    </TextButton>
-                  );
-                } else if (selectVoice === "voicevox") {
-                  return (
-                    <TextButton onClick={() => setSelectVoice("google")}>
-                      {t('UsingVoiceVox')}
-                    </TextButton>
-                  );
-                } else {
-                  return (
-                    <TextButton onClick={() => setSelectVoice("koeiromap")}>
-                      {t('UsingGoogleTTS')}
-                    </TextButton>
-                  );
-                }
-              })()}
+              <select
+                value={selectVoice}
+                onChange={(e) => setSelectVoice(e.target.value)}
+                className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+              >
+                <option value="voicevox">{t('UsingVoiceVox')}</option>
+                <option value="koeiromap">{t('UsingKoeiromap')}</option>
+                <option value="google">{t('UsingGoogleTTS')}</option>
+              </select>
             </div>
             <div>&nbsp;</div>
             <div className="my-16 typography-20 font-bold">{t('VoiceAdjustment')}</div>
