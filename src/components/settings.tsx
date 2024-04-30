@@ -15,7 +15,14 @@ import { useTranslation } from 'react-i18next';
 import speakers from './speakers.json';
 
 type Props = {
+  selectAIService: string;
+  setSelectAIService: (service: string) => void;
+  selectAIModel: string;
+  setSelectAIModel: (model: string) => void;
   openAiKey: string;
+  onChangeOpenAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  anthropicKey: string;
+  onChangeAnthropicKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -27,7 +34,6 @@ type Props = {
   youtubeApiKey: string;
   youtubeLiveId: string;
   onClickClose: () => void;
-  onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
@@ -52,7 +58,14 @@ type Props = {
   onClickTestVoice: (speaker: string) => void;
 };
 export const Settings = ({
+  selectAIService,
+  setSelectAIService,
+  selectAIModel,
+  setSelectAIModel,
   openAiKey,
+  onChangeOpenAiKey,
+  anthropicKey,
+  onChangeAnthropicKey,
   chatLog,
   systemPrompt,
   koeiroParam,
@@ -64,7 +77,6 @@ export const Settings = ({
   youtubeLiveId,
   onClickClose,
   onChangeSystemPrompt,
-  onChangeAiKey,
   onChangeChatLog,
   onChangeCodeLog,
   onChangeKoeiroParam,
@@ -153,23 +165,64 @@ export const Settings = ({
             if (!webSocketMode) {
               return (
                 <>
-                  <div className="my-24">
-                    <div className="my-16 typography-20 font-bold">{t('OpenAI_API_Key_Label')}</div>
-                    <input
-                      className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                      type="text"
-                      placeholder="sk-..."
-                      value={openAiKey}
-                      onChange={onChangeAiKey}
-                    />
-                    <div>
-                      {t('APIKeyInstruction')}<br />
-                      <Link url="https://platform.openai.com/account/api-keys" label="OpenAI" />
+                  <div className="my-40">
+                    <div className="my-16 typography-20 font-bold">
+                      {t('SelectAIService')}
                     </div>
-                    <div className="my-16">
-                      {t('ChatGPTInfo')}
+                    <div className="my-8">
+                      <select
+                        className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                        value={selectAIService}
+                        onChange={(e) => setSelectAIService(e.target.value)}
+                      >
+                        <option value="openai">OpenAI</option>
+                        <option value="anthropic">Anthropic</option>
+                      </select>
                     </div>
                   </div>
+                  {(() => {
+                    if (selectAIService === "openai") {
+                      return (
+                        <div className="my-24">
+                          <div className="my-16 typography-20 font-bold">{t('OpenAIAPIKeyLabel')}</div>
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="sk-..."
+                            value={openAiKey}
+                            onChange={onChangeOpenAiKey}
+                          />
+                          <div>
+                            {t('APIKeyInstruction')}<br />
+                            <Link url="https://platform.openai.com/account/api-keys" label="OpenAI" />
+                          </div>
+                          <div className="my-16">
+                            {t('ChatGPTInfo')}
+                          </div>
+                        </div>
+                      );
+                    } else if (selectAIService === "anthropic") {
+                      return (
+                        <div className="my-24">
+                          <div className="my-16 typography-20 font-bold">{t('AnthropicAPIKeyLabel')}</div>
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={anthropicKey}
+                            onChange={onChangeAnthropicKey}
+                          />
+                          <div>
+                            {t('APIKeyInstruction')}<br />
+                            <Link url="https://console.anthropic.com" label="Anthropic" />
+                          </div>
+                          <div className="my-16">
+                            {t('AnthropicInfo')}
+                          </div>
+                        </div>
+                      );
+                    }
+                  })()}
                   <div className="my-40">
                     <div className="my-16 typography-20 font-bold">
                       {t('YoutubeMode')}

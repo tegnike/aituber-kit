@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.8",
     "@charcoal-ui/icons": "^2.6.0",
     "@google-cloud/text-to-speech": "^5.0.1",
     "@tailwindcss/line-clamp": "^0.4.4",

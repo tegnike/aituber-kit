@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import { Message } from "../messages/messages";
 
-export async function getChatResponse(messages: Message[], apiKey: string) {
+export async function getOpenAIChatResponse(messages: Message[], apiKey: string) {
   if (!apiKey) {
     throw new Error("Invalid API Key");
   }
@@ -22,7 +22,7 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
   return { message: message };
 }
 
-export async function getChatResponseStream(
+export async function getOpenAIChatResponseStream(
   messages: Message[],
   apiKey: string
 ) {

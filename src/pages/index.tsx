@@ -10,7 +10,8 @@ import { speakCharacter } from "@/features/messages/speakCharacter";
 import { MessageInputContainer } from "@/components/messageInputContainer";
 import { SYSTEM_PROMPT } from "@/features/constants/systemPromptConstants";
 import { KoeiroParam, DEFAULT_PARAM } from "@/features/constants/koeiroParam";
-import { getChatResponseStream } from "@/features/chat/openAiChat";
+import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
+import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
@@ -23,7 +24,10 @@ export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
+  const [selectAIService, setSelectAIService] = useState("openai");
+  const [selectAIModel, setSelectAIModel] = useState("gpt-3.5-turbo");
   const [openAiKey, setOpenAiKey] = useState("");
+  const [anthropicKey, setAnthropicKey] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
   const [selectLanguage, setSelectLanguage] = useState("Japanese");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
@@ -184,7 +188,10 @@ export default function Home() {
         }
       } else {
         // ChatVERM original mode
-        if (!openAiKey) {
+        if (selectAIService === "openai" && !openAiKey) {
+          setAssistantMessage(t('APIKeyNotEntered'));
+          return;
+        } else if (selectAIService === "anthropic" && !anthropicKey) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
         }
@@ -206,12 +213,22 @@ export default function Home() {
           ...messageLog,
         ];
 
-        const stream = await getChatResponseStream(messages, openAiKey).catch(
-          (e) => {
-            console.error(e);
-            return null;
-          }
-        );
+        let stream;
+        if (selectAIService === "openai") {
+          stream = await getOpenAIChatResponseStream(messages, openAiKey).catch(
+            (e) => {
+              console.error(e);
+              return null;
+            }
+          );
+        } else if (selectAIService === "anthropic") {
+          stream = await getAnthropicChatResponseStream(messages, anthropicKey).catch(
+            (e) => {
+              console.error(e);
+              return null;
+            }
+          );
+        }
         if (stream == null) {
           setChatProcessing(false);
           return;
@@ -285,7 +302,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, openAiKey, chatLog, systemPrompt]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, chatLog, systemPrompt]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
@@ -374,7 +391,14 @@ export default function Home() {
         selectVoiceLanguage={selectVoiceLanguage}
       />
       <Menu
+        selectAIService={selectAIService}
+        setSelectAIService={setSelectAIService}
+        selectAIModel={selectAIModel}
+        setSelectAIModel={setSelectAIModel}
         openAiKey={openAiKey}
+        onChangeOpenAiKey={setOpenAiKey}
+        anthropicKey={anthropicKey}
+        onChangeAnthropicKey={setAnthropicKey}
         systemPrompt={systemPrompt}
         chatLog={chatLog}
         codeLog={codeLog}
@@ -386,7 +410,6 @@ export default function Home() {
         youtubeMode={youtubeMode}
         youtubeApiKey={youtubeApiKey}
         youtubeLiveId={youtubeLiveId}
-        onChangeAiKey={setOpenAiKey}
         onChangeSystemPrompt={setSystemPrompt}
         onChangeChatLog={handleChangeChatLog}
         onChangeCodeLog={handleChangeCodeLog}
