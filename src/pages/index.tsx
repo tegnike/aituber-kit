@@ -215,14 +215,14 @@ export default function Home() {
 
         let stream;
         if (selectAIService === "openai") {
-          stream = await getOpenAIChatResponseStream(messages, openAiKey).catch(
+          stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel).catch(
             (e) => {
               console.error(e);
               return null;
             }
           );
         } else if (selectAIService === "anthropic") {
-          stream = await getAnthropicChatResponseStream(messages, anthropicKey).catch(
+          stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel).catch(
             (e) => {
               console.error(e);
               return null;
@@ -302,7 +302,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, chatLog, systemPrompt]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, chatLog, systemPrompt, selectAIModel]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）

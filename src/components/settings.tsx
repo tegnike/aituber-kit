@@ -199,6 +199,17 @@ export const Settings = ({
                           <div className="my-16">
                             {t('ChatGPTInfo')}
                           </div>
+                          <div className="my-24">
+                            <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                            <select
+                              className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              value={selectAIModel}
+                              onChange={(e) => setSelectAIModel(e.target.value)}
+                            >
+                              <option value="gpt-4-turbo">gpt-4-turbo</option>
+                              <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                            </select>
+                          </div>
                         </div>
                       );
                     } else if (selectAIService === "anthropic") {
@@ -218,6 +229,18 @@ export const Settings = ({
                           </div>
                           <div className="my-16">
                             {t('AnthropicInfo')}
+                          </div>
+                          <div className="my-24">
+                            <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                            <select
+                              className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              value={selectAIModel}
+                              onChange={(e) => setSelectAIModel(e.target.value)}
+                            >
+                              <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
+                              <option value="claude-3-sonnet-20240229">claude-3-sonnet-20240229</option>
+                              <option value="claude-3-haiku-20240229">claude-3-haiku-20240229</option>
+                            </select>
                           </div>
                         </div>
                       );

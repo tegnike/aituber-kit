@@ -1,13 +1,12 @@
-// features/chat/anthropicChat.ts
 import { Message } from "../messages/messages";
 
-export async function getAnthropicChatResponse(messages: Message[], apiKey: string) {
+export async function getAnthropicChatResponse(messages: Message[], apiKey: string, model: string) {
   const response = await fetch("/api/anthropic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ messages, apiKey }),
+    body: JSON.stringify({ messages, apiKey, model}),
   });
 
   const data = await response.json();
@@ -16,14 +15,15 @@ export async function getAnthropicChatResponse(messages: Message[], apiKey: stri
 
 export async function getAnthropicChatResponseStream(
   messages: Message[],
-  apiKey: string
+  apiKey: string,
+  model: string
 ) {
   const response = await fetch("/api/anthropic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ messages, apiKey, stream: true }),
+    body: JSON.stringify({ messages, apiKey, model, stream: true }),
   });
 
   if (!response.ok) {
