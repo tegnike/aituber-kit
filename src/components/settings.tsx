@@ -107,28 +107,42 @@ export const Settings = ({
             </div>
             <div className="my-8">
               {(() => {
-                if (selectLanguage === "Japanese") {
-                  return (
-                    <TextButton onClick={() => { 
-                        setSelectLanguage("English")
-                        setSelectVoice("google")
-                        setSelectVoiceLanguage("en-US")
+                switch (selectLanguage) {
+                  case "Japanese":
+                    return (
+                      <TextButton onClick={() => {
+                        setSelectLanguage("English");
+                        setSelectVoice("google");
+                        setSelectVoiceLanguage("en-US");
                         i18n.changeLanguage('en');
-                    }}>
-                      日本語 - Japanese
-                    </TextButton>
-                  );
-                } else {
-                  return (
-                    <TextButton onClick={() => { 
-                        setSelectLanguage("Japanese")
-                        setSelectVoice("koeiromap")
-                        setSelectVoiceLanguage("ja-JP")
+                      }}>
+                        日本語 - Japanese
+                      </TextButton>
+                    );
+                  case "English":
+                    return (
+                      <TextButton onClick={() => {
+                        setSelectLanguage("Traditional Chinese");
+                        setSelectVoice("google");
+                        setSelectVoiceLanguage("zh-TW");
+                        i18n.changeLanguage('zh-TW');
+                      }}>
+                        英語 - English
+                      </TextButton>
+                    );
+                  case "Traditional Chinese":
+                    return (
+                      <TextButton onClick={() => {
+                        setSelectLanguage("Japanese");
+                        setSelectVoice("koeiromap");
+                        setSelectVoiceLanguage("ja-JP");
                         i18n.changeLanguage('ja');
-                    }}>
-                      英語 - English
-                    </TextButton>
-                  );
+                      }}>
+                        繁體中文 - Traditional Chinese
+                      </TextButton>
+                    );
+                  default:
+                    return null;  // Optionally handle unexpected values
                 }
               })()}
             </div>

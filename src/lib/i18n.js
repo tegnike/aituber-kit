@@ -10,7 +10,10 @@ i18n
       },
       ja: {
         translation: require("../../locales/ja/translation.json"),
-      }
+      },
+      zh: {
+        translation: require("../../locales/zh/translation.json"),
+      },
     },
     lng: "ja", 
     fallbackLng: "ja",
