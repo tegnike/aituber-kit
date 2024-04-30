@@ -7,6 +7,7 @@
   "StatusOn": "Status: ON",
   "StatusOff": "Status: OFF",
   "SelectAIService": "Select AI Service",
+  "SelectModel": "Select Model",
   "OpenAIAPIKeyLabel": "OpenAI API Key",
   "AnthropicAPIKeyLabel": "Anthropic API Key",
   "APIKeyInstruction": "You can obtain the API key below. Enter the obtained API key into the form.",
