@@ -118,31 +118,39 @@ export const Settings = ({
               言語設定 - Language
             </div>
             <div className="my-8">
-              {(() => {
-                if (selectLanguage === "Japanese") {
-                  return (
-                    <TextButton onClick={() => { 
-                        setSelectLanguage("English")
-                        setSelectVoice("google")
-                        setSelectVoiceLanguage("en-US")
-                        i18n.changeLanguage('en');
-                    }}>
-                      日本語 - Japanese
-                    </TextButton>
-                  );
-                } else {
-                  return (
-                    <TextButton onClick={() => { 
-                        setSelectLanguage("Japanese")
-                        setSelectVoice("koeiromap")
-                        setSelectVoiceLanguage("ja-JP")
-                        i18n.changeLanguage('ja');
-                    }}>
-                      英語 - English
-                    </TextButton>
-                  );
-                }
-              })()}
+              <select
+                className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                value={selectLanguage}
+                onChange={(e) => {
+                  const newLanguage = e.target.value;
+                  switch (newLanguage) {
+                    case "Japanese":
+                      setSelectLanguage("Japanese");
+                      setSelectVoice("koeiromap");
+                      setSelectVoiceLanguage("ja-JP");
+                      i18n.changeLanguage('ja');
+                      break;
+                    case "English":
+                      setSelectLanguage("English");
+                      setSelectVoice("google");
+                      setSelectVoiceLanguage("en-US");
+                      i18n.changeLanguage('en');
+                      break;
+                    case "Traditional Chinese":
+                      setSelectLanguage("Traditional Chinese");
+                      setSelectVoice("google");
+                      setSelectVoiceLanguage("zh-TW");
+                      i18n.changeLanguage('zh-TW');
+                      break;
+                    default:
+                      break;  // Optionally handle unexpected values
+                  }
+                }}
+              >
+                <option value="Japanese">日本語 - Japanese</option>
+                <option value="English">英語 - English</option>
+                <option value="Traditional Chinese">繁體中文 - Traditional Chinese</option>
+              </select>
             </div>
           </div>
           <div className="my-40">
