@@ -12,6 +12,7 @@ import { SYSTEM_PROMPT } from "@/features/constants/systemPromptConstants";
 import { KoeiroParam, DEFAULT_PARAM } from "@/features/constants/koeiroParam";
 import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
 import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
+import { getOllamaChatResponseStream } from "@/features/chat/ollamaChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
@@ -223,6 +224,13 @@ export default function Home() {
           );
         } else if (selectAIService === "anthropic") {
           stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel).catch(
+            (e) => {
+              console.error(e);
+              return null;
+            }
+          );
+        } else if (selectAIService === "ollama") {
+          stream = await getOllamaChatResponseStream(messages, selectAIModel).catch(
             (e) => {
               console.error(e);
               return null;

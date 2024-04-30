@@ -178,82 +178,109 @@ export const Settings = ({
                       {t('SelectAIService')}
                     </div>
                     <div className="my-8">
-                      <select
-                        className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    <select
+                        className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
                         value={selectAIService}
-                        onChange={(e) => setSelectAIService(e.target.value)}
+                        onChange={(e) => {
+                          const newService = e.target.value;
+                          setSelectAIService(newService);
+                          if (newService === "ollama") {
+                            setSelectAIModel(""); // ollamaが選択された場合、AIモデルを空文字に設定
+                          }
+                        }}
                       >
                         <option value="openai">OpenAI</option>
                         <option value="anthropic">Anthropic</option>
+                        <option value="ollama">ローカルLLM（Ollama）</option>
                       </select>
-                    </div>
+                      </div>
+                    {(() => {
+                      if (selectAIService === "openai") {
+                        return (
+                          <div className="my-24">
+                            <div className="my-16 typography-20 font-bold">{t('OpenAIAPIKeyLabel')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="sk-..."
+                              value={openAiKey}
+                              onChange={onChangeOpenAiKey}
+                            />
+                            <div className="my-16">
+                              {t('APIKeyInstruction')}<br />
+                              <Link url="https://platform.openai.com/account/api-keys" label="OpenAI" />
+                            </div>
+                            <div className="my-16">
+                              {t('ChatGPTInfo')}
+                            </div>
+                            <div className="my-24">
+                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <select
+                                className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                value={selectAIModel}
+                                onChange={(e) => setSelectAIModel(e.target.value)}
+                              >
+                                <option value="gpt-4-turbo">gpt-4-turbo</option>
+                                <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                              </select>
+                            </div>
+                          </div>
+                        );
+                      } else if (selectAIService === "anthropic") {
+                        return (
+                          <div className="my-24">
+                            <div className="my-16 typography-20 font-bold">{t('AnthropicAPIKeyLabel')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={anthropicKey}
+                              onChange={onChangeAnthropicKey}
+                            />
+                            <div className="my-16">
+                              {t('APIKeyInstruction')}<br />
+                              <Link url="https://console.anthropic.com" label="Anthropic" />
+                            </div>
+                            <div className="my-16">
+                              {t('AnthropicInfo')}
+                            </div>
+                            <div className="my-24">
+                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <select
+                                className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                value={selectAIModel}
+                                onChange={(e) => setSelectAIModel(e.target.value)}
+                              >
+                                <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
+                                <option value="claude-3-sonnet-20240229">claude-3-sonnet-20240229</option>
+                                <option value="claude-3-haiku-20240307">claude-3-haiku-20240307</option>
+                              </select>
+                            </div>
+                          </div>
+                        );
+                      } else if (selectAIService === "ollama") {
+                        return (
+                          <div className="my-24">
+                            <div className="my-16">
+                              {t('OllamaInfo')}<br />
+                              <Link url="https://note.com/schroneko/n/n8b1a5bbc740b" label="https://note.com/schroneko/n/n8b1a5bbc740b" />
+                            </div>
+                            <div className="my-16">
+                              {t('OllamaInfo2')}
+                            </div>
+                            <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={selectAIModel}
+                              onChange={(e) => setSelectAIModel(e.target.value)}
+                            />
+                          </div>
+                        );
+                      }
+                    })()}
                   </div>
-                  {(() => {
-                    if (selectAIService === "openai") {
-                      return (
-                        <div className="my-24">
-                          <div className="my-16 typography-20 font-bold">{t('OpenAIAPIKeyLabel')}</div>
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="sk-..."
-                            value={openAiKey}
-                            onChange={onChangeOpenAiKey}
-                          />
-                          <div>
-                            {t('APIKeyInstruction')}<br />
-                            <Link url="https://platform.openai.com/account/api-keys" label="OpenAI" />
-                          </div>
-                          <div className="my-16">
-                            {t('ChatGPTInfo')}
-                          </div>
-                          <div className="my-24">
-                            <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
-                            <select
-                              className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                              value={selectAIModel}
-                              onChange={(e) => setSelectAIModel(e.target.value)}
-                            >
-                              <option value="gpt-4-turbo">gpt-4-turbo</option>
-                              <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                            </select>
-                          </div>
-                        </div>
-                      );
-                    } else if (selectAIService === "anthropic") {
-                      return (
-                        <div className="my-24">
-                          <div className="my-16 typography-20 font-bold">{t('AnthropicAPIKeyLabel')}</div>
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={anthropicKey}
-                            onChange={onChangeAnthropicKey}
-                          />
-                          <div>
-                            {t('APIKeyInstruction')}<br />
-                            <Link url="https://console.anthropic.com" label="Anthropic" />
-                          </div>
-                          <div className="my-16">
-                            {t('AnthropicInfo')}
-                          </div>
-                          <div className="my-24">
-                            <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
-                            <select
-                              className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                              value={selectAIModel}
-                              onChange={(e) => setSelectAIModel(e.target.value)}
-                            >
-                              <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
-                              <option value="claude-3-sonnet-20240229">claude-3-sonnet-20240229</option>
-                              <option value="claude-3-haiku-20240307">claude-3-haiku-20240307</option>
-                            </select>
-                          </div>
-                        </div>
-                      );
-                    }
-                  })()}
                   <div className="my-40">
                     <div className="my-16 typography-20 font-bold">
                       {t('YoutubeMode')}

@@ -15,6 +15,7 @@
     "@google-cloud/text-to-speech": "^5.0.1",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@types/dom-speech-recognition": "^0.0.1",
+    "axios": "^1.6.8",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "i18next": "^23.6.0",
