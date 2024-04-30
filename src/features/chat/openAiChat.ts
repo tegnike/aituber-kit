@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import { Message } from "../messages/messages";
 
-export async function getChatResponse(messages: Message[], apiKey: string) {
+export async function getOpenAIChatResponse(messages: Message[], apiKey: string, model: string) {
   if (!apiKey) {
     throw new Error("Invalid API Key");
   }
@@ -12,7 +12,7 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
   });
 
   const data = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
+    model: model,
     messages: messages,
   });
 
@@ -22,9 +22,10 @@ export async function getChatResponse(messages: Message[], apiKey: string) {
   return { message: message };
 }
 
-export async function getChatResponseStream(
+export async function getOpenAIChatResponseStream(
   messages: Message[],
-  apiKey: string
+  apiKey: string,
+  model: string
 ) {
   if (!apiKey) {
     throw new Error("Invalid API Key");
@@ -36,7 +37,7 @@ export async function getChatResponseStream(
   });
 
   const stream = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
+    model: model,
     messages: messages,
     stream: true,
     max_tokens: 200,
