@@ -11,7 +11,14 @@ import { useTranslation } from 'react-i18next';
 import { testVoice } from "@/features/messages/speakCharacter";
 
 type Props = {
+  selectAIService: string;
+  setSelectAIService: (service: string) => void;
+  selectAIModel: string;
+  setSelectAIModel: (model: string) => void;
   openAiKey: string;
+  onChangeOpenAiKey: (key: string) => void;
+  anthropicKey: string;
+  onChangeAnthropicKey: (key: string) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -24,7 +31,6 @@ type Props = {
   youtubeApiKey: string;
   youtubeLiveId: string;
   onChangeSystemPrompt: (systemPrompt: string) => void;
-  onChangeAiKey: (key: string) => void;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
   onChangeKoeiromapParam: (param: KoeiroParam) => void;
@@ -46,7 +52,14 @@ type Props = {
   setSelectVoiceLanguage: (show: string) => void;
 };
 export const Menu = ({
+  selectAIService,
+  setSelectAIService,
+  selectAIModel,
+  setSelectAIModel,
   openAiKey,
+  onChangeOpenAiKey,
+  anthropicKey,
+  onChangeAnthropicKey,
   systemPrompt,
   chatLog,
   codeLog,
@@ -59,7 +72,6 @@ export const Menu = ({
   youtubeApiKey,
   youtubeLiveId,
   onChangeSystemPrompt,
-  onChangeAiKey,
   onChangeChatLog,
   onChangeCodeLog,
   onChangeKoeiromapParam,
@@ -93,11 +105,18 @@ export const Menu = ({
     [onChangeSystemPrompt]
   );
 
-  const handleAiKeyChange = useCallback(
+  const handleOpenAiKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeAiKey(event.target.value);
+      onChangeOpenAiKey(event.target.value);
     },
-    [onChangeAiKey]
+    [onChangeOpenAiKey]
+  );
+
+  const handleAnthropicKeyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeAnthropicKey(event.target.value);
+    },
+    [onChangeAnthropicKey]
   );
 
   const handleChangeKoeiromapKey = useCallback(
@@ -217,7 +236,14 @@ export const Menu = ({
       }
       {showSettings && (
         <Settings
+          selectAIService={selectAIService}
+          setSelectAIService={setSelectAIService}
+          selectAIModel={selectAIModel}
+          setSelectAIModel={setSelectAIModel}
           openAiKey={openAiKey}
+          onChangeOpenAiKey={handleOpenAiKeyChange}
+          anthropicKey={anthropicKey}
+          onChangeAnthropicKey={handleAnthropicKeyChange}
           chatLog={chatLog}
           codeLog={codeLog}
           systemPrompt={systemPrompt}
@@ -229,7 +255,6 @@ export const Menu = ({
           youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
           onClickClose={() => setShowSettings(false)}
-          onChangeAiKey={handleAiKeyChange}
           onChangeSystemPrompt={handleChangeSystemPrompt}
           onChangeChatLog={onChangeChatLog}
           onChangeCodeLog={onChangeCodeLog}
