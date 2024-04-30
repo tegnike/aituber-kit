@@ -13,6 +13,8 @@
   "APIKeyInstruction": "APIキーは下記のリンクから取得できます。取得したAPIキーをフォームに入力してください。",
   "ChatGPTInfo": "ChatGPT APIはブラウザから直接アクセスしています。",
   "AnthropicInfo": "Anthropic APIはブラウザから直接アクセスしています。",
+  "OllamaInfo": "Ollamaサーバーを起動している必要があります。セットアップは下記の記事が参考になります。",
+  "OllamaInfo2": "ダウンロードしたモデルを入力してください。",
   "CharacterModelLabel": "キャラクターモデル",
   "OpenVRM": "VRMを開く",
   "CharacterSettingsPrompt": "キャラクター設定（システムプロンプト）",
