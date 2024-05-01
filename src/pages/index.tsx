@@ -246,37 +246,26 @@ export default function Home() {
         ];
         setChatLog(messageLog);
 
-        // Chat GPTへ
         const messages: Message[] = [
           {
             role: "system",
             content: systemPrompt,
           },
-          ...messageLog,
+          ...messageLog.slice(-20),
         ];
 
         let stream;
-        if (selectAIService === "openai") {
-          stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel).catch(
-            (e) => {
-              console.error(e);
-              return null;
-            }
-          );
-        } else if (selectAIService === "anthropic") {
-          stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel).catch(
-            (e) => {
-              console.error(e);
-              return null;
-            }
-          );
-        } else if (selectAIService === "ollama") {
-          stream = await getOllamaChatResponseStream(messages, selectAIModel).catch(
-            (e) => {
-              console.error(e);
-              return null;
-            }
-          );
+        try {
+          if (selectAIService === "openai") {
+            stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
+          } else if (selectAIService === "anthropic") {
+            stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
+          } else if (selectAIService === "ollama") {
+            stream = await getOllamaChatResponseStream(messages, selectAIModel);
+          }
+        } catch (e) {
+          console.error(e);
+          stream = null;
         }
         if (stream == null) {
           setChatProcessing(false);
