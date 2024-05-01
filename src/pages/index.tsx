@@ -52,32 +52,73 @@ export default function Home() {
     const storedData = window.localStorage.getItem("chatVRMParams");
     if (storedData) {
       const params = JSON.parse(storedData);
-      // codeLogがundefinedまたは配列でない場合は、空の配列をセットする
+      setSystemPrompt(params.systemPrompt || SYSTEM_PROMPT);
+      setKoeiroParam(params.koeiroParam || DEFAULT_PARAM);
+      setChatLog(Array.isArray(params.chatLog) ? params.chatLog : []);
       setCodeLog(Array.isArray(params.codeLog) ? params.codeLog : []);
+      setSelectAIService(params.selectAIService || "openai");
+      setSelectAIModel(params.selectAIModel || "gpt-3.5-turbo");
+      setOpenAiKey(params.openAiKey || "");
+      setAnthropicKey(params.anthropicKey || "");
+      setSelectVoice(params.selectVoice || "voicevox");
+      setSelectLanguage(params.selectLanguage || "Japanese");
+      setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
+      setKoeiromapKey(params.koeiromapKey || "");
+      setVoicevoxSpeaker(params.voicevoxSpeaker || "2");
+      setGoogleTtsType(params.googleTtsType || "en-US-Neural2-F");
+      setYoutubeMode(params.youtubeMode || false);
+      setYoutubeApiKey(params.youtubeApiKey || "");
+      setYoutubeLiveId(params.youtubeLiveId || "");
+      changeWebSocketMode(params.webSocketMode || false);
     }
   }, []);
 
   useEffect(() => {
-    if (window.localStorage.getItem("chatVRMParams")) {
-      const params = JSON.parse(
-        window.localStorage.getItem("chatVRMParams") as string
-      );
-      setSystemPrompt(params.systemPrompt);
-      setKoeiroParam(params.koeiroParam);
-      setChatLog(params.chatLog);
-      setCodeLog(params.codeLog);
-    }
-  }, []);
-
-  useEffect(() => {
+    const params = {
+      systemPrompt,
+      koeiroParam,
+      chatLog,
+      codeLog,
+      selectAIService,
+      selectAIModel,
+      openAiKey,
+      anthropicKey,
+      selectVoice,
+      selectLanguage,
+      selectVoiceLanguage,
+      koeiromapKey,
+      voicevoxSpeaker,
+      googleTtsType,
+      youtubeMode,
+      youtubeApiKey,
+      youtubeLiveId,
+      webSocketMode
+    };
     process.nextTick(() =>
       window.localStorage.setItem(
-        "chatVRMParams",
-        JSON.stringify({ systemPrompt, koeiroParam, chatLog, codeLog })
+        "chatVRMParams", JSON.stringify(params)
       )
     );
-  }, [systemPrompt, koeiroParam, chatLog, codeLog]);
-
+  }, [
+    systemPrompt,
+    koeiroParam,
+    chatLog,
+    codeLog,
+    selectAIService,
+    selectAIModel,
+    openAiKey,
+    anthropicKey,
+    selectVoice,
+    selectLanguage,
+    selectVoiceLanguage,
+    koeiromapKey,
+    voicevoxSpeaker,
+    googleTtsType,
+    youtubeMode,
+    youtubeApiKey,
+    youtubeLiveId,
+    webSocketMode
+  ]);
   const handleChangeChatLog = useCallback(
     (targetIndex: number, text: string) => {
       const newChatLog = chatLog.map((v: Message, i) => {
