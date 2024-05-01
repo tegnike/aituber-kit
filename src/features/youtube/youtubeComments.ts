@@ -38,12 +38,12 @@ export const retrieveLiveComments = async (activeLiveChatId: string, youtubeKey:
   const json = await response.json()
   const items = json.items;
   nextPageToken = json.nextPageToken;
-  
+
   const comments = items.map((item: any) => ({
     userName: item.authorDetails.displayName,
     userIconUrl: item.authorDetails.profileImageUrl,
     userComment: item.snippet.textMessageDetails?.messageText || item.snippet.superChatDetails?.userComment || ""
-  })).filter((comment: any) => comment.userComment !== "");
+  })).filter((comment: any) => comment.userComment !== "" && !comment.userComment.startsWith("#"));
 
   console.log(comments);
 
