@@ -25,6 +25,8 @@
   "UsingKoeiromap": "使用 Koeiromap（僅限日文）",
   "UsingVoiceVox": "使用 VOICEVOX（僅限日文）",
   "UsingGoogleTTS": "使用 Google TTS",
+  "UsingStyleBertVITS2": "使用 Style-Bert-VIT2 (僅限日文)",
+  "StyleBertVITS2Info": "使用 Style-Bert-VITS2。它使用本機 API，您需要從以下網站下載並啟動適合您環境的應用程式",
   "SpeakerSelection": "選擇語音角色",
   "GoogleTTSInfo": "使用 Google Cloud 文字轉語音。支援多種語言。",
   "AuthFileInstruction": "在下方獲取認證 JSON 檔案，並將其放置於儲存庫的根目錄下，命名為 'credentials.json'。",

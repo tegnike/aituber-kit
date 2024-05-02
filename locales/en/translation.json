@@ -25,6 +25,8 @@
   "UsingKoeiromap": "Koeiromap (Japanese Only)",
   "UsingVoiceVox": "VOICEVOX (Japanese Only)",
   "UsingGoogleTTS": "Google TTS",
+  "UsingStyleBertVITS2": "Style-Bert-VIT2 (Japanese Only)",
+  "StyleBertVITS2Info": "Using Style-Bert-VITS2. It uses a local API, you need to download and launch the app that suits your environment from the site below.",
   "SpeakerSelection": "Speaker Selection",
   "GoogleTTSInfo": "Using Google Cloud Text-to-Speech. It supports multiple languages.",
   "AuthFileInstruction": "Obtain the authentication JSON file below and place it in the root folder of the repository as 'credentials.json'.",
