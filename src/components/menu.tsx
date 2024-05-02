@@ -27,6 +27,10 @@ type Props = {
   koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
+  stylebertvits2ServerUrl: string;
+  onChangeStyleBertVits2ServerUrl: (key: string) => void;
+  stylebertvits2ModelId: string;
+  onChangeStyleBertVits2ModelId: (key: string) => void;
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
@@ -68,6 +72,8 @@ export const Menu = ({
   koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
+  stylebertvits2ServerUrl,
+  stylebertvits2ModelId,
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
@@ -81,6 +87,8 @@ export const Menu = ({
   onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
+  onChangeStyleBertVits2ServerUrl,
+  onChangeStyleBertVits2ModelId,
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
@@ -138,6 +146,20 @@ export const Menu = ({
       onChangeGoogleTtsType(event.target.value);
     },
     [onChangeGoogleTtsType]
+  );
+
+  const handleChangeStyleBertVits2ServerUrl = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeStyleBertVits2ServerUrl(event.target.value);
+    },
+    [onChangeStyleBertVits2ServerUrl]
+  );
+
+  const handleChangeStyleBertVits2ModelId = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeStyleBertVits2ModelId(event.target.value);
+    },
+    [onChangeStyleBertVits2ModelId]
   );
 
   const handleYoutubeApiKeyChange = useCallback(
@@ -251,6 +273,8 @@ export const Menu = ({
           koeiromapKey={koeiromapKey}
           voicevoxSpeaker={voicevoxSpeaker}
           googleTtsType={googleTtsType}
+          stylebertvits2ServerUrl={stylebertvits2ServerUrl}
+          stylebertvits2ModelId={stylebertvits2ModelId}
           youtubeMode={youtubeMode}
           youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
@@ -266,6 +290,8 @@ export const Menu = ({
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
           onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
           onChangeGoogleTtsType={handleChangeGoogleTtsType}
+          onChangeStyleBertVits2ServerUrl={handleChangeStyleBertVits2ServerUrl}
+          onChangeStyleBertVits2ModelId={handleChangeStyleBertVits2ModelId}
           onChangeYoutubeMode={onChangeYoutubeMode}
           onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
           onChangeYoutubeLiveId={handleYoutubeLiveIdChange}

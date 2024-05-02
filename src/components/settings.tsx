@@ -30,6 +30,8 @@ type Props = {
   koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
+  stylebertvits2ServerUrl: string;
+  stylebertvits2ModelId: string;
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
@@ -45,6 +47,8 @@ type Props = {
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeVoicevoxSpeaker: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onChangeGoogleTtsType: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeStyleBertVits2ServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeStyleBertVits2ModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -72,6 +76,8 @@ export const Settings = ({
   koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
+  stylebertvits2ServerUrl,
+  stylebertvits2ModelId,
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
@@ -87,6 +93,8 @@ export const Settings = ({
   onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
+  onChangeStyleBertVits2ServerUrl,
+  onChangeStyleBertVits2ModelId,
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
@@ -369,6 +377,7 @@ export const Settings = ({
                 <option value="voicevox">{t('UsingVoiceVox')}</option>
                 <option value="koeiromap">{t('UsingKoeiromap')}</option>
                 <option value="google">{t('UsingGoogleTTS')}</option>
+                <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
               </select>
             </div>
             <div>&nbsp;</div>
@@ -476,7 +485,7 @@ export const Settings = ({
                         </div>
                     </>
                   );
-                } else {
+                } else if (selectVoice === "google"){
                   return (
                     <>
                       <div>
@@ -499,6 +508,37 @@ export const Settings = ({
                           placeholder="..."
                           value={googleTtsType}
                           onChange={onChangeGoogleTtsType} />
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === "stylebertvits2"){
+                  return (
+                    <>
+                      <div>
+                        {t('StyleBertVITS2Info')}
+                        <br />
+                        <Link
+                          url="https://github.com/litagin02/Style-Bert-VITS2"
+                          label="https://github.com/litagin02/Style-Bert-VITS2" />
+                        <br /><br />
+                      </div>
+                      <div className="mt-16 font-bold">Sytle-Bert-VITS2 Local Server URL</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={stylebertvits2ServerUrl}
+                          onChange={onChangeStyleBertVits2ServerUrl} />
+                      </div>
+                      <div className="mt-16 font-bold">Sytle-Bert-VITS2 Model ID</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          placeholder="..."
+                          value={stylebertvits2ModelId}
+                          onChange={onChangeStyleBertVits2ModelId} />
                       </div>
                     </>
                   );
