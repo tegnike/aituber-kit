@@ -37,6 +37,6 @@
   "NotConnectedToExternalAssistant": "未連接外部助理。",
   "APIKeyNotEntered": "尚未輸入 API 金鑰。",
   "CodeLog": "程式碼日誌",
-  "ChatLog": "對話日誌",
+  "ChatLog": "聊天記錄",
   "EnterYourQuestion": "在此輸入您的問題"
 }

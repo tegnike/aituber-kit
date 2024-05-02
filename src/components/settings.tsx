@@ -105,6 +105,15 @@ export const Settings = ({
 }: Props) => {
   const { t } = useTranslation();
 
+  // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
+  // ollamaが選択された場合、AIモデルを空文字に設定
+  const defaultModels = {
+    openai: 'gpt-3.5-turbo',
+    anthropic: 'claude-3-haiku-20240307',
+    ollama: '',
+    groq: 'gemma-7b-it',
+  };
+
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
       <div className="absolute m-24">
@@ -188,9 +197,9 @@ export const Settings = ({
                         onChange={(e) => {
                           const newService = e.target.value;
                           setSelectAIService(newService);
-                          if (newService === "ollama") {
-                            setSelectAIModel(""); // ollamaが選択された場合、AIモデルを空文字に設定
-                          }
+
+                          // 選択したAIサービスに基づいてデフォルトモデルを設定する
+                          setSelectAIModel(defaultModels[newService]);
                         }}
                       >
                         <option value="openai">OpenAI</option>
