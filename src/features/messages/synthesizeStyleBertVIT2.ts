@@ -10,13 +10,22 @@ export async function synthesizeStyleBertVIT2Api(
     type: "stylebertvits2",
   };
 
-  const res = await fetch("/api/stylebertvits2", {
-    method: "POST",
-    headers: {
-      "Content-Type": "audio/wav",
-    },
-    body: JSON.stringify(body),
-  });
-  const buffer = await res.arrayBuffer();
-  return buffer;
+  try {
+    const res = await fetch("/api/stylebertvits2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      throw new Error(`APIからの応答が異常です。ステータスコード: ${res.status}`);
+    }
+
+    const buffer = await res.arrayBuffer();
+    return buffer;
+  } catch (error: any) {
+    throw new Error(`APIリクエスト中にエラーが発生しました: ${error.message}`);
+  }
 }
