@@ -13,6 +13,8 @@ import { KoeiroParam, DEFAULT_PARAM } from "@/features/constants/koeiroParam";
 import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
 import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
 import { getOllamaChatResponseStream } from "@/features/chat/ollamaChat";
+import { getGroqChatResponseStream } from "@/features/chat/groqChat";
+import { getGroqChatResponse } from "@/features/chat/groqChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
@@ -29,6 +31,7 @@ export default function Home() {
   const [selectAIModel, setSelectAIModel] = useState("gpt-3.5-turbo");
   const [openAiKey, setOpenAiKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
+  const [groqKey, setGroqKey] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
   const [selectLanguage, setSelectLanguage] = useState("Japanese");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
@@ -236,6 +239,13 @@ export default function Home() {
               return null;
             }
           );
+        } else if (selectAIService === "groq") {
+          stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel).catch(
+            (e) => {
+              console.error(e);
+              return null;
+            }
+          );
         }
         if (stream == null) {
           setChatProcessing(false);
@@ -407,6 +417,8 @@ export default function Home() {
         onChangeOpenAiKey={setOpenAiKey}
         anthropicKey={anthropicKey}
         onChangeAnthropicKey={setAnthropicKey}
+        groqKey={groqKey}
+        onChangeGroqKey={setGroqKey}
         systemPrompt={systemPrompt}
         chatLog={chatLog}
         codeLog={codeLog}

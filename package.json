@@ -18,6 +18,7 @@
     "axios": "^1.6.8",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "groq-sdk": "^0.3.3",
     "i18next": "^23.6.0",
     "next": "13.2.4",
     "node-fetch": "^3.3.1",

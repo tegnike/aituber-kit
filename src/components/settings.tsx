@@ -23,6 +23,8 @@ type Props = {
   onChangeOpenAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   anthropicKey: string;
   onChangeAnthropicKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  groqKey: string;
+  onChangeGroqKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -66,6 +68,8 @@ export const Settings = ({
   onChangeOpenAiKey,
   anthropicKey,
   onChangeAnthropicKey,
+  groqKey,
+  onChangeGroqKey,
   chatLog,
   systemPrompt,
   koeiroParam,
@@ -192,6 +196,7 @@ export const Settings = ({
                         <option value="openai">OpenAI</option>
                         <option value="anthropic">Anthropic</option>
                         <option value="ollama">ローカルLLM（Ollama）</option>
+                        <option value="groq">Groq</option>
                       </select>
                       </div>
                     {(() => {
@@ -276,6 +281,39 @@ export const Settings = ({
                               value={selectAIModel}
                               onChange={(e) => setSelectAIModel(e.target.value)}
                             />
+                          </div>
+                        );
+                      } else if (selectAIService === "groq") {
+                        return (
+                          <div className="my-24">
+                            <div className="my-16 typography-20 font-bold">{t('GroqAPIKeyLabel')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={groqKey}
+                              onChange={onChangeGroqKey}
+                            />
+                            <div className="my-16">
+                              {t('APIKeyInstruction')}<br />
+                              <Link url="https://console.groq.com/keys" label="Groq Dashboard" />
+                            </div>
+                            <div className="my-16">
+                              {t('GroqInfo')}
+                            </div>
+                            <div className="my-24">
+                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <select
+                                className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                value={selectAIModel}
+                                onChange={(e) => setSelectAIModel(e.target.value)}
+                              >
+                                <option value="gemma-7b-it">gemma-7b-it</option>
+                                <option value="llama3-70b-8192">llama3-70b-8192</option>
+                                <option value="llama3-8b-8192">llama3-8b-8192</option>
+                                <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+                              </select>
+                            </div>
                           </div>
                         );
                       }
