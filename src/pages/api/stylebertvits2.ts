@@ -14,8 +14,9 @@ export default async function handler(
   const stylebertvits2ModelId = body.stylebertvits2ModelId;
   const stylebertvits2ServerUrl = body.stylebertvits2ServerUrl;
   const stylebertvits2Style = body.stylebertvits2Style;
+  const selectLanguage = body.selectLanguage;
 
-  const queryParams = new URLSearchParams({ text: message, model_id: stylebertvits2ModelId, style: stylebertvits2Style });
+  const queryParams = new URLSearchParams({ text: message, model_id: stylebertvits2ModelId, style: stylebertvits2Style, language: selectLanguage });
 
   try {
     const voice = await fetch(`${stylebertvits2ServerUrl}/voice?${queryParams}`, {

@@ -30,7 +30,7 @@ export default function Home() {
   const [openAiKey, setOpenAiKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
-  const [selectLanguage, setSelectLanguage] = useState("Japanese");
+  const [selectLanguage, setSelectLanguage] = useState("JP");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
@@ -112,9 +112,32 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void
     ) => {
-      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style, onStart, onEnd);
+      speakCharacter(
+        screenplay,
+        viewer,
+        selectVoice,
+        selectLanguage,
+        koeiromapKey,
+        voicevoxSpeaker,
+        googleTtsType,
+        stylebertvits2ServerUrl,
+        stylebertvits2ModelId,
+        stylebertvits2Style,
+        onStart,
+        onEnd
+      );
     },
-    [viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style]
+    [
+      viewer,
+      selectVoice,
+      selectLanguage,
+      koeiromapKey,
+      voicevoxSpeaker,
+      googleTtsType,
+      stylebertvits2ServerUrl,
+      stylebertvits2ModelId,
+      stylebertvits2Style
+    ]
   );
 
   const wsRef = useRef<WebSocket | null>(null);

@@ -17,6 +17,7 @@ const createSpeakCharacter = () => {
     screenplay: Screenplay,
     viewer: Viewer,
     selectVoice: string,
+    selectLanguage: string,
     koeiroApiKey: string,
     voicevoxSpeaker: string,
     googleTtsType: string,
@@ -45,7 +46,7 @@ const createSpeakCharacter = () => {
           () => null
         );
       } else if (selectVoice == "stylebertvits2") {
-        buffer = await fetchAudioStyleBertVITS2(screenplay.talk, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style).catch(
+        buffer = await fetchAudioStyleBertVITS2(screenplay.talk, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style, selectLanguage).catch(
           () => null
         );
       }
@@ -140,13 +141,15 @@ export const fetchAudioStyleBertVITS2 = async (
   talk: Talk,
   stylebertvits2ServerUrl: string,
   stylebertvits2ModelId: string,
-  stylebertvits2Style: string
+  stylebertvits2Style: string,
+  selectLanguage: string
 ): Promise<ArrayBuffer> => {
   const ttsVoice = await synthesizeStyleBertVITS2Api(
     talk.message,
     stylebertvits2ServerUrl,
     stylebertvits2ModelId,
-    stylebertvits2Style
+    stylebertvits2Style,
+    selectLanguage
   );
   return ttsVoice
 };

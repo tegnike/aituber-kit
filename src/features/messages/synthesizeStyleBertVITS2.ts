@@ -3,12 +3,14 @@ export async function synthesizeStyleBertVITS2Api(
   stylebertvits2ServerUrl: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
+  selectLanguage: string
 ) {
   const body = {
     message: message,
     stylebertvits2ServerUrl: stylebertvits2ServerUrl,
     stylebertvits2ModelId: stylebertvits2ModelId,
     stylebertvits2Style: stylebertvits2Style,
+    selectLanguage: selectLanguage,
     type: "stylebertvits2",
   };
 
