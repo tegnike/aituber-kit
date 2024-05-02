@@ -12,12 +12,13 @@ export default async function handler(
   const body = req.body; // JSON.parse を削除
   const message = body.message;
   const stylebertvits2ModelId = body.stylebertvits2ModelId;
-  const stylebertvit2ServerUrl = body.stylebertvit2ServerUrl;
+  const stylebertvits2ServerUrl = body.stylebertvits2ServerUrl;
+  const stylebertvits2Style = body.stylebertvits2Style;
 
-  const queryParams = new URLSearchParams({ text: message, model_id: stylebertvits2ModelId, language: "EN", style: "w" });
+  const queryParams = new URLSearchParams({ text: message, model_id: stylebertvits2ModelId, style: stylebertvits2Style });
 
   try {
-    const voice = await fetch(`${stylebertvit2ServerUrl}/voice?${queryParams}`, {
+    const voice = await fetch(`${stylebertvits2ServerUrl}/voice?${queryParams}`, {
       method: "GET",
       headers: {
         "Content-Type": "audio/wav",

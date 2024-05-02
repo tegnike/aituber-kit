@@ -1,7 +1,7 @@
 import { wait } from "@/utils/wait";
 import { synthesizeVoiceApi } from "./synthesizeVoice";
 import { synthesizeVoiceGoogleApi } from "./synthesizeVoiceGoogle";
-import { synthesizeStyleBertVIT2Api } from "./synthesizeStyleBertVIT2";
+import { synthesizeStyleBertVITS2Api } from "./synthesizeStyleBertVITS2";
 import { Viewer } from "../vrmViewer/viewer";
 import { Screenplay } from "./messages";
 import { Talk } from "./messages";
@@ -20,8 +20,9 @@ const createSpeakCharacter = () => {
     koeiroApiKey: string,
     voicevoxSpeaker: string,
     googleTtsType: string,
-    stylebertvit2ServerUrl: string,
+    stylebertvits2ServerUrl: string,
     stylebertvits2ModelId: string,
+    stylebertvits2Style: string,
     onStart?: () => void,
     onComplete?: () => void
   ) => {
@@ -44,7 +45,7 @@ const createSpeakCharacter = () => {
           () => null
         );
       } else if (selectVoice == "stylebertvits2") {
-        buffer = await fetchAudioStyleBertVITS2(screenplay.talk, stylebertvit2ServerUrl, stylebertvits2ModelId).catch(
+        buffer = await fetchAudioStyleBertVITS2(screenplay.talk, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style).catch(
           () => null
         );
       }
@@ -137,13 +138,15 @@ export const fetchAudioGoogle = async (
 
 export const fetchAudioStyleBertVITS2 = async (
   talk: Talk,
-  stylebertvit2ServerUrl: string,
-  stylebertvits2ModelId: string
+  stylebertvits2ServerUrl: string,
+  stylebertvits2ModelId: string,
+  stylebertvits2Style: string
 ): Promise<ArrayBuffer> => {
-  const ttsVoice = await synthesizeStyleBertVIT2Api(
+  const ttsVoice = await synthesizeStyleBertVITS2Api(
     talk.message,
-    stylebertvit2ServerUrl,
-    stylebertvits2ModelId
+    stylebertvits2ServerUrl,
+    stylebertvits2ModelId,
+    stylebertvits2Style
   );
   return ttsVoice
 };

@@ -35,8 +35,9 @@ export default function Home() {
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
-  const [stylebertvits2ServerUrl, setStylebertvits2ServerURL] = useState("http://localhost:5000");
+  const [stylebertvits2ServerUrl, setStylebertvits2ServerURL] = useState("http://127.0.0.1:5000");
   const [stylebertvits2ModelId, setStylebertvits2ModelId] = useState("0");
+  const [stylebertvits2Style, setStylebertvits2Style] = useState("Neutral");
   const [youtubeMode, setYoutubeMode] = useState(false);
   const [youtubeApiKey, setYoutubeApiKey] = useState("");
   const [youtubeLiveId, setYoutubeLiveId] = useState("");
@@ -111,9 +112,9 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void
     ) => {
-      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, stylebertvits2ServerUrl, stylebertvits2ModelId, onStart, onEnd);
+      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style, onStart, onEnd);
     },
-    [viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, stylebertvits2ServerUrl, stylebertvits2ModelId]
+    [viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style]
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -419,6 +420,7 @@ export default function Home() {
         googleTtsType={googleTtsType}
         stylebertvits2ServerUrl={stylebertvits2ServerUrl}
         stylebertvits2ModelId={stylebertvits2ModelId}
+        stylebertvits2Style={stylebertvits2Style}
         youtubeMode={youtubeMode}
         youtubeApiKey={youtubeApiKey}
         youtubeLiveId={youtubeLiveId}
@@ -437,6 +439,7 @@ export default function Home() {
         onChangeGoogleTtsType={setGoogleTtsType}
         onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
         onChangeStyleBertVits2ModelId={setStylebertvits2ModelId}
+        onChangeStyleBertVits2Style={setStylebertvits2Style}
         webSocketMode={webSocketMode}
         changeWebSocketMode={changeWebSocketMode}
         selectVoice={selectVoice}

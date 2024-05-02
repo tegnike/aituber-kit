@@ -32,6 +32,7 @@ type Props = {
   googleTtsType: string;
   stylebertvits2ServerUrl: string;
   stylebertvits2ModelId: string;
+  stylebertvits2Style: string;
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
@@ -49,6 +50,7 @@ type Props = {
   onChangeGoogleTtsType: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeStyleBertVits2ServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeStyleBertVits2ModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeStyleBertVits2Style: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -78,6 +80,7 @@ export const Settings = ({
   googleTtsType,
   stylebertvits2ServerUrl,
   stylebertvits2ModelId,
+  stylebertvits2Style,
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
@@ -95,6 +98,7 @@ export const Settings = ({
   onChangeGoogleTtsType,
   onChangeStyleBertVits2ServerUrl,
   onChangeStyleBertVits2ModelId,
+  onChangeStyleBertVits2Style,
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
@@ -522,7 +526,7 @@ export const Settings = ({
                           label="https://github.com/litagin02/Style-Bert-VITS2" />
                         <br /><br />
                       </div>
-                      <div className="mt-16 font-bold">Sytle-Bert-VITS2 Local Server URL</div>
+                      <div className="mt-16 font-bold">{t('StyleBeatVITS2LocalServerURL')}</div>
                       <div className="mt-8">
                         <input
                           className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
@@ -531,7 +535,7 @@ export const Settings = ({
                           value={stylebertvits2ServerUrl}
                           onChange={onChangeStyleBertVits2ServerUrl} />
                       </div>
-                      <div className="mt-16 font-bold">Sytle-Bert-VITS2 Model ID</div>
+                      <div className="mt-16 font-bold">{t('StyleBeatVITS2ModelID')}</div>
                       <div className="mt-8">
                         <input
                           className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
@@ -539,6 +543,15 @@ export const Settings = ({
                           placeholder="..."
                           value={stylebertvits2ModelId}
                           onChange={onChangeStyleBertVits2ModelId} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('StyleBeatVITS2Style')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={stylebertvits2Style}
+                          onChange={onChangeStyleBertVits2Style} />
                       </div>
                     </>
                   );

@@ -31,6 +31,8 @@ type Props = {
   onChangeStyleBertVits2ServerUrl: (key: string) => void;
   stylebertvits2ModelId: string;
   onChangeStyleBertVits2ModelId: (key: string) => void;
+  stylebertvits2Style: string;
+  onChangeStyleBertVits2Style: (key: string) => void;
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
@@ -74,6 +76,7 @@ export const Menu = ({
   googleTtsType,
   stylebertvits2ServerUrl,
   stylebertvits2ModelId,
+  stylebertvits2Style,
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
@@ -89,6 +92,7 @@ export const Menu = ({
   onChangeGoogleTtsType,
   onChangeStyleBertVits2ServerUrl,
   onChangeStyleBertVits2ModelId,
+  onChangeStyleBertVits2Style,
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
@@ -160,6 +164,13 @@ export const Menu = ({
       onChangeStyleBertVits2ModelId(event.target.value);
     },
     [onChangeStyleBertVits2ModelId]
+  );
+
+  const handleChangeStyleBertVits2Style = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeStyleBertVits2Style(event.target.value);
+    },
+    [onChangeStyleBertVits2Style]
   );
 
   const handleYoutubeApiKeyChange = useCallback(
@@ -275,6 +286,7 @@ export const Menu = ({
           googleTtsType={googleTtsType}
           stylebertvits2ServerUrl={stylebertvits2ServerUrl}
           stylebertvits2ModelId={stylebertvits2ModelId}
+          stylebertvits2Style={stylebertvits2Style}
           youtubeMode={youtubeMode}
           youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
@@ -292,6 +304,7 @@ export const Menu = ({
           onChangeGoogleTtsType={handleChangeGoogleTtsType}
           onChangeStyleBertVits2ServerUrl={handleChangeStyleBertVits2ServerUrl}
           onChangeStyleBertVits2ModelId={handleChangeStyleBertVits2ModelId}
+          onChangeStyleBertVits2Style={handleChangeStyleBertVits2Style}
           onChangeYoutubeMode={onChangeYoutubeMode}
           onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
           onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
