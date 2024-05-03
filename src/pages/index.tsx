@@ -13,6 +13,8 @@ import { KoeiroParam, DEFAULT_PARAM } from "@/features/constants/koeiroParam";
 import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
 import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
 import { getOllamaChatResponseStream } from "@/features/chat/ollamaChat";
+import { getGroqChatResponseStream } from "@/features/chat/groqChat";
+import { getGroqChatResponse } from "@/features/chat/groqChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
@@ -29,12 +31,16 @@ export default function Home() {
   const [selectAIModel, setSelectAIModel] = useState("gpt-3.5-turbo");
   const [openAiKey, setOpenAiKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
+  const [groqKey, setGroqKey] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
-  const [selectLanguage, setSelectLanguage] = useState("Japanese");
+  const [selectLanguage, setSelectLanguage] = useState("JP");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
   const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
+  const [stylebertvits2ServerUrl, setStylebertvits2ServerURL] = useState("http://127.0.0.1:5000");
+  const [stylebertvits2ModelId, setStylebertvits2ModelId] = useState("0");
+  const [stylebertvits2Style, setStylebertvits2Style] = useState("Neutral");
   const [youtubeMode, setYoutubeMode] = useState(false);
   const [youtubeApiKey, setYoutubeApiKey] = useState("");
   const [youtubeLiveId, setYoutubeLiveId] = useState("");
@@ -150,9 +156,32 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void
     ) => {
-      speakCharacter(screenplay, viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType, onStart, onEnd);
+      speakCharacter(
+        screenplay,
+        viewer,
+        selectVoice,
+        selectLanguage,
+        koeiromapKey,
+        voicevoxSpeaker,
+        googleTtsType,
+        stylebertvits2ServerUrl,
+        stylebertvits2ModelId,
+        stylebertvits2Style,
+        onStart,
+        onEnd
+      );
     },
-    [viewer, selectVoice, koeiromapKey, voicevoxSpeaker, googleTtsType]
+    [
+      viewer,
+      selectVoice,
+      selectLanguage,
+      koeiromapKey,
+      voicevoxSpeaker,
+      googleTtsType,
+      stylebertvits2ServerUrl,
+      stylebertvits2ModelId,
+      stylebertvits2Style
+    ]
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -262,6 +291,8 @@ export default function Home() {
             stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
           } else if (selectAIService === "ollama") {
             stream = await getOllamaChatResponseStream(messages, selectAIModel);
+          } else if (selectAIService === "groq") {
+            stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
           }
         } catch (e) {
           console.error(e);
@@ -437,6 +468,8 @@ export default function Home() {
         onChangeOpenAiKey={setOpenAiKey}
         anthropicKey={anthropicKey}
         onChangeAnthropicKey={setAnthropicKey}
+        groqKey={groqKey}
+        onChangeGroqKey={setGroqKey}
         systemPrompt={systemPrompt}
         chatLog={chatLog}
         codeLog={codeLog}
@@ -445,6 +478,9 @@ export default function Home() {
         koeiromapKey={koeiromapKey}
         voicevoxSpeaker={voicevoxSpeaker}
         googleTtsType={googleTtsType}
+        stylebertvits2ServerUrl={stylebertvits2ServerUrl}
+        stylebertvits2ModelId={stylebertvits2ModelId}
+        stylebertvits2Style={stylebertvits2Style}
         youtubeMode={youtubeMode}
         youtubeApiKey={youtubeApiKey}
         youtubeLiveId={youtubeLiveId}
@@ -461,6 +497,9 @@ export default function Home() {
         onChangeKoeiromapKey={setKoeiromapKey}
         onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
         onChangeGoogleTtsType={setGoogleTtsType}
+        onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
+        onChangeStyleBertVits2ModelId={setStylebertvits2ModelId}
+        onChangeStyleBertVits2Style={setStylebertvits2Style}
         webSocketMode={webSocketMode}
         changeWebSocketMode={changeWebSocketMode}
         selectVoice={selectVoice}
