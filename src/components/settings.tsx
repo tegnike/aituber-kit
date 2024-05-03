@@ -384,30 +384,31 @@ export const Settings = ({
                         </TextButton>
                       )}
                     </div>
-                  </div>
-                  <div className="my-8">
-                    {(() => {
-                      if (youtubeMode) {
-                        return (
-                          <>
-                            <div className="my-16 typography-20 font-bold">{t('YoutubeAPIKey')}</div>
-                            <input
-                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                              type="text"
-                              placeholder="..."
-                              value={youtubeApiKey}
-                              onChange={onChangeYoutubeApiKey} />
-                            <div className="my-16 typography-20 font-bold">{t('YoutubeLiveID')}</div>
-                            <input
-                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                              type="text"
-                              placeholder="..."
-                              value={youtubeLiveId}
-                              onChange={onChangeYoutubeLiveId} />
-                          </>
-                        );
-                      }
-                    })()}
+                    <div className="my-16">
+                      {(() => {
+                        if (youtubeMode) {
+                          return (
+                            <>
+                              <div className="">{t('YoutubeInfo')}</div>
+                              <div className="my-16 typography-20 font-bold">{t('YoutubeAPIKey')}</div>
+                              <input
+                                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                type="text"
+                                placeholder="..."
+                                value={youtubeApiKey}
+                                onChange={onChangeYoutubeApiKey} />
+                              <div className="my-16 typography-20 font-bold">{t('YoutubeLiveID')}</div>
+                              <input
+                                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                type="text"
+                                placeholder="..."
+                                value={youtubeLiveId}
+                                onChange={onChangeYoutubeLiveId} />
+                            </>
+                          );
+                        }
+                      })()}
+                    </div>
                   </div>
                 </>
               )
@@ -639,6 +640,9 @@ export const Settings = ({
             <div className="my-40">
               <div className="my-8 grid-cols-2">
                 <div className="my-16 typography-20 font-bold">{t('ConversationHistory')}</div>
+                <div className="my-8">
+                  {t('ConversationHistoryInfo')}
+                </div>
                 <TextButton onClick={() => { 
                   onClickResetChatLog();
                   onClickResetCodeLog(); 
