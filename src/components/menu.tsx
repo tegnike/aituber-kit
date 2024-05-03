@@ -27,6 +27,12 @@ type Props = {
   koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
+  stylebertvits2ServerUrl: string;
+  onChangeStyleBertVits2ServerUrl: (key: string) => void;
+  stylebertvits2ModelId: string;
+  onChangeStyleBertVits2ModelId: (key: string) => void;
+  stylebertvits2Style: string;
+  onChangeStyleBertVits2Style: (key: string) => void;
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
@@ -68,6 +74,9 @@ export const Menu = ({
   koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
+  stylebertvits2ServerUrl,
+  stylebertvits2ModelId,
+  stylebertvits2Style,
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
@@ -81,6 +90,9 @@ export const Menu = ({
   onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
+  onChangeStyleBertVits2ServerUrl,
+  onChangeStyleBertVits2ModelId,
+  onChangeStyleBertVits2Style,
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
@@ -138,6 +150,27 @@ export const Menu = ({
       onChangeGoogleTtsType(event.target.value);
     },
     [onChangeGoogleTtsType]
+  );
+
+  const handleChangeStyleBertVits2ServerUrl = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeStyleBertVits2ServerUrl(event.target.value);
+    },
+    [onChangeStyleBertVits2ServerUrl]
+  );
+
+  const handleChangeStyleBertVits2ModelId = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeStyleBertVits2ModelId(event.target.value);
+    },
+    [onChangeStyleBertVits2ModelId]
+  );
+
+  const handleChangeStyleBertVits2Style = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeStyleBertVits2Style(event.target.value);
+    },
+    [onChangeStyleBertVits2Style]
   );
 
   const handleYoutubeApiKeyChange = useCallback(
@@ -251,6 +284,9 @@ export const Menu = ({
           koeiromapKey={koeiromapKey}
           voicevoxSpeaker={voicevoxSpeaker}
           googleTtsType={googleTtsType}
+          stylebertvits2ServerUrl={stylebertvits2ServerUrl}
+          stylebertvits2ModelId={stylebertvits2ModelId}
+          stylebertvits2Style={stylebertvits2Style}
           youtubeMode={youtubeMode}
           youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
@@ -266,6 +302,9 @@ export const Menu = ({
           onChangeKoeiromapKey={handleChangeKoeiromapKey}
           onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
           onChangeGoogleTtsType={handleChangeGoogleTtsType}
+          onChangeStyleBertVits2ServerUrl={handleChangeStyleBertVits2ServerUrl}
+          onChangeStyleBertVits2ModelId={handleChangeStyleBertVits2ModelId}
+          onChangeStyleBertVits2Style={handleChangeStyleBertVits2Style}
           onChangeYoutubeMode={onChangeYoutubeMode}
           onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
           onChangeYoutubeLiveId={handleYoutubeLiveIdChange}

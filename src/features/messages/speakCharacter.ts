@@ -1,6 +1,7 @@
 import { wait } from "@/utils/wait";
 import { synthesizeVoiceApi } from "./synthesizeVoice";
 import { synthesizeVoiceGoogleApi } from "./synthesizeVoiceGoogle";
+import { synthesizeStyleBertVITS2Api } from "./synthesizeStyleBertVITS2";
 import { Viewer } from "../vrmViewer/viewer";
 import { Screenplay } from "./messages";
 import { Talk } from "./messages";
@@ -16,9 +17,13 @@ const createSpeakCharacter = () => {
     screenplay: Screenplay,
     viewer: Viewer,
     selectVoice: string,
+    selectLanguage: string,
     koeiroApiKey: string,
     voicevoxSpeaker: string,
     googleTtsType: string,
+    stylebertvits2ServerUrl: string,
+    stylebertvits2ModelId: string,
+    stylebertvits2Style: string,
     onStart?: () => void,
     onComplete?: () => void
   ) => {
@@ -27,7 +32,6 @@ const createSpeakCharacter = () => {
       if (now - lastTime < 1000) {
         await wait(1000 - (now - lastTime));
       }
-
       let buffer;
       if (selectVoice == "koeiromap") {
         buffer = await fetchAudio(screenplay.talk, koeiroApiKey).catch(
@@ -39,6 +43,10 @@ const createSpeakCharacter = () => {
         );
       } else if (selectVoice == "google") {
         buffer = await fetchAudioGoogle(screenplay.talk, googleTtsType).catch(
+          () => null
+        );
+      } else if (selectVoice == "stylebertvits2") {
+        buffer = await fetchAudioStyleBertVITS2(screenplay.talk, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style, selectLanguage).catch(
           () => null
         );
       }
@@ -127,6 +135,23 @@ export const fetchAudioGoogle = async (
   const arrayBuffer: ArrayBuffer = uint8Array.buffer;
   
   return arrayBuffer;
+};
+
+export const fetchAudioStyleBertVITS2 = async (
+  talk: Talk,
+  stylebertvits2ServerUrl: string,
+  stylebertvits2ModelId: string,
+  stylebertvits2Style: string,
+  selectLanguage: string
+): Promise<ArrayBuffer> => {
+  const ttsVoice = await synthesizeStyleBertVITS2Api(
+    talk.message,
+    stylebertvits2ServerUrl,
+    stylebertvits2ModelId,
+    stylebertvits2Style,
+    selectLanguage
+  );
+  return ttsVoice
 };
 
 export const testVoice = async (

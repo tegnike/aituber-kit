@@ -30,6 +30,9 @@ type Props = {
   koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
+  stylebertvits2ServerUrl: string;
+  stylebertvits2ModelId: string;
+  stylebertvits2Style: string;
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
@@ -45,6 +48,9 @@ type Props = {
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeVoicevoxSpeaker: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onChangeGoogleTtsType: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeStyleBertVits2ServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeStyleBertVits2ModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeStyleBertVits2Style: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -72,6 +78,9 @@ export const Settings = ({
   koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
+  stylebertvits2ServerUrl,
+  stylebertvits2ModelId,
+  stylebertvits2Style,
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
@@ -87,6 +96,9 @@ export const Settings = ({
   onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
+  onChangeStyleBertVits2ServerUrl,
+  onChangeStyleBertVits2ModelId,
+  onChangeStyleBertVits2Style,
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
@@ -124,21 +136,24 @@ export const Settings = ({
                 onChange={(e) => {
                   const newLanguage = e.target.value;
                   switch (newLanguage) {
-                    case "Japanese":
-                      setSelectLanguage("Japanese");
-                      setSelectVoice("koeiromap");
+                    case "JP":
+                      setSelectLanguage("JP");
                       setSelectVoiceLanguage("ja-JP");
                       i18n.changeLanguage('ja');
                       break;
-                    case "English":
-                      setSelectLanguage("English");
-                      setSelectVoice("google");
+                    case "EN":
+                      setSelectLanguage("EN");
+                      if (selectVoice === "voicevox" || selectVoice === "koeiromap") {
+                        setSelectVoice("google");
+                      }
                       setSelectVoiceLanguage("en-US");
                       i18n.changeLanguage('en');
                       break;
-                    case "Traditional Chinese":
-                      setSelectLanguage("Traditional Chinese");
-                      setSelectVoice("google");
+                    case "ZH":
+                      setSelectLanguage("ZH");
+                      if (selectVoice === "voicevox" || selectVoice === "koeiromap") {
+                        setSelectVoice("google");
+                      }
                       setSelectVoiceLanguage("zh-TW");
                       i18n.changeLanguage('zh-TW');
                       break;
@@ -147,9 +162,9 @@ export const Settings = ({
                   }
                 }}
               >
-                <option value="Japanese">日本語 - Japanese</option>
-                <option value="English">英語 - English</option>
-                <option value="Traditional Chinese">繁體中文 - Traditional Chinese</option>
+                <option value="JP">日本語 - Japanese</option>
+                <option value="EN">英語 - English</option>
+                <option value="ZH">繁體中文 - Traditional Chinese</option>
               </select>
             </div>
           </div>
@@ -369,6 +384,7 @@ export const Settings = ({
                 <option value="voicevox">{t('UsingVoiceVox')}</option>
                 <option value="koeiromap">{t('UsingKoeiromap')}</option>
                 <option value="google">{t('UsingGoogleTTS')}</option>
+                <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
               </select>
             </div>
             <div>&nbsp;</div>
@@ -476,7 +492,7 @@ export const Settings = ({
                         </div>
                     </>
                   );
-                } else {
+                } else if (selectVoice === "google"){
                   return (
                     <>
                       <div>
@@ -499,6 +515,46 @@ export const Settings = ({
                           placeholder="..."
                           value={googleTtsType}
                           onChange={onChangeGoogleTtsType} />
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === "stylebertvits2"){
+                  return (
+                    <>
+                      <div>
+                        {t('StyleBertVITS2Info')}
+                        <br />
+                        <Link
+                          url="https://github.com/litagin02/Style-Bert-VITS2"
+                          label="https://github.com/litagin02/Style-Bert-VITS2" />
+                        <br /><br />
+                      </div>
+                      <div className="mt-16 font-bold">{t('StyleBeatVITS2LocalServerURL')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={stylebertvits2ServerUrl}
+                          onChange={onChangeStyleBertVits2ServerUrl} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('StyleBeatVITS2ModelID')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          placeholder="..."
+                          value={stylebertvits2ModelId}
+                          onChange={onChangeStyleBertVits2ModelId} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('StyleBeatVITS2Style')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={stylebertvits2Style}
+                          onChange={onChangeStyleBertVits2Style} />
                       </div>
                     </>
                   );
