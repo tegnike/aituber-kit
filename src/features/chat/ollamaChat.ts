@@ -36,13 +36,12 @@ export async function getOllamaChatResponseStream(
             // JSONが正常に解析された場合、必要なデータを抽出
             if (data.choices && data.choices.length > 0) {
               const content = data.choices[0].delta.content;
-              console.log(content);
               controller.enqueue(content);
               accumulatedChunks = ''; // JSONが成功したのでチャンクをリセット
 
             }
           } catch (error) {
-            console.log("accumulatedChunks: `" + accumulatedChunks + "`");
+            // console.log("accumulatedChunks: `" + accumulatedChunks + "`");
             // JSONが不完全であるため、さらにチャンクを累積
           }
         }
