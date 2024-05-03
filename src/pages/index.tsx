@@ -293,7 +293,7 @@ export default function Home() {
             role: "system",
             content: systemPrompt,
           },
-          ...messageLog.slice(-20),
+          ...messageLog.slice(-10),
         ];
 
         let stream;

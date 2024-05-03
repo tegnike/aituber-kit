@@ -32,23 +32,30 @@ npm run dev
 
 - This is a feature to converse with an AI character.
 - It is a feature of [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM), which is the basis of this repository.
-- It can be tried relatively easily as long as you have an OpenAI key.
+- It can be tried relatively easily as long as you have an API key for various LLMs.
+- The last 10 conversation sentences are retained as memory. (The number can be specified in future updates)
 
 ### Usage
 
-1. Enter your OpenAI API key in the settings screen.
+1. Enter your API key for various LLMs in the settings screen.
+   - OpenAI
+   - Anthropic
+   - Groq
+   - Ollama (No API key is required, but a local API server needs to be running.)
 2. Edit the character's setting prompt if necessary.
 3. Load a VRM file if needed.
 4. Select a speech synthesis engine and configure voice settings if necessary.
    - For VOICEVOX, you can select a speaker from multiple options. The VOICEVOX app needs to be running beforehand.
    - For Koeiromap, you can finely adjust the voice. An API key is required.
    - For Google TTS, languages other than Japanese can also be selected. Credential information is required.
+   - For Style-Bert-VITS2, a local API server needs to be running.
 5. Start conversing with the character from the input form. Microphone input is also possible.
 
 ## AITuber Streaming
 
 - It is possible to retrieve YouTube streaming comments and have the character speak.
 - A YouTube API key is required.
+- Comments starting with '#' are not read. (The string can be specified in future updates)
 
 ### Usage
 
