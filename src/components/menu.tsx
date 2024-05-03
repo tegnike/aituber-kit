@@ -19,6 +19,8 @@ type Props = {
   onChangeOpenAiKey: (key: string) => void;
   anthropicKey: string;
   onChangeAnthropicKey: (key: string) => void;
+  groqKey: string;
+  onChangeGroqKey: (key: string) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -66,6 +68,8 @@ export const Menu = ({
   onChangeOpenAiKey,
   anthropicKey,
   onChangeAnthropicKey,
+  groqKey,
+  onChangeGroqKey,
   systemPrompt,
   chatLog,
   codeLog,
@@ -129,6 +133,13 @@ export const Menu = ({
       onChangeAnthropicKey(event.target.value);
     },
     [onChangeAnthropicKey]
+  );
+
+  const handleGroqKeyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGroqKey(event.target.value);
+    },
+    [onChangeGroqKey]
   );
 
   const handleChangeKoeiromapKey = useCallback(
@@ -277,6 +288,8 @@ export const Menu = ({
           onChangeOpenAiKey={handleOpenAiKeyChange}
           anthropicKey={anthropicKey}
           onChangeAnthropicKey={handleAnthropicKeyChange}
+          groqKey={groqKey}
+          onChangeGroqKey={handleGroqKeyChange}
           chatLog={chatLog}
           codeLog={codeLog}
           systemPrompt={systemPrompt}
