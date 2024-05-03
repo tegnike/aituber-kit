@@ -122,8 +122,8 @@ export const Settings = ({
   const defaultModels = {
     openai: 'gpt-3.5-turbo',
     anthropic: 'claude-3-haiku-20240307',
-    ollama: '',
     groq: 'gemma-7b-it',
+    ollama: '',
   };
 
   return (
@@ -210,17 +210,16 @@ export const Settings = ({
                         className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
                         value={selectAIService}
                         onChange={(e) => {
-                          const newService = e.target.value;
+                          const newService = e.target.value as keyof typeof defaultModels;
                           setSelectAIService(newService);
-
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
                           setSelectAIModel(defaultModels[newService]);
                         }}
                       >
                         <option value="openai">OpenAI</option>
                         <option value="anthropic">Anthropic</option>
-                        <option value="ollama">ローカルLLM（Ollama）</option>
                         <option value="groq">Groq</option>
+                        <option value="ollama">{t('LocalLLMOllama')}</option>
                       </select>
                       </div>
                     {(() => {
@@ -270,9 +269,6 @@ export const Settings = ({
                               {t('APIKeyInstruction')}<br />
                               <Link url="https://console.anthropic.com" label="Anthropic" />
                             </div>
-                            <div className="my-16">
-                              {t('AnthropicInfo')}
-                            </div>
                             <div className="my-24">
                               <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
                               <select
@@ -283,6 +279,36 @@ export const Settings = ({
                                 <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
                                 <option value="claude-3-sonnet-20240229">claude-3-sonnet-20240229</option>
                                 <option value="claude-3-haiku-20240307">claude-3-haiku-20240307</option>
+                              </select>
+                            </div>
+                          </div>
+                        );
+                      } else if (selectAIService === "groq") {
+                        return (
+                          <div className="my-24">
+                            <div className="my-16 typography-20 font-bold">{t('GroqAPIKeyLabel')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={groqKey}
+                              onChange={onChangeGroqKey}
+                            />
+                            <div className="my-16">
+                              {t('APIKeyInstruction')}<br />
+                              <Link url="https://console.groq.com/keys" label="Groq Dashboard" />
+                            </div>
+                            <div className="my-24">
+                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <select
+                                className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                value={selectAIModel}
+                                onChange={(e) => setSelectAIModel(e.target.value)}
+                              >
+                                <option value="gemma-7b-it">gemma-7b-it</option>
+                                <option value="llama3-70b-8192">llama3-70b-8192</option>
+                                <option value="llama3-8b-8192">llama3-8b-8192</option>
+                                <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
                               </select>
                             </div>
                           </div>
@@ -358,30 +384,31 @@ export const Settings = ({
                         </TextButton>
                       )}
                     </div>
-                  </div>
-                  <div className="my-8">
-                    {(() => {
-                      if (youtubeMode) {
-                        return (
-                          <>
-                            <div className="my-16 typography-20 font-bold">{t('YoutubeAPIKey')}</div>
-                            <input
-                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                              type="text"
-                              placeholder="..."
-                              value={youtubeApiKey}
-                              onChange={onChangeYoutubeApiKey} />
-                            <div className="my-16 typography-20 font-bold">{t('YoutubeLiveID')}</div>
-                            <input
-                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                              type="text"
-                              placeholder="..."
-                              value={youtubeLiveId}
-                              onChange={onChangeYoutubeLiveId} />
-                          </>
-                        );
-                      }
-                    })()}
+                    <div className="my-16">
+                      {(() => {
+                        if (youtubeMode) {
+                          return (
+                            <>
+                              <div className="">{t('YoutubeInfo')}</div>
+                              <div className="my-16 typography-20 font-bold">{t('YoutubeAPIKey')}</div>
+                              <input
+                                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                type="text"
+                                placeholder="..."
+                                value={youtubeApiKey}
+                                onChange={onChangeYoutubeApiKey} />
+                              <div className="my-16 typography-20 font-bold">{t('YoutubeLiveID')}</div>
+                              <input
+                                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                type="text"
+                                placeholder="..."
+                                value={youtubeLiveId}
+                                onChange={onChangeYoutubeLiveId} />
+                            </>
+                          );
+                        }
+                      })()}
+                    </div>
                   </div>
                 </>
               )
@@ -613,6 +640,9 @@ export const Settings = ({
             <div className="my-40">
               <div className="my-8 grid-cols-2">
                 <div className="my-16 typography-20 font-bold">{t('ConversationHistory')}</div>
+                <div className="my-8">
+                  {t('ConversationHistoryInfo')}
+                </div>
                 <TextButton onClick={() => { 
                   onClickResetChatLog();
                   onClickResetCodeLog(); 

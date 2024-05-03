@@ -58,31 +58,85 @@ export default function Home() {
     const storedData = window.localStorage.getItem("chatVRMParams");
     if (storedData) {
       const params = JSON.parse(storedData);
-      // codeLogがundefinedまたは配列でない場合は、空の配列をセットする
+      setSystemPrompt(params.systemPrompt || SYSTEM_PROMPT);
+      setKoeiroParam(params.koeiroParam || DEFAULT_PARAM);
+      setChatLog(Array.isArray(params.chatLog) ? params.chatLog : []);
       setCodeLog(Array.isArray(params.codeLog) ? params.codeLog : []);
+      setSelectAIService(params.selectAIService || "openai");
+      setSelectAIModel(params.selectAIModel || "gpt-3.5-turbo");
+      setOpenAiKey(params.openAiKey || "");
+      setAnthropicKey(params.anthropicKey || "");
+      setGroqKey(params.groqKey || "");
+      setSelectVoice(params.selectVoice || "voicevox");
+      setSelectLanguage(params.selectLanguage || "Japanese");
+      setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
+      setKoeiromapKey(params.koeiromapKey || "");
+      setVoicevoxSpeaker(params.voicevoxSpeaker || "2");
+      setGoogleTtsType(params.googleTtsType || "en-US-Neural2-F");
+      setYoutubeMode(params.youtubeMode || false);
+      setYoutubeApiKey(params.youtubeApiKey || "");
+      setYoutubeLiveId(params.youtubeLiveId || "");
+      changeWebSocketMode(params.webSocketMode || false);
+      setStylebertvits2ServerURL(params.stylebertvits2ServerUrl || "http://127.0.0.1:5000");
+      setStylebertvits2ModelId(params.stylebertvits2ModelId || "0");
+      setStylebertvits2Style(params.stylebertvits2Style || "Neutral");
     }
   }, []);
 
   useEffect(() => {
-    if (window.localStorage.getItem("chatVRMParams")) {
-      const params = JSON.parse(
-        window.localStorage.getItem("chatVRMParams") as string
-      );
-      setSystemPrompt(params.systemPrompt);
-      setKoeiroParam(params.koeiroParam);
-      setChatLog(params.chatLog);
-      setCodeLog(params.codeLog);
-    }
-  }, []);
-
-  useEffect(() => {
+    const params = {
+      systemPrompt,
+      koeiroParam,
+      chatLog,
+      codeLog,
+      selectAIService,
+      selectAIModel,
+      openAiKey,
+      anthropicKey,
+      groqKey,
+      selectVoice,
+      selectLanguage,
+      selectVoiceLanguage,
+      koeiromapKey,
+      voicevoxSpeaker,
+      googleTtsType,
+      youtubeMode,
+      youtubeApiKey,
+      youtubeLiveId,
+      webSocketMode,
+      stylebertvits2ServerUrl,
+      stylebertvits2ModelId,
+      stylebertvits2Style
+    };
     process.nextTick(() =>
       window.localStorage.setItem(
-        "chatVRMParams",
-        JSON.stringify({ systemPrompt, koeiroParam, chatLog, codeLog })
+        "chatVRMParams", JSON.stringify(params)
       )
     );
-  }, [systemPrompt, koeiroParam, chatLog, codeLog]);
+  }, [
+    systemPrompt,
+    koeiroParam,
+    chatLog,
+    codeLog,
+    selectAIService,
+    selectAIModel,
+    openAiKey,
+    anthropicKey,
+    groqKey,
+    selectVoice,
+    selectLanguage,
+    selectVoiceLanguage,
+    koeiromapKey,
+    voicevoxSpeaker,
+    googleTtsType,
+    youtubeMode,
+    youtubeApiKey,
+    youtubeLiveId,
+    webSocketMode,
+    stylebertvits2ServerUrl,
+    stylebertvits2ModelId,
+    stylebertvits2Style
+  ]);
 
   const handleChangeChatLog = useCallback(
     (targetIndex: number, text: string) => {
@@ -234,44 +288,28 @@ export default function Home() {
         ];
         setChatLog(messageLog);
 
-        // Chat GPTへ
         const messages: Message[] = [
           {
             role: "system",
             content: systemPrompt,
           },
-          ...messageLog,
+          ...messageLog.slice(-10),
         ];
 
         let stream;
-        if (selectAIService === "openai") {
-          stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel).catch(
-            (e) => {
-              console.error(e);
-              return null;
-            }
-          );
-        } else if (selectAIService === "anthropic") {
-          stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel).catch(
-            (e) => {
-              console.error(e);
-              return null;
-            }
-          );
-        } else if (selectAIService === "ollama") {
-          stream = await getOllamaChatResponseStream(messages, selectAIModel).catch(
-            (e) => {
-              console.error(e);
-              return null;
-            }
-          );
-        } else if (selectAIService === "groq") {
-          stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel).catch(
-            (e) => {
-              console.error(e);
-              return null;
-            }
-          );
+        try {
+          if (selectAIService === "openai") {
+            stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
+          } else if (selectAIService === "anthropic") {
+            stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
+          } else if (selectAIService === "ollama") {
+            stream = await getOllamaChatResponseStream(messages, selectAIModel);
+          } else if (selectAIService === "groq") {
+            stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
+          }
+        } catch (e) {
+          console.error(e);
+          stream = null;
         }
         if (stream == null) {
           setChatProcessing(false);
