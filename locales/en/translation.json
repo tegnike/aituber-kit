@@ -7,6 +7,7 @@
   "StatusOn": "Status: ON",
   "StatusOff": "Status: OFF",
   "SelectAIService": "Select AI Service",
+  "LocalLLMOllama": "Local LLM (Ollama)",
   "SelectModel": "Select Model",
   "OpenAIAPIKeyLabel": "OpenAI API Key",
   "AnthropicAPIKeyLabel": "Anthropic API Key",

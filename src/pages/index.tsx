@@ -66,6 +66,7 @@ export default function Home() {
       setSelectAIModel(params.selectAIModel || "gpt-3.5-turbo");
       setOpenAiKey(params.openAiKey || "");
       setAnthropicKey(params.anthropicKey || "");
+      setGroqKey(params.groqKey || "");
       setSelectVoice(params.selectVoice || "voicevox");
       setSelectLanguage(params.selectLanguage || "Japanese");
       setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
@@ -76,6 +77,9 @@ export default function Home() {
       setYoutubeApiKey(params.youtubeApiKey || "");
       setYoutubeLiveId(params.youtubeLiveId || "");
       changeWebSocketMode(params.webSocketMode || false);
+      setStylebertvits2ServerURL(params.stylebertvits2ServerUrl || "http://127.0.0.1:5000");
+      setStylebertvits2ModelId(params.stylebertvits2ModelId || "0");
+      setStylebertvits2Style(params.stylebertvits2Style || "Neutral");
     }
   }, []);
 
@@ -89,6 +93,7 @@ export default function Home() {
       selectAIModel,
       openAiKey,
       anthropicKey,
+      groqKey,
       selectVoice,
       selectLanguage,
       selectVoiceLanguage,
@@ -98,7 +103,10 @@ export default function Home() {
       youtubeMode,
       youtubeApiKey,
       youtubeLiveId,
-      webSocketMode
+      webSocketMode,
+      stylebertvits2ServerUrl,
+      stylebertvits2ModelId,
+      stylebertvits2Style
     };
     process.nextTick(() =>
       window.localStorage.setItem(
@@ -114,6 +122,7 @@ export default function Home() {
     selectAIModel,
     openAiKey,
     anthropicKey,
+    groqKey,
     selectVoice,
     selectLanguage,
     selectVoiceLanguage,
@@ -123,8 +132,12 @@ export default function Home() {
     youtubeMode,
     youtubeApiKey,
     youtubeLiveId,
-    webSocketMode
+    webSocketMode,
+    stylebertvits2ServerUrl,
+    stylebertvits2ModelId,
+    stylebertvits2Style
   ]);
+
   const handleChangeChatLog = useCallback(
     (targetIndex: number, text: string) => {
       const newChatLog = chatLog.map((v: Message, i) => {

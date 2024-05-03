@@ -218,8 +218,8 @@ export const Settings = ({
                       >
                         <option value="openai">OpenAI</option>
                         <option value="anthropic">Anthropic</option>
-                        <option value="ollama">ローカルLLM（Ollama）</option>
                         <option value="groq">Groq</option>
+                        <option value="ollama">{t('LocalLLMOllama')}</option>
                       </select>
                       </div>
                     {(() => {

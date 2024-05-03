@@ -7,6 +7,7 @@
   "StatusOn": "狀態：開",
   "StatusOff": "狀態：關",
   "SelectAIService": "選擇 AI 服務",
+  "LocalLLMOllama": "本地 LLM (Ollama)",
   "SelectModel": "選擇模型",
   "OpenAIAPIKeyLabel": "OpenAI API 金鑰",
   "AnthropicAPIKeyLabel": "Anthropic API 金鑰",
