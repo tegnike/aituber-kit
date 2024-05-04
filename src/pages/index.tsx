@@ -68,7 +68,7 @@ export default function Home() {
       setAnthropicKey(params.anthropicKey || "");
       setGroqKey(params.groqKey || "");
       setSelectVoice(params.selectVoice || "voicevox");
-      setSelectLanguage(params.selectLanguage || "Japanese");
+      setSelectLanguage(params.selectLanguage || "JP");
       setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
       setKoeiromapKey(params.koeiromapKey || "");
       setVoicevoxSpeaker(params.voicevoxSpeaker || "2");
