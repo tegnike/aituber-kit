@@ -3,6 +3,10 @@ import { Model } from "./model";
 import { loadVRMAnimation } from "@/lib/VRMAnimation/loadVRMAnimation";
 import { buildUrl } from "@/utils/buildUrl";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { loadMixamoAnimation } from '@/lib/fbxAnimation/loadMixamoAnimation';
+
+
+const defaultAnimationUrl = buildUrl("/idle_loop.vrma");
 
 /**
  * three.jsを使った3Dビューワー
@@ -19,7 +23,15 @@ export class Viewer {
   private _camera?: THREE.PerspectiveCamera;
   private _cameraControls?: OrbitControls;
 
+  private _currentAnimationUrl: string;
+  private _currentAnimationType: string;
+
   constructor() {
+
+    // current animation
+    this._currentAnimationUrl = defaultAnimationUrl;
+    this._currentAnimationType = "vrma";
+
     this.isReady = false;
 
     // scene
@@ -56,8 +68,13 @@ export class Viewer {
 
       this._scene.add(this.model.vrm.scene);
 
-      const vrma = await loadVRMAnimation(buildUrl("/idle_loop.vrma"));
-      if (vrma) this.model.loadAnimation(vrma);
+
+      if (this._currentAnimationUrl && this._currentAnimationType === "vrma") {
+        const vrma = await loadVRMAnimation(this._currentAnimationUrl);
+        if (vrma) this.model.loadAnimation(vrma);
+      } else if (this._currentAnimationUrl && this._currentAnimationType === "fbx") {
+        this.loadFbx(this._currentAnimationUrl);
+      }
 
       // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
       requestAnimationFrame(() => {
@@ -70,6 +87,44 @@ export class Viewer {
     if (this.model?.vrm) {
       this._scene.remove(this.model.vrm.scene);
       this.model?.unLoadVrm();
+    }
+  }
+
+  public async loadVrma(url: string) {
+
+    if (this.model?.vrm) {
+      this._currentAnimationUrl = url;
+      this._currentAnimationType = "vrma";
+
+      const vrma = await loadVRMAnimation(this._currentAnimationUrl);
+      if (vrma) {
+        await this.model.loadAnimation(vrma)
+      }
+
+      requestAnimationFrame(() => {
+        this.resetCamera();
+      });
+    }
+  }
+
+
+  public async loadFbx(url: string) {
+
+    if (this.model?.vrm) {
+      this._currentAnimationUrl = url;
+      this._currentAnimationType = "fbx";
+
+      // Load animation
+      loadMixamoAnimation(this._currentAnimationUrl,
+        this.model.vrm).then((clip: THREE.AnimationClip) => {
+          this.model?.loadFbxAnimation(clip)
+        }).then(() => {
+          requestAnimationFrame(() => {
+            this.resetCamera();
+          });
+        });
+    } else {
+      console.error("No VRM loaded yet, cannot load FBX animation.");
     }
   }
 
