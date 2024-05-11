@@ -286,6 +286,12 @@ export default function Home() {
         } else if (selectAIService === "anthropic" && !anthropicKey) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
+        } else if (selectAIService === "groq" && !groqKey) {
+          setAssistantMessage(t('APIKeyNotEntered'));
+          return;
+        } else if (selectAIService === "dify" && !difyKey) {
+          setAssistantMessage(t('APIKeyNotEntered'));
+          return;
         }
 
         setChatProcessing(true);
@@ -394,7 +400,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, chatLog, systemPrompt, selectAIModel]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, chatLog, systemPrompt, selectAIModel, groqKey, difyKey, difyUrl]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
