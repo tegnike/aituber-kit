@@ -14,7 +14,7 @@ import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
 import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
 import { getOllamaChatResponseStream } from "@/features/chat/ollamaChat";
 import { getGroqChatResponseStream } from "@/features/chat/groqChat";
-import { getGroqChatResponse } from "@/features/chat/groqChat";
+import { getDifyChatResponseStream } from "@/features/chat/difyChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
@@ -32,6 +32,8 @@ export default function Home() {
   const [openAiKey, setOpenAiKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
   const [groqKey, setGroqKey] = useState("");
+  const [difyKey, setDifyKey] = useState("");
+  const [difyUrl, setDifyUrl] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
   const [selectLanguage, setSelectLanguage] = useState("JP");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
@@ -67,6 +69,8 @@ export default function Home() {
       setOpenAiKey(params.openAiKey || "");
       setAnthropicKey(params.anthropicKey || "");
       setGroqKey(params.groqKey || "");
+      setDifyKey(params.difyKey || "");
+      setDifyUrl(params.difyUrl || "");
       setSelectVoice(params.selectVoice || "voicevox");
       setSelectLanguage(params.selectLanguage || "JP");
       setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
@@ -94,6 +98,8 @@ export default function Home() {
       openAiKey,
       anthropicKey,
       groqKey,
+      difyKey,
+      difyUrl,
       selectVoice,
       selectLanguage,
       selectVoiceLanguage,
@@ -123,6 +129,8 @@ export default function Home() {
     openAiKey,
     anthropicKey,
     groqKey,
+    difyKey,
+    difyUrl,
     selectVoice,
     selectLanguage,
     selectVoiceLanguage,
@@ -306,6 +314,8 @@ export default function Home() {
             stream = await getOllamaChatResponseStream(messages, selectAIModel);
           } else if (selectAIService === "groq") {
             stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
+          } else if (selectAIService === "dify") {
+            stream = await getDifyChatResponseStream(messages, difyKey, difyUrl);
           }
         } catch (e) {
           console.error(e);
@@ -483,6 +493,10 @@ export default function Home() {
         onChangeAnthropicKey={setAnthropicKey}
         groqKey={groqKey}
         onChangeGroqKey={setGroqKey}
+        difyKey={difyKey}
+        onChangeDifyKey={setDifyKey}
+        difyUrl={difyUrl}
+        onChangeDifyUrl={setDifyUrl}
         systemPrompt={systemPrompt}
         chatLog={chatLog}
         codeLog={codeLog}
