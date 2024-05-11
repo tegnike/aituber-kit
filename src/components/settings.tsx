@@ -25,6 +25,10 @@ type Props = {
   onChangeAnthropicKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   groqKey: string;
   onChangeGroqKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  difyKey: string;
+  onChangeDifyKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  difyUrl: string;
+  onChangeDifyUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -76,6 +80,10 @@ export const Settings = ({
   onChangeAnthropicKey,
   groqKey,
   onChangeGroqKey,
+  difyKey,
+  onChangeDifyKey,
+  difyUrl,
+  onChangeDifyUrl,
   chatLog,
   systemPrompt,
   koeiroParam,
@@ -124,6 +132,7 @@ export const Settings = ({
     anthropic: 'claude-3-haiku-20240307',
     groq: 'gemma-7b-it',
     ollama: '',
+    dify: '',
   };
 
   return (
@@ -220,6 +229,7 @@ export const Settings = ({
                         <option value="anthropic">Anthropic</option>
                         <option value="groq">Groq</option>
                         <option value="ollama">{t('LocalLLMOllama')}</option>
+                        <option value="dify">Dify</option>
                       </select>
                       </div>
                     {(() => {
@@ -333,36 +343,30 @@ export const Settings = ({
                             />
                           </div>
                         );
-                      } else if (selectAIService === "groq") {
+                      } else if (selectAIService === "dify") {
                         return (
                           <div className="my-24">
-                            <div className="my-16 typography-20 font-bold">{t('GroqAPIKeyLabel')}</div>
+                            <div className="my-16">
+                              {t('DifyInfo')}<br />
+                              {t('DifyInfo2')}
+                            </div>
+                            <div className="my-16 typography-20 font-bold">{t('DifyAPIKeyLabel')}</div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
                               placeholder="..."
-                              value={groqKey}
-                              onChange={onChangeGroqKey}
+                              value={difyKey}
+                              onChange={onChangeDifyKey}
                             />
-                            <div className="my-16">
-                              {t('APIKeyInstruction')}<br />
-                              <Link url="https://console.groq.com/keys" label="Groq Dashboard" />
-                            </div>
-                            <div className="my-16">
-                              {t('GroqInfo')}
-                            </div>
                             <div className="my-24">
-                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
-                              <select
-                                className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                                value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
-                              >
-                                <option value="gemma-7b-it">gemma-7b-it</option>
-                                <option value="llama3-70b-8192">llama3-70b-8192</option>
-                                <option value="llama3-8b-8192">llama3-8b-8192</option>
-                                <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
-                              </select>
+                              <div className="my-16 typography-20 font-bold">{t('EnterURL')}</div>
+                              <input
+                                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                type="text"
+                                placeholder="..."
+                                value={difyUrl}
+                                onChange={onChangeDifyUrl}
+                              />
                             </div>
                           </div>
                         );
@@ -431,6 +435,9 @@ export const Settings = ({
                       <div className="my-16 typography-20 font-bold">
                         {t('CharacterSettingsPrompt')}
                       </div>
+                      {selectAIService === "dify" && (
+                        <div className="my-16">{t('DifyInstruction')}</div>
+                      )}
                       <TextButton onClick={onClickResetSystemPrompt}>
                         {t('CharacterSettingsReset')}
                       </TextButton>

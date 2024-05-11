@@ -21,6 +21,10 @@ type Props = {
   onChangeAnthropicKey: (key: string) => void;
   groqKey: string;
   onChangeGroqKey: (key: string) => void;
+  difyKey: string;
+  onChangeDifyKey: (key: string) => void;
+  difyUrl: string;
+  onChangeDifyUrl: (url: string) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -70,6 +74,10 @@ export const Menu = ({
   onChangeAnthropicKey,
   groqKey,
   onChangeGroqKey,
+  difyKey,
+  onChangeDifyKey,
+  difyUrl,
+  onChangeDifyUrl,
   systemPrompt,
   chatLog,
   codeLog,
@@ -140,6 +148,20 @@ export const Menu = ({
       onChangeGroqKey(event.target.value);
     },
     [onChangeGroqKey]
+  );
+
+  const handleDifyKeyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeDifyKey(event.target.value);
+    },
+    [onChangeDifyKey]
+  );
+
+  const handleDifyUrlChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeDifyUrl(event.target.value);
+    },
+    [onChangeDifyUrl]
   );
 
   const handleChangeKoeiromapKey = useCallback(
@@ -290,6 +312,10 @@ export const Menu = ({
           onChangeAnthropicKey={handleAnthropicKeyChange}
           groqKey={groqKey}
           onChangeGroqKey={handleGroqKeyChange}
+          difyKey={difyKey}
+          onChangeDifyKey={handleDifyKeyChange}
+          difyUrl={difyUrl}
+          onChangeDifyUrl={handleDifyUrlChange}
           chatLog={chatLog}
           codeLog={codeLog}
           systemPrompt={systemPrompt}
