@@ -279,7 +279,7 @@ export default function Home() {
           }
         }
       } else {
-        // ChatVERM original mode
+        // ChatVRM original mode
         if (selectAIService === "openai" && !openAiKey) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
@@ -296,19 +296,42 @@ export default function Home() {
 
         setChatProcessing(true);
         // ユーザーの発言を追加して表示
-        const messageLog: Message[] = [
-          ...chatLog,
-          { role: "user", content: newMessage },
-        ];
-        setChatLog(messageLog);
+        let messages: Message[] = [];
+        if (role !== "assistant") {
+          const messageLog: Message[] = [
+            ...chatLog,
+            { role: "user", content: newMessage },
+          ];
+          setChatLog(messageLog);
 
-        const messages: Message[] = [
-          {
-            role: "system",
-            content: systemPrompt,
-          },
-          ...messageLog.slice(-10),
-        ];
+          messages = [
+            {
+              role: "system",
+              content: systemPrompt,
+            },
+            ...messageLog.slice(-10),
+          ];
+        } else if (chatLog && chatLog.length > 0) {
+          const systemPromptAuto = systemPrompt + "\n\n## 追加設定\n以下はuserとあなたの直前の会話です。\n\n" + chatLog.slice(-10).reduce((acc, message) => {
+            if (message.role === "user") {
+              return acc + `user: ${message.content}\n`;
+            } else if (message.role === "assistant") {
+              return acc + `you: ${message.content}\n`;
+            }
+            return acc;
+          }, "") + "\n\n次の指示に従ってください。\n\n## 指示\n";
+
+          messages = [
+            {
+              role: "system",
+              content: systemPromptAuto,
+            },
+            {
+              role: "user",
+              content: newMessage,
+            },
+          ];
+        }
 
         let stream;
         try {
