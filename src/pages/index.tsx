@@ -297,8 +297,9 @@ export default function Home() {
         setChatProcessing(true);
         // ユーザーの発言を追加して表示
         let messages: Message[] = [];
+        let messageLog: Message[] = [];
         if (role !== "assistant") {
-          const messageLog: Message[] = [
+          messageLog = [
             ...chatLog,
             { role: "user", content: newMessage },
           ];
