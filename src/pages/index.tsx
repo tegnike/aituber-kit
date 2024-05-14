@@ -313,6 +313,7 @@ export default function Home() {
             ...messageLog.slice(-10),
           ];
         } else if (chatLog && chatLog.length > 0) {
+          messageLog = chatLog;
           const systemPromptAuto = systemPrompt + "\n\n## 追加設定\n以下はuserとあなたの直前の会話です。\n\n" + chatLog.slice(-10).reduce((acc, message) => {
             if (message.role === "user") {
               return acc + `user: ${message.content}\n`;
