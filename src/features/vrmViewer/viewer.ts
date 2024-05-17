@@ -56,8 +56,8 @@ export class Viewer {
 
       this._scene.add(this.model.vrm.scene);
 
-      const vrma = await loadVRMAnimation(buildUrl("/idle_loop.vrma"));
-      if (vrma) this.model.loadAnimation(vrma);
+      // const vrma = await loadVRMAnimation(buildUrl("/idle_loop.vrma"));
+      // if (vrma) this.model.loadAnimation(vrma);
 
       // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
       requestAnimationFrame(() => {
@@ -149,16 +149,49 @@ export class Viewer {
     }
   }
 
+  private _breathingAmplitude: number = 0.005; // 呼吸の振幅（大きさ）
+  private _breathingFrequency: number = 0.2; // 呼吸の周波数（速さ）
+  private _breathingTime: number = 0; // 呼吸のタイマー
+
   public update = () => {
     requestAnimationFrame(this.update);
     const delta = this._clock.getDelta();
-    // update vrm components
+
+    // VRMコンポーネントを更新
     if (this.model) {
       this.model.update(delta);
+      this.updateBreathing(delta); // 呼吸運動を更新
+      this.lowerArms(); // 腕を下げる
     }
 
     if (this._renderer && this._camera) {
       this._renderer.render(this._scene, this._camera);
     }
   };
+
+  private lowerArms() {
+    if (!this.model?.vrm) return;
+
+    const rightArm = this.model.vrm.humanoid.getRawBoneNode('rightUpperArm');
+    const leftArm = this.model.vrm.humanoid.getRawBoneNode('leftUpperArm');
+
+    if (rightArm) rightArm.rotation.z = Math.PI / 3;
+    if (leftArm) leftArm.rotation.z = -Math.PI / 3;
+  }
+
+  private updateBreathing(delta: number) {
+    if (!this.model?.vrm) return;
+
+    const chest = this.model.vrm.humanoid.getRawBoneNode('chest');
+    const spine = this.model.vrm.humanoid.getRawBoneNode('spine');
+    const upperChest = this.model.vrm.humanoid.getRawBoneNode('upperChest');
+
+    if (chest && spine && upperChest) {
+      this._breathingTime += delta;
+      const swayAngle = Math.sin(this._breathingTime * Math.PI * 2 * this._breathingFrequency) * this._breathingAmplitude;
+      chest.rotation.z = swayAngle;
+      spine.rotation.z = swayAngle;
+      upperChest.rotation.z = swayAngle;
+    }
+  }
 }
