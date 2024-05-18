@@ -101,9 +101,10 @@ export class Viewer {
         await this.model.loadAnimation(vrma)
       }
 
-      requestAnimationFrame(() => {
-        this.resetCamera();
-      });
+
+      // requestAnimationFrame(() => {
+      //   this.resetCamera();
+      // });
     }
   }
 
@@ -119,9 +120,9 @@ export class Viewer {
         this.model.vrm).then((clip: THREE.AnimationClip) => {
           this.model?.loadFbxAnimation(clip)
         }).then(() => {
-          requestAnimationFrame(() => {
-            this.resetCamera();
-          });
+          // requestAnimationFrame(() => {
+          //   this.resetCamera();
+          // });
         });
     } else {
       console.error("No VRM loaded yet, cannot load FBX animation.");
