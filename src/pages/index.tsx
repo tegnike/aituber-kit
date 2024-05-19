@@ -58,6 +58,7 @@ export default function Home() {
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
   const [backgroundImageUrl, setBackgroundImageUrl] = useState("/bg-c.png");
+  const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
 
   useEffect(() => {
     const storedData = window.localStorage.getItem("chatVRMParams");
@@ -87,6 +88,7 @@ export default function Home() {
       setStylebertvits2ServerURL(params.stylebertvits2ServerUrl || "http://127.0.0.1:5000");
       setStylebertvits2ModelId(params.stylebertvits2ModelId || "0");
       setStylebertvits2Style(params.stylebertvits2Style || "Neutral");
+      setDontShowIntroduction(params.dontShowIntroduction || false);
     }
   }, []);
 
@@ -115,7 +117,8 @@ export default function Home() {
       webSocketMode,
       stylebertvits2ServerUrl,
       stylebertvits2ModelId,
-      stylebertvits2Style
+      stylebertvits2Style,
+      dontShowIntroduction
     };
     process.nextTick(() =>
       window.localStorage.setItem(
@@ -146,7 +149,8 @@ export default function Home() {
     webSocketMode,
     stylebertvits2ServerUrl,
     stylebertvits2ModelId,
-    stylebertvits2Style
+    stylebertvits2Style,
+    dontShowIntroduction
   ]);
 
   const handleChangeChatLog = useCallback(
@@ -480,12 +484,12 @@ export default function Home() {
     <>
       <div className={"font-M_PLUS_2"} style={{ backgroundImage: `url(${buildUrl(backgroundImageUrl)})`, backgroundSize: 'cover', minHeight: '100vh' }}>
         <Meta />
-        <Introduction
-          openAiKey={openAiKey}
-          koeiroMapKey={koeiromapKey}
-          onChangeAiKey={setOpenAiKey}
-          onChangeKoeiromapKey={setKoeiromapKey}
-        />
+        {!dontShowIntroduction && (
+          <Introduction
+            dontShowIntroduction={dontShowIntroduction}
+            onChangeDontShowIntroduction={setDontShowIntroduction}
+          />
+        )}
         <VrmViewer />
         <MessageInputContainer
           isChatProcessing={chatProcessing}
