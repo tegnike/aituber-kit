@@ -48,6 +48,7 @@ type Props = {
   onChangeCodeLog: (index: number, text: string) => void;
   onChangeKoeiroParam: (x: number, y: number) => void;
   onClickOpenVrmFile: () => void;
+  onClickOpenBgFile: () => void;
   onClickResetChatLog: () => void;
   onClickResetCodeLog: () => void;
   onClickResetSystemPrompt: () => void;
@@ -102,6 +103,7 @@ export const Settings = ({
   onChangeCodeLog,
   onChangeKoeiroParam,
   onClickOpenVrmFile,
+  onClickOpenBgFile,
   onClickResetChatLog,
   onClickResetCodeLog,
   onClickResetSystemPrompt,
@@ -425,6 +427,14 @@ export const Settings = ({
             </div>
             <div className="my-8">
               <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
+            </div>
+          </div>
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">
+              {t('BackgroundImage')}
+            </div>
+            <div className="my-8">
+              <TextButton onClick={onClickOpenBgFile}>{t('ChangeBackgroundImage')}</TextButton>
             </div>
           </div>
           {(() => {

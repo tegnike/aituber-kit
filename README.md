@@ -1,5 +1,6 @@
 # 誰でもAITuberお試しキット
 [English version](./en_README.md)
+[Chinese version](./zh_README.md)
 
 ## 概要
 
@@ -12,7 +13,6 @@
 下記の記事に詳細な使用方法を記載しました。
 
 [![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/nike-ChatVRM/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
-
 
 ### 共通事前準備
 
@@ -43,6 +43,7 @@ npm run dev
    - Anthropic
    - Groq
    - Ollama（APIキーは不要ですが、ローカルAPIサーバーを起動しておく必要があります。）
+   - Dify Chatbot（APIキーは不要ですが、ローカルAPIサーバーを起動しておく必要があります。）
 2. 必要に応じてキャラクターの設定プロンプトを編集します。
 3. 必要に応じてVRMファイルを読み込みます。
 4. 音声合成エンジンを選択し、必要に応じて声の設定を行います。
@@ -82,8 +83,16 @@ npm run dev
 - 私が作成したサーバーアプリのリポジトリで試すことが可能です。[tegnike/nike-open-interpreter](https://github.com/tegnike/nike-open-interpreter)
 - 詳しい設定は「[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)」を読んでください。
 
+## TIPS
+
+### VRMモデル、背景固定方法
+
+- VRMモデルは `public/AvatarSample_B.vrm` のデータを変更してください。名称は変更しないでください。
+- 背景画像は `public/bg-c.jpg` の画像を変更してください。名称は変更しないでください。
+
 ## その他
 
-1. ライセンスは[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)に準拠します。
-2. 言語設定は日本語と英語に対応しています。設定画面で切り替えが可能です。
-3. 会話履歴は設定画面でリセットすることができます。
+- ライセンスは[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)に準拠します。
+- 言語設定は日本語、英語、中国語（繁体字）に対応しています。設定画面で切り替えが可能です。
+- 会話履歴は設定画面でリセットすることができます。
+- 各種設定項目はブラウザに保存されます。

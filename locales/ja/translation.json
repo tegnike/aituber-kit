@@ -25,6 +25,8 @@
   "EnterURL": "URLを入力",
   "CharacterModelLabel": "キャラクターモデル",
   "OpenVRM": "VRMを開く",
+  "BackgroundImage": "背景画像",
+  "ChangeBackgroundImage": "背景画像を変える",
   "CharacterSettingsPrompt": "キャラクター設定（システムプロンプト）",
   "CharacterSettingsReset": "キャラクター設定リセット",
   "SyntheticVoiceEngineChoice": "合成音声エンジンの選択",
