@@ -22,6 +22,7 @@ import { Meta } from "@/components/meta";
 import "@/lib/i18n";
 import { useTranslation } from 'react-i18next';
 import { fetchAndProcessComments } from "@/features/youtube/youtubeComments";
+import { buildUrl } from "@/utils/buildUrl";
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
@@ -55,6 +56,7 @@ export default function Home() {
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState("/bg-c.png");
 
   useEffect(() => {
     const storedData = window.localStorage.getItem("chatVRMParams");
@@ -474,74 +476,77 @@ export default function Home() {
   }, [youtubeLiveId, youtubeApiKey, handleSendChat]);
 
   return (
-    <div className={"font-M_PLUS_2"}>
-      <Meta />
-      <Introduction
-        openAiKey={openAiKey}
-        koeiroMapKey={koeiromapKey}
-        onChangeAiKey={setOpenAiKey}
-        onChangeKoeiromapKey={setKoeiromapKey}
-      />
-      <VrmViewer />
-      <MessageInputContainer
-        isChatProcessing={chatProcessing}
-        onChatProcessStart={handleSendChat}
-        selectVoiceLanguage={selectVoiceLanguage}
-      />
-      <Menu
-        selectAIService={selectAIService}
-        setSelectAIService={setSelectAIService}
-        selectAIModel={selectAIModel}
-        setSelectAIModel={setSelectAIModel}
-        openAiKey={openAiKey}
-        onChangeOpenAiKey={setOpenAiKey}
-        anthropicKey={anthropicKey}
-        onChangeAnthropicKey={setAnthropicKey}
-        groqKey={groqKey}
-        onChangeGroqKey={setGroqKey}
-        difyKey={difyKey}
-        onChangeDifyKey={setDifyKey}
-        difyUrl={difyUrl}
-        onChangeDifyUrl={setDifyUrl}
-        systemPrompt={systemPrompt}
-        chatLog={chatLog}
-        codeLog={codeLog}
-        koeiroParam={koeiroParam}
-        assistantMessage={assistantMessage}
-        koeiromapKey={koeiromapKey}
-        voicevoxSpeaker={voicevoxSpeaker}
-        googleTtsType={googleTtsType}
-        stylebertvits2ServerUrl={stylebertvits2ServerUrl}
-        stylebertvits2ModelId={stylebertvits2ModelId}
-        stylebertvits2Style={stylebertvits2Style}
-        youtubeMode={youtubeMode}
-        youtubeApiKey={youtubeApiKey}
-        youtubeLiveId={youtubeLiveId}
-        onChangeSystemPrompt={setSystemPrompt}
-        onChangeChatLog={handleChangeChatLog}
-        onChangeCodeLog={handleChangeCodeLog}
-        onChangeKoeiromapParam={setKoeiroParam}
-        onChangeYoutubeMode={setYoutubeMode}
-        onChangeYoutubeApiKey={setYoutubeApiKey}
-        onChangeYoutubeLiveId={setYoutubeLiveId}
-        handleClickResetChatLog={() => setChatLog([])}
-        handleClickResetCodeLog={() => setCodeLog([])}
-        handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
-        onChangeKoeiromapKey={setKoeiromapKey}
-        onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
-        onChangeGoogleTtsType={setGoogleTtsType}
-        onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
-        onChangeStyleBertVits2ModelId={setStylebertvits2ModelId}
-        onChangeStyleBertVits2Style={setStylebertvits2Style}
-        webSocketMode={webSocketMode}
-        changeWebSocketMode={changeWebSocketMode}
-        selectVoice={selectVoice}
-        setSelectVoice={setSelectVoice}
-        selectLanguage={selectLanguage}
-        setSelectLanguage={setSelectLanguage}
-        setSelectVoiceLanguage={setSelectVoiceLanguage}
-      />
-      <GitHubLink />
-    </div>
+    <>
+      <div className={"font-M_PLUS_2"} style={{ backgroundImage: `url(${buildUrl(backgroundImageUrl)})`, backgroundSize: 'cover', minHeight: '100vh' }}>
+        <Meta />
+        <Introduction
+          openAiKey={openAiKey}
+          koeiroMapKey={koeiromapKey}
+          onChangeAiKey={setOpenAiKey}
+          onChangeKoeiromapKey={setKoeiromapKey}
+        />
+        <VrmViewer />
+        <MessageInputContainer
+          isChatProcessing={chatProcessing}
+          onChatProcessStart={handleSendChat}
+          selectVoiceLanguage={selectVoiceLanguage}
+        />
+        <Menu
+          selectAIService={selectAIService}
+          setSelectAIService={setSelectAIService}
+          selectAIModel={selectAIModel}
+          setSelectAIModel={setSelectAIModel}
+          openAiKey={openAiKey}
+          onChangeOpenAiKey={setOpenAiKey}
+          anthropicKey={anthropicKey}
+          onChangeAnthropicKey={setAnthropicKey}
+          groqKey={groqKey}
+          onChangeGroqKey={setGroqKey}
+          difyKey={difyKey}
+          onChangeDifyKey={setDifyKey}
+          difyUrl={difyUrl}
+          onChangeDifyUrl={setDifyUrl}
+          systemPrompt={systemPrompt}
+          chatLog={chatLog}
+          codeLog={codeLog}
+          koeiroParam={koeiroParam}
+          assistantMessage={assistantMessage}
+          koeiromapKey={koeiromapKey}
+          voicevoxSpeaker={voicevoxSpeaker}
+          googleTtsType={googleTtsType}
+          stylebertvits2ServerUrl={stylebertvits2ServerUrl}
+          stylebertvits2ModelId={stylebertvits2ModelId}
+          stylebertvits2Style={stylebertvits2Style}
+          youtubeMode={youtubeMode}
+          youtubeApiKey={youtubeApiKey}
+          youtubeLiveId={youtubeLiveId}
+          onChangeSystemPrompt={setSystemPrompt}
+          onChangeChatLog={handleChangeChatLog}
+          onChangeCodeLog={handleChangeCodeLog}
+          onChangeKoeiromapParam={setKoeiroParam}
+          onChangeYoutubeMode={setYoutubeMode}
+          onChangeYoutubeApiKey={setYoutubeApiKey}
+          onChangeYoutubeLiveId={setYoutubeLiveId}
+          handleClickResetChatLog={() => setChatLog([])}
+          handleClickResetCodeLog={() => setCodeLog([])}
+          handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
+          onChangeKoeiromapKey={setKoeiromapKey}
+          onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
+          onChangeGoogleTtsType={setGoogleTtsType}
+          onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
+          onChangeStyleBertVits2ModelId={setStylebertvits2ModelId}
+          onChangeStyleBertVits2Style={setStylebertvits2Style}
+          webSocketMode={webSocketMode}
+          changeWebSocketMode={changeWebSocketMode}
+          selectVoice={selectVoice}
+          setSelectVoice={setSelectVoice}
+          selectLanguage={selectLanguage}
+          setSelectLanguage={setSelectLanguage}
+          setSelectVoiceLanguage={setSelectVoiceLanguage}
+          setBackgroundImageUrl={setBackgroundImageUrl}
+        />
+        <GitHubLink />
+      </div>
+    </>
   );
 }

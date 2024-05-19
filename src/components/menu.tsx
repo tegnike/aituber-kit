@@ -9,6 +9,7 @@ import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 import { AssistantText } from "./assistantText";
 import { useTranslation } from 'react-i18next';
 import { testVoice } from "@/features/messages/speakCharacter";
+import { useBackground } from '@/lib/backgroundContext';
 
 type Props = {
   selectAIService: string;
@@ -62,6 +63,7 @@ type Props = {
   selectLanguage: string;
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
+  setBackgroundImageUrl: (url: string) => void;
 };
 export const Menu = ({
   selectAIService,
@@ -115,11 +117,13 @@ export const Menu = ({
   selectLanguage,
   setSelectLanguage,
   setSelectVoiceLanguage,
+  setBackgroundImageUrl
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
   const { viewer } = useContext(ViewerContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bgFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
 
   const handleChangeSystemPrompt = useCallback(
@@ -239,8 +243,13 @@ export const Menu = ({
     },
     [changeWebSocketMode, webSocketMode, onChangeYoutubeMode]
   );
+
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
+  }, []);
+
+  const handleClickOpenBgFile = useCallback(() => {
+    bgFileInputRef.current?.click();
   }, []);
 
   const handleClickTestVoice = (speaker: string) => {
@@ -266,6 +275,17 @@ export const Menu = ({
       event.target.value = "";
     },
     [viewer]
+  );
+
+  const handleChangeBgFile = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setBackgroundImageUrl(imageUrl);
+      }
+    },
+    [setBackgroundImageUrl]
   );
 
   return (
@@ -335,6 +355,7 @@ export const Menu = ({
           onChangeCodeLog={onChangeCodeLog}
           onChangeKoeiroParam={handleChangeKoeiroParam}
           onClickOpenVrmFile={handleClickOpenVrmFile}
+          onClickOpenBgFile={handleClickOpenBgFile}
           onClickResetChatLog={handleClickResetChatLog}
           onClickResetCodeLog={handleClickResetCodeLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
@@ -366,6 +387,13 @@ export const Menu = ({
         accept=".vrm"
         ref={fileInputRef}
         onChange={handleChangeVrmFile}
+      />
+      <input
+        type="file"
+        className="hidden"
+        accept="image/*"
+        ref={bgFileInputRef}
+        onChange={handleChangeBgFile}
       />
     </>
   );

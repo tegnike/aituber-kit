@@ -25,6 +25,8 @@
   "EnterURL": "URL",
   "CharacterModelLabel": "Character Model",
   "OpenVRM": "Open VRM",
+  "BackgroundImage": "Background Image",
+  "ChangeBackgroundImage": "Change Background Image",
   "CharacterSettingsPrompt": "Character Settings (System Prompt)",
   "CharacterSettingsReset": "Reset Character Settings",
   "SyntheticVoiceEngineChoice": "Choose Synthetic Voice Engine",
