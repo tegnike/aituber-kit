@@ -3,31 +3,20 @@ import { Link } from "./link";
 import { IconButton } from "./iconButton";
 
 type Props = {
-  openAiKey: string;
-  koeiroMapKey: string;
-  onChangeAiKey: (openAiKey: string) => void;
-  onChangeKoeiromapKey: (koeiromapKey: string) => void;
+  dontShowIntroduction: boolean;
+  onChangeDontShowIntroduction: (dontShowIntroduction: boolean) => void;
 };
 export const Introduction = ({
-  openAiKey,
-  koeiroMapKey,
-  onChangeAiKey,
-  onChangeKoeiromapKey,
+  dontShowIntroduction,
+  onChangeDontShowIntroduction
 }: Props) => {
   const [opened, setOpened] = useState(true);
 
-  const handleAiKeyChange = useCallback(
+  const handleDontShowIntroductionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeAiKey(event.target.value);
+      onChangeDontShowIntroduction(event.target.checked);
     },
-    [onChangeAiKey]
-  );
-
-  const handleKoeiromapKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeKoeiromapKey(event.target.value);
-    },
-    [onChangeKoeiromapKey]
+    [onChangeDontShowIntroduction]
   );
 
   return opened ? (
@@ -62,6 +51,16 @@ export const Introduction = ({
             技術紹介
           </div>
           <div>
+            このアプリはpixiv社の<b>ChatVRM</b>を改造して作成されています。元のソースコードは
+            <Link
+              url={
+                "https://github.com/pixiv/ChatVRM"
+              }
+              label={"こちら"}
+            />
+            をご覧ください。
+          </div>
+          <div className="my-16">
             3Dモデルの表示や操作には
             <Link
               url={"https://github.com/pixiv/three-vrm"}
@@ -72,28 +71,21 @@ export const Introduction = ({
               url={
                 "https://openai.com/blog/introducing-chatgpt-and-whisper-apis"
               }
-              label={"ChatGPT API"}
+              label={"OpenAI API"}
             />
-            、 音声合成には
-            <Link url={"https://koemotion.rinna.co.jp/"} label={"Koemotion"} />
-            の
+            などの各種LLM、 音声合成には
+            <Link url={"https://developers.rinna.co.jp/product/#product=koeiromap-free"} label={"Koemotion"} />
+            などの各種TTSを使用しています。 詳細はこちらの
             <Link
-              url={
-                "https://developers.rinna.co.jp/product/#product=koeiromap-free"
-              }
-              label={"Koeiromap API"}
-            />
-            を使用しています。 詳細はこちらの
-            <Link
-              url={"https://inside.pixiv.blog/2023/04/28/160000"}
-              label={"技術解説記事"}
+              url={"https://note.com/nike_cha_n/n/ne98acb25e00f"}
+              label={"解説記事"}
             />
             をご覧ください。
           </div>
           <div className="my-16">
-            このデモはGitHubでソースコードを公開しています。自由に変更や改変をお試しください！
+            このアプリのソースコードはGitHubで公開しています。自由に変更や改変可能です。
             <br />
-            リポジトリ：
+            リポジトリURL:<span> </span>
             <Link
               url={"https://github.com/tegnike/nike-ChatVRM"}
               label={"https://github.com/tegnike/nike-ChatVRM"}
@@ -101,60 +93,19 @@ export const Introduction = ({
           </div>
         </div>
 
+        {/* dontShowIntroductionのチェックボックスを表示 */}
         <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            利用上の注意
-          </div>
-          <div>
-            差別的または暴力的な発言、特定の人物を貶めるような発言を、意図的に誘導しないでください。また、VRMモデルを使ってキャラクターを差し替える際はモデルの利用条件に従ってください。
-          </div>
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={dontShowIntroduction}
+              onChange={handleDontShowIntroductionChange}
+              className="mr-8"
+            />
+            <span>次回からこのダイアログを表示しない（Do not show this dialog next time）</span>
+          </label>
         </div>
 
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            Koeiromap APIキー
-          </div>
-          <input
-            type="text"
-            placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            value={koeiroMapKey}
-            onChange={handleKoeiromapKeyChange}
-            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-          ></input>
-          <div>
-            APIキーはrinna Developersから発行してください。
-            <Link
-              url="https://developers.rinna.co.jp/product/#product=koeiromap-free"
-              label="詳細はこちら"
-            />
-          </div>
-        </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            OpenAI APIキー
-          </div>
-          <input
-            type="text"
-            placeholder="sk-..."
-            value={openAiKey}
-            onChange={handleAiKeyChange}
-            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-          ></input>
-          <div>
-            APIキーは
-            <Link
-              url="https://platform.openai.com/account/api-keys"
-              label="OpenAIのサイト"
-            />
-            で取得できます。取得したAPIキーをフォームに入力してください。
-          </div>
-          <div className="my-16">
-            ChatGPT
-            APIはブラウザから直接アクセスしています。また、APIキーや会話内容はピクシブのサーバには保存されません。
-            <br />
-            ※利用しているモデルはChatGPT API (GPT-3.5)です。
-          </div>
-        </div>
         <div className="my-24">
           <button
             onClick={() => {
