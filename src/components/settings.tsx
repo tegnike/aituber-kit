@@ -25,6 +25,8 @@ type Props = {
   onChangeAnthropicKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   groqKey: string;
   onChangeGroqKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  localLlmUrl: string;
+  onChangeLocalLlmUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
   difyKey: string;
   onChangeDifyKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   difyUrl: string;
@@ -81,6 +83,8 @@ export const Settings = ({
   onChangeAnthropicKey,
   groqKey,
   onChangeGroqKey,
+  localLlmUrl,
+  onChangeLocalLlmUrl,
   difyKey,
   onChangeDifyKey,
   difyUrl,
@@ -128,12 +132,12 @@ export const Settings = ({
   const { t } = useTranslation();
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
-  // ollamaが選択された場合、AIモデルを空文字に設定
+  // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
     openai: 'gpt-3.5-turbo',
     anthropic: 'claude-3-haiku-20240307',
     groq: 'gemma-7b-it',
-    ollama: '',
+    localLlm: '',
     dify: '',
   };
 
@@ -230,7 +234,7 @@ export const Settings = ({
                         <option value="openai">OpenAI</option>
                         <option value="anthropic">Anthropic</option>
                         <option value="groq">Groq</option>
-                        <option value="ollama">{t('LocalLLMOllama')}</option>
+                        <option value="localLlm">{t('LocalLLM')}</option>
                         <option value="dify">Dify</option>
                       </select>
                       </div>
@@ -326,16 +330,25 @@ export const Settings = ({
                             </div>
                           </div>
                         );
-                      } else if (selectAIService === "ollama") {
+                      } else if (selectAIService === "localLlm") {
                         return (
                           <div className="my-24">
                             <div className="my-16">
-                              {t('OllamaInfo')}<br />
-                              <Link url="https://note.com/schroneko/n/n8b1a5bbc740b" label="https://note.com/schroneko/n/n8b1a5bbc740b" />
+                              {t('LocalLLMInfo')}<br />
+                              ex. Ollama: <Link url="https://note.com/schroneko/n/n8b1a5bbc740b" label="https://note.com/schroneko/n/n8b1a5bbc740b" />
                             </div>
                             <div className="my-16">
-                              {t('OllamaInfo2')}
+                              {t('LocalLLMInfo2')}<br />
+                              ex. Ollama: http://localhost:11434/v1/chat/completions
                             </div>
+                            <div className="my-16 typography-20 font-bold">{t('EnterURL')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={localLlmUrl}
+                              onChange={onChangeLocalLlmUrl}
+                            />
                             <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
