@@ -12,7 +12,7 @@ import { SYSTEM_PROMPT } from "@/features/constants/systemPromptConstants";
 import { KoeiroParam, DEFAULT_PARAM } from "@/features/constants/koeiroParam";
 import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
 import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
-import { getOllamaChatResponseStream } from "@/features/chat/ollamaChat";
+import { getLocalLLMChatResponseStream } from "@/features/chat/localLLMChat";
 import { getGroqChatResponseStream } from "@/features/chat/groqChat";
 import { getDifyChatResponseStream } from "@/features/chat/difyChat";
 import { Introduction } from "@/components/introduction";
@@ -33,6 +33,7 @@ export default function Home() {
   const [openAiKey, setOpenAiKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
   const [groqKey, setGroqKey] = useState("");
+  const [localLlmUrl, setLocalLlmUrl] = useState("");
   const [difyKey, setDifyKey] = useState("");
   const [difyUrl, setDifyUrl] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
@@ -318,8 +319,8 @@ export default function Home() {
             stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
           } else if (selectAIService === "anthropic") {
             stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
-          } else if (selectAIService === "ollama") {
-            stream = await getOllamaChatResponseStream(messages, selectAIModel);
+          } else if (selectAIService === "localLlm") {
+            stream = await getLocalLLMChatResponseStream(messages, localLlmUrl, selectAIModel);
           } else if (selectAIService === "groq") {
             stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
           } else if (selectAIService === "dify") {
@@ -502,6 +503,8 @@ export default function Home() {
           onChangeAnthropicKey={setAnthropicKey}
           groqKey={groqKey}
           onChangeGroqKey={setGroqKey}
+          localLlmUrl={localLlmUrl}
+          onChangeLocalLlmUrl={setLocalLlmUrl}
           difyKey={difyKey}
           onChangeDifyKey={setDifyKey}
           difyUrl={difyUrl}

@@ -42,7 +42,7 @@ npm run dev
    - OpenAI
    - Anthropic
    - Groq
-   - Ollama（不需要API密鑰，但需要運行本地API服務器。）
+   - Local LLM（不需要API密鑰，但需要運行本地API服務器。）
    - Dify Chatbot（不需要API密鑰，但需要運行本地API服務器。）
 2. 如有必要，編輯角色的設置提示。
 3. 如有必要，加載VRM文件。

@@ -9,7 +9,6 @@ import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 import { AssistantText } from "./assistantText";
 import { useTranslation } from 'react-i18next';
 import { testVoice } from "@/features/messages/speakCharacter";
-import { useBackground } from '@/lib/backgroundContext';
 
 type Props = {
   selectAIService: string;
@@ -22,6 +21,8 @@ type Props = {
   onChangeAnthropicKey: (key: string) => void;
   groqKey: string;
   onChangeGroqKey: (key: string) => void;
+  localLlmUrl: string;
+  onChangeLocalLlmUrl: (url: string) => void;
   difyKey: string;
   onChangeDifyKey: (key: string) => void;
   difyUrl: string;
@@ -76,6 +77,8 @@ export const Menu = ({
   onChangeAnthropicKey,
   groqKey,
   onChangeGroqKey,
+  localLlmUrl,
+  onChangeLocalLlmUrl,
   difyKey,
   onChangeDifyKey,
   difyUrl,
@@ -152,6 +155,13 @@ export const Menu = ({
       onChangeGroqKey(event.target.value);
     },
     [onChangeGroqKey]
+  );
+
+  const handleChangeLocalLlmUrl = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeLocalLlmUrl(event.target.value);
+    },
+    [onChangeLocalLlmUrl]
   );
 
   const handleDifyKeyChange = useCallback(
@@ -334,6 +344,8 @@ export const Menu = ({
           onChangeGroqKey={handleGroqKeyChange}
           difyKey={difyKey}
           onChangeDifyKey={handleDifyKeyChange}
+          localLlmUrl={localLlmUrl}
+          onChangeLocalLlmUrl={handleChangeLocalLlmUrl}
           difyUrl={difyUrl}
           onChangeDifyUrl={handleDifyUrlChange}
           chatLog={chatLog}

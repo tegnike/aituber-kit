@@ -42,7 +42,7 @@ npm run dev
    - OpenAI
    - Anthropic
    - Groq
-   - Ollama (No API key is required, but a local API server needs to be running.)
+   - Local LLM (No API key is required, but a local API server needs to be running.)
    - Dify Chatbot (No API key is required, but a local API server needs to be running.)
 2. Edit the character's setting prompt if necessary.
 3. Load a VRM file if needed.
