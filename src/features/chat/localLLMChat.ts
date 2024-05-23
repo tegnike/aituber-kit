@@ -1,17 +1,17 @@
 import axios from 'axios';
 import { Message } from '../messages/messages';
 
-export async function getOllamaChatResponseStream(
+export async function getLocalLLMChatResponseStream(
   messages: Message[],
-  model: string
+  localLlmUrl: string,
+  model?: string
 ) {
   const response = await axios.post(
-    'http://localhost:11434/v1/chat/completions',
+    localLlmUrl,
     {
       model: model,
       messages: messages,
       stream: true,
-      max_tokens: 200,
     },
     {
       responseType: 'stream',
@@ -23,7 +23,6 @@ export async function getOllamaChatResponseStream(
   const res = new ReadableStream({
     async start(controller: ReadableStreamDefaultController) {
       let accumulatedChunks = '';
-      let accumulatedContent = '';
       try {
         for await (const chunk of stream) {
           accumulatedChunks += chunk;

@@ -1,5 +1,6 @@
 # AITuber Trial Kit for Everyone
 [Japanese version](./README.md)
+[Chinese version](./zh_README.md)
 
 ## Overview
 
@@ -41,7 +42,8 @@ npm run dev
    - OpenAI
    - Anthropic
    - Groq
-   - Ollama (No API key is required, but a local API server needs to be running.)
+   - Local LLM (No API key is required, but a local API server needs to be running.)
+   - Dify Chatbot (No API key is required, but a local API server needs to be running.)
 2. Edit the character's setting prompt if necessary.
 3. Load a VRM file if needed.
 4. Select a speech synthesis engine and configure voice settings if necessary.
@@ -72,7 +74,7 @@ npm run dev
 ### Usage
 
 1. Start the server app and open the `ws://127.0.0.1:8000/ws` endpoint.
-2. Turn on WebSocket mode in the settings screen. 
+2. Turn on WebSocket mode in the settings screen.
 3. Configure other settings the same way as "Conversation with AI Character".
 7. Wait for messages from the server app and confirm that the character reacts.
 
@@ -81,8 +83,16 @@ npm run dev
 - You can try it with the server app repository I created. [tegnike/nike-open-interpreter](https://github.com/tegnike/nike-open-interpreter)
 - For detailed settings, please read "[Let's develop with a beautiful girl!! [Open Interpreter]](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)".
 
+## TIPS
+
+### VRM Model and Background Fixing Method
+
+- Change the VRM model data at `public/AvatarSample_B.vrm`. Do not change the name.
+- Change the background image at `public/bg-c.jpg`. Do not change the name.
+
 ## Other
 
-1. The license adheres to [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM).
-2. Language settings support Japanese and English. You can switch in the settings screen.
-3. Conversation history can be reset in the settings screen.
+- The license adheres to [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM).
+- Language settings support Japanese, English, and Traditional Chinese. You can switch in the settings screen.
+- Conversation history can be reset in the settings screen.
+- Various settings are stored in the browser.

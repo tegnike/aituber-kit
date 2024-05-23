@@ -12,7 +12,8 @@ import { SYSTEM_PROMPT } from "@/features/constants/systemPromptConstants";
 import { KoeiroParam, DEFAULT_PARAM } from "@/features/constants/koeiroParam";
 import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
 import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
-import { getOllamaChatResponseStream } from "@/features/chat/ollamaChat";
+import { getGoogleChatResponseStream } from "@/features/chat/googleChat";
+import { getLocalLLMChatResponseStream } from "@/features/chat/localLLMChat";
 import { getGroqChatResponseStream } from "@/features/chat/groqChat";
 import { getDifyChatResponseStream } from "@/features/chat/difyChat";
 import { Introduction } from "@/components/introduction";
@@ -22,6 +23,7 @@ import { Meta } from "@/components/meta";
 import "@/lib/i18n";
 import { useTranslation } from 'react-i18next';
 import { fetchAndProcessComments } from "@/features/youtube/youtubeComments";
+import { buildUrl } from "@/utils/buildUrl";
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
@@ -31,7 +33,9 @@ export default function Home() {
   const [selectAIModel, setSelectAIModel] = useState("gpt-3.5-turbo");
   const [openAiKey, setOpenAiKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
+  const [googleKey, setGoogleKey] = useState("");
   const [groqKey, setGroqKey] = useState("");
+  const [localLlmUrl, setLocalLlmUrl] = useState("");
   const [difyKey, setDifyKey] = useState("");
   const [difyUrl, setDifyUrl] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
@@ -55,6 +59,8 @@ export default function Home() {
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState("/bg-c.png");
+  const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
 
   useEffect(() => {
     const storedData = window.localStorage.getItem("chatVRMParams");
@@ -68,6 +74,7 @@ export default function Home() {
       setSelectAIModel(params.selectAIModel || "gpt-3.5-turbo");
       setOpenAiKey(params.openAiKey || "");
       setAnthropicKey(params.anthropicKey || "");
+      setGoogleKey(params.googleKey || "");
       setGroqKey(params.groqKey || "");
       setDifyKey(params.difyKey || "");
       setDifyUrl(params.difyUrl || "");
@@ -84,6 +91,7 @@ export default function Home() {
       setStylebertvits2ServerURL(params.stylebertvits2ServerUrl || "http://127.0.0.1:5000");
       setStylebertvits2ModelId(params.stylebertvits2ModelId || "0");
       setStylebertvits2Style(params.stylebertvits2Style || "Neutral");
+      setDontShowIntroduction(params.dontShowIntroduction || false);
     }
   }, []);
 
@@ -97,6 +105,7 @@ export default function Home() {
       selectAIModel,
       openAiKey,
       anthropicKey,
+      googleKey,
       groqKey,
       difyKey,
       difyUrl,
@@ -112,7 +121,8 @@ export default function Home() {
       webSocketMode,
       stylebertvits2ServerUrl,
       stylebertvits2ModelId,
-      stylebertvits2Style
+      stylebertvits2Style,
+      dontShowIntroduction
     };
     process.nextTick(() =>
       window.localStorage.setItem(
@@ -128,6 +138,7 @@ export default function Home() {
     selectAIModel,
     openAiKey,
     anthropicKey,
+    googleKey,
     groqKey,
     difyKey,
     difyUrl,
@@ -143,7 +154,8 @@ export default function Home() {
     webSocketMode,
     stylebertvits2ServerUrl,
     stylebertvits2ModelId,
-    stylebertvits2Style
+    stylebertvits2Style,
+    dontShowIntroduction
   ]);
 
   const handleChangeChatLog = useCallback(
@@ -340,8 +352,10 @@ export default function Home() {
             stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
           } else if (selectAIService === "anthropic") {
             stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
-          } else if (selectAIService === "ollama") {
-            stream = await getOllamaChatResponseStream(messages, selectAIModel);
+          } else if (selectAIService === "google") {
+            stream = await getGoogleChatResponseStream(messages, googleKey, selectAIModel);
+          } else if (selectAIService === "localLlm") {
+            stream = await getLocalLLMChatResponseStream(messages, localLlmUrl, selectAIModel);
           } else if (selectAIService === "groq") {
             stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
           } else if (selectAIService === "dify") {
@@ -424,7 +438,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, chatLog, systemPrompt, selectAIModel, groqKey, difyKey, difyUrl]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, groqKey, difyKey, chatLog, systemPrompt, selectAIModel, googleKey, localLlmUrl, difyUrl]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
@@ -498,74 +512,81 @@ export default function Home() {
   }, [youtubeLiveId, youtubeApiKey, handleSendChat]);
 
   return (
-    <div className={"font-M_PLUS_2"}>
-      <Meta />
-      <Introduction
-        openAiKey={openAiKey}
-        koeiroMapKey={koeiromapKey}
-        onChangeAiKey={setOpenAiKey}
-        onChangeKoeiromapKey={setKoeiromapKey}
-      />
-      <VrmViewer />
-      <MessageInputContainer
-        isChatProcessing={chatProcessing}
-        onChatProcessStart={handleSendChat}
-        selectVoiceLanguage={selectVoiceLanguage}
-      />
-      <Menu
-        selectAIService={selectAIService}
-        setSelectAIService={setSelectAIService}
-        selectAIModel={selectAIModel}
-        setSelectAIModel={setSelectAIModel}
-        openAiKey={openAiKey}
-        onChangeOpenAiKey={setOpenAiKey}
-        anthropicKey={anthropicKey}
-        onChangeAnthropicKey={setAnthropicKey}
-        groqKey={groqKey}
-        onChangeGroqKey={setGroqKey}
-        difyKey={difyKey}
-        onChangeDifyKey={setDifyKey}
-        difyUrl={difyUrl}
-        onChangeDifyUrl={setDifyUrl}
-        systemPrompt={systemPrompt}
-        chatLog={chatLog}
-        codeLog={codeLog}
-        koeiroParam={koeiroParam}
-        assistantMessage={assistantMessage}
-        koeiromapKey={koeiromapKey}
-        voicevoxSpeaker={voicevoxSpeaker}
-        googleTtsType={googleTtsType}
-        stylebertvits2ServerUrl={stylebertvits2ServerUrl}
-        stylebertvits2ModelId={stylebertvits2ModelId}
-        stylebertvits2Style={stylebertvits2Style}
-        youtubeMode={youtubeMode}
-        youtubeApiKey={youtubeApiKey}
-        youtubeLiveId={youtubeLiveId}
-        onChangeSystemPrompt={setSystemPrompt}
-        onChangeChatLog={handleChangeChatLog}
-        onChangeCodeLog={handleChangeCodeLog}
-        onChangeKoeiromapParam={setKoeiroParam}
-        onChangeYoutubeMode={setYoutubeMode}
-        onChangeYoutubeApiKey={setYoutubeApiKey}
-        onChangeYoutubeLiveId={setYoutubeLiveId}
-        handleClickResetChatLog={() => setChatLog([])}
-        handleClickResetCodeLog={() => setCodeLog([])}
-        handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
-        onChangeKoeiromapKey={setKoeiromapKey}
-        onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
-        onChangeGoogleTtsType={setGoogleTtsType}
-        onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
-        onChangeStyleBertVits2ModelId={setStylebertvits2ModelId}
-        onChangeStyleBertVits2Style={setStylebertvits2Style}
-        webSocketMode={webSocketMode}
-        changeWebSocketMode={changeWebSocketMode}
-        selectVoice={selectVoice}
-        setSelectVoice={setSelectVoice}
-        selectLanguage={selectLanguage}
-        setSelectLanguage={setSelectLanguage}
-        setSelectVoiceLanguage={setSelectVoiceLanguage}
-      />
-      <GitHubLink />
-    </div>
+    <>
+      <div className={"font-M_PLUS_2"} style={{ backgroundImage: `url(${buildUrl(backgroundImageUrl)})`, backgroundSize: 'cover', minHeight: '100vh' }}>
+        <Meta />
+        {!dontShowIntroduction && (
+          <Introduction
+            dontShowIntroduction={dontShowIntroduction}
+            onChangeDontShowIntroduction={setDontShowIntroduction}
+          />
+        )}
+        <VrmViewer />
+        <MessageInputContainer
+          isChatProcessing={chatProcessing}
+          onChatProcessStart={handleSendChat}
+          selectVoiceLanguage={selectVoiceLanguage}
+        />
+        <Menu
+          selectAIService={selectAIService}
+          setSelectAIService={setSelectAIService}
+          selectAIModel={selectAIModel}
+          setSelectAIModel={setSelectAIModel}
+          openAiKey={openAiKey}
+          onChangeOpenAiKey={setOpenAiKey}
+          anthropicKey={anthropicKey}
+          onChangeAnthropicKey={setAnthropicKey}
+          googleKey={googleKey}
+          onChangeGoogleKey={setGoogleKey}
+          groqKey={groqKey}
+          onChangeGroqKey={setGroqKey}
+          localLlmUrl={localLlmUrl}
+          onChangeLocalLlmUrl={setLocalLlmUrl}
+          difyKey={difyKey}
+          onChangeDifyKey={setDifyKey}
+          difyUrl={difyUrl}
+          onChangeDifyUrl={setDifyUrl}
+          systemPrompt={systemPrompt}
+          chatLog={chatLog}
+          codeLog={codeLog}
+          koeiroParam={koeiroParam}
+          assistantMessage={assistantMessage}
+          koeiromapKey={koeiromapKey}
+          voicevoxSpeaker={voicevoxSpeaker}
+          googleTtsType={googleTtsType}
+          stylebertvits2ServerUrl={stylebertvits2ServerUrl}
+          stylebertvits2ModelId={stylebertvits2ModelId}
+          stylebertvits2Style={stylebertvits2Style}
+          youtubeMode={youtubeMode}
+          youtubeApiKey={youtubeApiKey}
+          youtubeLiveId={youtubeLiveId}
+          onChangeSystemPrompt={setSystemPrompt}
+          onChangeChatLog={handleChangeChatLog}
+          onChangeCodeLog={handleChangeCodeLog}
+          onChangeKoeiromapParam={setKoeiroParam}
+          onChangeYoutubeMode={setYoutubeMode}
+          onChangeYoutubeApiKey={setYoutubeApiKey}
+          onChangeYoutubeLiveId={setYoutubeLiveId}
+          handleClickResetChatLog={() => setChatLog([])}
+          handleClickResetCodeLog={() => setCodeLog([])}
+          handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
+          onChangeKoeiromapKey={setKoeiromapKey}
+          onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
+          onChangeGoogleTtsType={setGoogleTtsType}
+          onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
+          onChangeStyleBertVits2ModelId={setStylebertvits2ModelId}
+          onChangeStyleBertVits2Style={setStylebertvits2Style}
+          webSocketMode={webSocketMode}
+          changeWebSocketMode={changeWebSocketMode}
+          selectVoice={selectVoice}
+          setSelectVoice={setSelectVoice}
+          selectLanguage={selectLanguage}
+          setSelectLanguage={setSelectLanguage}
+          setSelectVoiceLanguage={setSelectVoiceLanguage}
+          setBackgroundImageUrl={setBackgroundImageUrl}
+        />
+        <GitHubLink />
+      </div>
+    </>
   );
 }
