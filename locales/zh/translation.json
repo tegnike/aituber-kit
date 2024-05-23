@@ -12,6 +12,7 @@
   "SelectModel": "選擇模型",
   "OpenAIAPIKeyLabel": "OpenAI API 金鑰",
   "AnthropicAPIKeyLabel": "Anthropic API 金鑰",
+  "GoogleAPIKeyLabel": "Google Gemini API 金鑰",
   "GroqAPIKeyLabel": "Groq API 金鑰",
   "DifyAPIKeyLabel": "Dify API 金鑰",
   "APIKeyInstruction": "您可以在下方獲取 API 金鑰。請將獲得的 API 金鑰輸入到表單中。",
