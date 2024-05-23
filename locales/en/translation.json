@@ -12,6 +12,7 @@
   "SelectModel": "Select Model",
   "OpenAIAPIKeyLabel": "OpenAI API Key",
   "AnthropicAPIKeyLabel": "Anthropic API Key",
+  "GoogleAPIKeyLabel": "Google Gemini API Key",
   "GroqAPIKeyLabel": "Groq API Key",
   "DifyAPIKeyLabel": "Dify API Key",
   "APIKeyInstruction": "You can obtain the API key below. Enter the obtained API key into the form.",

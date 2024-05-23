@@ -12,6 +12,7 @@
   "SelectModel": "モデルを選択",
   "OpenAIAPIKeyLabel": "OpenAI API キー",
   "AnthropicAPIKeyLabel": "Anthropic API キー",
+  "GoogleAPIKeyLabel": "Google Gemini API キー",
   "GroqAPIKeyLabel": "Groq API キー",
   "DifyAPIKeyLabel": "Dify API キー",
   "APIKeyInstruction": "APIキーは下記のリンクから取得できます。取得したAPIキーをフォームに入力してください。",

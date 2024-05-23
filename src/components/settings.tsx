@@ -23,6 +23,8 @@ type Props = {
   onChangeOpenAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   anthropicKey: string;
   onChangeAnthropicKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  googleKey: string;
+  onChangeGoogleKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   groqKey: string;
   onChangeGroqKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   localLlmUrl: string;
@@ -81,6 +83,8 @@ export const Settings = ({
   onChangeOpenAiKey,
   anthropicKey,
   onChangeAnthropicKey,
+  googleKey,
+  onChangeGoogleKey,
   groqKey,
   onChangeGroqKey,
   localLlmUrl,
@@ -136,6 +140,7 @@ export const Settings = ({
   const defaultModels = {
     openai: 'gpt-3.5-turbo',
     anthropic: 'claude-3-haiku-20240307',
+    google: 'gemini-1.5-pro',
     groq: 'gemma-7b-it',
     localLlm: '',
     dify: '',
@@ -233,6 +238,7 @@ export const Settings = ({
                       >
                         <option value="openai">OpenAI</option>
                         <option value="anthropic">Anthropic</option>
+                        <option value="google">Google Gemini</option>
                         <option value="groq">Groq</option>
                         <option value="localLlm">{t('LocalLLM')}</option>
                         <option value="dify">Dify</option>
@@ -296,6 +302,34 @@ export const Settings = ({
                                 <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
                                 <option value="claude-3-sonnet-20240229">claude-3-sonnet-20240229</option>
                                 <option value="claude-3-haiku-20240307">claude-3-haiku-20240307</option>
+                              </select>
+                            </div>
+                          </div>
+                        );
+                      } else if (selectAIService === "google") {
+                        return (
+                          <div className="my-24">
+                            <div className="my-16 typography-20 font-bold">{t('GoogleAPIKeyLabel')}</div>
+                            <input
+                              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                              type="text"
+                              placeholder="..."
+                              value={googleKey}
+                              onChange={onChangeGoogleKey}
+                            />
+                            <div className="my-16">
+                              {t('APIKeyInstruction')}<br />
+                              <Link url="https://aistudio.google.com/app/apikey?hl=ja" label="Google AI Studio" />
+                            </div>
+                            <div className="my-24">
+                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <select
+                                className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                                value={selectAIModel}
+                                onChange={(e) => setSelectAIModel(e.target.value)}
+                              >
+                                <option value="gemini-1.5-pro-latest">gemini-1.5-pro-latest</option>
+                                <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
                               </select>
                             </div>
                           </div>

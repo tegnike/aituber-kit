@@ -19,6 +19,8 @@ type Props = {
   onChangeOpenAiKey: (key: string) => void;
   anthropicKey: string;
   onChangeAnthropicKey: (key: string) => void;
+  googleKey: string;
+  onChangeGoogleKey: (key: string) => void;
   groqKey: string;
   onChangeGroqKey: (key: string) => void;
   localLlmUrl: string;
@@ -75,6 +77,8 @@ export const Menu = ({
   onChangeOpenAiKey,
   anthropicKey,
   onChangeAnthropicKey,
+  googleKey,
+  onChangeGoogleKey,
   groqKey,
   onChangeGroqKey,
   localLlmUrl,
@@ -148,6 +152,13 @@ export const Menu = ({
       onChangeAnthropicKey(event.target.value);
     },
     [onChangeAnthropicKey]
+  );
+
+  const handleGoogleKeyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGoogleKey(event.target.value);
+    },
+    [onChangeGoogleKey]
   );
 
   const handleGroqKeyChange = useCallback(
@@ -340,6 +351,8 @@ export const Menu = ({
           onChangeOpenAiKey={handleOpenAiKeyChange}
           anthropicKey={anthropicKey}
           onChangeAnthropicKey={handleAnthropicKeyChange}
+          googleKey={googleKey}
+          onChangeGoogleKey={handleGoogleKeyChange}
           groqKey={groqKey}
           onChangeGroqKey={handleGroqKeyChange}
           difyKey={difyKey}
