@@ -61,6 +61,8 @@ export default function Home() {
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
   const [backgroundImageUrl, setBackgroundImageUrl] = useState("/bg-c.png");
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
+  const [youtubeNextPageToken, setYoutubeNextPageToken] = useState("");
+  const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
 
   useEffect(() => {
     const storedData = window.localStorage.getItem("chatVRMParams");
@@ -219,6 +221,106 @@ export default function Home() {
 
   const wsRef = useRef<WebSocket | null>(null);
 
+  const processAIResponse = useCallback(
+    async (currentChatLog: Message[], messages: Message[]) => {
+    let stream;
+    try {
+      if (selectAIService === "openai") {
+        stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
+      } else if (selectAIService === "anthropic") {
+        stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
+      } else if (selectAIService === "google") {
+        stream = await getGoogleChatResponseStream(messages, googleKey, selectAIModel);
+      } else if (selectAIService === "localLlm") {
+        stream = await getLocalLLMChatResponseStream(messages, localLlmUrl, selectAIModel);
+      } else if (selectAIService === "groq") {
+        stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
+      } else if (selectAIService === "dify") {
+        stream = await getDifyChatResponseStream(messages, difyKey, difyUrl);
+      }
+    } catch (e) {
+      console.error(e);
+      stream = null;
+    }
+    if (stream == null) {
+      setChatProcessing(false);
+      return;
+    }
+
+    const reader = stream.getReader();
+    let receivedMessage = "";
+    let aiTextLog = "";
+    let tag = "";
+    const sentences = new Array<string>();
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        receivedMessage += value;
+
+        // 返答内容のタグ部分の検出
+        const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
+        if (tagMatch && tagMatch[0]) {
+          tag = tagMatch[0];
+          receivedMessage = receivedMessage.slice(tag.length);
+        }
+
+        // 返答を一文単位で切り出して処理する
+        const sentenceMatch = receivedMessage.match(
+          /^(.+[。．！？\n]|.{10,}[、,])/
+        );
+        if (sentenceMatch && sentenceMatch[0]) {
+          const sentence = sentenceMatch[0];
+          sentences.push(sentence);
+          receivedMessage = receivedMessage
+            .slice(sentence.length)
+            .trimStart();
+
+          // 発話不要/不可能な文字列だった場合はスキップ
+          if (
+            !sentence.replace(
+              /^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g,
+              ""
+            )
+          ) {
+            continue;
+          }
+
+          const aiText = `${tag} ${sentence}`;
+          const aiTalks = textsToScreenplay([aiText], koeiroParam);
+          aiTextLog += aiText;
+
+          // 文ごとに音声を生成 & 再生、返答を表示
+          const currentAssistantMessage = sentences.join(" ");
+
+          handleSpeakAi(aiTalks[0], () => {
+            setAssistantMessage(currentAssistantMessage);
+          });
+        }
+      }
+    } catch (e) {
+      setChatProcessing(false);
+      console.error(e);
+    } finally {
+      reader.releaseLock();
+    }
+    console.log(currentChatLog)
+    // アシスタントの返答をログに追加
+    const messageLogAssistant: Message[] = [
+      ...currentChatLog,
+      { role: "assistant", content: aiTextLog },
+    ];
+
+    setChatLog(messageLogAssistant);
+  }, [selectAIService, openAiKey, selectAIModel, anthropicKey, googleKey, localLlmUrl, groqKey, difyKey, difyUrl, koeiroParam, handleSpeakAi]);
+
+  const preProcessAIResponse = useCallback(
+    async (messages: Message[]) => {
+      await processAIResponse(chatLog, messages);
+    }
+  , [chatLog, processAIResponse]);
+
   /**
    * アシスタントとの会話を行う
    */
@@ -308,137 +410,31 @@ export default function Home() {
 
         setChatProcessing(true);
         // ユーザーの発言を追加して表示
-        let messages: Message[] = [];
-        let messageLog: Message[] = [];
-        if (role !== "assistant") {
-          messageLog = [
-            ...chatLog,
-            { role: "user", content: newMessage },
-          ];
-          setChatLog(messageLog);
-
-          messages = [
-            {
-              role: "system",
-              content: systemPrompt,
-            },
-            ...messageLog.slice(-10),
-          ];
-        } else if (chatLog && chatLog.length > 0) {
-          const systemPromptAuto = systemPrompt + "\n\n## 追加設定\n以下はuserとあなたの直前の会話です。\n\n" + chatLog.slice(-10).reduce((acc, message) => {
-            if (message.role === "user") {
-              return acc + `user: ${message.content}\n`;
-            } else if (message.role === "assistant") {
-              return acc + `you: ${message.content}\n`;
-            }
-            return acc;
-          }, "") + "\n\n次の指示に従ってください。\n\n## 指示\n";
-
-          messages = [
-            {
-              role: "system",
-              content: systemPromptAuto,
-            },
-            {
-              role: "user",
-              content: newMessage,
-            },
-          ];
-        }
-
-        let stream;
-        try {
-          if (selectAIService === "openai") {
-            stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
-          } else if (selectAIService === "anthropic") {
-            stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
-          } else if (selectAIService === "google") {
-            stream = await getGoogleChatResponseStream(messages, googleKey, selectAIModel);
-          } else if (selectAIService === "localLlm") {
-            stream = await getLocalLLMChatResponseStream(messages, localLlmUrl, selectAIModel);
-          } else if (selectAIService === "groq") {
-            stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
-          } else if (selectAIService === "dify") {
-            stream = await getDifyChatResponseStream(messages, difyKey, difyUrl);
-          }
-        } catch (e) {
-          console.error(e);
-          stream = null;
-        }
-        if (stream == null) {
-          setChatProcessing(false);
-          return;
-        }
-
-        const reader = stream.getReader();
-        let receivedMessage = "";
-        let aiTextLog = "";
-        let tag = "";
-        const sentences = new Array<string>();
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            receivedMessage += value;
-
-            // 返答内容のタグ部分の検出
-            const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
-            if (tagMatch && tagMatch[0]) {
-              tag = tagMatch[0];
-              receivedMessage = receivedMessage.slice(tag.length);
-            }
-
-            // 返答を一文単位で切り出して処理する
-            const sentenceMatch = receivedMessage.match(
-              /^(.+[。．！？\n]|.{10,}[、,])/
-            );
-            if (sentenceMatch && sentenceMatch[0]) {
-              const sentence = sentenceMatch[0];
-              sentences.push(sentence);
-              receivedMessage = receivedMessage
-                .slice(sentence.length)
-                .trimStart();
-
-              // 発話不要/不可能な文字列だった場合はスキップ
-              if (
-                !sentence.replace(
-                  /^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g,
-                  ""
-                )
-              ) {
-                continue;
-              }
-
-              const aiText = `${tag} ${sentence}`;
-              const aiTalks = textsToScreenplay([aiText], koeiroParam);
-              aiTextLog += aiText;
-
-              // 文ごとに音声を生成 & 再生、返答を表示
-              const currentAssistantMessage = sentences.join(" ");
-              handleSpeakAi(aiTalks[0], () => {
-                setAssistantMessage(currentAssistantMessage);
-              });
-            }
-          }
-        } catch (e) {
-          setChatProcessing(false);
-          console.error(e);
-        } finally {
-          reader.releaseLock();
-        }
-
-        // アシスタントの返答をログに追加
-        const messageLogAssistant: Message[] = [
-          ...messageLog,
-          { role: "assistant", content: aiTextLog },
+        const messageLog: Message[] = [
+          ...chatLog,
+          { role: "user", content: newMessage },
         ];
+        setChatLog(messageLog);
 
-        setChatLog(messageLogAssistant);
+        const messages: Message[] = [
+          {
+            role: "system",
+            content: systemPrompt,
+          },
+          ...messageLog.slice(-10),
+        ];
+        console.log(chatLog)
+
+        try {
+          await processAIResponse(messageLog, messages);
+        } catch (e) {
+          console.error(e);
+        }
+  
         setChatProcessing(false);
       }
     },
-    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, groqKey, difyKey, chatLog, systemPrompt, selectAIModel, googleKey, localLlmUrl, difyUrl]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, groqKey, difyKey, chatLog, systemPrompt, processAIResponse]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
@@ -503,13 +499,20 @@ export default function Home() {
 
   // YouTubeコメントを取得する処理
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchAndProcessComments(youtubeLiveId, youtubeApiKey, handleSendChat);
-    }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS);
-  
-    // クリーンアップ関数
-    return () => clearInterval(intervalId);
-  }, [youtubeLiveId, youtubeApiKey, handleSendChat]);
+    fetchAndProcessComments(
+      chatLog,
+      youtubeLiveId,
+      youtubeApiKey,
+      youtubeNextPageToken,
+      setYoutubeNextPageToken,
+      youtubeNoCommentCount,
+      setYoutubeNoCommentCount,
+      handleSendChat,
+      preProcessAIResponse
+    );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatLog, youtubeLiveId, youtubeApiKey, handleSendChat, preProcessAIResponse]);
 
   return (
     <>
