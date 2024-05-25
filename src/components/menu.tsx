@@ -19,8 +19,12 @@ type Props = {
   onChangeOpenAiKey: (key: string) => void;
   anthropicKey: string;
   onChangeAnthropicKey: (key: string) => void;
+  googleKey: string;
+  onChangeGoogleKey: (key: string) => void;
   groqKey: string;
   onChangeGroqKey: (key: string) => void;
+  localLlmUrl: string;
+  onChangeLocalLlmUrl: (url: string) => void;
   difyKey: string;
   onChangeDifyKey: (key: string) => void;
   difyUrl: string;
@@ -62,6 +66,7 @@ type Props = {
   selectLanguage: string;
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
+  setBackgroundImageUrl: (url: string) => void;
 };
 export const Menu = ({
   selectAIService,
@@ -72,8 +77,12 @@ export const Menu = ({
   onChangeOpenAiKey,
   anthropicKey,
   onChangeAnthropicKey,
+  googleKey,
+  onChangeGoogleKey,
   groqKey,
   onChangeGroqKey,
+  localLlmUrl,
+  onChangeLocalLlmUrl,
   difyKey,
   onChangeDifyKey,
   difyUrl,
@@ -115,11 +124,13 @@ export const Menu = ({
   selectLanguage,
   setSelectLanguage,
   setSelectVoiceLanguage,
+  setBackgroundImageUrl
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
   const { viewer } = useContext(ViewerContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bgFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
 
   const handleChangeSystemPrompt = useCallback(
@@ -143,11 +154,25 @@ export const Menu = ({
     [onChangeAnthropicKey]
   );
 
+  const handleGoogleKeyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGoogleKey(event.target.value);
+    },
+    [onChangeGoogleKey]
+  );
+
   const handleGroqKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGroqKey(event.target.value);
     },
     [onChangeGroqKey]
+  );
+
+  const handleChangeLocalLlmUrl = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeLocalLlmUrl(event.target.value);
+    },
+    [onChangeLocalLlmUrl]
   );
 
   const handleDifyKeyChange = useCallback(
@@ -239,8 +264,13 @@ export const Menu = ({
     },
     [changeWebSocketMode, webSocketMode, onChangeYoutubeMode]
   );
+
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
+  }, []);
+
+  const handleClickOpenBgFile = useCallback(() => {
+    bgFileInputRef.current?.click();
   }, []);
 
   const handleClickTestVoice = (speaker: string) => {
@@ -266,6 +296,17 @@ export const Menu = ({
       event.target.value = "";
     },
     [viewer]
+  );
+
+  const handleChangeBgFile = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setBackgroundImageUrl(imageUrl);
+      }
+    },
+    [setBackgroundImageUrl]
   );
 
   return (
@@ -310,10 +351,14 @@ export const Menu = ({
           onChangeOpenAiKey={handleOpenAiKeyChange}
           anthropicKey={anthropicKey}
           onChangeAnthropicKey={handleAnthropicKeyChange}
+          googleKey={googleKey}
+          onChangeGoogleKey={handleGoogleKeyChange}
           groqKey={groqKey}
           onChangeGroqKey={handleGroqKeyChange}
           difyKey={difyKey}
           onChangeDifyKey={handleDifyKeyChange}
+          localLlmUrl={localLlmUrl}
+          onChangeLocalLlmUrl={handleChangeLocalLlmUrl}
           difyUrl={difyUrl}
           onChangeDifyUrl={handleDifyUrlChange}
           chatLog={chatLog}
@@ -335,6 +380,7 @@ export const Menu = ({
           onChangeCodeLog={onChangeCodeLog}
           onChangeKoeiroParam={handleChangeKoeiroParam}
           onClickOpenVrmFile={handleClickOpenVrmFile}
+          onClickOpenBgFile={handleClickOpenBgFile}
           onClickResetChatLog={handleClickResetChatLog}
           onClickResetCodeLog={handleClickResetCodeLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
@@ -366,6 +412,13 @@ export const Menu = ({
         accept=".vrm"
         ref={fileInputRef}
         onChange={handleChangeVrmFile}
+      />
+      <input
+        type="file"
+        className="hidden"
+        accept="image/*"
+        ref={bgFileInputRef}
+        onChange={handleChangeBgFile}
       />
     </>
   );

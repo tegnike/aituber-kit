@@ -13,6 +13,7 @@
     "@anthropic-ai/sdk": "^0.20.8",
     "@charcoal-ui/icons": "^2.6.0",
     "@google-cloud/text-to-speech": "^5.0.1",
+    "@google/generative-ai": "^0.11.3",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@types/dom-speech-recognition": "^0.0.1",
     "axios": "^1.6.8",
