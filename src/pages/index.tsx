@@ -56,13 +56,23 @@ export default function Home() {
   const [codeLog, setCodeLog] = useState<Message[]>([]);
   const [assistantMessage, setAssistantMessage] = useState("");
   const [webSocketMode, changeWebSocketMode] = useState(false);
-  const [isVoicePlaying, setIsVoicePlaying] = useState(false);
+  const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
   const [backgroundImageUrl, setBackgroundImageUrl] = useState("/bg-c.png");
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState("");
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
+  const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
+  const [chatProcessingCount, setChatProcessingCount] = useState(0);
+
+  const incrementChatProcessingCount = () => {
+    setChatProcessingCount(prevCount => prevCount + 1);
+  };
+
+  const decrementChatProcessingCount = () => {
+    setChatProcessingCount(prevCount => prevCount - 1);
+  }
 
   useEffect(() => {
     const storedData = window.localStorage.getItem("chatVRMParams");
@@ -220,9 +230,13 @@ export default function Home() {
   );
 
   const wsRef = useRef<WebSocket | null>(null);
-
-  const processAIResponse = useCallback(
-    async (currentChatLog: Message[], messages: Message[]) => {
+  /**
+   * AIからの応答を処理する関数
+   * @param currentChatLog ログに残るメッセージの配列
+   * @param messages 解答生成に使用するメッセージの配列
+   */
+  const processAIResponse = useCallback(async (currentChatLog: Message[], messages: Message[]) => {
+    setChatProcessing(true);
     let stream;
     try {
       if (selectAIService === "openai") {
@@ -296,30 +310,30 @@ export default function Home() {
 
           handleSpeakAi(aiTalks[0], () => {
             setAssistantMessage(currentAssistantMessage);
+            incrementChatProcessingCount();
+          }, () => {
+            decrementChatProcessingCount();
           });
         }
       }
     } catch (e) {
-      setChatProcessing(false);
       console.error(e);
     } finally {
       reader.releaseLock();
     }
-    console.log(currentChatLog)
+
     // アシスタントの返答をログに追加
     const messageLogAssistant: Message[] = [
       ...currentChatLog,
       { role: "assistant", content: aiTextLog },
     ];
-
     setChatLog(messageLogAssistant);
+    setChatProcessing(false);
   }, [selectAIService, openAiKey, selectAIModel, anthropicKey, googleKey, localLlmUrl, groqKey, difyKey, difyUrl, koeiroParam, handleSpeakAi]);
 
-  const preProcessAIResponse = useCallback(
-    async (messages: Message[]) => {
-      await processAIResponse(chatLog, messages);
-    }
-  , [chatLog, processAIResponse]);
+  const preProcessAIResponse = useCallback(async (messages: Message[]) => {
+    await processAIResponse(chatLog, messages);
+  }, [chatLog, processAIResponse]);
 
   /**
    * アシスタントとの会話を行う
@@ -333,6 +347,7 @@ export default function Home() {
       }
 
       if (webSocketMode) {
+        // 未メンテなので不具合がある可能性あり
         console.log("websocket mode: true")
         setChatProcessing(true);
 
@@ -393,6 +408,8 @@ export default function Home() {
           }
         }
       } else {
+        setChatProcessing(true);
+
         // ChatVRM original mode
         if (selectAIService === "openai" && !openAiKey) {
           setAssistantMessage(t('APIKeyNotEntered'));
@@ -408,7 +425,6 @@ export default function Home() {
           return;
         }
 
-        setChatProcessing(true);
         // ユーザーの発言を追加して表示
         const messageLog: Message[] = [
           ...chatLog,
@@ -423,7 +439,6 @@ export default function Home() {
           },
           ...messageLog.slice(-10),
         ];
-        console.log(chatLog)
 
         try {
           await processAIResponse(messageLog, messages);
@@ -488,6 +503,7 @@ export default function Home() {
     };
   }, [webSocketMode]);
 
+  // WebSocketモード用の処理
   useEffect(() => {
     if (tmpMessages.length > 0 && !isVoicePlaying) {
       const message = tmpMessages[0];
@@ -498,8 +514,16 @@ export default function Home() {
   }, [tmpMessages, isVoicePlaying, handleSendChat]);
 
   // YouTubeコメントを取得する処理
-  useEffect(() => {
+  const fetchAndProcessCommentsCallback = useCallback(async() => {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+    if (!youtubeLiveId || !youtubeApiKey || chatProcessing || chatProcessingCount > 0) {
+      return;
+    }
+    console.log("Call fetchAndProcessComments !!!");
+
     fetchAndProcessComments(
+      systemPrompt,
       chatLog,
       youtubeLiveId,
       youtubeApiKey,
@@ -507,12 +531,40 @@ export default function Home() {
       setYoutubeNextPageToken,
       youtubeNoCommentCount,
       setYoutubeNoCommentCount,
+      youtubeSleepMode,
+      setYoutubeSleepMode,
       handleSendChat,
       preProcessAIResponse
     );
+  }, [
+    youtubeLiveId,
+    youtubeApiKey,
+    chatProcessing,
+    chatProcessingCount,
+    systemPrompt,
+    chatLog,
+    youtubeNextPageToken,
+    setYoutubeNextPageToken,
+    youtubeNoCommentCount,
+    setYoutubeNoCommentCount,
+    youtubeSleepMode,
+    setYoutubeSleepMode,
+    handleSendChat,
+    preProcessAIResponse
+  ]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatLog, youtubeLiveId, youtubeApiKey, handleSendChat, preProcessAIResponse]);
+  useEffect(() => {
+    console.log("chatProcessingCount:", chatProcessingCount);
+    fetchAndProcessCommentsCallback();
+  }, [chatProcessingCount, youtubeLiveId, youtubeApiKey]);
+
+  useEffect(() => {
+    console.log("youtubeSleepMode:", youtubeSleepMode);
+    (async () => {
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      fetchAndProcessCommentsCallback();
+    })();
+  }, [youtubeNoCommentCount]);
 
   return (
     <>

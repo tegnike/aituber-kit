@@ -1,14 +1,6 @@
 import { Message } from "@/features/messages/messages";
 import { getOpenAIChatResponse } from "@/features/chat/openAiChat";
 
-const getSystemMessage = async (messages: Message[]): Promise<string> => {
-  const systemMessage = messages.find((message: any) => message.role === "system");
-  if (!systemMessage) {
-    throw new Error("System message not found in the messages.");
-  }
-  return systemMessage.content;
-}
-
 const getLastMessages = (messages: Message[], numberOfMessages: number): string => {
   return messages
     .filter(message => message.role === "user" || message.role === "assistant")
@@ -32,23 +24,39 @@ ${systemMessage}
 }
 
 export const getBestComment = async (messages: Message[], youtubeComments: any[]): Promise<string> => {
+  console.log("getBestComment");
   const lastSixMessages = getLastMessages(messages, 6);
   const systemMessage = `これからあなたに複数ターンの会話歴と2つ以上のコメントを与えます。
-与えられたコメントから、会話歴の続きとして最も適したコメントを選択してください。`
+これらの情報から、会話歴の続きとして最も適したコメントを1つだけ選択してください。
+必ずコメントの内容のみを返却すること。
+
+## 例
+コメント一覧: [
+​知らないな、いつの年代の映画？,
+​そうなんだ,
+​明後日の天気は？,
+​ポケモン好き？,
+]
+あなたの返答: 明後日の天気は？
+
+## 実際の会話歴
+${lastSixMessages}
+
+## 実際のコメント一覧`
 
   const queryMessages = [
     { role: "system", content: systemMessage },
-    { role: "user", content: "## 会話歴\n" + lastSixMessages + "\n\n## コメント\n" + youtubeComments.map(comment => comment.userComment).join("\n") }
+    { role: "user", content: "[\n" + youtubeComments.map(comment => comment.userComment).join(",\n") + "\n]" }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
+  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-3.5-turbo");
 
   return response.message;
 }
 
-export const getMessagesForSleep = async (messages: Message[]): Promise<Message[]> => {
-  const systemMessageContent = await getSystemMessage(messages);
-  const modifiedSystemMessage = await getModifiedSystemMessage(systemMessageContent);
+export const getMessagesForSleep = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
+  console.log("getMessagesForSleep");
+  const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const userMessage = `- あなたはYoutubeの配信者です。
 - ただしコメントにあまり人が来ていません。
 - 人が来るまで別の作業をしている、という旨のセリフが欲しいです。`
@@ -59,24 +67,33 @@ export const getMessagesForSleep = async (messages: Message[]): Promise<Message[
 }
 
 export const getAnotherTopic = async (messages: Message[]): Promise<string> => {
+  console.log("getAnotherTopic");
   const lastFourMessages = getLastMessages(messages, 4);
   const queryMessages = [
-    { role: "system", content: "次に渡される会話文から関連するが別の話題を1つ考えてください。結果は単語か非口語の短文で返すこと。" },
+    { role: "system", content: `次に渡される会話文から関連するが別の話題を1つ考えてください。
+結果は単語か非口語の短文で返すこと。
+
+## 解答例
+- 最近見た映画
+- ヘルスケア
+- 5年後の自分
+- 今ハマっている趣味` },
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
+  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-3.5-turbo");
 
   return response.message;
 }
 
-export const getMessagesForNewTopic = async (messages: Message[], topic: string): Promise<Message[]> => {
-  const systemMessage = await getSystemMessage(messages);
-  const modifiedSystemMessage = await getModifiedSystemMessage(systemMessage);
+export const getMessagesForNewTopic = async (systemPrompt: string, messages: Message[], topic: string): Promise<Message[]> => {
+  console.log("getMessagesForNewTopic");
+  const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastFourMessages = getLastMessages(messages, 4);
   const userMessage = `- 話題を切り替えたいと思います。
 - 次の話題は「${topic}」です。
 - 以下の会話文から話を切り替えるとして、キャラになりきって発言してください。
+- なお、あなたはassistantの発言をしたと仮定します。
 
 ## 会話歴
 ${lastFourMessages}`
@@ -88,6 +105,7 @@ ${lastFourMessages}`
 }
 
 export const checkIfResponseContinuationIsRequired = async (messages: Message[]): Promise<boolean> => {
+  console.log("checkIfResponseContinuationIsRequired");
   const lastFourMessages = getLastMessages(messages, 4);
   if (!lastFourMessages.includes("assistant:")) {
     return false;
@@ -153,7 +171,7 @@ B: 見てみたいな。送ってくれない？
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
+  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-3.5-turbo");
 
   const responseJson = JSON.parse(response.message);
   const isContinuationNeeded = responseJson.answer === "true";
@@ -161,11 +179,11 @@ B: 見てみたいな。送ってくれない？
   return isContinuationNeeded;
 }
 
-export const getMessagesForContinuation = async (messages: Message[]): Promise<Message[]> => {
-  const systemMessage = await getSystemMessage(messages);
-  const modifiedSystemMessage = await getModifiedSystemMessage(systemMessage);
+export const getMessagesForContinuation = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
+  console.log("getMessagesForContinuation");
+  const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastFourMessages = getLastMessages(messages, 4);
-  const userMessage = `- あなたの発言はassistantです。下記の会話に続くコメントを生成してください。\n${lastFourMessages}`
+  const userMessage = `- 下記の会話に続くコメントを生成してください。\n- なお、あなたはassistantの発言をしたと仮定します。\n\n${lastFourMessages}`
   return [
     { role: "system", content: modifiedSystemMessage },
     { role: "user", content: userMessage }

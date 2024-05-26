@@ -22,7 +22,7 @@ export const getLiveChatId = async (liveId: string, youtubeKey: string): Promise
     },
   })
   const json = await response.json();
-  if (json.items.length == 0) {
+  if (json.items == undefined || json.items.length == 0) {
     return "";
   }
   const liveChatId = json.items[0].liveStreamingDetails.activeLiveChatId
@@ -35,8 +35,9 @@ const retrieveLiveComments = async (
   youtubeNextPageToken: string,
   setYoutubeNextPageToken: (token: string) => void
 ): Promise<[]> => {
+  console.log("retrieveLiveComments");
   let url = "https://youtube.googleapis.com/youtube/v3/liveChat/messages?liveChatId=" + activeLiveChatId + '&part=authorDetails%2Csnippet&key=' + youtubeKey
-  if (youtubeNextPageToken !== "") {
+  if (youtubeNextPageToken !== "" && youtubeNextPageToken !== undefined) {
     url = url + "&pageToken=" + youtubeNextPageToken
   }
   const response = await fetch(url, {
@@ -55,10 +56,15 @@ const retrieveLiveComments = async (
     userComment: item.snippet.textMessageDetails?.messageText || item.snippet.superChatDetails?.userComment || ""
   })).filter((comment: any) => comment.userComment !== "" && !comment.userComment.startsWith("#"));
 
+  if (comments.length === 0) {
+    return [];
+  }
+
   return comments;
 }
 
 export const fetchAndProcessComments = async (
+  systemPrompt: string,
   messages: Message[],
   liveId: string,
   youtubeKey: string,
@@ -66,52 +72,57 @@ export const fetchAndProcessComments = async (
   setYoutubeNextPageToken: (token: string) => void,
   youtubeNoCommentCount: number,
   setYoutubeNoCommentCount: (count: number) => void,
+  youtubeSleepMode: boolean,
+  setYoutubeSleepMode: (mode: boolean) => void,
   handleSendChat: (text: string, role?: string) => void,
   preProcessAIResponse: (messages: Message[]) => void
 ): Promise<void> => {
-  if (liveId && youtubeKey) {
-    try {
-      const liveChatId = await getLiveChatId(liveId, youtubeKey);
+  try {
+    const liveChatId = await getLiveChatId(liveId, youtubeKey);
 
-      if (liveChatId) {
-        const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages);
-        if (isContinuationNeeded) {
-          const continuationMessage = await getMessagesForContinuation(messages);
-          preProcessAIResponse(continuationMessage);
-          return;
-        }
-
-        const youtubeComments = await retrieveLiveComments(liveChatId, youtubeKey, youtubeNextPageToken, setYoutubeNextPageToken);
-
-        // ランダムなコメントを選択して送信
-        if (youtubeComments.length > 0) {
-          let selectedComment = "";
-          if (youtubeComments.length > 1) {
-            selectedComment = await getBestComment(messages, youtubeComments);
-          } else {
-            selectedComment = youtubeComments[0].userComment;
-          }
-
-          handleSendChat(selectedComment);
-        } else {
-          setYoutubeNoCommentCount(youtubeNoCommentCount + 1);
-          if (youtubeNoCommentCount < 3 || 3 < youtubeNoCommentCount && youtubeNoCommentCount < 6) {
-            const continuationMessage = await getMessagesForContinuation(messages);
-            preProcessAIResponse(continuationMessage);
-          } else {
-            if (youtubeNoCommentCount === 3) {
-              const anotherTopic = await getAnotherTopic(messages);
-              const newTopicMessage = await getMessagesForNewTopic(messages, anotherTopic);
-              preProcessAIResponse(newTopicMessage);
-            } else {
-              const messagesForSleep = await getMessagesForSleep(messages);
-              preProcessAIResponse(messagesForSleep);
-            }
-          }
-        }
+    if (liveChatId) {
+      const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages);
+      if (isContinuationNeeded) {
+        const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
+        preProcessAIResponse(continuationMessage);
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching comments:", error);
+
+      const youtubeComments = await retrieveLiveComments(liveChatId, youtubeKey, youtubeNextPageToken, setYoutubeNextPageToken);
+
+      // ランダムなコメントを選択して送信
+      if (youtubeComments.length > 0) {
+        setYoutubeNoCommentCount(0);
+        setYoutubeSleepMode(false);
+        let selectedComment = "";
+        if (youtubeComments.length > 1) {
+          selectedComment = await getBestComment(messages, youtubeComments);
+        } else {
+          selectedComment = youtubeComments[0].userComment;
+        }
+        console.log("selectedYoutubeComment:", selectedComment);
+
+        handleSendChat(selectedComment);
+      } else {
+        const noCommentCount = youtubeNoCommentCount + 1;
+        if (noCommentCount < 3 || 3 < noCommentCount && noCommentCount < 6) {
+          const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
+          preProcessAIResponse(continuationMessage);
+        } else if (noCommentCount === 3) {
+          const anotherTopic = await getAnotherTopic(messages);
+          console.log("anotherTopic:", anotherTopic);
+          const newTopicMessage = await getMessagesForNewTopic(systemPrompt, messages, anotherTopic);
+          preProcessAIResponse(newTopicMessage);
+        } else if (noCommentCount === 6){
+          const messagesForSleep = await getMessagesForSleep(systemPrompt, messages);
+          preProcessAIResponse(messagesForSleep);
+          setYoutubeSleepMode(true);
+        }
+        console.log("YoutubeNoCommentCount:", noCommentCount);
+        setYoutubeNoCommentCount(noCommentCount);
+      }
     }
+  } catch (error) {
+    console.error("Error fetching comments:", error);
   }
 }
