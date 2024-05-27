@@ -18,7 +18,6 @@ import { getGroqChatResponseStream } from "@/features/chat/groqChat";
 import { getDifyChatResponseStream } from "@/features/chat/difyChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
-import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
 import "@/lib/i18n";
 import { useTranslation } from 'react-i18next';
@@ -292,16 +291,11 @@ export default function Home() {
         }
       } else {
         // ChatVERM original mode
-        if (selectAIService === "openai" && !openAiKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "anthropic" && !anthropicKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "groq" && !groqKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "dify" && !difyKey) {
+        if (selectAIService === "openai" && !openAiKey ||
+        selectAIService === "anthropic" && !anthropicKey ||
+        selectAIService === "google" && !googleKey ||
+        selectAIService === "groq" && !groqKey ||
+        selectAIService === "dify" && !difyKey) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
         }
@@ -564,7 +558,6 @@ export default function Home() {
           setSelectVoiceLanguage={setSelectVoiceLanguage}
           setBackgroundImageUrl={setBackgroundImageUrl}
         />
-        <GitHubLink />
       </div>
     </>
   );
