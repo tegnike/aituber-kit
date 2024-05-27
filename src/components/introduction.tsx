@@ -144,6 +144,12 @@ export const Introduction = ({
            {t('Close')}
           </button>
         </div>
+
+        {selectLanguage === 'JP' && (
+          <div className="my-24">
+            <p>You can select the language from the settings. English and Traditional Chinese are available.</p>
+          </div>
+        )}
       </div>
     </div>
   ) : null;
