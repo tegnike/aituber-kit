@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IconButton } from "./iconButton";
 import { TextButton } from "./textButton";
 import { Message } from "@/features/messages/messages";
@@ -135,6 +135,17 @@ export const Settings = ({
 }: Props) => {
   const { t } = useTranslation();
 
+  // Add this useEffect hook
+  useEffect(() => {
+    const storedData = window.localStorage.getItem('chatVRMParams');
+    if (storedData) {
+      const params = JSON.parse(storedData);
+      if (params.selectLanguage) {
+        setSelectLanguage(params.selectLanguage);
+      }
+    }
+  }, [setSelectLanguage]);
+  
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
@@ -160,7 +171,7 @@ export const Settings = ({
           <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
-              言語設定 - Language
+              {t('Language')}
             </div>
             <div className="my-8">
               <select

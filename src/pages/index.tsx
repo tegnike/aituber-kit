@@ -495,6 +495,9 @@ export default function Home() {
           <Introduction
             dontShowIntroduction={dontShowIntroduction}
             onChangeDontShowIntroduction={setDontShowIntroduction}
+            selectLanguage={selectLanguage}
+            setSelectLanguage={setSelectLanguage}
+            setSelectVoiceLanguage={setSelectVoiceLanguage}
           />
         )}
         <VrmViewer />

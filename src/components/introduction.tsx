@@ -1,23 +1,57 @@
 import { useState, useCallback } from "react";
 import { Link } from "./link";
 import { IconButton } from "./iconButton";
+import i18n from "i18next";
+import { useTranslation, Trans } from 'react-i18next';
 
 type Props = {
   dontShowIntroduction: boolean;
   onChangeDontShowIntroduction: (dontShowIntroduction: boolean) => void;
+  selectLanguage: string;
+  setSelectLanguage: (show: string) => void;
+  setSelectVoiceLanguage: (show: string) => void;
 };
 export const Introduction = ({
   dontShowIntroduction,
-  onChangeDontShowIntroduction
+  onChangeDontShowIntroduction,
+  selectLanguage,
+  setSelectLanguage,
+  setSelectVoiceLanguage
 }: Props) => {
   const [opened, setOpened] = useState(true);
 
   const handleDontShowIntroductionChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeDontShowIntroduction(event.target.checked);
+      updateLanguage();
     },
     [onChangeDontShowIntroduction]
   );
+
+  const { t } = useTranslation();
+
+  const updateLanguage = () => {
+    console.log('i18n.language', i18n.language);  // 'ja'
+    // selectLanguage: "JP"
+    const languageCode = i18n.language.toUpperCase();
+    setSelectLanguage(languageCode);
+    setSelectVoiceLanguage(getVoiceLanguageCode(languageCode));
+  }
+
+  const getVoiceLanguageCode = (selectLanguage: string) => {
+    switch (selectLanguage) {
+      case 'JP':
+        return 'ja-JP';
+      case 'EN':
+        return 'en-US';
+      case 'ZH':
+        return 'zh-TW';
+      case 'zh-TW':
+        return 'zh-TW';
+      default:
+        return 'ja-JP';  
+    }
+  }
 
   return opened ? (
     <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
@@ -25,67 +59,60 @@ export const Introduction = ({
       <IconButton
           iconName="24/Close"
           isProcessing={false}
-          onClick={() => setOpened(false)}
+          onClick={() => {
+            setOpened(false);
+            updateLanguage();
+          }}
           className="absolute top-8 right-8 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
         ></IconButton>
         <div className="my-24">
           <div className="my-8 font-bold typography-20 text-secondary ">
-            このアプリケーションについて
+            {t('AboutThisApplication')}
           </div>
           <div>
-            Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。<br />
-            設定は左上のメニューボタンから変更できます。
-          </div>
-        </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary ">
-            About This Application
-          </div>
-          <div>
-            Enjoy conversations with a 3D character right in your web browser, using microphone or text input and voice synthesis. You can also change the character (VRM), adjust its personality, and modify its voice.<br />
-            Settings can be changed from the menu button in the top left.
+            <Trans i18nKey="AboutThisApplicationDescription" />
           </div>
         </div>
         <div className="my-24">
           <div className="my-8 font-bold typography-20 text-secondary">
-            技術紹介
+            {t('TechnologyIntroduction')}
           </div>
           <div>
-            このアプリはpixiv社の<b>ChatVRM</b>を改造して作成されています。元のソースコードは
+            <Trans i18nKey="TechnologyIntroductionDescription1" components={{ b: <b /> }} />
             <Link
               url={
                 "https://github.com/pixiv/ChatVRM"
               }
-              label={"こちら"}
+              label={t('TechnologyIntroductionLink1')}
             />
-            をご覧ください。
+            {t('TechnologyIntroductionDescription2')}
           </div>
           <div className="my-16">
-            3Dモデルの表示や操作には
+            {t('TechnologyIntroductionDescription3')}
             <Link
               url={"https://github.com/pixiv/three-vrm"}
               label={"@pixiv/three-vrm"}
             />
-            、 会話文生成には
+            {t('TechnologyIntroductionDescription4')}
             <Link
               url={
                 "https://openai.com/blog/introducing-chatgpt-and-whisper-apis"
               }
               label={"OpenAI API"}
             />
-            などの各種LLM、 音声合成には
+            {t('TechnologyIntroductionDescription5')}
             <Link url={"https://developers.rinna.co.jp/product/#product=koeiromap-free"} label={"Koemotion"} />
-            などの各種TTSを使用しています。 詳細はこちらの
+            {t('TechnologyIntroductionDescription6')}
             <Link
               url={"https://note.com/nike_cha_n/n/ne98acb25e00f"}
-              label={"解説記事"}
+              label={t('TechnologyIntroductionLink2')}
             />
-            をご覧ください。
+            {t('TechnologyIntroductionDescription7')}
           </div>
           <div className="my-16">
-            このアプリのソースコードはGitHubで公開しています。自由に変更や改変可能です。
+            {t('SourceCodeDescription1')}
             <br />
-            リポジトリURL:<span> </span>
+            {t('RepositoryURL')}<span> </span>
             <Link
               url={"https://github.com/tegnike/nike-ChatVRM"}
               label={"https://github.com/tegnike/nike-ChatVRM"}
@@ -102,7 +129,7 @@ export const Introduction = ({
               onChange={handleDontShowIntroductionChange}
               className="mr-8"
             />
-            <span>次回からこのダイアログを表示しない（Do not show this dialog next time）</span>
+            <span>{t('DontShowIntroductionNextTime')}</span>
           </label>
         </div>
 
@@ -110,12 +137,19 @@ export const Introduction = ({
           <button
             onClick={() => {
               setOpened(false);
+              updateLanguage();
             }}
             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
           >
-           閉じる（CLOSE）
+           {t('Close')}
           </button>
         </div>
+
+        {selectLanguage === 'JP' && (
+          <div className="my-24">
+            <p>You can select the language from the settings. English and Traditional Chinese are available.</p>
+          </div>
+        )}
       </div>
     </div>
   ) : null;

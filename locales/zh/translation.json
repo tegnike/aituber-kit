@@ -54,5 +54,22 @@
   "APIKeyNotEntered": "尚未輸入 API 金鑰。",
   "CodeLog": "程式碼日誌",
   "ChatLog": "聊天記錄",
-  "EnterYourQuestion": "在此輸入您的問題"
+  "EnterYourQuestion": "在此輸入您的問題",
+  "AboutThisApplication": "關於這個應用程式",
+  "AboutThisApplicationDescription": "只需使用網頁瀏覽器，即可通過麥克風或文字輸入、語音合成與 3D 角色對話。你可以更換角色（VRM）、設定性格和調整語音。<br />設定可以從左上角的選單按鈕進行更改。",
+  "TechnologyIntroduction": "技術介紹",
+  "TechnologyIntroductionDescription1": "這個應用程式是基於 pixiv 公司的 <b>ChatVRM</b> 改造而成。原始程式碼請參考",
+  "TechnologyIntroductionLink1": "這裡",
+  "TechnologyIntroductionDescription2": "。",
+  "TechnologyIntroductionDescription3": "3D 模型的顯示與操作使用",
+  "TechnologyIntroductionDescription4": "，對話生成使用了",
+  "TechnologyIntroductionDescription5": "等各種 LLM，語音合成使用了",
+  "TechnologyIntroductionDescription6": "等各種 TTS。詳細內容請參閱此",
+  "TechnologyIntroductionLink2": "解說文章",
+  "TechnologyIntroductionDescription7": "。",
+  "SourceCodeDescription1": "這個應用程式的源代碼在 GitHub 上公開，歡迎自由修改和改進。",
+  "RepositoryURL": "儲存庫 URL：",
+  "DontShowIntroductionNextTime": "下次不再顯示此對話框",
+  "Close": "關閉",
+  "Language": "語言設定"
 }
