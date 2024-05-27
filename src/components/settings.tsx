@@ -168,6 +168,9 @@ export const Settings = ({
           onClick={onClickClose}
         ></IconButton>
       </div>
+      <div className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
+        powered by Pixiv, VRoid, Koemotion, VOICEVOX, OpenAI, Anthropic, Google, Groq, Dify
+      </div>
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
@@ -712,8 +715,9 @@ export const Settings = ({
                   );
                 }
             })()}
-
           </div>
+          
+
           {chatLog.length > 0 && (
             <div className="my-40">
               <div className="my-8 grid-cols-2">
