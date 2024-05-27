@@ -58,7 +58,9 @@ export default function Home() {
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
-  const [backgroundImageUrl, setBackgroundImageUrl] = useState("/bg-c.png");
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState(
+    process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH !== undefined ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH : "/bg-c.png"
+  );
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
 
   useEffect(() => {

@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next build && next start",
     "export": "next export",
-    "lint": "next lint"
+    "lint": "next lint",
+    "electron": "wait-on http://localhost:3000 && electron ./electron.mjs",
+    "desktop": "NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=\"\" run-p dev electron"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.20.8",
@@ -39,8 +41,12 @@
     "@types/react-dom": "18.0.11",
     "@types/three": "0.149.0",
     "autoprefixer": "^10.4.14",
+    "electron": "^30.0.8",
+    "electron-is-dev": "^3.0.1",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.3.1"
+    "tailwindcss": "^3.3.1",
+    "wait-on": "^7.2.0"
   },
   "engines": {
     "node": "16.14.2"
