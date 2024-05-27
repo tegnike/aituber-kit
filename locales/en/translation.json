@@ -53,5 +53,22 @@
   "APIKeyNotEntered": "API key is not entered.",
   "CodeLog": "Code Log",
   "ChatLog": "Conversation Log",
-  "EnterYourQuestion": "Enter your question here"
+  "EnterYourQuestion": "Enter your question here",
+  "AboutThisApplication": "About This Application",
+  "AboutThisApplicationDescription": "Enjoy conversations with a 3D character right in your web browser, using microphone or text input and voice synthesis. You can also change the character (VRM), adjust its personality, and modify its voice.<br />Settings can be changed from the menu button in the top left.",
+  "TechnologyIntroduction": "Technology Introduction",
+  "TechnologyIntroductionDescription1": "This app was created by modifying pixiv's <b>ChatVRM</b>. The original source code can be found",
+  "TechnologyIntroductionLink1": "here",
+  "TechnologyIntroductionDescription2": ".",
+  "TechnologyIntroductionDescription3": "For displaying and manipulating 3D models,",
+  "TechnologyIntroductionDescription4": "is used. For generating conversation text, various LLMs such as",
+  "TechnologyIntroductionDescription5": "are used. For speech synthesis, various TTS engines like",
+  "TechnologyIntroductionDescription6": "are utilized. For more details, please check out this",
+  "TechnologyIntroductionLink2": "explanatory article",
+  "TechnologyIntroductionDescription7": ".",
+  "SourceCodeDescription1": "The source code for this app is publicly available on GitHub. Feel free to modify and adapt it as you like.",
+  "RepositoryURL": "Repository URL:",
+  "DontShowIntroductionNextTime": "Do not show this dialog next time",
+  "Close": "CLOSE",
+  "Language": "Language"
 }
