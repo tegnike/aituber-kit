@@ -292,16 +292,11 @@ export default function Home() {
         }
       } else {
         // ChatVERM original mode
-        if (selectAIService === "openai" && !openAiKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "anthropic" && !anthropicKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "groq" && !groqKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "dify" && !difyKey) {
+        if (selectAIService === "openai" && !openAiKey ||
+        selectAIService === "anthropic" && !anthropicKey ||
+        selectAIService === "google" && !googleKey ||
+        selectAIService === "groq" && !groqKey ||
+        selectAIService === "dify" && !difyKey) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
         }
