@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { IconButton } from "./iconButton";
 import { TextButton } from "./textButton";
 import { Message } from "@/features/messages/messages";
+import { GitHubLink } from "./githubLink";
 import {
   KoeiroParam,
   PRESET_A,
@@ -159,6 +160,7 @@ export const Settings = ({
 
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
+      <GitHubLink />
       <div className="absolute m-24">
         <IconButton
           iconName="24/Close"

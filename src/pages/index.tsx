@@ -18,7 +18,6 @@ import { getGroqChatResponseStream } from "@/features/chat/groqChat";
 import { getDifyChatResponseStream } from "@/features/chat/difyChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
-import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
 import "@/lib/i18n";
 import { useTranslation } from 'react-i18next';
@@ -559,7 +558,6 @@ export default function Home() {
           setSelectVoiceLanguage={setSelectVoiceLanguage}
           setBackgroundImageUrl={setBackgroundImageUrl}
         />
-        <GitHubLink />
       </div>
     </>
   );
