@@ -42,7 +42,7 @@ export default function Home() {
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
-  const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
+  const [googleTtsType, setGoogleTtsType] = useState(process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE && process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE !== "" ? process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE : "");
   const [stylebertvits2ServerUrl, setStylebertvits2ServerURL] = useState("http://127.0.0.1:5000");
   const [stylebertvits2ModelId, setStylebertvits2ModelId] = useState("0");
   const [stylebertvits2Style, setStylebertvits2Style] = useState("Neutral");
@@ -293,11 +293,11 @@ export default function Home() {
         }
       } else {
         // ChatVERM original mode
-        if (selectAIService === "openai" && !openAiKey ||
-        selectAIService === "anthropic" && !anthropicKey ||
-        selectAIService === "google" && !googleKey ||
-        selectAIService === "groq" && !groqKey ||
-        selectAIService === "dify" && !difyKey) {
+        if (selectAIService === "openai" && !openAiKey && !process.env.NEXT_PUBLIC_OPEN_AI_KEY ||
+        selectAIService === "anthropic" && !anthropicKey && !process.env.NEXT_PUBLIC_ANTHROPIC_KEY ||
+        selectAIService === "google" && !googleKey && !process.env.NEXT_PUBLIC_GOOGLE_KEY ||
+        selectAIService === "groq" && !groqKey && !process.env.NEXT_PUBLIC_GROQ_KEY ||
+        selectAIService === "dify" && !difyKey && !process.env.NEXT_PUBLIC_DIFY_KEY) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
         }
@@ -319,19 +319,29 @@ export default function Home() {
         ];
 
         let stream;
+
+        const _openAiKey = openAiKey && openAiKey !== "" ? openAiKey : process.env.NEXT_PUBLIC_OPEN_AI_KEY || "";
+        const _anthropicKey = anthropicKey && anthropicKey !== "" ? anthropicKey : process.env.NEXT_PUBLIC_ANTHROPIC_KEY || "";
+        const _googleKey = googleKey && googleKey !== "" ? googleKey : process.env.NEXT_PUBLIC_GOOGLE_KEY || "";
+        const _localLlmUrl = localLlmUrl && localLlmUrl !== "" ? localLlmUrl : process.env.NEXT_PUBLIC_LOCAL_LLM_URL || "";
+        const _selectAIModel = selectAIModel && selectAIModel !== "" ? selectAIModel : process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || "";
+        const _groqKey = groqKey && groqKey !== "" ? groqKey : process.env.NEXT_PUBLIC_GROQ_KEY || "";
+        const _difyKey = difyKey && difyKey !== "" ? difyKey : process.env.NEXT_PUBLIC_DIFY_KEY || "";
+        const _difyUrl = difyUrl && difyUrl !== "" ? difyUrl : process.env.NEXT_PUBLIC_DIFY_URL || "";
+
         try {
           if (selectAIService === "openai") {
-            stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
+            stream = await getOpenAIChatResponseStream(messages, _openAiKey, selectAIModel);
           } else if (selectAIService === "anthropic") {
-            stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
+            stream = await getAnthropicChatResponseStream(messages, _anthropicKey, selectAIModel);
           } else if (selectAIService === "google") {
-            stream = await getGoogleChatResponseStream(messages, googleKey, selectAIModel);
+            stream = await getGoogleChatResponseStream(messages, _googleKey, selectAIModel);
           } else if (selectAIService === "localLlm") {
-            stream = await getLocalLLMChatResponseStream(messages, localLlmUrl, selectAIModel);
+            stream = await getLocalLLMChatResponseStream(messages, _localLlmUrl, _selectAIModel);
           } else if (selectAIService === "groq") {
-            stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
+            stream = await getGroqChatResponseStream(messages, _groqKey, selectAIModel);
           } else if (selectAIService === "dify") {
-            stream = await getDifyChatResponseStream(messages, difyKey, difyUrl);
+            stream = await getDifyChatResponseStream(messages, _difyKey, _difyUrl);
           }
         } catch (e) {
           console.error(e);
