@@ -90,6 +90,11 @@ npm run dev
 - VRMモデルは `public/AvatarSample_B.vrm` のデータを変更してください。名称は変更しないでください。
 - 背景画像は `public/bg-c.jpg` の画像を変更してください。名称は変更しないでください。
 
+### 環境変数の設定
+
+- 一部の設定値は `.env` ファイルの内容を参照することができます。
+- 設定画面で入力した場合は、その値が優先されます。
+
 ## その他
 
 - ライセンスは[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)に準拠します。
