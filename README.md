@@ -1,4 +1,9 @@
 # 誰でもAITuberお試しキット
+
+<p align="center">
+  <img width="400" height="225" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
+</p>
+
 [English version](./en_README.md)
 [Chinese version](./zh_README.md)
 
