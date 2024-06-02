@@ -31,9 +31,10 @@ export const Introduction = ({
   const { t } = useTranslation();
 
   const updateLanguage = () => {
-    console.log('i18n.language', i18n.language);  // 'ja'
+    console.log('i18n.language', i18n.language);
     // selectLanguage: "JP"
-    const languageCode = i18n.language.toUpperCase();
+    let languageCode = i18n.language.toUpperCase();
+    languageCode == "JA" ? "JP" : languageCode
     setSelectLanguage(languageCode);
     setSelectVoiceLanguage(getVoiceLanguageCode(languageCode));
   }
@@ -49,7 +50,7 @@ export const Introduction = ({
       case 'zh-TW':
         return 'zh-TW';
       default:
-        return 'ja-JP';  
+        return 'ja-JP';
     }
   }
 
