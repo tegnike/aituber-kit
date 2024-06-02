@@ -30,6 +30,10 @@ export async function getAnthropicChatResponseStream(
     throw new Error("Anthropic APIリクエストに失敗しました");
   }
 
+  if (!response.body) {
+    throw new Error("Anthropic APIレスポンスが空です");
+  }
+
   const reader = response.body.getReader();
   const decoder = new TextDecoder("utf-8");
 
