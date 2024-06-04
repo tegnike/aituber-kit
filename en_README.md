@@ -17,7 +17,7 @@ This repository has the following 3 features:
 
 I've written a detailed usage guide in the article below:
 
-[![Become an AITuber Developer Today | Nike-chan](https://github.com/tegnike/nike-ChatVRM/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+[![You are AITuber Developer from Today | Nike-chan](https://github.com/tegnike/nike-ChatVRM/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
 ### Common Preparations
 
