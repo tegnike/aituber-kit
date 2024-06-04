@@ -22,6 +22,7 @@
   "GroqInfo": "Groq APIはブラウザから直接アクセスしています。",
   "DifyInfo": "Difyでは、チャットボットタイプのみ対応しています。",
   "DifyInfo2": "なお、Difyの仕様の都合上、会話履歴は保持されないのでその点に注意してください。",
+  "DifyInfo3": "例：http://localhost:81/v1/chat-messages",
   "DifyInstruction": "Difyを使用している場合、このシステムプロンプトは使用されません。Difyチャットボットに設定してください。",
   "EnterURL": "URLを入力",
   "CharacterModelLabel": "キャラクターモデル",

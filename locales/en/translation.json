@@ -22,6 +22,7 @@
   "GroqInfo": "Groq API is accessed directly from the browser.",
   "DifyInfo": "Dify only supports chatbot type.",
   "DifyInfo2": "However, due to the specifications of Dify, the conversation history is not saved, so please be careful.",
+  "DifyInfo3": "Example: http://localhost:81/v1/chat-messages",
   "DifyInstruction": "If you are using Dify, the system prompt will not be used. Please set Dify chatbot.",
   "EnterURL": "URL",
   "CharacterModelLabel": "Character Model",
