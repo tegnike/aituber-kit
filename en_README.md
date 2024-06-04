@@ -1,4 +1,9 @@
 # AITuber Trial Kit for Everyone
+
+<p align="center">
+  <img style="max-width: 100%;" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
+</p>
+
 [Japanese version](./README.md)
 [Chinese version](./zh_README.md)
 
