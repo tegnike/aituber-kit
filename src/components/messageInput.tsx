@@ -1,5 +1,6 @@
 import { IconButton } from "./iconButton";
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 type Props = {
   userMessage: string;
@@ -11,6 +12,7 @@ type Props = {
   onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
+
 export const MessageInput = ({
   userMessage,
   isMicRecording,
@@ -20,6 +22,18 @@ export const MessageInput = ({
   onClickSendButton,
 }: Props) => {
   const { t } = useTranslation();
+  const [rows, setRows] = useState(1);
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (!event.nativeEvent.isComposing && event.key === 'Enter' && !event.shiftKey && userMessage.trim() !== '') {
+      onClickSendButton(event as unknown as React.MouseEvent<HTMLButtonElement>);
+      setRows(1);
+    } else if (event.key === 'Enter' && event.shiftKey) {
+      setRows(rows + 1);
+    } else if (event.key === 'Backspace' && rows > 1 && userMessage.slice(-1) === '\n') {
+      setRows(rows - 1);
+    }
+  };
 
   return (
     <div className="absolute bottom-0 z-20 w-screen">
@@ -33,14 +47,16 @@ export const MessageInput = ({
               disabled={isChatProcessing}
               onClick={onClickMicButton}
             />
-            <input
-              type="text"
+            <textarea
               placeholder={t('EnterYourQuestion')}
               onChange={onChangeUserMessage}
+              onKeyDown={handleKeyPress}
               disabled={isChatProcessing}
               className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"
               value={userMessage}
-            ></input>
+              rows={rows}
+              style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}
+            ></textarea>
 
             <IconButton
               iconName="24/Send"
