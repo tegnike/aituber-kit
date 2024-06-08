@@ -174,6 +174,7 @@ export const Settings = ({
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
+          {/* 言語設定 */}
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
               {t('Language')}
@@ -217,6 +218,22 @@ export const Settings = ({
               </select>
             </div>
           </div>
+          {/* VRMと背景画像の設定 */}
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">
+              {t('CharacterModelLabel')}
+            </div>
+            <div className="my-8">
+              <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
+            </div>
+            <div className="my-16 typography-20 font-bold">
+              {t('BackgroundImage')}
+            </div>
+            <div className="my-8">
+              <TextButton onClick={onClickOpenBgFile}>{t('ChangeBackgroundImage')}</TextButton>
+            </div>
+          </div>
+          {/* 外部接続モード */}
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
               {t('ExternalConnectionMode')}
@@ -233,6 +250,7 @@ export const Settings = ({
               )}
             </div>
           </div>
+          {/* 外部連携モードでない時の設定 */}
           {(() => {
             if (!webSocketMode) {
               return (
@@ -480,30 +498,6 @@ export const Settings = ({
                       })()}
                     </div>
                   </div>
-                </>
-              )
-            }
-          })()}
-          <div className="my-40">
-            <div className="my-16 typography-20 font-bold">
-              {t('CharacterModelLabel')}
-            </div>
-            <div className="my-8">
-              <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
-            </div>
-          </div>
-          <div className="my-40">
-            <div className="my-16 typography-20 font-bold">
-              {t('BackgroundImage')}
-            </div>
-            <div className="my-8">
-              <TextButton onClick={onClickOpenBgFile}>{t('ChangeBackgroundImage')}</TextButton>
-            </div>
-          </div>
-          {(() => {
-            if (!webSocketMode) {
-              return (
-                <>
                   <div className="my-40">
                     <div className="my-8">
                       <div className="my-16 typography-20 font-bold">
@@ -523,10 +517,10 @@ export const Settings = ({
                     ></textarea>
                   </div>
                 </>
-              )
-              }
+              )}
             })()
           }
+          {/* 音声エンジンの選択 */}
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">{t('SyntheticVoiceEngineChoice')}</div>
             <div>{t('VoiceEngineInstruction')}</div>
@@ -716,8 +710,7 @@ export const Settings = ({
                 }
             })()}
           </div>
-          
-
+          {/* チャットログの設定 */}
           {chatLog.length > 0 && (
             <div className="my-40">
               <div className="my-8 grid-cols-2">
