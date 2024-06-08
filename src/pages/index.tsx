@@ -64,6 +64,7 @@ export default function Home() {
   );
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState("");
+  const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
   const [chatProcessingCount, setChatProcessingCount] = useState(0);
@@ -541,6 +542,9 @@ export default function Home() {
       setYoutubeNextPageToken,
       youtubeNoCommentCount,
       setYoutubeNoCommentCount,
+      youtubeContinuationCount,
+      setYoutubeContinuationCount,
+      youtubeSleepMode,
       setYoutubeSleepMode,
       conversationContinuityMode,
       handleSendChat,
@@ -559,6 +563,9 @@ export default function Home() {
     setYoutubeNextPageToken,
     youtubeNoCommentCount,
     setYoutubeNoCommentCount,
+    youtubeContinuationCount,
+    setYoutubeContinuationCount,
+    youtubeSleepMode,
     setYoutubeSleepMode,
     conversationContinuityMode,
     handleSendChat,

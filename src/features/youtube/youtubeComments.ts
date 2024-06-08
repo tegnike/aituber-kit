@@ -74,6 +74,9 @@ export const fetchAndProcessComments = async (
   setYoutubeNextPageToken: (token: string) => void,
   youtubeNoCommentCount: number,
   setYoutubeNoCommentCount: (count: number) => void,
+  youtubeContinuationCount: number,
+  setYoutubeContinuationCount: (count: number) => void,
+  youtubeSleepMode: boolean,
   setYoutubeSleepMode: (mode: boolean) => void,
   conversationContinuityMode: boolean,
   handleSendChat: (text: string, role?: string) => void,
@@ -83,13 +86,17 @@ export const fetchAndProcessComments = async (
     const liveChatId = await getLiveChatId(liveId, youtubeKey);
 
     if (liveChatId) {
-      if (conversationContinuityMode) {
+      console.log("youtubeContinuationCount:", youtubeContinuationCount);
+      if (!youtubeSleepMode && youtubeContinuationCount < 1 && conversationContinuityMode) {
         const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages, openAiKey, selectAIModel);
         if (isContinuationNeeded) {
           const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
           preProcessAIResponse(continuationMessage);
+          setYoutubeContinuationCount(youtubeContinuationCount + 1);
           return;
         }
+      } else {
+        setYoutubeContinuationCount(0);
       }
 
       const youtubeComments = await retrieveLiveComments(liveChatId, youtubeKey, youtubeNextPageToken, setYoutubeNextPageToken);
