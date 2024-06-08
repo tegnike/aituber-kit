@@ -24,7 +24,7 @@ ${systemMessage}
   return modifiedSystemMessage;
 }
 
-export const getBestComment = async (messages: Message[], youtubeComments: any[], openAiKey: string, selectAIService: string): Promise<string> => {
+export const getBestComment = async (messages: Message[], youtubeComments: any[], openAiKey: string, selectAIModel: string): Promise<string> => {
   console.log("getBestComment");
   const lastSixMessages = getLastMessages(messages, 6);
   const systemMessage = `これからあなたに複数ターンの会話歴と2つ以上のコメントを与えます。
@@ -50,7 +50,7 @@ ${lastSixMessages}
     { role: "user", content: "[\n" + youtubeComments.map(comment => comment.userComment).join(",\n") + "\n]" }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIService);
+  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIModel);
 
   return response.message;
 }
@@ -67,7 +67,7 @@ export const getMessagesForSleep = async (systemPrompt: string, messages: Messag
   ];
 }
 
-export const getAnotherTopic = async (messages: Message[], openAiKey: string, selectAIService: string): Promise<string> => {
+export const getAnotherTopic = async (messages: Message[], openAiKey: string, selectAIModel: string): Promise<string> => {
   console.log("getAnotherTopic");
   const lastFourMessages = getLastMessages(messages, 4);
   const queryMessages = [
@@ -82,7 +82,7 @@ export const getAnotherTopic = async (messages: Message[], openAiKey: string, se
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIService);
+  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIModel);
 
   return response.message;
 }
@@ -106,7 +106,7 @@ ${lastFourMessages}`
   ];
 }
 
-export const checkIfResponseContinuationIsRequired = async (messages: Message[], openAiKey: string, selectAIService: string): Promise<boolean> => {
+export const checkIfResponseContinuationIsRequired = async (messages: Message[], openAiKey: string, selectAIModel: string): Promise<boolean> => {
   console.log("checkIfResponseContinuationIsRequired");
   const lastFourMessages = getLastMessages(messages, 4);
   if (!lastFourMessages.includes("assistant:")) {
@@ -173,10 +173,17 @@ B: 見てみたいな。送ってくれない？
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIService);
-
-  const responseJson = JSON.parse(response.message);
-  const isContinuationNeeded = responseJson.answer === "true";
+  // エラーが発生した場合はfalseを返す
+  let answer;
+  try {
+    const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIModel);
+    const responseJson = JSON.parse(response.message);
+    answer = responseJson.answer;
+  } catch (error) {
+    console.error("JSON.parseエラーが発生しました。", error);
+    answer = "false";
+  }
+  const isContinuationNeeded = answer === "true";
 
   return isContinuationNeeded;
 }

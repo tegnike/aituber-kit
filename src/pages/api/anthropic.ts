@@ -35,6 +35,10 @@ export default async function handler(
     }
   });
 
+  while (consolidatedMessages.length > 0 && consolidatedMessages[0].role !== "user") {
+    consolidatedMessages.shift();
+  }
+
   userMessages = consolidatedMessages;
 
   if (stream) {

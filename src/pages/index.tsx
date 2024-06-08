@@ -524,18 +524,17 @@ export default function Home() {
 
   // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async() => {
-    await new Promise(resolve => setTimeout(resolve, 10000));
-
     if (!openAiKey || !youtubeLiveId || !youtubeApiKey || chatProcessing || chatProcessingCount > 0) {
       return;
     }
+    await new Promise(resolve => setTimeout(resolve, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS));
     console.log("Call fetchAndProcessComments !!!");
 
     fetchAndProcessComments(
       systemPrompt,
       chatLog,
       openAiKey,
-      selectAIService,
+      selectAIModel,
       youtubeLiveId,
       youtubeApiKey,
       youtubeNextPageToken,
@@ -549,7 +548,7 @@ export default function Home() {
     );
   }, [
     openAiKey,
-    selectAIService,
+    selectAIModel,
     youtubeLiveId,
     youtubeApiKey,
     chatProcessing,
@@ -573,10 +572,7 @@ export default function Home() {
 
   useEffect(() => {
     console.log("youtubeSleepMode:", youtubeSleepMode);
-    (async () => {
-      await new Promise(resolve => setTimeout(resolve, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS));
-      fetchAndProcessCommentsCallback();
-    })();
+    fetchAndProcessCommentsCallback();
   }, [youtubeNoCommentCount, conversationContinuityMode]);
 
   return (

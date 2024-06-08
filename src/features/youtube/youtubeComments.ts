@@ -67,7 +67,7 @@ export const fetchAndProcessComments = async (
   systemPrompt: string,
   messages: Message[],
   openAiKey: string,
-  selectAIService: string,
+  selectAIModel: string,
   liveId: string,
   youtubeKey: string,
   youtubeNextPageToken: string,
@@ -83,11 +83,13 @@ export const fetchAndProcessComments = async (
     const liveChatId = await getLiveChatId(liveId, youtubeKey);
 
     if (liveChatId) {
-      const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages, openAiKey, selectAIService);
-      if (isContinuationNeeded) {
-        const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
-        preProcessAIResponse(continuationMessage);
-        return;
+      if (conversationContinuityMode) {
+        const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages, openAiKey, selectAIModel);
+        if (isContinuationNeeded) {
+          const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
+          preProcessAIResponse(continuationMessage);
+          return;
+        }
       }
 
       const youtubeComments = await retrieveLiveComments(liveChatId, youtubeKey, youtubeNextPageToken, setYoutubeNextPageToken);
@@ -97,28 +99,30 @@ export const fetchAndProcessComments = async (
         setYoutubeNoCommentCount(0);
         setYoutubeSleepMode(false);
         let selectedComment = "";
-        if (youtubeComments.length > 1) {
-          selectedComment = await getBestComment(messages, youtubeComments, openAiKey, selectAIService);
+        if (youtubeComments.length > 1 && conversationContinuityMode) {
+          selectedComment = await getBestComment(messages, youtubeComments, openAiKey, selectAIModel);
         } else {
           selectedComment = youtubeComments[0].userComment;
         }
         console.log("selectedYoutubeComment:", selectedComment);
 
         handleSendChat(selectedComment);
-      } else if (conversationContinuityMode) {
+      } else {
         const noCommentCount = youtubeNoCommentCount + 1;
-        if (noCommentCount < 3 || 3 < noCommentCount && noCommentCount < 6) {
-          const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
-          preProcessAIResponse(continuationMessage);
-        } else if (noCommentCount === 3) {
-          const anotherTopic = await getAnotherTopic(messages, openAiKey, selectAIService);
-          console.log("anotherTopic:", anotherTopic);
-          const newTopicMessage = await getMessagesForNewTopic(systemPrompt, messages, anotherTopic);
-          preProcessAIResponse(newTopicMessage);
-        } else if (noCommentCount === 6){
-          const messagesForSleep = await getMessagesForSleep(systemPrompt, messages);
-          preProcessAIResponse(messagesForSleep);
-          setYoutubeSleepMode(true);
+        if (conversationContinuityMode) {
+          if (noCommentCount < 3 || 3 < noCommentCount && noCommentCount < 6) {
+            const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
+            preProcessAIResponse(continuationMessage);
+          } else if (noCommentCount === 3) {
+            const anotherTopic = await getAnotherTopic(messages, openAiKey, selectAIModel);
+            console.log("anotherTopic:", anotherTopic);
+            const newTopicMessage = await getMessagesForNewTopic(systemPrompt, messages, anotherTopic);
+            preProcessAIResponse(newTopicMessage);
+          } else if (noCommentCount === 6){
+            const messagesForSleep = await getMessagesForSleep(systemPrompt, messages);
+            preProcessAIResponse(messagesForSleep);
+            setYoutubeSleepMode(true);
+          }
         }
         console.log("YoutubeNoCommentCount:", noCommentCount);
         setYoutubeNoCommentCount(noCommentCount);
