@@ -515,7 +515,7 @@ export default function Home() {
 
   // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async() => {
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     if (!youtubeLiveId || !youtubeApiKey || chatProcessing || chatProcessingCount > 0) {
       return;
