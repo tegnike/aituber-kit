@@ -26,6 +26,10 @@ export async function getGroqChatResponseStream(messages: Message[], apiKey: str
     throw new Error("Groq API request failed");
   }
 
+  if (!response.body) {
+    throw new Error("Groq API response is empty");
+  }
+
   const reader = response.body.getReader();
   const decoder = new TextDecoder("utf-8");
 

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IconButton } from "./iconButton";
 import { TextButton } from "./textButton";
 import { Message } from "@/features/messages/messages";
+import { GitHubLink } from "./githubLink";
 import {
   KoeiroParam,
   PRESET_A,
@@ -135,6 +136,17 @@ export const Settings = ({
 }: Props) => {
   const { t } = useTranslation();
 
+  // Add this useEffect hook
+  useEffect(() => {
+    const storedData = window.localStorage.getItem('chatVRMParams');
+    if (storedData) {
+      const params = JSON.parse(storedData);
+      if (params.selectLanguage) {
+        setSelectLanguage(params.selectLanguage);
+      }
+    }
+  }, [setSelectLanguage]);
+  
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
@@ -148,6 +160,7 @@ export const Settings = ({
 
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
+      <GitHubLink />
       <div className="absolute m-24">
         <IconButton
           iconName="24/Close"
@@ -155,12 +168,15 @@ export const Settings = ({
           onClick={onClickClose}
         ></IconButton>
       </div>
+      <div className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
+        powered by Pixiv, VRoid, Koemotion, VOICEVOX, OpenAI, Anthropic, Google, Groq, Dify
+      </div>
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
-              言語設定 - Language
+              {t('Language')}
             </div>
             <div className="my-8">
               <select
@@ -699,8 +715,9 @@ export const Settings = ({
                   );
                 }
             })()}
-
           </div>
+          
+
           {chatLog.length > 0 && (
             <div className="my-40">
               <div className="my-8 grid-cols-2">

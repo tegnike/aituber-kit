@@ -18,7 +18,6 @@ import { getGroqChatResponseStream } from "@/features/chat/groqChat";
 import { getDifyChatResponseStream } from "@/features/chat/difyChat";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
-import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
 import "@/lib/i18n";
 import { useTranslation } from 'react-i18next';
@@ -43,7 +42,7 @@ export default function Home() {
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
-  const [googleTtsType, setGoogleTtsType] = useState("en-US-Neural2-F");
+  const [googleTtsType, setGoogleTtsType] = useState(process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE && process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE !== "" ? process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE : "");
   const [stylebertvits2ServerUrl, setStylebertvits2ServerURL] = useState("http://127.0.0.1:5000");
   const [stylebertvits2ModelId, setStylebertvits2ModelId] = useState("0");
   const [stylebertvits2Style, setStylebertvits2Style] = useState("Neutral");
@@ -59,7 +58,9 @@ export default function Home() {
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
-  const [backgroundImageUrl, setBackgroundImageUrl] = useState("/bg-c.png");
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState(
+    process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH !== undefined ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH : "/bg-c.png"
+  );
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState("");
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
@@ -411,16 +412,11 @@ export default function Home() {
         setChatProcessing(true);
 
         // ChatVRM original mode
-        if (selectAIService === "openai" && !openAiKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "anthropic" && !anthropicKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "groq" && !groqKey) {
-          setAssistantMessage(t('APIKeyNotEntered'));
-          return;
-        } else if (selectAIService === "dify" && !difyKey) {
+        if (selectAIService === "openai" && !openAiKey && !process.env.NEXT_PUBLIC_OPEN_AI_KEY ||
+        selectAIService === "anthropic" && !anthropicKey && !process.env.NEXT_PUBLIC_ANTHROPIC_KEY ||
+        selectAIService === "google" && !googleKey && !process.env.NEXT_PUBLIC_GOOGLE_KEY ||
+        selectAIService === "groq" && !groqKey && !process.env.NEXT_PUBLIC_GROQ_KEY ||
+        selectAIService === "dify" && !difyKey && !process.env.NEXT_PUBLIC_DIFY_KEY) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
         }
@@ -440,8 +436,33 @@ export default function Home() {
           ...messageLog.slice(-10),
         ];
 
+        let stream;
+
         try {
           await processAIResponse(messageLog, messages);
+
+          const _openAiKey = openAiKey && openAiKey !== "" ? openAiKey : process.env.NEXT_PUBLIC_OPEN_AI_KEY || "";
+          const _anthropicKey = anthropicKey && anthropicKey !== "" ? anthropicKey : process.env.NEXT_PUBLIC_ANTHROPIC_KEY || "";
+          const _googleKey = googleKey && googleKey !== "" ? googleKey : process.env.NEXT_PUBLIC_GOOGLE_KEY || "";
+          const _localLlmUrl = localLlmUrl && localLlmUrl !== "" ? localLlmUrl : process.env.NEXT_PUBLIC_LOCAL_LLM_URL || "";
+          const _selectAIModel = selectAIModel && selectAIModel !== "" ? selectAIModel : process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || "";
+          const _groqKey = groqKey && groqKey !== "" ? groqKey : process.env.NEXT_PUBLIC_GROQ_KEY || "";
+          const _difyKey = difyKey && difyKey !== "" ? difyKey : process.env.NEXT_PUBLIC_DIFY_KEY || "";
+          const _difyUrl = difyUrl && difyUrl !== "" ? difyUrl : process.env.NEXT_PUBLIC_DIFY_URL || "";
+
+          if (selectAIService === "openai") {
+            stream = await getOpenAIChatResponseStream(messages, _openAiKey, selectAIModel);
+          } else if (selectAIService === "anthropic") {
+            stream = await getAnthropicChatResponseStream(messages, _anthropicKey, selectAIModel);
+          } else if (selectAIService === "google") {
+            stream = await getGoogleChatResponseStream(messages, _googleKey, selectAIModel);
+          } else if (selectAIService === "localLlm") {
+            stream = await getLocalLLMChatResponseStream(messages, _localLlmUrl, _selectAIModel);
+          } else if (selectAIService === "groq") {
+            stream = await getGroqChatResponseStream(messages, _groqKey, selectAIModel);
+          } else if (selectAIService === "dify") {
+            stream = await getDifyChatResponseStream(messages, _difyKey, _difyUrl);
+          }
         } catch (e) {
           console.error(e);
         }
@@ -574,6 +595,9 @@ export default function Home() {
           <Introduction
             dontShowIntroduction={dontShowIntroduction}
             onChangeDontShowIntroduction={setDontShowIntroduction}
+            selectLanguage={selectLanguage}
+            setSelectLanguage={setSelectLanguage}
+            setSelectVoiceLanguage={setSelectVoiceLanguage}
           />
         )}
         <VrmViewer />
@@ -640,7 +664,6 @@ export default function Home() {
           setSelectVoiceLanguage={setSelectVoiceLanguage}
           setBackgroundImageUrl={setBackgroundImageUrl}
         />
-        <GitHubLink />
       </div>
     </>
   );

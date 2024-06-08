@@ -44,7 +44,37 @@ const createSpeakCharacter = () => {
           () => null
         );
       } else if (selectVoice == "google") {
-        buffer = await fetchAudioGoogle(screenplay.talk, googleTtsType).catch(
+
+        const getGppgleTTsType = (selectLanguage: string) => {
+          if (selectLanguage) {
+            switch (selectLanguage) {
+              case 'JP':
+                return 'ja-JP-Standard-B';
+              case 'EN':
+                return 'en-US-Neural2-F';
+              case 'ZH':
+                return 'cmn-TW-Standard-A';
+              default:
+                return 'en-US-Neural2-F';  
+            }
+          }
+        }
+
+        let googleTtsTypeByLang:string = '';
+        if (!googleTtsType || googleTtsType === "") {
+          const storedData = window.localStorage.getItem('chatVRMParams');
+          
+          if (storedData) {
+            const params = JSON.parse(storedData);
+            const langCode = params.selectLanguage;
+            if (langCode) {
+              googleTtsTypeByLang = getGppgleTTsType(langCode) ?? '';
+            }
+          }
+        } else {
+          googleTtsTypeByLang = googleTtsType;
+        }
+        buffer = await fetchAudioGoogle(screenplay.talk, googleTtsTypeByLang).catch(
           () => null
         );
       } else if (selectVoice == "stylebertvits2") {

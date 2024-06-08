@@ -53,5 +53,22 @@
   "APIKeyNotEntered": "APIキーが入力されていません。",
   "CodeLog": "コードログ",
   "ChatLog": "会話ログ",
-  "EnterYourQuestion": "聞きたいことをいれてね"
+  "EnterYourQuestion": "聞きたいことをいれてね",
+  "AboutThisApplication": "このアプリケーションについて",
+  "AboutThisApplicationDescription": "Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。<br />設定は左上のメニューボタンから変更できます。",
+  "TechnologyIntroduction": "技術紹介",
+  "TechnologyIntroductionDescription1": "このアプリはpixiv社の<b>ChatVRM</b>を改造して作成されています。元のソースコードは",
+  "TechnologyIntroductionLink1": "こちら",
+  "TechnologyIntroductionDescription2": "をご覧ください。",
+  "TechnologyIntroductionDescription3": "3Dモデルの表示や操作には",
+  "TechnologyIntroductionDescription4": "、 会話文生成には",
+  "TechnologyIntroductionDescription5": "などの各種LLM、 音声合成には",
+  "TechnologyIntroductionDescription6": "などの各種TTSを使用しています。 詳細はこちらの",
+  "TechnologyIntroductionLink2": "解説記事",
+  "TechnologyIntroductionDescription7": "をご覧ください。",
+  "SourceCodeDescription1": "このアプリのソースコードはGitHubで公開しています。自由に変更や改変可能です。",
+  "RepositoryURL": "リポジトリURL:",
+  "DontShowIntroductionNextTime": "次回からこのダイアログを表示しない",
+  "Close": "閉じる",
+  "Language": "言語設定"
 }

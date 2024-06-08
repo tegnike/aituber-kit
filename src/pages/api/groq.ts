@@ -64,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
     if (stream) {
-      const reader = stream.getReader();
+      const reader = (stream as unknown as { getReader: () => ReadableStreamDefaultReader<Uint8Array> }).getReader();
       const decoder = new TextDecoder("utf-8");
 
       while (true) {
@@ -94,7 +94,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .catch(async (err) => {
         if (err instanceof Groq.APIError) {
           console.error('Groq API Error:', err);
-          res.status(err.status).json({ error: err });
+          if (err.status) {
+            res.status(err.status).json({ error: err });
+          }
         } else {
           throw err;
         }

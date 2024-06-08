@@ -1,4 +1,9 @@
 # 誰でもAITuberお試しキット
+
+<p align="center">
+  <img style="max-width: 100%;" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
+</p>
+
 [English version](./en_README.md)
 [Chinese version](./zh_README.md)
 
@@ -89,6 +94,11 @@ npm run dev
 
 - VRMモデルは `public/AvatarSample_B.vrm` のデータを変更してください。名称は変更しないでください。
 - 背景画像は `public/bg-c.jpg` の画像を変更してください。名称は変更しないでください。
+
+### 環境変数の設定
+
+- 一部の設定値は `.env` ファイルの内容を参照することができます。
+- 設定画面で入力した場合は、その値が優先されます。
 
 ## その他
 

@@ -1,5 +1,6 @@
 import { OpenAI } from "openai";
 import { Message } from "../messages/messages";
+import { ChatCompletionMessageParam } from "openai/resources";
 
 export async function getOpenAIChatResponse(messages: Message[], apiKey: string, model: string) {
   if (!apiKey) {
@@ -14,7 +15,7 @@ export async function getOpenAIChatResponse(messages: Message[], apiKey: string,
   try {
     const data = await openai.chat.completions.create({
       model: model,
-      messages: messages,
+      messages: messages as ChatCompletionMessageParam[],
     });
 
     const [aiRes] = data.choices;
@@ -52,7 +53,7 @@ export async function getOpenAIChatResponseStream(
 
   const stream = await openai.chat.completions.create({
     model: model,
-    messages: messages,
+    messages: messages as ChatCompletionMessageParam[],
     stream: true,
     max_tokens: 200,
   });
