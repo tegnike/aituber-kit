@@ -17,7 +17,7 @@ import speakers from './speakers.json';
 
 type Props = {
   selectAIService: string;
-  setSelectAIService: (service: string) => void;
+  onChangeAIService: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   selectAIModel: string;
   setSelectAIModel: (model: string) => void;
   openAiKey: string;
@@ -79,7 +79,7 @@ type Props = {
 };
 export const Settings = ({
   selectAIService,
-  setSelectAIService,
+  onChangeAIService,
   selectAIModel,
   setSelectAIModel,
   openAiKey,
@@ -269,7 +269,7 @@ export const Settings = ({
                         value={selectAIService}
                         onChange={(e) => {
                           const newService = e.target.value as keyof typeof defaultModels;
-                          setSelectAIService(newService);
+                          onChangeAIService(e);
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
                           setSelectAIModel(defaultModels[newService]);
                         }}
@@ -499,12 +499,17 @@ export const Settings = ({
                               <div className="my-16 typography-20 font-bold">
                                 {t('ConversationContinuityMode')}
                               </div>
+                              <div className="my-8">{t('ConversationContinuityModeInfo')}</div>
                               {conversationContinuityMode ? (
-                                <TextButton onClick={() => onChangeConversationContinuityMode(false)}>
+                                <TextButton
+                                  onClick={() => onChangeConversationContinuityMode(false)}
+                                  disabled={selectAIService !== "openai"}>
                                   {t('StatusOn')}
                                 </TextButton>
                               ) : (
-                                <TextButton onClick={() => onChangeConversationContinuityMode(true)}>
+                                <TextButton
+                                  onClick={() => onChangeConversationContinuityMode(true)}
+                                  disabled={selectAIService !== "openai"}>
                                   {t('StatusOff')}
                                 </TextButton>
                               )}

@@ -526,7 +526,7 @@ export default function Home() {
   const fetchAndProcessCommentsCallback = useCallback(async() => {
     await new Promise(resolve => setTimeout(resolve, 10000));
 
-    if (!youtubeLiveId || !youtubeApiKey || chatProcessing || chatProcessingCount > 0) {
+    if (!openAiKey || !youtubeLiveId || !youtubeApiKey || chatProcessing || chatProcessingCount > 0) {
       return;
     }
     console.log("Call fetchAndProcessComments !!!");
@@ -534,6 +534,8 @@ export default function Home() {
     fetchAndProcessComments(
       systemPrompt,
       chatLog,
+      openAiKey,
+      selectAIService,
       youtubeLiveId,
       youtubeApiKey,
       youtubeNextPageToken,
@@ -546,6 +548,8 @@ export default function Home() {
       preProcessAIResponse
     );
   }, [
+    openAiKey,
+    selectAIService,
     youtubeLiveId,
     youtubeApiKey,
     chatProcessing,
@@ -596,7 +600,7 @@ export default function Home() {
         />
         <Menu
           selectAIService={selectAIService}
-          setSelectAIService={setSelectAIService}
+          onChangeAIService={setSelectAIService}
           selectAIModel={selectAIModel}
           setSelectAIModel={setSelectAIModel}
           openAiKey={openAiKey}

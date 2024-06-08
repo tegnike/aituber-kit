@@ -6,7 +6,7 @@
   "YoutubeAPIKey": "YouTube API キー",
   "YoutubeLiveID": "YouTube Live ID",
   "ConversationContinuityMode": "会話継続モード",
-  "ConversationContinuityModeInfo": "コメントが無いときにAIが自ら会話を継続しようとするモードです。",
+  "ConversationContinuityModeInfo": "コメントが無いときにAIが自ら会話を継続しようとするモードです。現在OpenAIのみ対応しています。",
   "StatusOn": "状態：ON",
   "StatusOff": "状態：OFF",
   "SelectAIService": "AIサービスを選択",

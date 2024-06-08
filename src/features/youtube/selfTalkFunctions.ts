@@ -24,7 +24,7 @@ ${systemMessage}
   return modifiedSystemMessage;
 }
 
-export const getBestComment = async (messages: Message[], youtubeComments: any[]): Promise<string> => {
+export const getBestComment = async (messages: Message[], youtubeComments: any[], openAiKey: string, selectAIService: string): Promise<string> => {
   console.log("getBestComment");
   const lastSixMessages = getLastMessages(messages, 6);
   const systemMessage = `これからあなたに複数ターンの会話歴と2つ以上のコメントを与えます。
@@ -50,7 +50,7 @@ ${lastSixMessages}
     { role: "user", content: "[\n" + youtubeComments.map(comment => comment.userComment).join(",\n") + "\n]" }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
+  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIService);
 
   return response.message;
 }
@@ -67,7 +67,7 @@ export const getMessagesForSleep = async (systemPrompt: string, messages: Messag
   ];
 }
 
-export const getAnotherTopic = async (messages: Message[]): Promise<string> => {
+export const getAnotherTopic = async (messages: Message[], openAiKey: string, selectAIService: string): Promise<string> => {
   console.log("getAnotherTopic");
   const lastFourMessages = getLastMessages(messages, 4);
   const queryMessages = [
@@ -82,7 +82,7 @@ export const getAnotherTopic = async (messages: Message[]): Promise<string> => {
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
+  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIService);
 
   return response.message;
 }
@@ -106,7 +106,7 @@ ${lastFourMessages}`
   ];
 }
 
-export const checkIfResponseContinuationIsRequired = async (messages: Message[]): Promise<boolean> => {
+export const checkIfResponseContinuationIsRequired = async (messages: Message[], openAiKey: string, selectAIService: string): Promise<boolean> => {
   console.log("checkIfResponseContinuationIsRequired");
   const lastFourMessages = getLastMessages(messages, 4);
   if (!lastFourMessages.includes("assistant:")) {
@@ -173,7 +173,7 @@ B: 見てみたいな。送ってくれない？
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
+  const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIService);
 
   const responseJson = JSON.parse(response.message);
   const isContinuationNeeded = responseJson.answer === "true";

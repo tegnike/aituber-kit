@@ -6,7 +6,7 @@
   "YoutubeAPIKey": "YouTube API Key",
   "YoutubeLiveID": "YouTube Live ID",
   "ConversationContinuityMode": "Conversation Continuity Mode",
-  "ConversationContinuityModeInfo": "When there is no comment, AI tries to continue the conversation.",
+  "ConversationContinuityModeInfo": "When there is no comment, AI tries to continue the conversation. Currently only OpenAI is supported.",
   "StatusOn": "Status: ON",
   "StatusOff": "Status: OFF",
   "SelectAIService": "Select AI Service",

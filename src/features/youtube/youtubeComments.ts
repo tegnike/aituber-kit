@@ -66,6 +66,8 @@ const retrieveLiveComments = async (
 export const fetchAndProcessComments = async (
   systemPrompt: string,
   messages: Message[],
+  openAiKey: string,
+  selectAIService: string,
   liveId: string,
   youtubeKey: string,
   youtubeNextPageToken: string,
@@ -81,7 +83,7 @@ export const fetchAndProcessComments = async (
     const liveChatId = await getLiveChatId(liveId, youtubeKey);
 
     if (liveChatId) {
-      const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages);
+      const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages, openAiKey, selectAIService);
       if (isContinuationNeeded) {
         const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
         preProcessAIResponse(continuationMessage);
@@ -96,7 +98,7 @@ export const fetchAndProcessComments = async (
         setYoutubeSleepMode(false);
         let selectedComment = "";
         if (youtubeComments.length > 1) {
-          selectedComment = await getBestComment(messages, youtubeComments);
+          selectedComment = await getBestComment(messages, youtubeComments, openAiKey, selectAIService);
         } else {
           selectedComment = youtubeComments[0].userComment;
         }
@@ -109,7 +111,7 @@ export const fetchAndProcessComments = async (
           const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
           preProcessAIResponse(continuationMessage);
         } else if (noCommentCount === 3) {
-          const anotherTopic = await getAnotherTopic(messages);
+          const anotherTopic = await getAnotherTopic(messages, openAiKey, selectAIService);
           console.log("anotherTopic:", anotherTopic);
           const newTopicMessage = await getMessagesForNewTopic(systemPrompt, messages, anotherTopic);
           preProcessAIResponse(newTopicMessage);
