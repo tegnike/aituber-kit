@@ -409,8 +409,6 @@ export default function Home() {
           }
         }
       } else {
-        setChatProcessing(true);
-
         // ChatVRM original mode
         if (selectAIService === "openai" && !openAiKey && !process.env.NEXT_PUBLIC_OPEN_AI_KEY ||
         selectAIService === "anthropic" && !anthropicKey && !process.env.NEXT_PUBLIC_ANTHROPIC_KEY ||
@@ -421,6 +419,7 @@ export default function Home() {
           return;
         }
 
+        setChatProcessing(true);
         // ユーザーの発言を追加して表示
         const messageLog: Message[] = [
           ...chatLog,
