@@ -11,6 +11,7 @@ const getLastMessages = (messages: Message[], numberOfMessages: number): string 
 
 const getModifiedSystemMessage = async (systemMessage: string): Promise<string> => {
   const modifiedSystemMessage = `これからあなたには下記のキャラになりきって、次に与えられた状況になったときのコメントを生成してもらいます。
+キャラクターの口調や性格を考慮してコメントを生成してください。
 
 ## キャラクター設定
 
@@ -49,7 +50,7 @@ ${lastSixMessages}
     { role: "user", content: "[\n" + youtubeComments.map(comment => comment.userComment).join(",\n") + "\n]" }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-3.5-turbo");
+  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
 
   return response.message;
 }
@@ -81,7 +82,7 @@ export const getAnotherTopic = async (messages: Message[]): Promise<string> => {
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-3.5-turbo");
+  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
 
   return response.message;
 }
@@ -93,6 +94,7 @@ export const getMessagesForNewTopic = async (systemPrompt: string, messages: Mes
   const userMessage = `- 話題を切り替えたいと思います。
 - 次の話題は「${topic}」です。
 - 以下の会話文から話を切り替えるとして、キャラになりきって発言してください。
+- 話題を切り替える旨のセリフも入れてください。
 - なお、あなたはassistantの発言をしたと仮定します。
 
 ## 会話歴
@@ -171,7 +173,7 @@ B: 見てみたいな。送ってくれない？
     { role: "user", content: "## 会話文\n" + lastFourMessages }
   ]
 
-  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-3.5-turbo");
+  const response = await getOpenAIChatResponse(queryMessages, "", "gpt-4o");
 
   const responseJson = JSON.parse(response.message);
   const isContinuationNeeded = responseJson.answer === "true";
@@ -183,7 +185,49 @@ export const getMessagesForContinuation = async (systemPrompt: string, messages:
   console.log("getMessagesForContinuation");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastFourMessages = getLastMessages(messages, 4);
-  const userMessage = `- 下記の会話に続くコメントを生成してください。\n- なお、あなたはassistantの発言をしたと仮定します。\n\n${lastFourMessages}`
+  const userMessage = `- あなたはassistantです。下記の会話に続くような自然なコメントを生成してください。
+- ただし、可能な限り直前と同じ内容の旨のコメントは避けること。
+
+## 例
+
+1.
+### 会話歴
+user: おはよう
+assistant: [happy] おはようございます！[neutral] 今日は何か楽しい予定がありますか？
+### あなたのコメント例
+[happy] 私はこれから友達とランチに行く予定です！
+
+2.
+### 会話歴
+user: おはよう
+assistant: [happy] おはようございます！[neutral] 今日は何か楽しい予定がありますか？
+assistant: [happy] 私はこれから友達とランチに行く予定です！
+### あなたのコメント例
+[neutral] まだ観る映画は決めていないんですけど、何かおすすめがあれば教えてください！
+
+3.
+### 会話歴
+user: 今日もいい天気だね～
+assistant: [happy] そうだね！[happy] 外で遊ぶには最高の日和だね！
+### あなたのコメント例
+[neutral] どこかに遊びに行く予定はあるの？
+
+4.
+### 会話歴
+user: こんにちは
+assistant: [happy] こんにちは！[happy] 元気ですか？
+### あなたのコメント例
+[neutral] 最近、何か面白いことがありましたか？
+
+4.
+### 会話歴
+user: こんにちは
+assistant: [happy] こんにちは！[happy] 元気ですか？
+assistant: [neutral] 最近、何か面白いことがありましたか？
+### あなたのコメント例
+[neutral] 私は最近、新しい趣味を始めたんです。なんだと思いますか？
+
+${lastFourMessages}`
   return [
     { role: "system", content: modifiedSystemMessage },
     { role: "user", content: userMessage }
