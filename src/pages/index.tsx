@@ -239,19 +239,29 @@ export default function Home() {
   const processAIResponse = useCallback(async (currentChatLog: Message[], messages: Message[]) => {
     setChatProcessing(true);
     let stream;
+
+    const _openAiKey = openAiKey && openAiKey !== "" ? openAiKey : process.env.NEXT_PUBLIC_OPEN_AI_KEY || "";
+    const _anthropicKey = anthropicKey && anthropicKey !== "" ? anthropicKey : process.env.NEXT_PUBLIC_ANTHROPIC_KEY || "";
+    const _googleKey = googleKey && googleKey !== "" ? googleKey : process.env.NEXT_PUBLIC_GOOGLE_KEY || "";
+    const _localLlmUrl = localLlmUrl && localLlmUrl !== "" ? localLlmUrl : process.env.NEXT_PUBLIC_LOCAL_LLM_URL || "";
+    const _selectAIModel = selectAIModel && selectAIModel !== "" ? selectAIModel : process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || "";
+    const _groqKey = groqKey && groqKey !== "" ? groqKey : process.env.NEXT_PUBLIC_GROQ_KEY || "";
+    const _difyKey = difyKey && difyKey !== "" ? difyKey : process.env.NEXT_PUBLIC_DIFY_KEY || "";
+    const _difyUrl = difyUrl && difyUrl !== "" ? difyUrl : process.env.NEXT_PUBLIC_DIFY_URL || "";
+
     try {
       if (selectAIService === "openai") {
-        stream = await getOpenAIChatResponseStream(messages, openAiKey, selectAIModel);
+        stream = await getOpenAIChatResponseStream(messages, _openAiKey, selectAIModel);
       } else if (selectAIService === "anthropic") {
-        stream = await getAnthropicChatResponseStream(messages, anthropicKey, selectAIModel);
+        stream = await getAnthropicChatResponseStream(messages, _anthropicKey, selectAIModel);
       } else if (selectAIService === "google") {
-        stream = await getGoogleChatResponseStream(messages, googleKey, selectAIModel);
+        stream = await getGoogleChatResponseStream(messages, _googleKey, selectAIModel);
       } else if (selectAIService === "localLlm") {
-        stream = await getLocalLLMChatResponseStream(messages, localLlmUrl, selectAIModel);
+        stream = await getLocalLLMChatResponseStream(messages, _localLlmUrl, _selectAIModel);
       } else if (selectAIService === "groq") {
-        stream = await getGroqChatResponseStream(messages, groqKey, selectAIModel);
+        stream = await getGroqChatResponseStream(messages, _groqKey, selectAIModel);
       } else if (selectAIService === "dify") {
-        stream = await getDifyChatResponseStream(messages, difyKey, difyUrl);
+        stream = await getDifyChatResponseStream(messages, _difyKey, _difyUrl);
       }
     } catch (e) {
       console.error(e);
@@ -435,33 +445,8 @@ export default function Home() {
           ...messageLog.slice(-10),
         ];
 
-        let stream;
-
-        const _openAiKey = openAiKey && openAiKey !== "" ? openAiKey : process.env.NEXT_PUBLIC_OPEN_AI_KEY || "";
-        const _anthropicKey = anthropicKey && anthropicKey !== "" ? anthropicKey : process.env.NEXT_PUBLIC_ANTHROPIC_KEY || "";
-        const _googleKey = googleKey && googleKey !== "" ? googleKey : process.env.NEXT_PUBLIC_GOOGLE_KEY || "";
-        const _localLlmUrl = localLlmUrl && localLlmUrl !== "" ? localLlmUrl : process.env.NEXT_PUBLIC_LOCAL_LLM_URL || "";
-        const _selectAIModel = selectAIModel && selectAIModel !== "" ? selectAIModel : process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || "";
-        const _groqKey = groqKey && groqKey !== "" ? groqKey : process.env.NEXT_PUBLIC_GROQ_KEY || "";
-        const _difyKey = difyKey && difyKey !== "" ? difyKey : process.env.NEXT_PUBLIC_DIFY_KEY || "";
-        const _difyUrl = difyUrl && difyUrl !== "" ? difyUrl : process.env.NEXT_PUBLIC_DIFY_URL || "";
-
         try {
           await processAIResponse(messageLog, messages);
-
-          if (selectAIService === "openai") {
-            stream = await getOpenAIChatResponseStream(messages, _openAiKey, selectAIModel);
-          } else if (selectAIService === "anthropic") {
-            stream = await getAnthropicChatResponseStream(messages, _anthropicKey, selectAIModel);
-          } else if (selectAIService === "google") {
-            stream = await getGoogleChatResponseStream(messages, _googleKey, selectAIModel);
-          } else if (selectAIService === "localLlm") {
-            stream = await getLocalLLMChatResponseStream(messages, _localLlmUrl, _selectAIModel);
-          } else if (selectAIService === "groq") {
-            stream = await getGroqChatResponseStream(messages, _groqKey, selectAIModel);
-          } else if (selectAIService === "dify") {
-            stream = await getDifyChatResponseStream(messages, _difyKey, _difyUrl);
-          }
         } catch (e) {
           console.error(e);
         }
@@ -469,7 +454,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, googleKey, groqKey, difyKey, chatLog, systemPrompt, processAIResponse, localLlmUrl, selectAIModel, difyUrl]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, googleKey, groqKey, difyKey, chatLog, systemPrompt, processAIResponse]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
