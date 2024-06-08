@@ -31,12 +31,14 @@ export const getBestComment = async (messages: Message[], youtubeComments: any[]
 これからあなたに複数の会話履歴と選択肢となるコメントが与えられます。
 これらの情報を基に、会話の流れに最も適したコメントを1つ選んでください。選んだコメントの内容のみを返答としてください。
 
-## 実施例
+## 例
 ### コメント一覧
-- 知らないな、いつの年代の映画？
-- そうなんだ
-- 明後日の天気は？
-- ポケモン好き？
+[
+​知らないな、いつの年代の映画？,
+​そうなんだ,
+​明後日の天気は？,
+​ポケモン好き？,
+]
 
 ### 選択したコメント
 明後日の天気は？
@@ -74,8 +76,8 @@ export const getAnotherTopic = async (messages: Message[], openAiKey: string, se
   console.log("getAnotherTopic");
   const lastFourMessages = getLastMessages(messages, 4);
   const queryMessages = [
-    { role: "system", content: `次に渡される会話文から関連するが別の話題を1つ考えてください。
-結果は単語か非口語の短文で返してください。
+    { role: "system", content: `次に渡される会話文から関連する別の話題を1つ考えてください。
+回答は単語か非口語の短文で返してください。
 
 ## 解答例
 - 最近見た映画
@@ -96,9 +98,8 @@ export const getMessagesForNewTopic = async (systemPrompt: string, messages: Mes
   console.log("getMessagesForNewTopic");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastFourMessages = getLastMessages(messages, 4);
-  const userMessage = `- 話題を切り替えたいと思います。
-- 次の話題は「${topic}」です。
-- 以下の会話文から話を切り替えるとして、キャラになりきって発言してください。
+  const userMessage = `- 話題を切り替えたいです。次の話題は「${topic}」です。
+- 以下の会話文から話を切り替えるとして、与えられたキャラになりきって発言してください。
 - 話題を切り替える旨のセリフも入れてください。
 - なお、あなたはassistantの発言をしたと仮定します。
 
@@ -113,8 +114,8 @@ ${lastFourMessages}`
 
 export const checkIfResponseContinuationIsRequired = async (messages: Message[], openAiKey: string, selectAIModel: string): Promise<boolean> => {
   console.log("checkIfResponseContinuationIsRequired");
-  const lastFourMessages = getLastMessages(messages, 4);
-  if (!lastFourMessages.includes("assistant:")) {
+  const lastSixMessages = getLastMessages(messages, 6);
+  if (!lastSixMessages.includes("assistant:")) {
     return false;
   }
 
@@ -130,7 +131,7 @@ B: 朝のうちは晴れるみたいだけど、午後から雨が降るって�
 A: そうなんだ。じゃあ、朝のうちに買い物に行こうかな。
 B: うん、それがいいと思う。
 {
-  "answer": false,
+  "answer": "false",
   "reason": "Bの同意で一旦区切りがついており、次はAが話す番だと判断できる。"
 }
 
@@ -140,7 +141,7 @@ B: ああ、イタリアンのお店でしょ？メニューを見たら美味�
 A: 良かったら今度一緒に行ってみない？
 B: ぜひ行きたいな。
 {
-  "answer": true,
+  "answer": "true",
   "reason": "Bの発言では会話が完結しておらず、予定の詳細などを話す必要があると判断できる。"
 }
 
@@ -150,7 +151,7 @@ B: 私も同じだよ。プロジェクトの締め切りが近くて残業ば�
 A: 体調管理に気を付けないとね。
 B: そうだね。お互い頑張ろう。
 {
-  "answer": false,
+  "answer": "false",
   "reason": "Bの励ましで一旦区切りがついており、次はAが話す番だと判断できる。"
 }
 
@@ -160,7 +161,7 @@ B: 国内だったら、京都とか北海道はどうかな。
 A: そうだね。自然も豊かだし、食べ物も美味しそう。
 B: 海外だと、ヨーロッパとかも楽しいよ。
 {
-  "answer": true,
+  "answer": "true",
   "reason": "Bの発言で新しい提案があり、続けて旅行の話を深める必要があると判断できる。"
 }
 
@@ -170,7 +171,7 @@ B: どんな動画だったの？
 A: 犬と猫が一緒に遊んでる動画で、すごく仲良しなんだよ。
 B: 見てみたいな。送ってくれない？
 {
-  "answer": false,
+  "answer": "false",
   "reason": "Bの要求で一旦区切りがついており、次はAが動画を送信するなどの行動を取る番だと判断できる。"
 }
 
@@ -178,7 +179,7 @@ B: 見てみたいな。送ってくれない？
 
   const queryMessages = [
     { role: "system", content: systemMessage },
-    { role: "user", content: lastFourMessages }
+    { role: "user", content: lastSixMessages }
   ]
 
   // エラーが発生した場合はfalseを返す
@@ -187,10 +188,12 @@ B: 見てみたいな。送ってくれない？
     const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIModel);
     const responseJson = JSON.parse(response.message);
     answer = responseJson.answer;
+    answer = answer.toString();
   } catch (error) {
     console.error("JSON.parseエラーが発生しました。", error);
     answer = "false";
   }
+  console.log("answer:", answer);
   const isContinuationNeeded = answer === "true";
 
   return isContinuationNeeded;
@@ -199,7 +202,7 @@ B: 見てみたいな。送ってくれない？
 export const getMessagesForContinuation = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
   console.log("getMessagesForContinuation");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
-  const lastFourMessages = getLastMessages(messages, 4);
+  const lastSixMessages = getLastMessages(messages, 6);
   const userMessage = `- あなたはassistantです。下記の会話に続くような自然なコメントを生成してください。
 - ただし、可能な限り直前と同じ内容の旨のコメントは避けること。
 
@@ -244,7 +247,7 @@ assistant: [neutral] 最近、何か面白いことがありましたか？
 
 ## 判定すべき会話歴
 
-${lastFourMessages}`
+${lastSixMessages}`
 
   return [
     { role: "system", content: modifiedSystemMessage },
