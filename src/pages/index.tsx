@@ -470,7 +470,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, groqKey, difyKey, chatLog, systemPrompt, processAIResponse]
+    [webSocketMode, koeiroParam, handleSpeakAi, codeLog, t, selectAIService, openAiKey, anthropicKey, googleKey, groqKey, difyKey, chatLog, systemPrompt, processAIResponse, localLlmUrl, selectAIModel, difyUrl]
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
