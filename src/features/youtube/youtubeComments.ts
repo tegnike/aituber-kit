@@ -109,10 +109,14 @@ export const fetchAndProcessComments = async (
         setYoutubeNoCommentCount(0);
         setYoutubeSleepMode(false);
         let selectedComment = "";
-        if (youtubeComments.length > 1 && conversationContinuityMode) {
-          selectedComment = await getBestComment(messages, youtubeComments, openAiKey, selectAIModel);
+        if (conversationContinuityMode) {
+          if (youtubeComments.length > 1) {
+            selectedComment = await getBestComment(messages, youtubeComments, openAiKey, selectAIModel);
+          } else {
+            selectedComment = youtubeComments[0].userComment;
+          }
         } else {
-          selectedComment = youtubeComments[0].userComment;
+          selectedComment = youtubeComments[Math.floor(Math.random() * youtubeComments.length)].userComment;
         }
         console.log("selectedYoutubeComment:", selectedComment);
 
