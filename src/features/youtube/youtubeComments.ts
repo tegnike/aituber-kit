@@ -86,7 +86,7 @@ export const fetchAndProcessComments = async (
     const liveChatId = await getLiveChatId(liveId, youtubeKey);
 
     if (liveChatId) {
-      console.log("youtubeContinuationCount:", youtubeContinuationCount);
+      // 会話の継続が必要かどうかを確認
       if (!youtubeSleepMode && youtubeContinuationCount < 1 && conversationContinuityMode) {
         const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages, openAiKey, selectAIModel);
         if (isContinuationNeeded) {
@@ -99,8 +99,8 @@ export const fetchAndProcessComments = async (
         setYoutubeContinuationCount(0);
       }
 
+      // コメントを取得
       const youtubeComments = await retrieveLiveComments(liveChatId, youtubeKey, youtubeNextPageToken, setYoutubeNextPageToken);
-
       // ランダムなコメントを選択して送信
       if (youtubeComments.length > 0) {
         setYoutubeNoCommentCount(0);
@@ -118,15 +118,18 @@ export const fetchAndProcessComments = async (
         const noCommentCount = youtubeNoCommentCount + 1;
         if (conversationContinuityMode) {
           if (noCommentCount < 3 || 3 < noCommentCount && noCommentCount < 6) {
+            // 会話の続きを生成
             const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
             preProcessAIResponse(continuationMessage);
           } else if (noCommentCount === 3) {
+            // 新しいトピックを生成
             const anotherTopic = await getAnotherTopic(messages, openAiKey, selectAIModel);
             console.log("anotherTopic:", anotherTopic);
             const newTopicMessage = await getMessagesForNewTopic(systemPrompt, messages, anotherTopic);
             preProcessAIResponse(newTopicMessage);
           } else if (noCommentCount === 6){
-            const messagesForSleep = await getMessagesForSleep(systemPrompt, messages);
+            // スリープモードにする
+            const messagesForSleep = await getMessagesForSleep(systemPrompt);
             preProcessAIResponse(messagesForSleep);
             setYoutubeSleepMode(true);
           }

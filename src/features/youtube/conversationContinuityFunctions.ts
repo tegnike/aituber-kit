@@ -1,6 +1,14 @@
 import { Message } from "@/features/messages/messages";
 import { getOpenAIChatResponse } from "@/features/chat/openAiChat";
 
+/**
+ * 指定された数の最新メッセージを取得し、文字列として返します。
+ * ユーザーとアシスタントのメッセージのみを対象とします。
+ * 
+ * @param {Message[]} messages - メッセージの配列
+ * @param {number} numberOfMessages - 取得するメッセージの数
+ * @returns {string} - ロールと内容を含むメッセージの文字列
+ */
 const getLastMessages = (messages: Message[], numberOfMessages: number): string => {
   return messages
     .filter(message => message.role === "user" || message.role === "assistant")
@@ -9,6 +17,12 @@ const getLastMessages = (messages: Message[], numberOfMessages: number): string 
     .join("\n");
 }
 
+/**
+ * システムメッセージを受け取り、修正したシステムメッセージを返します。
+ * 
+ * @param {string} systemMessage - システムメッセージ
+ * @returns {Promise<string>} - 修正されたシステムメッセージ
+ */
 const getModifiedSystemMessage = async (systemMessage: string): Promise<string> => {
   const modifiedSystemMessage = `# キャラクター設定
 以下のキャラクター情報をもとに、ユーザーから提供される具体的な状況に合わせたコメントを生成してください。
@@ -24,6 +38,15 @@ ${systemMessage}
   return modifiedSystemMessage;
 }
 
+/**
+ * ユーザーのコメントとYoutubeのコメントを受け取り、最適なコメントを返します。
+ * 
+ * @param {Message[]} messages - メッセージの配列
+ * @param {any[]} youtubeComments - Youtubeのコメントの配列
+ * @param {string} openAiKey - OpenAIのAPIキー
+ * @param {string} selectAIModel - 使用するモデル
+ * @returns {Promise<string>} - 最適なコメント
+ */
 export const getBestComment = async (messages: Message[], youtubeComments: any[], openAiKey: string, selectAIModel: string): Promise<string> => {
   console.log("getBestComment");
   const lastSixMessages = getLastMessages(messages, 6);
@@ -60,7 +83,13 @@ ${lastSixMessages}
   return response.message;
 }
 
-export const getMessagesForSleep = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
+/**
+ * システムプロンプトを受け取り、休憩用のメッセージを返します。
+ * 
+ * @param {string} systemPrompt - システムプロンプト
+ * @returns {Promise<Message[]>} - メッセージの配列
+ */
+export const getMessagesForSleep = async (systemPrompt: string): Promise<Message[]> => {
   console.log("getMessagesForSleep");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const userMessage = `- あなたはYoutubeの配信者です。
@@ -72,6 +101,14 @@ export const getMessagesForSleep = async (systemPrompt: string, messages: Messag
   ];
 }
 
+/**
+ * メッセージを受け取り、最新の4つのメッセージを使用して別の話題を取得します。
+ * 
+ * @param {Message[]} messages - メッセージの配列
+ * @param {string} openAiKey - OpenAIのAPIキー
+ * @param {string} selectAIModel - 使用するモデル
+ * @returns {Promise<string>} - 別の話題
+ */
 export const getAnotherTopic = async (messages: Message[], openAiKey: string, selectAIModel: string): Promise<string> => {
   console.log("getAnotherTopic");
   const lastFourMessages = getLastMessages(messages, 4);
@@ -94,6 +131,14 @@ export const getAnotherTopic = async (messages: Message[], openAiKey: string, se
   return response.message;
 }
 
+/**
+ * メッセージを受け取り、新しい話題のためのメッセージを取得します。
+ * 
+ * @param {string} systemPrompt - システムプロンプト
+ * @param {Message[]} messages - メッセージの配列
+ * @param {string} topic - 新しい話題
+ * @returns {Promise<Message[]>} - メッセージの配列
+ */
 export const getMessagesForNewTopic = async (systemPrompt: string, messages: Message[], topic: string): Promise<Message[]> => {
   console.log("getMessagesForNewTopic");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
@@ -112,6 +157,14 @@ ${lastFourMessages}`
   ];
 }
 
+/**
+ * メッセージを受け取り、次の発言者を判断します。
+ * 
+ * @param {Message[]} messages - メッセージの配列
+ * @param {string} openAiKey - OpenAIのAPIキー
+ * @param {string} selectAIModel - 使用するモデル
+ * @returns {Promise<boolean>} - 次の発言者
+ */
 export const checkIfResponseContinuationIsRequired = async (messages: Message[], openAiKey: string, selectAIModel: string): Promise<boolean> => {
   console.log("checkIfResponseContinuationIsRequired");
   const lastSixMessages = getLastMessages(messages, 6);
@@ -199,6 +252,13 @@ B: 見てみたいな。送ってくれない？
   return isContinuationNeeded;
 }
 
+/**
+ * システムプロンプトとメッセージを受け取り、継続のためのメッセージを取得します。
+ * 
+ * @param {string} systemPrompt - システムプロンプト
+ * @param {Message[]} messages - メッセージの配列
+ * @returns {Promise<Message[]>} - メッセージの配列
+ */
 export const getMessagesForContinuation = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
   console.log("getMessagesForContinuation");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
