@@ -47,6 +47,7 @@ type Props = {
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
+  conversationContinuityMode: boolean;
   onClickClose: () => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onChangeChatLog: (index: number, text: string) => void;
@@ -66,6 +67,7 @@ type Props = {
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
   onChangeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
@@ -106,6 +108,7 @@ export const Settings = ({
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
+  conversationContinuityMode,
   onClickClose,
   onChangeSystemPrompt,
   onChangeChatLog,
@@ -125,6 +128,7 @@ export const Settings = ({
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
+  onChangeConversationContinuityMode,
   webSocketMode,
   onChangeWebSocketMode,
   selectVoice,
@@ -492,6 +496,18 @@ export const Settings = ({
                                 placeholder="..."
                                 value={youtubeLiveId}
                                 onChange={onChangeYoutubeLiveId} />
+                              <div className="my-16 typography-20 font-bold">
+                                {t('ConversationContinuityMode')}
+                              </div>
+                              {conversationContinuityMode ? (
+                                <TextButton onClick={() => onChangeConversationContinuityMode(false)}>
+                                  {t('StatusOn')}
+                                </TextButton>
+                              ) : (
+                                <TextButton onClick={() => onChangeConversationContinuityMode(true)}>
+                                  {t('StatusOff')}
+                                </TextButton>
+                              )}
                             </>
                           );
                         }

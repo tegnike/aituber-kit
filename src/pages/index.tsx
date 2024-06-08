@@ -49,6 +49,7 @@ export default function Home() {
   const [youtubeMode, setYoutubeMode] = useState(false);
   const [youtubeApiKey, setYoutubeApiKey] = useState("");
   const [youtubeLiveId, setYoutubeLiveId] = useState("");
+  const [conversationContinuityMode, setConversationContinuityMode] = useState(false);
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
@@ -57,7 +58,7 @@ export default function Home() {
   const [webSocketMode, changeWebSocketMode] = useState(false);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
-  const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 20000; // 20秒
+  const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 10000; // 10秒
   const [backgroundImageUrl, setBackgroundImageUrl] = useState(
     process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH !== undefined ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH : "/bg-c.png"
   );
@@ -100,6 +101,7 @@ export default function Home() {
       setYoutubeMode(params.youtubeMode || false);
       setYoutubeApiKey(params.youtubeApiKey || "");
       setYoutubeLiveId(params.youtubeLiveId || "");
+      setConversationContinuityMode(params.conversationContinuityMode || false);
       changeWebSocketMode(params.webSocketMode || false);
       setStylebertvits2ServerURL(params.stylebertvits2ServerUrl || "http://127.0.0.1:5000");
       setStylebertvits2ModelId(params.stylebertvits2ModelId || "0");
@@ -131,6 +133,7 @@ export default function Home() {
       youtubeMode,
       youtubeApiKey,
       youtubeLiveId,
+      conversationContinuityMode,
       webSocketMode,
       stylebertvits2ServerUrl,
       stylebertvits2ModelId,
@@ -164,6 +167,7 @@ export default function Home() {
     youtubeMode,
     youtubeApiKey,
     youtubeLiveId,
+    conversationContinuityMode,
     webSocketMode,
     stylebertvits2ServerUrl,
     stylebertvits2ModelId,
@@ -536,8 +540,8 @@ export default function Home() {
       setYoutubeNextPageToken,
       youtubeNoCommentCount,
       setYoutubeNoCommentCount,
-      youtubeSleepMode,
       setYoutubeSleepMode,
+      conversationContinuityMode,
       handleSendChat,
       preProcessAIResponse
     );
@@ -552,8 +556,8 @@ export default function Home() {
     setYoutubeNextPageToken,
     youtubeNoCommentCount,
     setYoutubeNoCommentCount,
-    youtubeSleepMode,
     setYoutubeSleepMode,
+    conversationContinuityMode,
     handleSendChat,
     preProcessAIResponse
   ]);
@@ -561,15 +565,15 @@ export default function Home() {
   useEffect(() => {
     console.log("chatProcessingCount:", chatProcessingCount);
     fetchAndProcessCommentsCallback();
-  }, [chatProcessingCount, youtubeLiveId, youtubeApiKey]);
+  }, [chatProcessingCount, youtubeLiveId, youtubeApiKey, conversationContinuityMode]);
 
   useEffect(() => {
     console.log("youtubeSleepMode:", youtubeSleepMode);
     (async () => {
-      await new Promise(resolve => setTimeout(resolve, 10000));
+      await new Promise(resolve => setTimeout(resolve, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS));
       fetchAndProcessCommentsCallback();
     })();
-  }, [youtubeNoCommentCount]);
+  }, [youtubeNoCommentCount, conversationContinuityMode]);
 
   return (
     <>
@@ -623,6 +627,7 @@ export default function Home() {
           youtubeMode={youtubeMode}
           youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
+          conversationContinuityMode={conversationContinuityMode}
           onChangeSystemPrompt={setSystemPrompt}
           onChangeChatLog={handleChangeChatLog}
           onChangeCodeLog={handleChangeCodeLog}
@@ -630,6 +635,7 @@ export default function Home() {
           onChangeYoutubeMode={setYoutubeMode}
           onChangeYoutubeApiKey={setYoutubeApiKey}
           onChangeYoutubeLiveId={setYoutubeLiveId}
+          onChangeConversationContinuityMode={setConversationContinuityMode}
           handleClickResetChatLog={() => setChatLog([])}
           handleClickResetCodeLog={() => setCodeLog([])}
           handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}

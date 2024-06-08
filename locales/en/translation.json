@@ -5,6 +5,8 @@
   "YoutubeInfo": "The first character of the comment is '#', it is ignored.",
   "YoutubeAPIKey": "YouTube API Key",
   "YoutubeLiveID": "YouTube Live ID",
+  "ConversationContinuityMode": "Conversation Continuity Mode",
+  "ConversationContinuityModeInfo": "When there is no comment, AI tries to continue the conversation.",
   "StatusOn": "Status: ON",
   "StatusOff": "Status: OFF",
   "SelectAIService": "Select AI Service",

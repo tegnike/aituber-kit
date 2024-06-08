@@ -46,6 +46,7 @@ type Props = {
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
+  conversationContinuityMode: boolean;
   onChangeSystemPrompt: (systemPrompt: string) => void;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
@@ -59,6 +60,7 @@ type Props = {
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (key: string) => void;
   onChangeYoutubeLiveId: (key: string) => void;
+  onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
@@ -101,6 +103,7 @@ export const Menu = ({
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
+  conversationContinuityMode,
   onChangeSystemPrompt,
   onChangeChatLog,
   onChangeCodeLog,
@@ -117,6 +120,7 @@ export const Menu = ({
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
+  onChangeConversationContinuityMode,
   webSocketMode,
   changeWebSocketMode,
   selectVoice,
@@ -265,6 +269,13 @@ export const Menu = ({
     [changeWebSocketMode, webSocketMode, onChangeYoutubeMode]
   );
 
+  const handleConversationContinuityMode = useCallback(
+    (show: boolean) => {
+      onChangeConversationContinuityMode(show);
+    },
+    [onChangeConversationContinuityMode]
+  );
+
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
@@ -374,6 +385,7 @@ export const Menu = ({
           youtubeMode={youtubeMode}
           youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
+          conversationContinuityMode={conversationContinuityMode}
           onClickClose={() => setShowSettings(false)}
           onChangeSystemPrompt={handleChangeSystemPrompt}
           onChangeChatLog={onChangeChatLog}
@@ -393,6 +405,7 @@ export const Menu = ({
           onChangeYoutubeMode={onChangeYoutubeMode}
           onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
           onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
+          onChangeConversationContinuityMode={handleConversationContinuityMode}
           webSocketMode={webSocketMode}
           onChangeWebSocketMode={handleWebSocketMode}
           selectVoice = {selectVoice}

@@ -72,8 +72,8 @@ export const fetchAndProcessComments = async (
   setYoutubeNextPageToken: (token: string) => void,
   youtubeNoCommentCount: number,
   setYoutubeNoCommentCount: (count: number) => void,
-  youtubeSleepMode: boolean,
   setYoutubeSleepMode: (mode: boolean) => void,
+  conversationContinuityMode: boolean,
   handleSendChat: (text: string, role?: string) => void,
   preProcessAIResponse: (messages: Message[]) => void
 ): Promise<void> => {
@@ -103,7 +103,7 @@ export const fetchAndProcessComments = async (
         console.log("selectedYoutubeComment:", selectedComment);
 
         handleSendChat(selectedComment);
-      } else {
+      } else if (conversationContinuityMode) {
         const noCommentCount = youtubeNoCommentCount + 1;
         if (noCommentCount < 3 || 3 < noCommentCount && noCommentCount < 6) {
           const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
