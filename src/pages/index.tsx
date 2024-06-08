@@ -58,7 +58,7 @@ export default function Home() {
   const [webSocketMode, changeWebSocketMode] = useState(false);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
-  const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 10000; // 10秒
+  const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 5000; // 5秒
   const [backgroundImageUrl, setBackgroundImageUrl] = useState(
     process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH !== undefined ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH : "/bg-c.png"
   );
@@ -578,8 +578,11 @@ export default function Home() {
   }, [chatProcessingCount, youtubeLiveId, youtubeApiKey, conversationContinuityMode]);
 
   useEffect(() => {
+    if (youtubeNoCommentCount < 1) return;
     console.log("youtubeSleepMode:", youtubeSleepMode);
-    fetchAndProcessCommentsCallback();
+    setTimeout(() => {
+      fetchAndProcessCommentsCallback();
+    }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS);
   }, [youtubeNoCommentCount, conversationContinuityMode]);
 
   return (

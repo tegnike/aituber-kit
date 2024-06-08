@@ -93,6 +93,9 @@ export const fetchAndProcessComments = async (
           const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
           preProcessAIResponse(continuationMessage);
           setYoutubeContinuationCount(youtubeContinuationCount + 1);
+          if (youtubeNoCommentCount < 1) {
+            setYoutubeNoCommentCount(1);
+          }
           return;
         }
       } else {
