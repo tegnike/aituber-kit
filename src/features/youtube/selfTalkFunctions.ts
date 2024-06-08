@@ -10,38 +10,41 @@ const getLastMessages = (messages: Message[], numberOfMessages: number): string 
 }
 
 const getModifiedSystemMessage = async (systemMessage: string): Promise<string> => {
-  const modifiedSystemMessage = `これからあなたには下記のキャラになりきって、次に与えられた状況になったときのコメントを生成してもらいます。
-キャラクターの口調や性格を考慮してコメントを生成してください。
+  const modifiedSystemMessage = `# キャラクター設定
+以下のキャラクター情報をもとに、ユーザーから提供される具体的な状況に合わせたコメントを生成してください。
+キャラクターの口調や性格を考慮し、可能な限り詳細なレスポンスを提供してください。
 
-## キャラクター設定
-
+## キャラクターの詳細
 \`\`\`
 ${systemMessage}
 \`\`\`
 
-## 状況
-`;
+## 状況`;
+
   return modifiedSystemMessage;
 }
 
 export const getBestComment = async (messages: Message[], youtubeComments: any[], openAiKey: string, selectAIModel: string): Promise<string> => {
   console.log("getBestComment");
   const lastSixMessages = getLastMessages(messages, 6);
-  const systemMessage = `これからあなたに複数ターンの会話歴と2つ以上のコメントを与えます。
-これらの情報から、会話歴の続きとして最も適したコメントを1つだけ選択してください。
-必ずコメントの内容のみを返却すること。
+  const systemMessage = `# 会話選択タスク
+これからあなたに複数の会話履歴と選択肢となるコメントが与えられます。
+これらの情報を基に、会話の流れに最も適したコメントを1つ選んでください。選んだコメントの内容のみを返答としてください。
 
-## 例
-コメント一覧: [
-​知らないな、いつの年代の映画？,
-​そうなんだ,
-​明後日の天気は？,
-​ポケモン好き？,
-]
-あなたの返答: 明後日の天気は？
+## 実施例
+### コメント一覧
+- 知らないな、いつの年代の映画？
+- そうなんだ
+- 明後日の天気は？
+- ポケモン好き？
+
+### 選択したコメント
+明後日の天気は？
 
 ## 実際の会話歴
+\`\`\`
 ${lastSixMessages}
+\`\`\`
 
 ## 実際のコメント一覧`
 
@@ -72,14 +75,16 @@ export const getAnotherTopic = async (messages: Message[], openAiKey: string, se
   const lastFourMessages = getLastMessages(messages, 4);
   const queryMessages = [
     { role: "system", content: `次に渡される会話文から関連するが別の話題を1つ考えてください。
-結果は単語か非口語の短文で返すこと。
+結果は単語か非口語の短文で返してください。
 
 ## 解答例
 - 最近見た映画
 - ヘルスケア
 - 5年後の自分
-- 今ハマっている趣味` },
-    { role: "user", content: "## 会話文\n" + lastFourMessages }
+- 今ハマっている趣味
+
+## 会話文` },
+    { role: "user", content: lastFourMessages }
   ]
 
   const response = await getOpenAIChatResponse(queryMessages, openAiKey, selectAIModel);
@@ -113,8 +118,9 @@ export const checkIfResponseContinuationIsRequired = async (messages: Message[],
     return false;
   }
 
-  const systemMessage = `次に渡される会話文から最後の話者が話を続ける必要があるかどうかを判定してください。
-最後の話者が話続ける必要がある場合はtrue、もう一方の話者が話す必要があると感じる場合はfalseを返してください。
+  const systemMessage = `与えられた会話文の文脈から、次にどの話者が発言すべきかを判断してください。
+最後の話者が話を続けるべきならば "true" を、逆に交代が必要な場合は "false" を返します。
+回答はJSON形式で、answerとreasonの2つのキーを持つオブジェクトとしてください。
 
 ## 例
 
@@ -166,11 +172,13 @@ B: 見てみたいな。送ってくれない？
 {
   "answer": false,
   "reason": "Bの要求で一旦区切りがついており、次はAが動画を送信するなどの行動を取る番だと判断できる。"
-}`
+}
+
+## 会話文`
 
   const queryMessages = [
     { role: "system", content: systemMessage },
-    { role: "user", content: "## 会話文\n" + lastFourMessages }
+    { role: "user", content: lastFourMessages }
   ]
 
   // エラーが発生した場合はfalseを返す
@@ -226,7 +234,7 @@ assistant: [happy] こんにちは！[happy] 元気ですか？
 ### あなたのコメント例
 [neutral] 最近、何か面白いことがありましたか？
 
-4.
+5.
 ### 会話歴
 user: こんにちは
 assistant: [happy] こんにちは！[happy] 元気ですか？
@@ -234,7 +242,10 @@ assistant: [neutral] 最近、何か面白いことがありましたか？
 ### あなたのコメント例
 [neutral] 私は最近、新しい趣味を始めたんです。なんだと思いますか？
 
+## 判定すべき会話歴
+
 ${lastFourMessages}`
+
   return [
     { role: "system", content: modifiedSystemMessage },
     { role: "user", content: userMessage }
