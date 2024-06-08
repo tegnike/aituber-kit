@@ -11,15 +11,29 @@ export async function getOpenAIChatResponse(messages: Message[], apiKey: string,
     dangerouslyAllowBrowser: true,
   });
 
-  const data = await openai.chat.completions.create({
-    model: model,
-    messages: messages,
-  });
+  try {
+    const data = await openai.chat.completions.create({
+      model: model,
+      messages: messages,
+    });
 
-  const [aiRes] = data.choices;
-  const message = aiRes.message?.content || "エラーが発生しました";
+    const [aiRes] = data.choices;
+    const message = aiRes.message?.content || "[sad]回答生成時にエラーが発生しました。";
 
-  return { message: message };
+    try {
+      JSON.parse(message);
+      return { message: message };
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        return { message: "[sad]回答生成時にエラーが発生しました。" };
+      } else {
+        throw error;
+      }
+    }
+  } catch (error) {
+    console.error("OpenAI API Error:", error);
+    return { message: "[sad]回答生成時にエラーが発生しました。" };
+  }
 }
 
 export async function getOpenAIChatResponseStream(
