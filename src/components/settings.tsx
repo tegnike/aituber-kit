@@ -500,6 +500,8 @@ export const Settings = ({
                                 {t('ConversationContinuityMode')}
                               </div>
                               <div className="my-8">{t('ConversationContinuityModeInfo')}</div>
+                              <div className="my-8">{t('ConversationContinuityModeInfo2')}</div>
+                              <div className="my-8">{t('ConversationContinuityModeInfo3')}</div>
                               {conversationContinuityMode ? (
                                 <TextButton
                                   onClick={() => onChangeConversationContinuityMode(false)}
