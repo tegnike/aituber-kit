@@ -6,7 +6,7 @@ import {
   getMessagesForNewTopic,
   checkIfResponseContinuationIsRequired,
   getMessagesForContinuation
-} from "@/features/youtube/selfTalkFunctions";
+} from "@/features/youtube/conversationContinuityFunctions";
 
 export const getLiveChatId = async (liveId: string, youtubeKey: string): Promise<string> => {
   const params = {
