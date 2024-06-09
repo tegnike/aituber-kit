@@ -12,7 +12,7 @@ import { testVoice } from "@/features/messages/speakCharacter";
 
 type Props = {
   selectAIService: string;
-  setSelectAIService: (service: string) => void;
+  onChangeAIService: (service: string) => void;
   selectAIModel: string;
   setSelectAIModel: (model: string) => void;
   openAiKey: string;
@@ -46,6 +46,7 @@ type Props = {
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
+  conversationContinuityMode: boolean;
   onChangeSystemPrompt: (systemPrompt: string) => void;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
@@ -59,6 +60,7 @@ type Props = {
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (key: string) => void;
   onChangeYoutubeLiveId: (key: string) => void;
+  onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
@@ -70,7 +72,7 @@ type Props = {
 };
 export const Menu = ({
   selectAIService,
-  setSelectAIService,
+  onChangeAIService,
   selectAIModel,
   setSelectAIModel,
   openAiKey,
@@ -101,6 +103,7 @@ export const Menu = ({
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
+  conversationContinuityMode,
   onChangeSystemPrompt,
   onChangeChatLog,
   onChangeCodeLog,
@@ -117,6 +120,7 @@ export const Menu = ({
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
+  onChangeConversationContinuityMode,
   webSocketMode,
   changeWebSocketMode,
   selectVoice,
@@ -132,6 +136,16 @@ export const Menu = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bgFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+
+  const handleChangeAIService = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChangeAIService(event.target.value);
+      if (event.target.value !== "openai") {
+        onChangeConversationContinuityMode(false);
+      }
+    },
+    [onChangeAIService, onChangeConversationContinuityMode]
+  );
 
   const handleChangeSystemPrompt = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -265,6 +279,13 @@ export const Menu = ({
     [changeWebSocketMode, webSocketMode, onChangeYoutubeMode]
   );
 
+  const handleConversationContinuityMode = useCallback(
+    (show: boolean) => {
+      onChangeConversationContinuityMode(show);
+    },
+    [onChangeConversationContinuityMode]
+  );
+
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
@@ -344,7 +365,7 @@ export const Menu = ({
       {showSettings && (
         <Settings
           selectAIService={selectAIService}
-          setSelectAIService={setSelectAIService}
+          onChangeAIService={handleChangeAIService}
           selectAIModel={selectAIModel}
           setSelectAIModel={setSelectAIModel}
           openAiKey={openAiKey}
@@ -374,6 +395,7 @@ export const Menu = ({
           youtubeMode={youtubeMode}
           youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
+          conversationContinuityMode={conversationContinuityMode}
           onClickClose={() => setShowSettings(false)}
           onChangeSystemPrompt={handleChangeSystemPrompt}
           onChangeChatLog={onChangeChatLog}
@@ -393,6 +415,7 @@ export const Menu = ({
           onChangeYoutubeMode={onChangeYoutubeMode}
           onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
           onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
+          onChangeConversationContinuityMode={handleConversationContinuityMode}
           webSocketMode={webSocketMode}
           onChangeWebSocketMode={handleWebSocketMode}
           selectVoice = {selectVoice}

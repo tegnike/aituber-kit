@@ -18,7 +18,7 @@ export async function getOpenAIChatResponse(messages: Message[], apiKey: string,
   });
 
   const [aiRes] = data.choices;
-  const message = aiRes.message?.content || "エラーが発生しました";
+  const message = aiRes.message?.content || "[sad]回答生成時にエラーが発生しました。";
 
   return { message: message };
 }

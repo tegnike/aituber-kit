@@ -14,8 +14,6 @@ export async function synthesizeStyleBertVITS2Api(
     type: "stylebertvits2",
   };
 
-  console.log("body", body);
-
   try {
     const res = await fetch("/api/stylebertvits2", {
       method: "POST",
