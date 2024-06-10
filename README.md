@@ -7,12 +7,12 @@
 <p align="center">
    <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/nike-ChatVRM"></a>
    <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/nike-ChatVRM"></a>
-   <img alt="GitHub Release" src="https://img.shields.io/github/v/release/tegnike/nike-ChatVRM?color=red">
+   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/nike-ChatVRM?sort=semver&color=orange">
 </p>
 
 <h2 align="center">
-   [【English】](./en_README.md)
-   [【中文】](./zh_README.md)
+   <a href="./en_README.md">【English】</a>
+   <a href="./zh_README.md">【中文】</a>
 </h2>
 
 ## 概要
