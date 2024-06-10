@@ -110,3 +110,8 @@ npm run dev
 - Language settings support Japanese, English, and Traditional Chinese. You can switch in the settings screen.
 - Conversation history can be reset in the settings screen.
 - Various settings are stored in the browser.
+
+## Usage Agreement
+
+- [Logo Usage Agreement](./docs/logo_licence_en.md)
+- [VRM Model Usage Agreement](./docs/vrm_licence_en.md)
