@@ -1,8 +1,8 @@
+<h1 align="center">AITuberキット</h1>
+
 <p align="center">
   <img style="max-width: 100%;" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
 </p>
-
-<h1 align="center">誰でもAITuberお試しキット</h1>
 
 <p align="center">
    <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/nike-ChatVRM"></a>
@@ -10,10 +10,10 @@
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/nike-ChatVRM?sort=semver&color=orange">
 </p>
 
-<h2 align="center">
+<h3 align="center">
    <a href="./en_README.md">【English】</a>
    <a href="./zh_README.md">【中文】</a>
-</h2>
+</h3>
 
 ## 概要
 
