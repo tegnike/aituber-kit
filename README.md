@@ -11,8 +11,8 @@
 </p>
 
 <h3 align="center">
-   <a href="./en_README.md">【English】</a>
-   <a href="./zh_README.md">【中文】</a>
+   <a href="./docs/README_en.md">【English】</a>
+   <a href="./docs/README_zh.md">【中文】</a>
 </h3>
 
 ## 概要
