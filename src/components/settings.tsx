@@ -17,7 +17,7 @@ import speakers from './speakers.json';
 
 type Props = {
   selectAIService: string;
-  setSelectAIService: (service: string) => void;
+  onChangeAIService: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   selectAIModel: string;
   setSelectAIModel: (model: string) => void;
   openAiKey: string;
@@ -47,6 +47,7 @@ type Props = {
   youtubeMode: boolean;
   youtubeApiKey: string;
   youtubeLiveId: string;
+  conversationContinuityMode: boolean;
   onClickClose: () => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onChangeChatLog: (index: number, text: string) => void;
@@ -66,6 +67,7 @@ type Props = {
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
   onChangeWebSocketMode: (show: boolean) => void;
   selectVoice: string;
@@ -77,7 +79,7 @@ type Props = {
 };
 export const Settings = ({
   selectAIService,
-  setSelectAIService,
+  onChangeAIService,
   selectAIModel,
   setSelectAIModel,
   openAiKey,
@@ -106,6 +108,7 @@ export const Settings = ({
   youtubeMode,
   youtubeApiKey,
   youtubeLiveId,
+  conversationContinuityMode,
   onClickClose,
   onChangeSystemPrompt,
   onChangeChatLog,
@@ -125,6 +128,7 @@ export const Settings = ({
   onChangeYoutubeMode,
   onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
+  onChangeConversationContinuityMode,
   webSocketMode,
   onChangeWebSocketMode,
   selectVoice,
@@ -174,6 +178,7 @@ export const Settings = ({
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
+          {/* 言語設定 */}
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
               {t('Language')}
@@ -217,6 +222,22 @@ export const Settings = ({
               </select>
             </div>
           </div>
+          {/* VRMと背景画像の設定 */}
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">
+              {t('CharacterModelLabel')}
+            </div>
+            <div className="my-8">
+              <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
+            </div>
+            <div className="my-16 typography-20 font-bold">
+              {t('BackgroundImage')}
+            </div>
+            <div className="my-8">
+              <TextButton onClick={onClickOpenBgFile}>{t('ChangeBackgroundImage')}</TextButton>
+            </div>
+          </div>
+          {/* 外部接続モード */}
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">
               {t('ExternalConnectionMode')}
@@ -233,6 +254,7 @@ export const Settings = ({
               )}
             </div>
           </div>
+          {/* 外部連携モードでない時の設定 */}
           {(() => {
             if (!webSocketMode) {
               return (
@@ -247,7 +269,7 @@ export const Settings = ({
                         value={selectAIService}
                         onChange={(e) => {
                           const newService = e.target.value as keyof typeof defaultModels;
-                          setSelectAIService(newService);
+                          onChangeAIService(e);
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
                           setSelectAIModel(defaultModels[newService]);
                         }}
@@ -477,36 +499,31 @@ export const Settings = ({
                                 placeholder="..."
                                 value={youtubeLiveId}
                                 onChange={onChangeYoutubeLiveId} />
+                              <div className="my-16 typography-20 font-bold">
+                                {t('ConversationContinuityMode')}
+                              </div>
+                              <div className="my-8">{t('ConversationContinuityModeInfo')}</div>
+                              <div className="my-8">{t('ConversationContinuityModeInfo2')}</div>
+                              <div className="my-8">{t('ConversationContinuityModeInfo3')}</div>
+                              {conversationContinuityMode ? (
+                                <TextButton
+                                  onClick={() => onChangeConversationContinuityMode(false)}
+                                  disabled={selectAIService !== "openai"}>
+                                  {t('StatusOn')}
+                                </TextButton>
+                              ) : (
+                                <TextButton
+                                  onClick={() => onChangeConversationContinuityMode(true)}
+                                  disabled={selectAIService !== "openai"}>
+                                  {t('StatusOff')}
+                                </TextButton>
+                              )}
                             </>
                           );
                         }
                       })()}
                     </div>
                   </div>
-                </>
-              )
-            }
-          })()}
-          <div className="my-40">
-            <div className="my-16 typography-20 font-bold">
-              {t('CharacterModelLabel')}
-            </div>
-            <div className="my-8">
-              <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
-            </div>
-          </div>
-          <div className="my-40">
-            <div className="my-16 typography-20 font-bold">
-              {t('BackgroundImage')}
-            </div>
-            <div className="my-8">
-              <TextButton onClick={onClickOpenBgFile}>{t('ChangeBackgroundImage')}</TextButton>
-            </div>
-          </div>
-          {(() => {
-            if (!webSocketMode) {
-              return (
-                <>
                   <div className="my-40">
                     <div className="my-8">
                       <div className="my-16 typography-20 font-bold">
@@ -526,10 +543,10 @@ export const Settings = ({
                     ></textarea>
                   </div>
                 </>
-              )
-              }
+              )}
             })()
           }
+          {/* 音声エンジンの選択 */}
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">{t('SyntheticVoiceEngineChoice')}</div>
             <div>{t('VoiceEngineInstruction')}</div>
@@ -719,8 +736,7 @@ export const Settings = ({
                 }
             })()}
           </div>
-          
-
+          {/* チャットログの設定 */}
           {chatLog.length > 0 && (
             <div className="my-40">
               <div className="my-8 grid-cols-2">

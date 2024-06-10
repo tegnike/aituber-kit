@@ -27,6 +27,8 @@ const createSpeakCharacter = () => {
     onStart?: () => void,
     onComplete?: () => void
   ) => {
+    onStart?.();
+
     const fetchPromise = prevFetchPromise.then(async () => {
       const now = Date.now();
       if (now - lastTime < 1000) {
@@ -87,7 +89,6 @@ const createSpeakCharacter = () => {
     prevFetchPromise = fetchPromise;
     prevSpeakPromise = Promise.all([fetchPromise, prevSpeakPromise]).then(
       ([audioBuffer]) => {
-        onStart?.();
         if (!audioBuffer) {
           return;
         }

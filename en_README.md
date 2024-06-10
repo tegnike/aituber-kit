@@ -11,9 +11,9 @@
 
 This repository has the following 3 features:
 
-1. Conversation with AI character (ChatVRM feature)
+1. Conversation with AI character
 2. AITuber streaming 
-3. WebSocket mode
+3. External integration mode
 
 I've written a detailed usage guide in the article below:
 
@@ -46,6 +46,7 @@ npm run dev
 1. Enter your API key for various LLMs in the settings screen.
    - OpenAI
    - Anthropic
+   - Google Gemini
    - Groq
    - Local LLM (No API key is required, but a local API server needs to be running.)
    - Dify Chatbot (No API key is required, but a local API server needs to be running.)
@@ -70,8 +71,9 @@ npm run dev
 2. Enter your YouTube API key and YouTube Live ID.
 3. Configure other settings the same way as "Conversation with AI Character".
 4. Start streaming on YouTube and confirm that the character reacts to comments.
+5. Turn on the conversation continuity mode to be able to speak even if there are no comments.
 
-## WebSocket Mode
+## External Integration Mode
 
 - You can send messages to the server app via WebSocket and get a response.
 - Unlike the above two, it does not complete within the front-end app, so the difficulty level is a bit higher.
@@ -81,7 +83,7 @@ npm run dev
 1. Start the server app and open the `ws://127.0.0.1:8000/ws` endpoint.
 2. Turn on WebSocket mode in the settings screen.
 3. Configure other settings the same way as "Conversation with AI Character".
-7. Wait for messages from the server app and confirm that the character reacts.
+4. Wait for messages from the server app and confirm that the character reacts.
 
 ### Related
 
