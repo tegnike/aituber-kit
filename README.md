@@ -1,11 +1,19 @@
-# 誰でもAITuberお試しキット
-
 <p align="center">
   <img style="max-width: 100%;" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
 </p>
 
-[English version](./en_README.md)
-[Chinese version](./zh_README.md)
+<h1 align="center">誰でもAITuberお試しキット</h1>
+
+<p align="center">
+   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/nike-ChatVRM"></a>
+   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/nike-ChatVRM"></a>
+   <img alt="GitHub Release" src="https://img.shields.io/github/v/release/tegnike/nike-ChatVRM?color=red">
+</p>
+
+<h2 align="center">
+   [【English】](./en_README.md)
+   [【中文】](./zh_README.md)
+</h2>
 
 ## 概要
 
