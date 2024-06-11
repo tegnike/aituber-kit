@@ -1,7 +1,19 @@
-# AITuber Trial Kit for Everyone
-[Japanese version](./README.md)
-[Chinese version](./zh_README.md)
+<h1 align="center">AITuber Kit</h1>
 
+<p align="center">
+  <img style="max-width: 100%;" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
+</p>
+
+<p align="center">
+   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/nike-ChatVRM"></a>
+   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/nike-ChatVRM"></a>
+   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/nike-ChatVRM?sort=semver&color=orange">
+</p>
+
+<h3 align="center">
+   <a href="./README.md">【Japanese】</a>
+   <a href="./zh_README.md">【Chinese】</a>
+</h3>
 ## Overview
 
 This repository has the following 3 features:
@@ -12,7 +24,7 @@ This repository has the following 3 features:
 
 I've written a detailed usage guide in the article below:
 
-[![Become an AITuber Developer Today | Nike-chan](https://github.com/tegnike/nike-ChatVRM/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+[![You are AITuber Developer from Today | Nike-chan](https://github.com/tegnike/nike-ChatVRM/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
 ### Common Preparations
 
@@ -98,3 +110,8 @@ npm run dev
 - Language settings support Japanese, English, and Traditional Chinese. You can switch in the settings screen.
 - Conversation history can be reset in the settings screen.
 - Various settings are stored in the browser.
+
+## Usage Agreement
+
+- [Logo Usage Agreement](./docs/logo_licence_en.md)
+- [VRM Model Usage Agreement](./docs/vrm_licence_en.md)

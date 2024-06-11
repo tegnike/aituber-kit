@@ -1,11 +1,19 @@
-# 誰でもAITuberお試しキット
+<h1 align="center">AITuberキット</h1>
 
 <p align="center">
   <img style="max-width: 100%;" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
 </p>
 
-[English version](./en_README.md)
-[Chinese version](./zh_README.md)
+<p align="center">
+   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/nike-ChatVRM"></a>
+   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/nike-ChatVRM"></a>
+   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/nike-ChatVRM?sort=semver&color=orange">
+</p>
+
+<h3 align="center">
+   <a href="./docs/README_en.md">【English】</a>
+   <a href="./docs/README_zh.md">【中文】</a>
+</h3>
 
 ## 概要
 
@@ -108,3 +116,8 @@ npm run dev
 - 言語設定は日本語、英語、中国語（繁体字）に対応しています。設定画面で切り替えが可能です。
 - 会話履歴は設定画面でリセットすることができます。
 - 各種設定項目はブラウザに保存されます。
+
+## 利用規約
+
+- [ロゴの利用規約](./docs/logo_licence.md)
+- [VRMモデルの利用規約](./docs/vrm_licence.md)

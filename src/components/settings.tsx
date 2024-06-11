@@ -448,6 +448,9 @@ export const Settings = ({
                             />
                             <div className="my-24">
                               <div className="my-16 typography-20 font-bold">{t('EnterURL')}</div>
+                              <div className="my-16">
+                                {t('DifyInfo3')}
+                              </div>
                               <input
                                 className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 type="text"

@@ -27,6 +27,7 @@
   "GroqInfo": "Groq API 直接從瀏覽器存取。",
   "DifyInfo": "Dify 只支援聊天機器人型態。",
   "DifyInfo2": "此外，Dify 的規格限制下，對話歷史不會被保存，因此請注意。",
+  "DifyInfo3": "例：http://localhost:81/v1/chat-messages",
   "DifyInstruction": "如果您正在使用 Dify，則此系統提示將不會被使用。請將 Dify 聊天機器人設定為系統提示。",
   "EnterURL": "輸入 URL",
   "CharacterModelLabel": "角色模型",
