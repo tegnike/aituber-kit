@@ -69,6 +69,14 @@ type Props = {
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
   setBackgroundImageUrl: (url: string) => void;
+  localTTSServerUrl: string;
+  onChangeLocalTTSServerUrl: (name: string) => void;
+  localTTSModelId: string;
+  onChangeLocalTTSModelId: (name: string) => void;
+  localTTSBatchSize: number;
+  onChangeLocalTTSBatchSize: (speed: number) => void;
+  localTTSSpeechRate: number;
+  onChangeLocalTTSSpeechRate: (speed: number) => void;
 };
 export const Menu = ({
   selectAIService,
@@ -128,7 +136,15 @@ export const Menu = ({
   selectLanguage,
   setSelectLanguage,
   setSelectVoiceLanguage,
-  setBackgroundImageUrl
+  setBackgroundImageUrl,
+  localTTSServerUrl,
+  onChangeLocalTTSServerUrl,
+  localTTSModelId,
+  onChangeLocalTTSModelId,
+  localTTSBatchSize,
+  onChangeLocalTTSBatchSize,
+  localTTSSpeechRate,
+  onChangeLocalTTSSpeechRate,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -330,6 +346,34 @@ export const Menu = ({
     [setBackgroundImageUrl]
   );
 
+  const handleChangeLocalTTSServerUrl = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeLocalTTSServerUrl(event.target.value);
+    },
+    [onChangeLocalTTSServerUrl]
+  );
+
+  const handleChangeLocalTTSModelId = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeLocalTTSModelId(event.target.value);
+    },
+    [onChangeLocalTTSModelId]
+  );
+
+  const handleChangeLocalTTSBatchSize = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeLocalTTSBatchSize(parseFloat(event.target.value));
+    },
+    [onChangeLocalTTSBatchSize]
+  );
+
+  const handleChangeLocalTTSpeechRate = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeLocalTTSSpeechRate(parseFloat(event.target.value));
+    },
+    [onChangeLocalTTSSpeechRate]
+  );
+
   return (
     <>
       <div className="absolute z-10 m-24">
@@ -424,6 +468,14 @@ export const Menu = ({
           setSelectLanguage = {setSelectLanguage}
           setSelectVoiceLanguage = {setSelectVoiceLanguage}
           onClickTestVoice={handleClickTestVoice}
+          localTTSServerUrl={localTTSServerUrl}
+          onChangeLocalTTSServerUrl={handleChangeLocalTTSServerUrl}
+          localTTSModelId={localTTSModelId}
+          onChangeLocalTTSModelId={handleChangeLocalTTSModelId}
+          localTTSBatchSize={localTTSBatchSize}
+          onChangeLocalTTSBatchSize={handleChangeLocalTTSBatchSize}
+          localTTSSpeechRate={localTTSSpeechRate}
+          onChangeLocalTTSSpeechRate={handleChangeLocalTTSpeechRate}
         />
       )}
       {!showChatLog && assistantMessage && (

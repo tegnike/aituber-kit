@@ -76,5 +76,11 @@
   "RepositoryURL": "儲存庫 URL：",
   "DontShowIntroductionNextTime": "下次不再顯示此對話框",
   "Close": "關閉",
-  "Language": "語言設定"
+  "Language": "語言設定",
+  "UsingLocalTTS": "使用本地 TTS",
+  "LocalTTSInfo": "本地 TTS 設定",
+  "LocalTTSServerUrl": "語音推理端點URL",
+  "LocalTTSModelID": "本地 TTS 模型ID",
+  "LocalTTSBatchSize": "本地 TTS 批次大小 (1 ~ 100 數值越大推理速度越快，太大可能會用完記憶體)",
+  "LocalTTSSpeechRate": "語速 (0.5 ~ 2.0 數字越大越快)"
 }

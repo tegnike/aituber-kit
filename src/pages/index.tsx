@@ -63,6 +63,10 @@ export default function Home() {
     process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH !== undefined ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH : "/bg-c.png"
   );
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
+  const [localTTSServerUrl, setLocalTTSServerUrl] = useState(process.env.NEXT_PUBLIC_LOCAL_TTS_URL && process.env.NEXT_PUBLIC_LOCAL_TTS_URL !== "" ? process.env.NEXT_PUBLIC_LOCAL_TTS_URL : "http://127.0.0.1:5000/tts");
+  const [localTTSModelId, setLocalTTSModelId] = useState("");
+  const [localTTSBatchSize, setLocalTTSBatchSize] = useState(2);
+  const [localTTSSpeechRate, setLocalTTSSpeechRate] = useState(1.0);
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState("");
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
@@ -108,6 +112,10 @@ export default function Home() {
       setStylebertvits2ModelId(params.stylebertvits2ModelId || "0");
       setStylebertvits2Style(params.stylebertvits2Style || "Neutral");
       setDontShowIntroduction(params.dontShowIntroduction || false);
+      setLocalTTSServerUrl(params.localTTSServerUrl || "http://127.0.0.1:5000/tts");
+      setLocalTTSModelId(params.localTTSModelId || "");
+      setLocalTTSBatchSize(params.localTTSBatchSize || 2);
+      setLocalTTSSpeechRate(params.localTTSSpeechRate || 1.0);
     }
   }, []);
 
@@ -139,7 +147,11 @@ export default function Home() {
       stylebertvits2ServerUrl,
       stylebertvits2ModelId,
       stylebertvits2Style,
-      dontShowIntroduction
+      dontShowIntroduction,
+      localTTSServerUrl,
+      localTTSModelId,
+      localTTSBatchSize,
+      localTTSSpeechRate
     };
     process.nextTick(() =>
       window.localStorage.setItem(
@@ -173,7 +185,11 @@ export default function Home() {
     stylebertvits2ServerUrl,
     stylebertvits2ModelId,
     stylebertvits2Style,
-    dontShowIntroduction
+    dontShowIntroduction,
+    localTTSServerUrl,
+    localTTSModelId,
+    localTTSBatchSize,
+    localTTSSpeechRate
   ]);
 
   const handleChangeChatLog = useCallback(
@@ -218,6 +234,10 @@ export default function Home() {
         stylebertvits2ServerUrl,
         stylebertvits2ModelId,
         stylebertvits2Style,
+        localTTSServerUrl,
+        localTTSModelId,
+        localTTSBatchSize,
+        localTTSSpeechRate,
         onStart,
         onEnd
       );
@@ -231,7 +251,11 @@ export default function Home() {
       googleTtsType,
       stylebertvits2ServerUrl,
       stylebertvits2ModelId,
-      stylebertvits2Style
+      stylebertvits2Style,
+      localTTSServerUrl,
+      localTTSModelId,
+      localTTSBatchSize,
+      localTTSSpeechRate
     ]
   );
 
@@ -663,6 +687,14 @@ export default function Home() {
           setSelectLanguage={setSelectLanguage}
           setSelectVoiceLanguage={setSelectVoiceLanguage}
           setBackgroundImageUrl={setBackgroundImageUrl}
+          localTTSServerUrl={localTTSServerUrl}
+          onChangeLocalTTSServerUrl={setLocalTTSServerUrl}
+          localTTSModelId={localTTSModelId}
+          onChangeLocalTTSModelId={setLocalTTSModelId}
+          localTTSBatchSize={localTTSBatchSize}
+          onChangeLocalTTSBatchSize={setLocalTTSBatchSize}
+          localTTSSpeechRate={localTTSSpeechRate}
+          onChangeLocalTTSSpeechRate={setLocalTTSSpeechRate}
         />
       </div>
     </>

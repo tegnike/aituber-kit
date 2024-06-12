@@ -76,6 +76,14 @@ type Props = {
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
   onClickTestVoice: (speaker: string) => void;
+  localTTSServerUrl: string;
+  onChangeLocalTTSServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  localTTSModelId: string;
+  onChangeLocalTTSModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  localTTSBatchSize: number;
+  onChangeLocalTTSBatchSize: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  localTTSSpeechRate: number;
+  onChangeLocalTTSSpeechRate: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 export const Settings = ({
   selectAIService,
@@ -137,6 +145,14 @@ export const Settings = ({
   setSelectLanguage,
   setSelectVoiceLanguage,
   onClickTestVoice,
+  localTTSServerUrl,
+  onChangeLocalTTSServerUrl,
+  localTTSModelId,
+  onChangeLocalTTSModelId,
+  localTTSBatchSize,
+  onChangeLocalTTSBatchSize,
+  localTTSSpeechRate,
+  onChangeLocalTTSSpeechRate,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -560,6 +576,7 @@ export const Settings = ({
                 <option value="koeiromap">{t('UsingKoeiromap')}</option>
                 <option value="google">{t('UsingGoogleTTS')}</option>
                 <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
+                <option value="localtts">{t('UsingLocalTTS')}</option>
               </select>
             </div>
             <div>&nbsp;</div>
@@ -730,6 +747,52 @@ export const Settings = ({
                           placeholder="..."
                           value={stylebertvits2Style}
                           onChange={onChangeStyleBertVits2Style} />
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === "localtts"){
+                  return (
+                    <>
+                      <div>
+                        {t('LocalTTSInfo')}
+                      </div>
+                      <div className="mt-16 font-bold">{t('LocalTTSServerUrl')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={localTTSServerUrl}
+                          onChange={onChangeLocalTTSServerUrl} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('LocalTTSModelId')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={localTTSModelId}
+                          onChange={onChangeLocalTTSModelId} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('LocalTTSBatchSize')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          step="1"
+                          placeholder="..."
+                          value={localTTSBatchSize}
+                          onChange={onChangeLocalTTSBatchSize} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('LocalTTSSpeechRate')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          step="0.1"
+                          placeholder="..."
+                          value={localTTSSpeechRate}
+                          onChange={onChangeLocalTTSSpeechRate} />
                       </div>
                     </>
                   );

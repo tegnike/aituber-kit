@@ -75,5 +75,11 @@
   "RepositoryURL": "Repository URL:",
   "DontShowIntroductionNextTime": "Do not show this dialog next time",
   "Close": "CLOSE",
-  "Language": "Language"
+  "Language": "Language",
+  "UsingLocalTTS": "Local TTS",
+  "LocalTTSInfo": "Local TTS Settings",
+  "LocalTTSServerUrl": "Local TTS Endpoint API",
+  "LocalTTSModelID": "Local TTS Model ID",
+  "LocalTTSBatchSize": "Local TTS Batch Size (1 ~ 100 The larger the value, the faster the inference speed, but it might exhaust memory if too large.)",
+  "LocalTTSSpeechRate": "Speech Rate (0.5 ~ 2.0 The bigger the value, the faster it is.)"
 }

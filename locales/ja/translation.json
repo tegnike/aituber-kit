@@ -75,5 +75,11 @@
   "RepositoryURL": "リポジトリURL:",
   "DontShowIntroductionNextTime": "次回からこのダイアログを表示しない",
   "Close": "閉じる",
-  "Language": "言語設定"
+  "Language": "言語設定",
+  "UsingLocalTTS": "ローカルTTSを使用する",
+  "LocalTTSInfo": "ローカルTTS設定",
+  "LocalTTSServerUrl": "ローカルTTSサーバーのURL",
+  "LocalTTSModelID": "ローカルTTS モデルID",
+  "LocalTTSBatchSize": "ローカルTTS バッチサイズ (1 ~ 100 数値が大きいほど推論速度は速くなりますが、大きすぎるとメモリを使い果たす可能性があります)",
+  "LocalTTSSpeechRate": "話速 (0.5 ~ 2.0 数値が大きいほど速い)"
 }
