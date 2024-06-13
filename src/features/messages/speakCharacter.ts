@@ -24,6 +24,10 @@ const createSpeakCharacter = () => {
     stylebertvits2ServerUrl: string,
     stylebertvits2ModelId: string,
     stylebertvits2Style: string,
+    gsviTtsServerUrl: string,
+    gsviTtsModelId: string,
+    gsviTtsBatchSize: number,
+    gsviTtsSpeechRate: number,
     onStart?: () => void,
     onComplete?: () => void
   ) => {
@@ -80,6 +84,10 @@ const createSpeakCharacter = () => {
       } else if (selectVoice == "stylebertvits2") {
         buffer = await fetchAudioStyleBertVITS2(screenplay.talk, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style, selectLanguage).catch(
           () => null
+        );
+      } else if (selectVoice == "gsvitts") {
+        buffer = await fetchAudioVoiceGSVIApi(screenplay.talk, gsviTtsServerUrl, gsviTtsModelId, gsviTtsBatchSize, gsviTtsSpeechRate).catch(
+          () => null  
         );
       }
       lastTime = Date.now();
@@ -206,3 +214,35 @@ export const testVoice = async (
     await viewer.model?.speak(buffer, screenplay);
   }
 };
+
+export const fetchAudioVoiceGSVIApi = async (
+  talk: Talk,
+  url: string,
+  character: string,
+  batchsize: number,
+  speed: number,
+): Promise<ArrayBuffer> => {
+  const style = (talk.style !== 'talk')? talk.style : 'default';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      character: character,
+      emotion: style,
+      text: talk.message,
+      batch_size: batchsize,
+      speed: speed.toString(),
+      stream: true
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch TTS audio.');
+  }
+
+  const blob = await response.blob();
+  const buffer = await blob.arrayBuffer();
+  return buffer;
+}

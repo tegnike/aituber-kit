@@ -69,6 +69,14 @@ type Props = {
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
   setBackgroundImageUrl: (url: string) => void;
+  gsviTtsServerUrl: string;
+  onChangeGSVITtsServerUrl: (name: string) => void;
+  gsviTtsModelId: string;
+  onChangeGSVITtsModelId: (name: string) => void;
+  gsviTtsBatchSize: number;
+  onChangeGVITtsBatchSize: (speed: number) => void;
+  gsviTtsSpeechRate: number;
+  onChangeGSVITtsSpeechRate: (speed: number) => void;
 };
 export const Menu = ({
   selectAIService,
@@ -128,7 +136,15 @@ export const Menu = ({
   selectLanguage,
   setSelectLanguage,
   setSelectVoiceLanguage,
-  setBackgroundImageUrl
+  setBackgroundImageUrl,
+  gsviTtsServerUrl,
+  onChangeGSVITtsServerUrl,
+  gsviTtsModelId,
+  onChangeGSVITtsModelId,
+  gsviTtsBatchSize,
+  onChangeGVITtsBatchSize,
+  gsviTtsSpeechRate,
+  onChangeGSVITtsSpeechRate,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -330,6 +346,34 @@ export const Menu = ({
     [setBackgroundImageUrl]
   );
 
+  const handleChangeGSVITtsServerUrl = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGSVITtsServerUrl(event.target.value);
+    },
+    [onChangeGSVITtsServerUrl]
+  );
+
+  const handleChangeGSVITtsModelId = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGSVITtsModelId(event.target.value);
+    },
+    [onChangeGSVITtsModelId]
+  );
+
+  const handleChangeGSVITtsBatchSize = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGVITtsBatchSize(parseFloat(event.target.value));
+    },
+    [onChangeGVITtsBatchSize]
+  );
+
+  const handleChangeGSVITtsSpeechRate = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeGSVITtsSpeechRate(parseFloat(event.target.value));
+    },
+    [onChangeGSVITtsSpeechRate]
+  );
+
   return (
     <>
       <div className="absolute z-10 m-24">
@@ -424,6 +468,14 @@ export const Menu = ({
           setSelectLanguage = {setSelectLanguage}
           setSelectVoiceLanguage = {setSelectVoiceLanguage}
           onClickTestVoice={handleClickTestVoice}
+          gsviTtsServerUrl={gsviTtsServerUrl}
+          onChangeGSVITtsServerUrl={handleChangeGSVITtsServerUrl}
+          gsviTtsModelId={gsviTtsModelId}
+          onChangeGSVITtsModelId={handleChangeGSVITtsModelId}
+          gsviTtsBatchSize={gsviTtsBatchSize}
+          onChangeGVITtsBatchSize={handleChangeGSVITtsBatchSize}
+          gsviTtsSpeechRate={gsviTtsSpeechRate}
+          onChangeGSVITtsSpeechRate={handleChangeGSVITtsSpeechRate}
         />
       )}
       {!showChatLog && assistantMessage && (

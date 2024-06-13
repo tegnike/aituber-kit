@@ -63,6 +63,10 @@ export default function Home() {
     process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH !== undefined ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH : "/bg-c.png"
   );
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
+  const [gsviTtsServerUrl, setGSVITTSServerUrl] = useState(process.env.NEXT_PUBLIC_LOCAL_TTS_URL && process.env.NEXT_PUBLIC_LOCAL_TTS_URL !== "" ? process.env.NEXT_PUBLIC_LOCAL_TTS_URL : "http://127.0.0.1:5000/tts");
+  const [gsviTtsModelId, setGSVITTSModelID] = useState("");
+  const [gsviTtsBatchSize, setGSVITTSBatchSize] = useState(2);
+  const [gsviTtsSpeechRate, setGSVITTSSpeechRate] = useState(1.0);
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState("");
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
@@ -108,6 +112,10 @@ export default function Home() {
       setStylebertvits2ModelId(params.stylebertvits2ModelId || "0");
       setStylebertvits2Style(params.stylebertvits2Style || "Neutral");
       setDontShowIntroduction(params.dontShowIntroduction || false);
+      setGSVITTSServerUrl(params.gsviTtsServerUrl || "http://127.0.0.1:5000/tts");
+      setGSVITTSModelID(params.gsviTtsModelId || "");
+      setGSVITTSBatchSize(params.gsviTtsBatchSize || 2);
+      setGSVITTSSpeechRate(params.gsviTtsSpeechRate || 1.0);
     }
   }, []);
 
@@ -139,7 +147,11 @@ export default function Home() {
       stylebertvits2ServerUrl,
       stylebertvits2ModelId,
       stylebertvits2Style,
-      dontShowIntroduction
+      dontShowIntroduction,
+      gsviTtsServerUrl,
+      gsviTtsModelId,
+      gsviTtsBatchSize,
+      gsviTtsSpeechRate
     };
     process.nextTick(() =>
       window.localStorage.setItem(
@@ -173,7 +185,11 @@ export default function Home() {
     stylebertvits2ServerUrl,
     stylebertvits2ModelId,
     stylebertvits2Style,
-    dontShowIntroduction
+    dontShowIntroduction,
+    gsviTtsServerUrl,
+    gsviTtsModelId,
+    gsviTtsBatchSize,
+    gsviTtsSpeechRate
   ]);
 
   const handleChangeChatLog = useCallback(
@@ -218,6 +234,10 @@ export default function Home() {
         stylebertvits2ServerUrl,
         stylebertvits2ModelId,
         stylebertvits2Style,
+        gsviTtsServerUrl,
+        gsviTtsModelId,
+        gsviTtsBatchSize,
+        gsviTtsSpeechRate,
         onStart,
         onEnd
       );
@@ -231,7 +251,11 @@ export default function Home() {
       googleTtsType,
       stylebertvits2ServerUrl,
       stylebertvits2ModelId,
-      stylebertvits2Style
+      stylebertvits2Style,
+      gsviTtsServerUrl,
+      gsviTtsModelId,
+      gsviTtsBatchSize,
+      gsviTtsSpeechRate
     ]
   );
 
@@ -663,6 +687,14 @@ export default function Home() {
           setSelectLanguage={setSelectLanguage}
           setSelectVoiceLanguage={setSelectVoiceLanguage}
           setBackgroundImageUrl={setBackgroundImageUrl}
+          gsviTtsServerUrl={gsviTtsServerUrl}
+          onChangeGSVITtsServerUrl={setGSVITTSServerUrl}
+          gsviTtsModelId={gsviTtsModelId}
+          onChangeGSVITtsModelId={setGSVITTSModelID}
+          gsviTtsBatchSize={gsviTtsBatchSize}
+          onChangeGVITtsBatchSize={setGSVITTSBatchSize}
+          gsviTtsSpeechRate={gsviTtsSpeechRate}
+          onChangeGSVITtsSpeechRate={setGSVITTSSpeechRate}
         />
       </div>
     </>

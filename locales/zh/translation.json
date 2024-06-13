@@ -76,5 +76,11 @@
   "RepositoryURL": "儲存庫 URL：",
   "DontShowIntroductionNextTime": "下次不再顯示此對話框",
   "Close": "關閉",
-  "Language": "語言設定"
+  "Language": "語言設定",
+  "UsingGSVITTS": "使用 GSVI TTS",
+  "GSVITTSInfo": "GSVI TTS 設定",
+  "GSVITTSServerUrl": "語音推理端點URL",
+  "GSVITTSModelID": "GSVI TTS 模型ID",
+  "GSVITTSBatchSize": "GSVI TTS 批次大小 (1 ~ 100 數值越大推理速度越快，太大可能會用完記憶體)",
+  "GSVITTSSpeechRate": "語速 (0.5 ~ 2.0 數字越大越快)"
 }

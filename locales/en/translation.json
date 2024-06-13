@@ -75,5 +75,11 @@
   "RepositoryURL": "Repository URL:",
   "DontShowIntroductionNextTime": "Do not show this dialog next time",
   "Close": "CLOSE",
-  "Language": "Language"
+  "Language": "Language",
+  "UsingGSVITTS": "GSVI TTS",
+  "GSVITTSInfo": "GSVI TTS Settings",
+  "GSVITTSServerUrl": "GSVI TTS Endpoint API",
+  "GSVITTSModelID": "GSVI TTS Model ID",
+  "GSVITTSBatchSize": "GSVI TTS Batch Size (1 ~ 100 The larger the value, the faster the inference speed, but it might exhaust memory if too large.)",
+  "GSVITTSSpeechRate": "Speech Rate (0.5 ~ 2.0 The bigger the value, the faster it is.)"
 }
