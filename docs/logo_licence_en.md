@@ -1,7 +1,7 @@
 # Terms of Use for the Logo
 
 ## Overview
-This document sets out the terms of use for the logo used in the [nike-ChatVRM](https://github.com/tegnike/nike-ChatVRM) repository.
+This document sets out the terms of use for the logo used in the [aituber-kit](https://github.com/tegnike/aituber-kit) repository.
 
 ## Copyright
 The copyright of this logo belongs to the owner of the repository.

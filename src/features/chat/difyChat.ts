@@ -18,7 +18,7 @@ export async function getDifyChatResponseStream(
     query: messages[messages.length - 1].content, // messages[-1] は TypeScript では無効です
     response_mode: "streaming",
     conversation_id: "",
-    user: "nike-ChatVRM",
+    user: "aituber-kit",
     files: []
   });
 

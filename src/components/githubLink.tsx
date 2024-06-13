@@ -6,7 +6,7 @@ export const GitHubLink = () => {
     <div className="absolute right-0 z-10 m-24">
       <a
         draggable={false}
-        href="https://github.com/tegnike/nike-ChatVRM"
+        href="https://github.com/tegnike/aituber-kit"
         rel="noopener noreferrer"
         target="_blank"
       >

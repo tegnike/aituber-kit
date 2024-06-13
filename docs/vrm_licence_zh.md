@@ -1,7 +1,7 @@
 # VRM模型的使用协议
 
 ## 概述
-本文档规定了在[nike-ChatVRM](https://github.com/tegnike/nike-ChatVRM)存储库中提供的[VRM模型](https://github.com/tegnike/nike-ChatVRM/blob/feature/update-instructions/public/AvatarSample_B.vrm)的使用条款。
+本文档规定了在[aituber-kit](https://github.com/tegnike/aituber-kit)存储库中提供的[VRM模型](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/AvatarSample_B.vrm)的使用条款。
 
 ## 版权
 此VRM模型的版权属于存储库的所有者。
