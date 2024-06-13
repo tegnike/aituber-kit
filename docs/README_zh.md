@@ -1,13 +1,13 @@
 <h1 align="center">AITuber套件</h1>
 
 <p align="center">
-  <img style="max-width: 100%;" src="https://github.com/tegnike/nike-ChatVRM/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
+  <img style="max-width: 100%;" src="https://github.com/tegnike/aituber-kit/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
 </p>
 
 <p align="center">
-   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/nike-ChatVRM"></a>
-   <a href="https://github.com/tegnike/nike-ChatVRM"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/nike-ChatVRM"></a>
-   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/nike-ChatVRM?sort=semver&color=orange">
+   <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
+   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
 </p>
 
 <h3 align="center">
@@ -25,7 +25,7 @@
 
 我在下面的文章中寫了詳細的使用指南：
 
-[![今天成為AITuber開發者 | Nike-chan](https://github.com/tegnike/nike-ChatVRM/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+[![今天成為AITuber開發者 | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
 ### 共同準備
 
@@ -96,7 +96,7 @@ npm run dev
 
 ### 相關
 
-- 您可以嘗試我創建的服務器應用程序存儲庫。[tegnike/nike-open-interpreter](https://github.com/tegnike/nike-open-interpreter)
+- 您可以嘗試我創建的服務器應用程序存儲庫。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
 - 請閱讀“[與美少女一起開發吧！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)”以獲得詳細設置。
 
 ## 小貼士

@@ -1,7 +1,7 @@
 # VRMモデルの利用規約
 
 ## 概要
-この文書は、[nike-ChatVRM](https://github.com/tegnike/nike-ChatVRM) リポジトリで提供されている[VRMモデル](https://github.com/tegnike/nike-ChatVRM/blob/feature/update-instructions/public/AvatarSample_B.vrm)の利用規約を定めます。
+この文書は、[aituber-kit](https://github.com/tegnike/aituber-kit) リポジトリで提供されている[VRMモデル](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/AvatarSample_B.vrm)の利用規約を定めます。
 
 ## 著作権
 このVRMモデルの著作権は、リポジトリの所有者に帰属します。

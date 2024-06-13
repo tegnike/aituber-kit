@@ -1,7 +1,7 @@
 # ロゴの利用規約
 
 ## 概要
-この文書は、[nike-ChatVRM](https://github.com/tegnike/nike-ChatVRM) リポジトリで使用されているロゴの利用規約を定めます。
+この文書は、[aituber-kit](https://github.com/tegnike/aituber-kit) リポジトリで使用されているロゴの利用規約を定めます。
 
 ## 著作権
 このロゴの著作権は、リポジトリの所有者に帰属します。

@@ -1,7 +1,7 @@
 # 商标使用条款
 
 ## 概述
-本文档规定了在[nike-ChatVRM](https://github.com/tegnike/nike-ChatVRM)存储库中使用的商标的使用条款。
+本文档规定了在[aituber-kit](https://github.com/tegnike/aituber-kit)存储库中使用的商标的使用条款。
 
 ## 版权
 此商标的版权属于存储库的所有者。

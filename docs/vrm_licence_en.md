@@ -1,7 +1,7 @@
 # Terms of Use for VRM Models
 
 ## Overview
-This document sets out the terms of use for the [VRM model](https://github.com/tegnike/nike-ChatVRM/blob/feature/update-instructions/public/AvatarSample_B.vrm) provided in the [nike-ChatVRM](https://github.com/tegnike/nike-ChatVRM) repository.
+This document sets out the terms of use for the [VRM model](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/AvatarSample_B.vrm) provided in the [aituber-kit](https://github.com/tegnike/aituber-kit) repository.
 
 ## Copyright
 The copyright of this VRM model belongs to the owner of the repository.
