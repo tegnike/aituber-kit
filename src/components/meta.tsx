@@ -1,10 +1,10 @@
 import { buildUrl } from "@/utils/buildUrl";
 import Head from "next/head";
 export const Meta = () => {
-  const title = "ChatVRM";
+  const title = "AITuberキット";
   const description =
-    "Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。";
-  const imageUrl = "https://pixiv.github.io/ChatVRM/ogp.png";
+    "WebブラウザだけでAIキャラと会話を楽しむことができ、Youtubeで配信することもできます。";
+  const imageUrl = "https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166";
   return (
     <Head>
       <title>{title}</title>
