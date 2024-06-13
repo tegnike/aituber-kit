@@ -64,6 +64,7 @@ npm run dev
    - For Koeiromap, you can finely adjust the voice. An API key is required.
    - For Google TTS, languages other than Japanese can also be selected. Credential information is required.
    - For Style-Bert-VITS2, a local API server needs to be running.
+   - GSVI TTS, a local API server needs to be running.
 5. Start conversing with the character from the input form. Microphone input is also possible.
 
 ## AITuber Streaming
