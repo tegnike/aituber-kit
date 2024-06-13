@@ -76,6 +76,14 @@ type Props = {
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
   onClickTestVoice: (speaker: string) => void;
+  gsviTtsServerUrl: string;
+  onChangeGSVITtsServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  gsviTtsModelId: string;
+  onChangeGSVITtsModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  gsviTtsBatchSize: number;
+  onChangeGVITtsBatchSize: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  gsviTtsSpeechRate: number;
+  onChangeGSVITtsSpeechRate: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 export const Settings = ({
   selectAIService,
@@ -137,6 +145,14 @@ export const Settings = ({
   setSelectLanguage,
   setSelectVoiceLanguage,
   onClickTestVoice,
+  gsviTtsServerUrl,
+  onChangeGSVITtsServerUrl,
+  gsviTtsModelId,
+  onChangeGSVITtsModelId,
+  gsviTtsBatchSize,
+  onChangeGVITtsBatchSize,
+  gsviTtsSpeechRate,
+  onChangeGSVITtsSpeechRate,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -560,6 +576,7 @@ export const Settings = ({
                 <option value="koeiromap">{t('UsingKoeiromap')}</option>
                 <option value="google">{t('UsingGoogleTTS')}</option>
                 <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
+                <option value="gsvitts">{t('UsingGSVITTS')}</option>
               </select>
             </div>
             <div>&nbsp;</div>
@@ -730,6 +747,52 @@ export const Settings = ({
                           placeholder="..."
                           value={stylebertvits2Style}
                           onChange={onChangeStyleBertVits2Style} />
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === "gsvitts"){
+                  return (
+                    <>
+                      <div>
+                        {t('GSVITTSInfo')}
+                      </div>
+                      <div className="mt-16 font-bold">{t('GSVITTSServerUrl')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={gsviTtsServerUrl}
+                          onChange={onChangeGSVITtsServerUrl} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('GSVITTSModelID')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={gsviTtsModelId}
+                          onChange={onChangeGSVITtsModelId} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('GSVITTSBatchSize')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          step="1"
+                          placeholder="..."
+                          value={gsviTtsBatchSize}
+                          onChange={onChangeGVITtsBatchSize} />
+                      </div>
+                      <div className="mt-16 font-bold">{t('GSVITTSSpeechRate')}</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          step="0.1"
+                          placeholder="..."
+                          value={gsviTtsSpeechRate}
+                          onChange={onChangeGSVITtsSpeechRate} />
                       </div>
                     </>
                   );

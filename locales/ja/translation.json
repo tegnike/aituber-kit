@@ -37,7 +37,7 @@
   "CharacterSettingsReset": "キャラクター設定リセット",
   "SyntheticVoiceEngineChoice": "合成音声エンジンの選択",
   "VoiceAdjustment": "声の調整",
-  "VoiceEngineInstruction": "使用する合成音声エンジンをVOICEVOX, Koeiromap, Google Cloud Text-to-Speechから選択してください。",
+  "VoiceEngineInstruction": "使用する合成音声エンジンを選択してください。",
   "UsingKoeiromap": "Koeiromapを使用する（Japanese Only）",
   "UsingVoiceVox": "VOICEVOXを使用する（Japanese Only）",
   "UsingGoogleTTS": "Google TTSを使用する",
@@ -75,5 +75,11 @@
   "RepositoryURL": "リポジトリURL:",
   "DontShowIntroductionNextTime": "次回からこのダイアログを表示しない",
   "Close": "閉じる",
-  "Language": "言語設定"
+  "Language": "言語設定",
+  "UsingGSVITTS": "GSVI TTSを使用する",
+  "GSVITTSInfo": "GSVI TTS設定",
+  "GSVITTSServerUrl": "GSVI TTSサーバーのURL",
+  "GSVITTSModelID": "GSVI TTS モデルID",
+  "GSVITTSBatchSize": "GSVI TTS バッチサイズ (1 ~ 100 数値が大きいほど推論速度は速くなりますが、大きすぎるとメモリを使い果たす可能性があります)",
+  "GSVITTSSpeechRate": "話速 (0.5 ~ 2.0 数値が大きいほど速い)"
 }
