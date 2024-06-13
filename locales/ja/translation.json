@@ -37,7 +37,7 @@
   "CharacterSettingsReset": "キャラクター設定リセット",
   "SyntheticVoiceEngineChoice": "合成音声エンジンの選択",
   "VoiceAdjustment": "声の調整",
-  "VoiceEngineInstruction": "使用する合成音声エンジンをVOICEVOX, Koeiromap, Google Cloud Text-to-Speechから選択してください。",
+  "VoiceEngineInstruction": "使用する合成音声エンジンを選択してください。",
   "UsingKoeiromap": "Koeiromapを使用する（Japanese Only）",
   "UsingVoiceVox": "VOICEVOXを使用する（Japanese Only）",
   "UsingGoogleTTS": "Google TTSを使用する",
