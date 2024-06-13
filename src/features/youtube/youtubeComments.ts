@@ -29,12 +29,20 @@ export const getLiveChatId = async (liveId: string, youtubeKey: string): Promise
   return liveChatId;
 }
 
+type YouTubeComment = {
+  userName: string;
+  userIconUrl: string;
+  userComment: string;
+};
+
+type YouTubeComments = YouTubeComment[];
+
 const retrieveLiveComments = async (
   activeLiveChatId: string, 
   youtubeKey: string, 
   youtubeNextPageToken: string,
   setYoutubeNextPageToken: (token: string) => void
-): Promise<[]> => {
+): Promise<YouTubeComments> => {
   console.log("retrieveLiveComments");
   let url = "https://youtube.googleapis.com/youtube/v3/liveChat/messages?liveChatId=" + activeLiveChatId + '&part=authorDetails%2Csnippet&key=' + youtubeKey
   if (youtubeNextPageToken !== "" && youtubeNextPageToken !== undefined) {
