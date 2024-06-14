@@ -34,7 +34,7 @@ export const Introduction = ({
     console.log('i18n.language', i18n.language);
     // selectLanguage: "JP"
     let languageCode = i18n.language.toUpperCase();
-    languageCode == "JA" ? "JP" : languageCode
+    languageCode = languageCode == "JA" ? "JP" : languageCode
     setSelectLanguage(languageCode);
     setSelectVoiceLanguage(getVoiceLanguageCode(languageCode));
   }
