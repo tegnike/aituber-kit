@@ -14,6 +14,9 @@ i18n
       zh: {
         translation: require("../../locales/zh/translation.json"),
       },
+      ko: {
+        translation: require("../../locales/ko/translation.json"),
+      },
     },
     lng: "ja", 
     fallbackLng: "ja",

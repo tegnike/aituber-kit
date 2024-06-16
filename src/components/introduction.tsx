@@ -49,6 +49,8 @@ export const Introduction = ({
         return 'zh-TW';
       case 'zh-TW':
         return 'zh-TW';
+      case 'KO':
+        return 'ko-KR';
       default:
         return 'ja-JP';
     }
