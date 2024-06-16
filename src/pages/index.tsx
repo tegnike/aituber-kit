@@ -95,6 +95,7 @@ export default function Home() {
       setAnthropicKey(params.anthropicKey || "");
       setGoogleKey(params.googleKey || "");
       setGroqKey(params.groqKey || "");
+      setLocalLlmUrl(params.localLlmUrl || "");
       setDifyKey(params.difyKey || "");
       setDifyUrl(params.difyUrl || "");
       setSelectVoice(params.selectVoice || "voicevox");
@@ -131,6 +132,7 @@ export default function Home() {
       anthropicKey,
       googleKey,
       groqKey,
+      localLlmUrl,
       difyKey,
       difyUrl,
       selectVoice,
@@ -168,6 +170,7 @@ export default function Home() {
     openAiKey,
     anthropicKey,
     googleKey,
+    localLlmUrl,
     groqKey,
     difyKey,
     difyUrl,
