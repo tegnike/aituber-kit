@@ -12,9 +12,9 @@
 </p>
 
 <h3 align="center">
-   <a href="./README.md">【日本語】</a>｜
-   <a href="./docs/README_en.md">【英語】</a>｜
-   <a href="./docs/README_ko.md">【韓語】</a>
+   <a href="/README.md">【日本語】</a>｜
+   <a href="/docs/README_en.md">【英語】</a>｜
+   <a href="/docs/README_ko.md">【韓語】</a>
 </h3>
 
 ## 概覽

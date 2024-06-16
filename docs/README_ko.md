@@ -12,9 +12,9 @@
 </p>
 
 <h3 align="center">
-   <a href="./README.md">【일본어】</a>｜
-   <a href="./docs/README_en.md">【영어】</a>｜
-   <a href="./docs/README_zh.md">【중국어】</a>
+   <a href="../README.md">【일본어】</a>｜
+   <a href="./README_en.md">【영어】</a>｜
+   <a href="./README_zh.md">【중국어】</a>
 </h3>
 
 ## 개요
@@ -121,5 +121,5 @@ npm run dev
 ## 이용 약관
 
 - 라이선스는 [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)을 준수하며 MIT 라이선스를 사용합니다.
-- [로고 이용 약관](./docs/logo_licence_ko.md)
-- [VRM 모델 이용 약관](./docs/vrm_licence_ko.md)
+- [로고 이용 약관](./logo_licence_ko.md)
+- [VRM 모델 이용 약관](./vrm_licence_ko.md)
