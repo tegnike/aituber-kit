@@ -227,6 +227,14 @@ export const Settings = ({
                       setSelectVoiceLanguage("zh-TW");
                       i18n.changeLanguage('zh-TW');
                       break;
+                    case "KO":
+                      setSelectLanguage("KO");
+                      if (selectVoice === "voicevox" || selectVoice === "koeiromap") {
+                        setSelectVoice("google");
+                      }
+                      setSelectVoiceLanguage("ko-KR");
+                      i18n.changeLanguage('ko');
+                      break;
                     default:
                       break;  // Optionally handle unexpected values
                   }
@@ -235,6 +243,7 @@ export const Settings = ({
                 <option value="JP">日本語 - Japanese</option>
                 <option value="EN">英語 - English</option>
                 <option value="ZH">繁體中文 - Traditional Chinese</option>
+                <option value="KO">韓語 - Korean</option>
               </select>
             </div>
           </div>
@@ -586,7 +595,7 @@ export const Settings = ({
                   return (
                     <>
                       <div>
-                        KoemotionのKoeiromap APIを使用しています。詳しくは下記をご覧ください。<br />
+                        {t('KoeiromapInfo')}<br />
                         <Link
                           url="https://koemotion.rinna.co.jp"
                           label="https://koemotion.rinna.co.jp" />
@@ -659,7 +668,7 @@ export const Settings = ({
                   return (
                     <>
                       <div>
-                        VOICEVOXを使用しています。ローカルAPIを使用するので下記のサイトから環境にあったアプリをダウンロードし、起動しておく必要があります。<br />
+                        {t('VoiceVoxInfo')}<br />
                         <Link
                           url="https://voicevox.hiroshiba.jp/"
                           label="https://voicevox.hiroshiba.jp/" />
