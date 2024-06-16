@@ -99,6 +99,72 @@ npm run dev
 - 私が作成したサーバーアプリのリポジトリで試すことが可能です。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
 - 詳しい設定は「[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)」を読んでください。
 
+## 新しい言語の追加方法
+
+新しい言語をプロジェクトに追加するには、以下の手順に従ってください。
+
+1. **言語ファイルの追加**:
+   - `locales` ディレクトリに新しい言語のディレクトリを作成し、その中に `translation.json` ファイルを作成します。
+   - 例: `locales/fr/translation.json` (フランス語の場合)
+
+2. **翻訳の追加**:
+   - `translation.json` ファイルに、既存の言語ファイルを参考にして翻訳を追加します。
+
+3. **言語設定の更新**:
+   - `src/lib/i18n.js` ファイルを開き、`resources` オブジェクトに新しい言語を追加します。
+   ```javascript:src/lib/i18n.js
+   resources: {
+     ...,
+     fr: {  // 新しい言語コード
+       translation: require("../../locales/fr/translation.json"),
+     },
+   },
+   ```
+
+4. **言語選択オプションの追加**:
+   - ユーザーが言語を選択できるように、UIの適切な部分（例えば設定画面の言語選択ドロップダウン）に新しい言語オプションを追加します。
+   ```typescript:src/components/settings.tsx
+   <select>
+     ...,
+     <option value="FR">フランス語 - French</option>
+   </select>
+   ```
+
+5. **テスト**:
+   - 新しい言語でアプリケーションが正しく表示されるかテストします。
+
+これで新しい言語のサポートがプロジェクトに追加されます。
+
+### 音声言語コードの追加
+
+- 音声言語コードの対応も追加する必要があります。
+- `Introduction` コンポーネント内の `getVoiceLanguageCode` 関数に新しい言語コードを追加します。
+
+```typescript:nike-ChatVRM/src/components/introduction.tsx
+const getVoiceLanguageCode = (selectLanguage: string) => {
+  switch (selectLanguage) {
+    case 'JP':
+      return 'ja-JP';
+    case 'EN':
+      return 'en-US';
+    case 'ZH':
+      return 'zh-TW';
+    case 'zh-TW':
+      return 'zh-TW';
+    case 'KO':
+      return 'ko-KR';
+    case 'FR':
+      return 'fr-FR';
+    default:
+      return 'ja-JP';
+  }
+}
+```
+
+### READMEの追加
+
+- 新しい言語のREADME (`README_fr.md`), ロゴ利用規約 (`logo_licence_fr.md`), VRMモデル利用規約 (`vrm_licence_fr.md`) を `docs` ディレクトリに追加してください。
+
 ## TIPS
 
 ### VRMモデル、背景固定方法
