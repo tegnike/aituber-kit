@@ -77,6 +77,10 @@ type Props = {
   onChangeGVITtsBatchSize: (speed: number) => void;
   gsviTtsSpeechRate: number;
   onChangeGSVITtsSpeechRate: (speed: number) => void;
+  characterName: string;
+  onChangeCharacterName: (key: string) => void;
+  showCharacterName: boolean;
+  onChangeShowCharacterName: (show: boolean) => void;
 };
 export const Menu = ({
   selectAIService,
@@ -145,6 +149,10 @@ export const Menu = ({
   onChangeGVITtsBatchSize,
   gsviTtsSpeechRate,
   onChangeGSVITtsSpeechRate,
+  characterName,
+  onChangeCharacterName,
+  showCharacterName,
+  onChangeShowCharacterName,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -374,6 +382,20 @@ export const Menu = ({
     [onChangeGSVITtsSpeechRate]
   );
 
+  const handleCharacterName = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeCharacterName(event.target.value);
+    },
+    [onChangeCharacterName]
+  );
+
+  const handleShowCharacterName = useCallback(
+    (show: boolean) => {
+      onChangeShowCharacterName(show);
+    },
+    [onChangeShowCharacterName]
+  );
+
   return (
     <>
       <div className="absolute z-10 m-24">
@@ -404,7 +426,7 @@ export const Menu = ({
       {
         webSocketMode ? 
           (showChatLog && <CodeLog messages={codeLog} />) :
-          (showChatLog && <ChatLog messages={chatLog} />)
+          (showChatLog && <ChatLog messages={chatLog} characterName={characterName} />)
       }
       {showSettings && (
         <Settings
@@ -476,10 +498,14 @@ export const Menu = ({
           onChangeGVITtsBatchSize={handleChangeGSVITtsBatchSize}
           gsviTtsSpeechRate={gsviTtsSpeechRate}
           onChangeGSVITtsSpeechRate={handleChangeGSVITtsSpeechRate}
+          characterName={characterName}
+          onChangeCharacterName={handleCharacterName}
+          showCharacterName={showCharacterName}
+          onChangeShowCharacterName={handleShowCharacterName}
         />
       )}
       {!showChatLog && assistantMessage && (
-        <AssistantText message={assistantMessage} />
+        <AssistantText message={assistantMessage} characterName={characterName} showCharacterName ={showCharacterName} />
       )}
       <input
         type="file"

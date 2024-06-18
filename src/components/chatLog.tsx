@@ -2,8 +2,10 @@ import { useEffect, useRef } from "react";
 import { Message } from "@/features/messages/messages";
 type Props = {
   messages: Message[];
+  characterName: string;
 };
-export const ChatLog = ({ messages }: Props) => {
+
+export const ChatLog = ({ messages, characterName }: Props) => {
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export const ChatLog = ({ messages }: Props) => {
         {messages.map((msg, i) => {
           return (
             <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
-              <Chat role={msg.role} message={msg.content} />
+              <Chat role={msg.role} message={msg.content} characterName={characterName} />
             </div>
           );
         })}
@@ -34,7 +36,7 @@ export const ChatLog = ({ messages }: Props) => {
   );
 };
 
-const Chat = ({ role, message }: { role: string; message: string }) => {
+const Chat = ({ role, message, characterName }: { role: string; message: string; characterName: string; }) => {
   const roleColor =
     role !== "user" ? "bg-secondary text-white " : "bg-base text-primary";
   const roleText = role !== "user" ? "text-secondary" : "text-primary";
@@ -45,7 +47,7 @@ const Chat = ({ role, message }: { role: string; message: string }) => {
       <div
         className={`px-24 py-8 rounded-t-8 font-bold tracking-wider ${roleColor}`}
       >
-        {role !== "user" ? "CHARACTER" : "YOU"}
+        {role !== "user" ? characterName : "YOU"}
       </div>
       <div className="px-24 py-16 bg-white rounded-b-8">
         <div className={`typography-16 font-bold ${roleText}`}>{message}</div>

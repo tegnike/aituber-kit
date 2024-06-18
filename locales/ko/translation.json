@@ -83,5 +83,7 @@
   "GSVITTSServerUrl": "GSVI TTS 서버 URL",
   "GSVITTSModelID": "GSVI TTS 모델 ID",
   "GSVITTSBatchSize": "GSVI TTS 배치 크기 (1 ~ 100 숫자가 클수록 추론 속도가 빨라지지만, 너무 크면 메모리가 부족할 수 있습니다)",
-  "GSVITTSSpeechRate": "말 속도 (0.5 ~ 2.0 숫자가 클수록 빠름)"
+  "GSVITTSSpeechRate": "말 속도 (0.5 ~ 2.0 숫자가 클수록 빠름)",
+  "CharacterName": "캐릭터 이름",
+  "ShowCharacterName": "캐릭터 이름 표시"
 }
