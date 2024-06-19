@@ -84,6 +84,10 @@ type Props = {
   onChangeGVITtsBatchSize: (event: React.ChangeEvent<HTMLInputElement>) => void;
   gsviTtsSpeechRate: number;
   onChangeGSVITtsSpeechRate: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  characterName: string;
+  onChangeCharacterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  showCharacterName: boolean;
+  onChangeShowCharacterName: (show: boolean) => void;
 };
 export const Settings = ({
   selectAIService,
@@ -153,6 +157,10 @@ export const Settings = ({
   onChangeGVITtsBatchSize,
   gsviTtsSpeechRate,
   onChangeGSVITtsSpeechRate,
+  characterName,
+  onChangeCharacterName,
+  showCharacterName,
+  onChangeShowCharacterName,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -245,6 +253,27 @@ export const Settings = ({
                 <option value="ZH">繁體中文 - Traditional Chinese</option>
                 <option value="KO">韓語 - Korean</option>
               </select>
+            </div>
+          </div>
+          {/* キャラクター名表示 */}
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">
+              {t('CharacterName')}
+            </div>
+            <input
+              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+              type="text"
+              placeholder={t('CharacterName')}
+              value={characterName}
+              onChange={onChangeCharacterName}
+            />
+            <div className="my-16 typography-20 font-bold">
+              {t('ShowCharacterName')}
+            </div>
+            <div className="my-8">
+              <TextButton onClick={() => onChangeShowCharacterName(!showCharacterName)}>
+                {showCharacterName ? t('StatusOn') : t('StatusOff')}
+              </TextButton>
             </div>
           </div>
           {/* VRMと背景画像の設定 */}

@@ -72,6 +72,8 @@ export default function Home() {
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
   const [chatProcessingCount, setChatProcessingCount] = useState(0);
+  const [characterName, setCharacterName] = useState("");
+  const [showCharacterName, setShowCharacterName] = useState(true);
 
   const incrementChatProcessingCount = () => {
     setChatProcessingCount(prevCount => prevCount + 1);
@@ -117,6 +119,8 @@ export default function Home() {
       setGSVITTSModelID(params.gsviTtsModelId || "");
       setGSVITTSBatchSize(params.gsviTtsBatchSize || 2);
       setGSVITTSSpeechRate(params.gsviTtsSpeechRate || 1.0);
+      setCharacterName(params.characterName || "CHRACTER");
+      setShowCharacterName(params.showCharacterName || true);
     }
   }, []);
 
@@ -153,7 +157,9 @@ export default function Home() {
       gsviTtsServerUrl,
       gsviTtsModelId,
       gsviTtsBatchSize,
-      gsviTtsSpeechRate
+      gsviTtsSpeechRate,
+      characterName,
+      showCharacterName
     };
     process.nextTick(() =>
       window.localStorage.setItem(
@@ -192,7 +198,9 @@ export default function Home() {
     gsviTtsServerUrl,
     gsviTtsModelId,
     gsviTtsBatchSize,
-    gsviTtsSpeechRate
+    gsviTtsSpeechRate,
+    characterName,
+    showCharacterName
   ]);
 
   const handleChangeChatLog = useCallback(
@@ -698,6 +706,10 @@ export default function Home() {
           onChangeGVITtsBatchSize={setGSVITTSBatchSize}
           gsviTtsSpeechRate={gsviTtsSpeechRate}
           onChangeGSVITtsSpeechRate={setGSVITTSSpeechRate}
+          showCharacterName={showCharacterName}
+          onChangeShowCharacterName={setShowCharacterName}
+          characterName={characterName}
+          onChangeCharacterName={setCharacterName}
         />
       </div>
     </>
