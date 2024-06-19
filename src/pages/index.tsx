@@ -37,6 +37,7 @@ export default function Home() {
   const [localLlmUrl, setLocalLlmUrl] = useState("");
   const [difyKey, setDifyKey] = useState("");
   const [difyUrl, setDifyUrl] = useState("");
+  const [difyConversationId, setDifyConversationId] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
   const [selectLanguage, setSelectLanguage] = useState("JP");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
@@ -100,6 +101,7 @@ export default function Home() {
       setLocalLlmUrl(params.localLlmUrl || "");
       setDifyKey(params.difyKey || "");
       setDifyUrl(params.difyUrl || "");
+      setDifyConversationId(params.difyConversationId || "");
       setSelectVoice(params.selectVoice || "voicevox");
       setSelectLanguage(params.selectLanguage || "JP");
       setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
@@ -139,6 +141,7 @@ export default function Home() {
       localLlmUrl,
       difyKey,
       difyUrl,
+      difyConversationId,
       selectVoice,
       selectLanguage,
       selectVoiceLanguage,
@@ -180,6 +183,7 @@ export default function Home() {
     groqKey,
     difyKey,
     difyUrl,
+    difyConversationId,
     selectVoice,
     selectLanguage,
     selectVoiceLanguage,
@@ -301,7 +305,7 @@ export default function Home() {
       } else if (selectAIService === "groq") {
         stream = await getGroqChatResponseStream(messages, _groqKey, selectAIModel);
       } else if (selectAIService === "dify") {
-        stream = await getDifyChatResponseStream(messages, _difyKey, _difyUrl);
+        stream = await getDifyChatResponseStream(messages, _difyKey, _difyUrl, difyConversationId, setDifyConversationId);
       }
     } catch (e) {
       console.error(e);
@@ -380,7 +384,7 @@ export default function Home() {
     ];
     setChatLog(messageLogAssistant);
     setChatProcessing(false);
-  }, [selectAIService, openAiKey, selectAIModel, anthropicKey, googleKey, localLlmUrl, groqKey, difyKey, difyUrl, koeiroParam, handleSpeakAi]);
+  }, [selectAIService, openAiKey, selectAIModel, anthropicKey, googleKey, localLlmUrl, groqKey, difyKey, difyUrl, difyConversationId, koeiroParam, handleSpeakAi]);
 
   const preProcessAIResponse = useCallback(async (messages: Message[]) => {
     await processAIResponse(chatLog, messages);
@@ -658,6 +662,8 @@ export default function Home() {
           onChangeDifyKey={setDifyKey}
           difyUrl={difyUrl}
           onChangeDifyUrl={setDifyUrl}
+          difyConversationId={difyConversationId}
+          onChangeDifyConversationId={setDifyConversationId}
           systemPrompt={systemPrompt}
           chatLog={chatLog}
           codeLog={codeLog}

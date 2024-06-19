@@ -34,6 +34,8 @@ type Props = {
   onChangeDifyKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   difyUrl: string;
   onChangeDifyUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  difyConversationId: string;
+  onChangeDifyConversationId: (id: string) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -108,6 +110,8 @@ export const Settings = ({
   onChangeDifyKey,
   difyUrl,
   onChangeDifyUrl,
+  difyConversationId,
+  onChangeDifyConversationId,
   chatLog,
   systemPrompt,
   koeiroParam,
@@ -838,20 +842,22 @@ export const Settings = ({
             })()}
           </div>
           {/* チャットログの設定 */}
-          {chatLog.length > 0 && (
-            <div className="my-40">
-              <div className="my-8 grid-cols-2">
-                <div className="my-16 typography-20 font-bold">{t('ConversationHistory')}</div>
-                <div className="my-8">
-                  {t('ConversationHistoryInfo')}
-                </div>
-                <TextButton onClick={() => { 
-                  onClickResetChatLog();
-                  onClickResetCodeLog(); 
-                }}>
-                  {t('ConversationHistoryReset')}
-                </TextButton>
+          <div className="my-40">
+            <div className="my-8 grid-cols-2">
+              <div className="my-16 typography-20 font-bold">{t('ConversationHistory')}</div>
+              <div className="my-8">
+                {t('ConversationHistoryInfo')}
               </div>
+              <TextButton onClick={() => {
+                onClickResetChatLog();
+                onClickResetCodeLog();
+                onChangeDifyConversationId("");
+              }}>
+                {t('ConversationHistoryReset')}
+              </TextButton>
+            </div>
+
+            {chatLog.length > 0 && (
               <div className="my-8">
                 {chatLog.map((value, index) => {
                   return (
@@ -876,8 +882,8 @@ export const Settings = ({
                   );
                 })}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

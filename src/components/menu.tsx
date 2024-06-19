@@ -29,6 +29,8 @@ type Props = {
   onChangeDifyKey: (key: string) => void;
   difyUrl: string;
   onChangeDifyUrl: (url: string) => void;
+  difyConversationId: string;
+  onChangeDifyConversationId: (id: string) => void;
   systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
@@ -101,6 +103,8 @@ export const Menu = ({
   onChangeDifyKey,
   difyUrl,
   onChangeDifyUrl,
+  difyConversationId,
+  onChangeDifyConversationId,
   systemPrompt,
   chatLog,
   codeLog,
@@ -225,6 +229,13 @@ export const Menu = ({
       onChangeDifyUrl(event.target.value);
     },
     [onChangeDifyUrl]
+  );
+
+  const handleDifyConversationIdChange = useCallback(
+    (value: string) => {
+      onChangeDifyConversationId(value);
+    },
+    [onChangeDifyConversationId]
   );
 
   const handleChangeKoeiromapKey = useCallback(
@@ -448,6 +459,8 @@ export const Menu = ({
           onChangeLocalLlmUrl={handleChangeLocalLlmUrl}
           difyUrl={difyUrl}
           onChangeDifyUrl={handleDifyUrlChange}
+          difyConversationId={difyConversationId}
+          onChangeDifyConversationId={handleDifyConversationIdChange}
           chatLog={chatLog}
           codeLog={codeLog}
           systemPrompt={systemPrompt}

@@ -4,6 +4,8 @@ export async function getDifyChatResponseStream(
   messages: Message[],
   apiKey: string,
   url: string,
+  conversationId: string,
+  setDifyConversationId: (id: string) => void
 ) {
   if (!apiKey) {
     throw new Error("Invalid API Key");
@@ -17,7 +19,7 @@ export async function getDifyChatResponseStream(
     inputs: {},
     query: messages[messages.length - 1].content, // messages[-1] は TypeScript では無効です
     response_mode: "streaming",
-    conversation_id: "",
+    conversation_id: conversationId,
     user: "aituber-kit",
     files: []
   });
@@ -46,6 +48,7 @@ export async function getDifyChatResponseStream(
             const data = JSON.parse(message.slice(5)); // Remove 'data:' prefix
             if (data.event === "message") {
               controller.enqueue(data.answer);
+              setDifyConversationId(data.conversation_id);
             }
           });
         }
