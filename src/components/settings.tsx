@@ -493,8 +493,7 @@ export const Settings = ({
                         return (
                           <div className="my-24">
                             <div className="my-16">
-                              {t('DifyInfo')}<br />
-                              {t('DifyInfo2')}
+                              {t('DifyInfo')}
                             </div>
                             <div className="my-16 typography-20 font-bold">{t('DifyAPIKeyLabel')}</div>
                             <input
@@ -846,7 +845,7 @@ export const Settings = ({
             <div className="my-8 grid-cols-2">
               <div className="my-16 typography-20 font-bold">{t('ConversationHistory')}</div>
               <div className="my-8">
-                {t('ConversationHistoryInfo')}
+                {selectAIService !== "dify" ? t('ConversationHistoryInfo') : t('DifyInfo2')}
               </div>
               <TextButton onClick={() => {
                 onClickResetChatLog();
