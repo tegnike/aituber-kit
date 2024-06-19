@@ -271,15 +271,9 @@ export const Settings = ({
               {t('ShowCharacterName')}
             </div>
             <div className="my-8">
-              {showCharacterName ? (
-                <TextButton onClick={() => onChangeShowCharacterName(false)}>
-                  {t('StatusOn')}
-                </TextButton>
-              ) : (
-                <TextButton onClick={() => onChangeShowCharacterName(true)}>
-                  {t('StatusOff')}
-                </TextButton>
-              )}
+              <TextButton onClick={() => onChangeShowCharacterName(!showCharacterName)}>
+                {showCharacterName ? t('StatusOn') : t('StatusOff')}
+              </TextButton>
             </div>
           </div>
           {/* VRMと背景画像の設定 */}
