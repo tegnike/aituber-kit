@@ -74,7 +74,8 @@ const retrieveLiveComments = async (
 export const fetchAndProcessComments = async (
   systemPrompt: string,
   messages: Message[],
-  openAiKey: string,
+  aiApiKey: string,
+  selectAIService: string,
   selectAIModel: string,
   liveId: string,
   youtubeKey: string,
@@ -96,7 +97,7 @@ export const fetchAndProcessComments = async (
     if (liveChatId) {
       // 会話の継続が必要かどうかを確認
       if (!youtubeSleepMode && youtubeContinuationCount < 1 && conversationContinuityMode) {
-        const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages, openAiKey, selectAIModel);
+        const isContinuationNeeded = await checkIfResponseContinuationIsRequired(messages, aiApiKey, selectAIService, selectAIModel);
         if (isContinuationNeeded) {
           const continuationMessage = await getMessagesForContinuation(systemPrompt, messages);
           preProcessAIResponse(continuationMessage);
@@ -106,9 +107,8 @@ export const fetchAndProcessComments = async (
           }
           return;
         }
-      } else {
-        setYoutubeContinuationCount(0);
       }
+      setYoutubeContinuationCount(0);
 
       // コメントを取得
       const youtubeComments = await retrieveLiveComments(liveChatId, youtubeKey, youtubeNextPageToken, setYoutubeNextPageToken);
@@ -119,7 +119,7 @@ export const fetchAndProcessComments = async (
         let selectedComment = "";
         if (conversationContinuityMode) {
           if (youtubeComments.length > 1) {
-            selectedComment = await getBestComment(messages, youtubeComments, openAiKey, selectAIModel);
+            selectedComment = await getBestComment(messages, youtubeComments, aiApiKey, selectAIService, selectAIModel);
           } else {
             selectedComment = youtubeComments[0].userComment;
           }
@@ -138,7 +138,7 @@ export const fetchAndProcessComments = async (
             preProcessAIResponse(continuationMessage);
           } else if (noCommentCount === 3) {
             // 新しいトピックを生成
-            const anotherTopic = await getAnotherTopic(messages, openAiKey, selectAIModel);
+            const anotherTopic = await getAnotherTopic(messages, aiApiKey, selectAIService, selectAIModel);
             console.log("anotherTopic:", anotherTopic);
             const newTopicMessage = await getMessagesForNewTopic(systemPrompt, messages, anotherTopic);
             preProcessAIResponse(newTopicMessage);
