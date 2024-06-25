@@ -117,6 +117,7 @@ npm run dev
 
 - Conversation history can be reset in the settings screen.
 - Various settings are stored in the browser.
+- Elements enclosed in code blocks are not read by TTS.
 
 ## Usage Agreement
 
