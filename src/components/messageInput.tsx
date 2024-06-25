@@ -1,6 +1,6 @@
 import { IconButton } from "./iconButton";
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type Props = {
   userMessage: string;
@@ -23,6 +23,20 @@ export const MessageInput = ({
 }: Props) => {
   const { t } = useTranslation();
   const [rows, setRows] = useState(1);
+  const [loadingDots, setLoadingDots] = useState('');
+
+  useEffect(() => {
+    if (isChatProcessing) {
+      const interval = setInterval(() => {
+        setLoadingDots(prev => {
+          if (prev === '...') return '';
+          return prev + '.';
+        });
+      }, 200);
+
+      return () => clearInterval(interval);
+    }
+  }, [isChatProcessing]);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (!event.nativeEvent.isComposing && event.key === 'Enter' && !event.shiftKey && userMessage.trim() !== '') {
@@ -48,12 +62,12 @@ export const MessageInput = ({
               onClick={onClickMicButton}
             />
             <textarea
-              placeholder={t('EnterYourQuestion')}
+              placeholder={isChatProcessing ? `回答生成中${loadingDots}` : t('EnterYourQuestion')}
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
               disabled={isChatProcessing}
               className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"
-              value={userMessage}
+              value={isChatProcessing ? '' : userMessage}
               rows={rows}
               style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}
             ></textarea>
