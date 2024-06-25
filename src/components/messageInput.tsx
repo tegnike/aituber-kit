@@ -62,7 +62,7 @@ export const MessageInput = ({
               onClick={onClickMicButton}
             />
             <textarea
-              placeholder={isChatProcessing ? `回答生成中${loadingDots}` : t('EnterYourQuestion')}
+              placeholder={isChatProcessing ? `${t('AnswerGenerating')}${loadingDots}` : t('EnterYourQuestion')}
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
               disabled={isChatProcessing}
