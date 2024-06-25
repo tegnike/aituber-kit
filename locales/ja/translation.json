@@ -61,6 +61,7 @@
   "CodeLog": "コードログ",
   "ChatLog": "会話ログ",
   "EnterYourQuestion": "聞きたいことをいれてね",
+  "AnswerGenerating": "回答生成中",
   "AboutThisApplication": "このアプリケーションについて",
   "AboutThisApplicationDescription": "Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。<br />設定は左上のメニューボタンから変更できます。",
   "TechnologyIntroduction": "技術紹介",
