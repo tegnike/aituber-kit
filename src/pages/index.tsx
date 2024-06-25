@@ -604,7 +604,8 @@ export default function Home() {
     fetchAndProcessComments(
       systemPrompt,
       chatLog,
-      openAiKey,
+      selectAIService === "anthropic" ? anthropicKey : openAiKey,
+      selectAIService,
       selectAIModel,
       youtubeLiveId,
       youtubeApiKey,
