@@ -10,7 +10,7 @@ export async function getAnthropicChatResponse(messages: Message[], apiKey: stri
   });
 
   const data = await response.json();
-  return data;
+  return { message: data.message[0].text };
 }
 
 export async function getAnthropicChatResponseStream(

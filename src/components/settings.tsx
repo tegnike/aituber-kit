@@ -566,13 +566,13 @@ export const Settings = ({
                               {conversationContinuityMode ? (
                                 <TextButton
                                   onClick={() => onChangeConversationContinuityMode(false)}
-                                  disabled={selectAIService !== "openai"}>
+                                  disabled={selectAIService !== "openai" && selectAIService !== "anthropic"}>
                                   {t('StatusOn')}
                                 </TextButton>
                               ) : (
                                 <TextButton
                                   onClick={() => onChangeConversationContinuityMode(true)}
-                                  disabled={selectAIService !== "openai"}>
+                                  disabled={selectAIService !== "openai" && selectAIService !== "anthropic"}>
                                   {t('StatusOff')}
                                 </TextButton>
                               )}

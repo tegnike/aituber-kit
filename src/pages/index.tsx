@@ -121,7 +121,7 @@ export default function Home() {
       setGSVITTSModelID(params.gsviTtsModelId || "");
       setGSVITTSBatchSize(params.gsviTtsBatchSize || 2);
       setGSVITTSSpeechRate(params.gsviTtsSpeechRate || 1.0);
-      setCharacterName(params.characterName || "CHRACTER");
+      setCharacterName(params.characterName || "CHARACTER");
       setShowCharacterName(params.showCharacterName || true);
     }
   }, []);
@@ -318,9 +318,11 @@ export default function Home() {
 
     const reader = stream.getReader();
     let receivedMessage = "";
-    let aiTextLog = "";
+    let aiTextLog: Message[] = []; // 会話ログ欄で使用
     let tag = "";
-    const sentences = new Array<string>();
+    let isCodeBlock = false;
+    let codeBlockText = "";
+    const sentences = new Array<string>(); // AssistantMessage欄で使用
     try {
       while (true) {
         const { done, value } = await reader.read();
@@ -328,7 +330,7 @@ export default function Home() {
 
         receivedMessage += value;
 
-        // 返答内容のタグ部分の検出
+        // 返答内容のタグ部分と返答部分を分離
         const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
         if (tagMatch && tagMatch[0]) {
           tag = tagMatch[0];
@@ -336,29 +338,52 @@ export default function Home() {
         }
 
         // 返答を一文単位で切り出して処理する
-        const sentenceMatch = receivedMessage.match(
-          /^(.+[。．！？\n]|.{10,}[、,])/
-        );
+        const sentenceMatch = receivedMessage.match(/^(.+[。．！？\n]|.{10,}[、,])/);
         if (sentenceMatch && sentenceMatch[0]) {
-          const sentence = sentenceMatch[0];
+          let sentence = sentenceMatch[0];
+          // 区切った文字をsentencesに追加
           sentences.push(sentence);
-          receivedMessage = receivedMessage
-            .slice(sentence.length)
-            .trimStart();
+          // 区切った文字の残りでreceivedMessageを更新
+          receivedMessage = receivedMessage.slice(sentence.length).trimStart();
 
           // 発話不要/不可能な文字列だった場合はスキップ
           if (
-            !sentence.replace(
-              /^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g,
-              ""
-            )
+            !sentence.replace(/^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g, "")
           ) {
             continue;
           }
 
-          const aiText = `${tag} ${sentence}`;
+          // タグと返答を結合（音声再生で使用される）
+          let aiText = `${tag} ${sentence}`;
+
+          if (isCodeBlock && !sentence.includes("```")) {
+            codeBlockText += sentence;
+            continue;
+          }
+
+          if (sentence.includes("```")) {
+            if (isCodeBlock) {
+              // 会話ログ欄にコードブロックを追加
+              aiTextLog.push({ role: "code", content: codeBlockText + sentence.split("```")[0] });
+              // receivedMessageを更新
+              aiText += `${tag} ${sentence.split("```")[1] || ""}`;
+
+              // AssistantMessage欄にコードブロックを追加
+              const currentAssistantMessage = sentences.join(" ");
+              setAssistantMessage(currentAssistantMessage);
+
+              isCodeBlock = false;
+              codeBlockText = ""
+            } else{
+              isCodeBlock = true;
+              [aiText, codeBlockText] = aiText.split("```");
+            }
+
+            sentence = sentence.replace(/```/g, "");
+          }
+
           const aiTalks = textsToScreenplay([aiText], koeiroParam);
-          aiTextLog += aiText;
+          aiTextLog.push({ role: "assistant", content: sentence });
 
           // 文ごとに音声を生成 & 再生、返答を表示
           const currentAssistantMessage = sentences.join(" ");
@@ -377,12 +402,18 @@ export default function Home() {
       reader.releaseLock();
     }
 
-    // アシスタントの返答をログに追加
-    const messageLogAssistant: Message[] = [
-      ...currentChatLog,
-      { role: "assistant", content: aiTextLog },
-    ];
-    setChatLog(messageLogAssistant);
+    // 直前のroleと同じならば、contentを結合し、空のcontentを除外する
+    aiTextLog = aiTextLog.reduce((acc: Message[], item: Message) => {
+      const lastItem = acc[acc.length - 1];
+      if (lastItem && lastItem.role === item.role) {
+        lastItem.content += " " + item.content;
+      } else {
+        acc.push({ ...item, content: item.content.trim() });
+      }
+      return acc;
+    }, []).filter(item => item.content !== "");
+
+    setChatLog([...currentChatLog, ...aiTextLog]);
     setChatProcessing(false);
   }, [selectAIService, openAiKey, selectAIModel, anthropicKey, googleKey, localLlmUrl, groqKey, difyKey, difyUrl, difyConversationId, koeiroParam, handleSpeakAi]);
 
@@ -573,7 +604,8 @@ export default function Home() {
     fetchAndProcessComments(
       systemPrompt,
       chatLog,
-      openAiKey,
+      selectAIService === "anthropic" ? anthropicKey : openAiKey,
+      selectAIService,
       selectAIModel,
       youtubeLiveId,
       youtubeApiKey,
