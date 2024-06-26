@@ -339,7 +339,7 @@ export default function Home() {
 
         // 返答を一文単位で切り出して処理する
         const sentenceMatch = receivedMessage.match(/^(.+[。．！？\n]|.{10,}[、,])/);
-        if (sentenceMatch && sentenceMatch[0]) {
+        if (sentenceMatch?.[0]) {
           let sentence = sentenceMatch[0];
           // 区切った文字をsentencesに追加
           sentences.push(sentence);
@@ -363,18 +363,18 @@ export default function Home() {
 
           if (sentence.includes("```")) {
             if (isCodeBlock) {
-              // 会話ログ欄にコードブロックを追加
-              aiTextLog.push({ role: "code", content: codeBlockText + sentence.split("```")[0] });
-              // receivedMessageを更新
-              aiText += `${tag} ${sentence.split("```")[1] || ""}`;
+              // コードブロックの終了処理
+              const [codeEnd, ...restOfSentence] = sentence.split("```");
+              aiTextLog.push({ role: "code", content: codeBlockText + codeEnd });
+              aiText += `${tag} ${restOfSentence.join("```") || ""}`;
 
-              // AssistantMessage欄にコードブロックを追加
-              const currentAssistantMessage = sentences.join(" ");
-              setAssistantMessage(currentAssistantMessage);
+              // AssistantMessage欄の更新
+              setAssistantMessage(sentences.join(" "));
 
+              codeBlockText = "";
               isCodeBlock = false;
-              codeBlockText = ""
-            } else{
+            } else {
+              // コードブロックの開始処理
               isCodeBlock = true;
               [aiText, codeBlockText] = aiText.split("```");
             }
