@@ -54,7 +54,7 @@ const Chat = ({ role, message, characterName }: { role: string; message: string;
         <div
           className={`px-24 py-8 rounded-t-8 font-bold tracking-wider ${roleColor}`}
         >
-          {role !== "user" ? characterName : "YOU"}
+          {role !== "user" ? (characterName || "CHARACTER") : "YOU"}
         </div>
         <div className="px-24 py-16 bg-white rounded-b-8">
             <div className={`typography-16 font-bold ${roleText}`}>{message}</div>

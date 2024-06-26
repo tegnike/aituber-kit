@@ -121,7 +121,7 @@ export default function Home() {
       setGSVITTSModelID(params.gsviTtsModelId || "");
       setGSVITTSBatchSize(params.gsviTtsBatchSize || 2);
       setGSVITTSSpeechRate(params.gsviTtsSpeechRate || 1.0);
-      setCharacterName(params.characterName || "CHRACTER");
+      setCharacterName(params.characterName || "CHARACTER");
       setShowCharacterName(params.showCharacterName || true);
     }
   }, []);
