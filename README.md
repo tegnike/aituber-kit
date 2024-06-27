@@ -9,6 +9,7 @@
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
+   <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
 <h3 align="center">
@@ -29,7 +30,7 @@
 
 [![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
-### 共通事前準備
+## 共通事前準備
 
 1. パッケージインストールします。
 ```bash
@@ -119,12 +120,49 @@ npm run dev
 - 各種設定項目はブラウザに保存されます。
 - コードブロックで囲まれた要素はTTSで読まれません。
 
+## スポンサー募集
+
+開発を継続するためにスポンサーの方を募集しています。<br>
+あなたの支援は、AITuberキットの開発と改善に大きく貢献します。
+
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+### 協力者の皆様（ご支援いただいた順）
+
+<p>
+  <a href="https://github.com/morioki3" title="morioki3">
+    <img src="https://github.com/morioki3.png" width="40" height="40" alt="morioki3">
+  </a>
+  <a href="https://github.com/hodachi-axcxept" title="hodachi-axcxept">
+    <img src="https://github.com/hodachi-axcxept.png" width="40" height="40" alt="hodachi-axcxept">
+  </a>
+  <a href="https://github.com/coderabbitai" title="coderabbitai">
+    <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
+  </a>
+  <a href="https://github.com/ai-bootcamp-tokyo" title="ai-bootcamp-tokyo">
+    <img src="https://github.com/ai-bootcamp-tokyo.png" width="40" height="40" alt="ai-bootcamp-tokyo">
+  </a>
+  <a href="https://github.com/wmoto-ai" title="wmoto-ai">
+    <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
+  </a>
+  <a href="https://github.com/JunzoKamahara" title="JunzoKamahara">
+    <img src="https://github.com/JunzoKamahara.png" width="40" height="40" alt="JunzoKamahara">
+  </a>
+  <a href="https://github.com/darkgaldragon" title="darkgaldragon">
+    <img src="https://github.com/darkgaldragon.png" width="40" height="40" alt="darkgaldragon">
+  </a>
+  <a href="https://github.com/usagi917" title="usagi917">
+    <img src="https://github.com/usagi917.png" width="40" height="40" alt="usagi917">
+  </a>
+</p>
+
+他、プライベートスポンサー 1 名
+
 ## 利用規約
 
-- ライセンスは[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)に準拠し、MITライセンスとしています。
+- ライセンスは [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM) に準拠し、MITライセンスとしています。
 - [ロゴの利用規約](./docs/logo_licence.md)
 - [VRMモデルの利用規約](./docs/vrm_licence.md)
-
 
 ## 新しい言語の追加方法
 

@@ -9,6 +9,7 @@
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
+   <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
 <h3 align="center">
@@ -29,7 +30,7 @@
 
 [![今天成為AITuber開發者 | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
-### 共同準備
+## 共同準備
 
 1. 安裝包
 ```bash
@@ -118,6 +119,44 @@ npm run dev
 - 可以在設置屏幕中重置對話歷史。
 - 各種設置存儲在瀏覽器中。
 - 代码块中的元素不会被TTS读取。
+
+## 尋求贊助
+
+我們正在尋求贊助者以繼續我們的開發工作。<br>
+您的支持將極大地促進AITuber套件的開發和改進。
+
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+### 我們的支持者（按支持順序排列）
+
+<p>
+  <a href="https://github.com/morioki3" title="morioki3">
+    <img src="https://github.com/morioki3.png" width="40" height="40" alt="morioki3">
+  </a>
+  <a href="https://github.com/hodachi-axcxept" title="hodachi-axcxept">
+    <img src="https://github.com/hodachi-axcxept.png" width="40" height="40" alt="hodachi-axcxept">
+  </a>
+  <a href="https://github.com/coderabbitai" title="coderabbitai">
+    <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
+  </a>
+  <a href="https://github.com/ai-bootcamp-tokyo" title="ai-bootcamp-tokyo">
+    <img src="https://github.com/ai-bootcamp-tokyo.png" width="40" height="40" alt="ai-bootcamp-tokyo">
+  </a>
+  <a href="https://github.com/wmoto-ai" title="wmoto-ai">
+    <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
+  </a>
+  <a href="https://github.com/JunzoKamahara" title="JunzoKamahara">
+    <img src="https://github.com/JunzoKamahara.png" width="40" height="40" alt="JunzoKamahara">
+  </a>
+  <a href="https://github.com/darkgaldragon" title="darkgaldragon">
+    <img src="https://github.com/darkgaldragon.png" width="40" height="40" alt="darkgaldragon">
+  </a>
+  <a href="https://github.com/usagi917" title="usagi917">
+    <img src="https://github.com/usagi917.png" width="40" height="40" alt="usagi917">
+  </a>
+</p>
+
+另外還有1位私人贊助者
 
 ## 使用協議
 
