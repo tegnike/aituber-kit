@@ -9,6 +9,7 @@
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
+   <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
 <h3 align="center">
@@ -29,7 +30,7 @@
 
 [![오늘부터 당신도 AITuber 개발자｜니케짱](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
-### 공통 사전 준비
+## 공통 사전 준비
 
 1. 패키지를 설치합니다.
 ```bash
@@ -118,6 +119,47 @@ npm run dev
 - 대화 내역은 설정 화면에서 재설정할 수 있습니다.
 - 다양한 설정 항목은 브라우저에 저장됩니다.
 - 코드 블록으로 둘러싸인 요소는 TTS에서 읽히지 않습니다.
+
+## 스폰서 모집
+
+개발을 지속하기 위해 스폰서를 모집하고 있습니다.<br>
+여러분의 지원은 AITuber 키트의 개발과 개선에 크게 기여합니다.
+
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+### 협력자 여러분 (지원해 주신 순서)
+
+<p>
+  <a href="https://github.com/morioki3" title="morioki3">
+    <img src="https://github.com/morioki3.png" width="40" height="40" alt="morioki3">
+  </a>
+  <a href="https://github.com/hodachi-axcxept" title="hodachi-axcxept">
+    <img src="https://github.com/hodachi-axcxept.png" width="40" height="40" alt="hodachi-axcxept">
+  </a>
+  <a href="https://github.com/coderabbitai" title="coderabbitai">
+    <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
+  </a>
+  <a href="https://github.com/ai-bootcamp-tokyo" title="ai-bootcamp-tokyo">
+    <img src="https://github.com/ai-bootcamp-tokyo.png" width="40" height="40" alt="ai-bootcamp-tokyo">
+  </a>
+  <a href="https://github.com/wmoto-ai" title="wmoto-ai">
+    <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
+  </a>
+  <a href="https://github.com/JunzoKamahara" title="JunzoKamahara">
+    <img src="https://github.com/JunzoKamahara.png" width="40" height="40" alt="JunzoKamahara">
+  </a>
+  <a href="https://github.com/darkgaldragon" title="darkgaldragon">
+    <img src="https://github.com/darkgaldragon.png" width="40" height="40" alt="darkgaldragon">
+  </a>
+  <a href="https://github.com/usagi917" title="usagi917">
+    <img src="https://github.com/usagi917.png" width="40" height="40" alt="usagi917">
+  </a>
+  <a href="https://github.com/ochisamu" title="ochisamu">
+    <img src="https://github.com/ochisamu.png" width="40" height="40" alt="ochisamu">
+  </a>
+</p>
+
+그 외, 비공개 스폰서 1명
 
 ## 이용 약관
 

@@ -9,6 +9,7 @@
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
+   <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
 <h3 align="center">
@@ -29,7 +30,7 @@ I've written a detailed usage guide in the article below:
 
 [![You are AITuber Developer from Today | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
-### Common Preparations
+## Common Preparations
 
 1. Install packages
 ```bash
@@ -119,8 +120,115 @@ npm run dev
 - Various settings are stored in the browser.
 - Elements enclosed in code blocks are not read by TTS.
 
+## Seeking Sponsors
+
+We are seeking sponsors to continue our development efforts.<br>
+Your support will greatly contribute to the development and improvement of the AITuber Kit.
+
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+### Our Supporters (in order of support)
+
+<p>
+  <a href="https://github.com/morioki3" title="morioki3">
+    <img src="https://github.com/morioki3.png" width="40" height="40" alt="morioki3">
+  </a>
+  <a href="https://github.com/hodachi-axcxept" title="hodachi-axcxept">
+    <img src="https://github.com/hodachi-axcxept.png" width="40" height="40" alt="hodachi-axcxept">
+  </a>
+  <a href="https://github.com/coderabbitai" title="coderabbitai">
+    <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
+  </a>
+  <a href="https://github.com/ai-bootcamp-tokyo" title="ai-bootcamp-tokyo">
+    <img src="https://github.com/ai-bootcamp-tokyo.png" width="40" height="40" alt="ai-bootcamp-tokyo">
+  </a>
+  <a href="https://github.com/wmoto-ai" title="wmoto-ai">
+    <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
+  </a>
+  <a href="https://github.com/JunzoKamahara" title="JunzoKamahara">
+    <img src="https://github.com/JunzoKamahara.png" width="40" height="40" alt="JunzoKamahara">
+  </a>
+  <a href="https://github.com/darkgaldragon" title="darkgaldragon">
+    <img src="https://github.com/darkgaldragon.png" width="40" height="40" alt="darkgaldragon">
+  </a>
+  <a href="https://github.com/usagi917" title="usagi917">
+    <img src="https://github.com/usagi917.png" width="40" height="40" alt="usagi917">
+  </a>
+  <a href="https://github.com/ochisamu" title="ochisamu">
+    <img src="https://github.com/ochisamu.png" width="40" height="40" alt="ochisamu">
+  </a>
+</p>
+
+Plus 1 private sponsor
+
 ## Usage Agreement
 
 - The license adheres to [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM) and is under the MIT License.
 - [Logo Usage Agreement](./logo_licence_en.md)
 - [VRM Model Usage Agreement](./vrm_licence_en.md)
+
+## How to Add a New Language
+
+To add a new language to the project, follow these steps:
+
+1. **Add Language File**:
+   - Create a new language directory in the `locales` directory and create a `translation.json` file inside it.
+   - Example: `locales/fr/translation.json` (for French)
+
+2. **Add Translations**:
+   - Add translations to the `translation.json` file, referring to existing language files.
+
+3. **Update Language Settings**:
+   - Open the `src/lib/i18n.js` file and add the new language to the `resources` object.
+   ```javascript:src/lib/i18n.js
+   resources: {
+     ...,
+     fr: {  // New language code
+       translation: require("../../locales/fr/translation.json"),
+     },
+   },
+   ```
+
+4. **Add Language Selection Option**:
+   - Add a new language option to the appropriate part of the UI (e.g., language selection dropdown in the settings screen) so users can select the language.
+   ```typescript:src/components/settings.tsx
+   <select>
+     ...,
+     <option value="FR">French - Français</option>
+   </select>
+   ```
+
+5. **Test**:
+   - Test if the application displays correctly in the new language.
+
+This will add support for the new language to the project.
+
+### Adding Voice Language Code
+
+- You also need to add support for the voice language code.
+- Add the new language code to the `getVoiceLanguageCode` function in the `Introduction` component.
+
+```typescript:nike-ChatVRM/src/components/introduction.tsx
+const getVoiceLanguageCode = (selectLanguage: string) => {
+  switch (selectLanguage) {
+    case 'JP':
+      return 'ja-JP';
+    case 'EN':
+      return 'en-US';
+    case 'ZH':
+      return 'zh-TW';
+    case 'zh-TW':
+      return 'zh-TW';
+    case 'KO':
+      return 'ko-KR';
+    case 'FR':
+      return 'fr-FR';
+    default:
+      return 'ja-JP';
+  }
+}
+```
+
+### Adding README
+
+- Add a new language README (`README_fr.md`), logo usage terms (`logo_licence_fr.md`), and VRM model usage terms (`vrm_licence_fr.md`) to the `docs` directory.
