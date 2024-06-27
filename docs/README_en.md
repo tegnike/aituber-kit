@@ -154,6 +154,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/usagi917" title="usagi917">
     <img src="https://github.com/usagi917.png" width="40" height="40" alt="usagi917">
   </a>
+  <a href="https://github.com/ochisamu" title="ochisamu">
+    <img src="https://github.com/ochisamu.png" width="40" height="40" alt="ochisamu">
+  </a>
 </p>
 
 Plus 1 private sponsor

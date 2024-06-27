@@ -154,6 +154,9 @@ npm run dev
   <a href="https://github.com/usagi917" title="usagi917">
     <img src="https://github.com/usagi917.png" width="40" height="40" alt="usagi917">
   </a>
+  <a href="https://github.com/ochisamu" title="ochisamu">
+    <img src="https://github.com/ochisamu.png" width="40" height="40" alt="ochisamu">
+  </a>
 </p>
 
 他、プライベートスポンサー 1 名
