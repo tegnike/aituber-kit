@@ -512,12 +512,17 @@ export default function Home() {
         ];
         setChatLog(messageLog);
 
+        const processedMessageLog = messageLog.map(message => ({
+          role: ['assistant', 'user', 'system'].includes(message.role) ? message.role : 'assistant',
+          content: message.content
+        }));
+
         const messages: Message[] = [
           {
             role: "system",
             content: systemPrompt,
           },
-          ...messageLog.slice(-10),
+          ...processedMessageLog.slice(-10),
         ];
 
         try {
