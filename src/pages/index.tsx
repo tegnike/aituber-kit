@@ -338,7 +338,7 @@ export default function Home() {
         }
 
         // 返答を一文単位で切り出して処理する
-        const sentenceMatch = receivedMessage.match(/^(.+[。．！？\n]|.{10,}[、,])/);
+        const sentenceMatch = receivedMessage.match(/^(.+?[。．.!?！？\n]|.{20,}[、,])/);
         if (sentenceMatch?.[0]) {
           let sentence = sentenceMatch[0];
           // 区切った文字をsentencesに追加
@@ -621,27 +621,7 @@ export default function Home() {
       handleSendChat,
       preProcessAIResponse
     );
-  }, [
-    openAiKey,
-    selectAIModel,
-    youtubeLiveId,
-    youtubeApiKey,
-    chatProcessing,
-    chatProcessingCount,
-    systemPrompt,
-    chatLog,
-    youtubeNextPageToken,
-    setYoutubeNextPageToken,
-    youtubeNoCommentCount,
-    setYoutubeNoCommentCount,
-    youtubeContinuationCount,
-    setYoutubeContinuationCount,
-    youtubeSleepMode,
-    setYoutubeSleepMode,
-    conversationContinuityMode,
-    handleSendChat,
-    preProcessAIResponse
-  ]);
+  }, [openAiKey, youtubeLiveId, youtubeApiKey, chatProcessing, chatProcessingCount, systemPrompt, chatLog, selectAIService, anthropicKey, selectAIModel, youtubeNextPageToken, youtubeNoCommentCount, youtubeContinuationCount, youtubeSleepMode, conversationContinuityMode, handleSendChat, preProcessAIResponse]);
 
   useEffect(() => {
     console.log("chatProcessingCount:", chatProcessingCount);
