@@ -77,6 +77,8 @@ type Props = {
   selectLanguage: string;
   setSelectLanguage: (show: string) => void;
   setSelectVoiceLanguage: (show: string) => void;
+  changeEnglishToJapanese: boolean;
+  setChangeEnglishToJapanese: (show: boolean) => void;
   onClickTestVoice: (speaker: string) => void;
   gsviTtsServerUrl: string;
   onChangeGSVITtsServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -152,6 +154,8 @@ export const Settings = ({
   selectLanguage,
   setSelectLanguage,
   setSelectVoiceLanguage,
+  changeEnglishToJapanese,
+  setChangeEnglishToJapanese,
   onClickTestVoice,
   gsviTtsServerUrl,
   onChangeGSVITtsServerUrl,
@@ -621,225 +625,244 @@ export const Settings = ({
                 <option value="gsvitts">{t('UsingGSVITTS')}</option>
               </select>
             </div>
-            <div>&nbsp;</div>
-            <div className="my-16 typography-20 font-bold">{t('VoiceAdjustment')}</div>
-            {(() => {
-                if (selectVoice === "koeiromap") {
-                  return (
-                    <>
-                      <div>
-                        {t('KoeiromapInfo')}<br />
-                        <Link
-                          url="https://koemotion.rinna.co.jp"
-                          label="https://koemotion.rinna.co.jp" />
-                        
-                      </div>
-                      <div className="mt-16 font-bold">API キー</div><div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="text"
-                          placeholder="..."
-                          value={koeiromapKey}
-                          onChange={onChangeKoeiromapKey} />
-                      </div>
-                      <div className="mt-16 font-bold">プリセット</div><div className="my-8 grid grid-cols-2 gap-[8px]">
-                        <TextButton
-                          onClick={() => onChangeKoeiroParam(PRESET_A.speakerX, PRESET_A.speakerY)}
-                        >
-                          かわいい
-                        </TextButton>
-                        <TextButton
-                          onClick={() => onChangeKoeiroParam(PRESET_B.speakerX, PRESET_B.speakerY)}
-                        >
-                          元気
-                        </TextButton>
-                        <TextButton
-                          onClick={() => onChangeKoeiroParam(PRESET_C.speakerX, PRESET_C.speakerY)}
-                        >
-                          かっこいい
-                        </TextButton>
-                        <TextButton
-                          onClick={() => onChangeKoeiroParam(PRESET_D.speakerX, PRESET_D.speakerY)}
-                        >
-                          渋い
-                        </TextButton>
-                      </div><div className="my-24">
-                        <div className="select-none">x : {koeiroParam.speakerX}</div>
-                        <input
-                          type="range"
-                          min={-10}
-                          max={10}
-                          step={0.001}
-                          value={koeiroParam.speakerX}
-                          className="mt-8 mb-16 input-range"
-                          onChange={(e) => {
-                            onChangeKoeiroParam(
-                              Number(e.target.value),
-                              koeiroParam.speakerY
-                            );
-                          } }
-                        ></input>
-                        <div className="select-none">y : {koeiroParam.speakerY}</div>
-                        <input
-                          type="range"
-                          min={-10}
-                          max={10}
-                          step={0.001}
-                          value={koeiroParam.speakerY}
-                          className="mt-8 mb-16 input-range"
-                          onChange={(e) => {
-                            onChangeKoeiroParam(
-                              koeiroParam.speakerX,
-                              Number(e.target.value)
-                            );
-                          } }
-                        ></input>
-                      </div>
-                    </>
-                  );
-                } else if (selectVoice === "voicevox") {
-                  return (
-                    <>
-                      <div>
-                        {t('VoiceVoxInfo')}<br />
-                        <Link
-                          url="https://voicevox.hiroshiba.jp/"
-                          label="https://voicevox.hiroshiba.jp/" />
-                      </div>
-                      <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
-                        <div className="flex items-center">
-                          <select
-                            value={voicevoxSpeaker}
-                            onChange={onChangeVoicevoxSpeaker}
-                            className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          >
-                            <option value="">選択してください</option>
-                            {speakers.map((speaker) => (
-                              <option key={speaker.id} value={speaker.id}>
-                                {speaker.speaker}
-                              </option>
-                            ))}
-                          </select>
-                          <TextButton onClick={() => onClickTestVoice(voicevoxSpeaker)} className="ml-16">
-                            ボイスを試聴する
-                          </TextButton>
+            <div className="my-40">
+              <div className="my-16 typography-20 font-bold">{t('VoiceAdjustment')}</div>
+              {(() => {
+                  if (selectVoice === "koeiromap") {
+                    return (
+                      <>
+                        <div>
+                          {t('KoeiromapInfo')}<br />
+                          <Link
+                            url="https://koemotion.rinna.co.jp"
+                            label="https://koemotion.rinna.co.jp" />
+                          
                         </div>
-                    </>
-                  );
-                } else if (selectVoice === "google"){
-                  return (
-                    <>
-                      <div>
-                        {t('GoogleTTSInfo')}
-                        {t('AuthFileInstruction')}<br />
-                        <Link
-                          url="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account"
-                          label="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account" />
-                        <br /><br />
-                        {t('LanguageModelURL')}<br />
-                        <Link
-                          url="https://cloud.google.com/text-to-speech/docs/voices"
-                          label="https://cloud.google.com/text-to-speech/docs/voices" />
-                      </div>
-                      <div className="mt-16 font-bold">{t('LanguageChoice')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="text"
-                          placeholder="..."
-                          value={googleTtsType}
-                          onChange={onChangeGoogleTtsType} />
-                      </div>
-                    </>
-                  );
-                } else if (selectVoice === "stylebertvits2"){
-                  return (
-                    <>
-                      <div>
-                        {t('StyleBertVITS2Info')}
-                        <br />
-                        <Link
-                          url="https://github.com/litagin02/Style-Bert-VITS2"
-                          label="https://github.com/litagin02/Style-Bert-VITS2" />
-                        <br /><br />
-                      </div>
-                      <div className="mt-16 font-bold">{t('StyleBeatVITS2LocalServerURL')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="text"
-                          placeholder="..."
-                          value={stylebertvits2ServerUrl}
-                          onChange={onChangeStyleBertVits2ServerUrl} />
-                      </div>
-                      <div className="mt-16 font-bold">{t('StyleBeatVITS2ModelID')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="number"
-                          placeholder="..."
-                          value={stylebertvits2ModelId}
-                          onChange={onChangeStyleBertVits2ModelId} />
-                      </div>
-                      <div className="mt-16 font-bold">{t('StyleBeatVITS2Style')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="text"
-                          placeholder="..."
-                          value={stylebertvits2Style}
-                          onChange={onChangeStyleBertVits2Style} />
-                      </div>
-                    </>
-                  );
-                } else if (selectVoice === "gsvitts"){
-                  return (
-                    <>
-                      <div>
-                        {t('GSVITTSInfo')}
-                      </div>
-                      <div className="mt-16 font-bold">{t('GSVITTSServerUrl')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="text"
-                          placeholder="..."
-                          value={gsviTtsServerUrl}
-                          onChange={onChangeGSVITtsServerUrl} />
-                      </div>
-                      <div className="mt-16 font-bold">{t('GSVITTSModelID')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="text"
-                          placeholder="..."
-                          value={gsviTtsModelId}
-                          onChange={onChangeGSVITtsModelId} />
-                      </div>
-                      <div className="mt-16 font-bold">{t('GSVITTSBatchSize')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="number"
-                          step="1"
-                          placeholder="..."
-                          value={gsviTtsBatchSize}
-                          onChange={onChangeGVITtsBatchSize} />
-                      </div>
-                      <div className="mt-16 font-bold">{t('GSVITTSSpeechRate')}</div>
-                      <div className="mt-8">
-                        <input
-                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                          type="number"
-                          step="0.1"
-                          placeholder="..."
-                          value={gsviTtsSpeechRate}
-                          onChange={onChangeGSVITtsSpeechRate} />
-                      </div>
-                    </>
-                  );
-                }
-            })()}
+                        <div className="mt-16 font-bold">API キー</div><div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={koeiromapKey}
+                            onChange={onChangeKoeiromapKey} />
+                        </div>
+                        <div className="mt-16 font-bold">プリセット</div><div className="my-8 grid grid-cols-2 gap-[8px]">
+                          <TextButton
+                            onClick={() => onChangeKoeiroParam(PRESET_A.speakerX, PRESET_A.speakerY)}
+                          >
+                            かわいい
+                          </TextButton>
+                          <TextButton
+                            onClick={() => onChangeKoeiroParam(PRESET_B.speakerX, PRESET_B.speakerY)}
+                          >
+                            元気
+                          </TextButton>
+                          <TextButton
+                            onClick={() => onChangeKoeiroParam(PRESET_C.speakerX, PRESET_C.speakerY)}
+                          >
+                            かっこいい
+                          </TextButton>
+                          <TextButton
+                            onClick={() => onChangeKoeiroParam(PRESET_D.speakerX, PRESET_D.speakerY)}
+                          >
+                            渋い
+                          </TextButton>
+                        </div><div className="my-24">
+                          <div className="select-none">x : {koeiroParam.speakerX}</div>
+                          <input
+                            type="range"
+                            min={-10}
+                            max={10}
+                            step={0.001}
+                            value={koeiroParam.speakerX}
+                            className="mt-8 mb-16 input-range"
+                            onChange={(e) => {
+                              onChangeKoeiroParam(
+                                Number(e.target.value),
+                                koeiroParam.speakerY
+                              );
+                            } }
+                          ></input>
+                          <div className="select-none">y : {koeiroParam.speakerY}</div>
+                          <input
+                            type="range"
+                            min={-10}
+                            max={10}
+                            step={0.001}
+                            value={koeiroParam.speakerY}
+                            className="mt-8 mb-16 input-range"
+                            onChange={(e) => {
+                              onChangeKoeiroParam(
+                                koeiroParam.speakerX,
+                                Number(e.target.value)
+                              );
+                            } }
+                          ></input>
+                        </div>
+                      </>
+                    );
+                  } else if (selectVoice === "voicevox") {
+                    return (
+                      <>
+                        <div>
+                          {t('VoiceVoxInfo')}<br />
+                          <Link
+                            url="https://voicevox.hiroshiba.jp/"
+                            label="https://voicevox.hiroshiba.jp/" />
+                        </div>
+                        <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
+                          <div className="flex items-center">
+                            <select
+                              value={voicevoxSpeaker}
+                              onChange={onChangeVoicevoxSpeaker}
+                              className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            >
+                              <option value="">選択してください</option>
+                              {speakers.map((speaker) => (
+                                <option key={speaker.id} value={speaker.id}>
+                                  {speaker.speaker}
+                                </option>
+                              ))}
+                            </select>
+                            <TextButton onClick={() => onClickTestVoice(voicevoxSpeaker)} className="ml-16">
+                              ボイスを試聴する
+                            </TextButton>
+                          </div>
+                      </>
+                    );
+                  } else if (selectVoice === "google"){
+                    return (
+                      <>
+                        <div>
+                          {t('GoogleTTSInfo')}
+                          {t('AuthFileInstruction')}<br />
+                          <Link
+                            url="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account"
+                            label="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account" />
+                          <br /><br />
+                          {t('LanguageModelURL')}<br />
+                          <Link
+                            url="https://cloud.google.com/text-to-speech/docs/voices"
+                            label="https://cloud.google.com/text-to-speech/docs/voices" />
+                        </div>
+                        <div className="mt-16 font-bold">{t('LanguageChoice')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={googleTtsType}
+                            onChange={onChangeGoogleTtsType} />
+                        </div>
+                      </>
+                    );
+                  } else if (selectVoice === "stylebertvits2"){
+                    return (
+                      <>
+                        <div>
+                          {t('StyleBertVITS2Info')}
+                          <br />
+                          <Link
+                            url="https://github.com/litagin02/Style-Bert-VITS2"
+                            label="https://github.com/litagin02/Style-Bert-VITS2" />
+                          <br /><br />
+                        </div>
+                        <div className="mt-16 font-bold">{t('StyleBeatVITS2LocalServerURL')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={stylebertvits2ServerUrl}
+                            onChange={onChangeStyleBertVits2ServerUrl} />
+                        </div>
+                        <div className="mt-16 font-bold">{t('StyleBeatVITS2ModelID')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="number"
+                            placeholder="..."
+                            value={stylebertvits2ModelId}
+                            onChange={onChangeStyleBertVits2ModelId} />
+                        </div>
+                        <div className="mt-16 font-bold">{t('StyleBeatVITS2Style')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={stylebertvits2Style}
+                            onChange={onChangeStyleBertVits2Style} />
+                        </div>
+                      </>
+                    );
+                  } else if (selectVoice === "gsvitts"){
+                    return (
+                      <>
+                        <div>
+                          {t('GSVITTSInfo')}
+                        </div>
+                        <div className="mt-16 font-bold">{t('GSVITTSServerUrl')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={gsviTtsServerUrl}
+                            onChange={onChangeGSVITtsServerUrl} />
+                        </div>
+                        <div className="mt-16 font-bold">{t('GSVITTSModelID')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={gsviTtsModelId}
+                            onChange={onChangeGSVITtsModelId} />
+                        </div>
+                        <div className="mt-16 font-bold">{t('GSVITTSBatchSize')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="number"
+                            step="1"
+                            placeholder="..."
+                            value={gsviTtsBatchSize}
+                            onChange={onChangeGVITtsBatchSize} />
+                        </div>
+                        <div className="mt-16 font-bold">{t('GSVITTSSpeechRate')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="number"
+                            step="0.1"
+                            placeholder="..."
+                            value={gsviTtsSpeechRate}
+                            onChange={onChangeGSVITtsSpeechRate} />
+                        </div>
+                      </>
+                    );
+                  }
+              })()}
+            </div>
+            {selectLanguage === "JP" && (
+              <div className="my-40">
+                <div className="my-16 typography-20 font-bold">
+                  {t('EnglishToJapanese')}
+                </div>
+                <div className="my-8">
+                  {changeEnglishToJapanese ? (
+                    <TextButton onClick={() => setChangeEnglishToJapanese(false)}>
+                      {t('StatusOn')}
+                    </TextButton>
+                  ) : (
+                    <TextButton onClick={() => setChangeEnglishToJapanese(true)}>
+                      {t('StatusOff')}
+                    </TextButton>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
           {/* チャットログの設定 */}
           <div className="my-40">

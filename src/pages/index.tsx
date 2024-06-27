@@ -41,6 +41,7 @@ export default function Home() {
   const [selectVoice, setSelectVoice] = useState("voicevox");
   const [selectLanguage, setSelectLanguage] = useState("JP");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
+  const [changeEnglishToJapanese, setChangeEnglishToJapanese] = useState(false);
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
   const [googleTtsType, setGoogleTtsType] = useState(process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE && process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE !== "" ? process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE : "");
@@ -105,6 +106,7 @@ export default function Home() {
       setSelectVoice(params.selectVoice || "voicevox");
       setSelectLanguage(params.selectLanguage || "JP");
       setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
+      setChangeEnglishToJapanese(params.changeEnglishToJapanese || false);
       setKoeiromapKey(params.koeiromapKey || "");
       setVoicevoxSpeaker(params.voicevoxSpeaker || "2");
       setGoogleTtsType(params.googleTtsType || "en-US-Neural2-F");
@@ -145,6 +147,7 @@ export default function Home() {
       selectVoice,
       selectLanguage,
       selectVoiceLanguage,
+      changeEnglishToJapanese,
       koeiromapKey,
       voicevoxSpeaker,
       googleTtsType,
@@ -187,6 +190,7 @@ export default function Home() {
     selectVoice,
     selectLanguage,
     selectVoiceLanguage,
+    changeEnglishToJapanese,
     koeiromapKey,
     voicevoxSpeaker,
     googleTtsType,
@@ -253,6 +257,7 @@ export default function Home() {
         gsviTtsModelId,
         gsviTtsBatchSize,
         gsviTtsSpeechRate,
+        changeEnglishToJapanese,
         onStart,
         onEnd
       );
@@ -270,7 +275,8 @@ export default function Home() {
       gsviTtsServerUrl,
       gsviTtsModelId,
       gsviTtsBatchSize,
-      gsviTtsSpeechRate
+      gsviTtsSpeechRate,
+      changeEnglishToJapanese
     ]
   );
 
@@ -735,6 +741,8 @@ export default function Home() {
           selectLanguage={selectLanguage}
           setSelectLanguage={setSelectLanguage}
           setSelectVoiceLanguage={setSelectVoiceLanguage}
+          changeEnglishToJapanese={changeEnglishToJapanese}
+          setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           setBackgroundImageUrl={setBackgroundImageUrl}
           gsviTtsServerUrl={gsviTtsServerUrl}
           onChangeGSVITtsServerUrl={setGSVITTSServerUrl}
