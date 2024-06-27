@@ -101,13 +101,13 @@ function getGoogleTtsType(googleTtsType: string, selectLanguage: string): string
     const params = JSON.parse(storedData);
     const langCode = params.selectLanguage;
     if (langCode) {
-      return getGppgleTTsType(langCode) || '';
+      return getGppgleTtsType(langCode) || '';
     }
   }
   return '';
 }
 
-function getGppgleTTsType(selectLanguage: string): string {
+function getGppgleTtsType(selectLanguage: string): string {
   switch (selectLanguage) {
     case 'JP': return 'ja-JP-Standard-B';
     case 'EN': return 'en-US-Neural2-F';
