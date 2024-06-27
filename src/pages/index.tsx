@@ -10,12 +10,7 @@ import { speakCharacter } from "@/features/messages/speakCharacter";
 import { MessageInputContainer } from "@/components/messageInputContainer";
 import { SYSTEM_PROMPT } from "@/features/constants/systemPromptConstants";
 import { KoeiroParam, DEFAULT_PARAM } from "@/features/constants/koeiroParam";
-import { getOpenAIChatResponseStream } from "@/features/chat/openAiChat";
-import { getAnthropicChatResponseStream } from "@/features/chat/anthropicChat";
-import { getGoogleChatResponseStream } from "@/features/chat/googleChat";
-import { getLocalLLMChatResponseStream } from "@/features/chat/localLLMChat";
-import { getGroqChatResponseStream } from "@/features/chat/groqChat";
-import { getDifyChatResponseStream } from "@/features/chat/difyChat";
+import { AIService, AIServiceConfig, getAIChatResponseStream } from "@/features/chat/aiChatFactory";
 import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { Meta } from "@/components/meta";
@@ -41,6 +36,7 @@ export default function Home() {
   const [selectVoice, setSelectVoice] = useState("voicevox");
   const [selectLanguage, setSelectLanguage] = useState("JP");
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
+  const [changeEnglishToJapanese, setChangeEnglishToJapanese] = useState(false);
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
   const [googleTtsType, setGoogleTtsType] = useState(process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE && process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE !== "" ? process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE : "");
@@ -105,6 +101,7 @@ export default function Home() {
       setSelectVoice(params.selectVoice || "voicevox");
       setSelectLanguage(params.selectLanguage || "JP");
       setSelectVoiceLanguage(params.selectVoiceLanguage || "ja-JP");
+      setChangeEnglishToJapanese(params.changeEnglishToJapanese || false);
       setKoeiromapKey(params.koeiromapKey || "");
       setVoicevoxSpeaker(params.voicevoxSpeaker || "2");
       setGoogleTtsType(params.googleTtsType || "en-US-Neural2-F");
@@ -145,6 +142,7 @@ export default function Home() {
       selectVoice,
       selectLanguage,
       selectVoiceLanguage,
+      changeEnglishToJapanese,
       koeiromapKey,
       voicevoxSpeaker,
       googleTtsType,
@@ -187,6 +185,7 @@ export default function Home() {
     selectVoice,
     selectLanguage,
     selectVoiceLanguage,
+    changeEnglishToJapanese,
     koeiromapKey,
     voicevoxSpeaker,
     googleTtsType,
@@ -253,6 +252,7 @@ export default function Home() {
         gsviTtsModelId,
         gsviTtsBatchSize,
         gsviTtsSpeechRate,
+        changeEnglishToJapanese,
         onStart,
         onEnd
       );
@@ -270,11 +270,13 @@ export default function Home() {
       gsviTtsServerUrl,
       gsviTtsModelId,
       gsviTtsBatchSize,
-      gsviTtsSpeechRate
+      gsviTtsSpeechRate,
+      changeEnglishToJapanese
     ]
   );
 
   const wsRef = useRef<WebSocket | null>(null);
+
   /**
    * AIからの応答を処理する関数
    * @param currentChatLog ログに残るメッセージの配列
@@ -284,33 +286,27 @@ export default function Home() {
     setChatProcessing(true);
     let stream;
 
-    const _openAiKey = openAiKey && openAiKey !== "" ? openAiKey : process.env.NEXT_PUBLIC_OPEN_AI_KEY || "";
-    const _anthropicKey = anthropicKey && anthropicKey !== "" ? anthropicKey : process.env.NEXT_PUBLIC_ANTHROPIC_KEY || "";
-    const _googleKey = googleKey && googleKey !== "" ? googleKey : process.env.NEXT_PUBLIC_GOOGLE_KEY || "";
-    const _localLlmUrl = localLlmUrl && localLlmUrl !== "" ? localLlmUrl : process.env.NEXT_PUBLIC_LOCAL_LLM_URL || "";
-    const _selectAIModel = selectAIModel && selectAIModel !== "" ? selectAIModel : process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || "";
-    const _groqKey = groqKey && groqKey !== "" ? groqKey : process.env.NEXT_PUBLIC_GROQ_KEY || "";
-    const _difyKey = difyKey && difyKey !== "" ? difyKey : process.env.NEXT_PUBLIC_DIFY_KEY || "";
-    const _difyUrl = difyUrl && difyUrl !== "" ? difyUrl : process.env.NEXT_PUBLIC_DIFY_URL || "";
+    const aiServiceConfig: AIServiceConfig = {
+      openai: { key: openAiKey || process.env.NEXT_PUBLIC_OPEN_AI_KEY || "", model: selectAIModel },
+      anthropic: { key: anthropicKey || process.env.NEXT_PUBLIC_ANTHROPIC_KEY || "", model: selectAIModel },
+      google: { key: googleKey || process.env.NEXT_PUBLIC_GOOGLE_KEY || "", model: selectAIModel },
+      localLlm: { url: localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || "", model: selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || "" },
+      groq: { key: groqKey || process.env.NEXT_PUBLIC_GROQ_KEY || "", model: selectAIModel },
+      dify: { 
+        key: difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || "", 
+        url: difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || "",
+        conversationId: difyConversationId,
+        setConversationId: setDifyConversationId
+      }
+    };
 
     try {
-      if (selectAIService === "openai") {
-        stream = await getOpenAIChatResponseStream(messages, _openAiKey, selectAIModel);
-      } else if (selectAIService === "anthropic") {
-        stream = await getAnthropicChatResponseStream(messages, _anthropicKey, selectAIModel);
-      } else if (selectAIService === "google") {
-        stream = await getGoogleChatResponseStream(messages, _googleKey, selectAIModel);
-      } else if (selectAIService === "localLlm") {
-        stream = await getLocalLLMChatResponseStream(messages, _localLlmUrl, _selectAIModel);
-      } else if (selectAIService === "groq") {
-        stream = await getGroqChatResponseStream(messages, _groqKey, selectAIModel);
-      } else if (selectAIService === "dify") {
-        stream = await getDifyChatResponseStream(messages, _difyKey, _difyUrl, difyConversationId, setDifyConversationId);
-      }
+      stream = await getAIChatResponseStream(selectAIService as AIService, messages, aiServiceConfig);
     } catch (e) {
       console.error(e);
       stream = null;
     }
+
     if (stream == null) {
       setChatProcessing(false);
       return;
@@ -338,7 +334,7 @@ export default function Home() {
         }
 
         // 返答を一文単位で切り出して処理する
-        const sentenceMatch = receivedMessage.match(/^(.+[。．！？\n]|.{10,}[、,])/);
+        const sentenceMatch = receivedMessage.match(/^(.+?[。．.!?！？\n]|.{20,}[、,])/);
         if (sentenceMatch?.[0]) {
           let sentence = sentenceMatch[0];
           // 区切った文字をsentencesに追加
@@ -512,12 +508,17 @@ export default function Home() {
         ];
         setChatLog(messageLog);
 
+        const processedMessageLog = messageLog.map(message => ({
+          role: ['assistant', 'user', 'system'].includes(message.role) ? message.role : 'assistant',
+          content: message.content
+        }));
+
         const messages: Message[] = [
           {
             role: "system",
             content: systemPrompt,
           },
-          ...messageLog.slice(-10),
+          ...processedMessageLog.slice(-10),
         ];
 
         try {
@@ -621,27 +622,7 @@ export default function Home() {
       handleSendChat,
       preProcessAIResponse
     );
-  }, [
-    openAiKey,
-    selectAIModel,
-    youtubeLiveId,
-    youtubeApiKey,
-    chatProcessing,
-    chatProcessingCount,
-    systemPrompt,
-    chatLog,
-    youtubeNextPageToken,
-    setYoutubeNextPageToken,
-    youtubeNoCommentCount,
-    setYoutubeNoCommentCount,
-    youtubeContinuationCount,
-    setYoutubeContinuationCount,
-    youtubeSleepMode,
-    setYoutubeSleepMode,
-    conversationContinuityMode,
-    handleSendChat,
-    preProcessAIResponse
-  ]);
+  }, [openAiKey, youtubeLiveId, youtubeApiKey, chatProcessing, chatProcessingCount, systemPrompt, chatLog, selectAIService, anthropicKey, selectAIModel, youtubeNextPageToken, youtubeNoCommentCount, youtubeContinuationCount, youtubeSleepMode, conversationContinuityMode, handleSendChat, preProcessAIResponse]);
 
   useEffect(() => {
     console.log("chatProcessingCount:", chatProcessingCount);
@@ -735,6 +716,8 @@ export default function Home() {
           selectLanguage={selectLanguage}
           setSelectLanguage={setSelectLanguage}
           setSelectVoiceLanguage={setSelectVoiceLanguage}
+          changeEnglishToJapanese={changeEnglishToJapanese}
+          setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           setBackgroundImageUrl={setBackgroundImageUrl}
           gsviTtsServerUrl={gsviTtsServerUrl}
           onChangeGSVITtsServerUrl={setGSVITTSServerUrl}
