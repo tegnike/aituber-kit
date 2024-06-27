@@ -153,9 +153,7 @@ export const fetchAudioVoiceVox = async (
   }
   const ttsQueryJson = await ttsQueryResponse.json();
 
-  ttsQueryJson['speedScale'] = 1.16;
-  ttsQueryJson['pitchScale'] = -0.02;
-  ttsQueryJson['intonationScale'] = 1.26;
+  ttsQueryJson['speedScale'] = 1.1;
   const synthesisResponse = await fetch(VOICE_VOX_API_URL + '/synthesis?speaker=' + speaker, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked' },
