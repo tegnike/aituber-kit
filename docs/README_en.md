@@ -157,6 +157,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/ochisamu" title="ochisamu">
     <img src="https://github.com/ochisamu.png" width="40" height="40" alt="ochisamu">
   </a>
+  <a href="https://github.com/mo0013" title="mo0013">
+    <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
+  </a>
 </p>
 
 Plus 1 private sponsor
