@@ -15,13 +15,27 @@ if not ANTHROPIC_API_KEY:
     raise ValueError("環境変数 'ANTHROPIC_API_KEY' が設定されていません。")
 
 # GitHubイベントの情報を取得
-with open(os.environ["GITHUB_EVENT_PATH"]) as event_file:
-    github_event = json.load(event_file)
+if "GITHUB_EVENT_PATH" in os.environ:
+    with open(os.environ["GITHUB_EVENT_PATH"]) as event_file:
+        github_event = json.load(event_file)
 
-issue_number = github_event["issue"]["number"]
-issue_title = github_event["issue"]["title"]
-issue_body = github_event["issue"]["body"]
-repo_full_name = github_event["repository"]["full_name"]
+    if "issue" in github_event:
+        issue_number = github_event["issue"]["number"]
+        issue_title = github_event["issue"]["title"]
+        issue_body = github_event["issue"]["body"]
+        repo_full_name = github_event["repository"]["full_name"]
+    else:
+        # workflow_dispatch からの入力を使用
+        issue_number = os.environ["ISSUE_NUMBER"]
+        issue_title = os.environ["ISSUE_TITLE"]
+        issue_body = os.environ["ISSUE_BODY"]
+        repo_full_name = os.environ["GITHUB_REPOSITORY"]
+else:
+    # workflow_dispatch からの入力を使用
+    issue_number = os.environ["ISSUE_NUMBER"]
+    issue_title = os.environ["ISSUE_TITLE"]
+    issue_body = os.environ["ISSUE_BODY"]
+    repo_full_name = os.environ["GITHUB_REPOSITORY"]
 
 # サマリーファイルの内容を読み込む
 with open("docs/summary.md") as summary_file:
