@@ -7,11 +7,15 @@ from anthropic import Anthropic
 GITHUB_API_BASE = "https://api.github.com"
 
 # 環境変数から認証情報を取得
-GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
-ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+if not GITHUB_TOKEN:
+    raise ValueError("環境変数 'GITHUB_TOKEN' が設定されていません。")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+if not ANTHROPIC_API_KEY:
+    raise ValueError("環境変数 'ANTHROPIC_API_KEY' が設定されていません。")
 
 # GitHubイベントの情報を取得
-with open(os.environ["GITHUB_EVENT_PATH"], "r") as event_file:
+with open(os.environ["GITHUB_EVENT_PATH"]) as event_file:
     github_event = json.load(event_file)
 
 issue_number = github_event["issue"]["number"]
@@ -20,7 +24,7 @@ issue_body = github_event["issue"]["body"]
 repo_full_name = github_event["repository"]["full_name"]
 
 # サマリーファイルの内容を読み込む
-with open("docs/summary.md", "r") as summary_file:
+with open("docs/summary.md") as summary_file:
     summary_content = summary_file.read()
 
 # Claude APIクライアントを初期化
