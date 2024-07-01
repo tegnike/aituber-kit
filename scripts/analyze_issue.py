@@ -59,8 +59,8 @@ try:
         system=(
             "以下はGitHubで作成されたIssueとサマリーファイルの内容です。\n"
             "このIssueに関連すると考えられるファイルを以下のJSONの形式で5-10つ出力してください。\n"
-            "[{'file_path': str, 'reason': str}]\n"
-            "必ずJSONのみで出力すること。"
+            "{\"file_path\": str, \"reason\": str}]\n"
+            "必ずJSONのみ出力すること。"
         ),
         messages=[
             {
@@ -72,6 +72,10 @@ try:
             },
         ],
     )
+
+    # Claude APIの応答を出力
+    print("Claude APIの応答:")
+    print(response.content[0].text)
 
     # Claude APIの応答をパースしてJSONを抽出
     content = response.content[0].text
