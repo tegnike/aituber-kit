@@ -157,6 +157,9 @@ npm run dev
   <a href="https://github.com/ochisamu" title="ochisamu">
     <img src="https://github.com/ochisamu.png" width="40" height="40" alt="ochisamu">
   </a>
+  <a href="https://github.com/mo0013" title="mo0013">
+    <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
+  </a>
 </p>
 
 그 외, 비공개 스폰서 1명

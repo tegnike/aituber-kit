@@ -344,13 +344,14 @@ export default function Home() {
 
           // 発話不要/不可能な文字列だった場合はスキップ
           if (
-            !sentence.replace(/^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g, "")
+            !sentence.includes("```") && !sentence.replace(/^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu, "")
           ) {
             continue;
           }
 
           // タグと返答を結合（音声再生で使用される）
           let aiText = `${tag} ${sentence}`;
+          console.log("aiText", aiText);
 
           if (isCodeBlock && !sentence.includes("```")) {
             codeBlockText += sentence;
