@@ -69,14 +69,28 @@ try:
                     f"Issue:\nタイトル: {issue_title}\n本文: {issue_body}\n\n"
                     f"サマリーファイル内容:\n{summary_content}\n"
                 ),
-            }
+            },
         ],
     )
-except Exception as e:
-    print("Claude APIリクエストに失敗しました。エラー:", e)
-    exit(1)
 
-analysis_result = json.loads(response.content[0].text)
+    # Claude APIの応答をパースしてJSONを抽出
+    content = response.content[0].text
+    # JSON部分を抽出するために [ と ] で囲まれた部分を探す
+    start = content.find("[")
+    end = content.rfind("]") + 1
+    if start != -1 and end != -1:
+        json_str = content[start:end]
+        analysis_result = json.loads(json_str)
+    else:
+        raise ValueError("Claude APIの応答からJSONを抽出できませんでした。")
+
+except json.JSONDecodeError as e:
+    print(f"JSONのパースに失敗しました。エラー: {e}")
+    print(f"Claude APIの応答: {content}")
+    exit(1)
+except Exception as e:
+    print(f"Claude APIリクエストに失敗しました。エラー: {e}")
+    exit(1)
 
 # 関連ファイルのコードを取得
 file_contents = {}
@@ -107,14 +121,13 @@ try:
                     "関連するファイルのコード:\n"
                     f"{json.dumps(file_contents, indent=2)}"
                 ),
-            }
+            },
         ],
     )
+    improvement_result = improvement_response.content[0].text
 except Exception as e:
-    print("Claude APIリクエストに失敗しました。エラー:", e)
+    print(f"Claude APIリクエストに失敗しました。エラー: {e}")
     exit(1)
-
-improvement_result = improvement_response.content[0].text
 
 # GitHubのIssueにコメントを追加
 comment_url = f"{GITHUB_API_BASE}/repos/{repo_full_name}/issues/{issue_number}/comments"
