@@ -23,25 +23,24 @@ jobs:
     permissions:
       issues: write
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests anthropic
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests anthropic
 
-    - name: Analyze issue
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        ISSUE_NUMBER: ${{ github.event.inputs.issue_number || github.event.issue.number }}
-        ISSUE_TITLE: ${{ github.event.inputs.issue_title || github.event.issue.title }}
-        ISSUE_BODY: ${{ github.event.inputs.issue_body || github.event.issue.body }}
-      run: python scripts/analyze_issue.py
-  
+      - name: Analyze issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ISSUE_NUMBER: ${{ github.event.inputs.issue_number || github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.inputs.issue_title || github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.inputs.issue_body || github.event.issue.body }}
+        run: python scripts/analyze_issue.py
