@@ -2,9 +2,7 @@ name: Issue Analyzer
 
 on:
   issues:
-    types: [opened, edited, reopened, labeled, unlabeled]
-  issue_comment:
-    types: [created]
+    types: [opened]
   workflow_dispatch:
     inputs:
       issue_number:
