@@ -59,8 +59,8 @@ try:
         system=(
             "以下はGitHubで作成されたIssueとサマリーファイルの内容です。\n"
             "このIssueに関連すると考えられるファイルを以下のJSONの形式で5-10つ出力してください。\n"
-            "{\"file_path\": str, \"reason\": str}]\n"
-            "必ずJSONのみ出力すること。"
+            '[{"file_path": str, "reason": str}]\n'
+            "必ずJSONのみ出力すること。日本語で回答してください。"
         ),
         messages=[
             {
@@ -116,14 +116,14 @@ try:
     improvement_response = anthropic.messages.create(
         model="claude-3-5-sonnet-20240620",
         max_tokens=2048,
-        system="次のIssueと関連するファイルのコードを分析し、具体的なコードの改善案を説明と共に提示してください。",
+        system="次のIssueと関連するファイルのコードを分析し、具体的なコードの改善案を説明と共に提示してください。必ず日本語で回答してください。",
         messages=[
             {
                 "role": "user",
                 "content": (
                     f"Issue:\nタイトル: {issue_title}\n本文: {issue_body}\n\n"
                     "関連するファイルのコード:\n"
-                    f"{json.dumps(file_contents, indent=2)}"
+                    f"{json.dumps(file_contents, indent=2, ensure_ascii=False)}"
                 ),
             },
         ],
@@ -136,7 +136,7 @@ except Exception as e:
 # GitHubのIssueにコメントを追加
 comment_url = f"{GITHUB_API_BASE}/repos/{repo_full_name}/issues/{issue_number}/comments"
 comment_data = {
-    "body": f"Issue分析結果:\n\n{json.dumps(analysis_result, indent=2)}\n\nコード改善案:\n\n{improvement_result}"
+    "body": f"Issue分析結果:\n\n```json\n{json.dumps(analysis_result, indent=2, ensure_ascii=False)}\n```\n\nコード改善案:\n\n{improvement_result}"
 }
 
 response = requests.post(comment_url, headers=headers, json=comment_data)
