@@ -58,7 +58,8 @@ try:
         max_tokens=1024,
         system=(
             "以下はGitHubで作成されたIssueとサマリーファイルの内容です。\n"
-            "このIssueに関連すると考えられるファイルを以下のJSONの形式で5-10つ出力してください。\n"
+            "このIssueに関連すると考えられるファイルを以下のJSONの形式で5-30つ出力してください。\n"
+            "候補はできるだけ多いほうがいいです。\n"
             '[{"file_path": str, "reason": str}]\n'
             "必ずJSONのみ出力すること。日本語で回答してください。"
         ),
@@ -136,7 +137,7 @@ except Exception as e:
 # GitHubのIssueにコメントを追加
 comment_url = f"{GITHUB_API_BASE}/repos/{repo_full_name}/issues/{issue_number}/comments"
 comment_data = {
-    "body": f"Issue分析結果:\n\n```json\n{json.dumps(analysis_result, indent=2, ensure_ascii=False)}\n```\n\nコード改善案:\n\n{improvement_result}"
+    "body": f"## Issue分析結果:\n\n```json\n{json.dumps(analysis_result, indent=2, ensure_ascii=False)}\n```\n\n## コード改善案:\n\n{improvement_result}"
 }
 
 response = requests.post(comment_url, headers=headers, json=comment_data)
