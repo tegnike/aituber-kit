@@ -282,7 +282,8 @@ export const getMessagesForContinuation = async (systemPrompt: string, messages:
   console.log("getMessagesForContinuation");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastSixMessages = getLastMessages(messages, 6);
-  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- あなたはassistantです。下記の会話に続くような自然なコメントを生成してください。
+  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- あなたは二人で会話をしています。相手はuser、あなたはassistantです。
+- 与えられた会話歴に続くような自然なコメントを生成してください。
 - ただし、可能な限り直前と同じ内容の旨のコメントは避けること。
 
 ## 例
