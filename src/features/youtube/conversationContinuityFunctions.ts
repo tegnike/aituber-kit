@@ -35,16 +35,28 @@ const getLastMessages = (messages: Message[], numberOfMessages: number): string 
  * @returns {Promise<string>} - 修正されたシステムメッセージ
  */
 const getModifiedSystemMessage = async (systemMessage: string): Promise<string> => {
-  const modifiedSystemMessage = `# キャラクター設定
-以下のキャラクター情報をもとに、ユーザーから提供される具体的な状況に合わせたコメントを生成してください。
-キャラクターの口調や性格を考慮し、可能な限り詳細なレスポンスを提供してください。
+  const modifiedSystemMessage = `あなたはあるキャラクターのロールプレイを行うAIアシスタントです。与えられたキャラクター情報と状況に基づいて、適切なコメントを生成してください。
 
-## キャラクターの詳細
-\`\`\`
+まず、以下のキャラクター情報を注意深く読んでください：
+
+<character_info>
 ${systemMessage}
-\`\`\`
+</character_info>
 
-## 状況`;
+次に、以下の状況を考慮してください：
+
+<situation>
+$SITUATION
+</situation>
+
+コメントを生成する際は、以下のガイドラインに従ってください：
+
+1. キャラクターの口調や性格を忠実に再現してください。
+2. 状況に合わせた具体的なコメントを作成してください。
+3. 可能な限り詳細で魅力的なレスポンスを提供してください。
+4. キャラクターのコメントのみを返答としてください。
+
+それでは、与えられた情報に基づいてコメントを生成してください。`;
 
   return modifiedSystemMessage;
 }
@@ -103,11 +115,10 @@ ${lastSixMessages}
 export const getMessagesForSleep = async (systemPrompt: string): Promise<Message[]> => {
   console.log("getMessagesForSleep");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
-  const userMessage = `- あなたはYoutubeの配信者です。
+  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- あなたはYoutubeの配信者です。
 - ただしコメントにあまり人が来ていません。
-- 人が来るまで別の作業をしている、という旨のセリフが欲しいです。`
+- 人が来るまで別の作業をしている、という旨のセリフが欲しいです。`);
   return [
-    { role: "system", content: modifiedSystemMessage },
     { role: "user", content: userMessage }
   ];
 }
@@ -154,16 +165,14 @@ export const getMessagesForNewTopic = async (systemPrompt: string, messages: Mes
   console.log("getMessagesForNewTopic");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastFourMessages = getLastMessages(messages, 4);
-  const userMessage = `- 話題を切り替えたいです。次の話題は「${topic}」です。
+  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- 話題を切り替えたいです。次の話題は「${topic}」です。
 - 以下の会話文から話を切り替えるとして、与えられたキャラになりきって発言してください。
 - 話題を切り替える旨のセリフも入れてください。
 - なお、あなたはassistantの発言をしたと仮定します。
 
 ## 会話歴
-${lastFourMessages}`
-
+${lastFourMessages}`);
   return [
-    { role: "system", content: modifiedSystemMessage },
     { role: "user", content: userMessage }
   ];
 }
@@ -273,7 +282,7 @@ export const getMessagesForContinuation = async (systemPrompt: string, messages:
   console.log("getMessagesForContinuation");
   const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastSixMessages = getLastMessages(messages, 6);
-  const userMessage = `- あなたはassistantです。下記の会話に続くような自然なコメントを生成してください。
+  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- あなたはassistantです。下記の会話に続くような自然なコメントを生成してください。
 - ただし、可能な限り直前と同じ内容の旨のコメントは避けること。
 
 ## 例
@@ -317,10 +326,9 @@ assistant: [neutral] 最近、何か面白いことがありましたか？
 
 ## 判定すべき会話歴
 
-${lastSixMessages}`
+${lastSixMessages}`)
 
   return [
-    { role: "system", content: modifiedSystemMessage },
     { role: "user", content: userMessage }
   ];
 }
