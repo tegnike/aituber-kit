@@ -23,7 +23,7 @@
     "eslint-config-next": "13.2.4",
     "groq-sdk": "^0.3.3",
     "i18next": "^23.6.0",
-    "next": "13.2.4",
+    "next": "^13.5.4",
     "node-fetch": "^3.3.1",
     "openai": "^4.38.5",
     "react": "18.2.0",
