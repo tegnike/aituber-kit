@@ -21,44 +21,13 @@ const fetchAIResponse = async (queryMessages: any[], aiApiKey: string, selectAIS
  * @returns {string} - ロールと内容を含むメッセージの文字列
  */
 const getLastMessages = (messages: Message[], numberOfMessages: number): string => {
-  return messages
-    .filter(message => message.role === "user" || message.role === "assistant")
+  const filteredMessages = messages
+    .filter(({ role }) => role === "user" || role === "assistant")
     .slice(-numberOfMessages)
-    .map(message => `${message.role}: ${message.content}`)
+    .map(({ role, content }) => `{${role}: ${content}}`)
     .join("\n");
-}
 
-/**
- * システムメッセージを受け取り、修正したシステムメッセージを返します。
- * 
- * @param {string} systemMessage - システムメッセージ
- * @returns {Promise<string>} - 修正されたシステムメッセージ
- */
-const getModifiedSystemMessage = async (systemMessage: string): Promise<string> => {
-  const modifiedSystemMessage = `あなたはあるキャラクターのロールプレイを行うAIアシスタントです。与えられたキャラクター情報と状況に基づいて、適切なコメントを生成してください。
-
-まず、以下のキャラクター情報を注意深く読んでください：
-
-<character_info>
-${systemMessage}
-</character_info>
-
-次に、以下の状況を考慮してください：
-
-<situation>
-$SITUATION
-</situation>
-
-コメントを生成する際は、以下のガイドラインに従ってください：
-
-1. キャラクターの口調や性格を忠実に再現してください。
-2. 状況に合わせた具体的なコメントを作成してください。
-3. 可能な限り詳細で魅力的なレスポンスを提供してください。
-4. キャラクターのコメントのみを返答としてください。
-
-それでは、与えられた情報に基づいてコメントを生成してください。`;
-
-  return modifiedSystemMessage;
+  return `[${filteredMessages}]`;
 }
 
 /**
@@ -114,10 +83,28 @@ ${lastSixMessages}
  */
 export const getMessagesForSleep = async (systemPrompt: string): Promise<Message[]> => {
   console.log("getMessagesForSleep");
-  const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
-  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- あなたはYoutubeの配信者です。
-- ただしコメントにあまり人が来ていません。
-- 人が来るまで別の作業をしている、という旨のセリフが欲しいです。`);
+  const userMessage = `あなたは日本語でYouTubeの配信者のロールプレイを行うAIアシスタントです。与えられたキャラクター情報と状況に基づいて、適切なコメントを生成してください。
+
+まず、以下のキャラクター情報を注意深く読んでください：
+
+## キャラクター情報
+${systemPrompt}
+
+次に、以下の状況を考慮してください：
+
+- あなたはYouTubeの配信者です。
+- ただし、配信にあまり視聴者が来ていません。
+- 視聴者が来るまで別の作業をしている、という旨のセリフを生成してください。
+
+コメントを生成する際は、以下のガイドラインに従ってください：
+
+1. キャラクターの口調や性格を忠実に再現してください。
+2. 状況に合わせた具体的なコメントを作成してください。
+3. 可能な限り詳細で魅力的なレスポンスを提供してください。
+4. キャラクターのコメントのみを返答としてください。
+
+それでは、与えられた情報に基づいてコメントを生成してください。`;
+
   return [
     { role: "user", content: userMessage }
   ];
@@ -163,15 +150,32 @@ export const getAnotherTopic = async (messages: Message[], aiApiKey: string, sel
  */
 export const getMessagesForNewTopic = async (systemPrompt: string, messages: Message[], topic: string): Promise<Message[]> => {
   console.log("getMessagesForNewTopic");
-  const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
-  const lastFourMessages = getLastMessages(messages, 4);
-  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- 話題を切り替えたいです。次の話題は「${topic}」です。
-- 以下の会話文から話を切り替えるとして、与えられたキャラになりきって発言してください。
-- 話題を切り替える旨のセリフも入れてください。
-- なお、あなたはassistantの発言をしたと仮定します。
+  const lastSixMessages = getLastMessages(messages, 6);
+  const userMessage = `あなたは特定のキャラクターになりきってロールプレイを行うAIアシスタントです。与えられたキャラクター情報と状況に基づいて、適切なコメントを生成してください。
 
-## 会話歴
-${lastFourMessages}`);
+まず、以下のキャラクター情報を注意深く読んでください：
+
+## キャラクター情報
+${systemPrompt}
+
+次に、以下の状況を考慮してください：
+
+- 話題を切り替える必要があります。次の話題は「${topic}」です。
+- 以下の会話履歴から話を切り替えるとして、与えられたキャラクターになりきって発言してください。
+- 話題を切り替える旨のセリフも含めてください。
+- なお、あなたはassistantの発言をしたものとして考えてください。
+
+## 会話履歴
+${lastSixMessages}
+
+コメントを生成する際は、以下のガイドラインに従ってください：
+
+1. キャラクターの口調や性格を忠実に再現してください。
+2. 状況に合わせた具体的なコメントを作成してください。
+3. 可能な限り詳細で魅力的なレスポンスを提供してください。
+4. キャラクターのコメントのみを返答としてください。
+
+それでは、与えられた情報に基づいてコメントを生成してください。`;
   return [
     { role: "user", content: userMessage }
   ];
@@ -280,54 +284,31 @@ B: 見てみたいな。送ってくれない？
  */
 export const getMessagesForContinuation = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
   console.log("getMessagesForContinuation");
-  const modifiedSystemMessage = await getModifiedSystemMessage(systemPrompt);
   const lastSixMessages = getLastMessages(messages, 6);
-  const userMessage = modifiedSystemMessage.replace('$SITUATION', `- あなたは二人で会話をしています。相手はuser、あなたはassistantです。
+  const userMessage = `あなたは特定のキャラクターになりきってロールプレイを行うAIアシスタントです。与えられたキャラクター情報と会話の状況に基づいて、適切なコメントを生成してください。
+
+まず、以下のキャラクター情報を注意深く読んでください：
+
+## キャラクター情報
+${systemPrompt}
+
+次に、以下の状況を考慮してください：
+- あなたは二人で会話をしています。相手はuser、あなたはassistantです。
 - 与えられた会話歴に続くような自然なコメントを生成してください。
-- ただし、可能な限り直前と同じ内容の旨のコメントは避けること。
+- ただし、可能な限り直前と同じ内容の旨のコメントは避けてください。
 
-## 例
+コメントを生成する際は、以下のガイドラインに従ってください：
+1. キャラクターの口調や性格を忠実に再現してください。
+2. 状況に合わせた具体的なコメントを作成してください。
+3. 可能な限り詳細で魅力的なレスポンスを提供してください。
+4. キャラクターのコメントのみを返答としてください。
 
-1.
-### 会話歴
-user: おはよう
-assistant: [happy] おはようございます！[neutral] 今日は何か楽しい予定がありますか？
-### あなたのコメント例
-[happy] 私はこれから友達とランチに行く予定です！
+以下が直近の会話歴です。これに続くコメントを生成してください：
 
-2.
-### 会話歴
-user: おはよう
-assistant: [happy] おはようございます！[neutral] 今日は何か楽しい予定がありますか？
-assistant: [happy] 私はこれから友達とランチに行く予定です！
-### あなたのコメント例
-[neutral] まだ観る映画は決めていないんですけど、何かおすすめがあれば教えてください！
+## 会話履歴
+${lastSixMessages}
 
-3.
-### 会話歴
-user: 今日もいい天気だね～
-assistant: [happy] そうだね！[happy] 外で遊ぶには最高の日和だね！
-### あなたのコメント例
-[neutral] どこかに遊びに行く予定はあるの？
-
-4.
-### 会話歴
-user: こんにちは
-assistant: [happy] こんにちは！[happy] 元気ですか？
-### あなたのコメント例
-[neutral] 最近、何か面白いことがありましたか？
-
-5.
-### 会話歴
-user: こんにちは
-assistant: [happy] こんにちは！[happy] 元気ですか？
-assistant: [neutral] 最近、何か面白いことがありましたか？
-### あなたのコメント例
-[neutral] 私は最近、新しい趣味を始めたんです。なんだと思いますか？
-
-## 判定すべき会話歴
-
-${lastSixMessages}`)
+上記の情報に基づいて、キャラクターとしての適切なコメントを生成してください。`;
 
   return [
     { role: "user", content: userMessage }
