@@ -172,6 +172,7 @@ export const Menu = ({
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
   const [showWebcam, setShowWebcam] = useState(false);
+  const [showPermissionModal, setShowPermissionModal] = useState(false);
   const { viewer } = useContext(ViewerContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bgFileInputRef = useRef<HTMLInputElement>(null);
@@ -430,6 +431,15 @@ export const Menu = ({
   useEffect(() => {
     console.log("onChangeWebcamStatus")
     onChangeWebcamStatus(showWebcam);
+    if (showWebcam) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(() => {
+          setShowPermissionModal(false);
+        })
+        .catch(() => {
+          setShowPermissionModal(true);
+        });
+    }
   }, [showWebcam]);
 
   return (
@@ -457,25 +467,18 @@ export const Menu = ({
               onClick={() => setShowChatLog(true)}
             />
           )}
-          { selectAIService=="openai" && (selectAIModel=="gpt-4o"||selectAIModel=="gpt-4-turbo") ? 
-          ( showWebcam ? (
-          <IconButton
-            iconName="24/Camera"
-            isProcessing={false}
-            onClick={() => setShowWebcam(false)}
-          ></IconButton>
-          ): (
+          {selectAIService === "openai" && (selectAIModel === "gpt-4o" || selectAIModel === "gpt-4-turbo") ? (
             <IconButton
-            iconName="24/Camera"
-            isProcessing={false}
-            onClick={() => setShowWebcam(true)}
-          ></IconButton>  
-          ) ) : (
+              iconName="24/Camera"
+              isProcessing={false}
+              onClick={() => setShowWebcam(!showWebcam)}
+            />
+          ) : (
             <IconButton
               iconName="24/Camera"
               isProcessing={false}
               disabled={true}
-          ></IconButton>
+            />
           )}
         </div>
       </div>
@@ -572,6 +575,14 @@ export const Menu = ({
           triggerShutter={triggerShutter}
           showWebcam={showWebcam}
         />
+      )}
+      {showPermissionModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p>カメラの使用を許可してください。</p>
+            <button onClick={() => setShowPermissionModal(false)}>閉じる</button>
+          </div>
+        </div>
       )}
       <input
         type="file"
