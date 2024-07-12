@@ -29,7 +29,7 @@ export const ChatLog = ({ messages, characterName }: Props) => {
         {messages.map((msg, i) => {
           return (
             <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
-              <Chat role={msg.role} message={msg.content.trim()} characterName={characterName} />
+              <Chat role={msg.role} message={typeof(msg.content)=="string"?msg.content:msg.content[0].text+"[画像]"} characterName={characterName} />
             </div>
           );
         })}

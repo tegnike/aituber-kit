@@ -895,7 +895,7 @@ export const Settings = ({
                         key={index}
                         className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
                         type="text"
-                        value={value.content}
+                        value={typeof(value.content)=="string"?value.content:value.content[0].text+"[画像]"}
                         onChange={(event) => {
                           onChangeChatLog(index, event.target.value);
                           onChangeCodeLog(index, event.target.value);
