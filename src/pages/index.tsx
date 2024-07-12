@@ -19,6 +19,7 @@ import "@/lib/i18n";
 import { useTranslation } from 'react-i18next';
 import { fetchAndProcessComments } from "@/features/youtube/youtubeComments";
 import { buildUrl } from "@/utils/buildUrl";
+import Image from 'next/image';
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
@@ -797,10 +798,10 @@ export default function Home() {
           onChangeWebcamStatus={handleStatusWebcam}
         />
          {modalImage && (
-          <div>
-            <img src={modalImage} width={512} height={512}></img>
-            <IconButton className="absolute z-30"
-              iconName="24/Trash"
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Image src={modalImage} width={512} height={512} alt="Modal Image" />
+          <IconButton className="absolute z-30"
+            iconName="24/Trash"
               isProcessing={false}
               onClick={clear}>
             </IconButton>

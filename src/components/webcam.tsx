@@ -157,7 +157,7 @@ export const Webcam: React.FC<Props> = ({
   }, [triggerShutter]);
 
   return (
-    <div className="row-span-1 flex flex-col flex-nowrap relative">
+    <div className="row-span-1 flex flex-col flex-nowrap relative items-end">
       <video
         ref={videoRef}
         width={512}
