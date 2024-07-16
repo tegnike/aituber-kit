@@ -329,9 +329,9 @@ export default function Home() {
     try {
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done && receivedMessage.length === 0) break;
 
-        receivedMessage += value;
+        if (value) receivedMessage += value;
 
         // 返答内容のタグ部分と返答部分を分離
         const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
@@ -341,55 +341,78 @@ export default function Home() {
         }
 
         // 返答を一文単位で切り出して処理する
-        const sentenceMatch = receivedMessage.match(/^(.+?[。．.!?！？\n]|.{20,}[、,])/);
-        if (sentenceMatch?.[0]) {
-          let sentence = sentenceMatch[0];
-          // 区切った文字をsentencesに追加
-          sentences.push(sentence);
-          // 区切った文字の残りでreceivedMessageを更新
-          receivedMessage = receivedMessage.slice(sentence.length).trimStart();
+        while (receivedMessage.length > 0) {
+          const sentenceMatch = receivedMessage.match(/^(.+?[。．.!?！？\n]|.{20,}[、,])/);
+          if (sentenceMatch?.[0]) {
+            let sentence = sentenceMatch[0];
+            // 区切った文字をsentencesに追加
+            sentences.push(sentence);
+            // 区切った文字の残りでreceivedMessageを更新
+            receivedMessage = receivedMessage.slice(sentence.length).trimStart();
 
-          // 発話不要/不可能な文字列だった場合はスキップ
-          if (
-            !sentence.includes("```") && !sentence.replace(/^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu, "")
-          ) {
-            continue;
-          }
-
-          // タグと返答を結合（音声再生で使用される）
-          let aiText = `${tag} ${sentence}`;
-          console.log("aiText", aiText);
-
-          if (isCodeBlock && !sentence.includes("```")) {
-            codeBlockText += sentence;
-            continue;
-          }
-
-          if (sentence.includes("```")) {
-            if (isCodeBlock) {
-              // コードブロックの終了処理
-              const [codeEnd, ...restOfSentence] = sentence.split("```");
-              aiTextLog.push({ role: "code", content: codeBlockText + codeEnd });
-              aiText += `${tag} ${restOfSentence.join("```") || ""}`;
-
-              // AssistantMessage欄の更新
-              setAssistantMessage(sentences.join(" "));
-
-              codeBlockText = "";
-              isCodeBlock = false;
-            } else {
-              // コードブロックの開始処理
-              isCodeBlock = true;
-              [aiText, codeBlockText] = aiText.split("```");
+            // 発話不要/不可能な文字列だった場合はスキップ
+            if (
+              !sentence.includes("```") && !sentence.replace(/^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu, "")
+            ) {
+              continue;
             }
 
-            sentence = sentence.replace(/```/g, "");
+            // タグと返答を結合（音声再生で使用される）
+            let aiText = `${tag} ${sentence}`;
+            console.log("aiText", aiText);
+
+            if (isCodeBlock && !sentence.includes("```")) {
+              codeBlockText += sentence;
+              continue;
+            }
+
+            if (sentence.includes("```")) {
+              if (isCodeBlock) {
+                // コードブロックの終了処理
+                const [codeEnd, ...restOfSentence] = sentence.split("```");
+                aiTextLog.push({ role: "code", content: codeBlockText + codeEnd });
+                aiText += `${tag} ${restOfSentence.join("```") || ""}`;
+
+                // AssistantMessage欄の更新
+                setAssistantMessage(sentences.join(" "));
+
+                codeBlockText = "";
+                isCodeBlock = false;
+              } else {
+                // コードブロックの開始処理
+                isCodeBlock = true;
+                [aiText, codeBlockText] = aiText.split("```");
+              }
+
+              sentence = sentence.replace(/```/g, "");
+            }
+
+            const aiTalks = textsToScreenplay([aiText], koeiroParam);
+            aiTextLog.push({ role: "assistant", content: sentence });
+
+            // 文ごとに音声を生成 & 再生、返答を表示
+            const currentAssistantMessage = sentences.join(" ");
+
+            handleSpeakAi(aiTalks[0], () => {
+              setAssistantMessage(currentAssistantMessage);
+              incrementChatProcessingCount();
+            }, () => {
+              decrementChatProcessingCount();
+            });
+          } else {
+            // マッチする文がない場合、ループを抜ける
+            break;
           }
+        }
 
+        // ストリームが終了し、receivedMessageが空でない場合の処理
+        if (done && receivedMessage.length > 0) {
+          // 残りのメッセージを処理
+          let aiText = `${tag} ${receivedMessage}`;
           const aiTalks = textsToScreenplay([aiText], koeiroParam);
-          aiTextLog.push({ role: "assistant", content: sentence });
+          aiTextLog.push({ role: "assistant", content: receivedMessage });
+          sentences.push(receivedMessage);
 
-          // 文ごとに音声を生成 & 再生、返答を表示
           const currentAssistantMessage = sentences.join(" ");
 
           handleSpeakAi(aiTalks[0], () => {
@@ -398,6 +421,8 @@ export default function Home() {
           }, () => {
             decrementChatProcessingCount();
           });
+
+          receivedMessage = "";
         }
       }
     } catch (e) {
