@@ -2,7 +2,13 @@ import { useContext, useCallback } from "react";
 import { ViewerContext } from "../features/vrmViewer/viewerContext";
 import { buildUrl } from "@/utils/buildUrl";
 
-export default function VrmViewer() {
+type Props = {
+  onImageDropped: (image: string) => void;
+};
+
+export default function VrmViewer({
+  onImageDropped,
+}:Props) {
   const { viewer } = useContext(ViewerContext);
 
   const canvasRef = useCallback(
@@ -28,17 +34,23 @@ export default function VrmViewer() {
           if (!file) {
             return;
           }
-
           const file_type = file.name.split(".").pop();
           if (file_type === "vrm") {
             const blob = new Blob([file], { type: "application/octet-stream" });
             const url = window.URL.createObjectURL(blob);
             viewer.loadVrm(url);
+          } else if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+              onImageDropped(reader.result as string);
+            };
           }
+
         });
       }
     },
-    [viewer]
+    [viewer, onImageDropped]
   );
 
   return (

@@ -699,6 +699,12 @@ export default function Home() {
       setWebcamStatus(status); // カメラが開いているかどうかの状態を更新
   },[]);
 
+  const handleImageDropped = useCallback(
+    async (image: string) => {
+      setModalImage(image);
+    },[]
+  );
+
   return (
     <>
       <div className={"font-M_PLUS_2"} style={{ backgroundImage: `url(${buildUrl(backgroundImageUrl)})`, backgroundSize: 'cover', minHeight: '100vh' }}>
@@ -712,7 +718,7 @@ export default function Home() {
             setSelectVoiceLanguage={setSelectVoiceLanguage}
           />
         )}
-        <VrmViewer />
+        <VrmViewer onImageDropped={handleImageDropped} />
         <MessageInputContainer
           isChatProcessing={chatProcessing}
           onChatProcessStart={hookSendChat}
