@@ -13,21 +13,72 @@ const fetchAIResponse = async (queryMessages: any[], aiApiKey: string, selectAIS
 }
 
 /**
+ * 共通のシステムメッセージをを返します。
+ * 
+ * @returns {Promise<string>} - 修正されたシステムメッセージ
+ */
+const getCommonSystemMessage = (systemPrompt: string, additionalGuidelines: string): string => {
+  return `あなたには以下のキャラクター情報と状況に基づいて、提供された会話に続くコメントを生成します。
+
+まず、以下のキャラクター情報を注意深く読んでください：
+
+\`\`\`
+${systemPrompt}
+\`\`\`
+
+次に、以下のガイドラインと状況を考慮してください：
+
+- あなたは二人で会話をしています。
+- キャラクターの口調や性格を忠実に再現し、状況に合わせた具体的で魅力的なコメントを作成してください。
+- 可能な限り詳細なレスポンスを提供し、キャラクターのコメントのみを返答としてください。
+${additionalGuidelines}
+
+以下の対話に続くコメントを生成してください。`;
+}
+
+/**
  * 指定された数の最新メッセージを取得し、文字列として返します。
  * ユーザーとアシスタントのメッセージのみを対象とします。
  * 
  * @param {Message[]} messages - メッセージの配列
  * @param {number} numberOfMessages - 取得するメッセージの数
- * @returns {string} - ロールと内容を含むメッセージの文字列
+ * @returns {Message[]} - メッセージの配列
  */
-const getLastMessages = (messages: Message[], numberOfMessages: number): string => {
+const getLastMessages = (messages: Message[], numberOfMessages: number): Message[] => {
   const filteredMessages = messages
     .filter(({ role }) => role === "user" || role === "assistant")
     .slice(-numberOfMessages)
-    .map(({ role, content }) => `{${role}: ${content}}`)
-    .join("\n");
 
-  return `[${filteredMessages}]`;
+  const returnMessages: Message[] = [];
+  let lastRole: string | null = null;
+  let combinedContent = "";
+
+  filteredMessages.forEach((message: Message, index: number) => {
+    if (message.role === lastRole) {
+      combinedContent += "\n" + message.content;
+    } else {
+      if (lastRole !== null) {
+        returnMessages.push({ role: lastRole, content: combinedContent });
+      }
+      lastRole = message.role;
+      combinedContent = message.content;
+    }
+
+    // 最後のメッセージの場合、現在の内容を追加
+    if (index === filteredMessages.length - 1) {
+      returnMessages.push({ role: lastRole, content: combinedContent });
+    }
+  });
+
+  while (returnMessages.length > 0 && returnMessages[0].role !== "user") {
+    returnMessages.shift();
+  }
+
+  if (returnMessages.length > 0 && returnMessages[returnMessages.length - 1].role === "assistant" || returnMessages.length === 0) {
+    returnMessages.push({ role: "user", content: "これはシステムメッセージです。回答を作成してください。このコメントは無視してください。" });
+  }
+
+  return returnMessages;
 }
 
 /**
@@ -41,7 +92,7 @@ const getLastMessages = (messages: Message[], numberOfMessages: number): string 
  */
 export const getBestComment = async (messages: Message[], youtubeComments: any[], aiApiKey: string, selectAIService: string, selectAIModel: string): Promise<string> => {
   console.log("getBestComment");
-  const lastSixMessages = getLastMessages(messages, 6);
+  const lastTenMessages = getLastMessages(messages, 10);
   const systemMessage = `# 会話選択タスク
 これからあなたに複数の会話履歴と選択肢となるコメントが与えられます。
 これらの情報を基に、会話の流れに最も適したコメントを1つ選んでください。選んだコメントの内容のみを返答としてください。
@@ -60,7 +111,7 @@ export const getBestComment = async (messages: Message[], youtubeComments: any[]
 
 ## 実際の会話歴
 \`\`\`
-${lastSixMessages}
+${lastTenMessages}
 \`\`\`
 
 ## 実際のコメント一覧`
@@ -79,35 +130,18 @@ ${lastSixMessages}
  * システムプロンプトを受け取り、休憩用のメッセージを返します。
  * 
  * @param {string} systemPrompt - システムプロンプト
+ * @param {Message[]} messages - メッセージの配列
  * @returns {Promise<Message[]>} - メッセージの配列
  */
-export const getMessagesForSleep = async (systemPrompt: string): Promise<Message[]> => {
+export const getMessagesForSleep = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
   console.log("getMessagesForSleep");
-  const userMessage = `あなたは日本語でYouTubeの配信者のロールプレイを行うAIアシスタントです。与えられたキャラクター情報と状況に基づいて、適切なコメントを生成してください。
+  const lastTenMessages = getLastMessages(messages, 10);
+  const systemMessage = getCommonSystemMessage(
+    systemPrompt,
+    "- あなたはYouTubeの配信者ですが、現在視聴者があまり来ていません。\n- 視聴者が来るまで別の作業をしている旨のセリフを生成してください。"
+    );
 
-まず、以下のキャラクター情報を注意深く読んでください：
-
-## キャラクター情報
-${systemPrompt}
-
-次に、以下の状況を考慮してください：
-
-- あなたはYouTubeの配信者です。
-- ただし、配信にあまり視聴者が来ていません。
-- 視聴者が来るまで別の作業をしている、という旨のセリフを生成してください。
-
-コメントを生成する際は、以下のガイドラインに従ってください：
-
-1. キャラクターの口調や性格を忠実に再現してください。
-2. 状況に合わせた具体的なコメントを作成してください。
-3. 可能な限り詳細で魅力的なレスポンスを提供してください。
-4. キャラクターのコメントのみを返答としてください。
-
-それでは、与えられた情報に基づいてコメントを生成してください。`;
-
-  return [
-    { role: "user", content: userMessage }
-  ];
+  return [{ role: "system", content: systemMessage }, ...lastTenMessages];
 }
 
 /**
@@ -120,7 +154,7 @@ ${systemPrompt}
  */
 export const getAnotherTopic = async (messages: Message[], aiApiKey: string, selectAIService: string, selectAIModel: string): Promise<string> => {
   console.log("getAnotherTopic");
-  const lastFourMessages = getLastMessages(messages, 4);
+  const lastTenMessages = getLastMessages(messages, 10);
   const queryMessages = [
     { role: "system", content: `次に渡される会話文から関連する別の話題を1つ考えてください。
 回答は単語か非口語の短文で返してください。
@@ -132,7 +166,7 @@ export const getAnotherTopic = async (messages: Message[], aiApiKey: string, sel
 - 今ハマっている趣味
 
 ## 会話文` },
-    { role: "user", content: lastFourMessages }
+    ...lastTenMessages
   ]
 
   const response = await fetchAIResponse(queryMessages, aiApiKey, selectAIService, selectAIModel);
@@ -150,35 +184,13 @@ export const getAnotherTopic = async (messages: Message[], aiApiKey: string, sel
  */
 export const getMessagesForNewTopic = async (systemPrompt: string, messages: Message[], topic: string): Promise<Message[]> => {
   console.log("getMessagesForNewTopic");
-  const lastSixMessages = getLastMessages(messages, 6);
-  const userMessage = `あなたは特定のキャラクターになりきってロールプレイを行うAIアシスタントです。与えられたキャラクター情報と状況に基づいて、適切なコメントを生成してください。
+  const lastTenMessages = getLastMessages(messages, 10);
+  const systemMessage = getCommonSystemMessage(
+    systemPrompt,
+    `- 話題を「${topic}」に切り替える必要があります。話題を切り替える旨のセリフもコメントに含めてください。`
+  );
 
-まず、以下のキャラクター情報を注意深く読んでください：
-
-## キャラクター情報
-${systemPrompt}
-
-次に、以下の状況を考慮してください：
-
-- 話題を切り替える必要があります。次の話題は「${topic}」です。
-- 以下の会話履歴から話を切り替えるとして、与えられたキャラクターになりきって発言してください。
-- 話題を切り替える旨のセリフも含めてください。
-- なお、あなたはassistantの発言をしたものとして考えてください。
-
-## 会話履歴
-${lastSixMessages}
-
-コメントを生成する際は、以下のガイドラインに従ってください：
-
-1. キャラクターの口調や性格を忠実に再現してください。
-2. 状況に合わせた具体的なコメントを作成してください。
-3. 可能な限り詳細で魅力的なレスポンスを提供してください。
-4. キャラクターのコメントのみを返答としてください。
-
-それでは、与えられた情報に基づいてコメントを生成してください。`;
-  return [
-    { role: "user", content: userMessage }
-  ];
+  return [{ role: "system", content: systemMessage }, ...lastTenMessages];
 }
 
 /**
@@ -191,8 +203,8 @@ ${lastSixMessages}
  */
 export const checkIfResponseContinuationIsRequired = async (messages: Message[], aiApiKey: string, selectAIService: string, selectAIModel: string): Promise<boolean> => {
   console.log("checkIfResponseContinuationIsRequired");
-  const lastSixMessages = getLastMessages(messages, 6);
-  if (!lastSixMessages.includes("assistant:")) {
+  const lastTenMessages = getLastMessages(messages, 10);
+  if (!lastTenMessages.some(message => message.role === "assistant")) {
     return false;
   }
 
@@ -256,7 +268,7 @@ B: 見てみたいな。送ってくれない？
 
   const queryMessages = [
     { role: "system", content: systemMessage },
-    { role: "user", content: lastSixMessages }
+    ...lastTenMessages
   ]
 
   // エラーが発生した場合はfalseを返す
@@ -284,33 +296,11 @@ B: 見てみたいな。送ってくれない？
  */
 export const getMessagesForContinuation = async (systemPrompt: string, messages: Message[]): Promise<Message[]> => {
   console.log("getMessagesForContinuation");
-  const lastSixMessages = getLastMessages(messages, 6);
-  const userMessage = `あなたは特定のキャラクターになりきってロールプレイを行うAIアシスタントです。与えられたキャラクター情報と会話の状況に基づいて、適切なコメントを生成してください。
+  const lastTenMessages = getLastMessages(messages, 10);
+  const systemMessage = getCommonSystemMessage(
+    systemPrompt,
+    `- 与えられた会話歴に続く自然なコメントを生成してください。ただし、直前と同じ内容は避けてください。`
+  );
 
-まず、以下のキャラクター情報を注意深く読んでください：
-
-## キャラクター情報
-${systemPrompt}
-
-次に、以下の状況を考慮してください：
-- あなたは二人で会話をしています。相手はuser、あなたはassistantです。
-- 与えられた会話歴に続くような自然なコメントを生成してください。
-- ただし、可能な限り直前と同じ内容の旨のコメントは避けてください。
-
-コメントを生成する際は、以下のガイドラインに従ってください：
-1. キャラクターの口調や性格を忠実に再現してください。
-2. 状況に合わせた具体的なコメントを作成してください。
-3. 可能な限り詳細で魅力的なレスポンスを提供してください。
-4. キャラクターのコメントのみを返答としてください。
-
-以下が直近の会話歴です。これに続くコメントを生成してください：
-
-## 会話履歴
-${lastSixMessages}
-
-上記の情報に基づいて、キャラクターとしての適切なコメントを生成してください。`;
-
-  return [
-    { role: "user", content: userMessage }
-  ];
+  return [{ role: "system", content: systemMessage }, ...lastTenMessages];
 }
