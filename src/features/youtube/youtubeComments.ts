@@ -144,7 +144,7 @@ export const fetchAndProcessComments = async (
             preProcessAIResponse(newTopicMessage);
           } else if (noCommentCount === 6){
             // スリープモードにする
-            const messagesForSleep = await getMessagesForSleep(systemPrompt);
+            const messagesForSleep = await getMessagesForSleep(systemPrompt, messages);
             preProcessAIResponse(messagesForSleep);
             setYoutubeSleepMode(true);
           }
