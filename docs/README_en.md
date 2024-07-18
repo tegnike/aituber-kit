@@ -1,9 +1,6 @@
-<h1 align="center">AITuber Kit</h1>
-
-<p align="center">
-  <img style="max-width: 100%;" src="https://github.com/tegnike/aituber-kit/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
-</p>
-
+<h1 align="center">
+  <img style="max-width: 100%;" src="./logo.png">
+</h1>
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
@@ -162,7 +159,7 @@ Your support will greatly contribute to the development and improvement of the A
   </a>
 </p>
 
-Plus 1 private sponsor
+Plus 2 private sponsors
 
 ## Usage Agreement
 
