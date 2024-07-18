@@ -1,6 +1,8 @@
-<h1 align="center">
-  <img style="max-width: 100%;" src="./docs/logo.png">
-</h1>
+<h1 align="center">AITuberキット</h1>
+
+<p align="center">
+  <img style="max-width: 100%;" src="https://github.com/tegnike/aituber-kit/assets/35606144/04e073de-ef99-4585-8bfa-aaf936409e79">
+</p>
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
