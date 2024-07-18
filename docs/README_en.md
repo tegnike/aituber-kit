@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img style="max-width: 100%;" src="./docs/logo.png">
+  <img style="max-width: 100%;" src="./logo.png">
 </h1>
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
