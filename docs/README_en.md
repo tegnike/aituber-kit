@@ -159,7 +159,7 @@ Your support will greatly contribute to the development and improvement of the A
   </a>
 </p>
 
-Plus 1 private sponsor
+Plus 2 private sponsors
 
 ## Usage Agreement
 
