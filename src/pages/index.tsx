@@ -34,8 +34,8 @@ export default function Home() {
   const [difyUrl, setDifyUrl] = useState("");
   const [difyConversationId, setDifyConversationId] = useState("");
   const [selectVoice, setSelectVoice] = useState("voicevox");
-  const [selectLanguage, setSelectLanguage] = useState("JP");
-  const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP");
+  const [selectLanguage, setSelectLanguage] = useState("JP"); // TODO: 要整理, JP, EN
+  const [selectVoiceLanguage, setSelectVoiceLanguage] = useState("ja-JP"); // TODO: 要整理, ja-JP, en-US
   const [changeEnglishToJapanese, setChangeEnglishToJapanese] = useState(false);
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState("2");
@@ -64,6 +64,8 @@ export default function Home() {
   const [gsviTtsModelId, setGSVITTSModelID] = useState("");
   const [gsviTtsBatchSize, setGSVITTSBatchSize] = useState(2);
   const [gsviTtsSpeechRate, setGSVITTSSpeechRate] = useState(1.0);
+  const [elevenlabsApiKey, setElevenlabsApiKey] = useState("");
+  const [elevenlabsVoiceId, setElevenlabsVoiceId] = useState("");
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState("");
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
@@ -118,6 +120,8 @@ export default function Home() {
       setGSVITTSModelID(params.gsviTtsModelId || "");
       setGSVITTSBatchSize(params.gsviTtsBatchSize || 2);
       setGSVITTSSpeechRate(params.gsviTtsSpeechRate || 1.0);
+      setElevenlabsApiKey(params.elevenlabsApiKey || "");
+      setElevenlabsVoiceId(params.elevenlabsVoiceId || "");
       setCharacterName(params.characterName || "CHARACTER");
       setShowCharacterName(params.showCharacterName || true);
     }
@@ -159,6 +163,8 @@ export default function Home() {
       gsviTtsModelId,
       gsviTtsBatchSize,
       gsviTtsSpeechRate,
+      elevenlabsApiKey,
+      elevenlabsVoiceId,
       characterName,
       showCharacterName
     };
@@ -202,6 +208,8 @@ export default function Home() {
     gsviTtsModelId,
     gsviTtsBatchSize,
     gsviTtsSpeechRate,
+    elevenlabsApiKey,
+    elevenlabsVoiceId,
     characterName,
     showCharacterName
   ]);
@@ -252,6 +260,8 @@ export default function Home() {
         gsviTtsModelId,
         gsviTtsBatchSize,
         gsviTtsSpeechRate,
+        elevenlabsApiKey,
+        elevenlabsVoiceId,
         changeEnglishToJapanese,
         onStart,
         onEnd
@@ -271,6 +281,8 @@ export default function Home() {
       gsviTtsModelId,
       gsviTtsBatchSize,
       gsviTtsSpeechRate,
+      elevenlabsApiKey,
+      elevenlabsVoiceId,
       changeEnglishToJapanese
     ]
   );
@@ -753,6 +765,10 @@ export default function Home() {
           onChangeGVITtsBatchSize={setGSVITTSBatchSize}
           gsviTtsSpeechRate={gsviTtsSpeechRate}
           onChangeGSVITtsSpeechRate={setGSVITTSSpeechRate}
+          elevenlabsApiKey={elevenlabsApiKey}
+          onChangeElevenlabsApiKey={setElevenlabsApiKey}
+          elevenlabsVoiceId={elevenlabsVoiceId}
+          onChangeElevenlabsVoiceId={setElevenlabsVoiceId}
           showCharacterName={showCharacterName}
           onChangeShowCharacterName={setShowCharacterName}
           characterName={characterName}

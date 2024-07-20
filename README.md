@@ -67,6 +67,7 @@ npm run dev
    - Google TTSの場合は日本語以外の言語も選択可能です。credential情報が必要です。
    - Style-Bert-VITS2は、ローカルAPIサーバーを起動しておく必要があります。
    - GSVI TTSは、ローカルAPIサーバーを起動しておく必要があります。
+   - ElevenLabsは様々な言語の選択が可能です。APIキーを入力してください。
 5. 入力フォームからキャラクターと会話を開始します。マイク入力も可能。
 
 ## AITuber配信

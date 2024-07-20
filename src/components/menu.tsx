@@ -81,6 +81,10 @@ type Props = {
   onChangeGVITtsBatchSize: (speed: number) => void;
   gsviTtsSpeechRate: number;
   onChangeGSVITtsSpeechRate: (speed: number) => void;
+  elevenlabsApiKey: string;
+  onChangeElevenlabsApiKey: (key: string) => void;
+  elevenlabsVoiceId: string;
+  onChangeElevenlabsVoiceId: (key: string) => void;
   characterName: string;
   onChangeCharacterName: (key: string) => void;
   showCharacterName: boolean;
@@ -157,6 +161,10 @@ export const Menu = ({
   onChangeGVITtsBatchSize,
   gsviTtsSpeechRate,
   onChangeGSVITtsSpeechRate,
+  elevenlabsApiKey,
+  onChangeElevenlabsApiKey,
+  elevenlabsVoiceId,
+  onChangeElevenlabsVoiceId,
   characterName,
   onChangeCharacterName,
   showCharacterName,
@@ -397,6 +405,20 @@ export const Menu = ({
     [onChangeGSVITtsSpeechRate]
   );
 
+  const handleChangeElevenlabsApiKey = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeElevenlabsApiKey(event.target.value);
+    },
+    [onChangeElevenlabsApiKey]
+  );
+
+  const handleChangeElevenlabsVoiceId = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChangeElevenlabsVoiceId(event.target.value);
+    },
+    [onChangeElevenlabsVoiceId]
+  );
+
   const handleCharacterName = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeCharacterName(event.target.value);
@@ -517,6 +539,10 @@ export const Menu = ({
           onChangeGVITtsBatchSize={handleChangeGSVITtsBatchSize}
           gsviTtsSpeechRate={gsviTtsSpeechRate}
           onChangeGSVITtsSpeechRate={handleChangeGSVITtsSpeechRate}
+          elevenlabsApiKey={elevenlabsApiKey}
+          onChangeElevenlabsApiKey={handleChangeElevenlabsApiKey}
+          elevenlabsVoiceId={elevenlabsVoiceId}
+          onChangeElevenlabsVoiceId={handleChangeElevenlabsVoiceId}
           characterName={characterName}
           onChangeCharacterName={handleCharacterName}
           showCharacterName={showCharacterName}

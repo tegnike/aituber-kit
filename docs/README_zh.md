@@ -67,6 +67,7 @@ npm run dev
    - 對於Google TTS，還可以選擇日語以外的語言。需要憑證信息。
    - 對於Style-Bert-VITS2，需要運行本地API服務器。
    - 對於GSVI TTS，需要運行本地API服務器。
+   - ElevenLabs支持多种语言选择。请输入API密钥。
 5. 從輸入表單開始與角色對話。也可以使用麥克風輸入。
 
 ## AITuber直播
