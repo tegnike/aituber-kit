@@ -5,6 +5,7 @@ import { synthesizeStyleBertVITS2Api } from "./synthesizeStyleBertVITS2";
 import { Viewer } from "../vrmViewer/viewer";
 import { Screenplay, Talk } from "./messages";
 import englishToJapanese from '@/utils/englishToJapanese.json';
+import { synthesizeVoiceElevenlabsApi } from "./synthesizeVoiceElevenlabs";
 
 interface EnglishToJapanese {
   [key: string]: string;
@@ -33,6 +34,8 @@ const createSpeakCharacter = () => {
     gsviTtsModelId: string,
     gsviTtsBatchSize: number,
     gsviTtsSpeechRate: number,
+    elevenlabsApiKey: string,
+    elevenlabsVoiceId: string,
     changeEnglishToJapanese: boolean,
     onStart?: () => void,
     onComplete?: () => void
@@ -61,6 +64,8 @@ const createSpeakCharacter = () => {
         buffer = await fetchAudioStyleBertVITS2(screenplay.talk, stylebertvits2ServerUrl, stylebertvits2ModelId, stylebertvits2Style, selectLanguage).catch(() => null);
       } else if (selectVoice == "gsvitts") {
         buffer = await fetchAudioVoiceGSVIApi(screenplay.talk, gsviTtsServerUrl, gsviTtsModelId, gsviTtsBatchSize, gsviTtsSpeechRate).catch(() => null);
+      } else if (selectVoice == "elevenlabs") {
+        buffer = await fetchAudioElevenlabs(screenplay.talk, elevenlabsApiKey, elevenlabsVoiceId, selectLanguage).catch(() => null);
       }
       lastTime = Date.now();
       return buffer;
@@ -251,3 +256,22 @@ export const fetchAudioVoiceGSVIApi = async (
   const buffer = await blob.arrayBuffer();
   return buffer;
 }
+
+export const fetchAudioElevenlabs = async (
+  talk: Talk,
+  apiKey: string,
+  voiceId: string,
+  language: string,
+): Promise<ArrayBuffer> => {
+  const ttsVoice = await synthesizeVoiceElevenlabsApi(
+    apiKey,
+    talk.message,
+    voiceId,
+    language
+  );
+
+  // const uint8Array = new Uint8Array(ttsVoice.audio);
+  const arrayBuffer: ArrayBuffer = ttsVoice.audio.buffer;
+
+  return arrayBuffer;
+};

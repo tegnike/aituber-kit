@@ -85,6 +85,11 @@
   "GSVITTSModelID": "GSVI TTS 模型ID",
   "GSVITTSBatchSize": "GSVI TTS 批次大小 (1 ~ 100 數值越大推理速度越快，太大可能會用完記憶體)",
   "GSVITTSSpeechRate": "語速 (0.5 ~ 2.0 數字越大越快)",
+  "UsingElevenLabs": "使用 ElevenLabs",
+  "ElevenLabsInfo": "使用 ElevenLabs API。支持多种语言。请从下面的URL获取API密钥。",
+  "ElevenLabsApiKey": "ElevenLabs API密钥",
+  "ElevenLabsVoiceId": "ElevenLabs 语音ID",
+  "ElevenLabsVoiceIdInfo": "请从下面的URL选择语音ID。",
   "CharacterName": "角色名字",
   "ShowCharacterName": "角色名字显示"
 }
