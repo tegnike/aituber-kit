@@ -88,6 +88,10 @@ type Props = {
   onChangeGVITtsBatchSize: (event: React.ChangeEvent<HTMLInputElement>) => void;
   gsviTtsSpeechRate: number;
   onChangeGSVITtsSpeechRate: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  elevenlabsApiKey: string;
+  onChangeElevenlabsApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  elevenlabsVoiceId: string;
+  onChangeElevenlabsVoiceId: (event: React.ChangeEvent<HTMLInputElement>) => void;
   characterName: string;
   onChangeCharacterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   showCharacterName: boolean;
@@ -165,6 +169,10 @@ export const Settings = ({
   onChangeGVITtsBatchSize,
   gsviTtsSpeechRate,
   onChangeGSVITtsSpeechRate,
+  elevenlabsApiKey,
+  onChangeElevenlabsApiKey,
+  elevenlabsVoiceId,
+  onChangeElevenlabsVoiceId,
   characterName,
   onChangeCharacterName,
   showCharacterName,
@@ -624,6 +632,7 @@ export const Settings = ({
                 <option value="google">{t('UsingGoogleTTS')}</option>
                 <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
                 <option value="gsvitts">{t('UsingGSVITTS')}</option>
+                <option value="elevenlabs">{t('UsingElevenLabs')}</option>
               </select>
             </div>
             <div className="my-40">
@@ -840,6 +849,43 @@ export const Settings = ({
                             placeholder="..."
                             value={gsviTtsSpeechRate}
                             onChange={onChangeGSVITtsSpeechRate} />
+                        </div>
+                      </>
+                    );
+                  } else if (selectVoice === "elevenlabs"){
+                    return (
+                      <>
+                        <div>
+                          {t('ElevenLabsInfo')}<br />
+                          <Link
+                            url="https://elevenlabs.io/api"
+                            label="https://elevenlabs.io/api" />
+                          <br />
+                        </div>
+                        <div className="mt-16 font-bold">{t('ElevenLabsApiKey')}</div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={elevenlabsApiKey}
+                            onChange={onChangeElevenlabsApiKey} />
+                        </div>
+                        <div className="mt-16 font-bold">{t('ElevenLabsVoiceId')}</div>
+                        <div className="mt-8">
+                          {t('ElevenLabsVoiceIdInfo')}<br />
+                          <Link
+                            url="https://api.elevenlabs.io/v1/voices"
+                            label="https://api.elevenlabs.io/v1/voices" />
+                          <br />
+                        </div>
+                        <div className="mt-8">
+                          <input
+                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                            type="text"
+                            placeholder="..."
+                            value={elevenlabsVoiceId}
+                            onChange={onChangeElevenlabsVoiceId} />
                         </div>
                       </>
                     );
