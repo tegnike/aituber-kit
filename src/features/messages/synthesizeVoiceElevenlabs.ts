@@ -69,6 +69,11 @@ export async function synthesizeVoiceElevenlabsApi(
     }),
   });
 
+  if (!res.ok) {
+    throw new Error(`ElevenLabs API request failed with status: ${res.status}`);
+  }
+
+
   const pcmData = await res.arrayBuffer();
   const wavHeader = createWavHeader(pcmData.byteLength);
   const wavData = new Uint8Array(wavHeader.byteLength + pcmData.byteLength);
