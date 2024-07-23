@@ -30,12 +30,24 @@
 
 ## 共通事前準備
 
-1. パッケージインストールします。
+1. リポジトリをローカルにクローンします。
+
+```bash
+git clone https://github.com/tegnike/aituber-kit.git
+```
+
+2. フォルダを開きます。
+
+```bash
+cd aituber-kit
+```
+
+3. パッケージインストールします。
 ```bash
 npm install
 ```
 
-2. 開発モードでアプリケーションを起動します。
+4. 開発モードでアプリケーションを起動します。
 
 ```bash
 npm run dev

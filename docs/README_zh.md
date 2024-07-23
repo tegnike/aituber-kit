@@ -30,12 +30,25 @@
 
 ## 共同準備
 
-1. 安裝包
+1. 將存儲庫克隆到本地。
+
+```bash
+git clone https://github.com/tegnike/aituber-kit.git
+```
+
+2. 打開文件夾。
+
+```bash
+cd aituber-kit
+```
+
+3. 安裝包。
+
 ```bash
 npm install
 ```
 
-2. 以開發模式啟動應用程序
+4. 以開發模式啟動應用程序。
 
 ```bash
 npm run dev

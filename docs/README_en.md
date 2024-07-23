@@ -29,12 +29,25 @@ I've written a detailed usage guide in the article below:
 
 ## Common Preparations
 
-1. Install packages
+1. Clone the repository to your local machine.
+
+```bash
+git clone https://github.com/tegnike/aituber-kit.git
+```
+
+2. Open the folder.
+
+```bash
+cd aituber-kit
+```
+
+3. Install packages.
+
 ```bash
 npm install
 ```
 
-2. Start the application in development mode
+4. Start the application in development mode.
 
 ```bash
 npm run dev
