@@ -3,7 +3,7 @@ import { Message } from "@/features/messages/messages";
 import { KoeiroParam } from "@/features/constants/koeiroParam";
 import { ChatLog } from "./chatLog";
 import { CodeLog } from "./codeLog";
-import React, { useCallback, useContext, useRef, useState } from "react";
+import React, { useCallback, useContext, useRef, useState, useEffect } from "react";
 import { Settings } from "./settings";
 import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 import { AssistantText } from "./assistantText";
@@ -432,6 +432,20 @@ export const Menu = ({
     },
     [onChangeShowCharacterName]
   );
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === '.') {
+        setShowSettings(prevState => !prevState);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <>
