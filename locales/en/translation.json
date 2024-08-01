@@ -91,5 +91,8 @@
   "ElevenLabsVoiceId": "ElevenLabs Voice ID",
   "ElevenLabsVoiceIdInfo": "Voice ID can be selected from the URL below.",
   "CharacterName": "Character name",
-  "ShowCharacterName": "Display character name"
+  "ShowCharacterName": "Display character name",
+  "AdvancedSettings": "Advanced Settings",
+  "ShowSettingsButton": "Show settings button",
+  "ShowSettingsButtonInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) ."
 }

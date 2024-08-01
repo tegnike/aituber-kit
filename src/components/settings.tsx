@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IconButton } from "./iconButton";
 import { TextButton } from "./textButton";
 import { Message } from "@/features/messages/messages";
@@ -14,12 +14,15 @@ import { Link } from "./link";
 import i18n from "i18next";
 import { useTranslation } from 'react-i18next';
 import speakers from './speakers.json';
+import { Disclosure } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/24/solid';
+import Image from 'next/image';
 
 type Props = {
   selectAIService: string;
   onChangeAIService: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   selectAIModel: string;
-  setSelectAIModel: (model: string) => void;
+  onChangeSelectAIModel: (model: string) => void;
   openAiKey: string;
   onChangeOpenAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   anthropicKey: string;
@@ -96,12 +99,14 @@ type Props = {
   onChangeCharacterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   showCharacterName: boolean;
   onChangeShowCharacterName: (show: boolean) => void;
+  showSettingsButton: boolean;
+  onChangeShowSettingsButton: (show: boolean) => void;
 };
 export const Settings = ({
   selectAIService,
   onChangeAIService,
   selectAIModel,
-  setSelectAIModel,
+  onChangeSelectAIModel,
   openAiKey,
   onChangeOpenAiKey,
   anthropicKey,
@@ -177,6 +182,8 @@ export const Settings = ({
   onChangeCharacterName,
   showCharacterName,
   onChangeShowCharacterName,
+  showSettingsButton,
+  onChangeShowSettingsButton,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -341,7 +348,7 @@ export const Settings = ({
                           const newService = e.target.value as keyof typeof defaultModels;
                           onChangeAIService(e);
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
-                          setSelectAIModel(defaultModels[newService]);
+                          onChangeSelectAIModel(defaultModels[newService]);
                         }}
                       >
                         <option value="openai">OpenAI</option>
@@ -376,7 +383,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="gpt-4o-mini">gpt-4o-mini</option>
                                 <option value="gpt-4o">gpt-4o</option>
@@ -406,7 +413,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
                                 <option value="claude-3-5-sonnet-20240620">claude-3.5-sonnet-20240620</option>
@@ -436,7 +443,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="gemini-1.5-pro-latest">gemini-1.5-pro-latest</option>
                                 <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
@@ -464,7 +471,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="gemma-7b-it">gemma-7b-it</option>
                                 <option value="llama3-70b-8192">llama3-70b-8192</option>
@@ -499,7 +506,7 @@ export const Settings = ({
                               type="text"
                               placeholder="..."
                               value={selectAIModel}
-                              onChange={(e) => setSelectAIModel(e.target.value)}
+                              onChange={(e) => onChangeSelectAIModel(e.target.value)}
                             />
                           </div>
                         );
@@ -892,24 +899,63 @@ export const Settings = ({
                   }
               })()}
             </div>
-            {selectLanguage === "JP" && (
-              <div className="my-40">
-                <div className="my-16 typography-20 font-bold">
-                  {t('EnglishToJapanese')}
-                </div>
-                <div className="my-8">
-                  {changeEnglishToJapanese ? (
-                    <TextButton onClick={() => setChangeEnglishToJapanese(false)}>
-                      {t('StatusOn')}
-                    </TextButton>
-                  ) : (
-                    <TextButton onClick={() => setChangeEnglishToJapanese(true)}>
-                      {t('StatusOff')}
-                    </TextButton>
-                  )}
-                </div>
-              </div>
-            )}
+          </div>
+          <div className="my-40">
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="flex items-center w-full px-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                    <div className="flex items-center flex-grow">
+                      <span className="typography-20 font-bold mr-8">{t('AdvancedSettings')}</span>
+                      <ChevronUpIcon
+                        className={`${
+                          open ? 'transform rotate-180' : ''
+                        } w-[20px] h-[20px] text-purple-500 flex-shrink-0`}
+                      />
+                    </div>
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                    <div className="pl-16">
+                      {selectLanguage === "JP" && (
+                        <div className="my-24">
+                          <div className="my-16 typography-16 font-bold">
+                            {t('EnglishToJapanese')}
+                          </div>
+                          <div className="my-8">
+                            {changeEnglishToJapanese ? (
+                              <TextButton onClick={() => setChangeEnglishToJapanese(false)}>
+                                {t('StatusOn')}
+                              </TextButton>
+                            ) : (
+                              <TextButton onClick={() => setChangeEnglishToJapanese(true)}>
+                                {t('StatusOff')}
+                              </TextButton>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div className="my-16 typography-16 font-bold">
+                        {t('ShowSettingsButton')}
+                      </div>
+                      <div className="my-16 typography-16">
+                        {t('ShowSettingsButtonInfo')}
+                      </div>
+                      <div className="my-8">
+                        {showSettingsButton ? (
+                          <TextButton onClick={() => onChangeShowSettingsButton(false)}>
+                            {t('StatusOn')}
+                          </TextButton>
+                        ) : (
+                          <TextButton onClick={() => onChangeShowSettingsButton(true)}>
+                            {t('StatusOff')}
+                          </TextButton>
+                        )}
+                      </div>
+                    </div>
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
           </div>
           {/* チャットログの設定 */}
           <div className="my-40">
@@ -938,16 +984,26 @@ export const Settings = ({
                       <div className="w-[64px] py-8">
                         {value.role === "assistant" ? "Character" : "You"}
                       </div>
-                      <input
-                        key={index}
-                        className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
-                        type="text"
-                        value={value.content}
-                        onChange={(event) => {
-                          onChangeChatLog(index, event.target.value);
-                          onChangeCodeLog(index, event.target.value);
-                        }}
-                      ></input>
+                      {typeof(value.content)=="string" ? (
+                        <input
+                          key={index}
+                          className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
+                          type="text"
+                          value={value.content}
+                          onChange={(event) => {
+                            onChangeChatLog(index, event.target.value);
+                            onChangeCodeLog(index, event.target.value);
+                            }}
+                          >
+                        </input>
+                      ) : (
+                        <Image 
+                          src={value.content[1].image_url.url}
+                          alt="画像"
+                          width={500}
+                          height={500}
+                        />
+                      )}
                     </div>
                   );
                 })}
