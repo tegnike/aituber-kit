@@ -540,7 +540,7 @@ export const Menu = ({
               iconName="24/Camera"
               isProcessing={false}
               onClick={() => setShowWebcam(!showWebcam)}
-              disabled={!(selectAIService === "openai" && ["gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
+              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
             />
           </div>
           <div className="order-4">
@@ -548,7 +548,7 @@ export const Menu = ({
               iconName="24/AddImage"
               isProcessing={false}
               onClick={() => imageFileInputRef.current?.click()}
-              disabled={!(selectAIService === "openai" && ["gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
+              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
             />
             <input
               type="file"

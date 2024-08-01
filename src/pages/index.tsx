@@ -565,7 +565,7 @@ export default function Home() {
         const messageLog: Message[] = [
           ...chatLog,
           { role: "user",
-            content: ( modalImage && selectAIService==="openai" && (selectAIModel==="gpt-4o"||selectAIModel==="gpt-4-turbo")) ? 
+            content: ( modalImage && selectAIService==="openai" && (selectAIModel==="gpt-4o-mini"||selectAIModel==="gpt-4o"||selectAIModel==="gpt-4-turbo")) ? 
               ( [ { type: "text", text: newMessage}, { type: "image_url", image_url: { url: modalImage }}]) 
               : (newMessage)
           },
@@ -581,7 +581,7 @@ export default function Home() {
           role: ['assistant', 'user', 'system'].includes(message.role) ? message.role : 'assistant',
           content: typeof message.content === "string" ||
             selectAIService === "openai" &&
-            (selectAIModel === "gpt-4o" || selectAIModel === "gpt-4-turbo")
+            (selectAIModel==="gpt-4o-mini"||selectAIModel==="gpt-4o"||selectAIModel==="gpt-4-turbo")
               ? message.content
               : message.content[0].text
         }));
