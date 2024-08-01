@@ -91,5 +91,8 @@
   "ElevenLabsVoiceId": "ElevenLabs 语音ID",
   "ElevenLabsVoiceIdInfo": "请从下面的URL选择语音ID。",
   "CharacterName": "角色名字",
-  "ShowCharacterName": "角色名字显示"
+  "ShowCharacterName": "角色名字显示",
+  "AdvancedSettings": "高级设置",
+  "ShowSettingsButton": "显示设置按钮",
+  "ShowSettingsButtonInfo": "可以通过按 Cmd + . (Mac) / Ctrl + . (Windows) 来显示设置界面。"
 }

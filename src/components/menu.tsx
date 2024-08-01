@@ -186,6 +186,7 @@ export const Menu = ({
   const bgFileInputRef = useRef<HTMLInputElement>(null);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+  const [showSettingsButton, setShowSettingsButton] = useState(true);
 
   const handleChangeAIService = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -452,6 +453,20 @@ export const Menu = ({
     [onChangeShowCharacterName]
   );
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === '.') {
+        setShowSettings(prevState => !prevState);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   const handleChangeModalImage = useCallback(
     (image: string) => {
       onChangeModalImage(image);
@@ -494,11 +509,13 @@ export const Menu = ({
       <div className="absolute z-10 m-24">
         <div className="grid md:grid-flow-col gap-[8px]">
           <div className="md:order-1 order-2">
-            <IconButton
-              iconName="24/Settings"
-              isProcessing={false}
-              onClick={() => setShowSettings(true)}
-            ></IconButton>
+            {showSettingsButton && (
+              <IconButton
+                iconName="24/Settings"
+                isProcessing={false}
+                onClick={() => setShowSettings(true)}
+              ></IconButton>
+            )}
           </div>
           <div className="md:order-2 order-1">
             {showChatLog ? (
@@ -630,6 +647,8 @@ export const Menu = ({
           onChangeCharacterName={handleCharacterName}
           showCharacterName={showCharacterName}
           onChangeShowCharacterName={handleShowCharacterName}
+          showSettingsButton={showSettingsButton}
+          onChangeShowSettingsButton={setShowSettingsButton}
         />
       )}
       {!showChatLog && assistantMessage && (
