@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IconButton } from "./iconButton";
 import { TextButton } from "./textButton";
 import { Message } from "@/features/messages/messages";
@@ -14,6 +14,8 @@ import { Link } from "./link";
 import i18n from "i18next";
 import { useTranslation } from 'react-i18next';
 import speakers from './speakers.json';
+import { Disclosure } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/24/solid';
 
 type Props = {
   selectAIService: string;
@@ -96,6 +98,8 @@ type Props = {
   onChangeCharacterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   showCharacterName: boolean;
   onChangeShowCharacterName: (show: boolean) => void;
+  showSettingsButton: boolean;
+  onChangeShowSettingsButton: (show: boolean) => void;
 };
 export const Settings = ({
   selectAIService,
@@ -177,6 +181,8 @@ export const Settings = ({
   onChangeCharacterName,
   showCharacterName,
   onChangeShowCharacterName,
+  showSettingsButton,
+  onChangeShowSettingsButton,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -892,24 +898,63 @@ export const Settings = ({
                   }
               })()}
             </div>
-            {selectLanguage === "JP" && (
-              <div className="my-40">
-                <div className="my-16 typography-20 font-bold">
-                  {t('EnglishToJapanese')}
-                </div>
-                <div className="my-8">
-                  {changeEnglishToJapanese ? (
-                    <TextButton onClick={() => setChangeEnglishToJapanese(false)}>
-                      {t('StatusOn')}
-                    </TextButton>
-                  ) : (
-                    <TextButton onClick={() => setChangeEnglishToJapanese(true)}>
-                      {t('StatusOff')}
-                    </TextButton>
-                  )}
-                </div>
-              </div>
-            )}
+          </div>
+          <div className="my-40">
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="flex items-center w-full px-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                    <div className="flex items-center flex-grow">
+                      <span className="typography-20 font-bold mr-8">{t('AdvancedSettings')}</span>
+                      <ChevronUpIcon
+                        className={`${
+                          open ? 'transform rotate-180' : ''
+                        } w-[20px] h-[20px] text-purple-500 flex-shrink-0`}
+                      />
+                    </div>
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                    <div className="pl-16">
+                      {selectLanguage === "JP" && (
+                        <div className="my-24">
+                          <div className="my-16 typography-16 font-bold">
+                            {t('EnglishToJapanese')}
+                          </div>
+                          <div className="my-8">
+                            {changeEnglishToJapanese ? (
+                              <TextButton onClick={() => setChangeEnglishToJapanese(false)}>
+                                {t('StatusOn')}
+                              </TextButton>
+                            ) : (
+                              <TextButton onClick={() => setChangeEnglishToJapanese(true)}>
+                                {t('StatusOff')}
+                              </TextButton>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div className="my-16 typography-16 font-bold">
+                        {t('ShowSettingsButton')}
+                      </div>
+                      <div className="my-16 typography-16">
+                        {t('ShowSettingsButtonInfo')}
+                      </div>
+                      <div className="my-8">
+                        {showSettingsButton ? (
+                          <TextButton onClick={() => onChangeShowSettingsButton(false)}>
+                            {t('StatusOn')}
+                          </TextButton>
+                        ) : (
+                          <TextButton onClick={() => onChangeShowSettingsButton(true)}>
+                            {t('StatusOff')}
+                          </TextButton>
+                        )}
+                      </div>
+                    </div>
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
           </div>
           {/* チャットログの設定 */}
           <div className="my-40">

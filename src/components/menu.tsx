@@ -176,6 +176,7 @@ export const Menu = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bgFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+  const [showSettingsButton, setShowSettingsButton] = useState(true);
 
   const handleChangeAIService = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -451,11 +452,13 @@ export const Menu = ({
     <>
       <div className="absolute z-10 m-24">
         <div className="grid grid-flow-col gap-[8px]">
-          <IconButton
-            iconName="24/Settings"
-            isProcessing={false}
-            onClick={() => setShowSettings(true)}
-          ></IconButton>
+          {showSettingsButton && (
+            <IconButton
+              iconName="24/Settings"
+              isProcessing={false}
+              onClick={() => setShowSettings(true)}
+            ></IconButton>
+          )}
           {showChatLog ? (
             <IconButton
               iconName="24/CommentOutline"
@@ -561,6 +564,8 @@ export const Menu = ({
           onChangeCharacterName={handleCharacterName}
           showCharacterName={showCharacterName}
           onChangeShowCharacterName={handleShowCharacterName}
+          showSettingsButton={showSettingsButton}
+          onChangeShowSettingsButton={setShowSettingsButton}
         />
       )}
       {!showChatLog && assistantMessage && (
