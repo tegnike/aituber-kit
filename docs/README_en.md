@@ -29,12 +29,25 @@ I've written a detailed usage guide in the article below:
 
 ## Common Preparations
 
-1. Install packages
+1. Clone the repository to your local machine.
+
+```bash
+git clone https://github.com/tegnike/aituber-kit.git
+```
+
+2. Open the folder.
+
+```bash
+cd aituber-kit
+```
+
+3. Install packages.
+
 ```bash
 npm install
 ```
 
-2. Start the application in development mode
+4. Start the application in development mode.
 
 ```bash
 npm run dev
@@ -168,7 +181,9 @@ Plus 2 private sponsors
 - [Logo Usage Agreement](./logo_licence_en.md)
 - [VRM Model Usage Agreement](./vrm_licence_en.md)
 
-## How to Add a New Language
+## Tips for Contributors
+
+### How to Add a New Language
 
 To add a new language to the project, follow these steps:
 
@@ -204,7 +219,7 @@ To add a new language to the project, follow these steps:
 
 This will add support for the new language to the project.
 
-### Adding Voice Language Code
+#### Adding Voice Language Code
 
 - You also need to add support for the voice language code.
 - Add the new language code to the `getVoiceLanguageCode` function in the `Introduction` component.
@@ -230,6 +245,6 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 }
 ```
 
-### Adding README
+#### Adding README
 
 - Add a new language README (`README_fr.md`), logo usage terms (`logo_licence_fr.md`), and VRM model usage terms (`vrm_licence_fr.md`) to the `docs` directory.
