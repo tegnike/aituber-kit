@@ -59,9 +59,10 @@ npm run dev
 ## 與AI角色對話
 
 - 這是與AI角色對話的功能。
-- 它是此存儲庫的基礎[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)的功能。
+- 它是此存儲庫的基礎[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)的擴展功能。
 - 只要您有各種LLM的API密鑰，就可以相對輕鬆地嘗試。
-- 最近的10個對話句子作為記憶保留。（未來更新可以指定數字）
+- 最近的10個對話句子作為記憶保留。（數字將在未來更新中可以指定）
+- 它是多模態的，能夠識別來自攝像頭的圖像或上傳的圖像來生成回應。
 
 ### 使用方法
 

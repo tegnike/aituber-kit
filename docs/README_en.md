@@ -58,9 +58,10 @@ npm run dev
 ## Conversation with AI Character
 
 - This is a feature to converse with an AI character.
-- It is a feature of [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM), which is the basis of this repository.
+- It is an extended feature of [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM), which is the basis of this repository.
 - It can be tried relatively easily as long as you have an API key for various LLMs.
-- The recent 10 conversation sentences are retained as memory. (The number can be specified in future updates)
+- The recent 10 conversation sentences are retained as memory. (The number will be configurable in future updates)
+- It is multimodal, capable of recognizing images from the camera or uploaded images to generate responses.
 
 ### Usage
 
