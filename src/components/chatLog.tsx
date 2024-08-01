@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Message } from "@/features/messages/messages";
+import Image from "next/image";
 
 type Props = {
   messages: Message[];
@@ -29,7 +30,14 @@ export const ChatLog = ({ messages, characterName }: Props) => {
         {messages.map((msg, i) => {
           return (
             <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
-              <Chat role={msg.role} message={typeof(msg.content)=="string"?msg.content:msg.content[0].text+"[画像]"} characterName={characterName} />
+              {typeof msg.content === "string" ? (
+                <Chat role={msg.role} message={msg.content} characterName={characterName} />
+              ) : (
+                <>
+                  <Chat role={msg.role} message={msg.content[0].text} characterName={characterName} />
+                  <ChatImage role={msg.role} imageUrl={msg.content[1].image_url.url} characterName={characterName} />
+                </>
+              )}
             </div>
           );
         })}
@@ -61,6 +69,16 @@ const Chat = ({ role, message, characterName }: { role: string; message: string;
           </div>
         </>
       )}
+    </div>
+  );
+};
+
+const ChatImage = ({ role, imageUrl, characterName }: { role: string; imageUrl: string; characterName: string; }) => {
+  const offsetX = role === "user" ? "pl-40" : "pr-40";
+
+  return (
+    <div className={`mx-auto max-w-[32rem] my-16 ${offsetX}`}>
+      <Image src={imageUrl} alt="Generated Image" className="rounded-8" width={512} height={512} />
     </div>
   );
 };

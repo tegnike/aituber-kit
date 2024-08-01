@@ -176,6 +176,7 @@ export const Menu = ({
   const { viewer } = useContext(ViewerContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bgFileInputRef = useRef<HTMLInputElement>(null);
+  const imageFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
 
   const handleChangeAIService = useCallback(
@@ -183,9 +184,18 @@ export const Menu = ({
       onChangeAIService(event.target.value);
       if (event.target.value !== "openai") {
         onChangeConversationContinuityMode(false);
+        setShowWebcam(false);
+        onChangeModalImage("");
       }
     },
     [onChangeAIService, onChangeConversationContinuityMode]
+  );
+
+  const handleChangeSelectAIModel = useCallback(
+    (model: string) => {
+      setSelectAIModel(model);
+    },
+    [setSelectAIModel]
   );
 
   const handleChangeSystemPrompt = useCallback(
@@ -427,6 +437,21 @@ export const Menu = ({
     [onChangeModalImage]
   );
 
+    const handleChangeImageFile = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageUrl = e.target?.result as string;
+          onChangeModalImage(imageUrl);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [onChangeModalImage]
+  );
+
   // カメラが開いているかどうかの状態変更
   useEffect(() => {
     console.log("onChangeWebcamStatus")
@@ -445,41 +470,55 @@ export const Menu = ({
   return (
     <>
       <div className="absolute z-10 m-24">
-        <div className="grid grid-flow-col gap-[8px]">
-          <IconButton
-            iconName="24/Settings"
-            isProcessing={false}
-            onClick={() => setShowSettings(true)}
-          ></IconButton>
-          {showChatLog ? (
+        <div className="grid md:grid-flow-col gap-[8px]">
+          <div className="md:order-1 order-2">
             <IconButton
-              iconName="24/CommentOutline"
-              label={webSocketMode ? t('CodeLog') : t('ChatLog')}
+              iconName="24/Settings"
               isProcessing={false}
-              onClick={() => setShowChatLog(false)}
-            />
-          ) : (
-            <IconButton
-              iconName="24/CommentFill"
-              label={webSocketMode ? t('CodeLog') : t('ChatLog')}
-              isProcessing={false}
-              disabled={chatLog.length <= 0}
-              onClick={() => setShowChatLog(true)}
-            />
-          )}
-          {selectAIService === "openai" && (selectAIModel === "gpt-4o" || selectAIModel === "gpt-4-turbo") ? (
+              onClick={() => setShowSettings(true)}
+            ></IconButton>
+          </div>
+          <div className="md:order-2 order-1">
+            {showChatLog ? (
+              <IconButton
+                iconName="24/CommentOutline"
+                label={webSocketMode ? t('CodeLog') : t('ChatLog')}
+                isProcessing={false}
+                onClick={() => setShowChatLog(false)}
+              />
+            ) : (
+              <IconButton
+                iconName="24/CommentFill"
+                label={webSocketMode ? t('CodeLog') : t('ChatLog')}
+                isProcessing={false}
+                disabled={chatLog.length <= 0}
+                onClick={() => setShowChatLog(true)}
+              />
+            )}
+          </div>
+          <div className="order-3">
             <IconButton
               iconName="24/Camera"
               isProcessing={false}
               onClick={() => setShowWebcam(!showWebcam)}
+              disabled={!(selectAIService === "openai" && ["gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
             />
-          ) : (
+          </div>
+          <div className="order-4">
             <IconButton
-              iconName="24/Camera"
+              iconName="24/AddImage"
               isProcessing={false}
-              disabled={true}
+              onClick={() => imageFileInputRef.current?.click()}
+              disabled={!(selectAIService === "openai" && ["gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
             />
-          )}
+            <input
+              type="file"
+              className="hidden"
+              accept="image/*"
+              ref={imageFileInputRef}
+              onChange={handleChangeImageFile}
+            />
+          </div>
         </div>
       </div>
       {
@@ -492,7 +531,7 @@ export const Menu = ({
           selectAIService={selectAIService}
           onChangeAIService={handleChangeAIService}
           selectAIModel={selectAIModel}
-          setSelectAIModel={setSelectAIModel}
+          onChangeSelectAIModel={handleChangeSelectAIModel}
           openAiKey={openAiKey}
           onChangeOpenAiKey={handleOpenAiKeyChange}
           anthropicKey={anthropicKey}

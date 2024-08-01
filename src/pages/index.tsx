@@ -432,12 +432,27 @@ export default function Home() {
     }
 
     // 直前のroleと同じならば、contentを結合し、空のcontentを除外する
+    let lastImageUrl = "";
     aiTextLog = aiTextLog.reduce((acc: Message[], item: Message) => {
+      if (typeof item.content != "string" && item.content[0] && item.content[1].image_url) {
+        lastImageUrl = item.content[1].image_url.url;
+      }
+
       const lastItem = acc[acc.length - 1];
       if (lastItem && lastItem.role === item.role) {
-        lastItem.content += " " + item.content;
+        if (typeof item.content != "string") {
+          lastItem.content += " " + item.content[0].text;
+        } else {
+          lastItem.content += " " + item.content;
+        }
       } else {
-        acc.push({ ...item, content: typeof(item.content)=="string"?item.content.trim():item.content[0].text+"[画像]" });
+        const text = typeof item.content != "string" ? item.content[0].text : item.content
+        if (lastImageUrl != "") {
+          acc.push({ ...item, content: [ { type: "text", text: text.trim() }, { type: "image_url", image_url: { url: lastImageUrl }} ] });
+          lastImageUrl = "";
+        } else {
+          acc.push({ ...item, content: text.trim() });
+        }
       }
       return acc;
     }, []).filter(item => item.content !== "");
@@ -549,9 +564,14 @@ export default function Home() {
         }
         setChatLog(messageLog);
 
+        // TODO: AIに送信するメッセージの加工、処理がひどいので要修正
         const processedMessageLog = messageLog.map(message => ({
           role: ['assistant', 'user', 'system'].includes(message.role) ? message.role : 'assistant',
-          content: message.content
+          content: typeof message.content === "string" ||
+            selectAIService === "openai" &&
+            (selectAIModel === "gpt-4o" || selectAIModel === "gpt-4-turbo")
+              ? message.content
+              : message.content[0].text
         }));
 
         const messages: Message[] = [
@@ -726,8 +746,11 @@ export default function Home() {
 
   const handleImageDropped = useCallback(
     async (image: string) => {
-      setModalImage(image);
-    },[]
+      if (image !== "") {
+        setModalImage(image);
+      }
+    },
+    [setModalImage]
   );
 
   return (
@@ -828,15 +851,26 @@ export default function Home() {
           triggerShutter={triggerShutter}
           onChangeWebcamStatus={handleStatusWebcam}
         />
-         {modalImage && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Image src={modalImage} width={512} height={512} alt="Modal Image" />
-          <IconButton className="absolute z-30"
-            iconName="24/Trash"
-              isProcessing={false}
-              onClick={clear}>
-            </IconButton>
-          </div>  
+        {modalImage && (
+          <div className="row-span-1 flex justify-end max-h-[40vh]">
+            <div className="relative w-full md:max-w-[512px] max-w-[50%] m-16">
+              <Image
+                src={modalImage}
+                width={512}
+                height={512}
+                alt="Modal Image"
+                className="rounded-8 w-auto object-contain max-h-[100%] ml-auto"
+              />
+              <div className="absolute top-4 right-4">
+                <IconButton
+                  iconName="24/Trash"
+                  className="hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
+                  isProcessing={false}
+                  onClick={clear}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </>

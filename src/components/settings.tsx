@@ -14,12 +14,13 @@ import { Link } from "./link";
 import i18n from "i18next";
 import { useTranslation } from 'react-i18next';
 import speakers from './speakers.json';
+import Image from 'next/image';
 
 type Props = {
   selectAIService: string;
   onChangeAIService: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   selectAIModel: string;
-  setSelectAIModel: (model: string) => void;
+  onChangeSelectAIModel: (model: string) => void;
   openAiKey: string;
   onChangeOpenAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   anthropicKey: string;
@@ -97,7 +98,7 @@ export const Settings = ({
   selectAIService,
   onChangeAIService,
   selectAIModel,
-  setSelectAIModel,
+  onChangeSelectAIModel,
   openAiKey,
   onChangeOpenAiKey,
   anthropicKey,
@@ -333,7 +334,7 @@ export const Settings = ({
                           const newService = e.target.value as keyof typeof defaultModels;
                           onChangeAIService(e);
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
-                          setSelectAIModel(defaultModels[newService]);
+                          onChangeSelectAIModel(defaultModels[newService]);
                         }}
                       >
                         <option value="openai">OpenAI</option>
@@ -368,7 +369,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="gpt-4o">gpt-4o</option>
                                 <option value="gpt-4-turbo">gpt-4-turbo</option>
@@ -397,7 +398,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
                                 <option value="claude-3-5-sonnet-20240620">claude-3.5-sonnet-20240620</option>
@@ -427,7 +428,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="gemini-1.5-pro-latest">gemini-1.5-pro-latest</option>
                                 <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
@@ -455,7 +456,7 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => setSelectAIModel(e.target.value)}
+                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
                               >
                                 <option value="gemma-7b-it">gemma-7b-it</option>
                                 <option value="llama3-70b-8192">llama3-70b-8192</option>
@@ -490,7 +491,7 @@ export const Settings = ({
                               type="text"
                               placeholder="..."
                               value={selectAIModel}
-                              onChange={(e) => setSelectAIModel(e.target.value)}
+                              onChange={(e) => onChangeSelectAIModel(e.target.value)}
                             />
                           </div>
                         );
@@ -891,16 +892,26 @@ export const Settings = ({
                       <div className="w-[64px] py-8">
                         {value.role === "assistant" ? "Character" : "You"}
                       </div>
-                      <input
-                        key={index}
-                        className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
-                        type="text"
-                        value={typeof(value.content)=="string"?value.content:value.content[0].text+"[画像]"}
-                        onChange={(event) => {
-                          onChangeChatLog(index, event.target.value);
-                          onChangeCodeLog(index, event.target.value);
-                        }}
-                      ></input>
+                      {typeof(value.content)=="string" ? (
+                        <input
+                          key={index}
+                          className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
+                          type="text"
+                          value={value.content}
+                          onChange={(event) => {
+                            onChangeChatLog(index, event.target.value);
+                            onChangeCodeLog(index, event.target.value);
+                            }}
+                          >
+                        </input>
+                      ) : (
+                        <Image 
+                          src={value.content[1].image_url.url}
+                          alt="画像"
+                          width={500}
+                          height={500}
+                        />
+                      )}
                     </div>
                   );
                 })}
