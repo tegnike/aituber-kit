@@ -116,10 +116,10 @@ export const Webcam: React.FC<Props> = ({
             onClick={handleRotateCamera}
           />
         </div>
-        <div className="absolute bottom-[20px] left-1/2 transform -translate-x-1/2">
+        <div className="block absolute bottom-4 right-4">
           <IconButton
             iconName="24/Shutter"
-            className="z-30 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+            className="z-30 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
             isProcessing={false}
             onClick={handleCapture}
           />
