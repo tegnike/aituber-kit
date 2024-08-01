@@ -181,7 +181,9 @@ npm run dev
 - [ロゴの利用規約](./docs/logo_licence.md)
 - [VRMモデルの利用規約](./docs/vrm_licence.md)
 
-## 新しい言語の追加方法
+## コントリビューター用TIPS
+
+### 新しい言語の追加方法
 
 新しい言語をプロジェクトに追加するには、以下の手順に従ってください。
 
@@ -217,7 +219,7 @@ npm run dev
 
 これで新しい言語のサポートがプロジェクトに追加されます。
 
-### 音声言語コードの追加
+#### 音声言語コードの追加
 
 - 音声言語コードの対応も追加する必要があります。
 - `Introduction` コンポーネント内の `getVoiceLanguageCode` 関数に新しい言語コードを追加します。
@@ -243,6 +245,6 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 }
 ```
 
-### READMEの追加
+#### READMEの追加
 
 - 新しい言語のREADME (`README_fr.md`), ロゴ利用規約 (`logo_licence_fr.md`), VRMモデル利用規約 (`vrm_licence_fr.md`) を `docs` ディレクトリに追加してください。
