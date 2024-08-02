@@ -32,6 +32,11 @@ export default async function handler(
         consolidatedMessages.push({ role: lastRole, content: combinedContent });
       }
       lastRole = message.role;
+
+      // TODO: support multi-modal message
+      if (typeof message.content !== 'string')
+        throw new Error('multi-modal message is not supported');
+
       combinedContent = message.content;
     }
 
