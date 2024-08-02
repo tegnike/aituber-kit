@@ -1,17 +1,17 @@
 export async function synthesizeVoiceGoogleApi(
   message: string,
-  ttsType: string
+  ttsType: string,
 ) {
   const body = {
     message: message,
     ttsType: ttsType,
-    type: "google",
+    type: 'google',
   };
 
-  const res = await fetch("/api/tts", {
-    method: "POST",
+  const res = await fetch('/api/tts', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   });

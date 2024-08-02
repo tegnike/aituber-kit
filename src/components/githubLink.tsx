@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { buildUrl } from "@/utils/buildUrl";
+import { buildUrl } from '@/utils/buildUrl';
 
 export const GitHubLink = () => {
   return (
@@ -15,7 +15,7 @@ export const GitHubLink = () => {
             alt="GitHub Repository Link"
             height={24}
             width={24}
-            src={buildUrl("/github-mark-white.svg")}
+            src={buildUrl('/github-mark-white.svg')}
           />
           <div className="mx-4 text-white font-bold">Fork me</div>
         </div>

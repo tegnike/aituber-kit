@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import { Message } from "@/features/messages/messages";
-import React from "react";
+import { useEffect, useRef } from 'react';
+import { Message } from '@/features/messages/messages';
+import React from 'react';
 type Props = {
   messages: Message[];
 };
@@ -9,15 +9,15 @@ export const CodeLog = ({ messages }: Props) => {
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
-      behavior: "auto",
-      block: "center",
+      behavior: 'auto',
+      block: 'center',
     });
   }, []);
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
+      behavior: 'smooth',
+      block: 'center',
     });
   }, [messages]);
   return (
@@ -27,60 +27,98 @@ export const CodeLog = ({ messages }: Props) => {
         <div className="p-24 ml-16 h-full rounded-8 bg-base">
           <div className="h-full font-bold tracking-wider bg-base text-primary overflow-y-auto scroll-hidden">
             {messages.map((msg, i) => {
-              const prevRole = i > 0 ? messages[i - 1].role : "";
-              const nextRole = i < messages.length - 1 ? messages[i + 1].role : "";
+              const prevRole = i > 0 ? messages[i - 1].role : '';
+              const nextRole =
+                i < messages.length - 1 ? messages[i + 1].role : '';
               return (
-                <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
-                  <Chat role={msg.role} message={msg.content} prevRole={prevRole} nextRole={nextRole} />
+                <div
+                  key={i}
+                  ref={messages.length - 1 === i ? chatScrollRef : null}
+                >
+                  <Chat
+                    role={msg.role}
+                    message={msg.content}
+                    prevRole={prevRole}
+                    nextRole={nextRole}
+                  />
                 </div>
               );
             })}
-            </div>
           </div>
+        </div>
       </div>
     </div>
   );
 };
 
-const Chat = ({ role, message, prevRole, nextRole }: { role: string; message: string; prevRole: string; nextRole: string; }) => {
-  const bgColor = (role === "code" || role === "output" || role === "executing") ? "bg-black" : "bg-white";
+const Chat = ({
+  role,
+  message,
+  prevRole,
+  nextRole,
+}: {
+  role: string;
+  message: string;
+  prevRole: string;
+  nextRole: string;
+}) => {
+  const bgColor =
+    role === 'code' || role === 'output' || role === 'executing'
+      ? 'bg-black'
+      : 'bg-white';
   let textColor: string;
-  switch(role) {
-    case "code":
-    case "output":
-    case "executing":
-      textColor = "text-white";
+  switch (role) {
+    case 'code':
+    case 'output':
+    case 'executing':
+      textColor = 'text-white';
       break;
-    case "assistant":
-      textColor = "text-secondary";
+    case 'assistant':
+      textColor = 'text-secondary';
       break;
     default:
-      textColor = "text-primary";
+      textColor = 'text-primary';
   }
   const same_as_prev_role = role === prevRole;
   const same_as_next_role = role === nextRole;
 
-  if (role === "code") {
+  if (role === 'code') {
     // 改行文字でメッセージを分割
     const messageLines = message.split('\n\n');
     return (
       <div className={`mx-auto ${!same_as_next_role && 'mb-16'}`}>
-        <div className={`px-24 ${!same_as_prev_role && 'pt-16 rounded-t-8'} ${bgColor} ${!same_as_next_role && 'rounded-b-8 pb-16'}`}>
-        {messageLines.map((line, index) =>
-          <div key={index} className={`typography-16 font-bold ${textColor}`} style={{ whiteSpace: 'pre-wrap', minHeight: '1em' }}>{line}</div>
-        )}
+        <div
+          className={`px-24 ${!same_as_prev_role && 'pt-16 rounded-t-8'} ${bgColor} ${!same_as_next_role && 'rounded-b-8 pb-16'}`}
+        >
+          {messageLines.map((line, index) => (
+            <div
+              key={index}
+              className={`typography-16 font-bold ${textColor}`}
+              style={{ whiteSpace: 'pre-wrap', minHeight: '1em' }}
+            >
+              {line}
+            </div>
+          ))}
         </div>
       </div>
     );
-  } else if (role === "output" || role === "executing") {
+  } else if (role === 'output' || role === 'executing') {
     // 改行文字でメッセージを分割
     const messageLines = message.split('\n');
     return (
       <div className={`mx-auto ${!same_as_next_role && 'mb-16'}`}>
-        <div className={`px-24 ${!same_as_prev_role && 'pt-16 rounded-t-8'} ${bgColor} ${!same_as_next_role && 'rounded-b-8 pb-16'}`}>
-        {messageLines.map((line, index) =>
-          <div key={index} className={`typography-16 font-bold ${textColor}`} style={{ whiteSpace: 'pre-wrap', minHeight: '1em' }}>{line}</div>
-        )}
+        <div
+          className={`px-24 ${!same_as_prev_role && 'pt-16 rounded-t-8'} ${bgColor} ${!same_as_next_role && 'rounded-b-8 pb-16'}`}
+        >
+          {messageLines.map((line, index) => (
+            <div
+              key={index}
+              className={`typography-16 font-bold ${textColor}`}
+              style={{ whiteSpace: 'pre-wrap', minHeight: '1em' }}
+            >
+              {line}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -89,10 +127,20 @@ const Chat = ({ role, message, prevRole, nextRole }: { role: string; message: st
     const messageLines = message.split('\n');
     return (
       <div className={`mx-auto ${!same_as_next_role && 'mb-16'}`}>
-        <div className={`px-24 ${!same_as_prev_role && 'pt-16 rounded-t-8'} pb-16 ${bgColor} ${!same_as_next_role && 'rounded-b-8'}`}>
-        {messageLines.filter(line => line.trim() !== '').map((line, index) =>
-          <div key={index} className={`typography-16 font-bold ${textColor}`} style={{ whiteSpace: 'pre-wrap', minHeight: '1em' }}>{line}</div>
-        )}
+        <div
+          className={`px-24 ${!same_as_prev_role && 'pt-16 rounded-t-8'} pb-16 ${bgColor} ${!same_as_next_role && 'rounded-b-8'}`}
+        >
+          {messageLines
+            .filter((line) => line.trim() !== '')
+            .map((line, index) => (
+              <div
+                key={index}
+                className={`typography-16 font-bold ${textColor}`}
+                style={{ whiteSpace: 'pre-wrap', minHeight: '1em' }}
+              >
+                {line}
+              </div>
+            ))}
         </div>
       </div>
     );

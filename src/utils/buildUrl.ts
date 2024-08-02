@@ -1,4 +1,4 @@
-import getConfig from "next/config";
+import getConfig from 'next/config';
 
 /**
  * github pagesに公開時にアセットを読み込めるようにするため、

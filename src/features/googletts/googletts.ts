@@ -1,7 +1,4 @@
-export async function googleTts(
-  message: string,
-  ttsType: string
-) {
+export async function googleTts(message: string, ttsType: string) {
   // Imports the Google Cloud client library
   const textToSpeech = require('@google-cloud/text-to-speech');
 
@@ -10,11 +7,11 @@ export async function googleTts(
 
   // Construct the request
   const request = {
-    input: {text: message},
+    input: { text: message },
     // Select the language and SSML voice gender (optional)
-    voice: {languageCode: 'en-US', name: ttsType, ssmlGender: 'FEMALE'},
+    voice: { languageCode: 'en-US', name: ttsType, ssmlGender: 'FEMALE' },
     // select the type of audio encoding
-    audioConfig: {audioEncoding: 'LINEAR16'},
+    audioConfig: { audioEncoding: 'LINEAR16' },
   };
 
   // Performs the text-to-speech request

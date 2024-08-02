@@ -1,4 +1,4 @@
-import { LipSyncAnalyzeResult } from "./lipSyncAnalyzeResult";
+import { LipSyncAnalyzeResult } from './lipSyncAnalyzeResult';
 
 const TIME_DOMAIN_DATA_LENGTH = 2048;
 
@@ -41,7 +41,7 @@ export class LipSync {
     bufferSource.connect(this.analyser);
     bufferSource.start();
     if (onEnded) {
-      bufferSource.addEventListener("ended", onEnded);
+      bufferSource.addEventListener('ended', onEnded);
     }
   }
 

@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
-import { Link } from "./link";
-import { IconButton } from "./iconButton";
-import i18n from "i18next";
+import { useState, useCallback } from 'react';
+import { Link } from './link';
+import { IconButton } from './iconButton';
+import i18n from 'i18next';
 import { useTranslation, Trans } from 'react-i18next';
 
 type Props = {
@@ -16,7 +16,7 @@ export const Introduction = ({
   onChangeDontShowIntroduction,
   selectLanguage,
   setSelectLanguage,
-  setSelectVoiceLanguage
+  setSelectVoiceLanguage,
 }: Props) => {
   const [opened, setOpened] = useState(true);
 
@@ -25,7 +25,7 @@ export const Introduction = ({
       onChangeDontShowIntroduction(event.target.checked);
       updateLanguage();
     },
-    [onChangeDontShowIntroduction]
+    [onChangeDontShowIntroduction],
   );
 
   const { t } = useTranslation();
@@ -34,10 +34,10 @@ export const Introduction = ({
     console.log('i18n.language', i18n.language);
     // selectLanguage: "JP"
     let languageCode = i18n.language.toUpperCase();
-    languageCode = languageCode == "JA" ? "JP" : languageCode
+    languageCode = languageCode == 'JA' ? 'JP' : languageCode;
     setSelectLanguage(languageCode);
     setSelectVoiceLanguage(getVoiceLanguageCode(languageCode));
-  }
+  };
 
   const getVoiceLanguageCode = (selectLanguage: string) => {
     switch (selectLanguage) {
@@ -54,12 +54,12 @@ export const Introduction = ({
       default:
         return 'ja-JP';
     }
-  }
+  };
 
   return opened ? (
     <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
       <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
-      <IconButton
+        <IconButton
           iconName="24/Close"
           isProcessing={false}
           onClick={() => {
@@ -81,11 +81,12 @@ export const Introduction = ({
             {t('TechnologyIntroduction')}
           </div>
           <div>
-            <Trans i18nKey="TechnologyIntroductionDescription1" components={{ b: <b /> }} />
+            <Trans
+              i18nKey="TechnologyIntroductionDescription1"
+              components={{ b: <b /> }}
+            />
             <Link
-              url={
-                "https://github.com/pixiv/ChatVRM"
-              }
+              url={'https://github.com/pixiv/ChatVRM'}
               label={t('TechnologyIntroductionLink1')}
             />
             {t('TechnologyIntroductionDescription2')}
@@ -93,21 +94,26 @@ export const Introduction = ({
           <div className="my-16">
             {t('TechnologyIntroductionDescription3')}
             <Link
-              url={"https://github.com/pixiv/three-vrm"}
-              label={"@pixiv/three-vrm"}
+              url={'https://github.com/pixiv/three-vrm'}
+              label={'@pixiv/three-vrm'}
             />
             {t('TechnologyIntroductionDescription4')}
             <Link
               url={
-                "https://openai.com/blog/introducing-chatgpt-and-whisper-apis"
+                'https://openai.com/blog/introducing-chatgpt-and-whisper-apis'
               }
-              label={"OpenAI API"}
+              label={'OpenAI API'}
             />
             {t('TechnologyIntroductionDescription5')}
-            <Link url={"https://developers.rinna.co.jp/product/#product=koeiromap-free"} label={"Koemotion"} />
+            <Link
+              url={
+                'https://developers.rinna.co.jp/product/#product=koeiromap-free'
+              }
+              label={'Koemotion'}
+            />
             {t('TechnologyIntroductionDescription6')}
             <Link
-              url={"https://note.com/nike_cha_n/n/ne98acb25e00f"}
+              url={'https://note.com/nike_cha_n/n/ne98acb25e00f'}
               label={t('TechnologyIntroductionLink2')}
             />
             {t('TechnologyIntroductionDescription7')}
@@ -115,10 +121,11 @@ export const Introduction = ({
           <div className="my-16">
             {t('SourceCodeDescription1')}
             <br />
-            {t('RepositoryURL')}<span> </span>
+            {t('RepositoryURL')}
+            <span> </span>
             <Link
-              url={"https://github.com/tegnike/aituber-kit"}
-              label={"https://github.com/tegnike/aituber-kit"}
+              url={'https://github.com/tegnike/aituber-kit'}
+              label={'https://github.com/tegnike/aituber-kit'}
             />
           </div>
         </div>
@@ -144,13 +151,16 @@ export const Introduction = ({
             }}
             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
           >
-           {t('Close')}
+            {t('Close')}
           </button>
         </div>
 
         {selectLanguage === 'JP' && (
           <div className="my-24">
-            <p>You can select the language from the settings. English and Traditional Chinese are available.</p>
+            <p>
+              You can select the language from the settings. English and
+              Traditional Chinese are available.
+            </p>
           </div>
         )}
       </div>

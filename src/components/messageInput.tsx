@@ -1,4 +1,4 @@
-import { IconButton } from "./iconButton";
+import { IconButton } from './iconButton';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
@@ -7,7 +7,7 @@ type Props = {
   isMicRecording: boolean;
   isChatProcessing: boolean;
   onChangeUserMessage: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
   onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -28,7 +28,7 @@ export const MessageInput = ({
   useEffect(() => {
     if (isChatProcessing) {
       const interval = setInterval(() => {
-        setLoadingDots(prev => {
+        setLoadingDots((prev) => {
           if (prev === '...') return '';
           return prev + '.';
         });
@@ -39,12 +39,23 @@ export const MessageInput = ({
   }, [isChatProcessing]);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (!event.nativeEvent.isComposing && event.key === 'Enter' && !event.shiftKey && userMessage.trim() !== '') {
-      onClickSendButton(event as unknown as React.MouseEvent<HTMLButtonElement>);
+    if (
+      !event.nativeEvent.isComposing &&
+      event.key === 'Enter' &&
+      !event.shiftKey &&
+      userMessage.trim() !== ''
+    ) {
+      onClickSendButton(
+        event as unknown as React.MouseEvent<HTMLButtonElement>,
+      );
       setRows(1);
     } else if (event.key === 'Enter' && event.shiftKey) {
       setRows(rows + 1);
-    } else if (event.key === 'Backspace' && rows > 1 && userMessage.slice(-1) === '\n') {
+    } else if (
+      event.key === 'Backspace' &&
+      rows > 1 &&
+      userMessage.slice(-1) === '\n'
+    ) {
       setRows(rows - 1);
     }
   };
@@ -62,7 +73,11 @@ export const MessageInput = ({
               onClick={onClickMicButton}
             />
             <textarea
-              placeholder={isChatProcessing ? `${t('AnswerGenerating')}${loadingDots}` : t('EnterYourQuestion')}
+              placeholder={
+                isChatProcessing
+                  ? `${t('AnswerGenerating')}${loadingDots}`
+                  : t('EnterYourQuestion')
+              }
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
               disabled={isChatProcessing}

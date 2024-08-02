@@ -1,5 +1,5 @@
-import { MessageInput } from "@/components/messageInput";
-import { useState, useEffect, useCallback } from "react";
+import { MessageInput } from '@/components/messageInput';
+import { useState, useEffect, useCallback } from 'react';
 
 type Props = {
   isChatProcessing: boolean;
@@ -16,9 +16,9 @@ type Props = {
 export const MessageInputContainer = ({
   isChatProcessing,
   onChatProcessStart,
-  selectVoiceLanguage
+  selectVoiceLanguage,
 }: Props) => {
-  const [userMessage, setUserMessage] = useState("");
+  const [userMessage, setUserMessage] = useState('');
   const [speechRecognition, setSpeechRecognition] =
     useState<SpeechRecognition>();
   const [isMicRecording, setIsMicRecording] = useState(false);
@@ -36,7 +36,7 @@ export const MessageInputContainer = ({
         onChatProcessStart(text);
       }
     },
-    [onChatProcessStart]
+    [onChatProcessStart],
   );
 
   // 無音が続いた場合も終了する
@@ -73,15 +73,15 @@ export const MessageInputContainer = ({
     recognition.interimResults = true; // 認識の途中結果を返す
     recognition.continuous = false; // 発言の終了時に認識を終了する
 
-    recognition.addEventListener("result", handleRecognitionResult);
-    recognition.addEventListener("end", handleRecognitionEnd);
+    recognition.addEventListener('result', handleRecognitionResult);
+    recognition.addEventListener('end', handleRecognitionEnd);
 
     setSpeechRecognition(recognition);
   }, [handleRecognitionResult, handleRecognitionEnd, selectVoiceLanguage]);
 
   useEffect(() => {
     if (!isChatProcessing) {
-      setUserMessage("");
+      setUserMessage('');
     }
   }, [isChatProcessing]);
 

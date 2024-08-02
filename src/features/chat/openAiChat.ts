@@ -1,10 +1,14 @@
-import { OpenAI } from "openai";
-import { Message } from "../messages/messages";
-import { ChatCompletionMessageParam } from "openai/resources";
+import { OpenAI } from 'openai';
+import { Message } from '../messages/messages';
+import { ChatCompletionMessageParam } from 'openai/resources';
 
-export async function getOpenAIChatResponse(messages: Message[], apiKey: string, model: string) {
+export async function getOpenAIChatResponse(
+  messages: Message[],
+  apiKey: string,
+  model: string,
+) {
   if (!apiKey) {
-    throw new Error("Invalid API Key");
+    throw new Error('Invalid API Key');
   }
 
   const openai = new OpenAI({
@@ -18,7 +22,8 @@ export async function getOpenAIChatResponse(messages: Message[], apiKey: string,
   });
 
   const [aiRes] = data.choices;
-  const message = aiRes.message?.content || "回答生成時にエラーが発生しました。";
+  const message =
+    aiRes.message?.content || '回答生成時にエラーが発生しました。';
 
   return { message: message };
 }
@@ -26,10 +31,10 @@ export async function getOpenAIChatResponse(messages: Message[], apiKey: string,
 export async function getOpenAIChatResponseStream(
   messages: Message[],
   apiKey: string,
-  model: string
+  model: string,
 ) {
   if (!apiKey) {
-    throw new Error("Invalid API Key");
+    throw new Error('Invalid API Key');
   }
 
   const openai = new OpenAI({
@@ -58,7 +63,7 @@ export async function getOpenAIChatResponseStream(
       } finally {
         controller.close();
       }
-    }
+    },
   });
 
   return res;

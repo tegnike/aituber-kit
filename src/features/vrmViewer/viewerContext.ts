@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { Viewer } from "./viewer";
+import { createContext } from 'react';
+import { Viewer } from './viewer';
 
 const viewer = new Viewer();
 

@@ -1,5 +1,5 @@
-import { VRMExpressionManager } from "@pixiv/three-vrm";
-import { BLINK_CLOSE_MAX, BLINK_OPEN_MAX } from "./emoteConstants";
+import { VRMExpressionManager } from '@pixiv/three-vrm';
+import { BLINK_CLOSE_MAX, BLINK_OPEN_MAX } from './emoteConstants';
 
 /**
  * 自動瞬きを制御するクラス
@@ -53,12 +53,12 @@ export class AutoBlink {
   private close() {
     this._isOpen = false;
     this._remainingTime = BLINK_CLOSE_MAX;
-    this._expressionManager.setValue("blink", 1);
+    this._expressionManager.setValue('blink', 1);
   }
 
   private open() {
     this._isOpen = true;
     this._remainingTime = BLINK_OPEN_MAX;
-    this._expressionManager.setValue("blink", 0);
+    this._expressionManager.setValue('blink', 0);
   }
 }

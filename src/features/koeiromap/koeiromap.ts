@@ -1,13 +1,13 @@
-import { TalkStyle } from "../messages/messages";
+import { TalkStyle } from '../messages/messages';
 
 export async function koeiromapV0(
   message: string,
   speakerX: number,
   speakerY: number,
-  style: TalkStyle
+  style: TalkStyle,
 ) {
   const param = {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       text: message,
       speaker_x: speakerX,
@@ -15,13 +15,13 @@ export async function koeiromapV0(
       style: style,
     }),
     headers: {
-      "Content-type": "application/json; charset=UTF-8",
+      'Content-type': 'application/json; charset=UTF-8',
     },
   };
 
   const koeiroRes = await fetch(
-    "https://api.rinna.co.jp/models/cttse/koeiro",
-    param
+    'https://api.rinna.co.jp/models/cttse/koeiro',
+    param,
   );
 
   const data = (await koeiroRes.json()) as any;
@@ -33,8 +33,8 @@ export async function koeiromapFreeV1(
   message: string,
   speakerX: number,
   speakerY: number,
-  style: "talk" | "happy" | "sad",
-  apiKey: string
+  style: 'talk' | 'happy' | 'sad',
+  apiKey: string,
 ) {
   // Request body
   const body = {
@@ -42,20 +42,20 @@ export async function koeiromapFreeV1(
     speaker_x: speakerX,
     speaker_y: speakerY,
     style: style,
-    output_format: "mp3",
+    output_format: 'mp3',
   };
 
   const koeiroRes = await fetch(
-    "https://api.rinna.co.jp/koeiromap/v1.0/infer",
+    'https://api.rinna.co.jp/koeiromap/v1.0/infer',
     {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(body),
       headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-        "Ocp-Apim-Subscription-Key": apiKey,
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Ocp-Apim-Subscription-Key': apiKey,
       },
-    }
+    },
   );
 
   const data = (await koeiroRes.json()) as any;

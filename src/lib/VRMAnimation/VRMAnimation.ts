@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { VRM, VRMExpressionManager, VRMHumanBoneName } from "@pixiv/three-vrm";
+import * as THREE from 'three';
+import { VRM, VRMExpressionManager, VRMHumanBoneName } from '@pixiv/three-vrm';
 
 export class VRMAnimation {
   public duration: number;
@@ -35,14 +35,14 @@ export class VRMAnimation {
     }
 
     if (vrm.lookAt != null) {
-      const track = this.createLookAtTrack("lookAtTargetParent.quaternion");
+      const track = this.createLookAtTrack('lookAtTargetParent.quaternion');
 
       if (track != null) {
         tracks.push(track);
       }
     }
 
-    return new THREE.AnimationClip("Clip", this.duration, tracks);
+    return new THREE.AnimationClip('Clip', this.duration, tracks);
   }
 
   public createHumanoidTracks(vrm: VRM): THREE.KeyframeTrack[] {
@@ -58,8 +58,8 @@ export class VRMAnimation {
           `${nodeName}.quaternion`,
           origTrack.times,
           origTrack.values.map((v, i) =>
-            metaVersion === "0" && i % 2 === 0 ? -v : v
-          )
+            metaVersion === '0' && i % 2 === 0 ? -v : v,
+          ),
         );
         tracks.push(track);
       }
@@ -76,7 +76,7 @@ export class VRMAnimation {
 
         const track = origTrack.clone();
         track.values = track.values.map(
-          (v, i) => (metaVersion === "0" && i % 3 !== 1 ? -v : v) * scale
+          (v, i) => (metaVersion === '0' && i % 3 !== 1 ? -v : v) * scale,
         );
         track.name = `${nodeName}.position`;
         tracks.push(track);
@@ -87,7 +87,7 @@ export class VRMAnimation {
   }
 
   public createExpressionTracks(
-    expressionManager: VRMExpressionManager
+    expressionManager: VRMExpressionManager,
   ): THREE.KeyframeTrack[] {
     const tracks: THREE.KeyframeTrack[] = [];
 

@@ -55,24 +55,26 @@ export async function synthesizeVoiceElevenlabsApi(
   voiceId: string,
   language: string,
 ) {
-  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=pcm_16000`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "xi-api-key": apiKey,
-      'accept': 'audio/mpeg'
+  const res = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=pcm_16000`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': apiKey,
+        accept: 'audio/mpeg',
+      },
+      body: JSON.stringify({
+        text: message,
+        model_id: 'eleven_turbo_v2_5',
+        language_code: getLanguageCode(language),
+      }),
     },
-    body: JSON.stringify({
-      "text": message,
-      'model_id': "eleven_turbo_v2_5",
-      'language_code': getLanguageCode(language)
-    }),
-  });
+  );
 
   if (!res.ok) {
     throw new Error(`ElevenLabs API request failed with status: ${res.status}`);
   }
-
 
   const pcmData = await res.arrayBuffer();
   const wavHeader = createWavHeader(pcmData.byteLength);

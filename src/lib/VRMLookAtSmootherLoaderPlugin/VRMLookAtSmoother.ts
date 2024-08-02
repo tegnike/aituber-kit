@@ -1,5 +1,5 @@
-import { VRMHumanoid, VRMLookAt, VRMLookAtApplier } from "@pixiv/three-vrm";
-import * as THREE from "three";
+import { VRMHumanoid, VRMLookAt, VRMLookAtApplier } from '@pixiv/three-vrm';
+import * as THREE from 'three';
 
 /** サッケードが発生するまでの最小間隔 */
 const SACCADE_MIN_INTERVAL = 0.5;
@@ -99,22 +99,22 @@ export class VRMLookAtSmoother extends VRMLookAt {
           1.0 -
           THREE.MathUtils.smoothstep(
             Math.sqrt(
-              yawAnimation * yawAnimation + pitchAnimation * pitchAnimation
+              yawAnimation * yawAnimation + pitchAnimation * pitchAnimation,
             ),
             30.0,
-            90.0
+            90.0,
           );
 
         // yawFrame / pitchFrame に結果を代入
         yawFrame = THREE.MathUtils.lerp(
           yawAnimation,
           0.6 * this._yawDamped,
-          userRatio
+          userRatio,
         );
         pitchFrame = THREE.MathUtils.lerp(
           pitchAnimation,
           0.6 * this._pitchDamped,
-          userRatio
+          userRatio,
         );
 
         // 頭も回す
@@ -122,11 +122,11 @@ export class VRMLookAtSmoother extends VRMLookAt {
           -this._pitchDamped * THREE.MathUtils.DEG2RAD,
           this._yawDamped * THREE.MathUtils.DEG2RAD,
           0.0,
-          VRMLookAt.EULER_ORDER
+          VRMLookAt.EULER_ORDER,
         );
         _quatA.setFromEuler(_eulerA);
 
-        const head = this.humanoid.getRawBoneNode("head")!;
+        const head = this.humanoid.getRawBoneNode('head')!;
         this._tempFirstPersonBoneQuat.copy(head.quaternion);
         head.quaternion.slerp(_quatA, 0.4);
         head.updateMatrixWorld();
@@ -167,7 +167,7 @@ export class VRMLookAtSmoother extends VRMLookAt {
   /** renderしたあとに叩いて頭の回転をもとに戻す */
   public revertFirstPersonBoneQuat(): void {
     if (this.userTarget) {
-      const head = this.humanoid.getNormalizedBoneNode("head")!;
+      const head = this.humanoid.getNormalizedBoneNode('head')!;
       head.quaternion.copy(this._tempFirstPersonBoneQuat);
     }
   }

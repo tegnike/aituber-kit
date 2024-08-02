@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { VRM } from "@pixiv/three-vrm";
+import * as THREE from 'three';
+import { VRM } from '@pixiv/three-vrm';
 /**
  * 目線を制御するクラス
  *

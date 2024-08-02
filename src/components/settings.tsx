@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { IconButton } from "./iconButton";
-import { TextButton } from "./textButton";
-import { Message } from "@/features/messages/messages";
-import { GitHubLink } from "./githubLink";
+import React, { useEffect, useState } from 'react';
+import { IconButton } from './iconButton';
+import { TextButton } from './textButton';
+import { Message } from '@/features/messages/messages';
+import { GitHubLink } from './githubLink';
 import {
   KoeiroParam,
   PRESET_A,
   PRESET_B,
   PRESET_C,
   PRESET_D,
-} from "@/features/constants/koeiroParam";
-import { Link } from "./link";
-import i18n from "i18next";
+} from '@/features/constants/koeiroParam';
+import { Link } from './link';
+import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import speakers from './speakers.json';
 import { Disclosure } from '@headlessui/react';
@@ -64,11 +64,19 @@ type Props = {
   onClickResetCodeLog: () => void;
   onClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangeVoicevoxSpeaker: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChangeVoicevoxSpeaker: (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => void;
   onChangeGoogleTtsType: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangeStyleBertVits2ServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangeStyleBertVits2ModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangeStyleBertVits2Style: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeStyleBertVits2ServerUrl: (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
+  onChangeStyleBertVits2ModelId: (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
+  onChangeStyleBertVits2Style: (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
   onChangeYoutubeMode: (mode: boolean) => void;
   onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -84,17 +92,25 @@ type Props = {
   setChangeEnglishToJapanese: (show: boolean) => void;
   onClickTestVoice: (speaker: string) => void;
   gsviTtsServerUrl: string;
-  onChangeGSVITtsServerUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeGSVITtsServerUrl: (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
   gsviTtsModelId: string;
   onChangeGSVITtsModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
   gsviTtsBatchSize: number;
   onChangeGVITtsBatchSize: (event: React.ChangeEvent<HTMLInputElement>) => void;
   gsviTtsSpeechRate: number;
-  onChangeGSVITtsSpeechRate: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeGSVITtsSpeechRate: (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
   elevenlabsApiKey: string;
-  onChangeElevenlabsApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeElevenlabsApiKey: (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
   elevenlabsVoiceId: string;
-  onChangeElevenlabsVoiceId: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeElevenlabsVoiceId: (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
   characterName: string;
   onChangeCharacterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   showCharacterName: boolean;
@@ -197,7 +213,7 @@ export const Settings = ({
       }
     }
   }, [setSelectLanguage]);
-  
+
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
@@ -220,16 +236,15 @@ export const Settings = ({
         ></IconButton>
       </div>
       <div className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
-        powered by Pixiv, VRoid, Koemotion, VOICEVOX, OpenAI, Anthropic, Google, Groq, Dify
+        powered by Pixiv, VRoid, Koemotion, VOICEVOX, OpenAI, Anthropic, Google,
+        Groq, Dify
       </div>
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
           {/* 言語設定 */}
           <div className="my-40">
-            <div className="my-16 typography-20 font-bold">
-              {t('Language')}
-            </div>
+            <div className="my-16 typography-20 font-bold">{t('Language')}</div>
             <div className="my-8">
               <select
                 className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
@@ -237,37 +252,46 @@ export const Settings = ({
                 onChange={(e) => {
                   const newLanguage = e.target.value;
                   switch (newLanguage) {
-                    case "JP":
-                      setSelectLanguage("JP");
-                      setSelectVoiceLanguage("ja-JP");
+                    case 'JP':
+                      setSelectLanguage('JP');
+                      setSelectVoiceLanguage('ja-JP');
                       i18n.changeLanguage('ja');
                       break;
-                    case "EN":
-                      setSelectLanguage("EN");
-                      if (selectVoice === "voicevox" || selectVoice === "koeiromap") {
-                        setSelectVoice("google");
+                    case 'EN':
+                      setSelectLanguage('EN');
+                      if (
+                        selectVoice === 'voicevox' ||
+                        selectVoice === 'koeiromap'
+                      ) {
+                        setSelectVoice('google');
                       }
-                      setSelectVoiceLanguage("en-US");
+                      setSelectVoiceLanguage('en-US');
                       i18n.changeLanguage('en');
                       break;
-                    case "ZH":
-                      setSelectLanguage("ZH");
-                      if (selectVoice === "voicevox" || selectVoice === "koeiromap") {
-                        setSelectVoice("google");
+                    case 'ZH':
+                      setSelectLanguage('ZH');
+                      if (
+                        selectVoice === 'voicevox' ||
+                        selectVoice === 'koeiromap'
+                      ) {
+                        setSelectVoice('google');
                       }
-                      setSelectVoiceLanguage("zh-TW");
+                      setSelectVoiceLanguage('zh-TW');
                       i18n.changeLanguage('zh-TW');
                       break;
-                    case "KO":
-                      setSelectLanguage("KO");
-                      if (selectVoice === "voicevox" || selectVoice === "koeiromap") {
-                        setSelectVoice("google");
+                    case 'KO':
+                      setSelectLanguage('KO');
+                      if (
+                        selectVoice === 'voicevox' ||
+                        selectVoice === 'koeiromap'
+                      ) {
+                        setSelectVoice('google');
                       }
-                      setSelectVoiceLanguage("ko-KR");
+                      setSelectVoiceLanguage('ko-KR');
                       i18n.changeLanguage('ko');
                       break;
                     default:
-                      break;  // Optionally handle unexpected values
+                      break; // Optionally handle unexpected values
                   }
                 }}
               >
@@ -294,7 +318,9 @@ export const Settings = ({
               {t('ShowCharacterName')}
             </div>
             <div className="my-8">
-              <TextButton onClick={() => onChangeShowCharacterName(!showCharacterName)}>
+              <TextButton
+                onClick={() => onChangeShowCharacterName(!showCharacterName)}
+              >
                 {showCharacterName ? t('StatusOn') : t('StatusOff')}
               </TextButton>
             </div>
@@ -305,13 +331,17 @@ export const Settings = ({
               {t('CharacterModelLabel')}
             </div>
             <div className="my-8">
-              <TextButton onClick={onClickOpenVrmFile}>{t('OpenVRM')}</TextButton>
+              <TextButton onClick={onClickOpenVrmFile}>
+                {t('OpenVRM')}
+              </TextButton>
             </div>
             <div className="my-16 typography-20 font-bold">
               {t('BackgroundImage')}
             </div>
             <div className="my-8">
-              <TextButton onClick={onClickOpenBgFile}>{t('ChangeBackgroundImage')}</TextButton>
+              <TextButton onClick={onClickOpenBgFile}>
+                {t('ChangeBackgroundImage')}
+              </TextButton>
             </div>
           </div>
           {/* 外部接続モード */}
@@ -341,11 +371,12 @@ export const Settings = ({
                       {t('SelectAIService')}
                     </div>
                     <div className="my-8">
-                    <select
+                      <select
                         className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
                         value={selectAIService}
                         onChange={(e) => {
-                          const newService = e.target.value as keyof typeof defaultModels;
+                          const newService = e.target
+                            .value as keyof typeof defaultModels;
                           onChangeAIService(e);
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
                           onChangeSelectAIModel(defaultModels[newService]);
@@ -358,12 +389,14 @@ export const Settings = ({
                         <option value="localLlm">{t('LocalLLM')}</option>
                         <option value="dify">Dify</option>
                       </select>
-                      </div>
+                    </div>
                     {(() => {
-                      if (selectAIService === "openai") {
+                      if (selectAIService === 'openai') {
                         return (
                           <div className="my-24">
-                            <div className="my-16 typography-20 font-bold">{t('OpenAIAPIKeyLabel')}</div>
+                            <div className="my-16 typography-20 font-bold">
+                              {t('OpenAIAPIKeyLabel')}
+                            </div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
@@ -372,31 +405,41 @@ export const Settings = ({
                               onChange={onChangeOpenAiKey}
                             />
                             <div className="my-16">
-                              {t('APIKeyInstruction')}<br />
-                              <Link url="https://platform.openai.com/account/api-keys" label="OpenAI" />
+                              {t('APIKeyInstruction')}
+                              <br />
+                              <Link
+                                url="https://platform.openai.com/account/api-keys"
+                                label="OpenAI"
+                              />
                             </div>
-                            <div className="my-16">
-                              {t('ChatGPTInfo')}
-                            </div>
+                            <div className="my-16">{t('ChatGPTInfo')}</div>
                             <div className="my-24">
-                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <div className="my-16 typography-20 font-bold">
+                                {t('SelectModel')}
+                              </div>
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
+                                onChange={(e) =>
+                                  onChangeSelectAIModel(e.target.value)
+                                }
                               >
                                 <option value="gpt-4o-mini">gpt-4o-mini</option>
                                 <option value="gpt-4o">gpt-4o</option>
                                 <option value="gpt-4-turbo">gpt-4-turbo</option>
-                                <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                                <option value="gpt-3.5-turbo">
+                                  gpt-3.5-turbo
+                                </option>
                               </select>
                             </div>
                           </div>
                         );
-                      } else if (selectAIService === "anthropic") {
+                      } else if (selectAIService === 'anthropic') {
                         return (
                           <div className="my-24">
-                            <div className="my-16 typography-20 font-bold">{t('AnthropicAPIKeyLabel')}</div>
+                            <div className="my-16 typography-20 font-bold">
+                              {t('AnthropicAPIKeyLabel')}
+                            </div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
@@ -405,28 +448,46 @@ export const Settings = ({
                               onChange={onChangeAnthropicKey}
                             />
                             <div className="my-16">
-                              {t('APIKeyInstruction')}<br />
-                              <Link url="https://console.anthropic.com" label="Anthropic" />
+                              {t('APIKeyInstruction')}
+                              <br />
+                              <Link
+                                url="https://console.anthropic.com"
+                                label="Anthropic"
+                              />
                             </div>
                             <div className="my-24">
-                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <div className="my-16 typography-20 font-bold">
+                                {t('SelectModel')}
+                              </div>
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
+                                onChange={(e) =>
+                                  onChangeSelectAIModel(e.target.value)
+                                }
                               >
-                                <option value="claude-3-opus-20240229">claude-3-opus-20240229</option>
-                                <option value="claude-3-5-sonnet-20240620">claude-3.5-sonnet-20240620</option>
-                                <option value="claude-3-sonnet-20240229">claude-3-sonnet-20240229</option>
-                                <option value="claude-3-haiku-20240307">claude-3-haiku-20240307</option>
+                                <option value="claude-3-opus-20240229">
+                                  claude-3-opus-20240229
+                                </option>
+                                <option value="claude-3-5-sonnet-20240620">
+                                  claude-3.5-sonnet-20240620
+                                </option>
+                                <option value="claude-3-sonnet-20240229">
+                                  claude-3-sonnet-20240229
+                                </option>
+                                <option value="claude-3-haiku-20240307">
+                                  claude-3-haiku-20240307
+                                </option>
                               </select>
                             </div>
                           </div>
                         );
-                      } else if (selectAIService === "google") {
+                      } else if (selectAIService === 'google') {
                         return (
                           <div className="my-24">
-                            <div className="my-16 typography-20 font-bold">{t('GoogleAPIKeyLabel')}</div>
+                            <div className="my-16 typography-20 font-bold">
+                              {t('GoogleAPIKeyLabel')}
+                            </div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
@@ -435,26 +496,40 @@ export const Settings = ({
                               onChange={onChangeGoogleKey}
                             />
                             <div className="my-16">
-                              {t('APIKeyInstruction')}<br />
-                              <Link url="https://aistudio.google.com/app/apikey?hl=ja" label="Google AI Studio" />
+                              {t('APIKeyInstruction')}
+                              <br />
+                              <Link
+                                url="https://aistudio.google.com/app/apikey?hl=ja"
+                                label="Google AI Studio"
+                              />
                             </div>
                             <div className="my-24">
-                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <div className="my-16 typography-20 font-bold">
+                                {t('SelectModel')}
+                              </div>
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
+                                onChange={(e) =>
+                                  onChangeSelectAIModel(e.target.value)
+                                }
                               >
-                                <option value="gemini-1.5-pro-latest">gemini-1.5-pro-latest</option>
-                                <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
+                                <option value="gemini-1.5-pro-latest">
+                                  gemini-1.5-pro-latest
+                                </option>
+                                <option value="gemini-1.5-flash-latest">
+                                  gemini-1.5-flash-latest
+                                </option>
                               </select>
                             </div>
                           </div>
                         );
-                      } else if (selectAIService === "groq") {
+                      } else if (selectAIService === 'groq') {
                         return (
                           <div className="my-24">
-                            <div className="my-16 typography-20 font-bold">{t('GroqAPIKeyLabel')}</div>
+                            <div className="my-16 typography-20 font-bold">
+                              {t('GroqAPIKeyLabel')}
+                            </div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
@@ -463,36 +538,59 @@ export const Settings = ({
                               onChange={onChangeGroqKey}
                             />
                             <div className="my-16">
-                              {t('APIKeyInstruction')}<br />
-                              <Link url="https://console.groq.com/keys" label="Groq Dashboard" />
+                              {t('APIKeyInstruction')}
+                              <br />
+                              <Link
+                                url="https://console.groq.com/keys"
+                                label="Groq Dashboard"
+                              />
                             </div>
                             <div className="my-24">
-                              <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                              <div className="my-16 typography-20 font-bold">
+                                {t('SelectModel')}
+                              </div>
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) => onChangeSelectAIModel(e.target.value)}
+                                onChange={(e) =>
+                                  onChangeSelectAIModel(e.target.value)
+                                }
                               >
                                 <option value="gemma-7b-it">gemma-7b-it</option>
-                                <option value="llama3-70b-8192">llama3-70b-8192</option>
-                                <option value="llama3-8b-8192">llama3-8b-8192</option>
-                                <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+                                <option value="llama3-70b-8192">
+                                  llama3-70b-8192
+                                </option>
+                                <option value="llama3-8b-8192">
+                                  llama3-8b-8192
+                                </option>
+                                <option value="mixtral-8x7b-32768">
+                                  mixtral-8x7b-32768
+                                </option>
                               </select>
                             </div>
                           </div>
                         );
-                      } else if (selectAIService === "localLlm") {
+                      } else if (selectAIService === 'localLlm') {
                         return (
                           <div className="my-24">
                             <div className="my-16">
-                              {t('LocalLLMInfo')}<br />
-                              ex. Ollama: <Link url="https://note.com/schroneko/n/n8b1a5bbc740b" label="https://note.com/schroneko/n/n8b1a5bbc740b" />
+                              {t('LocalLLMInfo')}
+                              <br />
+                              ex. Ollama:{' '}
+                              <Link
+                                url="https://note.com/schroneko/n/n8b1a5bbc740b"
+                                label="https://note.com/schroneko/n/n8b1a5bbc740b"
+                              />
                             </div>
                             <div className="my-16">
-                              {t('LocalLLMInfo2')}<br />
-                              ex. Ollama: http://localhost:11434/v1/chat/completions
+                              {t('LocalLLMInfo2')}
+                              <br />
+                              ex. Ollama:
+                              http://localhost:11434/v1/chat/completions
                             </div>
-                            <div className="my-16 typography-20 font-bold">{t('EnterURL')}</div>
+                            <div className="my-16 typography-20 font-bold">
+                              {t('EnterURL')}
+                            </div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
@@ -500,23 +598,27 @@ export const Settings = ({
                               value={localLlmUrl}
                               onChange={onChangeLocalLlmUrl}
                             />
-                            <div className="my-16 typography-20 font-bold">{t('SelectModel')}</div>
+                            <div className="my-16 typography-20 font-bold">
+                              {t('SelectModel')}
+                            </div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
                               placeholder="..."
                               value={selectAIModel}
-                              onChange={(e) => onChangeSelectAIModel(e.target.value)}
+                              onChange={(e) =>
+                                onChangeSelectAIModel(e.target.value)
+                              }
                             />
                           </div>
                         );
-                      } else if (selectAIService === "dify") {
+                      } else if (selectAIService === 'dify') {
                         return (
                           <div className="my-24">
-                            <div className="my-16">
-                              {t('DifyInfo')}
+                            <div className="my-16">{t('DifyInfo')}</div>
+                            <div className="my-16 typography-20 font-bold">
+                              {t('DifyAPIKeyLabel')}
                             </div>
-                            <div className="my-16 typography-20 font-bold">{t('DifyAPIKeyLabel')}</div>
                             <input
                               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                               type="text"
@@ -525,10 +627,10 @@ export const Settings = ({
                               onChange={onChangeDifyKey}
                             />
                             <div className="my-24">
-                              <div className="my-16 typography-20 font-bold">{t('EnterURL')}</div>
-                              <div className="my-16">
-                                {t('DifyInfo3')}
+                              <div className="my-16 typography-20 font-bold">
+                                {t('EnterURL')}
                               </div>
+                              <div className="my-16">{t('DifyInfo3')}</div>
                               <input
                                 className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 type="text"
@@ -563,36 +665,60 @@ export const Settings = ({
                           return (
                             <>
                               <div className="">{t('YoutubeInfo')}</div>
-                              <div className="my-16 typography-20 font-bold">{t('YoutubeAPIKey')}</div>
+                              <div className="my-16 typography-20 font-bold">
+                                {t('YoutubeAPIKey')}
+                              </div>
                               <input
                                 className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 type="text"
                                 placeholder="..."
                                 value={youtubeApiKey}
-                                onChange={onChangeYoutubeApiKey} />
-                              <div className="my-16 typography-20 font-bold">{t('YoutubeLiveID')}</div>
+                                onChange={onChangeYoutubeApiKey}
+                              />
+                              <div className="my-16 typography-20 font-bold">
+                                {t('YoutubeLiveID')}
+                              </div>
                               <input
                                 className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 type="text"
                                 placeholder="..."
                                 value={youtubeLiveId}
-                                onChange={onChangeYoutubeLiveId} />
+                                onChange={onChangeYoutubeLiveId}
+                              />
                               <div className="my-16 typography-20 font-bold">
                                 {t('ConversationContinuityMode')}
                               </div>
-                              <div className="my-8">{t('ConversationContinuityModeInfo')}</div>
-                              <div className="my-8">{t('ConversationContinuityModeInfo2')}</div>
-                              <div className="my-8">{t('ConversationContinuityModeInfo3')}</div>
+                              <div className="my-8">
+                                {t('ConversationContinuityModeInfo')}
+                              </div>
+                              <div className="my-8">
+                                {t('ConversationContinuityModeInfo2')}
+                              </div>
+                              <div className="my-8">
+                                {t('ConversationContinuityModeInfo3')}
+                              </div>
                               {conversationContinuityMode ? (
                                 <TextButton
-                                  onClick={() => onChangeConversationContinuityMode(false)}
-                                  disabled={selectAIService !== "openai" && selectAIService !== "anthropic"}>
+                                  onClick={() =>
+                                    onChangeConversationContinuityMode(false)
+                                  }
+                                  disabled={
+                                    selectAIService !== 'openai' &&
+                                    selectAIService !== 'anthropic'
+                                  }
+                                >
                                   {t('StatusOn')}
                                 </TextButton>
                               ) : (
                                 <TextButton
-                                  onClick={() => onChangeConversationContinuityMode(true)}
-                                  disabled={selectAIService !== "openai" && selectAIService !== "anthropic"}>
+                                  onClick={() =>
+                                    onChangeConversationContinuityMode(true)
+                                  }
+                                  disabled={
+                                    selectAIService !== 'openai' &&
+                                    selectAIService !== 'anthropic'
+                                  }
+                                >
                                   {t('StatusOff')}
                                 </TextButton>
                               )}
@@ -607,7 +733,7 @@ export const Settings = ({
                       <div className="my-16 typography-20 font-bold">
                         {t('CharacterSettingsPrompt')}
                       </div>
-                      {selectAIService === "dify" && (
+                      {selectAIService === 'dify' && (
                         <div className="my-16">{t('DifyInstruction')}</div>
                       )}
                       <TextButton onClick={onClickResetSystemPrompt}>
@@ -621,12 +747,14 @@ export const Settings = ({
                     ></textarea>
                   </div>
                 </>
-              )}
-            })()
-          }
+              );
+            }
+          })()}
           {/* 音声エンジンの選択 */}
           <div className="my-40">
-            <div className="my-16 typography-20 font-bold">{t('SyntheticVoiceEngineChoice')}</div>
+            <div className="my-16 typography-20 font-bold">
+              {t('SyntheticVoiceEngineChoice')}
+            </div>
             <div>{t('VoiceEngineInstruction')}</div>
             <div className="my-8">
               <select
@@ -637,266 +765,345 @@ export const Settings = ({
                 <option value="voicevox">{t('UsingVoiceVox')}</option>
                 <option value="koeiromap">{t('UsingKoeiromap')}</option>
                 <option value="google">{t('UsingGoogleTTS')}</option>
-                <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
+                <option value="stylebertvits2">
+                  {t('UsingStyleBertVITS2')}
+                </option>
                 <option value="gsvitts">{t('UsingGSVITTS')}</option>
                 <option value="elevenlabs">{t('UsingElevenLabs')}</option>
               </select>
             </div>
             <div className="my-40">
-              <div className="my-16 typography-20 font-bold">{t('VoiceAdjustment')}</div>
+              <div className="my-16 typography-20 font-bold">
+                {t('VoiceAdjustment')}
+              </div>
               {(() => {
-                  if (selectVoice === "koeiromap") {
-                    return (
-                      <>
-                        <div>
-                          {t('KoeiromapInfo')}<br />
-                          <Link
-                            url="https://koemotion.rinna.co.jp"
-                            label="https://koemotion.rinna.co.jp" />
-                          
+                if (selectVoice === 'koeiromap') {
+                  return (
+                    <>
+                      <div>
+                        {t('KoeiromapInfo')}
+                        <br />
+                        <Link
+                          url="https://koemotion.rinna.co.jp"
+                          label="https://koemotion.rinna.co.jp"
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">API キー</div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={koeiromapKey}
+                          onChange={onChangeKoeiromapKey}
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">プリセット</div>
+                      <div className="my-8 grid grid-cols-2 gap-[8px]">
+                        <TextButton
+                          onClick={() =>
+                            onChangeKoeiroParam(
+                              PRESET_A.speakerX,
+                              PRESET_A.speakerY,
+                            )
+                          }
+                        >
+                          かわいい
+                        </TextButton>
+                        <TextButton
+                          onClick={() =>
+                            onChangeKoeiroParam(
+                              PRESET_B.speakerX,
+                              PRESET_B.speakerY,
+                            )
+                          }
+                        >
+                          元気
+                        </TextButton>
+                        <TextButton
+                          onClick={() =>
+                            onChangeKoeiroParam(
+                              PRESET_C.speakerX,
+                              PRESET_C.speakerY,
+                            )
+                          }
+                        >
+                          かっこいい
+                        </TextButton>
+                        <TextButton
+                          onClick={() =>
+                            onChangeKoeiroParam(
+                              PRESET_D.speakerX,
+                              PRESET_D.speakerY,
+                            )
+                          }
+                        >
+                          渋い
+                        </TextButton>
+                      </div>
+                      <div className="my-24">
+                        <div className="select-none">
+                          x : {koeiroParam.speakerX}
                         </div>
-                        <div className="mt-16 font-bold">API キー</div><div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={koeiromapKey}
-                            onChange={onChangeKoeiromapKey} />
+                        <input
+                          type="range"
+                          min={-10}
+                          max={10}
+                          step={0.001}
+                          value={koeiroParam.speakerX}
+                          className="mt-8 mb-16 input-range"
+                          onChange={(e) => {
+                            onChangeKoeiroParam(
+                              Number(e.target.value),
+                              koeiroParam.speakerY,
+                            );
+                          }}
+                        ></input>
+                        <div className="select-none">
+                          y : {koeiroParam.speakerY}
                         </div>
-                        <div className="mt-16 font-bold">プリセット</div><div className="my-8 grid grid-cols-2 gap-[8px]">
-                          <TextButton
-                            onClick={() => onChangeKoeiroParam(PRESET_A.speakerX, PRESET_A.speakerY)}
-                          >
-                            かわいい
-                          </TextButton>
-                          <TextButton
-                            onClick={() => onChangeKoeiroParam(PRESET_B.speakerX, PRESET_B.speakerY)}
-                          >
-                            元気
-                          </TextButton>
-                          <TextButton
-                            onClick={() => onChangeKoeiroParam(PRESET_C.speakerX, PRESET_C.speakerY)}
-                          >
-                            かっこいい
-                          </TextButton>
-                          <TextButton
-                            onClick={() => onChangeKoeiroParam(PRESET_D.speakerX, PRESET_D.speakerY)}
-                          >
-                            渋い
-                          </TextButton>
-                        </div><div className="my-24">
-                          <div className="select-none">x : {koeiroParam.speakerX}</div>
-                          <input
-                            type="range"
-                            min={-10}
-                            max={10}
-                            step={0.001}
-                            value={koeiroParam.speakerX}
-                            className="mt-8 mb-16 input-range"
-                            onChange={(e) => {
-                              onChangeKoeiroParam(
-                                Number(e.target.value),
-                                koeiroParam.speakerY
-                              );
-                            } }
-                          ></input>
-                          <div className="select-none">y : {koeiroParam.speakerY}</div>
-                          <input
-                            type="range"
-                            min={-10}
-                            max={10}
-                            step={0.001}
-                            value={koeiroParam.speakerY}
-                            className="mt-8 mb-16 input-range"
-                            onChange={(e) => {
-                              onChangeKoeiroParam(
-                                koeiroParam.speakerX,
-                                Number(e.target.value)
-                              );
-                            } }
-                          ></input>
-                        </div>
-                      </>
-                    );
-                  } else if (selectVoice === "voicevox") {
-                    return (
-                      <>
-                        <div>
-                          {t('VoiceVoxInfo')}<br />
-                          <Link
-                            url="https://voicevox.hiroshiba.jp/"
-                            label="https://voicevox.hiroshiba.jp/" />
-                        </div>
-                        <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
-                          <div className="flex items-center">
-                            <select
-                              value={voicevoxSpeaker}
-                              onChange={onChangeVoicevoxSpeaker}
-                              className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            >
-                              <option value="">選択してください</option>
-                              {speakers.map((speaker) => (
-                                <option key={speaker.id} value={speaker.id}>
-                                  {speaker.speaker}
-                                </option>
-                              ))}
-                            </select>
-                            <TextButton onClick={() => onClickTestVoice(voicevoxSpeaker)} className="ml-16">
-                              ボイスを試聴する
-                            </TextButton>
-                          </div>
-                      </>
-                    );
-                  } else if (selectVoice === "google"){
-                    return (
-                      <>
-                        <div>
-                          {t('GoogleTTSInfo')}
-                          {t('AuthFileInstruction')}<br />
-                          <Link
-                            url="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account"
-                            label="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account" />
-                          <br /><br />
-                          {t('LanguageModelURL')}<br />
-                          <Link
-                            url="https://cloud.google.com/text-to-speech/docs/voices"
-                            label="https://cloud.google.com/text-to-speech/docs/voices" />
-                        </div>
-                        <div className="mt-16 font-bold">{t('LanguageChoice')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={googleTtsType}
-                            onChange={onChangeGoogleTtsType} />
-                        </div>
-                      </>
-                    );
-                  } else if (selectVoice === "stylebertvits2"){
-                    return (
-                      <>
-                        <div>
-                          {t('StyleBertVITS2Info')}
-                          <br />
-                          <Link
-                            url="https://github.com/litagin02/Style-Bert-VITS2"
-                            label="https://github.com/litagin02/Style-Bert-VITS2" />
-                          <br /><br />
-                        </div>
-                        <div className="mt-16 font-bold">{t('StyleBeatVITS2LocalServerURL')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={stylebertvits2ServerUrl}
-                            onChange={onChangeStyleBertVits2ServerUrl} />
-                        </div>
-                        <div className="mt-16 font-bold">{t('StyleBeatVITS2ModelID')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="number"
-                            placeholder="..."
-                            value={stylebertvits2ModelId}
-                            onChange={onChangeStyleBertVits2ModelId} />
-                        </div>
-                        <div className="mt-16 font-bold">{t('StyleBeatVITS2Style')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={stylebertvits2Style}
-                            onChange={onChangeStyleBertVits2Style} />
-                        </div>
-                      </>
-                    );
-                  } else if (selectVoice === "gsvitts"){
-                    return (
-                      <>
-                        <div>
-                          {t('GSVITTSInfo')}
-                        </div>
-                        <div className="mt-16 font-bold">{t('GSVITTSServerUrl')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={gsviTtsServerUrl}
-                            onChange={onChangeGSVITtsServerUrl} />
-                        </div>
-                        <div className="mt-16 font-bold">{t('GSVITTSModelID')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={gsviTtsModelId}
-                            onChange={onChangeGSVITtsModelId} />
-                        </div>
-                        <div className="mt-16 font-bold">{t('GSVITTSBatchSize')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="number"
-                            step="1"
-                            placeholder="..."
-                            value={gsviTtsBatchSize}
-                            onChange={onChangeGVITtsBatchSize} />
-                        </div>
-                        <div className="mt-16 font-bold">{t('GSVITTSSpeechRate')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="number"
-                            step="0.1"
-                            placeholder="..."
-                            value={gsviTtsSpeechRate}
-                            onChange={onChangeGSVITtsSpeechRate} />
-                        </div>
-                      </>
-                    );
-                  } else if (selectVoice === "elevenlabs"){
-                    return (
-                      <>
-                        <div>
-                          {t('ElevenLabsInfo')}<br />
-                          <Link
-                            url="https://elevenlabs.io/api"
-                            label="https://elevenlabs.io/api" />
-                          <br />
-                        </div>
-                        <div className="mt-16 font-bold">{t('ElevenLabsApiKey')}</div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={elevenlabsApiKey}
-                            onChange={onChangeElevenlabsApiKey} />
-                        </div>
-                        <div className="mt-16 font-bold">{t('ElevenLabsVoiceId')}</div>
-                        <div className="mt-8">
-                          {t('ElevenLabsVoiceIdInfo')}<br />
-                          <Link
-                            url="https://api.elevenlabs.io/v1/voices"
-                            label="https://api.elevenlabs.io/v1/voices" />
-                          <br />
-                        </div>
-                        <div className="mt-8">
-                          <input
-                            className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-                            type="text"
-                            placeholder="..."
-                            value={elevenlabsVoiceId}
-                            onChange={onChangeElevenlabsVoiceId} />
-                        </div>
-                      </>
-                    );
-                  }
+                        <input
+                          type="range"
+                          min={-10}
+                          max={10}
+                          step={0.001}
+                          value={koeiroParam.speakerY}
+                          className="mt-8 mb-16 input-range"
+                          onChange={(e) => {
+                            onChangeKoeiroParam(
+                              koeiroParam.speakerX,
+                              Number(e.target.value),
+                            );
+                          }}
+                        ></input>
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === 'voicevox') {
+                  return (
+                    <>
+                      <div>
+                        {t('VoiceVoxInfo')}
+                        <br />
+                        <Link
+                          url="https://voicevox.hiroshiba.jp/"
+                          label="https://voicevox.hiroshiba.jp/"
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('SpeakerSelection')}
+                      </div>
+                      <div className="flex items-center">
+                        <select
+                          value={voicevoxSpeaker}
+                          onChange={onChangeVoicevoxSpeaker}
+                          className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                        >
+                          <option value="">選択してください</option>
+                          {speakers.map((speaker) => (
+                            <option key={speaker.id} value={speaker.id}>
+                              {speaker.speaker}
+                            </option>
+                          ))}
+                        </select>
+                        <TextButton
+                          onClick={() => onClickTestVoice(voicevoxSpeaker)}
+                          className="ml-16"
+                        >
+                          ボイスを試聴する
+                        </TextButton>
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === 'google') {
+                  return (
+                    <>
+                      <div>
+                        {t('GoogleTTSInfo')}
+                        {t('AuthFileInstruction')}
+                        <br />
+                        <Link
+                          url="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account"
+                          label="https://developers.google.com/workspace/guides/create-credentials?#create_credentials_for_a_service_account"
+                        />
+                        <br />
+                        <br />
+                        {t('LanguageModelURL')}
+                        <br />
+                        <Link
+                          url="https://cloud.google.com/text-to-speech/docs/voices"
+                          label="https://cloud.google.com/text-to-speech/docs/voices"
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('LanguageChoice')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={googleTtsType}
+                          onChange={onChangeGoogleTtsType}
+                        />
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === 'stylebertvits2') {
+                  return (
+                    <>
+                      <div>
+                        {t('StyleBertVITS2Info')}
+                        <br />
+                        <Link
+                          url="https://github.com/litagin02/Style-Bert-VITS2"
+                          label="https://github.com/litagin02/Style-Bert-VITS2"
+                        />
+                        <br />
+                        <br />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('StyleBeatVITS2LocalServerURL')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={stylebertvits2ServerUrl}
+                          onChange={onChangeStyleBertVits2ServerUrl}
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('StyleBeatVITS2ModelID')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          placeholder="..."
+                          value={stylebertvits2ModelId}
+                          onChange={onChangeStyleBertVits2ModelId}
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('StyleBeatVITS2Style')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={stylebertvits2Style}
+                          onChange={onChangeStyleBertVits2Style}
+                        />
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === 'gsvitts') {
+                  return (
+                    <>
+                      <div>{t('GSVITTSInfo')}</div>
+                      <div className="mt-16 font-bold">
+                        {t('GSVITTSServerUrl')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={gsviTtsServerUrl}
+                          onChange={onChangeGSVITtsServerUrl}
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('GSVITTSModelID')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={gsviTtsModelId}
+                          onChange={onChangeGSVITtsModelId}
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('GSVITTSBatchSize')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          step="1"
+                          placeholder="..."
+                          value={gsviTtsBatchSize}
+                          onChange={onChangeGVITtsBatchSize}
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('GSVITTSSpeechRate')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="number"
+                          step="0.1"
+                          placeholder="..."
+                          value={gsviTtsSpeechRate}
+                          onChange={onChangeGSVITtsSpeechRate}
+                        />
+                      </div>
+                    </>
+                  );
+                } else if (selectVoice === 'elevenlabs') {
+                  return (
+                    <>
+                      <div>
+                        {t('ElevenLabsInfo')}
+                        <br />
+                        <Link
+                          url="https://elevenlabs.io/api"
+                          label="https://elevenlabs.io/api"
+                        />
+                        <br />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('ElevenLabsApiKey')}
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={elevenlabsApiKey}
+                          onChange={onChangeElevenlabsApiKey}
+                        />
+                      </div>
+                      <div className="mt-16 font-bold">
+                        {t('ElevenLabsVoiceId')}
+                      </div>
+                      <div className="mt-8">
+                        {t('ElevenLabsVoiceIdInfo')}
+                        <br />
+                        <Link
+                          url="https://api.elevenlabs.io/v1/voices"
+                          label="https://api.elevenlabs.io/v1/voices"
+                        />
+                        <br />
+                      </div>
+                      <div className="mt-8">
+                        <input
+                          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                          type="text"
+                          placeholder="..."
+                          value={elevenlabsVoiceId}
+                          onChange={onChangeElevenlabsVoiceId}
+                        />
+                      </div>
+                    </>
+                  );
+                }
               })()}
             </div>
           </div>
@@ -906,7 +1113,9 @@ export const Settings = ({
                 <>
                   <Disclosure.Button className="flex items-center w-full px-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
                     <div className="flex items-center flex-grow">
-                      <span className="typography-20 font-bold mr-8">{t('AdvancedSettings')}</span>
+                      <span className="typography-20 font-bold mr-8">
+                        {t('AdvancedSettings')}
+                      </span>
                       <ChevronUpIcon
                         className={`${
                           open ? 'transform rotate-180' : ''
@@ -916,18 +1125,24 @@ export const Settings = ({
                   </Disclosure.Button>
                   <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
                     <div className="pl-16">
-                      {selectLanguage === "JP" && (
+                      {selectLanguage === 'JP' && (
                         <div className="my-24">
                           <div className="my-16 typography-16 font-bold">
                             {t('EnglishToJapanese')}
                           </div>
                           <div className="my-8">
                             {changeEnglishToJapanese ? (
-                              <TextButton onClick={() => setChangeEnglishToJapanese(false)}>
+                              <TextButton
+                                onClick={() =>
+                                  setChangeEnglishToJapanese(false)
+                                }
+                              >
                                 {t('StatusOn')}
                               </TextButton>
                             ) : (
-                              <TextButton onClick={() => setChangeEnglishToJapanese(true)}>
+                              <TextButton
+                                onClick={() => setChangeEnglishToJapanese(true)}
+                              >
                                 {t('StatusOff')}
                               </TextButton>
                             )}
@@ -942,11 +1157,15 @@ export const Settings = ({
                       </div>
                       <div className="my-8">
                         {showSettingsButton ? (
-                          <TextButton onClick={() => onChangeShowSettingsButton(false)}>
+                          <TextButton
+                            onClick={() => onChangeShowSettingsButton(false)}
+                          >
                             {t('StatusOn')}
                           </TextButton>
                         ) : (
-                          <TextButton onClick={() => onChangeShowSettingsButton(true)}>
+                          <TextButton
+                            onClick={() => onChangeShowSettingsButton(true)}
+                          >
                             {t('StatusOff')}
                           </TextButton>
                         )}
@@ -960,15 +1179,21 @@ export const Settings = ({
           {/* チャットログの設定 */}
           <div className="my-40">
             <div className="my-8 grid-cols-2">
-              <div className="my-16 typography-20 font-bold">{t('ConversationHistory')}</div>
-              <div className="my-8">
-                {selectAIService !== "dify" ? t('ConversationHistoryInfo') : t('DifyInfo2')}
+              <div className="my-16 typography-20 font-bold">
+                {t('ConversationHistory')}
               </div>
-              <TextButton onClick={() => {
-                onClickResetChatLog();
-                onClickResetCodeLog();
-                onChangeDifyConversationId("");
-              }}>
+              <div className="my-8">
+                {selectAIService !== 'dify'
+                  ? t('ConversationHistoryInfo')
+                  : t('DifyInfo2')}
+              </div>
+              <TextButton
+                onClick={() => {
+                  onClickResetChatLog();
+                  onClickResetCodeLog();
+                  onChangeDifyConversationId('');
+                }}
+              >
                 {t('ConversationHistoryReset')}
               </TextButton>
             </div>
@@ -982,9 +1207,9 @@ export const Settings = ({
                       className="my-8 grid grid-flow-col  grid-cols-[min-content_1fr] gap-x-fixed"
                     >
                       <div className="w-[64px] py-8">
-                        {value.role === "assistant" ? "Character" : "You"}
+                        {value.role === 'assistant' ? 'Character' : 'You'}
                       </div>
-                      {typeof(value.content)=="string" ? (
+                      {typeof value.content == 'string' ? (
                         <input
                           key={index}
                           className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
@@ -993,11 +1218,10 @@ export const Settings = ({
                           onChange={(event) => {
                             onChangeChatLog(index, event.target.value);
                             onChangeCodeLog(index, event.target.value);
-                            }}
-                          >
-                        </input>
+                          }}
+                        ></input>
                       ) : (
-                        <Image 
+                        <Image
                           src={value.content[1].image_url.url}
                           alt="画像"
                           width={500}

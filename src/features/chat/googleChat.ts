@@ -74,14 +74,21 @@
 //   });
 // }
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { Message } from "../messages/messages";
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Message } from '../messages/messages';
 
-export async function getGoogleChatResponse(messages: Message[], apiKey: string, model: string) {
+export async function getGoogleChatResponse(
+  messages: Message[],
+  apiKey: string,
+  model: string,
+) {
   const { history, systemMessage } = processMessages(messages);
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const chatModel = genAI.getGenerativeModel({ model: model, systemInstruction: systemMessage });
+  const chatModel = genAI.getGenerativeModel({
+    model: model,
+    systemInstruction: systemMessage,
+  });
 
   const chat = chatModel.startChat({ history });
   const result = await chat.sendMessage(messages[messages.length - 1].content);
@@ -94,15 +101,20 @@ export async function getGoogleChatResponse(messages: Message[], apiKey: string,
 export async function getGoogleChatResponseStream(
   messages: Message[],
   apiKey: string,
-  model: string
+  model: string,
 ) {
   const { history, systemMessage } = processMessages(messages);
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const chatModel = genAI.getGenerativeModel({ model: model, systemInstruction: systemMessage });
+  const chatModel = genAI.getGenerativeModel({
+    model: model,
+    systemInstruction: systemMessage,
+  });
 
   const chat = chatModel.startChat({ history });
-  const result = await chat.sendMessageStream(messages[messages.length - 1].content);
+  const result = await chat.sendMessageStream(
+    messages[messages.length - 1].content,
+  );
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -129,7 +141,7 @@ function processMessages(messages: Message[]) {
       }
       return index === 0 ? message.role === 'user' : true;
     })
-    .map(message => ({
+    .map((message) => ({
       role: message.role === 'assistant' ? 'model' : message.role,
       parts: [{ text: message.content }],
     }));

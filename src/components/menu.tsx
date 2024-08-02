@@ -1,15 +1,21 @@
-import { IconButton } from "./iconButton";
-import { Message } from "@/features/messages/messages";
-import { KoeiroParam } from "@/features/constants/koeiroParam";
-import { ChatLog } from "./chatLog";
-import { CodeLog } from "./codeLog";
-import React, { useCallback, useContext, useRef, useState, useEffect } from "react";
-import { Settings } from "./settings";
-import { Webcam }  from "./webcam";
-import { ViewerContext } from "@/features/vrmViewer/viewerContext";
-import { AssistantText } from "./assistantText";
+import { IconButton } from './iconButton';
+import { Message } from '@/features/messages/messages';
+import { KoeiroParam } from '@/features/constants/koeiroParam';
+import { ChatLog } from './chatLog';
+import { CodeLog } from './codeLog';
+import React, {
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
+import { Settings } from './settings';
+import { Webcam } from './webcam';
+import { ViewerContext } from '@/features/vrmViewer/viewerContext';
+import { AssistantText } from './assistantText';
 import { useTranslation } from 'react-i18next';
-import { testVoice } from "@/features/messages/speakCharacter";
+import { testVoice } from '@/features/messages/speakCharacter';
 
 type Props = {
   selectAIService: string;
@@ -191,139 +197,139 @@ export const Menu = ({
   const handleChangeAIService = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       onChangeAIService(event.target.value);
-      if (event.target.value !== "openai") {
+      if (event.target.value !== 'openai') {
         onChangeConversationContinuityMode(false);
         setShowWebcam(false);
-        onChangeModalImage("");
+        onChangeModalImage('');
       }
     },
-    [onChangeAIService, onChangeConversationContinuityMode]
+    [onChangeAIService, onChangeConversationContinuityMode],
   );
 
   const handleChangeSelectAIModel = useCallback(
     (model: string) => {
       setSelectAIModel(model);
     },
-    [setSelectAIModel]
+    [setSelectAIModel],
   );
 
   const handleChangeSystemPrompt = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       onChangeSystemPrompt(event.target.value);
     },
-    [onChangeSystemPrompt]
+    [onChangeSystemPrompt],
   );
 
   const handleOpenAiKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeOpenAiKey(event.target.value);
     },
-    [onChangeOpenAiKey]
+    [onChangeOpenAiKey],
   );
 
   const handleAnthropicKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeAnthropicKey(event.target.value);
     },
-    [onChangeAnthropicKey]
+    [onChangeAnthropicKey],
   );
 
   const handleGoogleKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGoogleKey(event.target.value);
     },
-    [onChangeGoogleKey]
+    [onChangeGoogleKey],
   );
 
   const handleGroqKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGroqKey(event.target.value);
     },
-    [onChangeGroqKey]
+    [onChangeGroqKey],
   );
 
   const handleChangeLocalLlmUrl = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeLocalLlmUrl(event.target.value);
     },
-    [onChangeLocalLlmUrl]
+    [onChangeLocalLlmUrl],
   );
 
   const handleDifyKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeDifyKey(event.target.value);
     },
-    [onChangeDifyKey]
+    [onChangeDifyKey],
   );
 
   const handleDifyUrlChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeDifyUrl(event.target.value);
     },
-    [onChangeDifyUrl]
+    [onChangeDifyUrl],
   );
 
   const handleDifyConversationIdChange = useCallback(
     (value: string) => {
       onChangeDifyConversationId(value);
     },
-    [onChangeDifyConversationId]
+    [onChangeDifyConversationId],
   );
 
   const handleChangeKoeiromapKey = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeKoeiromapKey(event.target.value);
     },
-    [onChangeKoeiromapKey]
+    [onChangeKoeiromapKey],
   );
 
   const handleVoicevoxSpeakerChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       onChangeVoicevoxSpeaker(event.target.value);
     },
-    [onChangeVoicevoxSpeaker]
+    [onChangeVoicevoxSpeaker],
   );
 
   const handleChangeGoogleTtsType = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGoogleTtsType(event.target.value);
     },
-    [onChangeGoogleTtsType]
+    [onChangeGoogleTtsType],
   );
 
   const handleChangeStyleBertVits2ServerUrl = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeStyleBertVits2ServerUrl(event.target.value);
     },
-    [onChangeStyleBertVits2ServerUrl]
+    [onChangeStyleBertVits2ServerUrl],
   );
 
   const handleChangeStyleBertVits2ModelId = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeStyleBertVits2ModelId(event.target.value);
     },
-    [onChangeStyleBertVits2ModelId]
+    [onChangeStyleBertVits2ModelId],
   );
 
   const handleChangeStyleBertVits2Style = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeStyleBertVits2Style(event.target.value);
     },
-    [onChangeStyleBertVits2Style]
+    [onChangeStyleBertVits2Style],
   );
 
   const handleYoutubeApiKeyChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeYoutubeApiKey(event.target.value);
     },
-    [onChangeYoutubeApiKey]
+    [onChangeYoutubeApiKey],
   );
 
   const handleYoutubeLiveIdChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeYoutubeLiveId(event.target.value);
     },
-    [onChangeYoutubeLiveId]
+    [onChangeYoutubeLiveId],
   );
 
   const handleChangeKoeiroParam = useCallback(
@@ -333,7 +339,7 @@ export const Menu = ({
         speakerY: y,
       });
     },
-    [onChangeKoeiromapParam]
+    [onChangeKoeiromapParam],
   );
 
   const handleWebSocketMode = useCallback(
@@ -343,14 +349,14 @@ export const Menu = ({
         onChangeYoutubeMode(false);
       }
     },
-    [changeWebSocketMode, webSocketMode, onChangeYoutubeMode]
+    [changeWebSocketMode, webSocketMode, onChangeYoutubeMode],
   );
 
   const handleConversationContinuityMode = useCallback(
     (show: boolean) => {
       onChangeConversationContinuityMode(show);
     },
-    [onChangeConversationContinuityMode]
+    [onChangeConversationContinuityMode],
   );
 
   const handleClickOpenVrmFile = useCallback(() => {
@@ -373,17 +379,17 @@ export const Menu = ({
       const file = files[0];
       if (!file) return;
 
-      const file_type = file.name.split(".").pop();
+      const file_type = file.name.split('.').pop();
 
-      if (file_type === "vrm") {
-        const blob = new Blob([file], { type: "application/octet-stream" });
+      if (file_type === 'vrm') {
+        const blob = new Blob([file], { type: 'application/octet-stream' });
         const url = window.URL.createObjectURL(blob);
         viewer.loadVrm(url);
       }
 
-      event.target.value = "";
+      event.target.value = '';
     },
-    [viewer]
+    [viewer],
   );
 
   const handleChangeBgFile = useCallback(
@@ -394,69 +400,69 @@ export const Menu = ({
         setBackgroundImageUrl(imageUrl);
       }
     },
-    [setBackgroundImageUrl]
+    [setBackgroundImageUrl],
   );
 
   const handleChangeGSVITtsServerUrl = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGSVITtsServerUrl(event.target.value);
     },
-    [onChangeGSVITtsServerUrl]
+    [onChangeGSVITtsServerUrl],
   );
 
   const handleChangeGSVITtsModelId = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGSVITtsModelId(event.target.value);
     },
-    [onChangeGSVITtsModelId]
+    [onChangeGSVITtsModelId],
   );
 
   const handleChangeGSVITtsBatchSize = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGVITtsBatchSize(parseFloat(event.target.value));
     },
-    [onChangeGVITtsBatchSize]
+    [onChangeGVITtsBatchSize],
   );
 
   const handleChangeGSVITtsSpeechRate = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeGSVITtsSpeechRate(parseFloat(event.target.value));
     },
-    [onChangeGSVITtsSpeechRate]
+    [onChangeGSVITtsSpeechRate],
   );
 
   const handleChangeElevenlabsApiKey = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeElevenlabsApiKey(event.target.value);
     },
-    [onChangeElevenlabsApiKey]
+    [onChangeElevenlabsApiKey],
   );
 
   const handleChangeElevenlabsVoiceId = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeElevenlabsVoiceId(event.target.value);
     },
-    [onChangeElevenlabsVoiceId]
+    [onChangeElevenlabsVoiceId],
   );
 
   const handleCharacterName = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeCharacterName(event.target.value);
     },
-    [onChangeCharacterName]
+    [onChangeCharacterName],
   );
 
   const handleShowCharacterName = useCallback(
     (show: boolean) => {
       onChangeShowCharacterName(show);
     },
-    [onChangeShowCharacterName]
+    [onChangeShowCharacterName],
   );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === '.') {
-        setShowSettings(prevState => !prevState);
+        setShowSettings((prevState) => !prevState);
       }
     };
 
@@ -471,10 +477,10 @@ export const Menu = ({
     (image: string) => {
       onChangeModalImage(image);
     },
-    [onChangeModalImage]
+    [onChangeModalImage],
   );
 
-    const handleChangeImageFile = useCallback(
+  const handleChangeImageFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
@@ -486,15 +492,16 @@ export const Menu = ({
         reader.readAsDataURL(file);
       }
     },
-    [onChangeModalImage]
+    [onChangeModalImage],
   );
 
   // カメラが開いているかどうかの状態変更
   useEffect(() => {
-    console.log("onChangeWebcamStatus")
+    console.log('onChangeWebcamStatus');
     onChangeWebcamStatus(showWebcam);
     if (showWebcam) {
-      navigator.mediaDevices.getUserMedia({ video: true })
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
         .then(() => {
           setShowPermissionModal(false);
         })
@@ -540,7 +547,14 @@ export const Menu = ({
               iconName="24/Camera"
               isProcessing={false}
               onClick={() => setShowWebcam(!showWebcam)}
-              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
+              disabled={
+                !(
+                  selectAIService === 'openai' &&
+                  ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo'].includes(
+                    selectAIModel,
+                  )
+                )
+              }
             />
           </div>
           <div className="order-4">
@@ -548,7 +562,14 @@ export const Menu = ({
               iconName="24/AddImage"
               isProcessing={false}
               onClick={() => imageFileInputRef.current?.click()}
-              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
+              disabled={
+                !(
+                  selectAIService === 'openai' &&
+                  ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo'].includes(
+                    selectAIModel,
+                  )
+                )
+              }
             />
             <input
               type="file"
@@ -560,11 +581,11 @@ export const Menu = ({
           </div>
         </div>
       </div>
-      {
-        webSocketMode ? 
-          (showChatLog && <CodeLog messages={codeLog} />) :
-          (showChatLog && <ChatLog messages={chatLog} characterName={characterName} />)
-      }
+      {webSocketMode
+        ? showChatLog && <CodeLog messages={codeLog} />
+        : showChatLog && (
+            <ChatLog messages={chatLog} characterName={characterName} />
+          )}
       {showSettings && (
         <Settings
           selectAIService={selectAIService}
@@ -623,11 +644,11 @@ export const Menu = ({
           onChangeConversationContinuityMode={handleConversationContinuityMode}
           webSocketMode={webSocketMode}
           onChangeWebSocketMode={handleWebSocketMode}
-          selectVoice = {selectVoice}
-          setSelectVoice = {setSelectVoice}
-          selectLanguage = {selectLanguage}
-          setSelectLanguage = {setSelectLanguage}
-          setSelectVoiceLanguage = {setSelectVoiceLanguage}
+          selectVoice={selectVoice}
+          setSelectVoice={setSelectVoice}
+          selectLanguage={selectLanguage}
+          setSelectLanguage={setSelectLanguage}
+          setSelectVoiceLanguage={setSelectVoiceLanguage}
           changeEnglishToJapanese={changeEnglishToJapanese}
           setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           onClickTestVoice={handleClickTestVoice}
@@ -652,10 +673,15 @@ export const Menu = ({
         />
       )}
       {!showChatLog && assistantMessage && (
-        <AssistantText message={assistantMessage} characterName={characterName} showCharacterName ={showCharacterName} />
+        <AssistantText
+          message={assistantMessage}
+          characterName={characterName}
+          showCharacterName={showCharacterName}
+        />
       )}
       {showWebcam && navigator.mediaDevices && (
-        <Webcam onChangeModalImage={handleChangeModalImage}
+        <Webcam
+          onChangeModalImage={handleChangeModalImage}
           triggerShutter={triggerShutter}
           showWebcam={showWebcam}
         />
@@ -664,7 +690,9 @@ export const Menu = ({
         <div className="modal">
           <div className="modal-content">
             <p>カメラの使用を許可してください。</p>
-            <button onClick={() => setShowPermissionModal(false)}>閉じる</button>
+            <button onClick={() => setShowPermissionModal(false)}>
+              閉じる
+            </button>
           </div>
         </div>
       )}

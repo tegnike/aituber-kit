@@ -13,7 +13,7 @@ export function arrayChunk<T>(array: ArrayLike<T>, every: number): T[][] {
   let current: T[] = [];
   let remaining = 0;
 
-  for (let i = 0; i < N; i ++) {
+  for (let i = 0; i < N; i++) {
     const el = array[i];
 
     if (remaining <= 0) {

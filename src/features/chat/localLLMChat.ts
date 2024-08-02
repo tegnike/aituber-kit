@@ -4,7 +4,7 @@ import { Message } from '../messages/messages';
 export async function getLocalLLMChatResponseStream(
   messages: Message[],
   localLlmUrl: string,
-  model?: string
+  model?: string,
 ) {
   const response = await axios.post(
     localLlmUrl,
@@ -15,7 +15,7 @@ export async function getLocalLLMChatResponseStream(
     },
     {
       responseType: 'stream',
-    }
+    },
   );
 
   const stream = response.data;
@@ -37,7 +37,6 @@ export async function getLocalLLMChatResponseStream(
               const content = data.choices[0].delta.content;
               controller.enqueue(content);
               accumulatedChunks = ''; // JSONが成功したのでチャンクをリセット
-
             }
           } catch (error) {
             // console.log("accumulatedChunks: `" + accumulatedChunks + "`");
