@@ -1,29 +1,31 @@
+import Image from 'next/image';
 import { useCallback, useContext, useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { IconButton } from '@/components/iconButton';
+import { Introduction } from '@/components/introduction';
+import { Menu } from '@/components/menu';
+import { MessageInputContainer } from '@/components/messageInputContainer';
+import { Meta } from '@/components/meta';
 import VrmViewer from '@/components/vrmViewer';
-import { ViewerContext } from '@/features/vrmViewer/viewerContext';
+import {
+  AIService,
+  AIServiceConfig,
+  getAIChatResponseStream,
+} from '@/features/chat/aiChatFactory';
+import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
+import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
 import {
   Message,
   textsToScreenplay,
   Screenplay,
 } from '@/features/messages/messages';
 import { speakCharacter } from '@/features/messages/speakCharacter';
-import { MessageInputContainer } from '@/components/messageInputContainer';
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
-import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
-import {
-  AIService,
-  AIServiceConfig,
-  getAIChatResponseStream,
-} from '@/features/chat/aiChatFactory';
-import { Introduction } from '@/components/introduction';
-import { Menu } from '@/components/menu';
-import { IconButton } from '@/components/iconButton';
-import { Meta } from '@/components/meta';
-import '@/lib/i18n';
-import { useTranslation } from 'react-i18next';
+import store from '@/features/stores/app';
+import { ViewerContext } from '@/features/vrmViewer/viewerContext';
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments';
+import '@/lib/i18n';
 import { buildUrl } from '@/utils/buildUrl';
-import Image from 'next/image';
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
@@ -31,19 +33,13 @@ export default function Home() {
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
   const [selectAIService, setSelectAIService] = useState('openai');
   const [selectAIModel, setSelectAIModel] = useState('gpt-3.5-turbo');
-  const [openAiKey, setOpenAiKey] = useState('');
-  const [anthropicKey, setAnthropicKey] = useState('');
-  const [googleKey, setGoogleKey] = useState('');
-  const [groqKey, setGroqKey] = useState('');
   const [localLlmUrl, setLocalLlmUrl] = useState('');
-  const [difyKey, setDifyKey] = useState('');
   const [difyUrl, setDifyUrl] = useState('');
   const [difyConversationId, setDifyConversationId] = useState('');
   const [selectVoice, setSelectVoice] = useState('voicevox');
   const [selectLanguage, setSelectLanguage] = useState('JP'); // TODO: 要整理, JP, EN
   const [selectVoiceLanguage, setSelectVoiceLanguage] = useState('ja-JP'); // TODO: 要整理, ja-JP, en-US
   const [changeEnglishToJapanese, setChangeEnglishToJapanese] = useState(false);
-  const [koeiromapKey, setKoeiromapKey] = useState('');
   const [voicevoxSpeaker, setVoicevoxSpeaker] = useState('2');
   const [googleTtsType, setGoogleTtsType] = useState(
     process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE &&
@@ -57,7 +53,6 @@ export default function Home() {
   const [stylebertvits2ModelId, setStylebertvits2ModelId] = useState('0');
   const [stylebertvits2Style, setStylebertvits2Style] = useState('Neutral');
   const [youtubeMode, setYoutubeMode] = useState(false);
-  const [youtubeApiKey, setYoutubeApiKey] = useState('');
   const [youtubeLiveId, setYoutubeLiveId] = useState('');
   const [conversationContinuityMode, setConversationContinuityMode] =
     useState(false);
@@ -85,7 +80,6 @@ export default function Home() {
   const [gsviTtsModelId, setGSVITTSModelID] = useState('');
   const [gsviTtsBatchSize, setGSVITTSBatchSize] = useState(2);
   const [gsviTtsSpeechRate, setGSVITTSSpeechRate] = useState(1.0);
-  const [elevenlabsApiKey, setElevenlabsApiKey] = useState('');
   const [elevenlabsVoiceId, setElevenlabsVoiceId] = useState('');
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState('');
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
@@ -117,23 +111,16 @@ export default function Home() {
       setCodeLog(Array.isArray(params.codeLog) ? params.codeLog : []);
       setSelectAIService(params.selectAIService || 'openai');
       setSelectAIModel(params.selectAIModel || 'gpt-3.5-turbo');
-      setOpenAiKey(params.openAiKey || '');
-      setAnthropicKey(params.anthropicKey || '');
-      setGoogleKey(params.googleKey || '');
-      setGroqKey(params.groqKey || '');
       setLocalLlmUrl(params.localLlmUrl || '');
-      setDifyKey(params.difyKey || '');
       setDifyUrl(params.difyUrl || '');
       setDifyConversationId(params.difyConversationId || '');
       setSelectVoice(params.selectVoice || 'voicevox');
       setSelectLanguage(params.selectLanguage || 'JP');
       setSelectVoiceLanguage(params.selectVoiceLanguage || 'ja-JP');
       setChangeEnglishToJapanese(params.changeEnglishToJapanese || false);
-      setKoeiromapKey(params.koeiromapKey || '');
       setVoicevoxSpeaker(params.voicevoxSpeaker || '2');
       setGoogleTtsType(params.googleTtsType || 'en-US-Neural2-F');
       setYoutubeMode(params.youtubeMode || false);
-      setYoutubeApiKey(params.youtubeApiKey || '');
       setYoutubeLiveId(params.youtubeLiveId || '');
       setConversationContinuityMode(params.conversationContinuityMode || false);
       changeWebSocketMode(params.webSocketMode || false);
@@ -149,7 +136,6 @@ export default function Home() {
       setGSVITTSModelID(params.gsviTtsModelId || '');
       setGSVITTSBatchSize(params.gsviTtsBatchSize || 2);
       setGSVITTSSpeechRate(params.gsviTtsSpeechRate || 1.0);
-      setElevenlabsApiKey(params.elevenlabsApiKey || '');
       setElevenlabsVoiceId(params.elevenlabsVoiceId || '');
       setCharacterName(params.characterName || 'CHARACTER');
       setShowCharacterName(params.showCharacterName || true);
@@ -164,23 +150,16 @@ export default function Home() {
       codeLog,
       selectAIService,
       selectAIModel,
-      openAiKey,
-      anthropicKey,
-      googleKey,
-      groqKey,
       localLlmUrl,
-      difyKey,
       difyUrl,
       difyConversationId,
       selectVoice,
       selectLanguage,
       selectVoiceLanguage,
       changeEnglishToJapanese,
-      koeiromapKey,
       voicevoxSpeaker,
       googleTtsType,
       youtubeMode,
-      youtubeApiKey,
       youtubeLiveId,
       conversationContinuityMode,
       webSocketMode,
@@ -192,7 +171,6 @@ export default function Home() {
       gsviTtsModelId,
       gsviTtsBatchSize,
       gsviTtsSpeechRate,
-      elevenlabsApiKey,
       elevenlabsVoiceId,
       characterName,
       showCharacterName,
@@ -207,23 +185,16 @@ export default function Home() {
     codeLog,
     selectAIService,
     selectAIModel,
-    openAiKey,
-    anthropicKey,
-    googleKey,
     localLlmUrl,
-    groqKey,
-    difyKey,
     difyUrl,
     difyConversationId,
     selectVoice,
     selectLanguage,
     selectVoiceLanguage,
     changeEnglishToJapanese,
-    koeiromapKey,
     voicevoxSpeaker,
     googleTtsType,
     youtubeMode,
-    youtubeApiKey,
     youtubeLiveId,
     conversationContinuityMode,
     webSocketMode,
@@ -235,7 +206,6 @@ export default function Home() {
     gsviTtsModelId,
     gsviTtsBatchSize,
     gsviTtsSpeechRate,
-    elevenlabsApiKey,
     elevenlabsVoiceId,
     characterName,
     showCharacterName,
@@ -277,7 +247,6 @@ export default function Home() {
         viewer,
         selectVoice,
         selectLanguage,
-        koeiromapKey,
         voicevoxSpeaker,
         googleTtsType,
         stylebertvits2ServerUrl,
@@ -287,7 +256,6 @@ export default function Home() {
         gsviTtsModelId,
         gsviTtsBatchSize,
         gsviTtsSpeechRate,
-        elevenlabsApiKey,
         elevenlabsVoiceId,
         changeEnglishToJapanese,
         onStart,
@@ -298,7 +266,6 @@ export default function Home() {
       viewer,
       selectVoice,
       selectLanguage,
-      koeiromapKey,
       voicevoxSpeaker,
       googleTtsType,
       stylebertvits2ServerUrl,
@@ -308,7 +275,6 @@ export default function Home() {
       gsviTtsModelId,
       gsviTtsBatchSize,
       gsviTtsSpeechRate,
-      elevenlabsApiKey,
       elevenlabsVoiceId,
       changeEnglishToJapanese,
     ],
@@ -325,6 +291,9 @@ export default function Home() {
     async (currentChatLog: Message[], messages: Message[]) => {
       setChatProcessing(true);
       let stream;
+
+      const { openAiKey, anthropicKey, googleKey, groqKey, difyKey } =
+        store.getState();
 
       const aiServiceConfig: AIServiceConfig = {
         openai: {
@@ -548,13 +517,8 @@ export default function Home() {
     },
     [
       selectAIService,
-      openAiKey,
       selectAIModel,
-      anthropicKey,
-      googleKey,
       localLlmUrl,
-      groqKey,
-      difyKey,
       difyUrl,
       difyConversationId,
       koeiroParam,
@@ -650,6 +614,9 @@ export default function Home() {
           }
         }
       } else {
+        const { openAiKey, anthropicKey, googleKey, groqKey, difyKey } =
+          store.getState();
+
         // ChatVRM original mode
         if (
           (selectAIService === 'openai' &&
@@ -736,11 +703,6 @@ export default function Home() {
       codeLog,
       t,
       selectAIService,
-      openAiKey,
-      anthropicKey,
-      googleKey,
-      groqKey,
-      difyKey,
       chatLog,
       systemPrompt,
       processAIResponse,
@@ -818,6 +780,8 @@ export default function Home() {
 
   // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async () => {
+    const { openAiKey, anthropicKey, youtubeApiKey } = store.getState();
+
     if (
       !openAiKey ||
       !youtubeLiveId ||
@@ -853,15 +817,12 @@ export default function Home() {
       preProcessAIResponse,
     );
   }, [
-    openAiKey,
     youtubeLiveId,
-    youtubeApiKey,
     chatProcessing,
     chatProcessingCount,
     systemPrompt,
     chatLog,
     selectAIService,
-    anthropicKey,
     selectAIModel,
     youtubeNextPageToken,
     youtubeNoCommentCount,
@@ -875,12 +836,7 @@ export default function Home() {
   useEffect(() => {
     console.log('chatProcessingCount:', chatProcessingCount);
     fetchAndProcessCommentsCallback();
-  }, [
-    chatProcessingCount,
-    youtubeLiveId,
-    youtubeApiKey,
-    conversationContinuityMode,
-  ]);
+  }, [chatProcessingCount, youtubeLiveId, conversationContinuityMode]);
 
   useEffect(() => {
     if (youtubeNoCommentCount < 1) return;
@@ -983,18 +939,8 @@ export default function Home() {
           onChangeAIService={setSelectAIService}
           selectAIModel={selectAIModel}
           setSelectAIModel={setSelectAIModel}
-          openAiKey={openAiKey}
-          onChangeOpenAiKey={setOpenAiKey}
-          anthropicKey={anthropicKey}
-          onChangeAnthropicKey={setAnthropicKey}
-          googleKey={googleKey}
-          onChangeGoogleKey={setGoogleKey}
-          groqKey={groqKey}
-          onChangeGroqKey={setGroqKey}
           localLlmUrl={localLlmUrl}
           onChangeLocalLlmUrl={setLocalLlmUrl}
-          difyKey={difyKey}
-          onChangeDifyKey={setDifyKey}
           difyUrl={difyUrl}
           onChangeDifyUrl={setDifyUrl}
           difyConversationId={difyConversationId}
@@ -1004,14 +950,12 @@ export default function Home() {
           codeLog={codeLog}
           koeiroParam={koeiroParam}
           assistantMessage={assistantMessage}
-          koeiromapKey={koeiromapKey}
           voicevoxSpeaker={voicevoxSpeaker}
           googleTtsType={googleTtsType}
           stylebertvits2ServerUrl={stylebertvits2ServerUrl}
           stylebertvits2ModelId={stylebertvits2ModelId}
           stylebertvits2Style={stylebertvits2Style}
           youtubeMode={youtubeMode}
-          youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
           conversationContinuityMode={conversationContinuityMode}
           onChangeSystemPrompt={setSystemPrompt}
@@ -1019,13 +963,11 @@ export default function Home() {
           onChangeCodeLog={handleChangeCodeLog}
           onChangeKoeiromapParam={setKoeiroParam}
           onChangeYoutubeMode={setYoutubeMode}
-          onChangeYoutubeApiKey={setYoutubeApiKey}
           onChangeYoutubeLiveId={setYoutubeLiveId}
           onChangeConversationContinuityMode={setConversationContinuityMode}
           handleClickResetChatLog={() => setChatLog([])}
           handleClickResetCodeLog={() => setCodeLog([])}
           handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
-          onChangeKoeiromapKey={setKoeiromapKey}
           onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
           onChangeGoogleTtsType={setGoogleTtsType}
           onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
@@ -1049,8 +991,6 @@ export default function Home() {
           onChangeGVITtsBatchSize={setGSVITTSBatchSize}
           gsviTtsSpeechRate={gsviTtsSpeechRate}
           onChangeGSVITtsSpeechRate={setGSVITTSSpeechRate}
-          elevenlabsApiKey={elevenlabsApiKey}
-          onChangeElevenlabsApiKey={setElevenlabsApiKey}
           elevenlabsVoiceId={elevenlabsVoiceId}
           onChangeElevenlabsVoiceId={setElevenlabsVoiceId}
           showCharacterName={showCharacterName}

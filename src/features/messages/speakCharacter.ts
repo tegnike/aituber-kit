@@ -1,3 +1,4 @@
+import store from '@/features/stores/app';
 import { wait } from '@/utils/wait';
 import { synthesizeVoiceApi } from './synthesizeVoice';
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle';
@@ -25,7 +26,6 @@ const createSpeakCharacter = () => {
     viewer: Viewer,
     selectVoice: string,
     selectLanguage: string,
-    koeiroApiKey: string,
     voicevoxSpeaker: string,
     googleTtsType: string,
     stylebertvits2ServerUrl: string,
@@ -35,12 +35,13 @@ const createSpeakCharacter = () => {
     gsviTtsModelId: string,
     gsviTtsBatchSize: number,
     gsviTtsSpeechRate: number,
-    elevenlabsApiKey: string,
     elevenlabsVoiceId: string,
     changeEnglishToJapanese: boolean,
     onStart?: () => void,
     onComplete?: () => void,
   ) => {
+    const { koeiromapKey, elevenlabsApiKey } = store.getState();
+
     onStart?.();
 
     if (changeEnglishToJapanese && selectLanguage === 'JP') {
@@ -57,7 +58,7 @@ const createSpeakCharacter = () => {
       }
       let buffer;
       if (selectVoice == 'koeiromap') {
-        buffer = await fetchAudio(screenplay.talk, koeiroApiKey).catch(
+        buffer = await fetchAudio(screenplay.talk, koeiromapKey).catch(
           () => null,
         );
       } else if (selectVoice == 'voicevox') {

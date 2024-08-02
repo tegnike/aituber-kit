@@ -22,18 +22,8 @@ type Props = {
   onChangeAIService: (service: string) => void;
   selectAIModel: string;
   setSelectAIModel: (model: string) => void;
-  openAiKey: string;
-  onChangeOpenAiKey: (key: string) => void;
-  anthropicKey: string;
-  onChangeAnthropicKey: (key: string) => void;
-  googleKey: string;
-  onChangeGoogleKey: (key: string) => void;
-  groqKey: string;
-  onChangeGroqKey: (key: string) => void;
   localLlmUrl: string;
   onChangeLocalLlmUrl: (url: string) => void;
-  difyKey: string;
-  onChangeDifyKey: (key: string) => void;
   difyUrl: string;
   onChangeDifyUrl: (url: string) => void;
   difyConversationId: string;
@@ -43,7 +33,6 @@ type Props = {
   codeLog: Message[];
   koeiroParam: KoeiroParam;
   assistantMessage: string;
-  koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
   stylebertvits2ServerUrl: string;
@@ -53,7 +42,6 @@ type Props = {
   stylebertvits2Style: string;
   onChangeStyleBertVits2Style: (key: string) => void;
   youtubeMode: boolean;
-  youtubeApiKey: string;
   youtubeLiveId: string;
   conversationContinuityMode: boolean;
   onChangeSystemPrompt: (systemPrompt: string) => void;
@@ -63,11 +51,9 @@ type Props = {
   handleClickResetChatLog: () => void;
   handleClickResetCodeLog: () => void;
   handleClickResetSystemPrompt: () => void;
-  onChangeKoeiromapKey: (key: string) => void;
   onChangeVoicevoxSpeaker: (speaker: string) => void;
   onChangeGoogleTtsType: (key: string) => void;
   onChangeYoutubeMode: (mode: boolean) => void;
-  onChangeYoutubeApiKey: (key: string) => void;
   onChangeYoutubeLiveId: (key: string) => void;
   onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
@@ -88,8 +74,6 @@ type Props = {
   onChangeGVITtsBatchSize: (speed: number) => void;
   gsviTtsSpeechRate: number;
   onChangeGSVITtsSpeechRate: (speed: number) => void;
-  elevenlabsApiKey: string;
-  onChangeElevenlabsApiKey: (key: string) => void;
   elevenlabsVoiceId: string;
   onChangeElevenlabsVoiceId: (key: string) => void;
   characterName: string;
@@ -105,18 +89,8 @@ export const Menu = ({
   onChangeAIService,
   selectAIModel,
   setSelectAIModel,
-  openAiKey,
-  onChangeOpenAiKey,
-  anthropicKey,
-  onChangeAnthropicKey,
-  googleKey,
-  onChangeGoogleKey,
-  groqKey,
-  onChangeGroqKey,
   localLlmUrl,
   onChangeLocalLlmUrl,
-  difyKey,
-  onChangeDifyKey,
   difyUrl,
   onChangeDifyUrl,
   difyConversationId,
@@ -126,14 +100,12 @@ export const Menu = ({
   codeLog,
   koeiroParam,
   assistantMessage,
-  koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
   stylebertvits2ServerUrl,
   stylebertvits2ModelId,
   stylebertvits2Style,
   youtubeMode,
-  youtubeApiKey,
   youtubeLiveId,
   conversationContinuityMode,
   onChangeSystemPrompt,
@@ -143,14 +115,12 @@ export const Menu = ({
   handleClickResetChatLog,
   handleClickResetCodeLog,
   handleClickResetSystemPrompt,
-  onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
   onChangeStyleBertVits2ServerUrl,
   onChangeStyleBertVits2ModelId,
   onChangeStyleBertVits2Style,
   onChangeYoutubeMode,
-  onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
   onChangeConversationContinuityMode,
   webSocketMode,
@@ -171,8 +141,6 @@ export const Menu = ({
   onChangeGVITtsBatchSize,
   gsviTtsSpeechRate,
   onChangeGSVITtsSpeechRate,
-  elevenlabsApiKey,
-  onChangeElevenlabsApiKey,
   elevenlabsVoiceId,
   onChangeElevenlabsVoiceId,
   characterName,
@@ -220,46 +188,11 @@ export const Menu = ({
     [onChangeSystemPrompt],
   );
 
-  const handleOpenAiKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeOpenAiKey(event.target.value);
-    },
-    [onChangeOpenAiKey],
-  );
-
-  const handleAnthropicKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeAnthropicKey(event.target.value);
-    },
-    [onChangeAnthropicKey],
-  );
-
-  const handleGoogleKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGoogleKey(event.target.value);
-    },
-    [onChangeGoogleKey],
-  );
-
-  const handleGroqKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGroqKey(event.target.value);
-    },
-    [onChangeGroqKey],
-  );
-
   const handleChangeLocalLlmUrl = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onChangeLocalLlmUrl(event.target.value);
     },
     [onChangeLocalLlmUrl],
-  );
-
-  const handleDifyKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeDifyKey(event.target.value);
-    },
-    [onChangeDifyKey],
   );
 
   const handleDifyUrlChange = useCallback(
@@ -274,13 +207,6 @@ export const Menu = ({
       onChangeDifyConversationId(value);
     },
     [onChangeDifyConversationId],
-  );
-
-  const handleChangeKoeiromapKey = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeKoeiromapKey(event.target.value);
-    },
-    [onChangeKoeiromapKey],
   );
 
   const handleVoicevoxSpeakerChange = useCallback(
@@ -316,13 +242,6 @@ export const Menu = ({
       onChangeStyleBertVits2Style(event.target.value);
     },
     [onChangeStyleBertVits2Style],
-  );
-
-  const handleYoutubeApiKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeYoutubeApiKey(event.target.value);
-    },
-    [onChangeYoutubeApiKey],
   );
 
   const handleYoutubeLiveIdChange = useCallback(
@@ -429,13 +348,6 @@ export const Menu = ({
       onChangeGSVITtsSpeechRate(parseFloat(event.target.value));
     },
     [onChangeGSVITtsSpeechRate],
-  );
-
-  const handleChangeElevenlabsApiKey = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeElevenlabsApiKey(event.target.value);
-    },
-    [onChangeElevenlabsApiKey],
   );
 
   const handleChangeElevenlabsVoiceId = useCallback(
@@ -592,16 +504,6 @@ export const Menu = ({
           onChangeAIService={handleChangeAIService}
           selectAIModel={selectAIModel}
           onChangeSelectAIModel={handleChangeSelectAIModel}
-          openAiKey={openAiKey}
-          onChangeOpenAiKey={handleOpenAiKeyChange}
-          anthropicKey={anthropicKey}
-          onChangeAnthropicKey={handleAnthropicKeyChange}
-          googleKey={googleKey}
-          onChangeGoogleKey={handleGoogleKeyChange}
-          groqKey={groqKey}
-          onChangeGroqKey={handleGroqKeyChange}
-          difyKey={difyKey}
-          onChangeDifyKey={handleDifyKeyChange}
           localLlmUrl={localLlmUrl}
           onChangeLocalLlmUrl={handleChangeLocalLlmUrl}
           difyUrl={difyUrl}
@@ -612,14 +514,12 @@ export const Menu = ({
           codeLog={codeLog}
           systemPrompt={systemPrompt}
           koeiroParam={koeiroParam}
-          koeiromapKey={koeiromapKey}
           voicevoxSpeaker={voicevoxSpeaker}
           googleTtsType={googleTtsType}
           stylebertvits2ServerUrl={stylebertvits2ServerUrl}
           stylebertvits2ModelId={stylebertvits2ModelId}
           stylebertvits2Style={stylebertvits2Style}
           youtubeMode={youtubeMode}
-          youtubeApiKey={youtubeApiKey}
           youtubeLiveId={youtubeLiveId}
           conversationContinuityMode={conversationContinuityMode}
           onClickClose={() => setShowSettings(false)}
@@ -632,14 +532,12 @@ export const Menu = ({
           onClickResetChatLog={handleClickResetChatLog}
           onClickResetCodeLog={handleClickResetCodeLog}
           onClickResetSystemPrompt={handleClickResetSystemPrompt}
-          onChangeKoeiromapKey={handleChangeKoeiromapKey}
           onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
           onChangeGoogleTtsType={handleChangeGoogleTtsType}
           onChangeStyleBertVits2ServerUrl={handleChangeStyleBertVits2ServerUrl}
           onChangeStyleBertVits2ModelId={handleChangeStyleBertVits2ModelId}
           onChangeStyleBertVits2Style={handleChangeStyleBertVits2Style}
           onChangeYoutubeMode={onChangeYoutubeMode}
-          onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
           onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
           onChangeConversationContinuityMode={handleConversationContinuityMode}
           webSocketMode={webSocketMode}
@@ -660,8 +558,6 @@ export const Menu = ({
           onChangeGVITtsBatchSize={handleChangeGSVITtsBatchSize}
           gsviTtsSpeechRate={gsviTtsSpeechRate}
           onChangeGSVITtsSpeechRate={handleChangeGSVITtsSpeechRate}
-          elevenlabsApiKey={elevenlabsApiKey}
-          onChangeElevenlabsApiKey={handleChangeElevenlabsApiKey}
           elevenlabsVoiceId={elevenlabsVoiceId}
           onChangeElevenlabsVoiceId={handleChangeElevenlabsVoiceId}
           characterName={characterName}

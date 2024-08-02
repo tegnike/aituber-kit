@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import store from '@/features/stores/app';
+import React, { useEffect } from 'react';
 import { IconButton } from './iconButton';
 import { TextButton } from './textButton';
 import { Message } from '@/features/messages/messages';
@@ -23,18 +24,8 @@ type Props = {
   onChangeAIService: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   selectAIModel: string;
   onChangeSelectAIModel: (model: string) => void;
-  openAiKey: string;
-  onChangeOpenAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  anthropicKey: string;
-  onChangeAnthropicKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  googleKey: string;
-  onChangeGoogleKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  groqKey: string;
-  onChangeGroqKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   localLlmUrl: string;
   onChangeLocalLlmUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  difyKey: string;
-  onChangeDifyKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   difyUrl: string;
   onChangeDifyUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
   difyConversationId: string;
@@ -43,14 +34,12 @@ type Props = {
   chatLog: Message[];
   codeLog: Message[];
   koeiroParam: KoeiroParam;
-  koeiromapKey: string;
   voicevoxSpeaker: string;
   googleTtsType: string;
   stylebertvits2ServerUrl: string;
   stylebertvits2ModelId: string;
   stylebertvits2Style: string;
   youtubeMode: boolean;
-  youtubeApiKey: string;
   youtubeLiveId: string;
   conversationContinuityMode: boolean;
   onClickClose: () => void;
@@ -63,7 +52,6 @@ type Props = {
   onClickResetChatLog: () => void;
   onClickResetCodeLog: () => void;
   onClickResetSystemPrompt: () => void;
-  onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeVoicevoxSpeaker: (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => void;
@@ -78,7 +66,6 @@ type Props = {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => void;
   onChangeYoutubeMode: (mode: boolean) => void;
-  onChangeYoutubeApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
@@ -103,10 +90,6 @@ type Props = {
   onChangeGSVITtsSpeechRate: (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => void;
-  elevenlabsApiKey: string;
-  onChangeElevenlabsApiKey: (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
   elevenlabsVoiceId: string;
   onChangeElevenlabsVoiceId: (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -123,18 +106,8 @@ export const Settings = ({
   onChangeAIService,
   selectAIModel,
   onChangeSelectAIModel,
-  openAiKey,
-  onChangeOpenAiKey,
-  anthropicKey,
-  onChangeAnthropicKey,
-  googleKey,
-  onChangeGoogleKey,
-  groqKey,
-  onChangeGroqKey,
   localLlmUrl,
   onChangeLocalLlmUrl,
-  difyKey,
-  onChangeDifyKey,
   difyUrl,
   onChangeDifyUrl,
   difyConversationId,
@@ -142,14 +115,12 @@ export const Settings = ({
   chatLog,
   systemPrompt,
   koeiroParam,
-  koeiromapKey,
   voicevoxSpeaker,
   googleTtsType,
   stylebertvits2ServerUrl,
   stylebertvits2ModelId,
   stylebertvits2Style,
   youtubeMode,
-  youtubeApiKey,
   youtubeLiveId,
   conversationContinuityMode,
   onClickClose,
@@ -162,14 +133,12 @@ export const Settings = ({
   onClickResetChatLog,
   onClickResetCodeLog,
   onClickResetSystemPrompt,
-  onChangeKoeiromapKey,
   onChangeVoicevoxSpeaker,
   onChangeGoogleTtsType,
   onChangeStyleBertVits2ServerUrl,
   onChangeStyleBertVits2ModelId,
   onChangeStyleBertVits2Style,
   onChangeYoutubeMode,
-  onChangeYoutubeApiKey,
   onChangeYoutubeLiveId,
   onChangeConversationContinuityMode,
   webSocketMode,
@@ -190,8 +159,6 @@ export const Settings = ({
   onChangeGVITtsBatchSize,
   gsviTtsSpeechRate,
   onChangeGSVITtsSpeechRate,
-  elevenlabsApiKey,
-  onChangeElevenlabsApiKey,
   elevenlabsVoiceId,
   onChangeElevenlabsVoiceId,
   characterName,
@@ -201,6 +168,15 @@ export const Settings = ({
   showSettingsButton,
   onChangeShowSettingsButton,
 }: Props) => {
+  const openAiKey = store((s) => s.openAiKey);
+  const anthropicKey = store((s) => s.anthropicKey);
+  const googleKey = store((s) => s.googleKey);
+  const groqKey = store((s) => s.groqKey);
+  const difyKey = store((s) => s.difyKey);
+  const koeiromapKey = store((s) => s.koeiromapKey);
+  const youtubeApiKey = store((s) => s.youtubeApiKey);
+  const elevenlabsApiKey = store((s) => s.elevenlabsApiKey);
+
   const { t } = useTranslation();
 
   // Add this useEffect hook
@@ -402,7 +378,9 @@ export const Settings = ({
                               type="text"
                               placeholder="sk-..."
                               value={openAiKey}
-                              onChange={onChangeOpenAiKey}
+                              onChange={(e) =>
+                                store.setState({ openAiKey: e.target.value })
+                              }
                             />
                             <div className="my-16">
                               {t('APIKeyInstruction')}
@@ -445,7 +423,9 @@ export const Settings = ({
                               type="text"
                               placeholder="..."
                               value={anthropicKey}
-                              onChange={onChangeAnthropicKey}
+                              onChange={(e) =>
+                                store.setState({ anthropicKey: e.target.value })
+                              }
                             />
                             <div className="my-16">
                               {t('APIKeyInstruction')}
@@ -493,7 +473,9 @@ export const Settings = ({
                               type="text"
                               placeholder="..."
                               value={googleKey}
-                              onChange={onChangeGoogleKey}
+                              onChange={(e) =>
+                                store.setState({ googleKey: e.target.value })
+                              }
                             />
                             <div className="my-16">
                               {t('APIKeyInstruction')}
@@ -535,7 +517,9 @@ export const Settings = ({
                               type="text"
                               placeholder="..."
                               value={groqKey}
-                              onChange={onChangeGroqKey}
+                              onChange={(e) =>
+                                store.setState({ groqKey: e.target.value })
+                              }
                             />
                             <div className="my-16">
                               {t('APIKeyInstruction')}
@@ -624,7 +608,9 @@ export const Settings = ({
                               type="text"
                               placeholder="..."
                               value={difyKey}
-                              onChange={onChangeDifyKey}
+                              onChange={(e) =>
+                                store.setState({ difyKey: e.target.value })
+                              }
                             />
                             <div className="my-24">
                               <div className="my-16 typography-20 font-bold">
@@ -673,7 +659,11 @@ export const Settings = ({
                                 type="text"
                                 placeholder="..."
                                 value={youtubeApiKey}
-                                onChange={onChangeYoutubeApiKey}
+                                onChange={(e) =>
+                                  store.setState({
+                                    youtubeApiKey: e.target.value,
+                                  })
+                                }
                               />
                               <div className="my-16 typography-20 font-bold">
                                 {t('YoutubeLiveID')}
@@ -795,7 +785,9 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={koeiromapKey}
-                          onChange={onChangeKoeiromapKey}
+                          onChange={(e) =>
+                            store.setState({ koeiromapKey: e.target.value })
+                          }
                         />
                       </div>
                       <div className="mt-16 font-bold">プリセット</div>
@@ -1077,7 +1069,9 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={elevenlabsApiKey}
-                          onChange={onChangeElevenlabsApiKey}
+                          onChange={(e) =>
+                            store.setState({ elevenlabsApiKey: e.target.value })
+                          }
                         />
                       </div>
                       <div className="mt-16 font-bold">
