@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useCallback, useContext, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IconButton } from '@/components/iconButton';
@@ -20,14 +20,11 @@ import {
 } from '@/features/messages/messages';
 import { speakCharacter } from '@/features/messages/speakCharacter';
 import store from '@/features/stores/app';
-import { ViewerContext } from '@/features/vrmViewer/viewerContext';
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments';
 import '@/lib/i18n';
 import { buildUrl } from '@/utils/buildUrl';
 
 export default function Home() {
-  const { viewer } = useContext(ViewerContext);
-
   const conversationContinuityMode = store((s) => s.conversationContinuityMode);
   const webSocketMode = store((s) => s.webSocketMode);
 
@@ -117,15 +114,9 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void,
     ) => {
-      speakCharacter(
-        screenplay,
-        viewer,
-        changeEnglishToJapanese,
-        onStart,
-        onEnd,
-      );
+      speakCharacter(screenplay, changeEnglishToJapanese, onStart, onEnd);
     },
-    [viewer, changeEnglishToJapanese],
+    [changeEnglishToJapanese],
   );
 
   const wsRef = useRef<WebSocket | null>(null);

@@ -1,7 +1,6 @@
 import store from '@/features/stores/app';
 import englishToJapanese from '@/utils/englishToJapanese.json';
 import { wait } from '@/utils/wait';
-import { Viewer } from '../vrmViewer/viewer';
 import { Screenplay, Talk } from './messages';
 import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2';
 import { synthesizeVoiceApi } from './synthesizeVoice';
@@ -23,7 +22,6 @@ const createSpeakCharacter = () => {
 
   return (
     screenplay: Screenplay,
-    viewer: Viewer,
     changeEnglishToJapanese: boolean,
     onStart?: () => void,
     onComplete?: () => void,
@@ -96,7 +94,7 @@ const createSpeakCharacter = () => {
         if (!audioBuffer) {
           return;
         }
-        return viewer.model?.speak(audioBuffer, screenplay);
+        return s.viewer.model?.speak(audioBuffer, screenplay);
       },
     );
     prevSpeakPromise.then(() => {
@@ -230,7 +228,7 @@ export const fetchAudioStyleBertVITS2 = async (
   return ttsVoice;
 };
 
-export const testVoice = async (viewer: Viewer, voicevoxSpeaker: string) => {
+export const testVoice = async (voicevoxSpeaker: string) => {
   const talk: Talk = {
     message: 'ボイスボックスを使用します',
     speakerX: 0,
@@ -245,7 +243,8 @@ export const testVoice = async (viewer: Viewer, voicevoxSpeaker: string) => {
       expression: 'neutral',
       talk: talk,
     };
-    await viewer.model?.speak(buffer, screenplay);
+    const s = store.getState();
+    await s.viewer.model?.speak(buffer, screenplay);
   }
 };
 

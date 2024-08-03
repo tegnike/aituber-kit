@@ -1,17 +1,17 @@
-import { useContext, useCallback } from 'react';
-import { ViewerContext } from '../features/vrmViewer/viewerContext';
+import { useCallback } from 'react';
 import { buildUrl } from '@/utils/buildUrl';
+
+import store from '@/features/stores/app';
 
 type Props = {
   onImageDropped: (image: string) => void;
 };
 
 export default function VrmViewer({ onImageDropped }: Props) {
-  const { viewer } = useContext(ViewerContext);
-
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement) => {
       if (canvas) {
+        const { viewer } = store.getState();
         viewer.setup(canvas);
         viewer.loadVrm(buildUrl('/AvatarSample_B.vrm'));
 
@@ -47,7 +47,7 @@ export default function VrmViewer({ onImageDropped }: Props) {
         });
       }
     },
-    [viewer, onImageDropped],
+    [onImageDropped],
   );
 
   return (

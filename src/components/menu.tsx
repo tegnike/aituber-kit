@@ -1,17 +1,10 @@
-import React, {
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Message } from '@/features/messages/messages';
 import { testVoice } from '@/features/messages/speakCharacter';
 import store from '@/features/stores/app';
 import menuStore from '@/features/stores/menu';
-import { ViewerContext } from '@/features/vrmViewer/viewerContext';
 import { AssistantText } from './assistantText';
 import { ChatLog } from './chatLog';
 import { CodeLog } from './codeLog';
@@ -57,13 +50,12 @@ export const Menu = ({
   const [showChatLog, setShowChatLog] = useState(false);
   const [showWebcam, setShowWebcam] = useState(false);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
-  const { viewer } = useContext(ViewerContext);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const [showSettingsButton, setShowSettingsButton] = useState(true);
 
   const handleClickTestVoice = (speaker: string) => {
-    testVoice(viewer, speaker);
+    testVoice(speaker);
   };
 
   const handleChangeVrmFile = useCallback(
@@ -79,12 +71,14 @@ export const Menu = ({
       if (file_type === 'vrm') {
         const blob = new Blob([file], { type: 'application/octet-stream' });
         const url = window.URL.createObjectURL(blob);
-        viewer.loadVrm(url);
+
+        const s = store.getState();
+        s.viewer.loadVrm(url);
       }
 
       event.target.value = '';
     },
-    [viewer],
+    [],
   );
 
   const handleChangeBgFile = useCallback(

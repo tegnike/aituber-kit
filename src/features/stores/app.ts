@@ -5,6 +5,7 @@ import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
 import { Message } from '@/features/messages/messages';
 import { AIService, Voice } from '../chat/aiChatFactory';
+import { Viewer } from '../vrmViewer/viewer';
 
 interface APIKeys {
   openAiKey: string;
@@ -43,6 +44,7 @@ interface Integrations {
 }
 
 interface Character {
+  viewer: Viewer;
   characterName: string;
   showCharacterName: boolean;
   systemPrompt: string;
@@ -52,14 +54,11 @@ interface Character {
 interface General {
   selectLanguage: string; // TODO: (7741) use a more specific type
   selectVoiceLanguage: string; // TODO: (7741) use a more specific type
+  changeEnglishToJapanese: boolean;
   webSocketMode: boolean;
 }
 
 type Settings = APIKeys & ModelProvider & Integrations & Character & General;
-
-interface Preferences {
-  changeEnglishToJapanese: boolean;
-}
 
 interface Chat {
   chatLog: Message[];
@@ -70,7 +69,7 @@ interface General {
   dontShowIntroduction: boolean;
 }
 
-export type AppState = Settings & Preferences & Chat & General & {};
+export type AppState = Settings & Chat & General & {};
 
 const store = create<AppState>()(
   persist(
@@ -111,6 +110,7 @@ const store = create<AppState>()(
       youtubeLiveId: '',
 
       // Character
+      viewer: new Viewer(), // transient
       characterName: 'CHARACTER',
       showCharacterName: true,
       systemPrompt: SYSTEM_PROMPT,
@@ -133,6 +133,7 @@ const store = create<AppState>()(
     }),
     {
       name: 'app',
+      partialize: ({ viewer, ...states }) => states,
     },
   ),
 );
