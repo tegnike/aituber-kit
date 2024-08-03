@@ -192,19 +192,25 @@ export const Menu = ({
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       onChangeAIService(event.target.value);
       if (event.target.value !== "openai") {
-        onChangeConversationContinuityMode(false);
         setShowWebcam(false);
         onChangeModalImage("");
+        if (event.target.value !== "anthropic") {
+          onChangeConversationContinuityMode(false);
+        }
       }
     },
-    [onChangeAIService, onChangeConversationContinuityMode]
+    [onChangeAIService, onChangeConversationContinuityMode, onChangeModalImage]
   );
 
   const handleChangeSelectAIModel = useCallback(
     (model: string) => {
       setSelectAIModel(model);
+      if (model !== "gpt-4" && model !== "gpt-4-turbo" && model !== "gpt-4-o-mini") {
+        setShowWebcam(false);
+        onChangeModalImage("");
+      }
     },
-    [setSelectAIModel]
+    [setSelectAIModel, onChangeModalImage]
   );
 
   const handleChangeSystemPrompt = useCallback(
