@@ -1,4 +1,5 @@
 import { Message } from '@/features/messages/messages';
+import store from '@/features/stores/app';
 import {
   getBestComment,
   getMessagesForSleep,
@@ -90,11 +91,8 @@ const retrieveLiveComments = async (
 };
 
 export const fetchAndProcessComments = async (
-  systemPrompt: string,
   messages: Message[],
   aiApiKey: string,
-  selectAIService: string,
-  selectAIModel: string,
   liveId: string,
   youtubeKey: string,
   youtubeNextPageToken: string,
@@ -111,6 +109,7 @@ export const fetchAndProcessComments = async (
 ): Promise<void> => {
   try {
     const liveChatId = await getLiveChatId(liveId, youtubeKey);
+    const s = store.getState();
 
     if (liveChatId) {
       // 会話の継続が必要かどうかを確認
@@ -123,12 +122,12 @@ export const fetchAndProcessComments = async (
           await checkIfResponseContinuationIsRequired(
             messages,
             aiApiKey,
-            selectAIService,
-            selectAIModel,
+            s.selectAIService,
+            s.selectAIModel,
           );
         if (isContinuationNeeded) {
           const continuationMessage = await getMessagesForContinuation(
-            systemPrompt,
+            s.systemPrompt,
             messages,
           );
           preProcessAIResponse(continuationMessage);
@@ -159,8 +158,8 @@ export const fetchAndProcessComments = async (
               messages,
               youtubeComments,
               aiApiKey,
-              selectAIService,
-              selectAIModel,
+              s.selectAIService,
+              s.selectAIModel,
             );
           } else {
             selectedComment = youtubeComments[0].userComment;
@@ -182,7 +181,7 @@ export const fetchAndProcessComments = async (
           ) {
             // 会話の続きを生成
             const continuationMessage = await getMessagesForContinuation(
-              systemPrompt,
+              s.systemPrompt,
               messages,
             );
             preProcessAIResponse(continuationMessage);
@@ -191,12 +190,12 @@ export const fetchAndProcessComments = async (
             const anotherTopic = await getAnotherTopic(
               messages,
               aiApiKey,
-              selectAIService,
-              selectAIModel,
+              s.selectAIService,
+              s.selectAIModel,
             );
             console.log('anotherTopic:', anotherTopic);
             const newTopicMessage = await getMessagesForNewTopic(
-              systemPrompt,
+              s.systemPrompt,
               messages,
               anotherTopic,
             );
@@ -204,7 +203,7 @@ export const fetchAndProcessComments = async (
           } else if (noCommentCount === 6) {
             // スリープモードにする
             const messagesForSleep = await getMessagesForSleep(
-              systemPrompt,
+              s.systemPrompt,
               messages,
             );
             preProcessAIResponse(messagesForSleep);

@@ -1,3 +1,4 @@
+import store from '@/features/stores/app';
 import { Message } from '../messages/messages';
 
 export async function getDifyChatResponseStream(
@@ -5,7 +6,6 @@ export async function getDifyChatResponseStream(
   apiKey: string,
   url: string,
   conversationId: string,
-  setDifyConversationId: (id: string) => void,
 ) {
   if (!apiKey) {
     throw new Error('Invalid API Key');
@@ -50,7 +50,7 @@ export async function getDifyChatResponseStream(
             const data = JSON.parse(message.slice(5)); // Remove 'data:' prefix
             if (data.event === 'message') {
               controller.enqueue(data.answer);
-              setDifyConversationId(data.conversation_id);
+              store.setState({ difyConversationId: data.conversation_id });
             }
           });
         }

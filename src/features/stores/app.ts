@@ -4,9 +4,7 @@ import { persist } from 'zustand/middleware';
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
 import { Message } from '@/features/messages/messages';
-import { AIService } from '../chat/aiChatFactory';
-
-// TODO: (7741) sync type definition with ui, if applicable
+import { AIService, Voice } from '../chat/aiChatFactory';
 
 interface APIKeys {
   openAiKey: string;
@@ -19,10 +17,11 @@ interface APIKeys {
   elevenlabsApiKey: string;
 }
 
-interface ModelProviders {
+interface ModelProvider {
   selectAIService: AIService;
-  selectAIModel: string; // TODO: (7741) be more specific
+  selectAIModel: string; // TODO: (7741) use a more specific type
   localLlmUrl: string;
+  selectVoice: Voice;
   koeiroParam: KoeiroParam;
   googleTtsType: string;
   voicevoxSpeaker: string;
@@ -39,46 +38,39 @@ interface ModelProviders {
 interface Integrations {
   difyUrl: string;
   difyConversationId: string;
+  youtubeMode: boolean;
   youtubeLiveId: string;
 }
 
-// TODO: (7741) move out of store
-type Voice =
-  | 'elevenlabs'
-  | 'google'
-  | 'gsvitts'
-  | 'koeiromap'
-  | 'stylebertvits2'
-  | 'voicevox';
+interface Character {
+  characterName: string;
+  showCharacterName: boolean;
+  systemPrompt: string;
+}
+
+interface General {
+  selectLanguage: string; // TODO: (7741) use a more specific type
+  selectVoiceLanguage: string; // TODO: (7741) use a more specific type
+}
+
+type Settings = APIKeys & ModelProvider & Integrations & Character & General;
 
 interface Preferences {
-  selectVoice: Voice;
-  selectLanguage: 'JP'; // TODO: 要整理, JP, EN
-  selectVoiceLanguage: 'ja-JP'; // TODO: 要整理, ja-JP, en-US
-  youtubeMode: boolean;
   webSocketMode: boolean;
   changeEnglishToJapanese: boolean;
   conversationContinuityMode: boolean;
-  characterName: string;
-  showCharacterName: boolean;
 }
 
 interface Chat {
-  systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
 }
 
-interface GlobalStates {
+interface General {
   dontShowIntroduction: boolean;
 }
 
-export type AppState = APIKeys &
-  ModelProviders &
-  Integrations &
-  Preferences &
-  Chat &
-  GlobalStates & {};
+export type AppState = Settings & Preferences & Chat & General & {};
 
 const store = create<AppState>()(
   persist(
@@ -93,10 +85,11 @@ const store = create<AppState>()(
       youtubeApiKey: '',
       elevenlabsApiKey: '',
 
-      // Model Providers
+      // Model Provider
       selectAIService: 'openai',
       selectAIModel: 'gpt-3.5-turbo',
       localLlmUrl: '',
+      selectVoice: 'voicevox',
       koeiroParam: DEFAULT_PARAM,
       googleTtsType:
         process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE || 'en-US-Neural2-F',
@@ -114,21 +107,24 @@ const store = create<AppState>()(
       // Integrations
       difyUrl: '',
       difyConversationId: '',
+      youtubeMode: false,
       youtubeLiveId: '',
 
+      // Character
+      characterName: 'CHARACTER',
+      showCharacterName: true,
+      systemPrompt: SYSTEM_PROMPT,
+
+      // General
+      selectLanguage: 'JP', // TODO: 要整理, JP, EN
+      selectVoiceLanguage: 'ja-JP', // TODO: 要整理, ja-JP, en-US
+
       // Preferences
-      selectVoice: 'voicevox',
-      selectLanguage: 'JP',
-      selectVoiceLanguage: 'ja-JP',
-      youtubeMode: false,
       webSocketMode: false,
       changeEnglishToJapanese: false,
       conversationContinuityMode: false,
-      characterName: 'CHARACTER',
-      showCharacterName: true,
 
       // Chat
-      systemPrompt: SYSTEM_PROMPT,
       chatLog: [],
       codeLog: [],
 

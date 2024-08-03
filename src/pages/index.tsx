@@ -13,8 +13,6 @@ import {
   AIServiceConfig,
   getAIChatResponseStream,
 } from '@/features/chat/aiChatFactory';
-import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
 import {
   Message,
   textsToScreenplay,
@@ -30,33 +28,9 @@ import { buildUrl } from '@/utils/buildUrl';
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
-  const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
-  const [selectAIService, setSelectAIService] = useState('openai');
-  const [selectAIModel, setSelectAIModel] = useState('gpt-3.5-turbo');
-  const [localLlmUrl, setLocalLlmUrl] = useState('');
-  const [difyUrl, setDifyUrl] = useState('');
-  const [difyConversationId, setDifyConversationId] = useState('');
-  const [selectVoice, setSelectVoice] = useState('voicevox');
-  const [selectLanguage, setSelectLanguage] = useState('JP'); // TODO: 要整理, JP, EN
-  const [selectVoiceLanguage, setSelectVoiceLanguage] = useState('ja-JP'); // TODO: 要整理, ja-JP, en-US
   const [changeEnglishToJapanese, setChangeEnglishToJapanese] = useState(false);
-  const [voicevoxSpeaker, setVoicevoxSpeaker] = useState('2');
-  const [googleTtsType, setGoogleTtsType] = useState(
-    process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE &&
-      process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE !== ''
-      ? process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE
-      : '',
-  );
-  const [stylebertvits2ServerUrl, setStylebertvits2ServerURL] = useState(
-    'http://127.0.0.1:5000',
-  );
-  const [stylebertvits2ModelId, setStylebertvits2ModelId] = useState('0');
-  const [stylebertvits2Style, setStylebertvits2Style] = useState('Neutral');
-  const [youtubeMode, setYoutubeMode] = useState(false);
-  const [youtubeLiveId, setYoutubeLiveId] = useState('');
   const [conversationContinuityMode, setConversationContinuityMode] =
     useState(false);
-  const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
   const [codeLog, setCodeLog] = useState<Message[]>([]);
@@ -71,23 +45,11 @@ export default function Home() {
       : '/bg-c.png',
   );
   const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
-  const [gsviTtsServerUrl, setGSVITTSServerUrl] = useState(
-    process.env.NEXT_PUBLIC_LOCAL_TTS_URL &&
-      process.env.NEXT_PUBLIC_LOCAL_TTS_URL !== ''
-      ? process.env.NEXT_PUBLIC_LOCAL_TTS_URL
-      : 'http://127.0.0.1:5000/tts',
-  );
-  const [gsviTtsModelId, setGSVITTSModelID] = useState('');
-  const [gsviTtsBatchSize, setGSVITTSBatchSize] = useState(2);
-  const [gsviTtsSpeechRate, setGSVITTSSpeechRate] = useState(1.0);
-  const [elevenlabsVoiceId, setElevenlabsVoiceId] = useState('');
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState('');
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
   const [chatProcessingCount, setChatProcessingCount] = useState(0);
-  const [characterName, setCharacterName] = useState('');
-  const [showCharacterName, setShowCharacterName] = useState(true);
   const [modalImage, setModalImage] = useState('');
   const [triggerShutter, setTriggerShutter] = useState(false);
   const [delayedText, setDelayedText] = useState('');
@@ -105,110 +67,34 @@ export default function Home() {
     const storedData = window.localStorage.getItem('chatVRMParams');
     if (storedData) {
       const params = JSON.parse(storedData);
-      setSystemPrompt(params.systemPrompt || SYSTEM_PROMPT);
-      setKoeiroParam(params.koeiroParam || DEFAULT_PARAM);
       setChatLog(Array.isArray(params.chatLog) ? params.chatLog : []);
       setCodeLog(Array.isArray(params.codeLog) ? params.codeLog : []);
-      setSelectAIService(params.selectAIService || 'openai');
-      setSelectAIModel(params.selectAIModel || 'gpt-3.5-turbo');
-      setLocalLlmUrl(params.localLlmUrl || '');
-      setDifyUrl(params.difyUrl || '');
-      setDifyConversationId(params.difyConversationId || '');
-      setSelectVoice(params.selectVoice || 'voicevox');
-      setSelectLanguage(params.selectLanguage || 'JP');
-      setSelectVoiceLanguage(params.selectVoiceLanguage || 'ja-JP');
       setChangeEnglishToJapanese(params.changeEnglishToJapanese || false);
-      setVoicevoxSpeaker(params.voicevoxSpeaker || '2');
-      setGoogleTtsType(params.googleTtsType || 'en-US-Neural2-F');
-      setYoutubeMode(params.youtubeMode || false);
-      setYoutubeLiveId(params.youtubeLiveId || '');
       setConversationContinuityMode(params.conversationContinuityMode || false);
       changeWebSocketMode(params.webSocketMode || false);
-      setStylebertvits2ServerURL(
-        params.stylebertvits2ServerUrl || 'http://127.0.0.1:5000',
-      );
-      setStylebertvits2ModelId(params.stylebertvits2ModelId || '0');
-      setStylebertvits2Style(params.stylebertvits2Style || 'Neutral');
       setDontShowIntroduction(params.dontShowIntroduction || false);
-      setGSVITTSServerUrl(
-        params.gsviTtsServerUrl || 'http://127.0.0.1:5000/tts',
-      );
-      setGSVITTSModelID(params.gsviTtsModelId || '');
-      setGSVITTSBatchSize(params.gsviTtsBatchSize || 2);
-      setGSVITTSSpeechRate(params.gsviTtsSpeechRate || 1.0);
-      setElevenlabsVoiceId(params.elevenlabsVoiceId || '');
-      setCharacterName(params.characterName || 'CHARACTER');
-      setShowCharacterName(params.showCharacterName || true);
     }
   }, []);
 
   useEffect(() => {
     const params = {
-      systemPrompt,
-      koeiroParam,
       chatLog,
       codeLog,
-      selectAIService,
-      selectAIModel,
-      localLlmUrl,
-      difyUrl,
-      difyConversationId,
-      selectVoice,
-      selectLanguage,
-      selectVoiceLanguage,
       changeEnglishToJapanese,
-      voicevoxSpeaker,
-      googleTtsType,
-      youtubeMode,
-      youtubeLiveId,
       conversationContinuityMode,
       webSocketMode,
-      stylebertvits2ServerUrl,
-      stylebertvits2ModelId,
-      stylebertvits2Style,
       dontShowIntroduction,
-      gsviTtsServerUrl,
-      gsviTtsModelId,
-      gsviTtsBatchSize,
-      gsviTtsSpeechRate,
-      elevenlabsVoiceId,
-      characterName,
-      showCharacterName,
     };
     process.nextTick(() =>
       window.localStorage.setItem('chatVRMParams', JSON.stringify(params)),
     );
   }, [
-    systemPrompt,
-    koeiroParam,
     chatLog,
     codeLog,
-    selectAIService,
-    selectAIModel,
-    localLlmUrl,
-    difyUrl,
-    difyConversationId,
-    selectVoice,
-    selectLanguage,
-    selectVoiceLanguage,
     changeEnglishToJapanese,
-    voicevoxSpeaker,
-    googleTtsType,
-    youtubeMode,
-    youtubeLiveId,
     conversationContinuityMode,
     webSocketMode,
-    stylebertvits2ServerUrl,
-    stylebertvits2ModelId,
-    stylebertvits2Style,
     dontShowIntroduction,
-    gsviTtsServerUrl,
-    gsviTtsModelId,
-    gsviTtsBatchSize,
-    gsviTtsSpeechRate,
-    elevenlabsVoiceId,
-    characterName,
-    showCharacterName,
   ]);
 
   const handleChangeChatLog = useCallback(
@@ -245,39 +131,12 @@ export default function Home() {
       speakCharacter(
         screenplay,
         viewer,
-        selectVoice,
-        selectLanguage,
-        voicevoxSpeaker,
-        googleTtsType,
-        stylebertvits2ServerUrl,
-        stylebertvits2ModelId,
-        stylebertvits2Style,
-        gsviTtsServerUrl,
-        gsviTtsModelId,
-        gsviTtsBatchSize,
-        gsviTtsSpeechRate,
-        elevenlabsVoiceId,
         changeEnglishToJapanese,
         onStart,
         onEnd,
       );
     },
-    [
-      viewer,
-      selectVoice,
-      selectLanguage,
-      voicevoxSpeaker,
-      googleTtsType,
-      stylebertvits2ServerUrl,
-      stylebertvits2ModelId,
-      stylebertvits2Style,
-      gsviTtsServerUrl,
-      gsviTtsModelId,
-      gsviTtsBatchSize,
-      gsviTtsSpeechRate,
-      elevenlabsVoiceId,
-      changeEnglishToJapanese,
-    ],
+    [viewer, changeEnglishToJapanese],
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -292,41 +151,40 @@ export default function Home() {
       setChatProcessing(true);
       let stream;
 
-      const { openAiKey, anthropicKey, googleKey, groqKey, difyKey } =
-        store.getState();
+      const s = store.getState();
 
       const aiServiceConfig: AIServiceConfig = {
         openai: {
-          key: openAiKey || process.env.NEXT_PUBLIC_OPEN_AI_KEY || '',
-          model: selectAIModel,
+          key: s.openAiKey || process.env.NEXT_PUBLIC_OPEN_AI_KEY || '',
+          model: s.selectAIModel,
         },
         anthropic: {
-          key: anthropicKey || process.env.NEXT_PUBLIC_ANTHROPIC_KEY || '',
-          model: selectAIModel,
+          key: s.anthropicKey || process.env.NEXT_PUBLIC_ANTHROPIC_KEY || '',
+          model: s.selectAIModel,
         },
         google: {
-          key: googleKey || process.env.NEXT_PUBLIC_GOOGLE_KEY || '',
-          model: selectAIModel,
+          key: s.googleKey || process.env.NEXT_PUBLIC_GOOGLE_KEY || '',
+          model: s.selectAIModel,
         },
         localLlm: {
-          url: localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
-          model: selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || '',
+          url: s.localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
+          model:
+            s.selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || '',
         },
         groq: {
-          key: groqKey || process.env.NEXT_PUBLIC_GROQ_KEY || '',
-          model: selectAIModel,
+          key: s.groqKey || process.env.NEXT_PUBLIC_GROQ_KEY || '',
+          model: s.selectAIModel,
         },
         dify: {
-          key: difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || '',
-          url: difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || '',
-          conversationId: difyConversationId,
-          setConversationId: setDifyConversationId,
+          key: s.difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || '',
+          url: s.difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || '',
+          conversationId: s.difyConversationId,
         },
       };
 
       try {
         stream = await getAIChatResponseStream(
-          selectAIService as AIService,
+          s.selectAIService as AIService,
           messages,
           aiServiceConfig,
         );
@@ -419,7 +277,7 @@ export default function Home() {
                 sentence = sentence.replace(/```/g, '');
               }
 
-              const aiTalks = textsToScreenplay([aiText], koeiroParam);
+              const aiTalks = textsToScreenplay([aiText], s.koeiroParam);
               aiTextLog.push({ role: 'assistant', content: sentence });
 
               // 文ごとに音声を生成 & 再生、返答を表示
@@ -445,7 +303,7 @@ export default function Home() {
           if (done && receivedMessage.length > 0) {
             // 残りのメッセージを処理
             let aiText = `${tag} ${receivedMessage}`;
-            const aiTalks = textsToScreenplay([aiText], koeiroParam);
+            const aiTalks = textsToScreenplay([aiText], s.koeiroParam);
             aiTextLog.push({ role: 'assistant', content: receivedMessage });
             sentences.push(receivedMessage);
 
@@ -515,15 +373,7 @@ export default function Home() {
       setChatLog([...currentChatLog, ...aiTextLog]);
       setChatProcessing(false);
     },
-    [
-      selectAIService,
-      selectAIModel,
-      localLlmUrl,
-      difyUrl,
-      difyConversationId,
-      koeiroParam,
-      handleSpeakAi,
-    ],
+    [handleSpeakAi],
   );
 
   const preProcessAIResponse = useCallback(
@@ -544,6 +394,7 @@ export default function Home() {
         return;
       }
 
+      const s = store.getState();
       if (webSocketMode) {
         // 未メンテなので不具合がある可能性あり
         console.log('websocket mode: true');
@@ -555,7 +406,7 @@ export default function Home() {
           if (role == 'assistant') {
             let aiText = `${'[neutral]'} ${newMessage}`;
             try {
-              const aiTalks = textsToScreenplay([aiText], koeiroParam);
+              const aiTalks = textsToScreenplay([aiText], s.koeiroParam);
 
               // 文ごとに音声を生成 & 再生、返答を表示
               handleSpeakAi(aiTalks[0], async () => {
@@ -614,27 +465,29 @@ export default function Home() {
           }
         }
       } else {
-        const { openAiKey, anthropicKey, googleKey, groqKey, difyKey } =
-          store.getState();
-
         // ChatVRM original mode
-        if (
-          (selectAIService === 'openai' &&
-            !openAiKey &&
-            !process.env.NEXT_PUBLIC_OPEN_AI_KEY) ||
-          (selectAIService === 'anthropic' &&
-            !anthropicKey &&
-            !process.env.NEXT_PUBLIC_ANTHROPIC_KEY) ||
-          (selectAIService === 'google' &&
-            !googleKey &&
-            !process.env.NEXT_PUBLIC_GOOGLE_KEY) ||
-          (selectAIService === 'groq' &&
-            !groqKey &&
-            !process.env.NEXT_PUBLIC_GROQ_KEY) ||
-          (selectAIService === 'dify' &&
-            !difyKey &&
-            !process.env.NEXT_PUBLIC_DIFY_KEY)
-        ) {
+        const emptyKeys = [
+          s.selectAIService === 'openai' &&
+            !s.openAiKey &&
+            !process.env.NEXT_PUBLIC_OPEN_AI_KEY,
+
+          s.selectAIService === 'anthropic' &&
+            !s.anthropicKey &&
+            !process.env.NEXT_PUBLIC_ANTHROPIC_KEY,
+
+          s.selectAIService === 'google' &&
+            !s.googleKey &&
+            !process.env.NEXT_PUBLIC_GOOGLE_KEY,
+
+          s.selectAIService === 'groq' &&
+            !s.groqKey &&
+            !process.env.NEXT_PUBLIC_GROQ_KEY,
+
+          s.selectAIService === 'dify' &&
+            !s.difyKey &&
+            !process.env.NEXT_PUBLIC_DIFY_KEY,
+        ];
+        if (emptyKeys.includes(true)) {
           setAssistantMessage(t('APIKeyNotEntered'));
           return;
         }
@@ -647,10 +500,10 @@ export default function Home() {
             role: 'user',
             content:
               modalImage &&
-              selectAIService === 'openai' &&
-              (selectAIModel === 'gpt-4o-mini' ||
-                selectAIModel === 'gpt-4o' ||
-                selectAIModel === 'gpt-4-turbo')
+              s.selectAIService === 'openai' &&
+              (s.selectAIModel === 'gpt-4o-mini' ||
+                s.selectAIModel === 'gpt-4o' ||
+                s.selectAIModel === 'gpt-4-turbo')
                 ? [
                     { type: 'text', text: newMessage },
                     { type: 'image_url', image_url: { url: modalImage } },
@@ -671,10 +524,10 @@ export default function Home() {
             : 'assistant',
           content:
             typeof message.content === 'string' ||
-            (selectAIService === 'openai' &&
-              (selectAIModel === 'gpt-4o-mini' ||
-                selectAIModel === 'gpt-4o' ||
-                selectAIModel === 'gpt-4-turbo'))
+            (s.selectAIService === 'openai' &&
+              (s.selectAIModel === 'gpt-4o-mini' ||
+                s.selectAIModel === 'gpt-4o' ||
+                s.selectAIModel === 'gpt-4-turbo'))
               ? message.content
               : message.content[0].text,
         }));
@@ -682,7 +535,7 @@ export default function Home() {
         const messages: Message[] = [
           {
             role: 'system',
-            content: systemPrompt,
+            content: s.systemPrompt,
           },
           ...processedMessageLog.slice(-10),
         ];
@@ -698,13 +551,10 @@ export default function Home() {
     },
     [
       webSocketMode,
-      koeiroParam,
       handleSpeakAi,
       codeLog,
       t,
-      selectAIService,
       chatLog,
-      systemPrompt,
       processAIResponse,
       modalImage,
       delayedText,
@@ -780,12 +630,12 @@ export default function Home() {
 
   // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async () => {
-    const { openAiKey, anthropicKey, youtubeApiKey } = store.getState();
+    const s = store.getState();
 
     if (
-      !openAiKey ||
-      !youtubeLiveId ||
-      !youtubeApiKey ||
+      !s.openAiKey ||
+      !s.youtubeLiveId ||
+      !s.youtubeApiKey ||
       chatProcessing ||
       chatProcessingCount > 0
     ) {
@@ -797,13 +647,10 @@ export default function Home() {
     console.log('Call fetchAndProcessComments !!!');
 
     fetchAndProcessComments(
-      systemPrompt,
       chatLog,
-      selectAIService === 'anthropic' ? anthropicKey : openAiKey,
-      selectAIService,
-      selectAIModel,
-      youtubeLiveId,
-      youtubeApiKey,
+      s.selectAIService === 'anthropic' ? s.anthropicKey : s.openAiKey,
+      s.youtubeLiveId,
+      s.youtubeApiKey,
       youtubeNextPageToken,
       setYoutubeNextPageToken,
       youtubeNoCommentCount,
@@ -817,13 +664,9 @@ export default function Home() {
       preProcessAIResponse,
     );
   }, [
-    youtubeLiveId,
     chatProcessing,
     chatProcessingCount,
-    systemPrompt,
     chatLog,
-    selectAIService,
-    selectAIModel,
     youtubeNextPageToken,
     youtubeNoCommentCount,
     youtubeContinuationCount,
@@ -836,7 +679,7 @@ export default function Home() {
   useEffect(() => {
     console.log('chatProcessingCount:', chatProcessingCount);
     fetchAndProcessCommentsCallback();
-  }, [chatProcessingCount, youtubeLiveId, conversationContinuityMode]);
+  }, [chatProcessingCount, conversationContinuityMode]);
 
   useEffect(() => {
     if (youtubeNoCommentCount < 1) return;
@@ -923,80 +766,28 @@ export default function Home() {
           <Introduction
             dontShowIntroduction={dontShowIntroduction}
             onChangeDontShowIntroduction={setDontShowIntroduction}
-            selectLanguage={selectLanguage}
-            setSelectLanguage={setSelectLanguage}
-            setSelectVoiceLanguage={setSelectVoiceLanguage}
           />
         )}
         <VrmViewer onImageDropped={handleImageDropped} />
         <MessageInputContainer
           isChatProcessing={chatProcessing}
           onChatProcessStart={hookSendChat}
-          selectVoiceLanguage={selectVoiceLanguage}
         />
         <Menu
-          selectAIService={selectAIService}
-          onChangeAIService={setSelectAIService}
-          selectAIModel={selectAIModel}
-          setSelectAIModel={setSelectAIModel}
-          localLlmUrl={localLlmUrl}
-          onChangeLocalLlmUrl={setLocalLlmUrl}
-          difyUrl={difyUrl}
-          onChangeDifyUrl={setDifyUrl}
-          difyConversationId={difyConversationId}
-          onChangeDifyConversationId={setDifyConversationId}
-          systemPrompt={systemPrompt}
           chatLog={chatLog}
           codeLog={codeLog}
-          koeiroParam={koeiroParam}
           assistantMessage={assistantMessage}
-          voicevoxSpeaker={voicevoxSpeaker}
-          googleTtsType={googleTtsType}
-          stylebertvits2ServerUrl={stylebertvits2ServerUrl}
-          stylebertvits2ModelId={stylebertvits2ModelId}
-          stylebertvits2Style={stylebertvits2Style}
-          youtubeMode={youtubeMode}
-          youtubeLiveId={youtubeLiveId}
           conversationContinuityMode={conversationContinuityMode}
-          onChangeSystemPrompt={setSystemPrompt}
           onChangeChatLog={handleChangeChatLog}
           onChangeCodeLog={handleChangeCodeLog}
-          onChangeKoeiromapParam={setKoeiroParam}
-          onChangeYoutubeMode={setYoutubeMode}
-          onChangeYoutubeLiveId={setYoutubeLiveId}
           onChangeConversationContinuityMode={setConversationContinuityMode}
           handleClickResetChatLog={() => setChatLog([])}
           handleClickResetCodeLog={() => setCodeLog([])}
-          handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
-          onChangeVoicevoxSpeaker={setVoicevoxSpeaker}
-          onChangeGoogleTtsType={setGoogleTtsType}
-          onChangeStyleBertVits2ServerUrl={setStylebertvits2ServerURL}
-          onChangeStyleBertVits2ModelId={setStylebertvits2ModelId}
-          onChangeStyleBertVits2Style={setStylebertvits2Style}
           webSocketMode={webSocketMode}
           changeWebSocketMode={changeWebSocketMode}
-          selectVoice={selectVoice}
-          setSelectVoice={setSelectVoice}
-          selectLanguage={selectLanguage}
-          setSelectLanguage={setSelectLanguage}
-          setSelectVoiceLanguage={setSelectVoiceLanguage}
           changeEnglishToJapanese={changeEnglishToJapanese}
           setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           setBackgroundImageUrl={setBackgroundImageUrl}
-          gsviTtsServerUrl={gsviTtsServerUrl}
-          onChangeGSVITtsServerUrl={setGSVITTSServerUrl}
-          gsviTtsModelId={gsviTtsModelId}
-          onChangeGSVITtsModelId={setGSVITTSModelID}
-          gsviTtsBatchSize={gsviTtsBatchSize}
-          onChangeGVITtsBatchSize={setGSVITTSBatchSize}
-          gsviTtsSpeechRate={gsviTtsSpeechRate}
-          onChangeGSVITtsSpeechRate={setGSVITTSSpeechRate}
-          elevenlabsVoiceId={elevenlabsVoiceId}
-          onChangeElevenlabsVoiceId={setElevenlabsVoiceId}
-          showCharacterName={showCharacterName}
-          onChangeShowCharacterName={setShowCharacterName}
-          characterName={characterName}
-          onChangeCharacterName={setCharacterName}
           onChangeModalImage={handleChangeModelImage}
           triggerShutter={triggerShutter}
           onChangeWebcamStatus={handleStatusWebcam}

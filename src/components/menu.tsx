@@ -1,8 +1,3 @@
-import { IconButton } from './iconButton';
-import { Message } from '@/features/messages/messages';
-import { KoeiroParam } from '@/features/constants/koeiroParam';
-import { ChatLog } from './chatLog';
-import { CodeLog } from './codeLog';
 import React, {
   useCallback,
   useContext,
@@ -10,147 +5,60 @@ import React, {
   useState,
   useEffect,
 } from 'react';
-import { Settings } from './settings';
-import { Webcam } from './webcam';
+import { useTranslation } from 'react-i18next';
+
+import { Message } from '@/features/messages/messages';
+import { testVoice } from '@/features/messages/speakCharacter';
+import store from '@/features/stores/app';
 import { ViewerContext } from '@/features/vrmViewer/viewerContext';
 import { AssistantText } from './assistantText';
-import { useTranslation } from 'react-i18next';
-import { testVoice } from '@/features/messages/speakCharacter';
+import { ChatLog } from './chatLog';
+import { CodeLog } from './codeLog';
+import { IconButton } from './iconButton';
+import { Settings } from './settings';
+import { Webcam } from './webcam';
 
 type Props = {
-  selectAIService: string;
-  onChangeAIService: (service: string) => void;
-  selectAIModel: string;
-  setSelectAIModel: (model: string) => void;
-  localLlmUrl: string;
-  onChangeLocalLlmUrl: (url: string) => void;
-  difyUrl: string;
-  onChangeDifyUrl: (url: string) => void;
-  difyConversationId: string;
-  onChangeDifyConversationId: (id: string) => void;
-  systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
-  koeiroParam: KoeiroParam;
   assistantMessage: string;
-  voicevoxSpeaker: string;
-  googleTtsType: string;
-  stylebertvits2ServerUrl: string;
-  onChangeStyleBertVits2ServerUrl: (key: string) => void;
-  stylebertvits2ModelId: string;
-  onChangeStyleBertVits2ModelId: (key: string) => void;
-  stylebertvits2Style: string;
-  onChangeStyleBertVits2Style: (key: string) => void;
-  youtubeMode: boolean;
-  youtubeLiveId: string;
   conversationContinuityMode: boolean;
-  onChangeSystemPrompt: (systemPrompt: string) => void;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
-  onChangeKoeiromapParam: (param: KoeiroParam) => void;
   handleClickResetChatLog: () => void;
   handleClickResetCodeLog: () => void;
-  handleClickResetSystemPrompt: () => void;
-  onChangeVoicevoxSpeaker: (speaker: string) => void;
-  onChangeGoogleTtsType: (key: string) => void;
-  onChangeYoutubeMode: (mode: boolean) => void;
-  onChangeYoutubeLiveId: (key: string) => void;
   onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
   changeWebSocketMode: (show: boolean) => void;
-  selectVoice: string;
-  setSelectVoice: (show: string) => void;
-  selectLanguage: string;
-  setSelectLanguage: (show: string) => void;
-  setSelectVoiceLanguage: (show: string) => void;
   changeEnglishToJapanese: boolean;
   setChangeEnglishToJapanese: (show: boolean) => void;
   setBackgroundImageUrl: (url: string) => void;
-  gsviTtsServerUrl: string;
-  onChangeGSVITtsServerUrl: (name: string) => void;
-  gsviTtsModelId: string;
-  onChangeGSVITtsModelId: (name: string) => void;
-  gsviTtsBatchSize: number;
-  onChangeGVITtsBatchSize: (speed: number) => void;
-  gsviTtsSpeechRate: number;
-  onChangeGSVITtsSpeechRate: (speed: number) => void;
-  elevenlabsVoiceId: string;
-  onChangeElevenlabsVoiceId: (key: string) => void;
-  characterName: string;
-  onChangeCharacterName: (key: string) => void;
-  showCharacterName: boolean;
-  onChangeShowCharacterName: (show: boolean) => void;
   onChangeModalImage: (image: string) => void;
   triggerShutter: boolean;
   onChangeWebcamStatus: (show: boolean) => void;
 };
 export const Menu = ({
-  selectAIService,
-  onChangeAIService,
-  selectAIModel,
-  setSelectAIModel,
-  localLlmUrl,
-  onChangeLocalLlmUrl,
-  difyUrl,
-  onChangeDifyUrl,
-  difyConversationId,
-  onChangeDifyConversationId,
-  systemPrompt,
   chatLog,
   codeLog,
-  koeiroParam,
   assistantMessage,
-  voicevoxSpeaker,
-  googleTtsType,
-  stylebertvits2ServerUrl,
-  stylebertvits2ModelId,
-  stylebertvits2Style,
-  youtubeMode,
-  youtubeLiveId,
   conversationContinuityMode,
-  onChangeSystemPrompt,
   onChangeChatLog,
   onChangeCodeLog,
-  onChangeKoeiromapParam,
   handleClickResetChatLog,
   handleClickResetCodeLog,
-  handleClickResetSystemPrompt,
-  onChangeVoicevoxSpeaker,
-  onChangeGoogleTtsType,
-  onChangeStyleBertVits2ServerUrl,
-  onChangeStyleBertVits2ModelId,
-  onChangeStyleBertVits2Style,
-  onChangeYoutubeMode,
-  onChangeYoutubeLiveId,
   onChangeConversationContinuityMode,
   webSocketMode,
   changeWebSocketMode,
-  selectVoice,
-  setSelectVoice,
-  selectLanguage,
-  setSelectLanguage,
-  setSelectVoiceLanguage,
   changeEnglishToJapanese,
   setChangeEnglishToJapanese,
   setBackgroundImageUrl,
-  gsviTtsServerUrl,
-  onChangeGSVITtsServerUrl,
-  gsviTtsModelId,
-  onChangeGSVITtsModelId,
-  gsviTtsBatchSize,
-  onChangeGVITtsBatchSize,
-  gsviTtsSpeechRate,
-  onChangeGSVITtsSpeechRate,
-  elevenlabsVoiceId,
-  onChangeElevenlabsVoiceId,
-  characterName,
-  onChangeCharacterName,
-  showCharacterName,
-  onChangeShowCharacterName,
   onChangeModalImage,
   triggerShutter,
   onChangeWebcamStatus,
 }: Props) => {
+  const selectAIService = store((s) => s.selectAIService);
+  const selectAIModel = store((s) => s.selectAIModel);
+
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
   const [showWebcam, setShowWebcam] = useState(false);
@@ -162,113 +70,14 @@ export const Menu = ({
   const { t } = useTranslation();
   const [showSettingsButton, setShowSettingsButton] = useState(true);
 
-  const handleChangeAIService = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      onChangeAIService(event.target.value);
-      if (event.target.value !== 'openai') {
-        onChangeConversationContinuityMode(false);
-        setShowWebcam(false);
-        onChangeModalImage('');
-      }
-    },
-    [onChangeAIService, onChangeConversationContinuityMode],
-  );
-
-  const handleChangeSelectAIModel = useCallback(
-    (model: string) => {
-      setSelectAIModel(model);
-    },
-    [setSelectAIModel],
-  );
-
-  const handleChangeSystemPrompt = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onChangeSystemPrompt(event.target.value);
-    },
-    [onChangeSystemPrompt],
-  );
-
-  const handleChangeLocalLlmUrl = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeLocalLlmUrl(event.target.value);
-    },
-    [onChangeLocalLlmUrl],
-  );
-
-  const handleDifyUrlChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeDifyUrl(event.target.value);
-    },
-    [onChangeDifyUrl],
-  );
-
-  const handleDifyConversationIdChange = useCallback(
-    (value: string) => {
-      onChangeDifyConversationId(value);
-    },
-    [onChangeDifyConversationId],
-  );
-
-  const handleVoicevoxSpeakerChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      onChangeVoicevoxSpeaker(event.target.value);
-    },
-    [onChangeVoicevoxSpeaker],
-  );
-
-  const handleChangeGoogleTtsType = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGoogleTtsType(event.target.value);
-    },
-    [onChangeGoogleTtsType],
-  );
-
-  const handleChangeStyleBertVits2ServerUrl = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeStyleBertVits2ServerUrl(event.target.value);
-    },
-    [onChangeStyleBertVits2ServerUrl],
-  );
-
-  const handleChangeStyleBertVits2ModelId = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeStyleBertVits2ModelId(event.target.value);
-    },
-    [onChangeStyleBertVits2ModelId],
-  );
-
-  const handleChangeStyleBertVits2Style = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeStyleBertVits2Style(event.target.value);
-    },
-    [onChangeStyleBertVits2Style],
-  );
-
-  const handleYoutubeLiveIdChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeYoutubeLiveId(event.target.value);
-    },
-    [onChangeYoutubeLiveId],
-  );
-
-  const handleChangeKoeiroParam = useCallback(
-    (x: number, y: number) => {
-      onChangeKoeiromapParam({
-        speakerX: x,
-        speakerY: y,
-      });
-    },
-    [onChangeKoeiromapParam],
-  );
-
   const handleWebSocketMode = useCallback(
     (show: boolean) => {
       changeWebSocketMode(show);
       if (webSocketMode) {
-        onChangeYoutubeMode(false);
+        store.setState({ youtubeMode: false });
       }
     },
-    [changeWebSocketMode, webSocketMode, onChangeYoutubeMode],
+    [changeWebSocketMode, webSocketMode],
   );
 
   const handleConversationContinuityMode = useCallback(
@@ -320,55 +129,6 @@ export const Menu = ({
       }
     },
     [setBackgroundImageUrl],
-  );
-
-  const handleChangeGSVITtsServerUrl = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGSVITtsServerUrl(event.target.value);
-    },
-    [onChangeGSVITtsServerUrl],
-  );
-
-  const handleChangeGSVITtsModelId = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGSVITtsModelId(event.target.value);
-    },
-    [onChangeGSVITtsModelId],
-  );
-
-  const handleChangeGSVITtsBatchSize = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGVITtsBatchSize(parseFloat(event.target.value));
-    },
-    [onChangeGVITtsBatchSize],
-  );
-
-  const handleChangeGSVITtsSpeechRate = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGSVITtsSpeechRate(parseFloat(event.target.value));
-    },
-    [onChangeGSVITtsSpeechRate],
-  );
-
-  const handleChangeElevenlabsVoiceId = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeElevenlabsVoiceId(event.target.value);
-    },
-    [onChangeElevenlabsVoiceId],
-  );
-
-  const handleCharacterName = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeCharacterName(event.target.value);
-    },
-    [onChangeCharacterName],
-  );
-
-  const handleShowCharacterName = useCallback(
-    (show: boolean) => {
-      onChangeShowCharacterName(show);
-    },
-    [onChangeShowCharacterName],
   );
 
   useEffect(() => {
@@ -495,85 +255,31 @@ export const Menu = ({
       </div>
       {webSocketMode
         ? showChatLog && <CodeLog messages={codeLog} />
-        : showChatLog && (
-            <ChatLog messages={chatLog} characterName={characterName} />
-          )}
+        : showChatLog && <ChatLog messages={chatLog} />}
       {showSettings && (
         <Settings
-          selectAIService={selectAIService}
-          onChangeAIService={handleChangeAIService}
-          selectAIModel={selectAIModel}
-          onChangeSelectAIModel={handleChangeSelectAIModel}
-          localLlmUrl={localLlmUrl}
-          onChangeLocalLlmUrl={handleChangeLocalLlmUrl}
-          difyUrl={difyUrl}
-          onChangeDifyUrl={handleDifyUrlChange}
-          difyConversationId={difyConversationId}
-          onChangeDifyConversationId={handleDifyConversationIdChange}
           chatLog={chatLog}
           codeLog={codeLog}
-          systemPrompt={systemPrompt}
-          koeiroParam={koeiroParam}
-          voicevoxSpeaker={voicevoxSpeaker}
-          googleTtsType={googleTtsType}
-          stylebertvits2ServerUrl={stylebertvits2ServerUrl}
-          stylebertvits2ModelId={stylebertvits2ModelId}
-          stylebertvits2Style={stylebertvits2Style}
-          youtubeMode={youtubeMode}
-          youtubeLiveId={youtubeLiveId}
           conversationContinuityMode={conversationContinuityMode}
           onClickClose={() => setShowSettings(false)}
-          onChangeSystemPrompt={handleChangeSystemPrompt}
           onChangeChatLog={onChangeChatLog}
           onChangeCodeLog={onChangeCodeLog}
-          onChangeKoeiroParam={handleChangeKoeiroParam}
           onClickOpenVrmFile={handleClickOpenVrmFile}
           onClickOpenBgFile={handleClickOpenBgFile}
           onClickResetChatLog={handleClickResetChatLog}
           onClickResetCodeLog={handleClickResetCodeLog}
-          onClickResetSystemPrompt={handleClickResetSystemPrompt}
-          onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
-          onChangeGoogleTtsType={handleChangeGoogleTtsType}
-          onChangeStyleBertVits2ServerUrl={handleChangeStyleBertVits2ServerUrl}
-          onChangeStyleBertVits2ModelId={handleChangeStyleBertVits2ModelId}
-          onChangeStyleBertVits2Style={handleChangeStyleBertVits2Style}
-          onChangeYoutubeMode={onChangeYoutubeMode}
-          onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
           onChangeConversationContinuityMode={handleConversationContinuityMode}
           webSocketMode={webSocketMode}
           onChangeWebSocketMode={handleWebSocketMode}
-          selectVoice={selectVoice}
-          setSelectVoice={setSelectVoice}
-          selectLanguage={selectLanguage}
-          setSelectLanguage={setSelectLanguage}
-          setSelectVoiceLanguage={setSelectVoiceLanguage}
           changeEnglishToJapanese={changeEnglishToJapanese}
           setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           onClickTestVoice={handleClickTestVoice}
-          gsviTtsServerUrl={gsviTtsServerUrl}
-          onChangeGSVITtsServerUrl={handleChangeGSVITtsServerUrl}
-          gsviTtsModelId={gsviTtsModelId}
-          onChangeGSVITtsModelId={handleChangeGSVITtsModelId}
-          gsviTtsBatchSize={gsviTtsBatchSize}
-          onChangeGVITtsBatchSize={handleChangeGSVITtsBatchSize}
-          gsviTtsSpeechRate={gsviTtsSpeechRate}
-          onChangeGSVITtsSpeechRate={handleChangeGSVITtsSpeechRate}
-          elevenlabsVoiceId={elevenlabsVoiceId}
-          onChangeElevenlabsVoiceId={handleChangeElevenlabsVoiceId}
-          characterName={characterName}
-          onChangeCharacterName={handleCharacterName}
-          showCharacterName={showCharacterName}
-          onChangeShowCharacterName={handleShowCharacterName}
           showSettingsButton={showSettingsButton}
           onChangeShowSettingsButton={setShowSettingsButton}
         />
       )}
       {!showChatLog && assistantMessage && (
-        <AssistantText
-          message={assistantMessage}
-          characterName={characterName}
-          showCharacterName={showCharacterName}
-        />
+        <AssistantText message={assistantMessage} />
       )}
       {showWebcam && navigator.mediaDevices && (
         <Webcam

@@ -1,10 +1,11 @@
-import { MessageInput } from '@/components/messageInput';
 import { useState, useEffect, useCallback } from 'react';
+
+import { MessageInput } from '@/components/messageInput';
+import store from '@/features/stores/app';
 
 type Props = {
   isChatProcessing: boolean;
   onChatProcessStart: (text: string) => void;
-  selectVoiceLanguage: string;
 };
 
 /**
@@ -16,7 +17,6 @@ type Props = {
 export const MessageInputContainer = ({
   isChatProcessing,
   onChatProcessStart,
-  selectVoiceLanguage,
 }: Props) => {
   const [userMessage, setUserMessage] = useState('');
   const [speechRecognition, setSpeechRecognition] =
@@ -68,8 +68,9 @@ export const MessageInputContainer = ({
     if (!SpeechRecognition) {
       return;
     }
+    const s = store.getState();
     const recognition = new SpeechRecognition();
-    recognition.lang = selectVoiceLanguage;
+    recognition.lang = s.selectVoiceLanguage;
     recognition.interimResults = true; // 認識の途中結果を返す
     recognition.continuous = false; // 発言の終了時に認識を終了する
 
@@ -77,7 +78,7 @@ export const MessageInputContainer = ({
     recognition.addEventListener('end', handleRecognitionEnd);
 
     setSpeechRecognition(recognition);
-  }, [handleRecognitionResult, handleRecognitionEnd, selectVoiceLanguage]);
+  }, [handleRecognitionResult, handleRecognitionEnd]);
 
   useEffect(() => {
     if (!isChatProcessing) {

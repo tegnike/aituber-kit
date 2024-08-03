@@ -1,173 +1,67 @@
-import store from '@/features/stores/app';
-import React, { useEffect } from 'react';
-import { IconButton } from './iconButton';
-import { TextButton } from './textButton';
-import { Message } from '@/features/messages/messages';
-import { GitHubLink } from './githubLink';
+import { Disclosure } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/24/solid';
+import i18n from 'i18next';
+import Image from 'next/image';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { Voice } from '@/features/chat/aiChatFactory';
 import {
-  KoeiroParam,
   PRESET_A,
   PRESET_B,
   PRESET_C,
   PRESET_D,
 } from '@/features/constants/koeiroParam';
+import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
+import { Message } from '@/features/messages/messages';
+import store from '@/features/stores/app';
+import { GitHubLink } from './githubLink';
+import { IconButton } from './iconButton';
 import { Link } from './link';
-import i18n from 'i18next';
-import { useTranslation } from 'react-i18next';
 import speakers from './speakers.json';
-import { Disclosure } from '@headlessui/react';
-import { ChevronUpIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
+import { TextButton } from './textButton';
 
 type Props = {
-  selectAIService: string;
-  onChangeAIService: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  selectAIModel: string;
-  onChangeSelectAIModel: (model: string) => void;
-  localLlmUrl: string;
-  onChangeLocalLlmUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  difyUrl: string;
-  onChangeDifyUrl: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  difyConversationId: string;
-  onChangeDifyConversationId: (id: string) => void;
-  systemPrompt: string;
   chatLog: Message[];
   codeLog: Message[];
-  koeiroParam: KoeiroParam;
-  voicevoxSpeaker: string;
-  googleTtsType: string;
-  stylebertvits2ServerUrl: string;
-  stylebertvits2ModelId: string;
-  stylebertvits2Style: string;
-  youtubeMode: boolean;
-  youtubeLiveId: string;
   conversationContinuityMode: boolean;
   onClickClose: () => void;
-  onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
-  onChangeKoeiroParam: (x: number, y: number) => void;
   onClickOpenVrmFile: () => void;
   onClickOpenBgFile: () => void;
   onClickResetChatLog: () => void;
   onClickResetCodeLog: () => void;
-  onClickResetSystemPrompt: () => void;
-  onChangeVoicevoxSpeaker: (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => void;
-  onChangeGoogleTtsType: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onChangeStyleBertVits2ServerUrl: (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
-  onChangeStyleBertVits2ModelId: (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
-  onChangeStyleBertVits2Style: (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
-  onChangeYoutubeMode: (mode: boolean) => void;
-  onChangeYoutubeLiveId: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeConversationContinuityMode: (mode: boolean) => void;
   webSocketMode: boolean;
   onChangeWebSocketMode: (show: boolean) => void;
-  selectVoice: string;
-  setSelectVoice: (show: string) => void;
-  selectLanguage: string;
-  setSelectLanguage: (show: string) => void;
-  setSelectVoiceLanguage: (show: string) => void;
   changeEnglishToJapanese: boolean;
   setChangeEnglishToJapanese: (show: boolean) => void;
   onClickTestVoice: (speaker: string) => void;
-  gsviTtsServerUrl: string;
-  onChangeGSVITtsServerUrl: (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
-  gsviTtsModelId: string;
-  onChangeGSVITtsModelId: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  gsviTtsBatchSize: number;
-  onChangeGVITtsBatchSize: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  gsviTtsSpeechRate: number;
-  onChangeGSVITtsSpeechRate: (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
-  elevenlabsVoiceId: string;
-  onChangeElevenlabsVoiceId: (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => void;
-  characterName: string;
-  onChangeCharacterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  showCharacterName: boolean;
-  onChangeShowCharacterName: (show: boolean) => void;
   showSettingsButton: boolean;
   onChangeShowSettingsButton: (show: boolean) => void;
 };
 export const Settings = ({
-  selectAIService,
-  onChangeAIService,
-  selectAIModel,
-  onChangeSelectAIModel,
-  localLlmUrl,
-  onChangeLocalLlmUrl,
-  difyUrl,
-  onChangeDifyUrl,
-  difyConversationId,
-  onChangeDifyConversationId,
   chatLog,
-  systemPrompt,
-  koeiroParam,
-  voicevoxSpeaker,
-  googleTtsType,
-  stylebertvits2ServerUrl,
-  stylebertvits2ModelId,
-  stylebertvits2Style,
-  youtubeMode,
-  youtubeLiveId,
+  codeLog,
   conversationContinuityMode,
   onClickClose,
-  onChangeSystemPrompt,
   onChangeChatLog,
   onChangeCodeLog,
-  onChangeKoeiroParam,
   onClickOpenVrmFile,
   onClickOpenBgFile,
   onClickResetChatLog,
   onClickResetCodeLog,
-  onClickResetSystemPrompt,
-  onChangeVoicevoxSpeaker,
-  onChangeGoogleTtsType,
-  onChangeStyleBertVits2ServerUrl,
-  onChangeStyleBertVits2ModelId,
-  onChangeStyleBertVits2Style,
-  onChangeYoutubeMode,
-  onChangeYoutubeLiveId,
   onChangeConversationContinuityMode,
   webSocketMode,
   onChangeWebSocketMode,
-  selectVoice,
-  setSelectVoice,
-  selectLanguage,
-  setSelectLanguage,
-  setSelectVoiceLanguage,
   changeEnglishToJapanese,
   setChangeEnglishToJapanese,
   onClickTestVoice,
-  gsviTtsServerUrl,
-  onChangeGSVITtsServerUrl,
-  gsviTtsModelId,
-  onChangeGSVITtsModelId,
-  gsviTtsBatchSize,
-  onChangeGVITtsBatchSize,
-  gsviTtsSpeechRate,
-  onChangeGSVITtsSpeechRate,
-  elevenlabsVoiceId,
-  onChangeElevenlabsVoiceId,
-  characterName,
-  onChangeCharacterName,
-  showCharacterName,
-  onChangeShowCharacterName,
   showSettingsButton,
   onChangeShowSettingsButton,
 }: Props) => {
+  // API Keys
   const openAiKey = store((s) => s.openAiKey);
   const anthropicKey = store((s) => s.anthropicKey);
   const googleKey = store((s) => s.googleKey);
@@ -177,18 +71,38 @@ export const Settings = ({
   const youtubeApiKey = store((s) => s.youtubeApiKey);
   const elevenlabsApiKey = store((s) => s.elevenlabsApiKey);
 
-  const { t } = useTranslation();
+  // Model Provider
+  const selectAIService = store((s) => s.selectAIService);
+  const selectAIModel = store((s) => s.selectAIModel);
+  const localLlmUrl = store((s) => s.localLlmUrl);
+  const selectVoice = store((s) => s.selectVoice);
+  const koeiroParam = store((s) => s.koeiroParam);
+  const googleTtsType = store((s) => s.googleTtsType);
+  const voicevoxSpeaker = store((s) => s.voicevoxSpeaker);
+  const stylebertvits2ServerUrl = store((s) => s.stylebertvits2ServerUrl);
+  const stylebertvits2ModelId = store((s) => s.stylebertvits2ModelId);
+  const stylebertvits2Style = store((s) => s.stylebertvits2Style);
+  const gsviTtsServerUrl = store((s) => s.gsviTtsServerUrl);
+  const gsviTtsModelId = store((s) => s.gsviTtsModelId);
+  const gsviTtsBatchSize = store((s) => s.gsviTtsBatchSize);
+  const gsviTtsSpeechRate = store((s) => s.gsviTtsSpeechRate);
+  const elevenlabsVoiceId = store((s) => s.elevenlabsVoiceId);
 
-  // Add this useEffect hook
-  useEffect(() => {
-    const storedData = window.localStorage.getItem('chatVRMParams');
-    if (storedData) {
-      const params = JSON.parse(storedData);
-      if (params.selectLanguage) {
-        setSelectLanguage(params.selectLanguage);
-      }
-    }
-  }, [setSelectLanguage]);
+  // Integrations
+  const difyUrl = store((s) => s.difyUrl);
+  const difyConversationId = store((s) => s.difyConversationId);
+  const youtubeMode = store((s) => s.youtubeMode);
+  const youtubeLiveId = store((s) => s.youtubeLiveId);
+
+  // Characters
+  const characterName = store((s) => s.characterName);
+  const showCharacterName = store((s) => s.showCharacterName);
+  const systemPrompt = store((s) => s.systemPrompt);
+
+  // General
+  const selectLanguage = store((s) => s.selectLanguage);
+
+  const { t } = useTranslation();
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
@@ -227,47 +141,50 @@ export const Settings = ({
                 value={selectLanguage}
                 onChange={(e) => {
                   const newLanguage = e.target.value;
+                  const jpVoiceSelected =
+                    selectVoice === 'voicevox' || selectVoice === 'koeiromap';
+
                   switch (newLanguage) {
                     case 'JP':
-                      setSelectLanguage('JP');
-                      setSelectVoiceLanguage('ja-JP');
+                      store.setState({
+                        selectLanguage: 'JP',
+                        selectVoiceLanguage: 'ja-JP',
+                      });
+
                       i18n.changeLanguage('ja');
                       break;
                     case 'EN':
-                      setSelectLanguage('EN');
-                      if (
-                        selectVoice === 'voicevox' ||
-                        selectVoice === 'koeiromap'
-                      ) {
-                        setSelectVoice('google');
+                      store.setState({ selectLanguage: 'EN' });
+
+                      if (jpVoiceSelected) {
+                        store.setState({ selectVoice: 'google' });
                       }
-                      setSelectVoiceLanguage('en-US');
+                      store.setState({ selectVoiceLanguage: 'en-US' });
+
                       i18n.changeLanguage('en');
                       break;
                     case 'ZH':
-                      setSelectLanguage('ZH');
-                      if (
-                        selectVoice === 'voicevox' ||
-                        selectVoice === 'koeiromap'
-                      ) {
-                        setSelectVoice('google');
+                      store.setState({ selectLanguage: 'ZH' });
+
+                      if (jpVoiceSelected) {
+                        store.setState({ selectVoice: 'google' });
                       }
-                      setSelectVoiceLanguage('zh-TW');
+                      store.setState({ selectVoiceLanguage: 'zh-TW' });
+
                       i18n.changeLanguage('zh-TW');
                       break;
                     case 'KO':
-                      setSelectLanguage('KO');
-                      if (
-                        selectVoice === 'voicevox' ||
-                        selectVoice === 'koeiromap'
-                      ) {
-                        setSelectVoice('google');
+                      store.setState({ selectLanguage: 'KO' });
+
+                      if (jpVoiceSelected) {
+                        store.setState({ selectVoice: 'google' });
                       }
-                      setSelectVoiceLanguage('ko-KR');
+                      store.setState({ selectVoiceLanguage: 'ko-KR' });
+
                       i18n.changeLanguage('ko');
                       break;
                     default:
-                      break; // Optionally handle unexpected values
+                      break;
                   }
                 }}
               >
@@ -288,14 +205,20 @@ export const Settings = ({
               type="text"
               placeholder={t('CharacterName')}
               value={characterName}
-              onChange={onChangeCharacterName}
+              onChange={(e) =>
+                store.setState({ characterName: e.target.value })
+              }
             />
             <div className="my-16 typography-20 font-bold">
               {t('ShowCharacterName')}
             </div>
             <div className="my-8">
               <TextButton
-                onClick={() => onChangeShowCharacterName(!showCharacterName)}
+                onClick={() =>
+                  store.setState((s) => ({
+                    showCharacterName: !s.showCharacterName,
+                  }))
+                }
               >
                 {showCharacterName ? t('StatusOn') : t('StatusOff')}
               </TextButton>
@@ -353,9 +276,22 @@ export const Settings = ({
                         onChange={(e) => {
                           const newService = e.target
                             .value as keyof typeof defaultModels;
-                          onChangeAIService(e);
+
+                          store.setState({
+                            selectAIService: newService,
+                          });
+
+                          if (newService !== 'openai') {
+                            onChangeConversationContinuityMode(false);
+                            // FIXME: (7741) add showWebcam to menuStore and modalImage to store (global state)
+                            // setShowWebcam(false);
+                            // onChangeModalImage('');
+                          }
+
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
-                          onChangeSelectAIModel(defaultModels[newService]);
+                          store.setState({
+                            selectAIModel: defaultModels[newService],
+                          });
                         }}
                       >
                         <option value="openai">OpenAI</option>
@@ -399,7 +335,9 @@ export const Settings = ({
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
                                 onChange={(e) =>
-                                  onChangeSelectAIModel(e.target.value)
+                                  store.setState({
+                                    selectAIModel: e.target.value,
+                                  })
                                 }
                               >
                                 <option value="gpt-4o-mini">gpt-4o-mini</option>
@@ -443,7 +381,9 @@ export const Settings = ({
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
                                 onChange={(e) =>
-                                  onChangeSelectAIModel(e.target.value)
+                                  store.setState({
+                                    selectAIModel: e.target.value,
+                                  })
                                 }
                               >
                                 <option value="claude-3-opus-20240229">
@@ -493,7 +433,9 @@ export const Settings = ({
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
                                 onChange={(e) =>
-                                  onChangeSelectAIModel(e.target.value)
+                                  store.setState({
+                                    selectAIModel: e.target.value,
+                                  })
                                 }
                               >
                                 <option value="gemini-1.5-pro-latest">
@@ -537,7 +479,9 @@ export const Settings = ({
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
                                 onChange={(e) =>
-                                  onChangeSelectAIModel(e.target.value)
+                                  store.setState({
+                                    selectAIModel: e.target.value,
+                                  })
                                 }
                               >
                                 <option value="gemma-7b-it">gemma-7b-it</option>
@@ -580,7 +524,9 @@ export const Settings = ({
                               type="text"
                               placeholder="..."
                               value={localLlmUrl}
-                              onChange={onChangeLocalLlmUrl}
+                              onChange={(e) =>
+                                store.setState({ localLlmUrl: e.target.value })
+                              }
                             />
                             <div className="my-16 typography-20 font-bold">
                               {t('SelectModel')}
@@ -591,7 +537,9 @@ export const Settings = ({
                               placeholder="..."
                               value={selectAIModel}
                               onChange={(e) =>
-                                onChangeSelectAIModel(e.target.value)
+                                store.setState({
+                                  selectAIModel: e.target.value,
+                                })
                               }
                             />
                           </div>
@@ -622,7 +570,9 @@ export const Settings = ({
                                 type="text"
                                 placeholder="..."
                                 value={difyUrl}
-                                onChange={onChangeDifyUrl}
+                                onChange={(e) =>
+                                  store.setState({ difyUrl: e.target.value })
+                                }
                               />
                             </div>
                           </div>
@@ -636,11 +586,15 @@ export const Settings = ({
                     </div>
                     <div className="my-8">
                       {youtubeMode ? (
-                        <TextButton onClick={() => onChangeYoutubeMode(false)}>
+                        <TextButton
+                          onClick={() => store.setState({ youtubeMode: false })}
+                        >
                           {t('StatusOn')}
                         </TextButton>
                       ) : (
-                        <TextButton onClick={() => onChangeYoutubeMode(true)}>
+                        <TextButton
+                          onClick={() => store.setState({ youtubeMode: true })}
+                        >
                           {t('StatusOff')}
                         </TextButton>
                       )}
@@ -673,7 +627,11 @@ export const Settings = ({
                                 type="text"
                                 placeholder="..."
                                 value={youtubeLiveId}
-                                onChange={onChangeYoutubeLiveId}
+                                onChange={(e) =>
+                                  store.setState({
+                                    youtubeLiveId: e.target.value,
+                                  })
+                                }
                               />
                               <div className="my-16 typography-20 font-bold">
                                 {t('ConversationContinuityMode')}
@@ -726,13 +684,19 @@ export const Settings = ({
                       {selectAIService === 'dify' && (
                         <div className="my-16">{t('DifyInstruction')}</div>
                       )}
-                      <TextButton onClick={onClickResetSystemPrompt}>
+                      <TextButton
+                        onClick={() =>
+                          store.setState({ systemPrompt: SYSTEM_PROMPT })
+                        }
+                      >
                         {t('CharacterSettingsReset')}
                       </TextButton>
                     </div>
                     <textarea
                       value={systemPrompt}
-                      onChange={onChangeSystemPrompt}
+                      onChange={(e) =>
+                        store.setState({ systemPrompt: e.target.value })
+                      }
                       className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
                     ></textarea>
                   </div>
@@ -749,7 +713,9 @@ export const Settings = ({
             <div className="my-8">
               <select
                 value={selectVoice}
-                onChange={(e) => setSelectVoice(e.target.value)}
+                onChange={(e) =>
+                  store.setState({ selectVoice: e.target.value as Voice })
+                }
                 className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
               >
                 <option value="voicevox">{t('UsingVoiceVox')}</option>
@@ -794,40 +760,48 @@ export const Settings = ({
                       <div className="my-8 grid grid-cols-2 gap-[8px]">
                         <TextButton
                           onClick={() =>
-                            onChangeKoeiroParam(
-                              PRESET_A.speakerX,
-                              PRESET_A.speakerY,
-                            )
+                            store.setState({
+                              koeiroParam: {
+                                speakerX: PRESET_A.speakerX,
+                                speakerY: PRESET_A.speakerY,
+                              },
+                            })
                           }
                         >
                           かわいい
                         </TextButton>
                         <TextButton
                           onClick={() =>
-                            onChangeKoeiroParam(
-                              PRESET_B.speakerX,
-                              PRESET_B.speakerY,
-                            )
+                            store.setState({
+                              koeiroParam: {
+                                speakerX: PRESET_B.speakerX,
+                                speakerY: PRESET_B.speakerY,
+                              },
+                            })
                           }
                         >
                           元気
                         </TextButton>
                         <TextButton
                           onClick={() =>
-                            onChangeKoeiroParam(
-                              PRESET_C.speakerX,
-                              PRESET_C.speakerY,
-                            )
+                            store.setState({
+                              koeiroParam: {
+                                speakerX: PRESET_C.speakerX,
+                                speakerY: PRESET_C.speakerY,
+                              },
+                            })
                           }
                         >
                           かっこいい
                         </TextButton>
                         <TextButton
                           onClick={() =>
-                            onChangeKoeiroParam(
-                              PRESET_D.speakerX,
-                              PRESET_D.speakerY,
-                            )
+                            store.setState({
+                              koeiroParam: {
+                                speakerX: PRESET_D.speakerX,
+                                speakerY: PRESET_D.speakerY,
+                              },
+                            })
                           }
                         >
                           渋い
@@ -845,10 +819,12 @@ export const Settings = ({
                           value={koeiroParam.speakerX}
                           className="mt-8 mb-16 input-range"
                           onChange={(e) => {
-                            onChangeKoeiroParam(
-                              Number(e.target.value),
-                              koeiroParam.speakerY,
-                            );
+                            store.setState({
+                              koeiroParam: {
+                                speakerX: Number(e.target.value),
+                                speakerY: koeiroParam.speakerY,
+                              },
+                            });
                           }}
                         ></input>
                         <div className="select-none">
@@ -862,10 +838,12 @@ export const Settings = ({
                           value={koeiroParam.speakerY}
                           className="mt-8 mb-16 input-range"
                           onChange={(e) => {
-                            onChangeKoeiroParam(
-                              koeiroParam.speakerX,
-                              Number(e.target.value),
-                            );
+                            store.setState({
+                              koeiroParam: {
+                                speakerX: koeiroParam.speakerX,
+                                speakerY: Number(e.target.value),
+                              },
+                            });
                           }}
                         ></input>
                       </div>
@@ -888,7 +866,9 @@ export const Settings = ({
                       <div className="flex items-center">
                         <select
                           value={voicevoxSpeaker}
-                          onChange={onChangeVoicevoxSpeaker}
+                          onChange={(e) =>
+                            store.setState({ voicevoxSpeaker: e.target.value })
+                          }
                           className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
                         >
                           <option value="">選択してください</option>
@@ -936,7 +916,9 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={googleTtsType}
-                          onChange={onChangeGoogleTtsType}
+                          onChange={(e) =>
+                            store.setState({ googleTtsType: e.target.value })
+                          }
                         />
                       </div>
                     </>
@@ -963,7 +945,11 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={stylebertvits2ServerUrl}
-                          onChange={onChangeStyleBertVits2ServerUrl}
+                          onChange={(e) =>
+                            store.setState({
+                              stylebertvits2ServerUrl: e.target.value,
+                            })
+                          }
                         />
                       </div>
                       <div className="mt-16 font-bold">
@@ -975,7 +961,11 @@ export const Settings = ({
                           type="number"
                           placeholder="..."
                           value={stylebertvits2ModelId}
-                          onChange={onChangeStyleBertVits2ModelId}
+                          onChange={(e) =>
+                            store.setState({
+                              stylebertvits2ModelId: e.target.value,
+                            })
+                          }
                         />
                       </div>
                       <div className="mt-16 font-bold">
@@ -987,7 +977,11 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={stylebertvits2Style}
-                          onChange={onChangeStyleBertVits2Style}
+                          onChange={(e) =>
+                            store.setState({
+                              stylebertvits2Style: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </>
@@ -1005,7 +999,9 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={gsviTtsServerUrl}
-                          onChange={onChangeGSVITtsServerUrl}
+                          onChange={(e) =>
+                            store.setState({ gsviTtsServerUrl: e.target.value })
+                          }
                         />
                       </div>
                       <div className="mt-16 font-bold">
@@ -1017,7 +1013,9 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={gsviTtsModelId}
-                          onChange={onChangeGSVITtsModelId}
+                          onChange={(e) =>
+                            store.setState({ gsviTtsModelId: e.target.value })
+                          }
                         />
                       </div>
                       <div className="mt-16 font-bold">
@@ -1030,7 +1028,11 @@ export const Settings = ({
                           step="1"
                           placeholder="..."
                           value={gsviTtsBatchSize}
-                          onChange={onChangeGVITtsBatchSize}
+                          onChange={(e) =>
+                            store.setState({
+                              gsviTtsBatchSize: parseFloat(e.target.value),
+                            })
+                          }
                         />
                       </div>
                       <div className="mt-16 font-bold">
@@ -1043,7 +1045,11 @@ export const Settings = ({
                           step="0.1"
                           placeholder="..."
                           value={gsviTtsSpeechRate}
-                          onChange={onChangeGSVITtsSpeechRate}
+                          onChange={(e) =>
+                            store.setState({
+                              gsviTtsSpeechRate: parseFloat(e.target.value),
+                            })
+                          }
                         />
                       </div>
                     </>
@@ -1092,7 +1098,11 @@ export const Settings = ({
                           type="text"
                           placeholder="..."
                           value={elevenlabsVoiceId}
-                          onChange={onChangeElevenlabsVoiceId}
+                          onChange={(e) =>
+                            store.setState({
+                              elevenlabsVoiceId: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </>
@@ -1185,7 +1195,7 @@ export const Settings = ({
                 onClick={() => {
                   onClickResetChatLog();
                   onClickResetCodeLog();
-                  onChangeDifyConversationId('');
+                  store.setState({ difyConversationId: '' });
                 }}
               >
                 {t('ConversationHistoryReset')}
@@ -1209,9 +1219,9 @@ export const Settings = ({
                           className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
                           type="text"
                           value={value.content}
-                          onChange={(event) => {
-                            onChangeChatLog(index, event.target.value);
-                            onChangeCodeLog(index, event.target.value);
+                          onChange={(e) => {
+                            onChangeChatLog(index, e.target.value);
+                            onChangeCodeLog(index, e.target.value);
                           }}
                         ></input>
                       ) : (

@@ -1,23 +1,20 @@
-import { useState, useCallback } from 'react';
-import { Link } from './link';
-import { IconButton } from './iconButton';
 import i18n from 'i18next';
+import { useState, useCallback } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+
+import store from '@/features/stores/app';
+import { IconButton } from './iconButton';
+import { Link } from './link';
 
 type Props = {
   dontShowIntroduction: boolean;
   onChangeDontShowIntroduction: (dontShowIntroduction: boolean) => void;
-  selectLanguage: string;
-  setSelectLanguage: (show: string) => void;
-  setSelectVoiceLanguage: (show: string) => void;
 };
 export const Introduction = ({
   dontShowIntroduction,
   onChangeDontShowIntroduction,
-  selectLanguage,
-  setSelectLanguage,
-  setSelectVoiceLanguage,
 }: Props) => {
+  const selectLanguage = store((s) => s.selectLanguage);
   const [opened, setOpened] = useState(true);
 
   const handleDontShowIntroductionChange = useCallback(
@@ -35,8 +32,10 @@ export const Introduction = ({
     // selectLanguage: "JP"
     let languageCode = i18n.language.toUpperCase();
     languageCode = languageCode == 'JA' ? 'JP' : languageCode;
-    setSelectLanguage(languageCode);
-    setSelectVoiceLanguage(getVoiceLanguageCode(languageCode));
+    store.setState({
+      selectLanguage: languageCode,
+      selectVoiceLanguage: getVoiceLanguageCode(languageCode),
+    });
   };
 
   const getVoiceLanguageCode = (selectLanguage: string) => {

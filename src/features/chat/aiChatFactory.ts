@@ -1,10 +1,10 @@
 import { Message } from '@/features/messages/messages';
-import { getOpenAIChatResponseStream } from './openAiChat';
 import { getAnthropicChatResponseStream } from './anthropicChat';
-import { getGoogleChatResponseStream } from './googleChat';
-import { getLocalLLMChatResponseStream } from './localLLMChat';
-import { getGroqChatResponseStream } from './groqChat';
 import { getDifyChatResponseStream } from './difyChat';
+import { getGoogleChatResponseStream } from './googleChat';
+import { getGroqChatResponseStream } from './groqChat';
+import { getLocalLLMChatResponseStream } from './localLLMChat';
+import { getOpenAIChatResponseStream } from './openAiChat';
 
 export type AIService =
   | 'openai'
@@ -24,9 +24,16 @@ export interface AIServiceConfig {
     key: string;
     url: string;
     conversationId: string;
-    setConversationId: (id: string) => void;
   };
 }
+
+export type Voice =
+  | 'koeiromap'
+  | 'google'
+  | 'voicevox'
+  | 'stylebertvits2'
+  | 'gsvitts'
+  | 'elevenlabs';
 
 export async function getAIChatResponseStream(
   service: AIService,
@@ -70,7 +77,6 @@ export async function getAIChatResponseStream(
         config.dify.key,
         config.dify.url,
         config.dify.conversationId,
-        config.dify.setConversationId,
       );
     default:
       throw new Error(`Unsupported AI service: ${service}`);

@@ -1,17 +1,18 @@
-import '@/styles/globals.css';
-import type { AppProps } from 'next/app';
 import '@charcoal-ui/icons';
-import React, { useEffect, useState } from 'react';
+import type { AppProps } from 'next/app';
+import React, { useEffect } from 'react';
+
+import store from '@/features/stores/app';
+import '@/styles/globals.css';
 import i18n from '../lib/i18n';
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    const storedData = window.localStorage.getItem('chatVRMParams');
-    if (storedData) {
-      const params = JSON.parse(storedData);
-      if (params.selectLanguage) {
-        i18n.changeLanguage(params.selectLanguage.toLowerCase());
-      }
+    const s = store.getState();
+
+    if (s) {
+      // TODO: (7741) initialize selectLanguage as empty, not JP
+      i18n.changeLanguage(s.selectLanguage.toLowerCase());
     } else {
       const browserLanguage = navigator.language;
       const languageCode = browserLanguage.match(/^zh/i)

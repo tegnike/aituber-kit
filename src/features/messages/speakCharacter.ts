@@ -1,12 +1,12 @@
 import store from '@/features/stores/app';
+import englishToJapanese from '@/utils/englishToJapanese.json';
 import { wait } from '@/utils/wait';
-import { synthesizeVoiceApi } from './synthesizeVoice';
-import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle';
-import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2';
 import { Viewer } from '../vrmViewer/viewer';
 import { Screenplay, Talk } from './messages';
-import englishToJapanese from '@/utils/englishToJapanese.json';
+import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2';
+import { synthesizeVoiceApi } from './synthesizeVoice';
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs';
+import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle';
 
 interface EnglishToJapanese {
   [key: string]: string;
@@ -24,27 +24,14 @@ const createSpeakCharacter = () => {
   return (
     screenplay: Screenplay,
     viewer: Viewer,
-    selectVoice: string,
-    selectLanguage: string,
-    voicevoxSpeaker: string,
-    googleTtsType: string,
-    stylebertvits2ServerUrl: string,
-    stylebertvits2ModelId: string,
-    stylebertvits2Style: string,
-    gsviTtsServerUrl: string,
-    gsviTtsModelId: string,
-    gsviTtsBatchSize: number,
-    gsviTtsSpeechRate: number,
-    elevenlabsVoiceId: string,
     changeEnglishToJapanese: boolean,
     onStart?: () => void,
     onComplete?: () => void,
   ) => {
-    const { koeiromapKey, elevenlabsApiKey } = store.getState();
-
+    const s = store.getState();
     onStart?.();
 
-    if (changeEnglishToJapanese && selectLanguage === 'JP') {
+    if (changeEnglishToJapanese && s.selectLanguage === 'JP') {
       // 英単語を日本語で読み上げる
       screenplay.talk.message = convertEnglishToJapaneseReading(
         screenplay.talk.message,
@@ -57,46 +44,46 @@ const createSpeakCharacter = () => {
         await wait(1000 - (now - lastTime));
       }
       let buffer;
-      if (selectVoice == 'koeiromap') {
-        buffer = await fetchAudio(screenplay.talk, koeiromapKey).catch(
+      if (s.selectVoice == 'koeiromap') {
+        buffer = await fetchAudio(screenplay.talk, s.koeiromapKey).catch(
           () => null,
         );
-      } else if (selectVoice == 'voicevox') {
+      } else if (s.selectVoice == 'voicevox') {
         buffer = await fetchAudioVoiceVox(
           screenplay.talk,
-          voicevoxSpeaker,
+          s.voicevoxSpeaker,
         ).catch(() => null);
-      } else if (selectVoice == 'google') {
+      } else if (s.selectVoice == 'google') {
         const googleTtsTypeByLang = getGoogleTtsType(
-          googleTtsType,
-          selectLanguage,
+          s.googleTtsType,
+          s.selectLanguage,
         );
         buffer = await fetchAudioGoogle(
           screenplay.talk,
           googleTtsTypeByLang,
         ).catch(() => null);
-      } else if (selectVoice == 'stylebertvits2') {
+      } else if (s.selectVoice == 'stylebertvits2') {
         buffer = await fetchAudioStyleBertVITS2(
           screenplay.talk,
-          stylebertvits2ServerUrl,
-          stylebertvits2ModelId,
-          stylebertvits2Style,
-          selectLanguage,
+          s.stylebertvits2ServerUrl,
+          s.stylebertvits2ModelId,
+          s.stylebertvits2Style,
+          s.selectLanguage,
         ).catch(() => null);
-      } else if (selectVoice == 'gsvitts') {
+      } else if (s.selectVoice == 'gsvitts') {
         buffer = await fetchAudioVoiceGSVIApi(
           screenplay.talk,
-          gsviTtsServerUrl,
-          gsviTtsModelId,
-          gsviTtsBatchSize,
-          gsviTtsSpeechRate,
+          s.gsviTtsServerUrl,
+          s.gsviTtsModelId,
+          s.gsviTtsBatchSize,
+          s.gsviTtsSpeechRate,
         ).catch(() => null);
-      } else if (selectVoice == 'elevenlabs') {
+      } else if (s.selectVoice == 'elevenlabs') {
         buffer = await fetchAudioElevenlabs(
           screenplay.talk,
-          elevenlabsApiKey,
-          elevenlabsVoiceId,
-          selectLanguage,
+          s.elevenlabsApiKey,
+          s.elevenlabsVoiceId,
+          s.selectLanguage,
         ).catch(() => null);
       }
       lastTime = Date.now();
@@ -134,19 +121,8 @@ function getGoogleTtsType(
   googleTtsType: string,
   selectLanguage: string,
 ): string {
-  if (googleTtsType && googleTtsType !== '') {
-    return googleTtsType;
-  }
-
-  const storedData = window.localStorage.getItem('chatVRMParams');
-  if (storedData) {
-    const params = JSON.parse(storedData);
-    const langCode = params.selectLanguage;
-    if (langCode) {
-      return getGppgleTtsType(langCode) || '';
-    }
-  }
-  return '';
+  if (googleTtsType) return googleTtsType;
+  return getGppgleTtsType(selectLanguage) || '';
 }
 
 function getGppgleTtsType(selectLanguage: string): string {
