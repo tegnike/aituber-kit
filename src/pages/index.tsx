@@ -28,14 +28,14 @@ import { buildUrl } from '@/utils/buildUrl';
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
+  const conversationContinuityMode = store((s) => s.conversationContinuityMode);
+  const webSocketMode = store((s) => s.webSocketMode);
+
   const [changeEnglishToJapanese, setChangeEnglishToJapanese] = useState(false);
-  const [conversationContinuityMode, setConversationContinuityMode] =
-    useState(false);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
   const [codeLog, setCodeLog] = useState<Message[]>([]);
   const [assistantMessage, setAssistantMessage] = useState('');
-  const [webSocketMode, changeWebSocketMode] = useState(false);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 5000; // 5秒
@@ -70,8 +70,6 @@ export default function Home() {
       setChatLog(Array.isArray(params.chatLog) ? params.chatLog : []);
       setCodeLog(Array.isArray(params.codeLog) ? params.codeLog : []);
       setChangeEnglishToJapanese(params.changeEnglishToJapanese || false);
-      setConversationContinuityMode(params.conversationContinuityMode || false);
-      changeWebSocketMode(params.webSocketMode || false);
       setDontShowIntroduction(params.dontShowIntroduction || false);
     }
   }, []);
@@ -81,21 +79,12 @@ export default function Home() {
       chatLog,
       codeLog,
       changeEnglishToJapanese,
-      conversationContinuityMode,
-      webSocketMode,
       dontShowIntroduction,
     };
     process.nextTick(() =>
       window.localStorage.setItem('chatVRMParams', JSON.stringify(params)),
     );
-  }, [
-    chatLog,
-    codeLog,
-    changeEnglishToJapanese,
-    conversationContinuityMode,
-    webSocketMode,
-    dontShowIntroduction,
-  ]);
+  }, [chatLog, codeLog, changeEnglishToJapanese, dontShowIntroduction]);
 
   const handleChangeChatLog = useCallback(
     (targetIndex: number, text: string) => {
@@ -390,12 +379,10 @@ export default function Home() {
     async (text: string, role?: string) => {
       const newMessage = text;
 
-      if (newMessage == null) {
-        return;
-      }
+      if (newMessage === null) return;
 
       const s = store.getState();
-      if (webSocketMode) {
+      if (s.webSocketMode) {
         // 未メンテなので不具合がある可能性あり
         console.log('websocket mode: true');
         setChatProcessing(true);
@@ -550,7 +537,6 @@ export default function Home() {
       }
     },
     [
-      webSocketMode,
       handleSpeakAi,
       codeLog,
       t,
@@ -570,6 +556,10 @@ export default function Home() {
   const [tmpMessages, setTmpMessages] = useState<tmpMessage[]>([]);
 
   useEffect(() => {
+    // TODO: (7741) add a debug flag for logs
+    const s = store.getState();
+    if (!s.webSocketMode) return;
+
     const handleOpen = (event: Event) => {
       console.log('WebSocket connection opened:', event);
     };
@@ -597,8 +587,9 @@ export default function Home() {
     wsRef.current = ws;
 
     const reconnectInterval = setInterval(() => {
+      const s = store.getState();
       if (
-        webSocketMode &&
+        s.webSocketMode &&
         ws.readyState !== WebSocket.OPEN &&
         ws.readyState !== WebSocket.CONNECTING
       ) {
@@ -613,6 +604,7 @@ export default function Home() {
     return () => {
       clearInterval(reconnectInterval);
       ws.close();
+      wsRef.current = null;
     };
   }, [webSocketMode]);
 
@@ -659,7 +651,6 @@ export default function Home() {
       setYoutubeContinuationCount,
       youtubeSleepMode,
       setYoutubeSleepMode,
-      conversationContinuityMode,
       handleSendChat,
       preProcessAIResponse,
     );
@@ -671,7 +662,6 @@ export default function Home() {
     youtubeNoCommentCount,
     youtubeContinuationCount,
     youtubeSleepMode,
-    conversationContinuityMode,
     handleSendChat,
     preProcessAIResponse,
   ]);
@@ -777,14 +767,10 @@ export default function Home() {
           chatLog={chatLog}
           codeLog={codeLog}
           assistantMessage={assistantMessage}
-          conversationContinuityMode={conversationContinuityMode}
           onChangeChatLog={handleChangeChatLog}
           onChangeCodeLog={handleChangeCodeLog}
-          onChangeConversationContinuityMode={setConversationContinuityMode}
           handleClickResetChatLog={() => setChatLog([])}
           handleClickResetCodeLog={() => setCodeLog([])}
-          webSocketMode={webSocketMode}
-          changeWebSocketMode={changeWebSocketMode}
           changeEnglishToJapanese={changeEnglishToJapanese}
           setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           setBackgroundImageUrl={setBackgroundImageUrl}

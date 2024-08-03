@@ -46,19 +46,19 @@ interface Character {
   characterName: string;
   showCharacterName: boolean;
   systemPrompt: string;
+  conversationContinuityMode: boolean;
 }
 
 interface General {
   selectLanguage: string; // TODO: (7741) use a more specific type
   selectVoiceLanguage: string; // TODO: (7741) use a more specific type
+  webSocketMode: boolean;
 }
 
 type Settings = APIKeys & ModelProvider & Integrations & Character & General;
 
 interface Preferences {
-  webSocketMode: boolean;
   changeEnglishToJapanese: boolean;
-  conversationContinuityMode: boolean;
 }
 
 interface Chat {
@@ -114,15 +114,15 @@ const store = create<AppState>()(
       characterName: 'CHARACTER',
       showCharacterName: true,
       systemPrompt: SYSTEM_PROMPT,
+      conversationContinuityMode: false,
 
       // General
       selectLanguage: 'JP', // TODO: 要整理, JP, EN
       selectVoiceLanguage: 'ja-JP', // TODO: 要整理, ja-JP, en-US
+      webSocketMode: false,
 
       // Preferences
-      webSocketMode: false,
       changeEnglishToJapanese: false,
-      conversationContinuityMode: false,
 
       // Chat
       chatLog: [],

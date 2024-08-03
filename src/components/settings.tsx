@@ -15,6 +15,7 @@ import {
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
 import { Message } from '@/features/messages/messages';
 import store from '@/features/stores/app';
+import menuStore from '@/features/stores/menu';
 import { GitHubLink } from './githubLink';
 import { IconButton } from './iconButton';
 import { Link } from './link';
@@ -24,17 +25,11 @@ import { TextButton } from './textButton';
 type Props = {
   chatLog: Message[];
   codeLog: Message[];
-  conversationContinuityMode: boolean;
   onClickClose: () => void;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
-  onClickOpenVrmFile: () => void;
-  onClickOpenBgFile: () => void;
   onClickResetChatLog: () => void;
   onClickResetCodeLog: () => void;
-  onChangeConversationContinuityMode: (mode: boolean) => void;
-  webSocketMode: boolean;
-  onChangeWebSocketMode: (show: boolean) => void;
   changeEnglishToJapanese: boolean;
   setChangeEnglishToJapanese: (show: boolean) => void;
   onClickTestVoice: (speaker: string) => void;
@@ -44,17 +39,11 @@ type Props = {
 export const Settings = ({
   chatLog,
   codeLog,
-  conversationContinuityMode,
   onClickClose,
   onChangeChatLog,
   onChangeCodeLog,
-  onClickOpenVrmFile,
-  onClickOpenBgFile,
   onClickResetChatLog,
   onClickResetCodeLog,
-  onChangeConversationContinuityMode,
-  webSocketMode,
-  onChangeWebSocketMode,
   changeEnglishToJapanese,
   setChangeEnglishToJapanese,
   onClickTestVoice,
@@ -98,9 +87,11 @@ export const Settings = ({
   const characterName = store((s) => s.characterName);
   const showCharacterName = store((s) => s.showCharacterName);
   const systemPrompt = store((s) => s.systemPrompt);
+  const conversationContinuityMode = store((s) => s.conversationContinuityMode);
 
   // General
   const selectLanguage = store((s) => s.selectLanguage);
+  const webSocketMode = store((s) => s.webSocketMode);
 
   const { t } = useTranslation();
 
@@ -230,7 +221,12 @@ export const Settings = ({
               {t('CharacterModelLabel')}
             </div>
             <div className="my-8">
-              <TextButton onClick={onClickOpenVrmFile}>
+              <TextButton
+                onClick={() => {
+                  const { fileInput } = menuStore.getState();
+                  fileInput?.click();
+                }}
+              >
                 {t('OpenVRM')}
               </TextButton>
             </div>
@@ -238,7 +234,12 @@ export const Settings = ({
               {t('BackgroundImage')}
             </div>
             <div className="my-8">
-              <TextButton onClick={onClickOpenBgFile}>
+              <TextButton
+                onClick={() => {
+                  const { bgFileInput } = menuStore.getState();
+                  bgFileInput?.click();
+                }}
+              >
                 {t('ChangeBackgroundImage')}
               </TextButton>
             </div>
@@ -250,11 +251,21 @@ export const Settings = ({
             </div>
             <div className="my-8">
               {webSocketMode ? (
-                <TextButton onClick={() => onChangeWebSocketMode(false)}>
+                <TextButton
+                  onClick={() => {
+                    store.setState({ webSocketMode: false });
+                    webSocketMode && store.setState({ youtubeMode: false });
+                  }}
+                >
                   {t('StatusOn')}
                 </TextButton>
               ) : (
-                <TextButton onClick={() => onChangeWebSocketMode(true)}>
+                <TextButton
+                  onClick={() => {
+                    store.setState({ webSocketMode: true });
+                    webSocketMode && store.setState({ youtubeMode: false });
+                  }}
+                >
                   {t('StatusOff')}
                 </TextButton>
               )}
@@ -282,7 +293,9 @@ export const Settings = ({
                           });
 
                           if (newService !== 'openai') {
-                            onChangeConversationContinuityMode(false);
+                            store.setState({
+                              conversationContinuityMode: false,
+                            });
                             // FIXME: (7741) add showWebcam to menuStore and modalImage to store (global state)
                             // setShowWebcam(false);
                             // onChangeModalImage('');
@@ -648,7 +661,9 @@ export const Settings = ({
                               {conversationContinuityMode ? (
                                 <TextButton
                                   onClick={() =>
-                                    onChangeConversationContinuityMode(false)
+                                    store.setState({
+                                      conversationContinuityMode: false,
+                                    })
                                   }
                                   disabled={
                                     selectAIService !== 'openai' &&
@@ -660,7 +675,9 @@ export const Settings = ({
                               ) : (
                                 <TextButton
                                   onClick={() =>
-                                    onChangeConversationContinuityMode(true)
+                                    store.setState({
+                                      conversationContinuityMode: true,
+                                    })
                                   }
                                   disabled={
                                     selectAIService !== 'openai' &&

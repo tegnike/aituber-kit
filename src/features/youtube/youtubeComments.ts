@@ -103,7 +103,6 @@ export const fetchAndProcessComments = async (
   setYoutubeContinuationCount: (count: number) => void,
   youtubeSleepMode: boolean,
   setYoutubeSleepMode: (mode: boolean) => void,
-  conversationContinuityMode: boolean,
   handleSendChat: (text: string, role?: string) => void,
   preProcessAIResponse: (messages: Message[]) => void,
 ): Promise<void> => {
@@ -116,7 +115,7 @@ export const fetchAndProcessComments = async (
       if (
         !youtubeSleepMode &&
         youtubeContinuationCount < 1 &&
-        conversationContinuityMode
+        s.conversationContinuityMode
       ) {
         const isContinuationNeeded =
           await checkIfResponseContinuationIsRequired(
@@ -152,7 +151,7 @@ export const fetchAndProcessComments = async (
         setYoutubeNoCommentCount(0);
         setYoutubeSleepMode(false);
         let selectedComment = '';
-        if (conversationContinuityMode) {
+        if (s.conversationContinuityMode) {
           if (youtubeComments.length > 1) {
             selectedComment = await getBestComment(
               messages,
@@ -174,7 +173,7 @@ export const fetchAndProcessComments = async (
         handleSendChat(selectedComment);
       } else {
         const noCommentCount = youtubeNoCommentCount + 1;
-        if (conversationContinuityMode) {
+        if (s.conversationContinuityMode) {
           if (
             noCommentCount < 3 ||
             (3 < noCommentCount && noCommentCount < 6)

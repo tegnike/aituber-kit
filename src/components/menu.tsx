@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Message } from '@/features/messages/messages';
 import { testVoice } from '@/features/messages/speakCharacter';
 import store from '@/features/stores/app';
+import menuStore from '@/features/stores/menu';
 import { ViewerContext } from '@/features/vrmViewer/viewerContext';
 import { AssistantText } from './assistantText';
 import { ChatLog } from './chatLog';
@@ -22,14 +23,10 @@ type Props = {
   chatLog: Message[];
   codeLog: Message[];
   assistantMessage: string;
-  conversationContinuityMode: boolean;
   onChangeChatLog: (index: number, text: string) => void;
   onChangeCodeLog: (index: number, text: string) => void;
   handleClickResetChatLog: () => void;
   handleClickResetCodeLog: () => void;
-  onChangeConversationContinuityMode: (mode: boolean) => void;
-  webSocketMode: boolean;
-  changeWebSocketMode: (show: boolean) => void;
   changeEnglishToJapanese: boolean;
   setChangeEnglishToJapanese: (show: boolean) => void;
   setBackgroundImageUrl: (url: string) => void;
@@ -41,14 +38,10 @@ export const Menu = ({
   chatLog,
   codeLog,
   assistantMessage,
-  conversationContinuityMode,
   onChangeChatLog,
   onChangeCodeLog,
   handleClickResetChatLog,
   handleClickResetCodeLog,
-  onChangeConversationContinuityMode,
-  webSocketMode,
-  changeWebSocketMode,
   changeEnglishToJapanese,
   setChangeEnglishToJapanese,
   setBackgroundImageUrl,
@@ -58,42 +51,16 @@ export const Menu = ({
 }: Props) => {
   const selectAIService = store((s) => s.selectAIService);
   const selectAIModel = store((s) => s.selectAIModel);
+  const webSocketMode = store((s) => s.webSocketMode);
 
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
   const [showWebcam, setShowWebcam] = useState(false);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const { viewer } = useContext(ViewerContext);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const bgFileInputRef = useRef<HTMLInputElement>(null);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const [showSettingsButton, setShowSettingsButton] = useState(true);
-
-  const handleWebSocketMode = useCallback(
-    (show: boolean) => {
-      changeWebSocketMode(show);
-      if (webSocketMode) {
-        store.setState({ youtubeMode: false });
-      }
-    },
-    [changeWebSocketMode, webSocketMode],
-  );
-
-  const handleConversationContinuityMode = useCallback(
-    (show: boolean) => {
-      onChangeConversationContinuityMode(show);
-    },
-    [onChangeConversationContinuityMode],
-  );
-
-  const handleClickOpenVrmFile = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  const handleClickOpenBgFile = useCallback(() => {
-    bgFileInputRef.current?.click();
-  }, []);
 
   const handleClickTestVoice = (speaker: string) => {
     testVoice(viewer, speaker);
@@ -260,17 +227,11 @@ export const Menu = ({
         <Settings
           chatLog={chatLog}
           codeLog={codeLog}
-          conversationContinuityMode={conversationContinuityMode}
           onClickClose={() => setShowSettings(false)}
           onChangeChatLog={onChangeChatLog}
           onChangeCodeLog={onChangeCodeLog}
-          onClickOpenVrmFile={handleClickOpenVrmFile}
-          onClickOpenBgFile={handleClickOpenBgFile}
           onClickResetChatLog={handleClickResetChatLog}
           onClickResetCodeLog={handleClickResetCodeLog}
-          onChangeConversationContinuityMode={handleConversationContinuityMode}
-          webSocketMode={webSocketMode}
-          onChangeWebSocketMode={handleWebSocketMode}
           changeEnglishToJapanese={changeEnglishToJapanese}
           setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           onClickTestVoice={handleClickTestVoice}
@@ -302,14 +263,28 @@ export const Menu = ({
         type="file"
         className="hidden"
         accept=".vrm"
-        ref={fileInputRef}
+        ref={(fileInput) => {
+          if (!fileInput) {
+            menuStore.setState({ fileInput: null });
+            return;
+          }
+
+          menuStore.setState({ fileInput });
+        }}
         onChange={handleChangeVrmFile}
       />
       <input
         type="file"
         className="hidden"
         accept="image/*"
-        ref={bgFileInputRef}
+        ref={(bgFileInput) => {
+          if (!bgFileInput) {
+            menuStore.setState({ bgFileInput: null });
+            return;
+          }
+
+          menuStore.setState({ bgFileInput });
+        }}
         onChange={handleChangeBgFile}
       />
     </>
