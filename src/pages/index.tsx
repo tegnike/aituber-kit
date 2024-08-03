@@ -717,8 +717,10 @@ export default function Home() {
         console.log("capture");
         setModalImage(image);
         setTriggerShutter(false); // シャッターをリセット
+      } else {
+        setModalImage("");
       }
-  },[modalImage, setModalImage, handleSendChat]);
+  },[setModalImage]);
 
   const clear = useCallback(
     async () => {

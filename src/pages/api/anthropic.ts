@@ -26,7 +26,7 @@ export default async function handler(
         consolidatedMessages.push({ role: lastRole, content: combinedContent });
       }
       lastRole = message.role;
-      combinedContent = message.content;
+      combinedContent = typeof message.content === 'string' ? message.content : message.content[0].text;
     }
 
     // 最後のメッセージの場合、現在の内容を追加

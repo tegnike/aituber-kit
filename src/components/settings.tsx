@@ -220,7 +220,7 @@ export const Settings = ({
         ></IconButton>
       </div>
       <div className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
-        powered by Pixiv, VRoid, Koemotion, VOICEVOX, OpenAI, Anthropic, Google, Groq, Dify
+        powered by ChatVRM of Pixiv
       </div>
       <div className="max-h-full overflow-auto">
         <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
