@@ -84,7 +84,10 @@ export async function getGoogleChatResponse(messages: Message[], apiKey: string,
   const chatModel = genAI.getGenerativeModel({ model: model, systemInstruction: systemMessage });
 
   const chat = chatModel.startChat({ history });
-  const result = await chat.sendMessage(messages[messages.length - 1].content);
+  const lastMessage = messages[messages.length - 1].content;
+  const result = await chat.sendMessage(
+    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text
+  );
   const response = await result.response;
   const text = response.text();
 
@@ -102,7 +105,10 @@ export async function getGoogleChatResponseStream(
   const chatModel = genAI.getGenerativeModel({ model: model, systemInstruction: systemMessage });
 
   const chat = chatModel.startChat({ history });
-  const result = await chat.sendMessageStream(messages[messages.length - 1].content);
+  const lastMessage = messages[messages.length - 1].content;
+  const result = await chat.sendMessageStream(
+    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text
+  );
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -124,14 +130,14 @@ function processMessages(messages: Message[]) {
   const history = messages
     .filter((message, index) => {
       if (message.role === 'system') {
-        systemMessage = message.content;
+        systemMessage = typeof message.content === 'string' ? message.content : message.content[0].text;
         return false;
       }
       return index === 0 ? message.role === 'user' : true;
     })
     .map(message => ({
       role: message.role === 'assistant' ? 'model' : message.role,
-      parts: [{ text: message.content }],
+      parts: [{ text: typeof message.content === 'string' ? message.content : message.content[0].text }],
     }));
 
   return { history, systemMessage };

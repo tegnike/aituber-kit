@@ -192,19 +192,25 @@ export const Menu = ({
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       onChangeAIService(event.target.value);
       if (event.target.value !== "openai") {
-        onChangeConversationContinuityMode(false);
         setShowWebcam(false);
         onChangeModalImage("");
+        if (event.target.value !== "anthropic") {
+          onChangeConversationContinuityMode(false);
+        }
       }
     },
-    [onChangeAIService, onChangeConversationContinuityMode]
+    [onChangeAIService, onChangeConversationContinuityMode, onChangeModalImage]
   );
 
   const handleChangeSelectAIModel = useCallback(
     (model: string) => {
       setSelectAIModel(model);
+      if (model !== "gpt-4" && model !== "gpt-4-turbo" && model !== "gpt-4-o-mini") {
+        setShowWebcam(false);
+        onChangeModalImage("");
+      }
     },
-    [setSelectAIModel]
+    [setSelectAIModel, onChangeModalImage]
   );
 
   const handleChangeSystemPrompt = useCallback(
@@ -489,6 +495,17 @@ export const Menu = ({
     [onChangeModalImage]
   );
 
+  const handleChangeYoutubeMode = useCallback(
+    (mode: boolean) => {
+      onChangeYoutubeMode(mode);
+      if (mode) {
+        setShowWebcam(false);
+        onChangeModalImage("");
+      }
+    },
+    [onChangeYoutubeMode, setShowWebcam, onChangeModalImage]
+  );
+
   // カメラが開いているかどうかの状態変更
   useEffect(() => {
     console.log("onChangeWebcamStatus")
@@ -540,7 +557,7 @@ export const Menu = ({
               iconName="24/Camera"
               isProcessing={false}
               onClick={() => setShowWebcam(!showWebcam)}
-              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
+              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel)) || youtubeMode}
             />
           </div>
           <div className="order-4">
@@ -548,7 +565,7 @@ export const Menu = ({
               iconName="24/AddImage"
               isProcessing={false}
               onClick={() => imageFileInputRef.current?.click()}
-              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel))}
+              disabled={!(selectAIService === "openai" && ["gpt-4o-mini", "gpt-4o", "gpt-4-turbo"].includes(selectAIModel)) || youtubeMode}
             />
             <input
               type="file"
@@ -617,7 +634,7 @@ export const Menu = ({
           onChangeStyleBertVits2ServerUrl={handleChangeStyleBertVits2ServerUrl}
           onChangeStyleBertVits2ModelId={handleChangeStyleBertVits2ModelId}
           onChangeStyleBertVits2Style={handleChangeStyleBertVits2Style}
-          onChangeYoutubeMode={onChangeYoutubeMode}
+          onChangeYoutubeMode={handleChangeYoutubeMode}
           onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
           onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
           onChangeConversationContinuityMode={handleConversationContinuityMode}
