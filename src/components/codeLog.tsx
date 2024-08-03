@@ -1,11 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { Message } from '@/features/messages/messages';
-import React from 'react';
-type Props = {
-  messages: Message[];
-};
-export const CodeLog = ({ messages }: Props) => {
+
+import store from '@/features/stores/app';
+
+export const CodeLog = () => {
   const chatScrollRef = useRef<HTMLDivElement>(null);
+  const messages = store((s) => s.codeLog);
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
@@ -20,6 +19,7 @@ export const CodeLog = ({ messages }: Props) => {
       block: 'center',
     });
   }, [messages]);
+
   return (
     // 画面サイズによって変える
     <div className="absolute w-col-span-7 max-w-full h-[100svh] pb-104">

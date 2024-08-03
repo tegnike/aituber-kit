@@ -1,29 +1,16 @@
 import i18n from 'i18next';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
 import store from '@/features/stores/app';
 import { IconButton } from './iconButton';
 import { Link } from './link';
 
-type Props = {
-  dontShowIntroduction: boolean;
-  onChangeDontShowIntroduction: (dontShowIntroduction: boolean) => void;
-};
-export const Introduction = ({
-  dontShowIntroduction,
-  onChangeDontShowIntroduction,
-}: Props) => {
+export const Introduction = () => {
   const selectLanguage = store((s) => s.selectLanguage);
-  const [opened, setOpened] = useState(true);
+  const dontShowIntroduction = store((s) => s.dontShowIntroduction);
 
-  const handleDontShowIntroductionChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeDontShowIntroduction(event.target.checked);
-      updateLanguage();
-    },
-    [onChangeDontShowIntroduction],
-  );
+  const [opened, setOpened] = useState(true);
 
   const { t } = useTranslation();
 
@@ -135,7 +122,10 @@ export const Introduction = ({
             <input
               type="checkbox"
               checked={dontShowIntroduction}
-              onChange={handleDontShowIntroductionChange}
+              onChange={(e) => {
+                store.setState({ dontShowIntroduction: e.target.checked });
+                updateLanguage();
+              }}
               className="mr-8"
             />
             <span>{t('DontShowIntroductionNextTime')}</span>

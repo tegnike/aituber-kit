@@ -27,11 +27,9 @@ import { buildUrl } from '@/utils/buildUrl';
 export default function Home() {
   const conversationContinuityMode = store((s) => s.conversationContinuityMode);
   const webSocketMode = store((s) => s.webSocketMode);
+  const dontShowIntroduction = store((s) => s.dontShowIntroduction);
 
-  const [changeEnglishToJapanese, setChangeEnglishToJapanese] = useState(false);
   const [chatProcessing, setChatProcessing] = useState(false);
-  const [chatLog, setChatLog] = useState<Message[]>([]);
-  const [codeLog, setCodeLog] = useState<Message[]>([]);
   const [assistantMessage, setAssistantMessage] = useState('');
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
@@ -41,7 +39,6 @@ export default function Home() {
       ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH
       : '/bg-c.png',
   );
-  const [dontShowIntroduction, setDontShowIntroduction] = useState(false);
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState('');
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
@@ -60,51 +57,6 @@ export default function Home() {
     setChatProcessingCount((prevCount) => prevCount - 1);
   };
 
-  useEffect(() => {
-    const storedData = window.localStorage.getItem('chatVRMParams');
-    if (storedData) {
-      const params = JSON.parse(storedData);
-      setChatLog(Array.isArray(params.chatLog) ? params.chatLog : []);
-      setCodeLog(Array.isArray(params.codeLog) ? params.codeLog : []);
-      setChangeEnglishToJapanese(params.changeEnglishToJapanese || false);
-      setDontShowIntroduction(params.dontShowIntroduction || false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const params = {
-      chatLog,
-      codeLog,
-      changeEnglishToJapanese,
-      dontShowIntroduction,
-    };
-    process.nextTick(() =>
-      window.localStorage.setItem('chatVRMParams', JSON.stringify(params)),
-    );
-  }, [chatLog, codeLog, changeEnglishToJapanese, dontShowIntroduction]);
-
-  const handleChangeChatLog = useCallback(
-    (targetIndex: number, text: string) => {
-      const newChatLog = chatLog.map((v: Message, i) => {
-        return i === targetIndex ? { role: v.role, content: text } : v;
-      });
-
-      setChatLog(newChatLog);
-    },
-    [chatLog],
-  );
-
-  const handleChangeCodeLog = useCallback(
-    async (targetIndex: number, text: string) => {
-      const newCodeLog = codeLog.map((v: Message, i) => {
-        return i === targetIndex ? { role: v.role, content: text } : v;
-      });
-
-      setCodeLog(newCodeLog);
-    },
-    [codeLog],
-  );
-
   /**
    * 文ごとに音声を直列でリクエストしながら再生する
    */
@@ -114,9 +66,9 @@ export default function Home() {
       onStart?: () => void,
       onEnd?: () => void,
     ) => {
-      speakCharacter(screenplay, changeEnglishToJapanese, onStart, onEnd);
+      speakCharacter(screenplay, onStart, onEnd);
     },
-    [changeEnglishToJapanese],
+    [],
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -350,7 +302,7 @@ export default function Home() {
         }, [])
         .filter((item) => item.content !== '');
 
-      setChatLog([...currentChatLog, ...aiTextLog]);
+      store.setState({ chatLog: [...currentChatLog, ...aiTextLog] });
       setChatProcessing(false);
     },
     [handleSpeakAi],
@@ -358,9 +310,10 @@ export default function Home() {
 
   const preProcessAIResponse = useCallback(
     async (messages: Message[]) => {
-      await processAIResponse(chatLog, messages);
+      const s = store.getState();
+      await processAIResponse(s.chatLog, messages);
     },
-    [chatLog, processAIResponse],
+    [processAIResponse],
   );
 
   /**
@@ -390,11 +343,13 @@ export default function Home() {
               handleSpeakAi(aiTalks[0], async () => {
                 // アシスタントの返答をログに追加
                 const updateLog: Message[] = [
-                  ...codeLog,
+                  ...s.codeLog,
                   { role: 'assistant', content: newMessage },
                 ];
-                setChatLog(updateLog);
-                setCodeLog(updateLog);
+                store.setState({
+                  chatLog: updateLog,
+                  codeLog: updateLog,
+                });
 
                 setAssistantMessage(newMessage);
                 setIsVoicePlaying(false);
@@ -412,10 +367,10 @@ export default function Home() {
             // コードコメントの処理
             // ループ完了後にAI応答をコードログに追加
             const updateLog: Message[] = [
-              ...codeLog,
+              ...s.codeLog,
               { role: role, content: newMessage },
             ];
-            setCodeLog(updateLog);
+            store.setState({ codeLog: updateLog });
             setChatProcessing(false);
           } else {
             // その他のコメントの処理（現想定では使用されないはず）
@@ -427,11 +382,13 @@ export default function Home() {
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             // ユーザーの発言を追加して表示
             const updateLog: Message[] = [
-              ...codeLog,
+              ...s.codeLog,
               { role: 'user', content: newMessage },
             ];
-            setChatLog(updateLog);
-            setCodeLog(updateLog);
+            store.setState({
+              chatLog: updateLog,
+              codeLog: updateLog,
+            });
 
             // WebSocket送信
             wsRef.current.send(
@@ -473,7 +430,7 @@ export default function Home() {
         setChatProcessing(true);
         // ユーザーの発言を追加して表示
         const messageLog: Message[] = [
-          ...chatLog,
+          ...s.chatLog,
           {
             role: 'user',
             content:
@@ -493,7 +450,7 @@ export default function Home() {
           //setModalImage("");
           clear();
         }
-        setChatLog(messageLog);
+        store.setState({ chatLog: messageLog });
 
         // TODO: AIに送信するメッセージの加工、処理がひどいので要修正
         const processedMessageLog = messageLog.map((message) => ({
@@ -527,15 +484,7 @@ export default function Home() {
         setChatProcessing(false);
       }
     },
-    [
-      handleSpeakAi,
-      codeLog,
-      t,
-      chatLog,
-      processAIResponse,
-      modalImage,
-      delayedText,
-    ],
+    [handleSpeakAi, t, processAIResponse, modalImage, delayedText],
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
@@ -630,7 +579,7 @@ export default function Home() {
     console.log('Call fetchAndProcessComments !!!');
 
     fetchAndProcessComments(
-      chatLog,
+      s.chatLog,
       s.selectAIService === 'anthropic' ? s.anthropicKey : s.openAiKey,
       s.youtubeLiveId,
       s.youtubeApiKey,
@@ -648,7 +597,6 @@ export default function Home() {
   }, [
     chatProcessing,
     chatProcessingCount,
-    chatLog,
     youtubeNextPageToken,
     youtubeNoCommentCount,
     youtubeContinuationCount,
@@ -743,27 +691,14 @@ export default function Home() {
         }}
       >
         <Meta />
-        {!dontShowIntroduction && (
-          <Introduction
-            dontShowIntroduction={dontShowIntroduction}
-            onChangeDontShowIntroduction={setDontShowIntroduction}
-          />
-        )}
+        {!dontShowIntroduction && <Introduction />}
         <VrmViewer onImageDropped={handleImageDropped} />
         <MessageInputContainer
           isChatProcessing={chatProcessing}
           onChatProcessStart={hookSendChat}
         />
         <Menu
-          chatLog={chatLog}
-          codeLog={codeLog}
           assistantMessage={assistantMessage}
-          onChangeChatLog={handleChangeChatLog}
-          onChangeCodeLog={handleChangeCodeLog}
-          handleClickResetChatLog={() => setChatLog([])}
-          handleClickResetCodeLog={() => setCodeLog([])}
-          changeEnglishToJapanese={changeEnglishToJapanese}
-          setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           setBackgroundImageUrl={setBackgroundImageUrl}
           onChangeModalImage={handleChangeModelImage}
           triggerShutter={triggerShutter}

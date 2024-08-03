@@ -13,7 +13,6 @@ import {
   PRESET_D,
 } from '@/features/constants/koeiroParam';
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
-import { Message } from '@/features/messages/messages';
 import store from '@/features/stores/app';
 import menuStore from '@/features/stores/menu';
 import { GitHubLink } from './githubLink';
@@ -23,29 +22,13 @@ import speakers from './speakers.json';
 import { TextButton } from './textButton';
 
 type Props = {
-  chatLog: Message[];
-  codeLog: Message[];
   onClickClose: () => void;
-  onChangeChatLog: (index: number, text: string) => void;
-  onChangeCodeLog: (index: number, text: string) => void;
-  onClickResetChatLog: () => void;
-  onClickResetCodeLog: () => void;
-  changeEnglishToJapanese: boolean;
-  setChangeEnglishToJapanese: (show: boolean) => void;
   onClickTestVoice: (speaker: string) => void;
   showSettingsButton: boolean;
   onChangeShowSettingsButton: (show: boolean) => void;
 };
 export const Settings = ({
-  chatLog,
-  codeLog,
   onClickClose,
-  onChangeChatLog,
-  onChangeCodeLog,
-  onClickResetChatLog,
-  onClickResetCodeLog,
-  changeEnglishToJapanese,
-  setChangeEnglishToJapanese,
   onClickTestVoice,
   showSettingsButton,
   onChangeShowSettingsButton,
@@ -91,7 +74,11 @@ export const Settings = ({
 
   // General
   const selectLanguage = store((s) => s.selectLanguage);
+  const changeEnglishToJapanese = store((s) => s.changeEnglishToJapanese);
   const webSocketMode = store((s) => s.webSocketMode);
+
+  // Chat
+  const chatLog = store((s) => s.chatLog);
 
   const { t } = useTranslation();
 
@@ -1155,14 +1142,20 @@ export const Settings = ({
                             {changeEnglishToJapanese ? (
                               <TextButton
                                 onClick={() =>
-                                  setChangeEnglishToJapanese(false)
+                                  store.setState({
+                                    changeEnglishToJapanese: false,
+                                  })
                                 }
                               >
                                 {t('StatusOn')}
                               </TextButton>
                             ) : (
                               <TextButton
-                                onClick={() => setChangeEnglishToJapanese(true)}
+                                onClick={() =>
+                                  store.setState({
+                                    changeEnglishToJapanese: true,
+                                  })
+                                }
                               >
                                 {t('StatusOff')}
                               </TextButton>
@@ -1210,9 +1203,11 @@ export const Settings = ({
               </div>
               <TextButton
                 onClick={() => {
-                  onClickResetChatLog();
-                  onClickResetCodeLog();
-                  store.setState({ difyConversationId: '' });
+                  store.setState({
+                    difyConversationId: '',
+                    chatLog: [],
+                    codeLog: [],
+                  });
                 }}
               >
                 {t('ConversationHistoryReset')}
@@ -1237,8 +1232,8 @@ export const Settings = ({
                           type="text"
                           value={value.content}
                           onChange={(e) => {
-                            onChangeChatLog(index, e.target.value);
-                            onChangeCodeLog(index, e.target.value);
+                            handleChangeChatLog(index, e.target.value);
+                            handleChangeCodeLog(index, e.target.value);
                           }}
                         ></input>
                       ) : (
@@ -1259,4 +1254,24 @@ export const Settings = ({
       </div>
     </div>
   );
+};
+
+const handleChangeChatLog = (targetIndex: number, text: string) => {
+  const s = store.getState();
+
+  const newChatLog = s.chatLog.map((m, i) => {
+    return i === targetIndex ? { role: m.role, content: text } : m;
+  });
+
+  store.setState({ chatLog: newChatLog });
+};
+
+const handleChangeCodeLog = (targetIndex: number, text: string) => {
+  const s = store.getState();
+
+  const newCodeLog = s.codeLog.map((m, i) => {
+    return i === targetIndex ? { role: m.role, content: text } : m;
+  });
+
+  store.setState({ chatLog: newCodeLog });
 };

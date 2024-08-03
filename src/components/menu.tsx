@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Message } from '@/features/messages/messages';
 import { testVoice } from '@/features/messages/speakCharacter';
 import store from '@/features/stores/app';
 import menuStore from '@/features/stores/menu';
@@ -13,30 +12,14 @@ import { Settings } from './settings';
 import { Webcam } from './webcam';
 
 type Props = {
-  chatLog: Message[];
-  codeLog: Message[];
   assistantMessage: string;
-  onChangeChatLog: (index: number, text: string) => void;
-  onChangeCodeLog: (index: number, text: string) => void;
-  handleClickResetChatLog: () => void;
-  handleClickResetCodeLog: () => void;
-  changeEnglishToJapanese: boolean;
-  setChangeEnglishToJapanese: (show: boolean) => void;
   setBackgroundImageUrl: (url: string) => void;
   onChangeModalImage: (image: string) => void;
   triggerShutter: boolean;
   onChangeWebcamStatus: (show: boolean) => void;
 };
 export const Menu = ({
-  chatLog,
-  codeLog,
   assistantMessage,
-  onChangeChatLog,
-  onChangeCodeLog,
-  handleClickResetChatLog,
-  handleClickResetCodeLog,
-  changeEnglishToJapanese,
-  setChangeEnglishToJapanese,
   setBackgroundImageUrl,
   onChangeModalImage,
   triggerShutter,
@@ -45,6 +28,7 @@ export const Menu = ({
   const selectAIService = store((s) => s.selectAIService);
   const selectAIModel = store((s) => s.selectAIModel);
   const webSocketMode = store((s) => s.webSocketMode);
+  const chatLog = store((s) => s.chatLog);
 
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -214,20 +198,10 @@ export const Menu = ({
           </div>
         </div>
       </div>
-      {webSocketMode
-        ? showChatLog && <CodeLog messages={codeLog} />
-        : showChatLog && <ChatLog messages={chatLog} />}
+      {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
       {showSettings && (
         <Settings
-          chatLog={chatLog}
-          codeLog={codeLog}
           onClickClose={() => setShowSettings(false)}
-          onChangeChatLog={onChangeChatLog}
-          onChangeCodeLog={onChangeCodeLog}
-          onClickResetChatLog={handleClickResetChatLog}
-          onClickResetCodeLog={handleClickResetCodeLog}
-          changeEnglishToJapanese={changeEnglishToJapanese}
-          setChangeEnglishToJapanese={setChangeEnglishToJapanese}
           onClickTestVoice={handleClickTestVoice}
           showSettingsButton={showSettingsButton}
           onChangeShowSettingsButton={setShowSettingsButton}

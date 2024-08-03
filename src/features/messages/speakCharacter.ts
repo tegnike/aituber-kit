@@ -22,14 +22,13 @@ const createSpeakCharacter = () => {
 
   return (
     screenplay: Screenplay,
-    changeEnglishToJapanese: boolean,
     onStart?: () => void,
     onComplete?: () => void,
   ) => {
     const s = store.getState();
     onStart?.();
 
-    if (changeEnglishToJapanese && s.selectLanguage === 'JP') {
+    if (s.changeEnglishToJapanese && s.selectLanguage === 'JP') {
       // 英単語を日本語で読み上げる
       screenplay.talk.message = convertEnglishToJapaneseReading(
         screenplay.talk.message,

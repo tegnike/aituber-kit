@@ -119,10 +119,8 @@ const store = create<AppState>()(
       // General
       selectLanguage: 'JP', // TODO: 要整理, JP, EN
       selectVoiceLanguage: 'ja-JP', // TODO: 要整理, ja-JP, en-US
-      webSocketMode: false,
-
-      // Preferences
       changeEnglishToJapanese: false,
+      webSocketMode: false,
 
       // Chat
       chatLog: [],
