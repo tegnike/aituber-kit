@@ -281,11 +281,14 @@ export const Settings = ({
                           });
 
                           if (newService !== 'openai') {
-                            store.setState({
-                              conversationContinuityMode: false,
-                            });
                             homeStore.setState({ modalImage: '' });
                             menuStore.setState({ showWebcam: false });
+
+                            if (e.target.value !== 'anthropic') {
+                              store.setState({
+                                conversationContinuityMode: false,
+                              });
+                            }
                           }
 
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
@@ -334,11 +337,19 @@ export const Settings = ({
                               <select
                                 className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                                 value={selectAIModel}
-                                onChange={(e) =>
-                                  store.setState({
-                                    selectAIModel: e.target.value,
-                                  })
-                                }
+                                onChange={(e) => {
+                                  const model = e.target.value;
+                                  store.setState({ selectAIModel: model });
+
+                                  if (
+                                    model !== 'gpt-4' &&
+                                    model !== 'gpt-4-turbo' &&
+                                    model !== 'gpt-4-o-mini'
+                                  ) {
+                                    homeStore.setState({ modalImage: '' });
+                                    menuStore.setState({ showWebcam: false });
+                                  }
+                                }}
                               >
                                 <option value="gpt-4o-mini">gpt-4o-mini</option>
                                 <option value="gpt-4o">gpt-4o</option>
