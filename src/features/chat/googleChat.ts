@@ -92,12 +92,11 @@ export async function getGoogleChatResponse(
 
   const chat = chatModel.startChat({ history });
 
-  const m = messages[messages.length - 1];
-  // TODO: support multi-modal message
-  if (typeof m.content !== 'string')
-    throw new Error('multi-modal message is not supported');
+  const lastMessage = messages[messages.length - 1].content;
+  const result = await chat.sendMessage(
+    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text,
+  );
 
-  const result = await chat.sendMessage(m.content);
   const response = await result.response;
   const text = response.text();
 
@@ -119,12 +118,10 @@ export async function getGoogleChatResponseStream(
 
   const chat = chatModel.startChat({ history });
 
-  const m = messages[messages.length - 1];
-  // TODO: support multi-modal message
-  if (typeof m.content !== 'string')
-    throw new Error('multi-modal message is not supported');
-
-  const result = await chat.sendMessageStream(m.content);
+  const lastMessage = messages[messages.length - 1].content;
+  const result = await chat.sendMessageStream(
+    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text,
+  );
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -145,21 +142,28 @@ function processMessages(messages: Message[]) {
   let systemMessage = '';
   const history = messages
     .filter((message, index) => {
-      if (message.role === 'system' && typeof message.content === 'string') {
-        systemMessage = message.content;
+      if (message.role === 'system') {
+        systemMessage =
+          typeof message.content === 'string'
+            ? message.content
+            : message.content[0].text;
         return false;
       }
       return index === 0 ? message.role === 'user' : true;
     })
     .map((message) => {
-      if (typeof message.content !== 'string') return null;
-
       return {
         role: message.role === 'assistant' ? 'model' : message.role,
-        parts: [{ text: message.content }],
+        parts: [
+          {
+            text:
+              typeof message.content === 'string'
+                ? message.content
+                : message.content[0].text,
+          },
+        ],
       };
-    })
-    .filter((m): m is NonNullable<typeof m> => m !== null);
+    });
 
   return { history, systemMessage };
 }

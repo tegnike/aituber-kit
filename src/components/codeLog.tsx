@@ -26,28 +26,30 @@ export const CodeLog = () => {
       <div className="h-full pl-64 pr-16 pt-104 pb-104">
         <div className="p-24 ml-16 h-full rounded-8 bg-base">
           <div className="h-full font-bold tracking-wider bg-base text-primary overflow-y-auto scroll-hidden">
-            {messages
-              .map((msg, i) => {
-                const prevRole = i > 0 ? messages[i - 1].role : '';
-                const nextRole =
-                  i < messages.length - 1 ? messages[i + 1].role : '';
+            {messages.map((msg, i) => {
+              const prevRole = i > 0 ? messages[i - 1].role : '';
+              const nextRole =
+                i < messages.length - 1 ? messages[i + 1].role : '';
 
-                // TODO: support multi-modal message
-                return typeof msg.content === 'string' ? (
-                  <div
-                    key={i}
-                    ref={messages.length - 1 === i ? chatScrollRef : null}
-                  >
-                    <Chat
-                      role={msg.role}
-                      message={msg.content}
-                      prevRole={prevRole}
-                      nextRole={nextRole}
-                    />
-                  </div>
-                ) : null;
-              })
-              .filter((c) => !!c)}
+              const content =
+                typeof msg.content === 'string'
+                  ? msg.content
+                  : msg.content[0].text;
+
+              return (
+                <div
+                  key={i}
+                  ref={messages.length - 1 === i ? chatScrollRef : null}
+                >
+                  <Chat
+                    role={msg.role}
+                    message={content}
+                    prevRole={prevRole}
+                    nextRole={nextRole}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
