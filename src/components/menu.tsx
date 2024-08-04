@@ -15,6 +15,7 @@ import { Webcam } from './webcam';
 export const Menu = () => {
   const selectAIService = store((s) => s.selectAIService);
   const selectAIModel = store((s) => s.selectAIModel);
+  const youtubeMode = store((s) => s.youtubeMode);
   const webSocketMode = store((s) => s.webSocketMode);
   const chatLog = store((s) => s.chatLog);
   const assistantMessage = homeStore((s) => s.assistantMessage);
@@ -129,7 +130,7 @@ export const Menu = () => {
                   ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo'].includes(
                     selectAIModel,
                   )
-                )
+                ) || youtubeMode
               }
             />
           </div>
@@ -144,7 +145,7 @@ export const Menu = () => {
                   ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo'].includes(
                     selectAIModel,
                   )
-                )
+                ) || youtubeMode
               }
             />
             <input

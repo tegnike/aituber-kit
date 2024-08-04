@@ -94,6 +94,15 @@ export const Settings = ({
     dify: '',
   };
 
+  const handleChangeYoutubeMode = (youtubeMode: boolean) => {
+    store.setState({ youtubeMode });
+
+    if (youtubeMode) {
+      homeStore.setState({ modalImage: '' });
+      menuStore.setState({ showWebcam: false });
+    }
+  };
+
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
       <GitHubLink />
@@ -242,7 +251,7 @@ export const Settings = ({
                 <TextButton
                   onClick={() => {
                     store.setState({ webSocketMode: false });
-                    webSocketMode && store.setState({ youtubeMode: false });
+                    webSocketMode && handleChangeYoutubeMode(false);
                   }}
                 >
                   {t('StatusOn')}
@@ -251,7 +260,7 @@ export const Settings = ({
                 <TextButton
                   onClick={() => {
                     store.setState({ webSocketMode: true });
-                    webSocketMode && store.setState({ youtubeMode: false });
+                    webSocketMode && handleChangeYoutubeMode(false);
                   }}
                 >
                   {t('StatusOff')}
@@ -598,13 +607,13 @@ export const Settings = ({
                     <div className="my-8">
                       {youtubeMode ? (
                         <TextButton
-                          onClick={() => store.setState({ youtubeMode: false })}
+                          onClick={() => handleChangeYoutubeMode(false)}
                         >
                           {t('StatusOn')}
                         </TextButton>
                       ) : (
                         <TextButton
-                          onClick={() => store.setState({ youtubeMode: true })}
+                          onClick={() => handleChangeYoutubeMode(true)}
                         >
                           {t('StatusOff')}
                         </TextButton>

@@ -87,13 +87,16 @@ export const Webcam = () => {
     if (!ctx) return;
     ctx.drawImage(videoRef.current!, 0, 0);
     const data = canvas.toDataURL('image/png');
-    if (!data) return;
 
-    console.log('capture');
-    homeStore.setState({
-      modalImage: data,
-      triggerShutter: false, // シャッターをリセット
-    });
+    if (data !== '') {
+      console.log('capture');
+      homeStore.setState({
+        modalImage: data,
+        triggerShutter: false, // シャッターをリセット
+      });
+    } else {
+      homeStore.setState({ modalImage: '' });
+    }
   }, []);
 
   useEffect(() => {
