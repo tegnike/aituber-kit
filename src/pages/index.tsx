@@ -31,6 +31,7 @@ export default function Home() {
   const dontShowIntroduction = store((s) => s.dontShowIntroduction);
   // TODO: (7741) remove when related useEffects are moved to useYoutube
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount);
+  const modalImage = homeStore((s) => s.modalImage);
 
   const [showIntroduction, setShowIntroduction] = useState(false);
   const [assistantMessage, setAssistantMessage] = useState('');
@@ -46,8 +47,6 @@ export default function Home() {
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
-  const [modalImage, setModalImage] = useState('');
-  const [triggerShutter, setTriggerShutter] = useState(false);
   const [delayedText, setDelayedText] = useState('');
   const [webcamStatus, setWebcamStatus] = useState(false);
 
@@ -327,6 +326,8 @@ export default function Home() {
       if (newMessage === null) return;
 
       const s = store.getState();
+      const hs = homeStore.getState();
+
       if (s.webSocketMode) {
         // 未メンテなので不具合がある可能性あり
         console.log('websocket mode: true');
@@ -435,21 +436,20 @@ export default function Home() {
           {
             role: 'user',
             content:
-              modalImage &&
+              hs.modalImage &&
               s.selectAIService === 'openai' &&
               (s.selectAIModel === 'gpt-4o-mini' ||
                 s.selectAIModel === 'gpt-4o' ||
                 s.selectAIModel === 'gpt-4-turbo')
                 ? [
                     { type: 'text', text: newMessage },
-                    { type: 'image_url', image_url: { url: modalImage } },
+                    { type: 'image_url', image_url: { url: hs.modalImage } },
                   ]
                 : newMessage,
           },
         ];
-        if (modalImage) {
-          //setModalImage("");
-          clear();
+        if (hs.modalImage) {
+          homeStore.setState({ modalImage: '' });
         }
         store.setState({ chatLog: messageLog });
 
@@ -485,7 +485,7 @@ export default function Home() {
         homeStore.setState({ chatProcessing: false });
       }
     },
-    [handleSpeakAi, t, processAIResponse, modalImage, delayedText],
+    [handleSpeakAi, t, processAIResponse, delayedText],
   );
 
   ///取得したコメントをストックするリストの作成（tmpMessages）
@@ -618,22 +618,6 @@ export default function Home() {
     }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS);
   }, [youtubeNoCommentCount, conversationContinuityMode]);
 
-  const handleChangeModelImage = useCallback(
-    async (image: string) => {
-      //console.log(image);
-      if (image != '') {
-        console.log('capture');
-        setModalImage(image);
-        setTriggerShutter(false); // シャッターをリセット
-      }
-    },
-    [modalImage, setModalImage, handleSendChat],
-  );
-
-  const clear = useCallback(async () => {
-    setModalImage('');
-  }, []);
-
   useEffect(() => {
     // テキストと画像がそろったら、チャットを送信
     if (delayedText && modalImage) {
@@ -642,13 +626,9 @@ export default function Home() {
     }
   }, [modalImage, delayedText]);
 
-  const handleVoiceShutter = useCallback(async () => {
-    setTriggerShutter(true);
-  }, []);
-
   const hookSendChat = useCallback(
     (text: string) => {
-      handleVoiceShutter();
+      homeStore.setState({ triggerShutter: true });
       // MENUの中でshowCameraがtrueの場合、画像が取得されるまで待機
       if (webcamStatus) {
         // Webcamが開いている場合
@@ -657,28 +637,12 @@ export default function Home() {
         handleSendChat(text);
       }
     },
-    [
-      handleSendChat,
-      modalImage,
-      setModalImage,
-      webcamStatus,
-      delayedText,
-      setDelayedText,
-    ],
+    [handleSendChat, webcamStatus, delayedText, setDelayedText],
   );
 
   const handleStatusWebcam = useCallback(async (status: boolean) => {
     setWebcamStatus(status); // カメラが開いているかどうかの状態を更新
   }, []);
-
-  const handleImageDropped = useCallback(
-    async (image: string) => {
-      if (image !== '') {
-        setModalImage(image);
-      }
-    },
-    [setModalImage],
-  );
 
   return (
     <>
@@ -692,37 +656,43 @@ export default function Home() {
       >
         <Meta />
         {showIntroduction && <Introduction />}
-        <VrmViewer onImageDropped={handleImageDropped} />
+        <VrmViewer />
         <MessageInputContainer onChatProcessStart={hookSendChat} />
         <Menu
           assistantMessage={assistantMessage}
           setBackgroundImageUrl={setBackgroundImageUrl}
-          onChangeModalImage={handleChangeModelImage}
-          triggerShutter={triggerShutter}
           onChangeWebcamStatus={handleStatusWebcam}
         />
-        {modalImage && (
-          <div className="row-span-1 flex justify-end max-h-[40vh]">
-            <div className="relative w-full md:max-w-[512px] max-w-[50%] m-16">
-              <Image
-                src={modalImage}
-                width={512}
-                height={512}
-                alt="Modal Image"
-                className="rounded-8 w-auto object-contain max-h-[100%] ml-auto"
-              />
-              <div className="absolute top-4 right-4">
-                <IconButton
-                  iconName="24/Trash"
-                  className="hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
-                  isProcessing={false}
-                  onClick={clear}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+        <ModalImage />
       </div>
     </>
   );
 }
+
+const ModalImage = () => {
+  const modalImage = homeStore((s) => s.modalImage);
+
+  if (!modalImage) return null;
+
+  return (
+    <div className="row-span-1 flex justify-end max-h-[40vh]">
+      <div className="relative w-full md:max-w-[512px] max-w-[50%] m-16">
+        <Image
+          src={modalImage}
+          width={512}
+          height={512}
+          alt="Modal Image"
+          className="rounded-8 w-auto object-contain max-h-[100%] ml-auto"
+        />
+        <div className="absolute top-4 right-4">
+          <IconButton
+            iconName="24/Trash"
+            className="hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
+            isProcessing={false}
+            onClick={() => homeStore.setState({ modalImage: '' })}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};

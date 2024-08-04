@@ -5,6 +5,8 @@ interface HomeState {
   chatProcessingCount: number;
   incrementChatProcessingCount: () => void;
   decrementChatProcessingCount: () => void;
+  modalImage: string;
+  triggerShutter: boolean;
 }
 
 const homeStore = create<HomeState>((set, get) => ({
@@ -20,5 +22,7 @@ const homeStore = create<HomeState>((set, get) => ({
       chatProcessingCount: chatProcessingCount - 1,
     }));
   },
+  modalImage: '',
+  triggerShutter: false,
 }));
 export default homeStore;

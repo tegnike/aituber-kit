@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { testVoice } from '@/features/messages/speakCharacter';
 import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
 import menuStore from '@/features/stores/menu';
 import { AssistantText } from './assistantText';
 import { ChatLog } from './chatLog';
@@ -14,15 +15,11 @@ import { Webcam } from './webcam';
 type Props = {
   assistantMessage: string;
   setBackgroundImageUrl: (url: string) => void;
-  onChangeModalImage: (image: string) => void;
-  triggerShutter: boolean;
   onChangeWebcamStatus: (show: boolean) => void;
 };
 export const Menu = ({
   assistantMessage,
   setBackgroundImageUrl,
-  onChangeModalImage,
-  triggerShutter,
   onChangeWebcamStatus,
 }: Props) => {
   const selectAIService = store((s) => s.selectAIService);
@@ -89,28 +86,6 @@ export const Menu = ({
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-
-  const handleChangeModalImage = useCallback(
-    (image: string) => {
-      onChangeModalImage(image);
-    },
-    [onChangeModalImage],
-  );
-
-  const handleChangeImageFile = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const imageUrl = e.target?.result as string;
-          onChangeModalImage(imageUrl);
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [onChangeModalImage],
-  );
 
   // カメラが開いているかどうかの状態変更
   useEffect(() => {
@@ -193,7 +168,17 @@ export const Menu = ({
               className="hidden"
               accept="image/*"
               ref={imageFileInputRef}
-              onChange={handleChangeImageFile}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    const imageUrl = e.target?.result as string;
+                    homeStore.setState({ modalImage: imageUrl });
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
             />
           </div>
         </div>
@@ -210,13 +195,7 @@ export const Menu = ({
       {!showChatLog && assistantMessage && (
         <AssistantText message={assistantMessage} />
       )}
-      {showWebcam && navigator.mediaDevices && (
-        <Webcam
-          onChangeModalImage={handleChangeModalImage}
-          triggerShutter={triggerShutter}
-          showWebcam={showWebcam}
-        />
-      )}
+      {showWebcam && navigator.mediaDevices && <Webcam />}
       {showPermissionModal && (
         <div className="modal">
           <div className="modal-content">
