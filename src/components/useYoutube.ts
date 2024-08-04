@@ -4,18 +4,15 @@ import { Message } from '@/features/messages/messages';
 import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments';
+import { processAIResponse } from './handlers';
 
 const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 5000; // 5秒
 
 interface Params {
-  processAIResponse: (
-    currentChatLog: Message[],
-    messages: Message[],
-  ) => Promise<void>;
   handleSendChat: (text: string, role?: string) => Promise<void>;
 }
 
-const useYoutube = async ({ processAIResponse, handleSendChat }: Params) => {
+const useYoutube = async ({ handleSendChat }: Params) => {
   const conversationContinuityMode = store((s) => s.conversationContinuityMode);
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount);
 
@@ -24,13 +21,10 @@ const useYoutube = async ({ processAIResponse, handleSendChat }: Params) => {
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
 
-  const preProcessAIResponse = useCallback(
-    async (messages: Message[]) => {
-      const s = store.getState();
-      await processAIResponse(s.chatLog, messages);
-    },
-    [processAIResponse],
-  );
+  const preProcessAIResponse = useCallback(async (messages: Message[]) => {
+    const s = store.getState();
+    await processAIResponse(s.chatLog, messages);
+  }, []);
 
   // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async () => {
@@ -79,14 +73,22 @@ const useYoutube = async ({ processAIResponse, handleSendChat }: Params) => {
   useEffect(() => {
     console.log('chatProcessingCount:', chatProcessingCount);
     fetchAndProcessCommentsCallback();
-  }, [chatProcessingCount, conversationContinuityMode]);
+  }, [
+    chatProcessingCount,
+    fetchAndProcessCommentsCallback,
+    conversationContinuityMode,
+  ]);
 
   useEffect(() => {
     if (youtubeNoCommentCount < 1) return;
-    console.log('youtubeSleepMode:', youtubeSleepMode);
+    // console.log('youtubeSleepMode:', youtubeSleepMode);
     setTimeout(() => {
       fetchAndProcessCommentsCallback();
     }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS);
-  }, [youtubeNoCommentCount, conversationContinuityMode]);
+  }, [
+    youtubeNoCommentCount,
+    fetchAndProcessCommentsCallback,
+    conversationContinuityMode,
+  ]);
 };
 export default useYoutube;

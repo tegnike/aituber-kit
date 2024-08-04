@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
 import store from '@/features/stores/app';
@@ -10,9 +10,16 @@ export const Introduction = () => {
   const selectLanguage = store((s) => s.selectLanguage);
   const dontShowIntroduction = store((s) => s.dontShowIntroduction);
 
+  const [showIntroduction, setShowIntroduction] = useState(false);
   const [opened, setOpened] = useState(true);
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // wait for local storage to be fully initialized
+    // to prevent a flash of <Introduction />
+    setShowIntroduction(!store.getState().dontShowIntroduction);
+  }, [dontShowIntroduction]);
 
   const updateLanguage = () => {
     console.log('i18n.language', i18n.language);
@@ -42,7 +49,7 @@ export const Introduction = () => {
     }
   };
 
-  return opened ? (
+  return showIntroduction && opened ? (
     <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
       <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
         <IconButton
