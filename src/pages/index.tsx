@@ -29,6 +29,7 @@ export default function Home() {
   const webSocketMode = store((s) => s.webSocketMode);
   const dontShowIntroduction = store((s) => s.dontShowIntroduction);
 
+  const [showIntroduction, setShowIntroduction] = useState(false);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [assistantMessage, setAssistantMessage] = useState('');
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
@@ -48,6 +49,12 @@ export default function Home() {
   const [triggerShutter, setTriggerShutter] = useState(false);
   const [delayedText, setDelayedText] = useState('');
   const [webcamStatus, setWebcamStatus] = useState(false);
+
+  useEffect(() => {
+    // wait for local storage to be fully initialized
+    // to prevent a flash of <Introduction />
+    setShowIntroduction(!store.getState().dontShowIntroduction);
+  }, [dontShowIntroduction]);
 
   const incrementChatProcessingCount = () => {
     setChatProcessingCount((prevCount) => prevCount + 1);
@@ -691,7 +698,7 @@ export default function Home() {
         }}
       >
         <Meta />
-        {!dontShowIntroduction && <Introduction />}
+        {showIntroduction && <Introduction />}
         <VrmViewer onImageDropped={handleImageDropped} />
         <MessageInputContainer
           isChatProcessing={chatProcessing}
