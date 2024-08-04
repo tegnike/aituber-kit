@@ -18,10 +18,10 @@ export const Menu = () => {
   const webSocketMode = store((s) => s.webSocketMode);
   const chatLog = store((s) => s.chatLog);
   const assistantMessage = homeStore((s) => s.assistantMessage);
+  const showWebcam = menuStore((s) => s.showWebcam);
 
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
-  const [showWebcam, setShowWebcam] = useState(false);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
@@ -120,7 +120,9 @@ export const Menu = () => {
             <IconButton
               iconName="24/Camera"
               isProcessing={false}
-              onClick={() => setShowWebcam(!showWebcam)}
+              onClick={() =>
+                menuStore(({ showWebcam }) => ({ showWebcam: !showWebcam }))
+              }
               disabled={
                 !(
                   selectAIService === 'openai' &&

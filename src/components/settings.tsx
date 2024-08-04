@@ -14,6 +14,7 @@ import {
 } from '@/features/constants/koeiroParam';
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
 import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
 import menuStore from '@/features/stores/menu';
 import { GitHubLink } from './githubLink';
 import { IconButton } from './iconButton';
@@ -283,9 +284,8 @@ export const Settings = ({
                             store.setState({
                               conversationContinuityMode: false,
                             });
-                            // FIXME: (7741) add showWebcam to menuStore and modalImage to store (global state)
-                            // setShowWebcam(false);
-                            // onChangeModalImage('');
+                            homeStore.setState({ modalImage: '' });
+                            menuStore.setState({ showWebcam: false });
                           }
 
                           // 選択したAIサービスに基づいてデフォルトモデルを設定する
