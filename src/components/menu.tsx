@@ -12,20 +12,12 @@ import { IconButton } from './iconButton';
 import { Settings } from './settings';
 import { Webcam } from './webcam';
 
-type Props = {
-  assistantMessage: string;
-  setBackgroundImageUrl: (url: string) => void;
-  onChangeWebcamStatus: (show: boolean) => void;
-};
-export const Menu = ({
-  assistantMessage,
-  setBackgroundImageUrl,
-  onChangeWebcamStatus,
-}: Props) => {
+export const Menu = () => {
   const selectAIService = store((s) => s.selectAIService);
   const selectAIModel = store((s) => s.selectAIModel);
   const webSocketMode = store((s) => s.webSocketMode);
   const chatLog = store((s) => s.chatLog);
+  const assistantMessage = homeStore((s) => s.assistantMessage);
 
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -62,17 +54,6 @@ export const Menu = ({
     [],
   );
 
-  const handleChangeBgFile = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const imageUrl = URL.createObjectURL(file);
-        setBackgroundImageUrl(imageUrl);
-      }
-    },
-    [setBackgroundImageUrl],
-  );
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === '.') {
@@ -90,7 +71,8 @@ export const Menu = ({
   // カメラが開いているかどうかの状態変更
   useEffect(() => {
     console.log('onChangeWebcamStatus');
-    onChangeWebcamStatus(showWebcam);
+    homeStore.setState({ webcamStatus: showWebcam });
+
     if (showWebcam) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
@@ -232,7 +214,13 @@ export const Menu = ({
 
           menuStore.setState({ bgFileInput });
         }}
-        onChange={handleChangeBgFile}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            homeStore.setState({ backgroundImageUrl: imageUrl });
+          }
+        }}
       />
     </>
   );

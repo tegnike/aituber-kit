@@ -31,24 +31,21 @@ export default function Home() {
   const dontShowIntroduction = store((s) => s.dontShowIntroduction);
   // TODO: (7741) remove when related useEffects are moved to useYoutube
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount);
+  const backgroundImage = homeStore(
+    (s) => `url(${buildUrl(s.backgroundImageUrl)})`,
+  );
   const modalImage = homeStore((s) => s.modalImage);
+  const webcamStatus = homeStore((s) => s.webcamStatus);
 
   const [showIntroduction, setShowIntroduction] = useState(false);
-  const [assistantMessage, setAssistantMessage] = useState('');
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
   const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 5000; // 5秒
-  const [backgroundImageUrl, setBackgroundImageUrl] = useState(
-    process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH !== undefined
-      ? process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH
-      : '/bg-c.png',
-  );
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState('');
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
   const [delayedText, setDelayedText] = useState('');
-  const [webcamStatus, setWebcamStatus] = useState(false);
 
   useEffect(() => {
     // wait for local storage to be fully initialized
@@ -196,7 +193,7 @@ export default function Home() {
                   aiText += `${tag} ${restOfSentence.join('```') || ''}`;
 
                   // AssistantMessage欄の更新
-                  setAssistantMessage(sentences.join(' '));
+                  homeStore.setState({ assistantMessage: sentences.join(' ') });
 
                   codeBlockText = '';
                   isCodeBlock = false;
@@ -218,7 +215,9 @@ export default function Home() {
               handleSpeakAi(
                 aiTalks[0],
                 () => {
-                  setAssistantMessage(currentAssistantMessage);
+                  homeStore.setState({
+                    assistantMessage: currentAssistantMessage,
+                  });
                   hs.incrementChatProcessingCount();
                 },
                 () => {
@@ -244,7 +243,9 @@ export default function Home() {
             handleSpeakAi(
               aiTalks[0],
               () => {
-                setAssistantMessage(currentAssistantMessage);
+                homeStore.setState({
+                  assistantMessage: currentAssistantMessage,
+                });
                 hs.incrementChatProcessingCount();
               },
               () => {
@@ -353,7 +354,7 @@ export default function Home() {
                   codeLog: updateLog,
                 });
 
-                setAssistantMessage(newMessage);
+                homeStore.setState({ assistantMessage: newMessage });
                 setIsVoicePlaying(false);
                 homeStore.setState({ chatProcessing: false });
               });
@@ -397,8 +398,10 @@ export default function Home() {
               JSON.stringify({ content: newMessage, type: 'chat' }),
             );
           } else {
-            setAssistantMessage(t('NotConnectedToExternalAssistant'));
-            homeStore.setState({ chatProcessing: false });
+            homeStore.setState({
+              assistantMessage: t('NotConnectedToExternalAssistant'),
+              chatProcessing: false,
+            });
           }
         }
       } else {
@@ -425,7 +428,7 @@ export default function Home() {
             !process.env.NEXT_PUBLIC_DIFY_KEY,
         ];
         if (emptyKeys.includes(true)) {
-          setAssistantMessage(t('APIKeyNotEntered'));
+          homeStore.setState({ assistantMessage: t('APIKeyNotEntered') });
           return;
         }
 
@@ -629,6 +632,7 @@ export default function Home() {
   const hookSendChat = useCallback(
     (text: string) => {
       homeStore.setState({ triggerShutter: true });
+
       // MENUの中でshowCameraがtrueの場合、画像が取得されるまで待機
       if (webcamStatus) {
         // Webcamが開いている場合
@@ -640,24 +644,13 @@ export default function Home() {
     [handleSendChat, webcamStatus, delayedText, setDelayedText],
   );
 
-  const handleStatusWebcam = useCallback(async (status: boolean) => {
-    setWebcamStatus(status); // カメラが開いているかどうかの状態を更新
-  }, []);
-
   return (
-    <div
-      className={c.home}
-      style={{ backgroundImage: `url(${buildUrl(backgroundImageUrl)})` }}
-    >
+    <div className={c.home} style={{ backgroundImage }}>
       <Meta />
       {showIntroduction && <Introduction />}
-      {/*<VrmViewer />*/}
+      <VrmViewer />
       <MessageInputContainer onChatProcessStart={hookSendChat} />
-      <Menu
-        assistantMessage={assistantMessage}
-        setBackgroundImageUrl={setBackgroundImageUrl}
-        onChangeWebcamStatus={handleStatusWebcam}
-      />
+      <Menu />
       <ModalImage />
     </div>
   );
