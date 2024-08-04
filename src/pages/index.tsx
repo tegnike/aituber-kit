@@ -1,12 +1,11 @@
-import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IconButton } from '@/components/iconButton';
 import { Introduction } from '@/components/introduction';
 import { Menu } from '@/components/menu';
 import { MessageInputContainer } from '@/components/messageInputContainer';
 import { Meta } from '@/components/meta';
+import ModalImage from '@/components/modal-image';
 import VrmViewer from '@/components/vrmViewer';
 import {
   AIService,
@@ -24,6 +23,7 @@ import homeStore from '@/features/stores/home';
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments';
 import '@/lib/i18n';
 import { buildUrl } from '@/utils/buildUrl';
+import c from '@/styles/home.module.scss';
 
 export default function Home() {
   const conversationContinuityMode = store((s) => s.conversationContinuityMode);
@@ -645,54 +645,20 @@ export default function Home() {
   }, []);
 
   return (
-    <>
-      <div
-        className={'font-M_PLUS_2'}
-        style={{
-          backgroundImage: `url(${buildUrl(backgroundImageUrl)})`,
-          backgroundSize: 'cover',
-          minHeight: '100vh',
-        }}
-      >
-        <Meta />
-        {showIntroduction && <Introduction />}
-        <VrmViewer />
-        <MessageInputContainer onChatProcessStart={hookSendChat} />
-        <Menu
-          assistantMessage={assistantMessage}
-          setBackgroundImageUrl={setBackgroundImageUrl}
-          onChangeWebcamStatus={handleStatusWebcam}
-        />
-        <ModalImage />
-      </div>
-    </>
-  );
-}
-
-const ModalImage = () => {
-  const modalImage = homeStore((s) => s.modalImage);
-
-  if (!modalImage) return null;
-
-  return (
-    <div className="row-span-1 flex justify-end max-h-[40vh]">
-      <div className="relative w-full md:max-w-[512px] max-w-[50%] m-16">
-        <Image
-          src={modalImage}
-          width={512}
-          height={512}
-          alt="Modal Image"
-          className="rounded-8 w-auto object-contain max-h-[100%] ml-auto"
-        />
-        <div className="absolute top-4 right-4">
-          <IconButton
-            iconName="24/Trash"
-            className="hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
-            isProcessing={false}
-            onClick={() => homeStore.setState({ modalImage: '' })}
-          />
-        </div>
-      </div>
+    <div
+      className={c.home}
+      style={{ backgroundImage: `url(${buildUrl(backgroundImageUrl)})` }}
+    >
+      <Meta />
+      {showIntroduction && <Introduction />}
+      {/*<VrmViewer />*/}
+      <MessageInputContainer onChatProcessStart={hookSendChat} />
+      <Menu
+        assistantMessage={assistantMessage}
+        setBackgroundImageUrl={setBackgroundImageUrl}
+        onChangeWebcamStatus={handleStatusWebcam}
+      />
+      <ModalImage />
     </div>
   );
-};
+}
