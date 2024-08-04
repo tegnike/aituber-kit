@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { testVoice } from '@/features/messages/speakCharacter';
 import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
 import menuStore from '@/features/stores/menu';
@@ -9,7 +8,7 @@ import { AssistantText } from './assistantText';
 import { ChatLog } from './chatLog';
 import { CodeLog } from './codeLog';
 import { IconButton } from './iconButton';
-import { Settings } from './settings';
+import Settings from './settings';
 import { Webcam } from './webcam';
 
 export const Menu = () => {
@@ -20,17 +19,13 @@ export const Menu = () => {
   const chatLog = store((s) => s.chatLog);
   const assistantMessage = homeStore((s) => s.assistantMessage);
   const showWebcam = menuStore((s) => s.showWebcam);
+  const showSettingsButton = menuStore((s) => s.showSettingsButton);
 
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
-  const [showSettingsButton, setShowSettingsButton] = useState(true);
-
-  const handleClickTestVoice = (speaker: string) => {
-    testVoice(speaker);
-  };
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,14 +164,7 @@ export const Menu = () => {
         </div>
       </div>
       {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
-      {showSettings && (
-        <Settings
-          onClickClose={() => setShowSettings(false)}
-          onClickTestVoice={handleClickTestVoice}
-          showSettingsButton={showSettingsButton}
-          onChangeShowSettingsButton={setShowSettingsButton}
-        />
-      )}
+      {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {!showChatLog && assistantMessage && (
         <AssistantText message={assistantMessage} />
       )}
