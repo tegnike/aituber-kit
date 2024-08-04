@@ -20,6 +20,7 @@ import {
 } from '@/features/messages/messages';
 import { speakCharacter } from '@/features/messages/speakCharacter';
 import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments';
 import '@/lib/i18n';
 import { buildUrl } from '@/utils/buildUrl';
@@ -28,9 +29,10 @@ export default function Home() {
   const conversationContinuityMode = store((s) => s.conversationContinuityMode);
   const webSocketMode = store((s) => s.webSocketMode);
   const dontShowIntroduction = store((s) => s.dontShowIntroduction);
+  // TODO: (7741) remove when related useEffects are moved to useYoutube
+  const chatProcessingCount = homeStore((s) => s.chatProcessingCount);
 
   const [showIntroduction, setShowIntroduction] = useState(false);
-  const [chatProcessing, setChatProcessing] = useState(false);
   const [assistantMessage, setAssistantMessage] = useState('');
   const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
@@ -44,7 +46,6 @@ export default function Home() {
   const [youtubeContinuationCount, setYoutubeContinuationCount] = useState(0);
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0);
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
-  const [chatProcessingCount, setChatProcessingCount] = useState(0);
   const [modalImage, setModalImage] = useState('');
   const [triggerShutter, setTriggerShutter] = useState(false);
   const [delayedText, setDelayedText] = useState('');
@@ -55,14 +56,6 @@ export default function Home() {
     // to prevent a flash of <Introduction />
     setShowIntroduction(!store.getState().dontShowIntroduction);
   }, [dontShowIntroduction]);
-
-  const incrementChatProcessingCount = () => {
-    setChatProcessingCount((prevCount) => prevCount + 1);
-  };
-
-  const decrementChatProcessingCount = () => {
-    setChatProcessingCount((prevCount) => prevCount - 1);
-  };
 
   /**
    * 文ごとに音声を直列でリクエストしながら再生する
@@ -87,10 +80,11 @@ export default function Home() {
    */
   const processAIResponse = useCallback(
     async (currentChatLog: Message[], messages: Message[]) => {
-      setChatProcessing(true);
+      homeStore.setState({ chatProcessing: true });
       let stream;
 
       const s = store.getState();
+      const hs = homeStore.getState();
 
       const aiServiceConfig: AIServiceConfig = {
         openai: {
@@ -133,7 +127,7 @@ export default function Home() {
       }
 
       if (stream == null) {
-        setChatProcessing(false);
+        homeStore.setState({ chatProcessing: false });
         return;
       }
 
@@ -226,10 +220,10 @@ export default function Home() {
                 aiTalks[0],
                 () => {
                   setAssistantMessage(currentAssistantMessage);
-                  incrementChatProcessingCount();
+                  hs.incrementChatProcessingCount();
                 },
                 () => {
-                  decrementChatProcessingCount();
+                  hs.decrementChatProcessingCount();
                 },
               );
             } else {
@@ -252,10 +246,10 @@ export default function Home() {
               aiTalks[0],
               () => {
                 setAssistantMessage(currentAssistantMessage);
-                incrementChatProcessingCount();
+                hs.incrementChatProcessingCount();
               },
               () => {
-                decrementChatProcessingCount();
+                hs.decrementChatProcessingCount();
               },
             );
 
@@ -310,7 +304,7 @@ export default function Home() {
         .filter((item) => item.content !== '');
 
       store.setState({ chatLog: [...currentChatLog, ...aiTextLog] });
-      setChatProcessing(false);
+      homeStore.setState({ chatProcessing: false });
     },
     [handleSpeakAi],
   );
@@ -336,7 +330,7 @@ export default function Home() {
       if (s.webSocketMode) {
         // 未メンテなので不具合がある可能性あり
         console.log('websocket mode: true');
-        setChatProcessing(true);
+        homeStore.setState({ chatProcessing: true });
 
         if (role !== undefined && role !== 'user') {
           // WebSocketからの返答を処理
@@ -360,11 +354,11 @@ export default function Home() {
 
                 setAssistantMessage(newMessage);
                 setIsVoicePlaying(false);
-                setChatProcessing(false);
+                homeStore.setState({ chatProcessing: false });
               });
             } catch (e) {
               setIsVoicePlaying(false);
-              setChatProcessing(false);
+              homeStore.setState({ chatProcessing: false });
             }
           } else if (
             role == 'code' ||
@@ -378,7 +372,7 @@ export default function Home() {
               { role: role, content: newMessage },
             ];
             store.setState({ codeLog: updateLog });
-            setChatProcessing(false);
+            homeStore.setState({ chatProcessing: false });
           } else {
             // その他のコメントの処理（現想定では使用されないはず）
             console.log('error role:', role);
@@ -403,7 +397,7 @@ export default function Home() {
             );
           } else {
             setAssistantMessage(t('NotConnectedToExternalAssistant'));
-            setChatProcessing(false);
+            homeStore.setState({ chatProcessing: false });
           }
         }
       } else {
@@ -434,7 +428,7 @@ export default function Home() {
           return;
         }
 
-        setChatProcessing(true);
+        homeStore.setState({ chatProcessing: true });
         // ユーザーの発言を追加して表示
         const messageLog: Message[] = [
           ...s.chatLog,
@@ -488,7 +482,7 @@ export default function Home() {
           console.error(e);
         }
 
-        setChatProcessing(false);
+        homeStore.setState({ chatProcessing: false });
       }
     },
     [handleSpeakAi, t, processAIResponse, modalImage, delayedText],
@@ -540,7 +534,7 @@ export default function Home() {
         ws.readyState !== WebSocket.OPEN &&
         ws.readyState !== WebSocket.CONNECTING
       ) {
-        setChatProcessing(false);
+        homeStore.setState({ chatProcessing: false });
         console.log('try reconnecting...');
         ws.close();
         ws = setupWebsocket();
@@ -570,13 +564,14 @@ export default function Home() {
   // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async () => {
     const s = store.getState();
+    const hs = homeStore.getState();
 
     if (
       !s.openAiKey ||
       !s.youtubeLiveId ||
       !s.youtubeApiKey ||
-      chatProcessing ||
-      chatProcessingCount > 0
+      hs.chatProcessing ||
+      hs.chatProcessingCount > 0
     ) {
       return;
     }
@@ -602,8 +597,6 @@ export default function Home() {
       preProcessAIResponse,
     );
   }, [
-    chatProcessing,
-    chatProcessingCount,
     youtubeNextPageToken,
     youtubeNoCommentCount,
     youtubeContinuationCount,
@@ -700,10 +693,7 @@ export default function Home() {
         <Meta />
         {showIntroduction && <Introduction />}
         <VrmViewer onImageDropped={handleImageDropped} />
-        <MessageInputContainer
-          isChatProcessing={chatProcessing}
-          onChatProcessStart={hookSendChat}
-        />
+        <MessageInputContainer onChatProcessStart={hookSendChat} />
         <Menu
           assistantMessage={assistantMessage}
           setBackgroundImageUrl={setBackgroundImageUrl}

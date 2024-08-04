@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { MessageInput } from '@/components/messageInput';
 import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
 
 type Props = {
-  isChatProcessing: boolean;
   onChatProcessStart: (text: string) => void;
 };
 
@@ -14,10 +14,8 @@ type Props = {
  * 音声認識の完了時は自動で送信し、返答文の生成中は入力を無効化する
  *
  */
-export const MessageInputContainer = ({
-  isChatProcessing,
-  onChatProcessStart,
-}: Props) => {
+export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
+  const chatProcessing = homeStore((s) => s.chatProcessing);
   const [userMessage, setUserMessage] = useState('');
   const [speechRecognition, setSpeechRecognition] =
     useState<SpeechRecognition>();
@@ -81,15 +79,14 @@ export const MessageInputContainer = ({
   }, [handleRecognitionResult, handleRecognitionEnd]);
 
   useEffect(() => {
-    if (!isChatProcessing) {
+    if (!chatProcessing) {
       setUserMessage('');
     }
-  }, [isChatProcessing]);
+  }, [chatProcessing]);
 
   return (
     <MessageInput
       userMessage={userMessage}
-      isChatProcessing={isChatProcessing}
       isMicRecording={isMicRecording}
       onChangeUserMessage={(e) => setUserMessage(e.target.value)}
       onClickMicButton={handleClickMicButton}
