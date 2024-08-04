@@ -1,20 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Introduction } from '@/components/introduction';
 import { Menu } from '@/components/menu';
 import { MessageInputContainer } from '@/components/messageInputContainer';
 import { Meta } from '@/components/meta';
+import useWebSocket from '@/components/home/useWebSocket';
+import useYoutube from '@/components/home/useYoutube';
 import ModalImage from '@/components/modal-image';
 import VrmViewer from '@/components/vrmViewer';
 import {
+  getAIChatResponseStream,
   AIService,
   AIServiceConfig,
-  getAIChatResponseStream,
 } from '@/features/chat/aiChatFactory';
 import {
-  Message,
   textsToScreenplay,
+  Message,
   Screenplay,
 } from '@/features/messages/messages';
 import { speakCharacter } from '@/features/messages/speakCharacter';
@@ -23,10 +25,8 @@ import homeStore from '@/features/stores/home';
 import '@/lib/i18n';
 import { buildUrl } from '@/utils/buildUrl';
 import c from '@/styles/home.module.scss';
-import useYoutube from '@/components/home/useYoutube';
 
 const Home = () => {
-  const webSocketMode = store((s) => s.webSocketMode);
   const dontShowIntroduction = store((s) => s.dontShowIntroduction);
   const backgroundImage = homeStore(
     (s) => `url(${buildUrl(s.backgroundImageUrl)})`,
@@ -35,7 +35,6 @@ const Home = () => {
   const webcamStatus = homeStore((s) => s.webcamStatus);
 
   const [showIntroduction, setShowIntroduction] = useState(false);
-  const [isVoicePlaying, setIsVoicePlaying] = useState(false); // WebSocketモード用の設定
   const { t } = useTranslation();
   const [delayedText, setDelayedText] = useState('');
 
@@ -58,8 +57,6 @@ const Home = () => {
     },
     [],
   );
-
-  const wsRef = useRef<WebSocket | null>(null);
 
   /**
    * AIからの応答を処理する関数
@@ -338,13 +335,17 @@ const Home = () => {
                   codeLog: updateLog,
                 });
 
-                homeStore.setState({ assistantMessage: newMessage });
-                setIsVoicePlaying(false);
-                homeStore.setState({ chatProcessing: false });
+                homeStore.setState({
+                  assistantMessage: newMessage,
+                  chatProcessing: false,
+                  voicePlaying: false,
+                });
               });
             } catch (e) {
-              setIsVoicePlaying(false);
-              homeStore.setState({ chatProcessing: false });
+              homeStore.setState({
+                chatProcessing: false,
+                voicePlaying: false,
+              });
             }
           } else if (
             role == 'code' ||
@@ -366,7 +367,7 @@ const Home = () => {
         } else {
           // WebSocketで送信する処理
 
-          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          if (hs.ws?.readyState === WebSocket.OPEN) {
             // ユーザーの発言を追加して表示
             const updateLog: Message[] = [
               ...s.codeLog,
@@ -378,9 +379,7 @@ const Home = () => {
             });
 
             // WebSocket送信
-            wsRef.current.send(
-              JSON.stringify({ content: newMessage, type: 'chat' }),
-            );
+            hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }));
           } else {
             homeStore.setState({
               assistantMessage: t('NotConnectedToExternalAssistant'),
@@ -476,79 +475,7 @@ const Home = () => {
   );
 
   useYoutube({ processAIResponse, handleSendChat });
-
-  ///取得したコメントをストックするリストの作成（tmpMessages）
-  interface tmpMessage {
-    text: string;
-    role: string;
-    emotion: string;
-  }
-  const [tmpMessages, setTmpMessages] = useState<tmpMessage[]>([]);
-
-  useEffect(() => {
-    // TODO: (7741) add a debug flag for logs
-    const s = store.getState();
-    if (!s.webSocketMode) return;
-
-    const handleOpen = (event: Event) => {
-      console.log('WebSocket connection opened:', event);
-    };
-    const handleMessage = (event: MessageEvent) => {
-      console.log('Received message:', event.data);
-      const jsonData = JSON.parse(event.data);
-      setTmpMessages((prevMessages) => [...prevMessages, jsonData]);
-    };
-    const handleError = (event: Event) => {
-      console.error('WebSocket error:', event);
-    };
-    const handleClose = (event: Event) => {
-      console.log('WebSocket connection closed:', event);
-    };
-
-    function setupWebsocket() {
-      const ws = new WebSocket('ws://localhost:8000/ws');
-      ws.addEventListener('open', handleOpen);
-      ws.addEventListener('message', handleMessage);
-      ws.addEventListener('error', handleError);
-      ws.addEventListener('close', handleClose);
-      return ws;
-    }
-    let ws = setupWebsocket();
-    wsRef.current = ws;
-
-    const reconnectInterval = setInterval(() => {
-      const s = store.getState();
-      if (
-        s.webSocketMode &&
-        ws.readyState !== WebSocket.OPEN &&
-        ws.readyState !== WebSocket.CONNECTING
-      ) {
-        homeStore.setState({ chatProcessing: false });
-        console.log('try reconnecting...');
-        ws.close();
-        ws = setupWebsocket();
-        wsRef.current = ws;
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(reconnectInterval);
-      ws.close();
-      wsRef.current = null;
-    };
-  }, [webSocketMode]);
-
-  // WebSocketモード用の処理
-  useEffect(() => {
-    if (tmpMessages.length > 0 && !isVoicePlaying) {
-      const message = tmpMessages[0];
-      if (message.role == 'assistant') {
-        setIsVoicePlaying(true);
-      }
-      setTmpMessages((tmpMessages) => tmpMessages.slice(1));
-      handleSendChat(message.text, message.role);
-    }
-  }, [tmpMessages, isVoicePlaying, handleSendChat]);
+  useWebSocket({ handleSendChat });
 
   useEffect(() => {
     // テキストと画像がそろったら、チャットを送信

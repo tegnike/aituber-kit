@@ -10,6 +10,8 @@ interface HomeState {
   modalImage: string;
   triggerShutter: boolean;
   webcamStatus: boolean;
+  ws: WebSocket | null;
+  voicePlaying: boolean; // WebSocketモード用の設定
 }
 
 const homeStore = create<HomeState>((set, get) => ({
@@ -31,5 +33,7 @@ const homeStore = create<HomeState>((set, get) => ({
   modalImage: '',
   triggerShutter: false,
   webcamStatus: false,
+  ws: null,
+  voicePlaying: false,
 }));
 export default homeStore;
