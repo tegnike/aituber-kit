@@ -6,6 +6,10 @@ import homeStore from '@/features/stores/home';
 import settingsStore from '@/features/stores/settings';
 import { IconButton } from './iconButton';
 import { Link } from './link';
+import {
+  VoiceLanguage,
+  isLanguageSupported,
+} from '@/features/constants/settings';
 
 export const Introduction = () => {
   const dontShowIntroduction = homeStore((s) => s.dontShowIntroduction);
@@ -24,30 +28,30 @@ export const Introduction = () => {
 
   const updateLanguage = () => {
     console.log('i18n.language', i18n.language);
-    // selectLanguage: "JP"
-    let languageCode = i18n.language.toUpperCase();
-    languageCode = languageCode == 'JA' ? 'JP' : languageCode;
+
+    let languageCode = i18n.language;
+
+    const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
+      switch (selectLanguage) {
+        case 'ja':
+          return 'ja-JP';
+        case 'en':
+          return 'en-US';
+        case 'zh':
+          return 'zh-TW';
+        case 'zh-TW':
+          return 'zh-TW';
+        case 'ko':
+          return 'ko-KR';
+        default:
+          return 'ja-JP';
+      }
+    };
+
     settingsStore.setState({
-      selectLanguage: languageCode,
+      selectLanguage: isLanguageSupported(languageCode) ? languageCode : 'ja',
       selectVoiceLanguage: getVoiceLanguageCode(languageCode),
     });
-  };
-
-  const getVoiceLanguageCode = (selectLanguage: string) => {
-    switch (selectLanguage) {
-      case 'JP':
-        return 'ja-JP';
-      case 'EN':
-        return 'en-US';
-      case 'ZH':
-        return 'zh-TW';
-      case 'zh-TW':
-        return 'zh-TW';
-      case 'KO':
-        return 'ko-KR';
-      default:
-        return 'ja-JP';
-    }
   };
 
   return showIntroduction && opened ? (
@@ -154,7 +158,7 @@ export const Introduction = () => {
           </button>
         </div>
 
-        {selectLanguage === 'JP' && (
+        {selectLanguage === 'ja' && (
           <div className="my-24">
             <p>
               You can select the language from the settings. English and

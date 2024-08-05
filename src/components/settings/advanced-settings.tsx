@@ -34,7 +34,7 @@ const AdvancedSettings = () => {
             </Disclosure.Button>
             <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
               <div className="pl-16">
-                {selectLanguage === 'JP' && (
+                {selectLanguage === 'ja' && (
                   <div className="my-24">
                     <div className="my-16 typography-16 font-bold">
                       {t('EnglishToJapanese')}

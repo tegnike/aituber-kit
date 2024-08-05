@@ -1,39 +1,11 @@
 import { Message } from '@/features/messages/messages';
+import { AIService, AIServiceConfig } from '@/features/constants/settings';
 import { getAnthropicChatResponseStream } from './anthropicChat';
 import { getDifyChatResponseStream } from './difyChat';
 import { getGoogleChatResponseStream } from './googleChat';
 import { getGroqChatResponseStream } from './groqChat';
 import { getLocalLLMChatResponseStream } from './localLLMChat';
 import { getOpenAIChatResponseStream } from './openAiChat';
-
-export type AIService =
-  | 'openai'
-  | 'anthropic'
-  | 'google'
-  | 'localLlm'
-  | 'groq'
-  | 'dify';
-
-export interface AIServiceConfig {
-  openai: { key: string; model: string };
-  anthropic: { key: string; model: string };
-  google: { key: string; model: string };
-  localLlm: { url: string; model: string };
-  groq: { key: string; model: string };
-  dify: {
-    key: string;
-    url: string;
-    conversationId: string;
-  };
-}
-
-export type Voice =
-  | 'koeiromap'
-  | 'google'
-  | 'voicevox'
-  | 'stylebertvits2'
-  | 'gsvitts'
-  | 'elevenlabs';
 
 export async function getAIChatResponseStream(
   service: AIService,

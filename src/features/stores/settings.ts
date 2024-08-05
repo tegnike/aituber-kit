@@ -3,7 +3,12 @@ import { persist } from 'zustand/middleware';
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
-import { AIService, Voice } from '../chat/aiChatFactory';
+import {
+  AIService,
+  AIVoice,
+  Language,
+  VoiceLanguage,
+} from '../constants/settings';
 
 interface APIKeys {
   openAiKey: string;
@@ -18,9 +23,9 @@ interface APIKeys {
 
 interface ModelProvider {
   selectAIService: AIService;
-  selectAIModel: string; // TODO: (7741) use a more specific type
+  selectAIModel: string;
   localLlmUrl: string;
-  selectVoice: Voice;
+  selectVoice: AIVoice;
   koeiroParam: KoeiroParam;
   googleTtsType: string;
   voicevoxSpeaker: string;
@@ -49,8 +54,8 @@ interface Character {
 }
 
 interface General {
-  selectLanguage: string; // TODO: (7741) use a more specific type
-  selectVoiceLanguage: string; // TODO: (7741) use a more specific type
+  selectLanguage: Language;
+  selectVoiceLanguage: VoiceLanguage;
   changeEnglishToJapanese: boolean;
   webSocketMode: boolean;
 }
@@ -106,7 +111,7 @@ const settingsStore = create<SettingsState>()(
       conversationContinuityMode: false,
 
       // General
-      selectLanguage: 'JP', // TODO: 要整理, JP, EN
+      selectLanguage: 'ja',
       selectVoiceLanguage: 'ja-JP', // TODO: 要整理, ja-JP, en-US
       changeEnglishToJapanese: false,
       webSocketMode: false,

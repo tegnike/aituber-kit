@@ -1,8 +1,5 @@
-import {
-  getAIChatResponseStream,
-  AIService,
-  AIServiceConfig,
-} from '@/features/chat/aiChatFactory';
+import { getAIChatResponseStream } from '@/features/chat/aiChatFactory';
+import { AIService, AIServiceConfig } from '@/features/constants/settings';
 import { textsToScreenplay, Message } from '@/features/messages/messages';
 import { speakCharacter } from '@/features/messages/speakCharacter';
 import homeStore from '@/features/stores/home';

@@ -6,6 +6,7 @@ import { Viewer } from '../vrmViewer/viewer';
 
 interface HomeState {
   // persisted states
+  userOnboarded: boolean;
   chatLog: Message[];
   codeLog: Message[];
   dontShowIntroduction: boolean;
@@ -29,6 +30,7 @@ const homeStore = create<HomeState>()(
   persist(
     (set, get) => ({
       // persisted states
+      userOnboarded: false,
       chatLog: [],
       codeLog: [],
       dontShowIntroduction: false,

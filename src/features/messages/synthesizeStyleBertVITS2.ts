@@ -1,9 +1,11 @@
+import { Language } from '@/features/constants/settings';
+
 export async function synthesizeStyleBertVITS2Api(
   message: string,
   stylebertvits2ServerUrl: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
-  selectLanguage: string,
+  selectLanguage: Language,
 ) {
   const body = {
     message: message,

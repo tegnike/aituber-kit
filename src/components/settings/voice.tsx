@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-import { Voice } from '@/features/chat/aiChatFactory';
 import {
   PRESET_A,
   PRESET_B,
   PRESET_C,
   PRESET_D,
 } from '@/features/constants/koeiroParam';
+import { AIVoice } from '@/features/constants/settings';
 import { testVoice } from '@/features/messages/speakCharacter';
 import settingsStore from '@/features/stores/settings';
 import { Link } from '../link';
@@ -44,7 +44,7 @@ const Voice = () => {
         <select
           value={selectVoice}
           onChange={(e) =>
-            settingsStore.setState({ selectVoice: e.target.value as Voice })
+            settingsStore.setState({ selectVoice: e.target.value as AIVoice })
           }
           className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
         >

@@ -1,3 +1,4 @@
+import { Language } from '@/features/constants/settings';
 import homeStore from '@/features/stores/home';
 import settingsStore from '@/features/stores/settings';
 import englishToJapanese from '@/utils/englishToJapanese.json';
@@ -29,7 +30,7 @@ const createSpeakCharacter = () => {
     const ss = settingsStore.getState();
     onStart?.();
 
-    if (ss.changeEnglishToJapanese && ss.selectLanguage === 'JP') {
+    if (ss.changeEnglishToJapanese && ss.selectLanguage === 'ja') {
       // 英単語を日本語で読み上げる
       screenplay.talk.message = convertEnglishToJapaneseReading(
         screenplay.talk.message,
@@ -118,19 +119,19 @@ function convertEnglishToJapaneseReading(text: string): string {
 
 function getGoogleTtsType(
   googleTtsType: string,
-  selectLanguage: string,
+  selectLanguage: Language,
 ): string {
   if (googleTtsType) return googleTtsType;
   return getGppgleTtsType(selectLanguage) || '';
 }
 
-function getGppgleTtsType(selectLanguage: string): string {
+function getGppgleTtsType(selectLanguage: Language): string {
   switch (selectLanguage) {
-    case 'JP':
+    case 'ja':
       return 'ja-JP-Standard-B';
-    case 'EN':
+    case 'en':
       return 'en-US-Neural2-F';
-    case 'ZH':
+    case 'zh':
       return 'cmn-TW-Standard-A';
     default:
       return 'en-US-Neural2-F';
@@ -217,7 +218,7 @@ export const fetchAudioStyleBertVITS2 = async (
   stylebertvits2ServerUrl: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
-  selectLanguage: string,
+  selectLanguage: Language,
 ): Promise<ArrayBuffer> => {
   const ttsVoice = await synthesizeStyleBertVITS2Api(
     talk.message,
@@ -285,7 +286,7 @@ export const fetchAudioElevenlabs = async (
   talk: Talk,
   apiKey: string,
   voiceId: string,
-  language: string,
+  language: Language,
 ): Promise<ArrayBuffer> => {
   const ttsVoice = await synthesizeVoiceElevenlabsApi(
     apiKey,

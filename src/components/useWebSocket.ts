@@ -21,7 +21,6 @@ const useWebSocket = ({ handleSendChat }: Params) => {
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([]);
 
   useEffect(() => {
-    // TODO: (7741) add a debug flag for logs
     const ss = settingsStore.getState();
     if (!ss.webSocketMode) return;
 

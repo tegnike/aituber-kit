@@ -1,3 +1,5 @@
+import Language from '@/components/settings/language';
+
 function createWavHeader(dataLength: number) {
   const buffer = new ArrayBuffer(44);
   const view = new DataView(buffer);
@@ -30,30 +32,11 @@ function writeString(view: DataView, offset: number, str: string) {
   }
 }
 
-function getLanguageCode(language: string) {
-  switch (language) {
-    case 'JP':
-      return 'ja';
-    case 'EN':
-      return 'en';
-    case 'ZH':
-      return 'zh';
-    case 'zh-TW':
-      return 'zh';
-    case 'KO':
-      return 'ko';
-    case 'FR':
-      return 'fr';
-    default:
-      return 'ja';
-  }
-}
-
 export async function synthesizeVoiceElevenlabsApi(
   apiKey: string,
   message: string,
   voiceId: string,
-  language: string,
+  language: Language,
 ) {
   const res = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=pcm_16000`,
@@ -67,7 +50,7 @@ export async function synthesizeVoiceElevenlabsApi(
       body: JSON.stringify({
         text: message,
         model_id: 'eleven_turbo_v2_5',
-        language_code: getLanguageCode(language),
+        language_code: language,
       }),
     },
   );

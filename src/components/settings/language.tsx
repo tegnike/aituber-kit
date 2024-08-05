@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
+import { Language } from '@/features/constants/settings';
 import settingsStore from '@/features/stores/settings';
 
 const Language = () => {
@@ -16,45 +17,45 @@ const Language = () => {
           className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
           value={selectLanguage}
           onChange={(e) => {
-            const newLanguage = e.target.value;
+            const newLanguage = e.target.value as Language;
 
             const ss = settingsStore.getState();
-            const jpVoiceSelected =
+            const jaVoiceSelected =
               ss.selectVoice === 'voicevox' || ss.selectVoice === 'koeiromap';
 
             switch (newLanguage) {
-              case 'JP':
+              case 'ja':
                 settingsStore.setState({
-                  selectLanguage: 'JP',
+                  selectLanguage: 'ja',
                   selectVoiceLanguage: 'ja-JP',
                 });
 
                 i18n.changeLanguage('ja');
                 break;
-              case 'EN':
-                settingsStore.setState({ selectLanguage: 'EN' });
+              case 'en':
+                settingsStore.setState({ selectLanguage: 'en' });
 
-                if (jpVoiceSelected) {
+                if (jaVoiceSelected) {
                   settingsStore.setState({ selectVoice: 'google' });
                 }
                 settingsStore.setState({ selectVoiceLanguage: 'en-US' });
 
                 i18n.changeLanguage('en');
                 break;
-              case 'ZH':
-                settingsStore.setState({ selectLanguage: 'ZH' });
+              case 'zh':
+                settingsStore.setState({ selectLanguage: 'zh' });
 
-                if (jpVoiceSelected) {
+                if (jaVoiceSelected) {
                   settingsStore.setState({ selectVoice: 'google' });
                 }
                 settingsStore.setState({ selectVoiceLanguage: 'zh-TW' });
 
                 i18n.changeLanguage('zh-TW');
                 break;
-              case 'KO':
-                settingsStore.setState({ selectLanguage: 'KO' });
+              case 'ko':
+                settingsStore.setState({ selectLanguage: 'ko' });
 
-                if (jpVoiceSelected) {
+                if (jaVoiceSelected) {
                   settingsStore.setState({ selectVoice: 'google' });
                 }
                 settingsStore.setState({ selectVoiceLanguage: 'ko-KR' });
@@ -66,10 +67,10 @@ const Language = () => {
             }
           }}
         >
-          <option value="JP">日本語 - Japanese</option>
-          <option value="EN">英語 - English</option>
-          <option value="ZH">繁體中文 - Traditional Chinese</option>
-          <option value="KO">韓語 - Korean</option>
+          <option value="ja">日本語 - Japanese</option>
+          <option value="en">英語 - English</option>
+          <option value="zh">繁體中文 - Traditional Chinese</option>
+          <option value="ko">韓語 - Korean</option>
         </select>
       </div>
     </div>
