@@ -6,6 +6,7 @@ import { isLanguageSupported } from '@/features/constants/settings';
 import homeStore from '@/features/stores/home';
 import settingsStore from '@/features/stores/settings';
 import '@/styles/globals.css';
+import migrateStore from '@/utils/migrateStore';
 import i18n from '../lib/i18n';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -18,6 +19,8 @@ export default function App({ Component, pageProps }: AppProps) {
       return;
     }
 
+    migrateStore();
+
     const browserLanguage = navigator.language;
     const languageCode = browserLanguage.match(/^zh/i)
       ? 'zh'
@@ -26,10 +29,6 @@ export default function App({ Component, pageProps }: AppProps) {
     const language = isLanguageSupported(languageCode) ? languageCode : 'ja';
     i18n.changeLanguage(language);
     settingsStore.setState({ selectLanguage: language });
-
-    // TODO: (7741) implement a migration from the old local storage:
-    // 1. `chatVRMParams` to `settings` and `home` stores
-    // 2. selectLanguage value, e.g. JP to ja
 
     homeStore.setState({ userOnboarded: true });
   }, []);

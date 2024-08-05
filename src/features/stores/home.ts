@@ -4,14 +4,14 @@ import { persist } from 'zustand/middleware';
 import { Message } from '@/features/messages/messages';
 import { Viewer } from '../vrmViewer/viewer';
 
-interface HomeState {
-  // persisted states
+export interface PersistedState {
   userOnboarded: boolean;
   chatLog: Message[];
   codeLog: Message[];
   dontShowIntroduction: boolean;
+}
 
-  // transient states
+export interface TransientState {
   viewer: Viewer;
   assistantMessage: string;
   chatProcessing: boolean;
@@ -25,6 +25,8 @@ interface HomeState {
   ws: WebSocket | null;
   voicePlaying: boolean; // WebSocketモード用の設定
 }
+
+export type HomeState = PersistedState & TransientState;
 
 const homeStore = create<HomeState>()(
   persist(
