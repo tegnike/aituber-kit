@@ -7,15 +7,12 @@ import VrmViewer from '@/components/vrmViewer';
 import homeStore from '@/features/stores/home';
 import '@/lib/i18n';
 import { buildUrl } from '@/utils/buildUrl';
-import c from '@/styles/home.module.scss';
 
 const Home = () => {
-  const backgroundImage = homeStore(
-    (s) => `url(${buildUrl(s.backgroundImageUrl)})`,
-  );
+  const bgUrl = homeStore((s) => `url(${buildUrl(s.backgroundImageUrl)})`);
 
   return (
-    <div className={c.home} style={{ backgroundImage }}>
+    <div className="min-h-screen bg-cover" style={{ backgroundImage: bgUrl }}>
       <Meta />
       <Introduction />
       <VrmViewer />
