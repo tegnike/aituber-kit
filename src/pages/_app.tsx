@@ -2,17 +2,17 @@ import '@charcoal-ui/icons';
 import type { AppProps } from 'next/app';
 import React, { useEffect } from 'react';
 
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 import '@/styles/globals.css';
 import i18n from '../lib/i18n';
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    const s = store.getState();
+    const ss = settingsStore.getState();
 
-    if (s) {
+    if (ss) {
       // TODO: (7741) initialize selectLanguage as empty, not JP
-      i18n.changeLanguage(s.selectLanguage.toLowerCase());
+      i18n.changeLanguage(ss.selectLanguage.toLowerCase());
     } else {
       const browserLanguage = navigator.language;
       const languageCode = browserLanguage.match(/^zh/i)

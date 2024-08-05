@@ -8,27 +8,29 @@ import {
   PRESET_D,
 } from '@/features/constants/koeiroParam';
 import { testVoice } from '@/features/messages/speakCharacter';
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 import { Link } from '../link';
 import { TextButton } from '../textButton';
 import speakers from '../speakers.json';
 
 const Voice = () => {
-  const koeiromapKey = store((s) => s.koeiromapKey);
-  const elevenlabsApiKey = store((s) => s.elevenlabsApiKey);
+  const koeiromapKey = settingsStore((s) => s.koeiromapKey);
+  const elevenlabsApiKey = settingsStore((s) => s.elevenlabsApiKey);
 
-  const selectVoice = store((s) => s.selectVoice);
-  const koeiroParam = store((s) => s.koeiroParam);
-  const googleTtsType = store((s) => s.googleTtsType);
-  const voicevoxSpeaker = store((s) => s.voicevoxSpeaker);
-  const stylebertvits2ServerUrl = store((s) => s.stylebertvits2ServerUrl);
-  const stylebertvits2ModelId = store((s) => s.stylebertvits2ModelId);
-  const stylebertvits2Style = store((s) => s.stylebertvits2Style);
-  const gsviTtsServerUrl = store((s) => s.gsviTtsServerUrl);
-  const gsviTtsModelId = store((s) => s.gsviTtsModelId);
-  const gsviTtsBatchSize = store((s) => s.gsviTtsBatchSize);
-  const gsviTtsSpeechRate = store((s) => s.gsviTtsSpeechRate);
-  const elevenlabsVoiceId = store((s) => s.elevenlabsVoiceId);
+  const selectVoice = settingsStore((s) => s.selectVoice);
+  const koeiroParam = settingsStore((s) => s.koeiroParam);
+  const googleTtsType = settingsStore((s) => s.googleTtsType);
+  const voicevoxSpeaker = settingsStore((s) => s.voicevoxSpeaker);
+  const stylebertvits2ServerUrl = settingsStore(
+    (s) => s.stylebertvits2ServerUrl,
+  );
+  const stylebertvits2ModelId = settingsStore((s) => s.stylebertvits2ModelId);
+  const stylebertvits2Style = settingsStore((s) => s.stylebertvits2Style);
+  const gsviTtsServerUrl = settingsStore((s) => s.gsviTtsServerUrl);
+  const gsviTtsModelId = settingsStore((s) => s.gsviTtsModelId);
+  const gsviTtsBatchSize = settingsStore((s) => s.gsviTtsBatchSize);
+  const gsviTtsSpeechRate = settingsStore((s) => s.gsviTtsSpeechRate);
+  const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId);
 
   const { t } = useTranslation();
 
@@ -42,7 +44,7 @@ const Voice = () => {
         <select
           value={selectVoice}
           onChange={(e) =>
-            store.setState({ selectVoice: e.target.value as Voice })
+            settingsStore.setState({ selectVoice: e.target.value as Voice })
           }
           className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
         >
@@ -78,7 +80,7 @@ const Voice = () => {
                     placeholder="..."
                     value={koeiromapKey}
                     onChange={(e) =>
-                      store.setState({ koeiromapKey: e.target.value })
+                      settingsStore.setState({ koeiromapKey: e.target.value })
                     }
                   />
                 </div>
@@ -86,7 +88,7 @@ const Voice = () => {
                 <div className="my-8 grid grid-cols-2 gap-[8px]">
                   <TextButton
                     onClick={() =>
-                      store.setState({
+                      settingsStore.setState({
                         koeiroParam: {
                           speakerX: PRESET_A.speakerX,
                           speakerY: PRESET_A.speakerY,
@@ -98,7 +100,7 @@ const Voice = () => {
                   </TextButton>
                   <TextButton
                     onClick={() =>
-                      store.setState({
+                      settingsStore.setState({
                         koeiroParam: {
                           speakerX: PRESET_B.speakerX,
                           speakerY: PRESET_B.speakerY,
@@ -110,7 +112,7 @@ const Voice = () => {
                   </TextButton>
                   <TextButton
                     onClick={() =>
-                      store.setState({
+                      settingsStore.setState({
                         koeiroParam: {
                           speakerX: PRESET_C.speakerX,
                           speakerY: PRESET_C.speakerY,
@@ -122,7 +124,7 @@ const Voice = () => {
                   </TextButton>
                   <TextButton
                     onClick={() =>
-                      store.setState({
+                      settingsStore.setState({
                         koeiroParam: {
                           speakerX: PRESET_D.speakerX,
                           speakerY: PRESET_D.speakerY,
@@ -143,7 +145,7 @@ const Voice = () => {
                     value={koeiroParam.speakerX}
                     className="mt-8 mb-16 input-range"
                     onChange={(e) => {
-                      store.setState({
+                      settingsStore.setState({
                         koeiroParam: {
                           speakerX: Number(e.target.value),
                           speakerY: koeiroParam.speakerY,
@@ -160,7 +162,7 @@ const Voice = () => {
                     value={koeiroParam.speakerY}
                     className="mt-8 mb-16 input-range"
                     onChange={(e) => {
-                      store.setState({
+                      settingsStore.setState({
                         koeiroParam: {
                           speakerX: koeiroParam.speakerX,
                           speakerY: Number(e.target.value),
@@ -187,7 +189,9 @@ const Voice = () => {
                   <select
                     value={voicevoxSpeaker}
                     onChange={(e) =>
-                      store.setState({ voicevoxSpeaker: e.target.value })
+                      settingsStore.setState({
+                        voicevoxSpeaker: e.target.value,
+                      })
                     }
                     className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
                   >
@@ -235,7 +239,7 @@ const Voice = () => {
                     placeholder="..."
                     value={googleTtsType}
                     onChange={(e) =>
-                      store.setState({ googleTtsType: e.target.value })
+                      settingsStore.setState({ googleTtsType: e.target.value })
                     }
                   />
                 </div>
@@ -264,7 +268,7 @@ const Voice = () => {
                     placeholder="..."
                     value={stylebertvits2ServerUrl}
                     onChange={(e) =>
-                      store.setState({
+                      settingsStore.setState({
                         stylebertvits2ServerUrl: e.target.value,
                       })
                     }
@@ -280,7 +284,7 @@ const Voice = () => {
                     placeholder="..."
                     value={stylebertvits2ModelId}
                     onChange={(e) =>
-                      store.setState({
+                      settingsStore.setState({
                         stylebertvits2ModelId: e.target.value,
                       })
                     }
@@ -296,7 +300,7 @@ const Voice = () => {
                     placeholder="..."
                     value={stylebertvits2Style}
                     onChange={(e) =>
-                      store.setState({
+                      settingsStore.setState({
                         stylebertvits2Style: e.target.value,
                       })
                     }
@@ -316,7 +320,9 @@ const Voice = () => {
                     placeholder="..."
                     value={gsviTtsServerUrl}
                     onChange={(e) =>
-                      store.setState({ gsviTtsServerUrl: e.target.value })
+                      settingsStore.setState({
+                        gsviTtsServerUrl: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -328,7 +334,7 @@ const Voice = () => {
                     placeholder="..."
                     value={gsviTtsModelId}
                     onChange={(e) =>
-                      store.setState({ gsviTtsModelId: e.target.value })
+                      settingsStore.setState({ gsviTtsModelId: e.target.value })
                     }
                   />
                 </div>
@@ -341,7 +347,7 @@ const Voice = () => {
                     placeholder="..."
                     value={gsviTtsBatchSize}
                     onChange={(e) =>
-                      store.setState({
+                      settingsStore.setState({
                         gsviTtsBatchSize: parseFloat(e.target.value),
                       })
                     }
@@ -356,7 +362,7 @@ const Voice = () => {
                     placeholder="..."
                     value={gsviTtsSpeechRate}
                     onChange={(e) =>
-                      store.setState({
+                      settingsStore.setState({
                         gsviTtsSpeechRate: parseFloat(e.target.value),
                       })
                     }
@@ -384,7 +390,9 @@ const Voice = () => {
                     placeholder="..."
                     value={elevenlabsApiKey}
                     onChange={(e) =>
-                      store.setState({ elevenlabsApiKey: e.target.value })
+                      settingsStore.setState({
+                        elevenlabsApiKey: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -405,7 +413,7 @@ const Voice = () => {
                     placeholder="..."
                     value={elevenlabsVoiceId}
                     onChange={(e) =>
-                      store.setState({
+                      settingsStore.setState({
                         elevenlabsVoiceId: e.target.value,
                       })
                     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 
 ///取得したコメントをストックするリストの作成（tmpMessages）
 interface TmpMessage {
@@ -15,15 +15,15 @@ interface Params {
 }
 
 const useWebSocket = ({ handleSendChat }: Params) => {
-  const webSocketMode = store((s) => s.webSocketMode);
+  const webSocketMode = settingsStore((s) => s.webSocketMode);
   const voicePlaying = homeStore((s) => s.voicePlaying);
 
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([]);
 
   useEffect(() => {
     // TODO: (7741) add a debug flag for logs
-    const s = store.getState();
-    if (!s.webSocketMode) return;
+    const ss = settingsStore.getState();
+    if (!ss.webSocketMode) return;
 
     const handleOpen = (event: Event) => {
       console.log('WebSocket connection opened:', event);
@@ -52,9 +52,9 @@ const useWebSocket = ({ handleSendChat }: Params) => {
     homeStore.setState({ ws });
 
     const reconnectInterval = setInterval(() => {
-      const s = store.getState();
+      const ss = settingsStore.getState();
       if (
-        s.webSocketMode &&
+        ss.webSocketMode &&
         ws.readyState !== WebSocket.OPEN &&
         ws.readyState !== WebSocket.CONNECTING
       ) {

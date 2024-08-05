@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Message } from '@/features/messages/messages';
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments';
 import { processAIResponse } from './handlers';
 
@@ -13,7 +13,9 @@ interface Params {
 }
 
 const useYoutube = async ({ handleSendChat }: Params) => {
-  const conversationContinuityMode = store((s) => s.conversationContinuityMode);
+  const conversationContinuityMode = settingsStore(
+    (s) => s.conversationContinuityMode,
+  );
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount);
 
   const [youtubeNextPageToken, setYoutubeNextPageToken] = useState('');
@@ -22,19 +24,19 @@ const useYoutube = async ({ handleSendChat }: Params) => {
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false);
 
   const preProcessAIResponse = useCallback(async (messages: Message[]) => {
-    const s = store.getState();
-    await processAIResponse(s.chatLog, messages);
+    const hs = homeStore.getState();
+    await processAIResponse(hs.chatLog, messages);
   }, []);
 
   // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async () => {
-    const s = store.getState();
+    const ss = settingsStore.getState();
     const hs = homeStore.getState();
 
     if (
-      !s.openAiKey ||
-      !s.youtubeLiveId ||
-      !s.youtubeApiKey ||
+      !ss.openAiKey ||
+      !ss.youtubeLiveId ||
+      !ss.youtubeApiKey ||
       hs.chatProcessing ||
       hs.chatProcessingCount > 0
     ) {
@@ -46,10 +48,10 @@ const useYoutube = async ({ handleSendChat }: Params) => {
     console.log('Call fetchAndProcessComments !!!');
 
     fetchAndProcessComments(
-      s.chatLog,
-      s.selectAIService === 'anthropic' ? s.anthropicKey : s.openAiKey,
-      s.youtubeLiveId,
-      s.youtubeApiKey,
+      hs.chatLog,
+      ss.selectAIService === 'anthropic' ? ss.anthropicKey : ss.openAiKey,
+      ss.youtubeLiveId,
+      ss.youtubeApiKey,
       youtubeNextPageToken,
       setYoutubeNextPageToken,
       youtubeNoCommentCount,

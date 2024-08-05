@@ -1,13 +1,14 @@
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
-import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 
 export const ChatLog = () => {
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
-  const characterName = store((s) => s.characterName);
-  const messages = store((s) => s.chatLog);
+  const characterName = settingsStore((s) => s.characterName);
+  const messages = homeStore((s) => s.chatLog);
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({

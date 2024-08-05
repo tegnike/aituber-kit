@@ -1,8 +1,8 @@
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 
 export const AssistantText = ({ message }: { message: string }) => {
-  const characterName = store((s) => s.characterName);
-  const showCharacterName = store((s) => s.showCharacterName);
+  const characterName = settingsStore((s) => s.characterName);
+  const showCharacterName = settingsStore((s) => s.showCharacterName);
 
   return (
     <div className="absolute bottom-0 left-0 md:mb-104 mb-[80px] w-full">

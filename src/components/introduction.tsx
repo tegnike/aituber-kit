@@ -2,13 +2,14 @@ import i18n from 'i18next';
 import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
-import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 import { IconButton } from './iconButton';
 import { Link } from './link';
 
 export const Introduction = () => {
-  const selectLanguage = store((s) => s.selectLanguage);
-  const dontShowIntroduction = store((s) => s.dontShowIntroduction);
+  const dontShowIntroduction = homeStore((s) => s.dontShowIntroduction);
+  const selectLanguage = settingsStore((s) => s.selectLanguage);
 
   const [showIntroduction, setShowIntroduction] = useState(false);
   const [opened, setOpened] = useState(true);
@@ -18,7 +19,7 @@ export const Introduction = () => {
   useEffect(() => {
     // wait for local storage to be fully initialized
     // to prevent a flash of <Introduction />
-    setShowIntroduction(!store.getState().dontShowIntroduction);
+    setShowIntroduction(!homeStore.getState().dontShowIntroduction);
   }, [dontShowIntroduction]);
 
   const updateLanguage = () => {
@@ -26,7 +27,7 @@ export const Introduction = () => {
     // selectLanguage: "JP"
     let languageCode = i18n.language.toUpperCase();
     languageCode = languageCode == 'JA' ? 'JP' : languageCode;
-    store.setState({
+    settingsStore.setState({
       selectLanguage: languageCode,
       selectVoiceLanguage: getVoiceLanguageCode(languageCode),
     });
@@ -130,7 +131,9 @@ export const Introduction = () => {
               type="checkbox"
               checked={dontShowIntroduction}
               onChange={(e) => {
-                store.setState({ dontShowIntroduction: e.target.checked });
+                homeStore.setState({
+                  dontShowIntroduction: e.target.checked,
+                });
                 updateLanguage();
               }}
               className="mr-8"

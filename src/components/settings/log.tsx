@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 
-import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 import { TextButton } from '../textButton';
 
 const Log = () => {
-  const selectAIService = store((s) => s.selectAIService);
-
-  const chatLog = store((s) => s.chatLog);
+  const chatLog = homeStore((s) => s.chatLog);
+  const selectAIService = settingsStore((s) => s.selectAIService);
 
   const { t } = useTranslation();
 
@@ -24,11 +24,8 @@ const Log = () => {
         </div>
         <TextButton
           onClick={() => {
-            store.setState({
-              difyConversationId: '',
-              chatLog: [],
-              codeLog: [],
-            });
+            homeStore.setState({ chatLog: [], codeLog: [] });
+            settingsStore.setState({ difyConversationId: '' });
           }}
         >
           {t('ConversationHistoryReset')}
@@ -76,21 +73,21 @@ const Log = () => {
 export default Log;
 
 const handleChangeChatLog = (targetIndex: number, text: string) => {
-  const s = store.getState();
+  const hs = homeStore.getState();
 
-  const newChatLog = s.chatLog.map((m, i) => {
+  const newChatLog = hs.chatLog.map((m, i) => {
     return i === targetIndex ? { role: m.role, content: text } : m;
   });
 
-  store.setState({ chatLog: newChatLog });
+  homeStore.setState({ chatLog: newChatLog });
 };
 
 const handleChangeCodeLog = (targetIndex: number, text: string) => {
-  const s = store.getState();
+  const hs = homeStore.getState();
 
-  const newCodeLog = s.codeLog.map((m, i) => {
+  const newCodeLog = hs.codeLog.map((m, i) => {
     return i === targetIndex ? { role: m.role, content: text } : m;
   });
 
-  store.setState({ chatLog: newCodeLog });
+  homeStore.setState({ chatLog: newCodeLog });
 };

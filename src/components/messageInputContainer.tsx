@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
 import { MessageInput } from '@/components/messageInput';
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 
 type Props = {
   onChatProcessStart: (text: string) => void;
@@ -66,9 +66,9 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     if (!SpeechRecognition) {
       return;
     }
-    const s = store.getState();
+    const ss = settingsStore.getState();
     const recognition = new SpeechRecognition();
-    recognition.lang = s.selectVoiceLanguage;
+    recognition.lang = ss.selectVoiceLanguage;
     recognition.interimResults = true; // 認識の途中結果を返す
     recognition.continuous = false; // 発言の終了時に認識を終了する
 

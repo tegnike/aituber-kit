@@ -1,5 +1,5 @@
 import { Message } from '@/features/messages/messages';
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 import {
   getBestComment,
   getMessagesForSleep,
@@ -108,25 +108,25 @@ export const fetchAndProcessComments = async (
 ): Promise<void> => {
   try {
     const liveChatId = await getLiveChatId(liveId, youtubeKey);
-    const s = store.getState();
+    const ss = settingsStore.getState();
 
     if (liveChatId) {
       // 会話の継続が必要かどうかを確認
       if (
         !youtubeSleepMode &&
         youtubeContinuationCount < 1 &&
-        s.conversationContinuityMode
+        ss.conversationContinuityMode
       ) {
         const isContinuationNeeded =
           await checkIfResponseContinuationIsRequired(
             messages,
             aiApiKey,
-            s.selectAIService,
-            s.selectAIModel,
+            ss.selectAIService,
+            ss.selectAIModel,
           );
         if (isContinuationNeeded) {
           const continuationMessage = await getMessagesForContinuation(
-            s.systemPrompt,
+            ss.systemPrompt,
             messages,
           );
           preProcessAIResponse(continuationMessage);
@@ -151,14 +151,14 @@ export const fetchAndProcessComments = async (
         setYoutubeNoCommentCount(0);
         setYoutubeSleepMode(false);
         let selectedComment = '';
-        if (s.conversationContinuityMode) {
+        if (ss.conversationContinuityMode) {
           if (youtubeComments.length > 1) {
             selectedComment = await getBestComment(
               messages,
               youtubeComments,
               aiApiKey,
-              s.selectAIService,
-              s.selectAIModel,
+              ss.selectAIService,
+              ss.selectAIModel,
             );
           } else {
             selectedComment = youtubeComments[0].userComment;
@@ -173,14 +173,14 @@ export const fetchAndProcessComments = async (
         handleSendChat(selectedComment);
       } else {
         const noCommentCount = youtubeNoCommentCount + 1;
-        if (s.conversationContinuityMode) {
+        if (ss.conversationContinuityMode) {
           if (
             noCommentCount < 3 ||
             (3 < noCommentCount && noCommentCount < 6)
           ) {
             // 会話の続きを生成
             const continuationMessage = await getMessagesForContinuation(
-              s.systemPrompt,
+              ss.systemPrompt,
               messages,
             );
             preProcessAIResponse(continuationMessage);
@@ -189,12 +189,12 @@ export const fetchAndProcessComments = async (
             const anotherTopic = await getAnotherTopic(
               messages,
               aiApiKey,
-              s.selectAIService,
-              s.selectAIModel,
+              ss.selectAIService,
+              ss.selectAIModel,
             );
             console.log('anotherTopic:', anotherTopic);
             const newTopicMessage = await getMessagesForNewTopic(
-              s.systemPrompt,
+              ss.systemPrompt,
               messages,
               anotherTopic,
             );
@@ -202,7 +202,7 @@ export const fetchAndProcessComments = async (
           } else if (noCommentCount === 6) {
             // スリープモードにする
             const messagesForSleep = await getMessagesForSleep(
-              s.systemPrompt,
+              ss.systemPrompt,
               messages,
             );
             preProcessAIResponse(messagesForSleep);

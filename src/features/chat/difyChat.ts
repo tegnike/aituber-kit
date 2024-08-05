@@ -1,4 +1,4 @@
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 import { Message } from '../messages/messages';
 
 export async function getDifyChatResponseStream(
@@ -50,7 +50,9 @@ export async function getDifyChatResponseStream(
             const data = JSON.parse(message.slice(5)); // Remove 'data:' prefix
             if (data.event === 'message') {
               controller.enqueue(data.answer);
-              store.setState({ difyConversationId: data.conversation_id });
+              settingsStore.setState({
+                difyConversationId: data.conversation_id,
+              });
             }
           });
         }

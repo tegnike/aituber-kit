@@ -1,23 +1,25 @@
 import { useTranslation } from 'react-i18next';
 
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
 import menuStore from '@/features/stores/menu';
+import settingsStore from '@/features/stores/settings';
 import { TextButton } from '../textButton';
 
 const YouTube = () => {
-  const youtubeApiKey = store((s) => s.youtubeApiKey);
-  const youtubeMode = store((s) => s.youtubeMode);
-  const youtubeLiveId = store((s) => s.youtubeLiveId);
+  const youtubeApiKey = settingsStore((s) => s.youtubeApiKey);
+  const youtubeMode = settingsStore((s) => s.youtubeMode);
+  const youtubeLiveId = settingsStore((s) => s.youtubeLiveId);
 
-  const selectAIService = store((s) => s.selectAIService);
+  const selectAIService = settingsStore((s) => s.selectAIService);
 
-  const conversationContinuityMode = store((s) => s.conversationContinuityMode);
+  const conversationContinuityMode = settingsStore(
+    (s) => s.conversationContinuityMode,
+  );
 
   const { t } = useTranslation();
 
   const handleChangeYoutubeMode = (youtubeMode: boolean) => {
-    store.setState({ youtubeMode });
+    settingsStore.setState({ youtubeMode });
 
     if (youtubeMode) {
       homeStore.setState({ modalImage: '' });
@@ -54,7 +56,7 @@ const YouTube = () => {
                   placeholder="..."
                   value={youtubeApiKey}
                   onChange={(e) =>
-                    store.setState({
+                    settingsStore.setState({
                       youtubeApiKey: e.target.value,
                     })
                   }
@@ -68,7 +70,7 @@ const YouTube = () => {
                   placeholder="..."
                   value={youtubeLiveId}
                   onChange={(e) =>
-                    store.setState({
+                    settingsStore.setState({
                       youtubeLiveId: e.target.value,
                     })
                   }
@@ -88,7 +90,7 @@ const YouTube = () => {
                 {conversationContinuityMode ? (
                   <TextButton
                     onClick={() =>
-                      store.setState({
+                      settingsStore.setState({
                         conversationContinuityMode: false,
                       })
                     }
@@ -102,7 +104,7 @@ const YouTube = () => {
                 ) : (
                   <TextButton
                     onClick={() =>
-                      store.setState({
+                      settingsStore.setState({
                         conversationContinuityMode: true,
                       })
                     }

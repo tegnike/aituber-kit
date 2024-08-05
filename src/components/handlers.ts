@@ -5,8 +5,8 @@ import {
 } from '@/features/chat/aiChatFactory';
 import { textsToScreenplay, Message } from '@/features/messages/messages';
 import { speakCharacter } from '@/features/messages/speakCharacter';
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 
 /**
  * AIからの応答を処理する関数
@@ -20,40 +20,40 @@ export const processAIResponse = async (
   homeStore.setState({ chatProcessing: true });
   let stream;
 
-  const s = store.getState();
+  const ss = settingsStore.getState();
   const hs = homeStore.getState();
 
   const aiServiceConfig: AIServiceConfig = {
     openai: {
-      key: s.openAiKey || process.env.NEXT_PUBLIC_OPEN_AI_KEY || '',
-      model: s.selectAIModel,
+      key: ss.openAiKey || process.env.NEXT_PUBLIC_OPEN_AI_KEY || '',
+      model: ss.selectAIModel,
     },
     anthropic: {
-      key: s.anthropicKey || process.env.NEXT_PUBLIC_ANTHROPIC_KEY || '',
-      model: s.selectAIModel,
+      key: ss.anthropicKey || process.env.NEXT_PUBLIC_ANTHROPIC_KEY || '',
+      model: ss.selectAIModel,
     },
     google: {
-      key: s.googleKey || process.env.NEXT_PUBLIC_GOOGLE_KEY || '',
-      model: s.selectAIModel,
+      key: ss.googleKey || process.env.NEXT_PUBLIC_GOOGLE_KEY || '',
+      model: ss.selectAIModel,
     },
     localLlm: {
-      url: s.localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
-      model: s.selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || '',
+      url: ss.localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
+      model: ss.selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || '',
     },
     groq: {
-      key: s.groqKey || process.env.NEXT_PUBLIC_GROQ_KEY || '',
-      model: s.selectAIModel,
+      key: ss.groqKey || process.env.NEXT_PUBLIC_GROQ_KEY || '',
+      model: ss.selectAIModel,
     },
     dify: {
-      key: s.difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || '',
-      url: s.difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || '',
-      conversationId: s.difyConversationId,
+      key: ss.difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || '',
+      url: ss.difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || '',
+      conversationId: ss.difyConversationId,
     },
   };
 
   try {
     stream = await getAIChatResponseStream(
-      s.selectAIService as AIService,
+      ss.selectAIService as AIService,
       messages,
       aiServiceConfig,
     );
@@ -144,7 +144,7 @@ export const processAIResponse = async (
             sentence = sentence.replace(/```/g, '');
           }
 
-          const aiTalks = textsToScreenplay([aiText], s.koeiroParam);
+          const aiTalks = textsToScreenplay([aiText], ss.koeiroParam);
           aiTextLog.push({ role: 'assistant', content: sentence });
 
           // 文ごとに音声を生成 & 再生、返答を表示
@@ -172,7 +172,7 @@ export const processAIResponse = async (
       if (done && receivedMessage.length > 0) {
         // 残りのメッセージを処理
         let aiText = `${tag} ${receivedMessage}`;
-        const aiTalks = textsToScreenplay([aiText], s.koeiroParam);
+        const aiTalks = textsToScreenplay([aiText], ss.koeiroParam);
         aiTextLog.push({ role: 'assistant', content: receivedMessage });
         sentences.push(receivedMessage);
 
@@ -239,8 +239,10 @@ export const processAIResponse = async (
     }, [])
     .filter((item) => item.content !== '');
 
-  store.setState({ chatLog: [...currentChatLog, ...aiTextLog] });
-  homeStore.setState({ chatProcessing: false });
+  homeStore.setState({
+    chatLog: [...currentChatLog, ...aiTextLog],
+    chatProcessing: false,
+  });
 };
 
 /**
@@ -256,10 +258,10 @@ export const handleSendChatFn =
 
     if (newMessage === null) return;
 
-    const s = store.getState();
+    const ss = settingsStore.getState();
     const hs = homeStore.getState();
 
-    if (s.webSocketMode) {
+    if (ss.webSocketMode) {
       // 未メンテなので不具合がある可能性あり
       console.log('websocket mode: true');
       homeStore.setState({ chatProcessing: true });
@@ -270,21 +272,19 @@ export const handleSendChatFn =
         if (role == 'assistant') {
           let aiText = `${'[neutral]'} ${newMessage}`;
           try {
-            const aiTalks = textsToScreenplay([aiText], s.koeiroParam);
+            const aiTalks = textsToScreenplay([aiText], ss.koeiroParam);
 
             // 文ごとに音声を生成 & 再生、返答を表示
             speakCharacter(aiTalks[0], async () => {
               // アシスタントの返答をログに追加
               const updateLog: Message[] = [
-                ...s.codeLog,
+                ...hs.codeLog,
                 { role: 'assistant', content: newMessage },
               ];
-              store.setState({
-                chatLog: updateLog,
-                codeLog: updateLog,
-              });
 
               homeStore.setState({
+                chatLog: updateLog,
+                codeLog: updateLog,
                 assistantMessage: newMessage,
                 chatProcessing: false,
                 voicePlaying: false,
@@ -300,11 +300,10 @@ export const handleSendChatFn =
           // コードコメントの処理
           // ループ完了後にAI応答をコードログに追加
           const updateLog: Message[] = [
-            ...s.codeLog,
+            ...hs.codeLog,
             { role: role, content: newMessage },
           ];
-          store.setState({ codeLog: updateLog });
-          homeStore.setState({ chatProcessing: false });
+          homeStore.setState({ codeLog: updateLog, chatProcessing: false });
         } else {
           // その他のコメントの処理（現想定では使用されないはず）
           console.log('error role:', role);
@@ -315,10 +314,10 @@ export const handleSendChatFn =
         if (hs.ws?.readyState === WebSocket.OPEN) {
           // ユーザーの発言を追加して表示
           const updateLog: Message[] = [
-            ...s.codeLog,
+            ...hs.codeLog,
             { role: 'user', content: newMessage },
           ];
-          store.setState({
+          homeStore.setState({
             chatLog: updateLog,
             codeLog: updateLog,
           });
@@ -335,24 +334,24 @@ export const handleSendChatFn =
     } else {
       // ChatVRM original mode
       const emptyKeys = [
-        s.selectAIService === 'openai' &&
-          !s.openAiKey &&
+        ss.selectAIService === 'openai' &&
+          !ss.openAiKey &&
           !process.env.NEXT_PUBLIC_OPEN_AI_KEY,
 
-        s.selectAIService === 'anthropic' &&
-          !s.anthropicKey &&
+        ss.selectAIService === 'anthropic' &&
+          !ss.anthropicKey &&
           !process.env.NEXT_PUBLIC_ANTHROPIC_KEY,
 
-        s.selectAIService === 'google' &&
-          !s.googleKey &&
+        ss.selectAIService === 'google' &&
+          !ss.googleKey &&
           !process.env.NEXT_PUBLIC_GOOGLE_KEY,
 
-        s.selectAIService === 'groq' &&
-          !s.groqKey &&
+        ss.selectAIService === 'groq' &&
+          !ss.groqKey &&
           !process.env.NEXT_PUBLIC_GROQ_KEY,
 
-        s.selectAIService === 'dify' &&
-          !s.difyKey &&
+        ss.selectAIService === 'dify' &&
+          !ss.difyKey &&
           !process.env.NEXT_PUBLIC_DIFY_KEY,
       ];
       if (emptyKeys.includes(true)) {
@@ -363,15 +362,15 @@ export const handleSendChatFn =
       homeStore.setState({ chatProcessing: true });
       // ユーザーの発言を追加して表示
       const messageLog: Message[] = [
-        ...s.chatLog,
+        ...hs.chatLog,
         {
           role: 'user',
           content:
             hs.modalImage &&
-            s.selectAIService === 'openai' &&
-            (s.selectAIModel === 'gpt-4o-mini' ||
-              s.selectAIModel === 'gpt-4o' ||
-              s.selectAIModel === 'gpt-4-turbo')
+            ss.selectAIService === 'openai' &&
+            (ss.selectAIModel === 'gpt-4o-mini' ||
+              ss.selectAIModel === 'gpt-4o' ||
+              ss.selectAIModel === 'gpt-4-turbo')
               ? [
                   { type: 'text', text: newMessage },
                   { type: 'image_url', image_url: { url: hs.modalImage } },
@@ -382,7 +381,7 @@ export const handleSendChatFn =
       if (hs.modalImage) {
         homeStore.setState({ modalImage: '' });
       }
-      store.setState({ chatLog: messageLog });
+      homeStore.setState({ chatLog: messageLog });
 
       // TODO: AIに送信するメッセージの加工、処理がひどいので要修正
       const processedMessageLog = messageLog.map((message) => ({
@@ -391,10 +390,10 @@ export const handleSendChatFn =
           : 'assistant',
         content:
           typeof message.content === 'string' ||
-          (s.selectAIService === 'openai' &&
-            (s.selectAIModel === 'gpt-4o-mini' ||
-              s.selectAIModel === 'gpt-4o' ||
-              s.selectAIModel === 'gpt-4-turbo'))
+          (ss.selectAIService === 'openai' &&
+            (ss.selectAIModel === 'gpt-4o-mini' ||
+              ss.selectAIModel === 'gpt-4o' ||
+              ss.selectAIModel === 'gpt-4-turbo'))
             ? message.content
             : message.content[0].text,
       }));
@@ -402,7 +401,7 @@ export const handleSendChatFn =
       const messages: Message[] = [
         {
           role: 'system',
-          content: s.systemPrompt,
+          content: ss.systemPrompt,
         },
         ...processedMessageLog.slice(-10),
       ];

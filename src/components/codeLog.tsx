@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
 
 export const CodeLog = () => {
   const chatScrollRef = useRef<HTMLDivElement>(null);
-  const messages = store((s) => s.codeLog);
+  const messages = homeStore((s) => s.codeLog);
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({

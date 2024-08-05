@@ -1,10 +1,10 @@
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 
 const Language = () => {
-  const selectLanguage = store((s) => s.selectLanguage);
+  const selectLanguage = settingsStore((s) => s.selectLanguage);
 
   const { t } = useTranslation();
 
@@ -18,13 +18,13 @@ const Language = () => {
           onChange={(e) => {
             const newLanguage = e.target.value;
 
-            const s = store.getState();
+            const ss = settingsStore.getState();
             const jpVoiceSelected =
-              s.selectVoice === 'voicevox' || s.selectVoice === 'koeiromap';
+              ss.selectVoice === 'voicevox' || ss.selectVoice === 'koeiromap';
 
             switch (newLanguage) {
               case 'JP':
-                store.setState({
+                settingsStore.setState({
                   selectLanguage: 'JP',
                   selectVoiceLanguage: 'ja-JP',
                 });
@@ -32,32 +32,32 @@ const Language = () => {
                 i18n.changeLanguage('ja');
                 break;
               case 'EN':
-                store.setState({ selectLanguage: 'EN' });
+                settingsStore.setState({ selectLanguage: 'EN' });
 
                 if (jpVoiceSelected) {
-                  store.setState({ selectVoice: 'google' });
+                  settingsStore.setState({ selectVoice: 'google' });
                 }
-                store.setState({ selectVoiceLanguage: 'en-US' });
+                settingsStore.setState({ selectVoiceLanguage: 'en-US' });
 
                 i18n.changeLanguage('en');
                 break;
               case 'ZH':
-                store.setState({ selectLanguage: 'ZH' });
+                settingsStore.setState({ selectLanguage: 'ZH' });
 
                 if (jpVoiceSelected) {
-                  store.setState({ selectVoice: 'google' });
+                  settingsStore.setState({ selectVoice: 'google' });
                 }
-                store.setState({ selectVoiceLanguage: 'zh-TW' });
+                settingsStore.setState({ selectVoiceLanguage: 'zh-TW' });
 
                 i18n.changeLanguage('zh-TW');
                 break;
               case 'KO':
-                store.setState({ selectLanguage: 'KO' });
+                settingsStore.setState({ selectLanguage: 'KO' });
 
                 if (jpVoiceSelected) {
-                  store.setState({ selectVoice: 'google' });
+                  settingsStore.setState({ selectVoice: 'google' });
                 }
-                store.setState({ selectVoiceLanguage: 'ko-KR' });
+                settingsStore.setState({ selectVoiceLanguage: 'ko-KR' });
 
                 i18n.changeLanguage('ko');
                 break;

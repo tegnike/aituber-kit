@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
 
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
 import menuStore from '@/features/stores/menu';
+import settingsStore from '@/features/stores/settings';
 import { TextButton } from '../textButton';
 
 const WebSocket = () => {
   const { t } = useTranslation();
 
-  const webSocketMode = store((s) => s.webSocketMode);
+  const webSocketMode = settingsStore((s) => s.webSocketMode);
 
   const handleChangeYoutubeMode = (youtubeMode: boolean) => {
-    store.setState({ youtubeMode });
+    settingsStore.setState({ youtubeMode });
 
     if (youtubeMode) {
       homeStore.setState({ modalImage: '' });
@@ -28,7 +28,7 @@ const WebSocket = () => {
         {webSocketMode ? (
           <TextButton
             onClick={() => {
-              store.setState({ webSocketMode: false });
+              settingsStore.setState({ webSocketMode: false });
               webSocketMode && handleChangeYoutubeMode(false);
             }}
           >
@@ -37,7 +37,7 @@ const WebSocket = () => {
         ) : (
           <TextButton
             onClick={() => {
-              store.setState({ webSocketMode: true });
+              settingsStore.setState({ webSocketMode: true });
               webSocketMode && handleChangeYoutubeMode(false);
             }}
           >

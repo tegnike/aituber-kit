@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 import { TextButton } from '../textButton';
 
 const Character = () => {
-  const selectAIService = store((s) => s.selectAIService);
+  const selectAIService = settingsStore((s) => s.selectAIService);
 
-  const characterName = store((s) => s.characterName);
-  const showCharacterName = store((s) => s.showCharacterName);
-  const systemPrompt = store((s) => s.systemPrompt);
+  const characterName = settingsStore((s) => s.characterName);
+  const showCharacterName = settingsStore((s) => s.showCharacterName);
+  const systemPrompt = settingsStore((s) => s.systemPrompt);
 
   const { t } = useTranslation();
 
@@ -24,7 +24,9 @@ const Character = () => {
           type="text"
           placeholder={t('CharacterName')}
           value={characterName}
-          onChange={(e) => store.setState({ characterName: e.target.value })}
+          onChange={(e) =>
+            settingsStore.setState({ characterName: e.target.value })
+          }
         />
 
         <div className="my-16 typography-20 font-bold">
@@ -33,7 +35,7 @@ const Character = () => {
         <div className="my-8">
           <TextButton
             onClick={() =>
-              store.setState((s) => ({
+              settingsStore.setState((s) => ({
                 showCharacterName: !s.showCharacterName,
               }))
             }
@@ -52,14 +54,18 @@ const Character = () => {
             <div className="my-16">{t('DifyInstruction')}</div>
           )}
           <TextButton
-            onClick={() => store.setState({ systemPrompt: SYSTEM_PROMPT })}
+            onClick={() =>
+              settingsStore.setState({ systemPrompt: SYSTEM_PROMPT })
+            }
           >
             {t('CharacterSettingsReset')}
           </TextButton>
         </div>
         <textarea
           value={systemPrompt}
-          onChange={(e) => store.setState({ systemPrompt: e.target.value })}
+          onChange={(e) =>
+            settingsStore.setState({ systemPrompt: e.target.value })
+          }
           className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
         ></textarea>
       </div>

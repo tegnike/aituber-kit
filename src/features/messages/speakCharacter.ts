@@ -1,4 +1,5 @@
-import store from '@/features/stores/app';
+import homeStore from '@/features/stores/home';
+import settingsStore from '@/features/stores/settings';
 import englishToJapanese from '@/utils/englishToJapanese.json';
 import { wait } from '@/utils/wait';
 import { Screenplay, Talk } from './messages';
@@ -25,10 +26,10 @@ const createSpeakCharacter = () => {
     onStart?: () => void,
     onComplete?: () => void,
   ) => {
-    const s = store.getState();
+    const ss = settingsStore.getState();
     onStart?.();
 
-    if (s.changeEnglishToJapanese && s.selectLanguage === 'JP') {
+    if (ss.changeEnglishToJapanese && ss.selectLanguage === 'JP') {
       // 英単語を日本語で読み上げる
       screenplay.talk.message = convertEnglishToJapaneseReading(
         screenplay.talk.message,
@@ -41,46 +42,46 @@ const createSpeakCharacter = () => {
         await wait(1000 - (now - lastTime));
       }
       let buffer;
-      if (s.selectVoice == 'koeiromap') {
-        buffer = await fetchAudio(screenplay.talk, s.koeiromapKey).catch(
+      if (ss.selectVoice == 'koeiromap') {
+        buffer = await fetchAudio(screenplay.talk, ss.koeiromapKey).catch(
           () => null,
         );
-      } else if (s.selectVoice == 'voicevox') {
+      } else if (ss.selectVoice == 'voicevox') {
         buffer = await fetchAudioVoiceVox(
           screenplay.talk,
-          s.voicevoxSpeaker,
+          ss.voicevoxSpeaker,
         ).catch(() => null);
-      } else if (s.selectVoice == 'google') {
+      } else if (ss.selectVoice == 'google') {
         const googleTtsTypeByLang = getGoogleTtsType(
-          s.googleTtsType,
-          s.selectLanguage,
+          ss.googleTtsType,
+          ss.selectLanguage,
         );
         buffer = await fetchAudioGoogle(
           screenplay.talk,
           googleTtsTypeByLang,
         ).catch(() => null);
-      } else if (s.selectVoice == 'stylebertvits2') {
+      } else if (ss.selectVoice == 'stylebertvits2') {
         buffer = await fetchAudioStyleBertVITS2(
           screenplay.talk,
-          s.stylebertvits2ServerUrl,
-          s.stylebertvits2ModelId,
-          s.stylebertvits2Style,
-          s.selectLanguage,
+          ss.stylebertvits2ServerUrl,
+          ss.stylebertvits2ModelId,
+          ss.stylebertvits2Style,
+          ss.selectLanguage,
         ).catch(() => null);
-      } else if (s.selectVoice == 'gsvitts') {
+      } else if (ss.selectVoice == 'gsvitts') {
         buffer = await fetchAudioVoiceGSVIApi(
           screenplay.talk,
-          s.gsviTtsServerUrl,
-          s.gsviTtsModelId,
-          s.gsviTtsBatchSize,
-          s.gsviTtsSpeechRate,
+          ss.gsviTtsServerUrl,
+          ss.gsviTtsModelId,
+          ss.gsviTtsBatchSize,
+          ss.gsviTtsSpeechRate,
         ).catch(() => null);
-      } else if (s.selectVoice == 'elevenlabs') {
+      } else if (ss.selectVoice == 'elevenlabs') {
         buffer = await fetchAudioElevenlabs(
           screenplay.talk,
-          s.elevenlabsApiKey,
-          s.elevenlabsVoiceId,
-          s.selectLanguage,
+          ss.elevenlabsApiKey,
+          ss.elevenlabsVoiceId,
+          ss.selectLanguage,
         ).catch(() => null);
       }
       lastTime = Date.now();
@@ -93,7 +94,8 @@ const createSpeakCharacter = () => {
         if (!audioBuffer) {
           return;
         }
-        return s.viewer.model?.speak(audioBuffer, screenplay);
+        const hs = homeStore.getState();
+        return hs.viewer.model?.speak(audioBuffer, screenplay);
       },
     );
     prevSpeakPromise.then(() => {
@@ -242,8 +244,8 @@ export const testVoice = async (voicevoxSpeaker: string) => {
       expression: 'neutral',
       talk: talk,
     };
-    const s = store.getState();
-    await s.viewer.model?.speak(buffer, screenplay);
+    const hs = homeStore.getState();
+    await hs.viewer.model?.speak(buffer, screenplay);
   }
 };
 

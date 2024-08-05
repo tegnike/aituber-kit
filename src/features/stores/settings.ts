@@ -3,9 +3,7 @@ import { persist } from 'zustand/middleware';
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
-import { Message } from '@/features/messages/messages';
 import { AIService, Voice } from '../chat/aiChatFactory';
-import { Viewer } from '../vrmViewer/viewer';
 
 interface APIKeys {
   openAiKey: string;
@@ -44,7 +42,6 @@ interface Integrations {
 }
 
 interface Character {
-  viewer: Viewer;
   characterName: string;
   showCharacterName: boolean;
   systemPrompt: string;
@@ -58,20 +55,13 @@ interface General {
   webSocketMode: boolean;
 }
 
-type Settings = APIKeys & ModelProvider & Integrations & Character & General;
+export type SettingsState = APIKeys &
+  ModelProvider &
+  Integrations &
+  Character &
+  General;
 
-interface Chat {
-  chatLog: Message[];
-  codeLog: Message[];
-}
-
-interface General {
-  dontShowIntroduction: boolean;
-}
-
-export type AppState = Settings & Chat & General & {};
-
-const store = create<AppState>()(
+const settingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
       // API Keys
@@ -110,7 +100,6 @@ const store = create<AppState>()(
       youtubeLiveId: '',
 
       // Character
-      viewer: new Viewer(), // transient
       characterName: 'CHARACTER',
       showCharacterName: true,
       systemPrompt: SYSTEM_PROMPT,
@@ -121,18 +110,10 @@ const store = create<AppState>()(
       selectVoiceLanguage: 'ja-JP', // TODO: 要整理, ja-JP, en-US
       changeEnglishToJapanese: false,
       webSocketMode: false,
-
-      // Chat
-      chatLog: [],
-      codeLog: [],
-
-      // Global States
-      dontShowIntroduction: false,
     }),
     {
-      name: 'app',
-      partialize: ({ viewer, ...states }) => states,
+      name: 'settings',
     },
   ),
 );
-export default store;
+export default settingsStore;

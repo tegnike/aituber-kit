@@ -1,4 +1,3 @@
-// TODO: (7741) create an index
 import { create } from 'zustand';
 
 interface MenuState {

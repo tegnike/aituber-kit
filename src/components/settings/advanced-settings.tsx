@@ -2,13 +2,15 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 
-import store from '@/features/stores/app';
 import menuStore from '@/features/stores/menu';
+import settingsStore from '@/features/stores/settings';
 import { TextButton } from '../textButton';
 
 const AdvancedSettings = () => {
-  const selectLanguage = store((s) => s.selectLanguage);
-  const changeEnglishToJapanese = store((s) => s.changeEnglishToJapanese);
+  const selectLanguage = settingsStore((s) => s.selectLanguage);
+  const changeEnglishToJapanese = settingsStore(
+    (s) => s.changeEnglishToJapanese,
+  );
   const showSettingsButton = menuStore((s) => s.showSettingsButton);
 
   const { t } = useTranslation();
@@ -41,7 +43,7 @@ const AdvancedSettings = () => {
                       {changeEnglishToJapanese ? (
                         <TextButton
                           onClick={() =>
-                            store.setState({
+                            settingsStore.setState({
                               changeEnglishToJapanese: false,
                             })
                           }
@@ -51,7 +53,7 @@ const AdvancedSettings = () => {
                       ) : (
                         <TextButton
                           onClick={() =>
-                            store.setState({
+                            settingsStore.setState({
                               changeEnglishToJapanese: true,
                             })
                           }

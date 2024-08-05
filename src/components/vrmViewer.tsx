@@ -1,13 +1,12 @@
 import { useCallback } from 'react';
 import { buildUrl } from '@/utils/buildUrl';
 
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
 
 export default function VrmViewer() {
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (canvas) {
-      const { viewer } = store.getState();
+      const { viewer } = homeStore.getState();
       viewer.setup(canvas);
       viewer.loadVrm(buildUrl('/AvatarSample_B.vrm'));
 

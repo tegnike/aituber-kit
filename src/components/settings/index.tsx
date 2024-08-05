@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import store from '@/features/stores/app';
+import settingsStore from '@/features/stores/settings';
 import { GitHubLink } from '../githubLink';
 import { IconButton } from '../iconButton';
 import AdvancedSettings from './advanced-settings';
@@ -86,7 +86,7 @@ const Footer = () => {
 };
 
 const NonWebSocket = () => {
-  const webSocketMode = store((s) => s.webSocketMode);
+  const webSocketMode = settingsStore((s) => s.webSocketMode);
 
   return webSocketMode ? null : (
     <>

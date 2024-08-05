@@ -1,22 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import store from '@/features/stores/app';
 import homeStore from '@/features/stores/home';
 import menuStore from '@/features/stores/menu';
+import settingsStore from '@/features/stores/settings';
 import { Link } from '../link';
 
 const ModelProvider = () => {
-  const openAiKey = store((s) => s.openAiKey);
-  const anthropicKey = store((s) => s.anthropicKey);
-  const googleKey = store((s) => s.googleKey);
-  const groqKey = store((s) => s.groqKey);
-  const difyKey = store((s) => s.difyKey);
+  const openAiKey = settingsStore((s) => s.openAiKey);
+  const anthropicKey = settingsStore((s) => s.anthropicKey);
+  const googleKey = settingsStore((s) => s.googleKey);
+  const groqKey = settingsStore((s) => s.groqKey);
+  const difyKey = settingsStore((s) => s.difyKey);
 
-  const selectAIService = store((s) => s.selectAIService);
-  const selectAIModel = store((s) => s.selectAIModel);
-  const localLlmUrl = store((s) => s.localLlmUrl);
+  const selectAIService = settingsStore((s) => s.selectAIService);
+  const selectAIModel = settingsStore((s) => s.selectAIModel);
+  const localLlmUrl = settingsStore((s) => s.localLlmUrl);
 
-  const difyUrl = store((s) => s.difyUrl);
-  const difyConversationId = store((s) => s.difyConversationId);
+  const difyUrl = settingsStore((s) => s.difyUrl);
+  const difyConversationId = settingsStore((s) => s.difyConversationId);
 
   const { t } = useTranslation();
 
@@ -43,7 +43,7 @@ const ModelProvider = () => {
           onChange={(e) => {
             const newService = e.target.value as keyof typeof defaultModels;
 
-            store.setState({
+            settingsStore.setState({
               selectAIService: newService,
             });
 
@@ -52,14 +52,14 @@ const ModelProvider = () => {
               menuStore.setState({ showWebcam: false });
 
               if (e.target.value !== 'anthropic') {
-                store.setState({
+                settingsStore.setState({
                   conversationContinuityMode: false,
                 });
               }
             }
 
             // 選択したAIサービスに基づいてデフォルトモデルを設定する
-            store.setState({
+            settingsStore.setState({
               selectAIModel: defaultModels[newService],
             });
           }}
@@ -84,7 +84,9 @@ const ModelProvider = () => {
                 type="text"
                 placeholder="sk-..."
                 value={openAiKey}
-                onChange={(e) => store.setState({ openAiKey: e.target.value })}
+                onChange={(e) =>
+                  settingsStore.setState({ openAiKey: e.target.value })
+                }
               />
               <div className="my-16">
                 {t('APIKeyInstruction')}
@@ -104,7 +106,7 @@ const ModelProvider = () => {
                   value={selectAIModel}
                   onChange={(e) => {
                     const model = e.target.value;
-                    store.setState({ selectAIModel: model });
+                    settingsStore.setState({ selectAIModel: model });
 
                     if (
                       model !== 'gpt-4' &&
@@ -136,7 +138,7 @@ const ModelProvider = () => {
                 placeholder="..."
                 value={anthropicKey}
                 onChange={(e) =>
-                  store.setState({ anthropicKey: e.target.value })
+                  settingsStore.setState({ anthropicKey: e.target.value })
                 }
               />
               <div className="my-16">
@@ -152,7 +154,7 @@ const ModelProvider = () => {
                   className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                   value={selectAIModel}
                   onChange={(e) =>
-                    store.setState({
+                    settingsStore.setState({
                       selectAIModel: e.target.value,
                     })
                   }
@@ -184,7 +186,9 @@ const ModelProvider = () => {
                 type="text"
                 placeholder="..."
                 value={googleKey}
-                onChange={(e) => store.setState({ googleKey: e.target.value })}
+                onChange={(e) =>
+                  settingsStore.setState({ googleKey: e.target.value })
+                }
               />
               <div className="my-16">
                 {t('APIKeyInstruction')}
@@ -202,7 +206,7 @@ const ModelProvider = () => {
                   className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                   value={selectAIModel}
                   onChange={(e) =>
-                    store.setState({
+                    settingsStore.setState({
                       selectAIModel: e.target.value,
                     })
                   }
@@ -228,7 +232,9 @@ const ModelProvider = () => {
                 type="text"
                 placeholder="..."
                 value={groqKey}
-                onChange={(e) => store.setState({ groqKey: e.target.value })}
+                onChange={(e) =>
+                  settingsStore.setState({ groqKey: e.target.value })
+                }
               />
               <div className="my-16">
                 {t('APIKeyInstruction')}
@@ -246,7 +252,7 @@ const ModelProvider = () => {
                   className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                   value={selectAIModel}
                   onChange={(e) =>
-                    store.setState({
+                    settingsStore.setState({
                       selectAIModel: e.target.value,
                     })
                   }
@@ -285,7 +291,7 @@ const ModelProvider = () => {
                 placeholder="..."
                 value={localLlmUrl}
                 onChange={(e) =>
-                  store.setState({ localLlmUrl: e.target.value })
+                  settingsStore.setState({ localLlmUrl: e.target.value })
                 }
               />
               <div className="my-16 typography-20 font-bold">
@@ -297,7 +303,7 @@ const ModelProvider = () => {
                 placeholder="..."
                 value={selectAIModel}
                 onChange={(e) =>
-                  store.setState({
+                  settingsStore.setState({
                     selectAIModel: e.target.value,
                   })
                 }
@@ -316,7 +322,9 @@ const ModelProvider = () => {
                 type="text"
                 placeholder="..."
                 value={difyKey}
-                onChange={(e) => store.setState({ difyKey: e.target.value })}
+                onChange={(e) =>
+                  settingsStore.setState({ difyKey: e.target.value })
+                }
               />
               <div className="my-24">
                 <div className="my-16 typography-20 font-bold">
@@ -328,7 +336,9 @@ const ModelProvider = () => {
                   type="text"
                   placeholder="..."
                   value={difyUrl}
-                  onChange={(e) => store.setState({ difyUrl: e.target.value })}
+                  onChange={(e) =>
+                    settingsStore.setState({ difyUrl: e.target.value })
+                  }
                 />
               </div>
             </div>
