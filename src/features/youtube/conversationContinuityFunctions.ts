@@ -77,11 +77,10 @@ const getLastMessages = (
       }
       lastRole = message.role;
 
-      // TODO: support multi-modal message
-      if (typeof message.content !== 'string')
-        throw new Error('multi-modal message is not supported');
-
-      combinedContent = message.content;
+      combinedContent =
+        typeof message.content === 'string'
+          ? message.content
+          : message.content[0].text;
     }
 
     // 最後のメッセージの場合、現在の内容を追加
