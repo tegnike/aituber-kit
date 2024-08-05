@@ -43,6 +43,7 @@ export const MessageInput = ({
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
       !event.nativeEvent.isComposing &&
+      event.keyCode !== 229 && // IME (Input Method Editor)
       event.key === 'Enter' &&
       !event.shiftKey &&
       userMessage.trim() !== ''
