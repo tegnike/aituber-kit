@@ -1,12 +1,12 @@
-import Image from 'next/image';
+import Image from 'next/image'
 
-import { IconButton } from '@/components/iconButton';
-import homeStore from '@/features/stores/home';
+import { IconButton } from '@/components/iconButton'
+import homeStore from '@/features/stores/home'
 
 const ModalImage = () => {
-  const modalImage = homeStore((s) => s.modalImage);
+  const modalImage = homeStore((s) => s.modalImage)
 
-  if (!modalImage) return null;
+  if (!modalImage) return null
 
   return (
     <div className="row-span-1 flex justify-end max-h-[40vh]">
@@ -28,6 +28,6 @@ const ModalImage = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default ModalImage;
+  )
+}
+export default ModalImage

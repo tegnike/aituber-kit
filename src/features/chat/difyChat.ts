@@ -1,20 +1,20 @@
-import settingsStore from '@/features/stores/settings';
-import { Message } from '../messages/messages';
+import settingsStore from '@/features/stores/settings'
+import { Message } from '../messages/messages'
 
 export async function getDifyChatResponseStream(
   messages: Message[],
   apiKey: string,
   url: string,
-  conversationId: string,
+  conversationId: string
 ) {
   if (!apiKey) {
-    throw new Error('Invalid API Key');
+    throw new Error('Invalid API Key')
   }
 
   const headers = {
     Authorization: `Bearer ${apiKey}`,
     'Content-Type': 'application/json',
-  };
+  }
   const body = JSON.stringify({
     inputs: {},
     query: messages[messages.length - 1].content, // messages[-1] は TypeScript では無効です
@@ -22,47 +22,47 @@ export async function getDifyChatResponseStream(
     conversation_id: conversationId,
     user: 'aituber-kit',
     files: [],
-  });
+  })
 
   const response = await fetch(url, {
     method: 'POST',
     headers: headers,
     body: body,
-  });
+  })
 
   if (!response.body) {
-    throw new Error('Invalid response body');
+    throw new Error('Invalid response body')
   }
 
-  const reader = response.body.getReader();
+  const reader = response.body.getReader()
 
   const res = new ReadableStream({
     async start(controller) {
       try {
         while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const textChunk = new TextDecoder('utf-8').decode(value);
+          const { done, value } = await reader.read()
+          if (done) break
+          const textChunk = new TextDecoder('utf-8').decode(value)
           const messages = textChunk
             .split('\n')
-            .filter((line) => line.startsWith('data:'));
+            .filter((line) => line.startsWith('data:'))
           messages.forEach((message) => {
-            const data = JSON.parse(message.slice(5)); // Remove 'data:' prefix
+            const data = JSON.parse(message.slice(5)) // Remove 'data:' prefix
             if (data.event === 'message') {
-              controller.enqueue(data.answer);
+              controller.enqueue(data.answer)
               settingsStore.setState({
                 difyConversationId: data.conversation_id,
-              });
+              })
             }
-          });
+          })
         }
       } catch (error) {
-        controller.error(error);
+        controller.error(error)
       } finally {
-        controller.close();
+        controller.close()
       }
     },
-  });
+  })
 
-  return res;
+  return res
 }

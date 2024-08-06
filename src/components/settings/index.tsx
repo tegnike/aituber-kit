@@ -1,22 +1,22 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
-import settingsStore from '@/features/stores/settings';
-import { GitHubLink } from '../githubLink';
-import { IconButton } from '../iconButton';
-import AdvancedSettings from './advanced-settings';
-import Character from './character';
-import Environment from './environment';
-import Language from './language';
-import Log from './log';
-import ModelProvider from './model-provider';
-import Voice from './voice';
-import WebSocket from './websocket';
-import YouTube from './youtube';
+import settingsStore from '@/features/stores/settings'
+import { GitHubLink } from '../githubLink'
+import { IconButton } from '../iconButton'
+import AdvancedSettings from './advanced-settings'
+import Character from './character'
+import Environment from './environment'
+import Language from './language'
+import Log from './log'
+import ModelProvider from './model-provider'
+import Voice from './voice'
+import WebSocket from './websocket'
+import YouTube from './youtube'
 
 type Props = {
-  onClickClose: () => void;
-};
+  onClickClose: () => void
+}
 const Settings = (props: Props) => {
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
@@ -24,9 +24,9 @@ const Settings = (props: Props) => {
       <Main />
       <Footer />
     </div>
-  );
-};
-export default Settings;
+  )
+}
+export default Settings
 
 const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   return (
@@ -40,11 +40,11 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
         ></IconButton>
       </div>
     </>
-  );
-};
+  )
+}
 
 const Main = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <main className="max-h-full overflow-auto">
@@ -74,24 +74,24 @@ const Main = () => {
         <Log />
       </div>
     </main>
-  );
-};
+  )
+}
 
 const Footer = () => {
   return (
     <footer className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
       powered by ChatVRM of Pixiv
     </footer>
-  );
-};
+  )
+}
 
 const NonWebSocket = () => {
-  const webSocketMode = settingsStore((s) => s.webSocketMode);
+  const webSocketMode = settingsStore((s) => s.webSocketMode)
 
   return webSocketMode ? null : (
     <>
       <ModelProvider />
       <YouTube />
     </>
-  );
-};
+  )
+}

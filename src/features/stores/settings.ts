@@ -1,70 +1,70 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
-import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam';
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
+import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
+import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
   AIService,
   AIVoice,
   Language,
   VoiceLanguage,
-} from '../constants/settings';
+} from '../constants/settings'
 
 interface APIKeys {
-  openAiKey: string;
-  anthropicKey: string;
-  googleKey: string;
-  groqKey: string;
-  difyKey: string;
-  koeiromapKey: string;
-  youtubeApiKey: string;
-  elevenlabsApiKey: string;
+  openAiKey: string
+  anthropicKey: string
+  googleKey: string
+  groqKey: string
+  difyKey: string
+  koeiromapKey: string
+  youtubeApiKey: string
+  elevenlabsApiKey: string
 }
 
 interface ModelProvider {
-  selectAIService: AIService;
-  selectAIModel: string;
-  localLlmUrl: string;
-  selectVoice: AIVoice;
-  koeiroParam: KoeiroParam;
-  googleTtsType: string;
-  voicevoxSpeaker: string;
-  stylebertvits2ServerUrl: string;
-  stylebertvits2ModelId: string;
-  stylebertvits2Style: string;
-  gsviTtsServerUrl: string;
-  gsviTtsModelId: string;
-  gsviTtsBatchSize: number;
-  gsviTtsSpeechRate: number;
-  elevenlabsVoiceId: string;
+  selectAIService: AIService
+  selectAIModel: string
+  localLlmUrl: string
+  selectVoice: AIVoice
+  koeiroParam: KoeiroParam
+  googleTtsType: string
+  voicevoxSpeaker: string
+  stylebertvits2ServerUrl: string
+  stylebertvits2ModelId: string
+  stylebertvits2Style: string
+  gsviTtsServerUrl: string
+  gsviTtsModelId: string
+  gsviTtsBatchSize: number
+  gsviTtsSpeechRate: number
+  elevenlabsVoiceId: string
 }
 
 interface Integrations {
-  difyUrl: string;
-  difyConversationId: string;
-  youtubeMode: boolean;
-  youtubeLiveId: string;
+  difyUrl: string
+  difyConversationId: string
+  youtubeMode: boolean
+  youtubeLiveId: string
 }
 
 interface Character {
-  characterName: string;
-  showCharacterName: boolean;
-  systemPrompt: string;
-  conversationContinuityMode: boolean;
+  characterName: string
+  showCharacterName: boolean
+  systemPrompt: string
+  conversationContinuityMode: boolean
 }
 
 interface General {
-  selectLanguage: Language;
-  selectVoiceLanguage: VoiceLanguage;
-  changeEnglishToJapanese: boolean;
-  webSocketMode: boolean;
+  selectLanguage: Language
+  selectVoiceLanguage: VoiceLanguage
+  changeEnglishToJapanese: boolean
+  webSocketMode: boolean
 }
 
 export type SettingsState = APIKeys &
   ModelProvider &
   Integrations &
   Character &
-  General;
+  General
 
 const settingsStore = create<SettingsState>()(
   persist(
@@ -118,7 +118,7 @@ const settingsStore = create<SettingsState>()(
     }),
     {
       name: 'settings',
-    },
-  ),
-);
-export default settingsStore;
+    }
+  )
+)
+export default settingsStore

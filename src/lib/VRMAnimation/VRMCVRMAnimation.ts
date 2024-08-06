@@ -1,27 +1,27 @@
-import { VRMExpressionPresetName, VRMHumanBoneName } from '@pixiv/three-vrm';
+import { VRMExpressionPresetName, VRMHumanBoneName } from '@pixiv/three-vrm'
 
 export interface VRMCVRMAnimation {
-  specVersion: string;
+  specVersion: string
   humanoid: {
     humanBones: {
       [name in VRMHumanBoneName]?: {
-        node: number;
-      };
-    };
-  };
+        node: number
+      }
+    }
+  }
   expressions?: {
     preset?: {
       [name in VRMExpressionPresetName]?: {
-        node: number;
-      };
-    };
+        node: number
+      }
+    }
     custom?: {
       [name: string]: {
-        node: number;
-      };
-    };
-  };
+        node: number
+      }
+    }
+  }
   lookAt?: {
-    node: number;
-  };
+    node: number
+  }
 }

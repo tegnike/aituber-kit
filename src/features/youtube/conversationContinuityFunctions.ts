@@ -1,25 +1,25 @@
-import { Message } from '@/features/messages/messages';
-import { getOpenAIChatResponse } from '@/features/chat/openAiChat';
-import { getAnthropicChatResponse } from '@/features/chat/anthropicChat';
+import { Message } from '@/features/messages/messages'
+import { getOpenAIChatResponse } from '@/features/chat/openAiChat'
+import { getAnthropicChatResponse } from '@/features/chat/anthropicChat'
 
 const fetchAIResponse = async (
   queryMessages: any[],
   aiApiKey: string,
   selectAIService: string,
-  selectAIModel: string,
+  selectAIModel: string
 ): Promise<any> => {
   if (selectAIService === 'openai') {
-    return await getOpenAIChatResponse(queryMessages, aiApiKey, selectAIModel);
+    return await getOpenAIChatResponse(queryMessages, aiApiKey, selectAIModel)
   } else if (selectAIService === 'anthropic') {
     return await getAnthropicChatResponse(
       queryMessages,
       aiApiKey,
-      selectAIModel,
-    );
+      selectAIModel
+    )
   } else {
-    throw new Error('Unsupported AI service');
+    throw new Error('Unsupported AI service')
   }
-};
+}
 
 /**
  * 共通のシステムメッセージをを返します。
@@ -28,7 +28,7 @@ const fetchAIResponse = async (
  */
 const getCommonSystemMessage = (
   systemPrompt: string,
-  additionalGuidelines: string,
+  additionalGuidelines: string
 ): string => {
   return `あなたには以下のキャラクター情報と状況に基づいて、提供された会話に続くコメントを生成します。
 
@@ -45,8 +45,8 @@ ${systemPrompt}
 - 可能な限り詳細なレスポンスを提供し、キャラクターのコメントのみを返答としてください。
 ${additionalGuidelines}
 
-以下の対話に続くコメントを生成してください。`;
-};
+以下の対話に続くコメントを生成してください。`
+}
 
 /**
  * 指定された数の最新メッセージを取得し、文字列として返します。
@@ -58,39 +58,39 @@ ${additionalGuidelines}
  */
 const getLastMessages = (
   messages: Message[],
-  numberOfMessages: number,
+  numberOfMessages: number
 ): Message[] => {
   const filteredMessages = messages
     .filter(({ role }) => role === 'user' || role === 'assistant')
-    .slice(-numberOfMessages);
+    .slice(-numberOfMessages)
 
-  const returnMessages: Message[] = [];
-  let lastRole: string | null = null;
-  let combinedContent = '';
+  const returnMessages: Message[] = []
+  let lastRole: string | null = null
+  let combinedContent = ''
 
   filteredMessages.forEach((message: Message, index: number) => {
     if (message.role === lastRole) {
-      combinedContent += '\n' + message.content;
+      combinedContent += '\n' + message.content
     } else {
       if (lastRole !== null) {
-        returnMessages.push({ role: lastRole, content: combinedContent });
+        returnMessages.push({ role: lastRole, content: combinedContent })
       }
-      lastRole = message.role;
+      lastRole = message.role
 
       combinedContent =
         typeof message.content === 'string'
           ? message.content
-          : message.content[0].text;
+          : message.content[0].text
     }
 
     // 最後のメッセージの場合、現在の内容を追加
     if (index === filteredMessages.length - 1) {
-      returnMessages.push({ role: lastRole, content: combinedContent });
+      returnMessages.push({ role: lastRole, content: combinedContent })
     }
-  });
+  })
 
   while (returnMessages.length > 0 && returnMessages[0].role !== 'user') {
-    returnMessages.shift();
+    returnMessages.shift()
   }
 
   if (
@@ -102,11 +102,11 @@ const getLastMessages = (
       role: 'user',
       content:
         'これはシステムメッセージです。回答を作成してください。このコメントは無視してください。',
-    });
+    })
   }
 
-  return returnMessages;
-};
+  return returnMessages
+}
 
 /**
  * ユーザーのコメントとYoutubeのコメントを受け取り、最適なコメントを返します。
@@ -122,10 +122,10 @@ export const getBestComment = async (
   youtubeComments: any[],
   aiApiKey: string,
   selectAIService: string,
-  selectAIModel: string,
+  selectAIModel: string
 ): Promise<string> => {
-  console.log('getBestComment');
-  const lastTenMessages = getLastMessages(messages, 10);
+  console.log('getBestComment')
+  const lastTenMessages = getLastMessages(messages, 10)
   const systemMessage = `# 会話選択タスク
 これからあなたに複数の会話履歴と選択肢となるコメントが与えられます。
 これらの情報を基に、会話の流れに最も適したコメントを1つ選んでください。選んだコメントの内容のみを返答としてください。
@@ -147,7 +147,7 @@ export const getBestComment = async (
 ${lastTenMessages}
 \`\`\`
 
-## 実際のコメント一覧`;
+## 実際のコメント一覧`
 
   const queryMessages = [
     { role: 'system', content: systemMessage },
@@ -158,17 +158,17 @@ ${lastTenMessages}
         youtubeComments.map((comment) => comment.userComment).join(',\n') +
         '\n]',
     },
-  ];
+  ]
 
   const response = await fetchAIResponse(
     queryMessages,
     aiApiKey,
     selectAIService,
-    selectAIModel,
-  );
+    selectAIModel
+  )
 
-  return response.message;
-};
+  return response.message
+}
 
 /**
  * システムプロンプトを受け取り、休憩用のメッセージを返します。
@@ -179,17 +179,17 @@ ${lastTenMessages}
  */
 export const getMessagesForSleep = async (
   systemPrompt: string,
-  messages: Message[],
+  messages: Message[]
 ): Promise<Message[]> => {
-  console.log('getMessagesForSleep');
-  const lastTenMessages = getLastMessages(messages, 10);
+  console.log('getMessagesForSleep')
+  const lastTenMessages = getLastMessages(messages, 10)
   const systemMessage = getCommonSystemMessage(
     systemPrompt,
-    '- あなたはYouTubeの配信者ですが、現在視聴者があまり来ていません。\n- 視聴者が来るまで別の作業をしている旨のセリフを生成してください。',
-  );
+    '- あなたはYouTubeの配信者ですが、現在視聴者があまり来ていません。\n- 視聴者が来るまで別の作業をしている旨のセリフを生成してください。'
+  )
 
-  return [{ role: 'system', content: systemMessage }, ...lastTenMessages];
-};
+  return [{ role: 'system', content: systemMessage }, ...lastTenMessages]
+}
 
 /**
  * メッセージを受け取り、最新の4つのメッセージを使用して別の話題を取得します。
@@ -203,10 +203,10 @@ export const getAnotherTopic = async (
   messages: Message[],
   aiApiKey: string,
   selectAIService: string,
-  selectAIModel: string,
+  selectAIModel: string
 ): Promise<string> => {
-  console.log('getAnotherTopic');
-  const lastTenMessages = getLastMessages(messages, 10);
+  console.log('getAnotherTopic')
+  const lastTenMessages = getLastMessages(messages, 10)
   const queryMessages = [
     {
       role: 'system',
@@ -222,17 +222,17 @@ export const getAnotherTopic = async (
 ## 会話文`,
     },
     ...lastTenMessages,
-  ];
+  ]
 
   const response = await fetchAIResponse(
     queryMessages,
     aiApiKey,
     selectAIService,
-    selectAIModel,
-  );
+    selectAIModel
+  )
 
-  return response.message;
-};
+  return response.message
+}
 
 /**
  * メッセージを受け取り、新しい話題のためのメッセージを取得します。
@@ -245,17 +245,17 @@ export const getAnotherTopic = async (
 export const getMessagesForNewTopic = async (
   systemPrompt: string,
   messages: Message[],
-  topic: string,
+  topic: string
 ): Promise<Message[]> => {
-  console.log('getMessagesForNewTopic');
-  const lastTenMessages = getLastMessages(messages, 10);
+  console.log('getMessagesForNewTopic')
+  const lastTenMessages = getLastMessages(messages, 10)
   const systemMessage = getCommonSystemMessage(
     systemPrompt,
-    `- 話題を「${topic}」に切り替える必要があります。話題を切り替える旨のセリフもコメントに含めてください。`,
-  );
+    `- 話題を「${topic}」に切り替える必要があります。話題を切り替える旨のセリフもコメントに含めてください。`
+  )
 
-  return [{ role: 'system', content: systemMessage }, ...lastTenMessages];
-};
+  return [{ role: 'system', content: systemMessage }, ...lastTenMessages]
+}
 
 /**
  * メッセージを受け取り、次の発言者を判断します。
@@ -269,12 +269,12 @@ export const checkIfResponseContinuationIsRequired = async (
   messages: Message[],
   aiApiKey: string,
   selectAIService: string,
-  selectAIModel: string,
+  selectAIModel: string
 ): Promise<boolean> => {
-  console.log('checkIfResponseContinuationIsRequired');
-  const lastTenMessages = getLastMessages(messages, 10);
+  console.log('checkIfResponseContinuationIsRequired')
+  const lastTenMessages = getLastMessages(messages, 10)
   if (!lastTenMessages.some((message) => message.role === 'assistant')) {
-    return false;
+    return false
   }
 
   const systemMessage = `与えられた会話文の文脈から、次にどの話者が発言すべきかを判断してください。
@@ -333,33 +333,33 @@ B: 見てみたいな。送ってくれない？
   "reason": "Bの要求で一旦区切りがついており、次はAが動画を送信するなどの行動を取る番だと判断できる。"
 }
 
-## 会話文`;
+## 会話文`
 
   const queryMessages = [
     { role: 'system', content: systemMessage },
     ...lastTenMessages,
-  ];
+  ]
 
   // エラーが発生した場合はfalseを返す
-  let answer;
+  let answer
   try {
     const response = await fetchAIResponse(
       queryMessages,
       aiApiKey,
       selectAIService,
-      selectAIModel,
-    );
-    console.log('response.message:', response.message);
-    const responseJson = JSON.parse(response.message);
-    answer = responseJson.answer;
-    answer = answer.toString();
+      selectAIModel
+    )
+    console.log('response.message:', response.message)
+    const responseJson = JSON.parse(response.message)
+    answer = responseJson.answer
+    answer = answer.toString()
   } catch (error) {
-    console.error('JSON.parseエラーが発生しました。', error);
-    answer = 'false';
+    console.error('JSON.parseエラーが発生しました。', error)
+    answer = 'false'
   }
-  console.log('answer:', answer);
-  return answer === 'true';
-};
+  console.log('answer:', answer)
+  return answer === 'true'
+}
 
 /**
  * システムプロンプトとメッセージを受け取り、継続のためのメッセージを取得します。
@@ -370,14 +370,14 @@ B: 見てみたいな。送ってくれない？
  */
 export const getMessagesForContinuation = async (
   systemPrompt: string,
-  messages: Message[],
+  messages: Message[]
 ): Promise<Message[]> => {
-  console.log('getMessagesForContinuation');
-  const lastTenMessages = getLastMessages(messages, 10);
+  console.log('getMessagesForContinuation')
+  const lastTenMessages = getLastMessages(messages, 10)
   const systemMessage = getCommonSystemMessage(
     systemPrompt,
-    `- 与えられた会話歴に続く自然なコメントを生成してください。ただし、直前と同じ内容は避けてください。`,
-  );
+    `- 与えられた会話歴に続く自然なコメントを生成してください。ただし、直前と同じ内容は避けてください。`
+  )
 
-  return [{ role: 'system', content: systemMessage }, ...lastTenMessages];
-};
+  return [{ role: 'system', content: systemMessage }, ...lastTenMessages]
+}

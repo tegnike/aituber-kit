@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import homeStore from '@/features/stores/home';
-import { IconButton } from './iconButton';
+import homeStore from '@/features/stores/home'
+import { IconButton } from './iconButton'
 
 type Props = {
-  userMessage: string;
-  isMicRecording: boolean;
+  userMessage: string
+  isMicRecording: boolean
   onChangeUserMessage: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
-};
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void
+  onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void
+}
 
 export const MessageInput = ({
   userMessage,
@@ -21,24 +21,24 @@ export const MessageInput = ({
   onClickMicButton,
   onClickSendButton,
 }: Props) => {
-  const chatProcessing = homeStore((s) => s.chatProcessing);
-  const [rows, setRows] = useState(1);
-  const [loadingDots, setLoadingDots] = useState('');
+  const chatProcessing = homeStore((s) => s.chatProcessing)
+  const [rows, setRows] = useState(1)
+  const [loadingDots, setLoadingDots] = useState('')
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (chatProcessing) {
       const interval = setInterval(() => {
         setLoadingDots((prev) => {
-          if (prev === '...') return '';
-          return prev + '.';
-        });
-      }, 200);
+          if (prev === '...') return ''
+          return prev + '.'
+        })
+      }, 200)
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval)
     }
-  }, [chatProcessing]);
+  }, [chatProcessing])
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
@@ -48,20 +48,18 @@ export const MessageInput = ({
       !event.shiftKey &&
       userMessage.trim() !== ''
     ) {
-      onClickSendButton(
-        event as unknown as React.MouseEvent<HTMLButtonElement>,
-      );
-      setRows(1);
+      onClickSendButton(event as unknown as React.MouseEvent<HTMLButtonElement>)
+      setRows(1)
     } else if (event.key === 'Enter' && event.shiftKey) {
-      setRows(rows + 1);
+      setRows(rows + 1)
     } else if (
       event.key === 'Backspace' &&
       rows > 1 &&
       userMessage.slice(-1) === '\n'
     ) {
-      setRows(rows - 1);
+      setRows(rows - 1)
     }
-  };
+  }
 
   return (
     <div className="absolute bottom-0 z-20 w-screen">
@@ -101,5 +99,5 @@ export const MessageInput = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

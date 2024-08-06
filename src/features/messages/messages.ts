@@ -1,16 +1,16 @@
-import { VRMExpression, VRMExpressionPresetName } from '@pixiv/three-vrm';
-import { KoeiroParam } from '../constants/koeiroParam';
+import { VRMExpression, VRMExpressionPresetName } from '@pixiv/three-vrm'
+import { KoeiroParam } from '../constants/koeiroParam'
 
 // ChatGPT API
 export type Message = {
-  role: string; // "assistant" | "system" | "user";
+  role: string // "assistant" | "system" | "user";
   content:
     | string
     | [
         { type: string; text: string },
         { type: string; image_url: { url: string } },
-      ]; // マルチモーダル拡張
-};
+      ] // マルチモーダル拡張
+}
 
 const talkStyles = [
   'talk',
@@ -19,51 +19,51 @@ const talkStyles = [
   'angry',
   'fear',
   'surprised',
-] as const;
-export type TalkStyle = (typeof talkStyles)[number];
+] as const
+export type TalkStyle = (typeof talkStyles)[number]
 
 export type Talk = {
-  style: TalkStyle;
-  speakerX: number;
-  speakerY: number;
-  message: string;
-};
+  style: TalkStyle
+  speakerX: number
+  speakerY: number
+  message: string
+}
 
-const emotions = ['neutral', 'happy', 'angry', 'sad', 'relaxed'] as const;
-type EmotionType = (typeof emotions)[number] & VRMExpressionPresetName;
+const emotions = ['neutral', 'happy', 'angry', 'sad', 'relaxed'] as const
+type EmotionType = (typeof emotions)[number] & VRMExpressionPresetName
 
 /**
  * 発話文と音声の感情と、モデルの感情表現がセットになった物
  */
 export type Screenplay = {
-  expression: EmotionType;
-  talk: Talk;
-};
+  expression: EmotionType
+  talk: Talk
+}
 
 export const splitSentence = (text: string): string[] => {
-  const splitMessages = text.split(/(?<=[。．！？\n])/g);
-  return splitMessages.filter((msg) => msg !== '');
-};
+  const splitMessages = text.split(/(?<=[。．！？\n])/g)
+  return splitMessages.filter((msg) => msg !== '')
+}
 
 export const textsToScreenplay = (
   texts: string[],
-  koeiroParam: KoeiroParam,
+  koeiroParam: KoeiroParam
 ): Screenplay[] => {
-  const screenplays: Screenplay[] = [];
-  let prevExpression = 'neutral';
+  const screenplays: Screenplay[] = []
+  let prevExpression = 'neutral'
   for (let i = 0; i < texts.length; i++) {
-    const text = texts[i];
+    const text = texts[i]
 
-    const match = text.match(/\[(.*?)\]/);
+    const match = text.match(/\[(.*?)\]/)
 
-    const tag = (match && match[1]) || prevExpression;
+    const tag = (match && match[1]) || prevExpression
 
-    const message = text.replace(/\[(.*?)\]/g, '');
+    const message = text.replace(/\[(.*?)\]/g, '')
 
-    let expression = prevExpression;
+    let expression = prevExpression
     if (emotions.includes(tag as any)) {
-      expression = tag;
-      prevExpression = tag;
+      expression = tag
+      prevExpression = tag
     }
 
     screenplays.push({
@@ -74,21 +74,21 @@ export const textsToScreenplay = (
         speakerY: koeiroParam.speakerY,
         message: message,
       },
-    });
+    })
   }
 
-  return screenplays;
-};
+  return screenplays
+}
 
 const emotionToTalkStyle = (emotion: EmotionType): TalkStyle => {
   switch (emotion) {
     case 'angry':
-      return 'angry';
+      return 'angry'
     case 'happy':
-      return 'happy';
+      return 'happy'
     case 'sad':
-      return 'sad';
+      return 'sad'
     default:
-      return 'talk';
+      return 'talk'
   }
-};
+}

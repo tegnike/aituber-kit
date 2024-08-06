@@ -1,17 +1,17 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants';
-import settingsStore from '@/features/stores/settings';
-import { TextButton } from '../textButton';
+import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
+import settingsStore from '@/features/stores/settings'
+import { TextButton } from '../textButton'
 
 const Character = () => {
-  const selectAIService = settingsStore((s) => s.selectAIService);
+  const selectAIService = settingsStore((s) => s.selectAIService)
 
-  const characterName = settingsStore((s) => s.characterName);
-  const showCharacterName = settingsStore((s) => s.showCharacterName);
-  const systemPrompt = settingsStore((s) => s.systemPrompt);
+  const characterName = settingsStore((s) => s.characterName)
+  const showCharacterName = settingsStore((s) => s.showCharacterName)
+  const systemPrompt = settingsStore((s) => s.systemPrompt)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <>
@@ -70,6 +70,6 @@ const Character = () => {
         ></textarea>
       </div>
     </>
-  );
-};
-export default Character;
+  )
+}
+export default Character

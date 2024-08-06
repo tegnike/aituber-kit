@@ -1,32 +1,32 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
-import { Message } from '@/features/messages/messages';
-import { Viewer } from '../vrmViewer/viewer';
+import { Message } from '@/features/messages/messages'
+import { Viewer } from '../vrmViewer/viewer'
 
 export interface PersistedState {
-  userOnboarded: boolean;
-  chatLog: Message[];
-  codeLog: Message[];
-  dontShowIntroduction: boolean;
+  userOnboarded: boolean
+  chatLog: Message[]
+  codeLog: Message[]
+  dontShowIntroduction: boolean
 }
 
 export interface TransientState {
-  viewer: Viewer;
-  assistantMessage: string;
-  chatProcessing: boolean;
-  chatProcessingCount: number;
-  incrementChatProcessingCount: () => void;
-  decrementChatProcessingCount: () => void;
-  backgroundImageUrl: string;
-  modalImage: string;
-  triggerShutter: boolean;
-  webcamStatus: boolean;
-  ws: WebSocket | null;
-  voicePlaying: boolean; // WebSocketモード用の設定
+  viewer: Viewer
+  assistantMessage: string
+  chatProcessing: boolean
+  chatProcessingCount: number
+  incrementChatProcessingCount: () => void
+  decrementChatProcessingCount: () => void
+  backgroundImageUrl: string
+  modalImage: string
+  triggerShutter: boolean
+  webcamStatus: boolean
+  ws: WebSocket | null
+  voicePlaying: boolean // WebSocketモード用の設定
 }
 
-export type HomeState = PersistedState & TransientState;
+export type HomeState = PersistedState & TransientState
 
 const homeStore = create<HomeState>()(
   persist(
@@ -45,12 +45,12 @@ const homeStore = create<HomeState>()(
       incrementChatProcessingCount: () => {
         set(({ chatProcessingCount }) => ({
           chatProcessingCount: chatProcessingCount + 1,
-        }));
+        }))
       },
       decrementChatProcessingCount: () => {
         set(({ chatProcessingCount }) => ({
           chatProcessingCount: chatProcessingCount - 1,
-        }));
+        }))
       },
       backgroundImageUrl:
         process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH ?? '/bg-c.png',
@@ -67,7 +67,7 @@ const homeStore = create<HomeState>()(
         codeLog,
         dontShowIntroduction,
       }),
-    },
-  ),
-);
-export default homeStore;
+    }
+  )
+)
+export default homeStore

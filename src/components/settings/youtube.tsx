@@ -1,31 +1,31 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 
-import homeStore from '@/features/stores/home';
-import menuStore from '@/features/stores/menu';
-import settingsStore from '@/features/stores/settings';
-import { TextButton } from '../textButton';
+import homeStore from '@/features/stores/home'
+import menuStore from '@/features/stores/menu'
+import settingsStore from '@/features/stores/settings'
+import { TextButton } from '../textButton'
 
 const YouTube = () => {
-  const youtubeApiKey = settingsStore((s) => s.youtubeApiKey);
-  const youtubeMode = settingsStore((s) => s.youtubeMode);
-  const youtubeLiveId = settingsStore((s) => s.youtubeLiveId);
+  const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
+  const youtubeMode = settingsStore((s) => s.youtubeMode)
+  const youtubeLiveId = settingsStore((s) => s.youtubeLiveId)
 
-  const selectAIService = settingsStore((s) => s.selectAIService);
+  const selectAIService = settingsStore((s) => s.selectAIService)
 
   const conversationContinuityMode = settingsStore(
-    (s) => s.conversationContinuityMode,
-  );
+    (s) => s.conversationContinuityMode
+  )
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const handleChangeYoutubeMode = (youtubeMode: boolean) => {
-    settingsStore.setState({ youtubeMode });
+    settingsStore.setState({ youtubeMode })
 
     if (youtubeMode) {
-      homeStore.setState({ modalImage: '' });
-      menuStore.setState({ showWebcam: false });
+      homeStore.setState({ modalImage: '' })
+      menuStore.setState({ showWebcam: false })
     }
-  };
+  }
 
   return (
     <div className="my-40">
@@ -117,11 +117,11 @@ const YouTube = () => {
                   </TextButton>
                 )}
               </>
-            );
+            )
           }
         })()}
       </div>
     </div>
-  );
-};
-export default YouTube;
+  )
+}
+export default YouTube

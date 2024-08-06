@@ -1,19 +1,19 @@
-import { Disclosure } from '@headlessui/react';
-import { ChevronUpIcon } from '@heroicons/react/24/solid';
-import { useTranslation } from 'react-i18next';
+import { Disclosure } from '@headlessui/react'
+import { ChevronUpIcon } from '@heroicons/react/24/solid'
+import { useTranslation } from 'react-i18next'
 
-import menuStore from '@/features/stores/menu';
-import settingsStore from '@/features/stores/settings';
-import { TextButton } from '../textButton';
+import menuStore from '@/features/stores/menu'
+import settingsStore from '@/features/stores/settings'
+import { TextButton } from '../textButton'
 
 const AdvancedSettings = () => {
-  const selectLanguage = settingsStore((s) => s.selectLanguage);
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
   const changeEnglishToJapanese = settingsStore(
-    (s) => s.changeEnglishToJapanese,
-  );
-  const showSettingsButton = menuStore((s) => s.showSettingsButton);
+    (s) => s.changeEnglishToJapanese
+  )
+  const showSettingsButton = menuStore((s) => s.showSettingsButton)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <div className="my-40">
@@ -95,6 +95,6 @@ const AdvancedSettings = () => {
         )}
       </Disclosure>
     </div>
-  );
-};
-export default AdvancedSettings;
+  )
+}
+export default AdvancedSettings

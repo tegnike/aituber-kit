@@ -1,23 +1,23 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 
-import homeStore from '@/features/stores/home';
-import menuStore from '@/features/stores/menu';
-import settingsStore from '@/features/stores/settings';
-import { TextButton } from '../textButton';
+import homeStore from '@/features/stores/home'
+import menuStore from '@/features/stores/menu'
+import settingsStore from '@/features/stores/settings'
+import { TextButton } from '../textButton'
 
 const WebSocket = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const webSocketMode = settingsStore((s) => s.webSocketMode);
+  const webSocketMode = settingsStore((s) => s.webSocketMode)
 
   const handleChangeYoutubeMode = (youtubeMode: boolean) => {
-    settingsStore.setState({ youtubeMode });
+    settingsStore.setState({ youtubeMode })
 
     if (youtubeMode) {
-      homeStore.setState({ modalImage: '' });
-      menuStore.setState({ showWebcam: false });
+      homeStore.setState({ modalImage: '' })
+      menuStore.setState({ showWebcam: false })
     }
-  };
+  }
 
   return (
     <div className="my-40">
@@ -28,8 +28,8 @@ const WebSocket = () => {
         {webSocketMode ? (
           <TextButton
             onClick={() => {
-              settingsStore.setState({ webSocketMode: false });
-              webSocketMode && handleChangeYoutubeMode(false);
+              settingsStore.setState({ webSocketMode: false })
+              webSocketMode && handleChangeYoutubeMode(false)
             }}
           >
             {t('StatusOn')}
@@ -37,8 +37,8 @@ const WebSocket = () => {
         ) : (
           <TextButton
             onClick={() => {
-              settingsStore.setState({ webSocketMode: true });
-              webSocketMode && handleChangeYoutubeMode(false);
+              settingsStore.setState({ webSocketMode: true })
+              webSocketMode && handleChangeYoutubeMode(false)
             }}
           >
             {t('StatusOff')}
@@ -46,6 +46,6 @@ const WebSocket = () => {
         )}
       </div>
     </div>
-  );
-};
-export default WebSocket;
+  )
+}
+export default WebSocket

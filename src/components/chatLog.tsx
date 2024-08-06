@@ -1,28 +1,28 @@
-import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import Image from 'next/image'
+import { useEffect, useRef } from 'react'
 
-import homeStore from '@/features/stores/home';
-import settingsStore from '@/features/stores/settings';
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 
 export const ChatLog = () => {
-  const chatScrollRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null)
 
-  const characterName = settingsStore((s) => s.characterName);
-  const messages = homeStore((s) => s.chatLog);
+  const characterName = settingsStore((s) => s.characterName)
+  const messages = homeStore((s) => s.chatLog)
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
       behavior: 'auto',
       block: 'center',
-    });
-  }, []);
+    })
+  }, [])
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'center',
-    });
-  }, [messages]);
+    })
+  }, [messages])
 
   return (
     <div className="absolute w-col-span-7 max-w-full h-[100svh] pb-64">
@@ -51,26 +51,26 @@ export const ChatLog = () => {
                 </>
               )}
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Chat = ({
   role,
   message,
   characterName,
 }: {
-  role: string;
-  message: string;
-  characterName: string;
+  role: string
+  message: string
+  characterName: string
 }) => {
   const roleColor =
-    role !== 'user' ? 'bg-secondary text-white ' : 'bg-base text-primary';
-  const roleText = role !== 'user' ? 'text-secondary' : 'text-primary';
-  const offsetX = role === 'user' ? 'pl-40' : 'pr-40';
+    role !== 'user' ? 'bg-secondary text-white ' : 'bg-base text-primary'
+  const roleText = role !== 'user' ? 'text-secondary' : 'text-primary'
+  const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
 
   return (
     <div className={`mx-auto max-w-[32rem] my-16 ${offsetX}`}>
@@ -93,19 +93,19 @@ const Chat = ({
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
 const ChatImage = ({
   role,
   imageUrl,
   characterName,
 }: {
-  role: string;
-  imageUrl: string;
-  characterName: string;
+  role: string
+  imageUrl: string
+  characterName: string
 }) => {
-  const offsetX = role === 'user' ? 'pl-40' : 'pr-40';
+  const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
 
   return (
     <div className={`mx-auto max-w-[32rem] my-16 ${offsetX}`}>
@@ -117,5 +117,5 @@ const ChatImage = ({
         height={512}
       />
     </div>
-  );
-};
+  )
+}

@@ -20,7 +20,7 @@
 This repository has the following 3 features:
 
 1. Conversation with AI character
-2. AITuber streaming 
+2. AITuber streaming
 3. External integration mode
 
 I've written a detailed usage guide in the article below:
@@ -189,14 +189,18 @@ Plus 2 private sponsors
 To add a new language to the project, follow these steps:
 
 1. **Add Language File**:
+
    - Create a new language directory in the `locales` directory and create a `translation.json` file inside it.
    - Example: `locales/fr/translation.json` (for French)
 
 2. **Add Translations**:
+
    - Add translations to the `translation.json` file, referring to existing language files.
 
 3. **Update Language Settings**:
+
    - Open the `src/lib/i18n.js` file and add the new language to the `resources` object.
+
    ```javascript:src/lib/i18n.js
    resources: {
      ...,
@@ -207,7 +211,9 @@ To add a new language to the project, follow these steps:
    ```
 
 4. **Add Language Selection Option**:
+
    - Add a new language option to the appropriate part of the UI (e.g., language selection dropdown in the settings screen) so users can select the language.
+
    ```typescript:src/components/settings.tsx
    <select>
      ...,

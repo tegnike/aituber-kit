@@ -1,15 +1,15 @@
-import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
+import Image from 'next/image'
+import { useTranslation } from 'react-i18next'
 
-import homeStore from '@/features/stores/home';
-import settingsStore from '@/features/stores/settings';
-import { TextButton } from '../textButton';
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { TextButton } from '../textButton'
 
 const Log = () => {
-  const chatLog = homeStore((s) => s.chatLog);
-  const selectAIService = settingsStore((s) => s.selectAIService);
+  const chatLog = homeStore((s) => s.chatLog)
+  const selectAIService = settingsStore((s) => s.selectAIService)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <div className="my-40">
@@ -24,8 +24,8 @@ const Log = () => {
         </div>
         <TextButton
           onClick={() => {
-            homeStore.setState({ chatLog: [], codeLog: [] });
-            settingsStore.setState({ difyConversationId: '' });
+            homeStore.setState({ chatLog: [], codeLog: [] })
+            settingsStore.setState({ difyConversationId: '' })
           }}
         >
           {t('ConversationHistoryReset')}
@@ -50,8 +50,8 @@ const Log = () => {
                     type="text"
                     value={value.content}
                     onChange={(e) => {
-                      handleChangeChatLog(index, e.target.value);
-                      handleChangeCodeLog(index, e.target.value);
+                      handleChangeChatLog(index, e.target.value)
+                      handleChangeCodeLog(index, e.target.value)
                     }}
                   ></input>
                 ) : (
@@ -63,31 +63,31 @@ const Log = () => {
                   />
                 )}
               </div>
-            );
+            )
           })}
         </div>
       )}
     </div>
-  );
-};
-export default Log;
+  )
+}
+export default Log
 
 const handleChangeChatLog = (targetIndex: number, text: string) => {
-  const hs = homeStore.getState();
+  const hs = homeStore.getState()
 
   const newChatLog = hs.chatLog.map((m, i) => {
-    return i === targetIndex ? { role: m.role, content: text } : m;
-  });
+    return i === targetIndex ? { role: m.role, content: text } : m
+  })
 
-  homeStore.setState({ chatLog: newChatLog });
-};
+  homeStore.setState({ chatLog: newChatLog })
+}
 
 const handleChangeCodeLog = (targetIndex: number, text: string) => {
-  const hs = homeStore.getState();
+  const hs = homeStore.getState()
 
   const newCodeLog = hs.codeLog.map((m, i) => {
-    return i === targetIndex ? { role: m.role, content: text } : m;
-  });
+    return i === targetIndex ? { role: m.role, content: text } : m
+  })
 
-  homeStore.setState({ chatLog: newCodeLog });
-};
+  homeStore.setState({ chatLog: newCodeLog })
+}

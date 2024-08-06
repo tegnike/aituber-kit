@@ -74,82 +74,82 @@
 //   });
 // }
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { Message } from '../messages/messages';
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { Message } from '../messages/messages'
 
 export async function getGoogleChatResponse(
   messages: Message[],
   apiKey: string,
-  model: string,
+  model: string
 ) {
-  const { history, systemMessage } = processMessages(messages);
+  const { history, systemMessage } = processMessages(messages)
 
-  const genAI = new GoogleGenerativeAI(apiKey);
+  const genAI = new GoogleGenerativeAI(apiKey)
   const chatModel = genAI.getGenerativeModel({
     model: model,
     systemInstruction: systemMessage,
-  });
+  })
 
-  const chat = chatModel.startChat({ history });
+  const chat = chatModel.startChat({ history })
 
-  const lastMessage = messages[messages.length - 1].content;
+  const lastMessage = messages[messages.length - 1].content
   const result = await chat.sendMessage(
-    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text,
-  );
+    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text
+  )
 
-  const response = await result.response;
-  const text = response.text();
+  const response = await result.response
+  const text = response.text()
 
-  return { text };
+  return { text }
 }
 
 export async function getGoogleChatResponseStream(
   messages: Message[],
   apiKey: string,
-  model: string,
+  model: string
 ) {
-  const { history, systemMessage } = processMessages(messages);
+  const { history, systemMessage } = processMessages(messages)
 
-  const genAI = new GoogleGenerativeAI(apiKey);
+  const genAI = new GoogleGenerativeAI(apiKey)
   const chatModel = genAI.getGenerativeModel({
     model: model,
     systemInstruction: systemMessage,
-  });
+  })
 
-  const chat = chatModel.startChat({ history });
+  const chat = chatModel.startChat({ history })
 
-  const lastMessage = messages[messages.length - 1].content;
+  const lastMessage = messages[messages.length - 1].content
   const result = await chat.sendMessageStream(
-    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text,
-  );
+    typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text
+  )
 
   const stream = new ReadableStream({
     async start(controller) {
-      let text = '';
+      let text = ''
       for await (const chunk of result.stream) {
-        const chunkText = chunk.text();
-        text += chunkText;
-        controller.enqueue(chunkText);
+        const chunkText = chunk.text()
+        text += chunkText
+        controller.enqueue(chunkText)
       }
-      controller.close();
+      controller.close()
     },
-  });
+  })
 
-  return stream;
+  return stream
 }
 
 function processMessages(messages: Message[]) {
-  let systemMessage = '';
+  let systemMessage = ''
   const history = messages
     .filter((message, index) => {
       if (message.role === 'system') {
         systemMessage =
           typeof message.content === 'string'
             ? message.content
-            : message.content[0].text;
-        return false;
+            : message.content[0].text
+        return false
       }
-      return index === 0 ? message.role === 'user' : true;
+      return index === 0 ? message.role === 'user' : true
     })
     .map((message) => {
       return {
@@ -162,8 +162,8 @@ function processMessages(messages: Message[]) {
                 : message.content[0].text,
           },
         ],
-      };
-    });
+      }
+    })
 
-  return { history, systemMessage };
+  return { history, systemMessage }
 }

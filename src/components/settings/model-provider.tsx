@@ -1,24 +1,24 @@
-import { useTranslation } from 'react-i18next';
-import homeStore from '@/features/stores/home';
-import menuStore from '@/features/stores/menu';
-import settingsStore from '@/features/stores/settings';
-import { Link } from '../link';
+import { useTranslation } from 'react-i18next'
+import homeStore from '@/features/stores/home'
+import menuStore from '@/features/stores/menu'
+import settingsStore from '@/features/stores/settings'
+import { Link } from '../link'
 
 const ModelProvider = () => {
-  const openAiKey = settingsStore((s) => s.openAiKey);
-  const anthropicKey = settingsStore((s) => s.anthropicKey);
-  const googleKey = settingsStore((s) => s.googleKey);
-  const groqKey = settingsStore((s) => s.groqKey);
-  const difyKey = settingsStore((s) => s.difyKey);
+  const openAiKey = settingsStore((s) => s.openAiKey)
+  const anthropicKey = settingsStore((s) => s.anthropicKey)
+  const googleKey = settingsStore((s) => s.googleKey)
+  const groqKey = settingsStore((s) => s.groqKey)
+  const difyKey = settingsStore((s) => s.difyKey)
 
-  const selectAIService = settingsStore((s) => s.selectAIService);
-  const selectAIModel = settingsStore((s) => s.selectAIModel);
-  const localLlmUrl = settingsStore((s) => s.localLlmUrl);
+  const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const localLlmUrl = settingsStore((s) => s.localLlmUrl)
 
-  const difyUrl = settingsStore((s) => s.difyUrl);
-  const difyConversationId = settingsStore((s) => s.difyConversationId);
+  const difyUrl = settingsStore((s) => s.difyUrl)
+  const difyConversationId = settingsStore((s) => s.difyConversationId)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
@@ -29,7 +29,7 @@ const ModelProvider = () => {
     groq: 'gemma-7b-it',
     localLlm: '',
     dify: '',
-  };
+  }
 
   return (
     <div className="my-40">
@@ -41,27 +41,27 @@ const ModelProvider = () => {
           className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
           value={selectAIService}
           onChange={(e) => {
-            const newService = e.target.value as keyof typeof defaultModels;
+            const newService = e.target.value as keyof typeof defaultModels
 
             settingsStore.setState({
               selectAIService: newService,
-            });
+            })
 
             if (newService !== 'openai') {
-              homeStore.setState({ modalImage: '' });
-              menuStore.setState({ showWebcam: false });
+              homeStore.setState({ modalImage: '' })
+              menuStore.setState({ showWebcam: false })
 
               if (e.target.value !== 'anthropic') {
                 settingsStore.setState({
                   conversationContinuityMode: false,
-                });
+                })
               }
             }
 
             // 選択したAIサービスに基づいてデフォルトモデルを設定する
             settingsStore.setState({
               selectAIModel: defaultModels[newService],
-            });
+            })
           }}
         >
           <option value="openai">OpenAI</option>
@@ -105,16 +105,16 @@ const ModelProvider = () => {
                   className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                   value={selectAIModel}
                   onChange={(e) => {
-                    const model = e.target.value;
-                    settingsStore.setState({ selectAIModel: model });
+                    const model = e.target.value
+                    settingsStore.setState({ selectAIModel: model })
 
                     if (
                       model !== 'gpt-4' &&
                       model !== 'gpt-4-turbo' &&
                       model !== 'gpt-4-o-mini'
                     ) {
-                      homeStore.setState({ modalImage: '' });
-                      menuStore.setState({ showWebcam: false });
+                      homeStore.setState({ modalImage: '' })
+                      menuStore.setState({ showWebcam: false })
                     }
                   }}
                 >
@@ -125,7 +125,7 @@ const ModelProvider = () => {
                 </select>
               </div>
             </div>
-          );
+          )
         } else if (selectAIService === 'anthropic') {
           return (
             <div className="my-24">
@@ -174,7 +174,7 @@ const ModelProvider = () => {
                 </select>
               </div>
             </div>
-          );
+          )
         } else if (selectAIService === 'google') {
           return (
             <div className="my-24">
@@ -220,7 +220,7 @@ const ModelProvider = () => {
                 </select>
               </div>
             </div>
-          );
+          )
         } else if (selectAIService === 'groq') {
           return (
             <div className="my-24">
@@ -264,7 +264,7 @@ const ModelProvider = () => {
                 </select>
               </div>
             </div>
-          );
+          )
         } else if (selectAIService === 'localLlm') {
           return (
             <div className="my-24">
@@ -309,7 +309,7 @@ const ModelProvider = () => {
                 }
               />
             </div>
-          );
+          )
         } else if (selectAIService === 'dify') {
           return (
             <div className="my-24">
@@ -342,10 +342,10 @@ const ModelProvider = () => {
                 />
               </div>
             </div>
-          );
+          )
         }
       })()}
     </div>
-  );
-};
-export default ModelProvider;
+  )
+}
+export default ModelProvider

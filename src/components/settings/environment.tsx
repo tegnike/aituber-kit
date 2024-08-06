@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 
-import menuStore from '@/features/stores/menu';
-import { TextButton } from '../textButton';
+import menuStore from '@/features/stores/menu'
+import { TextButton } from '../textButton'
 
 const Environment = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <div className="my-40">
@@ -14,8 +14,8 @@ const Environment = () => {
       <div className="my-8">
         <TextButton
           onClick={() => {
-            const { fileInput } = menuStore.getState();
-            fileInput?.click();
+            const { fileInput } = menuStore.getState()
+            fileInput?.click()
           }}
         >
           {t('OpenVRM')}
@@ -27,14 +27,14 @@ const Environment = () => {
       <div className="my-8">
         <TextButton
           onClick={() => {
-            const { bgFileInput } = menuStore.getState();
-            bgFileInput?.click();
+            const { bgFileInput } = menuStore.getState()
+            bgFileInput?.click()
           }}
         >
           {t('ChangeBackgroundImage')}
         </TextButton>
       </div>
     </div>
-  );
-};
-export default Environment;
+  )
+}
+export default Environment

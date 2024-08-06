@@ -1,58 +1,58 @@
-import i18n from 'i18next';
-import { useEffect, useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import i18n from 'i18next'
+import { useEffect, useState } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
 
-import homeStore from '@/features/stores/home';
-import settingsStore from '@/features/stores/settings';
-import { IconButton } from './iconButton';
-import { Link } from './link';
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { IconButton } from './iconButton'
+import { Link } from './link'
 import {
   VoiceLanguage,
   isLanguageSupported,
-} from '@/features/constants/settings';
+} from '@/features/constants/settings'
 
 export const Introduction = () => {
-  const dontShowIntroduction = homeStore((s) => s.dontShowIntroduction);
-  const selectLanguage = settingsStore((s) => s.selectLanguage);
+  const dontShowIntroduction = homeStore((s) => s.dontShowIntroduction)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
 
-  const [showIntroduction, setShowIntroduction] = useState(false);
-  const [opened, setOpened] = useState(true);
+  const [showIntroduction, setShowIntroduction] = useState(false)
+  const [opened, setOpened] = useState(true)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   useEffect(() => {
     // wait for local storage to be fully initialized
     // to prevent a flash of <Introduction />
-    setShowIntroduction(!homeStore.getState().dontShowIntroduction);
-  }, [dontShowIntroduction]);
+    setShowIntroduction(!homeStore.getState().dontShowIntroduction)
+  }, [dontShowIntroduction])
 
   const updateLanguage = () => {
-    console.log('i18n.language', i18n.language);
+    console.log('i18n.language', i18n.language)
 
-    let languageCode = i18n.language;
+    let languageCode = i18n.language
 
     const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
       switch (selectLanguage) {
         case 'ja':
-          return 'ja-JP';
+          return 'ja-JP'
         case 'en':
-          return 'en-US';
+          return 'en-US'
         case 'zh':
-          return 'zh-TW';
+          return 'zh-TW'
         case 'zh-TW':
-          return 'zh-TW';
+          return 'zh-TW'
         case 'ko':
-          return 'ko-KR';
+          return 'ko-KR'
         default:
-          return 'ja-JP';
+          return 'ja-JP'
       }
-    };
+    }
 
     settingsStore.setState({
       selectLanguage: isLanguageSupported(languageCode) ? languageCode : 'ja',
       selectVoiceLanguage: getVoiceLanguageCode(languageCode),
-    });
-  };
+    })
+  }
 
   return showIntroduction && opened ? (
     <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
@@ -61,8 +61,8 @@ export const Introduction = () => {
           iconName="24/Close"
           isProcessing={false}
           onClick={() => {
-            setOpened(false);
-            updateLanguage();
+            setOpened(false)
+            updateLanguage()
           }}
           className="absolute top-8 right-8 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
         ></IconButton>
@@ -137,8 +137,8 @@ export const Introduction = () => {
               onChange={(e) => {
                 homeStore.setState({
                   dontShowIntroduction: e.target.checked,
-                });
-                updateLanguage();
+                })
+                updateLanguage()
               }}
               className="mr-8"
             />
@@ -149,8 +149,8 @@ export const Introduction = () => {
         <div className="my-24">
           <button
             onClick={() => {
-              setOpened(false);
-              updateLanguage();
+              setOpened(false)
+              updateLanguage()
             }}
             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
           >
@@ -168,5 +168,5 @@ export const Introduction = () => {
         )}
       </div>
     </div>
-  ) : null;
-};
+  ) : null
+}

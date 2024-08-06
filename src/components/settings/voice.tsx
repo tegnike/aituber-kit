@@ -1,38 +1,38 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 
 import {
   PRESET_A,
   PRESET_B,
   PRESET_C,
   PRESET_D,
-} from '@/features/constants/koeiroParam';
-import { AIVoice } from '@/features/constants/settings';
-import { testVoice } from '@/features/messages/speakCharacter';
-import settingsStore from '@/features/stores/settings';
-import { Link } from '../link';
-import { TextButton } from '../textButton';
-import speakers from '../speakers.json';
+} from '@/features/constants/koeiroParam'
+import { AIVoice } from '@/features/constants/settings'
+import { testVoice } from '@/features/messages/speakCharacter'
+import settingsStore from '@/features/stores/settings'
+import { Link } from '../link'
+import { TextButton } from '../textButton'
+import speakers from '../speakers.json'
 
 const Voice = () => {
-  const koeiromapKey = settingsStore((s) => s.koeiromapKey);
-  const elevenlabsApiKey = settingsStore((s) => s.elevenlabsApiKey);
+  const koeiromapKey = settingsStore((s) => s.koeiromapKey)
+  const elevenlabsApiKey = settingsStore((s) => s.elevenlabsApiKey)
 
-  const selectVoice = settingsStore((s) => s.selectVoice);
-  const koeiroParam = settingsStore((s) => s.koeiroParam);
-  const googleTtsType = settingsStore((s) => s.googleTtsType);
-  const voicevoxSpeaker = settingsStore((s) => s.voicevoxSpeaker);
+  const selectVoice = settingsStore((s) => s.selectVoice)
+  const koeiroParam = settingsStore((s) => s.koeiroParam)
+  const googleTtsType = settingsStore((s) => s.googleTtsType)
+  const voicevoxSpeaker = settingsStore((s) => s.voicevoxSpeaker)
   const stylebertvits2ServerUrl = settingsStore(
-    (s) => s.stylebertvits2ServerUrl,
-  );
-  const stylebertvits2ModelId = settingsStore((s) => s.stylebertvits2ModelId);
-  const stylebertvits2Style = settingsStore((s) => s.stylebertvits2Style);
-  const gsviTtsServerUrl = settingsStore((s) => s.gsviTtsServerUrl);
-  const gsviTtsModelId = settingsStore((s) => s.gsviTtsModelId);
-  const gsviTtsBatchSize = settingsStore((s) => s.gsviTtsBatchSize);
-  const gsviTtsSpeechRate = settingsStore((s) => s.gsviTtsSpeechRate);
-  const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId);
+    (s) => s.stylebertvits2ServerUrl
+  )
+  const stylebertvits2ModelId = settingsStore((s) => s.stylebertvits2ModelId)
+  const stylebertvits2Style = settingsStore((s) => s.stylebertvits2Style)
+  const gsviTtsServerUrl = settingsStore((s) => s.gsviTtsServerUrl)
+  const gsviTtsModelId = settingsStore((s) => s.gsviTtsModelId)
+  const gsviTtsBatchSize = settingsStore((s) => s.gsviTtsBatchSize)
+  const gsviTtsSpeechRate = settingsStore((s) => s.gsviTtsSpeechRate)
+  const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId)
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <div className="my-40">
@@ -150,7 +150,7 @@ const Voice = () => {
                           speakerX: Number(e.target.value),
                           speakerY: koeiroParam.speakerY,
                         },
-                      });
+                      })
                     }}
                   ></input>
                   <div className="select-none">y : {koeiroParam.speakerY}</div>
@@ -167,12 +167,12 @@ const Voice = () => {
                           speakerX: koeiroParam.speakerX,
                           speakerY: Number(e.target.value),
                         },
-                      });
+                      })
                     }}
                   ></input>
                 </div>
               </>
-            );
+            )
           } else if (selectVoice === 'voicevox') {
             return (
               <>
@@ -210,7 +210,7 @@ const Voice = () => {
                   </TextButton>
                 </div>
               </>
-            );
+            )
           } else if (selectVoice === 'google') {
             return (
               <>
@@ -244,7 +244,7 @@ const Voice = () => {
                   />
                 </div>
               </>
-            );
+            )
           } else if (selectVoice === 'stylebertvits2') {
             return (
               <>
@@ -307,7 +307,7 @@ const Voice = () => {
                   />
                 </div>
               </>
-            );
+            )
           } else if (selectVoice === 'gsvitts') {
             return (
               <>
@@ -369,7 +369,7 @@ const Voice = () => {
                   />
                 </div>
               </>
-            );
+            )
           } else if (selectVoice === 'elevenlabs') {
             return (
               <>
@@ -420,11 +420,11 @@ const Voice = () => {
                   />
                 </div>
               </>
-            );
+            )
           }
         })()}
       </div>
     </div>
-  );
-};
-export default Voice;
+  )
+}
+export default Voice

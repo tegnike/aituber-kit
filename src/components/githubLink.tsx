@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import { buildUrl } from '@/utils/buildUrl';
+import Image from 'next/image'
+import { buildUrl } from '@/utils/buildUrl'
 
 export const GitHubLink = () => {
   return (
@@ -21,5 +21,5 @@ export const GitHubLink = () => {
         </div>
       </a>
     </div>
-  );
-};
+  )
+}

@@ -1,15 +1,15 @@
-import { reduceTalkStyle } from '@/utils/reduceTalkStyle';
-import { koeiromapV0 } from '../koeiromap/koeiromap';
-import { TalkStyle } from '../messages/messages';
+import { reduceTalkStyle } from '@/utils/reduceTalkStyle'
+import { koeiromapV0 } from '../koeiromap/koeiromap'
+import { TalkStyle } from '../messages/messages'
 
 export async function synthesizeVoice(
   message: string,
   speakerX: number,
   speakerY: number,
-  style: TalkStyle,
+  style: TalkStyle
 ) {
-  const koeiroRes = await koeiromapV0(message, speakerX, speakerY, style);
-  return { audio: koeiroRes.audio };
+  const koeiroRes = await koeiromapV0(message, speakerX, speakerY, style)
+  return { audio: koeiroRes.audio }
 }
 
 export async function synthesizeVoiceApi(
@@ -17,10 +17,10 @@ export async function synthesizeVoiceApi(
   speakerX: number,
   speakerY: number,
   style: TalkStyle,
-  apiKey: string,
+  apiKey: string
 ) {
   // Free向けに感情を制限する
-  const reducedStyle = reduceTalkStyle(style);
+  const reducedStyle = reduceTalkStyle(style)
 
   const body = {
     message: message,
@@ -29,7 +29,7 @@ export async function synthesizeVoiceApi(
     style: reducedStyle,
     apiKey: apiKey,
     type: 'koeiromap',
-  };
+  }
 
   const res = await fetch('/api/tts', {
     method: 'POST',
@@ -37,8 +37,8 @@ export async function synthesizeVoiceApi(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
-  });
-  const data = (await res.json()) as any;
+  })
+  const data = (await res.json()) as any
 
-  return { audio: data.audio };
+  return { audio: data.audio }
 }

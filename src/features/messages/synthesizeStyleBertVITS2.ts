@@ -1,11 +1,11 @@
-import { Language } from '@/features/constants/settings';
+import { Language } from '@/features/constants/settings'
 
 export async function synthesizeStyleBertVITS2Api(
   message: string,
   stylebertvits2ServerUrl: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
-  selectLanguage: Language,
+  selectLanguage: Language
 ) {
   const body = {
     message: message,
@@ -14,7 +14,7 @@ export async function synthesizeStyleBertVITS2Api(
     stylebertvits2Style: stylebertvits2Style,
     selectLanguage: selectLanguage,
     type: 'stylebertvits2',
-  };
+  }
 
   try {
     const res = await fetch('/api/stylebertvits2', {
@@ -23,17 +23,17 @@ export async function synthesizeStyleBertVITS2Api(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
-    });
+    })
 
     if (!res.ok) {
       throw new Error(
-        `APIからの応答が異常です。ステータスコード: ${res.status}`,
-      );
+        `APIからの応答が異常です。ステータスコード: ${res.status}`
+      )
     }
 
-    const buffer = await res.arrayBuffer();
-    return buffer;
+    const buffer = await res.arrayBuffer()
+    return buffer
   } catch (error: any) {
-    throw new Error(`APIリクエスト中にエラーが発生しました: ${error.message}`);
+    throw new Error(`APIリクエスト中にエラーが発生しました: ${error.message}`)
   }
 }
