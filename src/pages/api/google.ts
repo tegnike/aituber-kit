@@ -42,7 +42,7 @@
 //     });
 
 //     const result = await chat.sendMessageStream(lastMessage);
-  
+
 //     for await (const chunk of result.stream) {
 //       const text = await chunk.text();
 //       console.log(text);

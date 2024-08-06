@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       issue_number:
-        description: 'Issue Number'
+        description: "Issue Number"
         required: true
       issue_title:
-        description: 'Issue Title'
+        description: "Issue Title"
         required: true
       issue_body:
-        description: 'Issue Body'
+        description: "Issue Body"
         required: true
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install dependencies
         run: |

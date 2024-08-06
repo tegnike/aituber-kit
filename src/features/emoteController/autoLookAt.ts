@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { VRM } from "@pixiv/three-vrm";
+import * as THREE from 'three'
+import { VRM } from '@pixiv/three-vrm'
 /**
  * 目線を制御するクラス
  *
@@ -7,11 +7,11 @@ import { VRM } from "@pixiv/three-vrm";
  * より目線を大きく動かしたい場合はここに実装する。
  */
 export class AutoLookAt {
-  private _lookAtTarget: THREE.Object3D;
+  private _lookAtTarget: THREE.Object3D
   constructor(vrm: VRM, camera: THREE.Object3D) {
-    this._lookAtTarget = new THREE.Object3D();
-    camera.add(this._lookAtTarget);
+    this._lookAtTarget = new THREE.Object3D()
+    camera.add(this._lookAtTarget)
 
-    if (vrm.lookAt) vrm.lookAt.target = this._lookAtTarget;
+    if (vrm.lookAt) vrm.lookAt.target = this._lookAtTarget
   }
 }

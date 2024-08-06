@@ -1,17 +1,17 @@
-import { IconButton } from "./iconButton";
-import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { IconButton } from './iconButton'
+import { useTranslation } from 'react-i18next'
+import { useState, useEffect } from 'react'
 
 type Props = {
-  userMessage: string;
-  isMicRecording: boolean;
-  isChatProcessing: boolean;
+  userMessage: string
+  isMicRecording: boolean
+  isChatProcessing: boolean
   onChangeUserMessage: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
-};
+  ) => void
+  onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void
+}
 
 export const MessageInput = ({
   userMessage,
@@ -21,33 +21,42 @@ export const MessageInput = ({
   onClickMicButton,
   onClickSendButton,
 }: Props) => {
-  const { t } = useTranslation();
-  const [rows, setRows] = useState(1);
-  const [loadingDots, setLoadingDots] = useState('');
+  const { t } = useTranslation()
+  const [rows, setRows] = useState(1)
+  const [loadingDots, setLoadingDots] = useState('')
 
   useEffect(() => {
     if (isChatProcessing) {
       const interval = setInterval(() => {
-        setLoadingDots(prev => {
-          if (prev === '...') return '';
-          return prev + '.';
-        });
-      }, 200);
+        setLoadingDots((prev) => {
+          if (prev === '...') return ''
+          return prev + '.'
+        })
+      }, 200)
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval)
     }
-  }, [isChatProcessing]);
+  }, [isChatProcessing])
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (!event.nativeEvent.isComposing && event.key === 'Enter' && !event.shiftKey && userMessage.trim() !== '') {
-      onClickSendButton(event as unknown as React.MouseEvent<HTMLButtonElement>);
-      setRows(1);
+    if (
+      !event.nativeEvent.isComposing &&
+      event.key === 'Enter' &&
+      !event.shiftKey &&
+      userMessage.trim() !== ''
+    ) {
+      onClickSendButton(event as unknown as React.MouseEvent<HTMLButtonElement>)
+      setRows(1)
     } else if (event.key === 'Enter' && event.shiftKey) {
-      setRows(rows + 1);
-    } else if (event.key === 'Backspace' && rows > 1 && userMessage.slice(-1) === '\n') {
-      setRows(rows - 1);
+      setRows(rows + 1)
+    } else if (
+      event.key === 'Backspace' &&
+      rows > 1 &&
+      userMessage.slice(-1) === '\n'
+    ) {
+      setRows(rows - 1)
     }
-  };
+  }
 
   return (
     <div className="absolute bottom-0 z-20 w-screen">
@@ -62,7 +71,11 @@ export const MessageInput = ({
               onClick={onClickMicButton}
             />
             <textarea
-              placeholder={isChatProcessing ? `${t('AnswerGenerating')}${loadingDots}` : t('EnterYourQuestion')}
+              placeholder={
+                isChatProcessing
+                  ? `${t('AnswerGenerating')}${loadingDots}`
+                  : t('EnterYourQuestion')
+              }
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
               disabled={isChatProcessing}
@@ -83,5 +96,5 @@ export const MessageInput = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
