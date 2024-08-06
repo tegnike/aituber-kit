@@ -91,10 +91,12 @@ export async function getGoogleChatResponse(
   })
 
   const chat = chatModel.startChat({ history })
+
   const lastMessage = messages[messages.length - 1].content
   const result = await chat.sendMessage(
     typeof lastMessage === 'string' ? lastMessage : lastMessage[0].text
   )
+
   const response = await result.response
   const text = response.text()
 
@@ -148,17 +150,19 @@ function processMessages(messages: Message[]) {
       }
       return index === 0 ? message.role === 'user' : true
     })
-    .map((message) => ({
-      role: message.role === 'assistant' ? 'model' : message.role,
-      parts: [
-        {
-          text:
-            typeof message.content === 'string'
-              ? message.content
-              : message.content[0].text,
-        },
-      ],
-    }))
+    .map((message) => {
+      return {
+        role: message.role === 'assistant' ? 'model' : message.role,
+        parts: [
+          {
+            text:
+              typeof message.content === 'string'
+                ? message.content
+                : message.content[0].text,
+          },
+        ],
+      }
+    })
 
   return { history, systemMessage }
 }
