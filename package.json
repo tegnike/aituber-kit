@@ -9,6 +9,8 @@
     "start": "next build && next start",
     "export": "next export",
     "lint": "next lint",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write .",
     "electron": "wait-on http://localhost:3000 && electron ./electron.mjs",
     "desktop": "NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=\"\" run-p dev electron"
   },
@@ -45,6 +47,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.5",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.40",
     "prettier": "^3.3.3",
