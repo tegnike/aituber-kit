@@ -173,9 +173,12 @@ npm run dev
   <a href="https://github.com/mo0013" title="mo0013">
     <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
   </a>
+  <a href="https://github.com/tsubouchi" title="tsubouchi">
+    <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
+  </a>
 </p>
 
-另外還有2位私人贊助者
+以及多位匿名贊助者
 
 ## 使用協議
 
