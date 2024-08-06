@@ -1,14 +1,8 @@
 name: Lint and Format
 
 on:
-  push:
-    branches:
-      - develop
   pull_request:
-    branches:
-      - develop
-    types: [closed]
-  workflow_dispatch:
+    types: [opened, synchronize]
 
 jobs:
   lint-and-format:
@@ -27,17 +21,19 @@ jobs:
         run: npm install
 
       - name: Run ESLint
-        run: npm run lint
+        run: |
+          npm run lint
+          git add .
+          if ! git diff --exit-code; then
+            echo "ESLint changes detected. Please commit the changes."
+            exit 1
+          fi
 
       - name: Run Prettier
-        run: npm run format
-
-      - name: Commit changes
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          npm run format
           git add .
-          git diff-index --quiet HEAD || git commit -m 'chore: auto format and lint fixes'
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          if ! git diff --exit-code; then
+            echo "Prettier changes detected. Please commit the changes."
+            exit 1
+          fi
