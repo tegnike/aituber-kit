@@ -172,9 +172,12 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/mo0013" title="mo0013">
     <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
   </a>
+  <a href="https://github.com/tsubouchi" title="tsubouchi">
+    <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
+  </a>
 </p>
 
-Plus 2 private sponsors
+Plus multiple private sponsors
 
 ## Usage Agreement
 
