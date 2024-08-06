@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
-    "dev-https": "next dev --turbo --experimental-https",
+    "dev": "next dev",
+    "dev-https": "next dev --experimental-https",
     "build": "next build",
     "start": "next build && next start",
     "export": "next export",
@@ -21,7 +21,8 @@
     "@google/generative-ai": "^0.11.3",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
-    "@pixiv/three-vrm": "^3.0.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@pixiv/three-vrm": "^1.0.9",
     "axios": "^1.6.8",
     "groq-sdk": "^0.3.3",
     "i18next": "^23.6.0",
@@ -30,7 +31,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^13.3.1",
-    "three": "^0.167.1",
+    "three": "^0.151.0",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
@@ -40,7 +41,7 @@
     "@types/node": "^22.1.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@types/three": "^0.167.1",
+    "@types/three": "0.151.0",
     "autoprefixer": "^10.4.14",
     "electron": "^30.0.8",
     "electron-is-dev": "^3.0.1",
