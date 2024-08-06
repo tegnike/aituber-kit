@@ -1,4 +1,4 @@
-import getConfig from "next/config";
+import getConfig from 'next/config'
 
 /**
  * github pagesに公開時にアセットを読み込めるようにするため、
@@ -8,8 +8,8 @@ export function buildUrl(path: string): string {
   const {
     publicRuntimeConfig,
   }: {
-    publicRuntimeConfig: { root: string };
-  } = getConfig();
+    publicRuntimeConfig: { root: string }
+  } = getConfig()
 
-  return publicRuntimeConfig.root + path;
+  return publicRuntimeConfig.root + path
 }

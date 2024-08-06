@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import { Viewer } from "./viewer";
+import { createContext } from 'react'
+import { Viewer } from './viewer'
 
-const viewer = new Viewer();
+const viewer = new Viewer()
 
-export const ViewerContext = createContext({ viewer });
+export const ViewerContext = createContext({ viewer })

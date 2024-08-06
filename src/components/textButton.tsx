@@ -1,5 +1,5 @@
-import { ButtonHTMLAttributes } from "react";
-type Props = ButtonHTMLAttributes<HTMLButtonElement>;
+import { ButtonHTMLAttributes } from 'react'
+type Props = ButtonHTMLAttributes<HTMLButtonElement>
 
 export const TextButton = (props: Props) => {
   return (
@@ -9,5 +9,5 @@ export const TextButton = (props: Props) => {
     >
       {props.children}
     </button>
-  );
-};
+  )
+}

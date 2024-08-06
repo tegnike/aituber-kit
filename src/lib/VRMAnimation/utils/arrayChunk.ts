@@ -6,25 +6,25 @@
  * ```
  */
 export function arrayChunk<T>(array: ArrayLike<T>, every: number): T[][] {
-  const N = array.length;
+  const N = array.length
 
-  const ret: T[][] = [];
+  const ret: T[][] = []
 
-  let current: T[] = [];
-  let remaining = 0;
+  let current: T[] = []
+  let remaining = 0
 
-  for (let i = 0; i < N; i ++) {
-    const el = array[i];
+  for (let i = 0; i < N; i++) {
+    const el = array[i]
 
     if (remaining <= 0) {
-      remaining = every;
-      current = [];
-      ret.push(current);
+      remaining = every
+      current = []
+      ret.push(current)
     }
 
-    current.push(el);
-    remaining--;
+    current.push(el)
+    remaining--
   }
 
-  return ret;
+  return ret
 }

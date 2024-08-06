@@ -1,10 +1,10 @@
-import { KnownIconType } from "@charcoal-ui/icons";
-import { ButtonHTMLAttributes } from "react";
+import { KnownIconType } from '@charcoal-ui/icons'
+import { ButtonHTMLAttributes } from 'react'
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  iconName: keyof KnownIconType;
-  isProcessing: boolean;
-  label?: string;
-};
+  iconName: keyof KnownIconType
+  isProcessing: boolean
+  label?: string
+}
 
 export const IconButton = ({
   iconName,
@@ -20,11 +20,11 @@ export const IconButton = ({
       `}
     >
       {isProcessing ? (
-        <pixiv-icon name={"24/Dot"} scale="1"></pixiv-icon>
+        <pixiv-icon name={'24/Dot'} scale="1"></pixiv-icon>
       ) : (
         <pixiv-icon name={iconName} scale="1"></pixiv-icon>
       )}
       {label && <div className="mx-4 font-bold">{label}</div>}
     </button>
-  );
-};
+  )
+}

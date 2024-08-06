@@ -1,11 +1,11 @@
-import { MessageInput } from "@/components/messageInput";
-import { useState, useEffect, useCallback } from "react";
+import { MessageInput } from '@/components/messageInput'
+import { useState, useEffect, useCallback } from 'react'
 
 type Props = {
-  isChatProcessing: boolean;
-  onChatProcessStart: (text: string) => void;
-  selectVoiceLanguage: string;
-};
+  isChatProcessing: boolean
+  onChatProcessStart: (text: string) => void
+  selectVoiceLanguage: string
+}
 
 /**
  * テキスト入力と音声入力を提供する
@@ -16,74 +16,74 @@ type Props = {
 export const MessageInputContainer = ({
   isChatProcessing,
   onChatProcessStart,
-  selectVoiceLanguage
+  selectVoiceLanguage,
 }: Props) => {
-  const [userMessage, setUserMessage] = useState("");
+  const [userMessage, setUserMessage] = useState('')
   const [speechRecognition, setSpeechRecognition] =
-    useState<SpeechRecognition>();
-  const [isMicRecording, setIsMicRecording] = useState(false);
+    useState<SpeechRecognition>()
+  const [isMicRecording, setIsMicRecording] = useState(false)
 
   // 音声認識の結果を処理する
   const handleRecognitionResult = useCallback(
     (event: SpeechRecognitionEvent) => {
-      const text = event.results[0][0].transcript;
-      setUserMessage(text);
+      const text = event.results[0][0].transcript
+      setUserMessage(text)
 
       // 発言の終了時
       if (event.results[0].isFinal) {
-        setUserMessage(text);
+        setUserMessage(text)
         // 返答文の生成を開始
-        onChatProcessStart(text);
+        onChatProcessStart(text)
       }
     },
     [onChatProcessStart]
-  );
+  )
 
   // 無音が続いた場合も終了する
   const handleRecognitionEnd = useCallback(() => {
-    setIsMicRecording(false);
-  }, []);
+    setIsMicRecording(false)
+  }, [])
 
   const handleClickMicButton = useCallback(() => {
     if (isMicRecording) {
-      speechRecognition?.abort();
-      setIsMicRecording(false);
+      speechRecognition?.abort()
+      setIsMicRecording(false)
 
-      return;
+      return
     }
 
-    speechRecognition?.start();
-    setIsMicRecording(true);
-  }, [isMicRecording, speechRecognition]);
+    speechRecognition?.start()
+    setIsMicRecording(true)
+  }, [isMicRecording, speechRecognition])
 
   const handleClickSendButton = useCallback(() => {
-    onChatProcessStart(userMessage);
-  }, [onChatProcessStart, userMessage]);
+    onChatProcessStart(userMessage)
+  }, [onChatProcessStart, userMessage])
 
   useEffect(() => {
     const SpeechRecognition =
-      window.webkitSpeechRecognition || window.SpeechRecognition;
+      window.webkitSpeechRecognition || window.SpeechRecognition
 
     // FirefoxなどSpeechRecognition非対応環境対策
     if (!SpeechRecognition) {
-      return;
+      return
     }
-    const recognition = new SpeechRecognition();
-    recognition.lang = selectVoiceLanguage;
-    recognition.interimResults = true; // 認識の途中結果を返す
-    recognition.continuous = false; // 発言の終了時に認識を終了する
+    const recognition = new SpeechRecognition()
+    recognition.lang = selectVoiceLanguage
+    recognition.interimResults = true // 認識の途中結果を返す
+    recognition.continuous = false // 発言の終了時に認識を終了する
 
-    recognition.addEventListener("result", handleRecognitionResult);
-    recognition.addEventListener("end", handleRecognitionEnd);
+    recognition.addEventListener('result', handleRecognitionResult)
+    recognition.addEventListener('end', handleRecognitionEnd)
 
-    setSpeechRecognition(recognition);
-  }, [handleRecognitionResult, handleRecognitionEnd, selectVoiceLanguage]);
+    setSpeechRecognition(recognition)
+  }, [handleRecognitionResult, handleRecognitionEnd, selectVoiceLanguage])
 
   useEffect(() => {
     if (!isChatProcessing) {
-      setUserMessage("");
+      setUserMessage('')
     }
-  }, [isChatProcessing]);
+  }, [isChatProcessing])
 
   return (
     <MessageInput
@@ -94,5 +94,5 @@ export const MessageInputContainer = ({
       onClickMicButton={handleClickMicButton}
       onClickSendButton={handleClickSendButton}
     />
-  );
-};
+  )
+}

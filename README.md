@@ -43,6 +43,7 @@ cd aituber-kit
 ```
 
 3. パッケージインストールします。
+
 ```bash
 npm install
 ```
@@ -189,14 +190,18 @@ npm run dev
 新しい言語をプロジェクトに追加するには、以下の手順に従ってください。
 
 1. **言語ファイルの追加**:
+
    - `locales` ディレクトリに新しい言語のディレクトリを作成し、その中に `translation.json` ファイルを作成します。
    - 例: `locales/fr/translation.json` (フランス語の場合)
 
 2. **翻訳の追加**:
+
    - `translation.json` ファイルに、既存の言語ファイルを参考にして翻訳を追加します。
 
 3. **言語設定の更新**:
+
    - `src/lib/i18n.js` ファイルを開き、`resources` オブジェクトに新しい言語を追加します。
+
    ```javascript:src/lib/i18n.js
    resources: {
      ...,
@@ -207,7 +212,9 @@ npm run dev
    ```
 
 4. **言語選択オプションの追加**:
+
    - ユーザーが言語を選択できるように、UIの適切な部分（例えば設定画面の言語選択ドロップダウン）に新しい言語オプションを追加します。
+
    ```typescript:src/components/settings.tsx
    <select>
      ...,
