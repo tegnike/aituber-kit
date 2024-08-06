@@ -117,7 +117,9 @@ export const Menu = () => {
               iconName="24/Camera"
               isProcessing={false}
               onClick={() =>
-                menuStore(({ showWebcam }) => ({ showWebcam: !showWebcam }))
+                menuStore.setState(({ showWebcam }) => ({
+                  showWebcam: !showWebcam,
+                }))
               }
               disabled={
                 !(

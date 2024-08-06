@@ -109,8 +109,8 @@ const ModelProvider = () => {
                     settingsStore.setState({ selectAIModel: model })
 
                     if (
-                      model !== 'gpt-4' &&
                       model !== 'gpt-4-turbo' &&
+                      model !== 'gpt-4-o' &&
                       model !== 'gpt-4-o-mini'
                     ) {
                       homeStore.setState({ modalImage: '' })
