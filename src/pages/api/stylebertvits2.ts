@@ -5,6 +5,23 @@ type Data = {
   error?: string
 }
 
+const getLanguageCode = (selectLanguage: string): string => {
+  switch (selectLanguage) {
+    case 'ja':
+      return 'JP'
+    case 'en':
+      return 'EN'
+    case 'zh':
+      return 'ZH'
+    case 'zh-TW':
+      return 'ZH'
+    case 'ko':
+      return 'EN'
+    default:
+      return 'JP'
+  }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -14,7 +31,7 @@ export default async function handler(
   const stylebertvits2ModelId = body.stylebertvits2ModelId
   const stylebertvits2ServerUrl = body.stylebertvits2ServerUrl
   const stylebertvits2Style = body.stylebertvits2Style
-  const selectLanguage = body.selectLanguage
+  const selectLanguage = getLanguageCode(body.selectLanguage)
 
   const queryParams = new URLSearchParams({
     text: message,

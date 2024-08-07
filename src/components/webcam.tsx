@@ -1,17 +1,10 @@
-import { IconButton } from './iconButton'
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 
-type Props = {
-  onChangeModalImage: (image: string) => void
-  triggerShutter: boolean
-  showWebcam: boolean
-}
+import homeStore from '@/features/stores/home'
+import { IconButton } from './iconButton'
 
-export const Webcam: React.FC<Props> = ({
-  onChangeModalImage,
-  triggerShutter,
-  showWebcam,
-}: Props) => {
+export const Webcam = () => {
+  const triggerShutter = homeStore((s) => s.triggerShutter)
   const [selectedDevice, setSelectedDevice] = useState<string>('')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
   const [showRotateButton, setShowRotateButton] = useState(true)
@@ -89,8 +82,17 @@ export const Webcam: React.FC<Props> = ({
     if (!ctx) return
     ctx.drawImage(videoRef.current!, 0, 0)
     const data = canvas.toDataURL('image/png')
-    onChangeModalImage(data)
-  }, [onChangeModalImage])
+
+    if (data !== '') {
+      console.log('capture')
+      homeStore.setState({
+        modalImage: data,
+        triggerShutter: false, // シャッターをリセット
+      })
+    } else {
+      homeStore.setState({ modalImage: '' })
+    }
+  }, [])
 
   useEffect(() => {
     if (triggerShutter) {

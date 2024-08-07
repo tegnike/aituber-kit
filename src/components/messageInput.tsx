@@ -1,11 +1,12 @@
-import { IconButton } from './iconButton'
-import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import homeStore from '@/features/stores/home'
+import { IconButton } from './iconButton'
 
 type Props = {
   userMessage: string
   isMicRecording: boolean
-  isChatProcessing: boolean
   onChangeUserMessage: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void
@@ -16,17 +17,18 @@ type Props = {
 export const MessageInput = ({
   userMessage,
   isMicRecording,
-  isChatProcessing,
   onChangeUserMessage,
   onClickMicButton,
   onClickSendButton,
 }: Props) => {
-  const { t } = useTranslation()
+  const chatProcessing = homeStore((s) => s.chatProcessing)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
 
+  const { t } = useTranslation()
+
   useEffect(() => {
-    if (isChatProcessing) {
+    if (chatProcessing) {
       const interval = setInterval(() => {
         setLoadingDots((prev) => {
           if (prev === '...') return ''
@@ -36,11 +38,12 @@ export const MessageInput = ({
 
       return () => clearInterval(interval)
     }
-  }, [isChatProcessing])
+  }, [chatProcessing])
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
       !event.nativeEvent.isComposing &&
+      event.keyCode !== 229 && // IME (Input Method Editor)
       event.key === 'Enter' &&
       !event.shiftKey &&
       userMessage.trim() !== ''
@@ -67,20 +70,20 @@ export const MessageInput = ({
               iconName="24/Microphone"
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
               isProcessing={isMicRecording}
-              disabled={isChatProcessing}
+              disabled={chatProcessing}
               onClick={onClickMicButton}
             />
             <textarea
               placeholder={
-                isChatProcessing
+                chatProcessing
                   ? `${t('AnswerGenerating')}${loadingDots}`
                   : t('EnterYourQuestion')
               }
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
-              disabled={isChatProcessing}
+              disabled={chatProcessing}
               className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"
-              value={isChatProcessing ? '' : userMessage}
+              value={chatProcessing ? '' : userMessage}
               rows={rows}
               style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}
             ></textarea>
@@ -88,8 +91,8 @@ export const MessageInput = ({
             <IconButton
               iconName="24/Send"
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-              isProcessing={isChatProcessing}
-              disabled={isChatProcessing || !userMessage}
+              isProcessing={chatProcessing}
+              disabled={chatProcessing || !userMessage}
               onClick={onClickSendButton}
             />
           </div>

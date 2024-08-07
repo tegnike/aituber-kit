@@ -1,11 +1,13 @@
-import { wait } from '@/utils/wait'
-import { synthesizeVoiceApi } from './synthesizeVoice'
-import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
-import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
-import { Viewer } from '../vrmViewer/viewer'
-import { Screenplay, Talk } from './messages'
+import { Language } from '@/features/constants/settings'
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 import englishToJapanese from '@/utils/englishToJapanese.json'
+import { wait } from '@/utils/wait'
+import { Screenplay, Talk } from './messages'
+import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
+import { synthesizeVoiceApi } from './synthesizeVoice'
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
+import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 
 interface EnglishToJapanese {
   [key: string]: string
@@ -22,28 +24,13 @@ const createSpeakCharacter = () => {
 
   return (
     screenplay: Screenplay,
-    viewer: Viewer,
-    selectVoice: string,
-    selectLanguage: string,
-    koeiroApiKey: string,
-    voicevoxSpeaker: string,
-    googleTtsType: string,
-    stylebertvits2ServerUrl: string,
-    stylebertvits2ModelId: string,
-    stylebertvits2Style: string,
-    gsviTtsServerUrl: string,
-    gsviTtsModelId: string,
-    gsviTtsBatchSize: number,
-    gsviTtsSpeechRate: number,
-    elevenlabsApiKey: string,
-    elevenlabsVoiceId: string,
-    changeEnglishToJapanese: boolean,
     onStart?: () => void,
     onComplete?: () => void
   ) => {
+    const ss = settingsStore.getState()
     onStart?.()
 
-    if (changeEnglishToJapanese && selectLanguage === 'JP') {
+    if (ss.changeEnglishToJapanese && ss.selectLanguage === 'ja') {
       // 英単語を日本語で読み上げる
       screenplay.talk.message = convertEnglishToJapaneseReading(
         screenplay.talk.message
@@ -56,46 +43,46 @@ const createSpeakCharacter = () => {
         await wait(1000 - (now - lastTime))
       }
       let buffer
-      if (selectVoice == 'koeiromap') {
-        buffer = await fetchAudio(screenplay.talk, koeiroApiKey).catch(
+      if (ss.selectVoice == 'koeiromap') {
+        buffer = await fetchAudio(screenplay.talk, ss.koeiromapKey).catch(
           () => null
         )
-      } else if (selectVoice == 'voicevox') {
+      } else if (ss.selectVoice == 'voicevox') {
         buffer = await fetchAudioVoiceVox(
           screenplay.talk,
-          voicevoxSpeaker
+          ss.voicevoxSpeaker
         ).catch(() => null)
-      } else if (selectVoice == 'google') {
+      } else if (ss.selectVoice == 'google') {
         const googleTtsTypeByLang = getGoogleTtsType(
-          googleTtsType,
-          selectLanguage
+          ss.googleTtsType,
+          ss.selectLanguage
         )
         buffer = await fetchAudioGoogle(
           screenplay.talk,
           googleTtsTypeByLang
         ).catch(() => null)
-      } else if (selectVoice == 'stylebertvits2') {
+      } else if (ss.selectVoice == 'stylebertvits2') {
         buffer = await fetchAudioStyleBertVITS2(
           screenplay.talk,
-          stylebertvits2ServerUrl,
-          stylebertvits2ModelId,
-          stylebertvits2Style,
-          selectLanguage
+          ss.stylebertvits2ServerUrl,
+          ss.stylebertvits2ModelId,
+          ss.stylebertvits2Style,
+          ss.selectLanguage
         ).catch(() => null)
-      } else if (selectVoice == 'gsvitts') {
+      } else if (ss.selectVoice == 'gsvitts') {
         buffer = await fetchAudioVoiceGSVIApi(
           screenplay.talk,
-          gsviTtsServerUrl,
-          gsviTtsModelId,
-          gsviTtsBatchSize,
-          gsviTtsSpeechRate
+          ss.gsviTtsServerUrl,
+          ss.gsviTtsModelId,
+          ss.gsviTtsBatchSize,
+          ss.gsviTtsSpeechRate
         ).catch(() => null)
-      } else if (selectVoice == 'elevenlabs') {
+      } else if (ss.selectVoice == 'elevenlabs') {
         buffer = await fetchAudioElevenlabs(
           screenplay.talk,
-          elevenlabsApiKey,
-          elevenlabsVoiceId,
-          selectLanguage
+          ss.elevenlabsApiKey,
+          ss.elevenlabsVoiceId,
+          ss.selectLanguage
         ).catch(() => null)
       }
       lastTime = Date.now()
@@ -108,7 +95,8 @@ const createSpeakCharacter = () => {
         if (!audioBuffer) {
           return
         }
-        return viewer.model?.speak(audioBuffer, screenplay)
+        const hs = homeStore.getState()
+        return hs.viewer.model?.speak(audioBuffer, screenplay)
       }
     )
     prevSpeakPromise.then(() => {
@@ -131,30 +119,19 @@ function convertEnglishToJapaneseReading(text: string): string {
 
 function getGoogleTtsType(
   googleTtsType: string,
-  selectLanguage: string
+  selectLanguage: Language
 ): string {
-  if (googleTtsType && googleTtsType !== '') {
-    return googleTtsType
-  }
-
-  const storedData = window.localStorage.getItem('chatVRMParams')
-  if (storedData) {
-    const params = JSON.parse(storedData)
-    const langCode = params.selectLanguage
-    if (langCode) {
-      return getGppgleTtsType(langCode) || ''
-    }
-  }
-  return ''
+  if (googleTtsType) return googleTtsType
+  return getGppgleTtsType(selectLanguage) || ''
 }
 
-function getGppgleTtsType(selectLanguage: string): string {
+function getGppgleTtsType(selectLanguage: Language): string {
   switch (selectLanguage) {
-    case 'JP':
+    case 'ja':
       return 'ja-JP-Standard-B'
-    case 'EN':
+    case 'en':
       return 'en-US-Neural2-F'
-    case 'ZH':
+    case 'zh':
       return 'cmn-TW-Standard-A'
     default:
       return 'en-US-Neural2-F'
@@ -241,7 +218,7 @@ export const fetchAudioStyleBertVITS2 = async (
   stylebertvits2ServerUrl: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
-  selectLanguage: string
+  selectLanguage: Language
 ): Promise<ArrayBuffer> => {
   const ttsVoice = await synthesizeStyleBertVITS2Api(
     talk.message,
@@ -253,7 +230,7 @@ export const fetchAudioStyleBertVITS2 = async (
   return ttsVoice
 }
 
-export const testVoice = async (viewer: Viewer, voicevoxSpeaker: string) => {
+export const testVoice = async (voicevoxSpeaker: string) => {
   const talk: Talk = {
     message: 'ボイスボックスを使用します',
     speakerX: 0,
@@ -268,7 +245,8 @@ export const testVoice = async (viewer: Viewer, voicevoxSpeaker: string) => {
       expression: 'neutral',
       talk: talk,
     }
-    await viewer.model?.speak(buffer, screenplay)
+    const hs = homeStore.getState()
+    await hs.viewer.model?.speak(buffer, screenplay)
   }
 }
 
@@ -308,7 +286,7 @@ export const fetchAudioElevenlabs = async (
   talk: Talk,
   apiKey: string,
   voiceId: string,
-  language: string
+  language: Language
 ): Promise<ArrayBuffer> => {
   const ttsVoice = await synthesizeVoiceElevenlabsApi(
     apiKey,

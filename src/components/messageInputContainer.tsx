@@ -1,10 +1,11 @@
-import { MessageInput } from '@/components/messageInput'
 import { useState, useEffect, useCallback } from 'react'
 
+import { MessageInput } from '@/components/messageInput'
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+
 type Props = {
-  isChatProcessing: boolean
   onChatProcessStart: (text: string) => void
-  selectVoiceLanguage: string
 }
 
 /**
@@ -13,11 +14,8 @@ type Props = {
  * 音声認識の完了時は自動で送信し、返答文の生成中は入力を無効化する
  *
  */
-export const MessageInputContainer = ({
-  isChatProcessing,
-  onChatProcessStart,
-  selectVoiceLanguage,
-}: Props) => {
+export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
+  const chatProcessing = homeStore((s) => s.chatProcessing)
   const [userMessage, setUserMessage] = useState('')
   const [speechRecognition, setSpeechRecognition] =
     useState<SpeechRecognition>()
@@ -68,8 +66,9 @@ export const MessageInputContainer = ({
     if (!SpeechRecognition) {
       return
     }
+    const ss = settingsStore.getState()
     const recognition = new SpeechRecognition()
-    recognition.lang = selectVoiceLanguage
+    recognition.lang = ss.selectVoiceLanguage
     recognition.interimResults = true // 認識の途中結果を返す
     recognition.continuous = false // 発言の終了時に認識を終了する
 
@@ -77,18 +76,17 @@ export const MessageInputContainer = ({
     recognition.addEventListener('end', handleRecognitionEnd)
 
     setSpeechRecognition(recognition)
-  }, [handleRecognitionResult, handleRecognitionEnd, selectVoiceLanguage])
+  }, [handleRecognitionResult, handleRecognitionEnd])
 
   useEffect(() => {
-    if (!isChatProcessing) {
+    if (!chatProcessing) {
       setUserMessage('')
     }
-  }, [isChatProcessing])
+  }, [chatProcessing])
 
   return (
     <MessageInput
       userMessage={userMessage}
-      isChatProcessing={isChatProcessing}
       isMicRecording={isMicRecording}
       onChangeUserMessage={(e) => setUserMessage(e.target.value)}
       onClickMicButton={handleClickMicButton}

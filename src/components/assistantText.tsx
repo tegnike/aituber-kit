@@ -1,12 +1,9 @@
-export const AssistantText = ({
-  message,
-  characterName,
-  showCharacterName,
-}: {
-  message: string
-  characterName: string
-  showCharacterName: boolean
-}) => {
+import settingsStore from '@/features/stores/settings'
+
+export const AssistantText = ({ message }: { message: string }) => {
+  const characterName = settingsStore((s) => s.characterName)
+  const showCharacterName = settingsStore((s) => s.showCharacterName)
+
   return (
     <div className="absolute bottom-0 left-0 md:mb-104 mb-[80px] w-full">
       <div className="mx-auto max-w-4xl w-full p-16">

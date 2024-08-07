@@ -1,62 +1,60 @@
-import { useState, useCallback } from 'react'
-import { Link } from './link'
-import { IconButton } from './iconButton'
 import i18n from 'i18next'
+import { useEffect, useState } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 
-type Props = {
-  dontShowIntroduction: boolean
-  onChangeDontShowIntroduction: (dontShowIntroduction: boolean) => void
-  selectLanguage: string
-  setSelectLanguage: (show: string) => void
-  setSelectVoiceLanguage: (show: string) => void
-}
-export const Introduction = ({
-  dontShowIntroduction,
-  onChangeDontShowIntroduction,
-  selectLanguage,
-  setSelectLanguage,
-  setSelectVoiceLanguage,
-}: Props) => {
-  const [opened, setOpened] = useState(true)
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { IconButton } from './iconButton'
+import { Link } from './link'
+import {
+  VoiceLanguage,
+  isLanguageSupported,
+} from '@/features/constants/settings'
 
-  const handleDontShowIntroductionChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeDontShowIntroduction(event.target.checked)
-      updateLanguage()
-    },
-    [onChangeDontShowIntroduction]
-  )
+export const Introduction = () => {
+  const dontShowIntroduction = homeStore((s) => s.dontShowIntroduction)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
+
+  const [showIntroduction, setShowIntroduction] = useState(false)
+  const [opened, setOpened] = useState(true)
 
   const { t } = useTranslation()
 
+  useEffect(() => {
+    // wait for local storage to be fully initialized
+    // to prevent a flash of <Introduction />
+    setShowIntroduction(!homeStore.getState().dontShowIntroduction)
+  }, [dontShowIntroduction])
+
   const updateLanguage = () => {
     console.log('i18n.language', i18n.language)
-    // selectLanguage: "JP"
-    let languageCode = i18n.language.toUpperCase()
-    languageCode = languageCode == 'JA' ? 'JP' : languageCode
-    setSelectLanguage(languageCode)
-    setSelectVoiceLanguage(getVoiceLanguageCode(languageCode))
-  }
 
-  const getVoiceLanguageCode = (selectLanguage: string) => {
-    switch (selectLanguage) {
-      case 'JP':
-        return 'ja-JP'
-      case 'EN':
-        return 'en-US'
-      case 'ZH':
-        return 'zh-TW'
-      case 'zh-TW':
-        return 'zh-TW'
-      case 'KO':
-        return 'ko-KR'
-      default:
-        return 'ja-JP'
+    let languageCode = i18n.language
+
+    const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
+      switch (selectLanguage) {
+        case 'ja':
+          return 'ja-JP'
+        case 'en':
+          return 'en-US'
+        case 'zh':
+          return 'zh-TW'
+        case 'zh-TW':
+          return 'zh-TW'
+        case 'ko':
+          return 'ko-KR'
+        default:
+          return 'ja-JP'
+      }
     }
+
+    settingsStore.setState({
+      selectLanguage: isLanguageSupported(languageCode) ? languageCode : 'ja',
+      selectVoiceLanguage: getVoiceLanguageCode(languageCode),
+    })
   }
 
-  return opened ? (
+  return showIntroduction && opened ? (
     <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
       <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
         <IconButton
@@ -136,7 +134,12 @@ export const Introduction = ({
             <input
               type="checkbox"
               checked={dontShowIntroduction}
-              onChange={handleDontShowIntroductionChange}
+              onChange={(e) => {
+                homeStore.setState({
+                  dontShowIntroduction: e.target.checked,
+                })
+                updateLanguage()
+              }}
               className="mr-8"
             />
             <span>{t('DontShowIntroductionNextTime')}</span>
@@ -155,7 +158,7 @@ export const Introduction = ({
           </button>
         </div>
 
-        {selectLanguage === 'JP' && (
+        {selectLanguage === 'ja' && (
           <div className="my-24">
             <p>
               You can select the language from the settings. English and
