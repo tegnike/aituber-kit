@@ -5,6 +5,9 @@
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
+</p>
+<p align="center">
+   <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
@@ -22,7 +25,7 @@
 
 1. AI 캐릭터와 대화
 2. AITuber 스트리밍
-3. 외부 통합 모드
+3. 외부 통합 모드（베타 버전）
 
 아래 기사에 자세한 사용 방법을 작성했습니다.
 
@@ -98,10 +101,11 @@ npm run dev
 4. YouTube에서 스트리밍을 시작하고 캐릭터가 댓글에 반응하는지 확인합니다.
 5. 대화 연속 모드를 켜면 댓글이 없어도 AI가 스스로 발언할 수 있습니다.
 
-## 외부 통합 모드
+## 외부 통합 모드（베타 버전）
 
 - WebSocket을 통해 서버 앱에 메시지를 보내고 응답을 받을 수 있습니다.
 - 위의 두 가지와 달리 프론트엔드 앱 내에서 완료되지 않으므로 난이도가 약간 높습니다.
+- ⚠ 이 모드는 지속적으로 유지되지 않으므로 작동하지 않을 수 있습니다.
 
 ### 사용 방법
 

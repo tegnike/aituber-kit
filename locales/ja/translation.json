@@ -1,6 +1,6 @@
 {
   "Settings": "設定",
-  "ExternalConnectionMode": "外部連携モード（WebSocket）",
+  "ExternalConnectionMode": "外部連携モード（WebSocket, β版）",
   "YoutubeMode": "YouTubeモード",
   "YoutubeInfo": "先頭が「#」のコメントは無視されます。",
   "YoutubeAPIKey": "YouTube API キー",
