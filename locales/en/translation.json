@@ -1,6 +1,6 @@
 {
   "Settings": "Settings",
-  "ExternalConnectionMode": "External Connection Mode (WebSocket)",
+  "ExternalConnectionMode": "External Connection Mode (WebSocket, β version)",
   "YoutubeMode": "YouTube Mode",
   "YoutubeInfo": "The first character of the comment is '#', it is ignored.",
   "YoutubeAPIKey": "YouTube API Key",

@@ -25,7 +25,7 @@ This repository has the following 3 features:
 
 1. Conversation with AI character
 2. AITuber streaming
-3. External integration mode
+3. External integration mode (β version)
 
 I've written a detailed usage guide in the article below:
 
@@ -101,10 +101,11 @@ npm run dev
 4. Start streaming on YouTube and confirm that the character reacts to comments.
 5. Turn on the conversation continuity mode to be able to speak even if there are no comments.
 
-## External Integration Mode
+## External Integration Mode (β version)
 
 - You can send messages to the server app via WebSocket and get a response.
 - Unlike the above two, it does not complete within the front-end app, so the difficulty level is a bit higher.
+- ⚠ This mode is not maintained, so it may not work.
 
 ### Usage
 

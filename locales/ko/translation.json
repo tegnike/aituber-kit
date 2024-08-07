@@ -1,6 +1,6 @@
 {
   "Settings": "설정",
-  "ExternalConnectionMode": "외부 연동 모드 (WebSocket)",
+  "ExternalConnectionMode": "외부 연동 모드 (WebSocket, 베타 버전)",
   "YoutubeMode": "YouTube 모드",
   "YoutubeInfo": "처음에 '#'이 있는 댓글은 무시됩니다.",
   "YoutubeAPIKey": "YouTube API 키",
