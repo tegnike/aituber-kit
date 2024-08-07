@@ -77,10 +77,7 @@ const useYoutube = async ({ handleSendChat }: Params) => {
   useEffect(() => {
     console.log('chatProcessingCount:', chatProcessingCount)
     fetchAndProcessCommentsCallback()
-  }, [
-    chatProcessingCount,
-    conversationContinuityMode,
-  ])
+  }, [chatProcessingCount, conversationContinuityMode])
 
   // fetchAndProcessCommentsCallback は依存配列に含めない
   useEffect(() => {
@@ -89,9 +86,6 @@ const useYoutube = async ({ handleSendChat }: Params) => {
     setTimeout(() => {
       fetchAndProcessCommentsCallback()
     }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS)
-  }, [
-    youtubeNoCommentCount,
-    conversationContinuityMode,
-  ])
+  }, [youtubeNoCommentCount, conversationContinuityMode])
 }
 export default useYoutube
