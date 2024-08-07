@@ -1,10 +1,10 @@
-import { buildUrl } from "@/utils/buildUrl";
-import Head from "next/head";
+import { buildUrl } from '@/utils/buildUrl'
+import Head from 'next/head'
 export const Meta = () => {
-  const title = "AITuberキット";
+  const title = 'AITuberKit'
   const description =
-    "WebブラウザだけでAIキャラと会話を楽しむことができ、Youtubeで配信することもできます。";
-  const imageUrl = "https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166";
+    'Webブラウザだけで誰でも簡単にAIキャラと会話したり、Youtubeで配信したりできます。'
+  const imageUrl = '/ogp.png'
   return (
     <Head>
       <title>{title}</title>
@@ -17,5 +17,5 @@ export const Meta = () => {
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />
     </Head>
-  );
-};
+  )
+}

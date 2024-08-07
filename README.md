@@ -6,6 +6,9 @@
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
+</p>
+<p align="center">
+   <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
@@ -22,7 +25,7 @@
 
 1. AIキャラとの対話
 2. AITuber配信
-3. 外部連携モード
+3. 外部連携モード（β版）
 
 下記の記事に詳細な使用方法を記載しました。
 
@@ -43,6 +46,7 @@ cd aituber-kit
 ```
 
 3. パッケージインストールします。
+
 ```bash
 npm install
 ```
@@ -97,10 +101,11 @@ npm run dev
 4. Youtubeの配信を開始し、キャラクターがコメントに反応するのを確認します。
 5. 会話継続モードをONにすると、コメントが無いときにAIが自ら発言することができます。
 
-## 外部連携モード
+## 外部連携モード（β版）
 
 - WebSocketでサーバーアプリにメッセージを送信して、レスポンスを取得することができます。
 - 上記2つと異なり、フロントアプリで完結しないため少し難易度が高いです。
+- ⚠ メンテナンスできていないため、動かない可能性があります。
 
 ### 使用方法
 
@@ -172,9 +177,12 @@ npm run dev
   <a href="https://github.com/mo0013" title="mo0013">
     <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
   </a>
+  <a href="https://github.com/tsubouchi" title="tsubouchi">
+    <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
+  </a>
 </p>
 
-他、プライベートスポンサー 2 名
+他、プライベートスポンサー 複数名
 
 ## 利用規約
 
@@ -189,14 +197,18 @@ npm run dev
 新しい言語をプロジェクトに追加するには、以下の手順に従ってください。
 
 1. **言語ファイルの追加**:
+
    - `locales` ディレクトリに新しい言語のディレクトリを作成し、その中に `translation.json` ファイルを作成します。
    - 例: `locales/fr/translation.json` (フランス語の場合)
 
 2. **翻訳の追加**:
+
    - `translation.json` ファイルに、既存の言語ファイルを参考にして翻訳を追加します。
 
 3. **言語設定の更新**:
+
    - `src/lib/i18n.js` ファイルを開き、`resources` オブジェクトに新しい言語を追加します。
+
    ```javascript:src/lib/i18n.js
    resources: {
      ...,
@@ -207,7 +219,9 @@ npm run dev
    ```
 
 4. **言語選択オプションの追加**:
+
    - ユーザーが言語を選択できるように、UIの適切な部分（例えば設定画面の言語選択ドロップダウン）に新しい言語オプションを追加します。
+
    ```typescript:src/components/settings.tsx
    <select>
      ...,

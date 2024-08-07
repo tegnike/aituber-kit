@@ -1,9 +1,13 @@
 <h1 align="center">
   <img style="max-width: 100%;" src="./logo.png">
 </h1>
+
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
+</p>
+<p align="center">
+   <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
@@ -20,8 +24,8 @@
 This repository has the following 3 features:
 
 1. Conversation with AI character
-2. AITuber streaming 
-3. External integration mode
+2. AITuber streaming
+3. External integration mode (β version)
 
 I've written a detailed usage guide in the article below:
 
@@ -97,10 +101,11 @@ npm run dev
 4. Start streaming on YouTube and confirm that the character reacts to comments.
 5. Turn on the conversation continuity mode to be able to speak even if there are no comments.
 
-## External Integration Mode
+## External Integration Mode (β version)
 
 - You can send messages to the server app via WebSocket and get a response.
 - Unlike the above two, it does not complete within the front-end app, so the difficulty level is a bit higher.
+- ⚠ This mode is not maintained, so it may not work.
 
 ### Usage
 
@@ -172,9 +177,12 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/mo0013" title="mo0013">
     <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
   </a>
+  <a href="https://github.com/tsubouchi" title="tsubouchi">
+    <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
+  </a>
 </p>
 
-Plus 2 private sponsors
+Plus multiple private sponsors
 
 ## Usage Agreement
 
@@ -189,14 +197,18 @@ Plus 2 private sponsors
 To add a new language to the project, follow these steps:
 
 1. **Add Language File**:
+
    - Create a new language directory in the `locales` directory and create a `translation.json` file inside it.
    - Example: `locales/fr/translation.json` (for French)
 
 2. **Add Translations**:
+
    - Add translations to the `translation.json` file, referring to existing language files.
 
 3. **Update Language Settings**:
+
    - Open the `src/lib/i18n.js` file and add the new language to the `resources` object.
+
    ```javascript:src/lib/i18n.js
    resources: {
      ...,
@@ -207,7 +219,9 @@ To add a new language to the project, follow these steps:
    ```
 
 4. **Add Language Selection Option**:
+
    - Add a new language option to the appropriate part of the UI (e.g., language selection dropdown in the settings screen) so users can select the language.
+
    ```typescript:src/components/settings.tsx
    <select>
      ...,

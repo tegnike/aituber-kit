@@ -1,98 +1,104 @@
-import { IconButton } from "./iconButton";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 
-type Props = {
-    onChangeModalImage: (image: string) => void;
-    triggerShutter: boolean;
-    showWebcam: boolean;
-};
+import homeStore from '@/features/stores/home'
+import { IconButton } from './iconButton'
 
-export const Webcam: React.FC<Props> = ({
-    onChangeModalImage,
-    triggerShutter,
-    showWebcam,
-}: Props) => {
-  const [selectedDevice, setSelectedDevice] = useState<string>("");
-  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [showRotateButton, setShowRotateButton] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
+export const Webcam = () => {
+  const triggerShutter = homeStore((s) => s.triggerShutter)
+  const [selectedDevice, setSelectedDevice] = useState<string>('')
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
+  const [showRotateButton, setShowRotateButton] = useState(true)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   const refreshDevices = useCallback(async () => {
-    if (!navigator.mediaDevices) return;
+    if (!navigator.mediaDevices) return
     try {
-      const latestDevices = (await navigator.mediaDevices.enumerateDevices())
-        .filter((d) => d.kind === "videoinput");
-      setDevices(latestDevices);
-      setShowRotateButton(latestDevices.length > 1);
+      const latestDevices = (
+        await navigator.mediaDevices.enumerateDevices()
+      ).filter((d) => d.kind === 'videoinput')
+      setDevices(latestDevices)
+      setShowRotateButton(latestDevices.length > 1)
       if (latestDevices.length > 0 && !selectedDevice) {
-        setSelectedDevice(latestDevices[0].deviceId);
+        setSelectedDevice(latestDevices[0].deviceId)
       }
     } catch (error) {
-      console.error("Error refreshing devices:", error);
+      console.error('Error refreshing devices:', error)
     }
-  }, [selectedDevice]);
+  }, [selectedDevice])
 
   useEffect(() => {
-    refreshDevices();
+    refreshDevices()
     const handleDeviceChange = () => {
-      refreshDevices();
-    };
-    navigator.mediaDevices?.addEventListener("devicechange", handleDeviceChange);
+      refreshDevices()
+    }
+    navigator.mediaDevices?.addEventListener('devicechange', handleDeviceChange)
     return () => {
-      navigator.mediaDevices?.removeEventListener("devicechange", handleDeviceChange);
-    };
-  }, [refreshDevices]);
+      navigator.mediaDevices?.removeEventListener(
+        'devicechange',
+        handleDeviceChange
+      )
+    }
+  }, [refreshDevices])
 
   const initializeCamera = useCallback(async () => {
-    if (!navigator.mediaDevices || !selectedDevice) return;
+    if (!navigator.mediaDevices || !selectedDevice) return
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
-        video: { deviceId: { exact: selectedDevice } }
-      });
+        video: { deviceId: { exact: selectedDevice } },
+      })
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+        videoRef.current.srcObject = stream
       }
     } catch (e) {
-      console.error("Error initializing camera:", e);
+      console.error('Error initializing camera:', e)
     }
-  }, [selectedDevice]);
+  }, [selectedDevice])
 
   useEffect(() => {
-    initializeCamera();
-  }, [initializeCamera]);
+    initializeCamera()
+  }, [initializeCamera])
 
   const handleRotateCamera = useCallback(() => {
-    if (!navigator.mediaDevices || devices.length < 2) return;
-    const currentIndex = devices.findIndex((d) => d.deviceId === selectedDevice);
-    const nextIndex = (currentIndex + 1) % devices.length;
-    const newDevice = devices[nextIndex].deviceId;
-    console.log("Current device:", selectedDevice);
-    console.log("New device:", newDevice);
-    setSelectedDevice(newDevice);
-  }, [devices, selectedDevice]);
+    if (!navigator.mediaDevices || devices.length < 2) return
+    const currentIndex = devices.findIndex((d) => d.deviceId === selectedDevice)
+    const nextIndex = (currentIndex + 1) % devices.length
+    const newDevice = devices[nextIndex].deviceId
+    console.log('Current device:', selectedDevice)
+    console.log('New device:', newDevice)
+    setSelectedDevice(newDevice)
+  }, [devices, selectedDevice])
 
   useEffect(() => {
-    console.log("Selected device changed:", selectedDevice);
-    initializeCamera();
-  }, [selectedDevice, initializeCamera]);
+    console.log('Selected device changed:', selectedDevice)
+    initializeCamera()
+  }, [selectedDevice, initializeCamera])
 
   const handleCapture = useCallback(() => {
-    const canvas = document.createElement("canvas");
-    canvas.width = videoRef.current!.videoWidth;
-    canvas.height = videoRef.current!.videoHeight;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(videoRef.current!, 0, 0);
-    const data = canvas.toDataURL("image/png");
-    onChangeModalImage(data);
-  }, [onChangeModalImage]);
+    const canvas = document.createElement('canvas')
+    canvas.width = videoRef.current!.videoWidth
+    canvas.height = videoRef.current!.videoHeight
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    ctx.drawImage(videoRef.current!, 0, 0)
+    const data = canvas.toDataURL('image/png')
+
+    if (data !== '') {
+      console.log('capture')
+      homeStore.setState({
+        modalImage: data,
+        triggerShutter: false, // シャッターをリセット
+      })
+    } else {
+      homeStore.setState({ modalImage: '' })
+    }
+  }, [])
 
   useEffect(() => {
     if (triggerShutter) {
-      handleCapture();
+      handleCapture()
     }
-  }, [triggerShutter, handleCapture]);
+  }, [triggerShutter, handleCapture])
 
   return (
     <div className="row-span-1 flex justify-end max-h-[40vh]">
@@ -126,5 +132,5 @@ export const Webcam: React.FC<Props> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

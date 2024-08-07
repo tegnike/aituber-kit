@@ -1,77 +1,85 @@
-import { Message } from "../messages/messages";
+import { Message } from '../messages/messages'
 
-export async function getGroqChatResponse(messages: Message[], apiKey: string, model: string) {
-  const response = await fetch("/api/groq", {
-    method: "POST",
+export async function getGroqChatResponse(
+  messages: Message[],
+  apiKey: string,
+  model: string
+) {
+  const response = await fetch('/api/groq', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ messages, apiKey, model }),
-  });
+  })
 
-  const data = await response.json();
-  return data;
+  const data = await response.json()
+  return data
 }
 
-export async function getGroqChatResponseStream(messages: Message[], apiKey: string, model: string) {
-  const response = await fetch("/api/groq", {
-    method: "POST",
+export async function getGroqChatResponseStream(
+  messages: Message[],
+  apiKey: string,
+  model: string
+) {
+  const response = await fetch('/api/groq', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ messages, apiKey, model, stream: false }),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error("Groq API request failed");
+    throw new Error('Groq API request failed')
   }
 
   if (!response.body) {
-    throw new Error("Groq API response is empty");
+    throw new Error('Groq API response is empty')
   }
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder("utf-8");
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder('utf-8')
 
   return new ReadableStream({
     async start(controller) {
-      let buffer = '';
+      let buffer = ''
 
       while (true) {
-        const { done, value } = await reader.read();
+        const { done, value } = await reader.read()
 
         if (done) {
-          break;
+          break
         }
 
         // const chunk = decoder.decode(value, { stream: true });
         // controller.enqueue(chunk);
 
-        buffer += decoder.decode(value, { stream: true });
+        buffer += decoder.decode(value, { stream: true })
 
         // バッファを処理し、「{"message":」文字列を削除する
-        buffer = buffer.replace(/{"message":\s*"/g, '');
+        buffer = buffer.replace(/{"message":\s*"/g, '')
 
         // バッファが完全なメッセージを含んでいる場合、それを送信する。
         if (buffer.includes('"}')) {
-          const messages = buffer.split('"}');
-          
+          const messages = buffer.split('"}')
+
           for (let i = 0; i < messages.length - 1; i++) {
-            controller.enqueue(messages[i]);
+            controller.enqueue(messages[i])
           }
-          
-          buffer = messages[messages.length - 1];
+
+          buffer = messages[messages.length - 1]
         }
       }
 
-      console.log('buffer', buffer);
+      console.log('buffer', buffer)
 
       // 残りのバッファを処理する。
       if (buffer.length > 0) {
-        controller.enqueue(buffer);
+        controller.enqueue(buffer)
       }
 
-      controller.close();
+      controller.close()
     },
-  });
+  })
 }

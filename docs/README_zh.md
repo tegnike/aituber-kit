@@ -5,6 +5,9 @@
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
+</p>
+<p align="center">
+   <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
@@ -22,7 +25,7 @@
 
 1. 與AI角色對話
 2. AITuber直播
-3. 外部整合模式
+3. 外部整合模式（β版本）
 
 我在下面的文章中寫了詳細的使用指南：
 
@@ -98,10 +101,11 @@ npm run dev
 4. 開始在YouTube上直播並確認角色對評論的反應。
 5. 開啟会話継続模式，在沒有評論時，AI可以自動發言。
 
-## 外部整合模式
+## 外部整合模式（β版本）
 
 - 您可以通過WebSocket向服務器應用程序發送消息並獲得響應。
 - 與上述兩者不同，它不在前端應用程序中完成，因此難度略高。
+- ⚠ 此模式不受支持，可能无法正常运行。
 
 ### 使用方法
 
@@ -173,9 +177,12 @@ npm run dev
   <a href="https://github.com/mo0013" title="mo0013">
     <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
   </a>
+  <a href="https://github.com/tsubouchi" title="tsubouchi">
+    <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
+  </a>
 </p>
 
-另外還有2位私人贊助者
+以及多位匿名贊助者
 
 ## 使用協議
 

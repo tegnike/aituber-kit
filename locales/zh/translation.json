@@ -1,6 +1,6 @@
 {
   "Settings": "設定",
-  "ExternalConnectionMode": "外部連線模式 (WebSocket)",
+  "ExternalConnectionMode": "外部連線模式 (WebSocket, β版本）",
   "YoutubeMode": "YouTube 模式",
   "YoutubeInfo": "YouTube 直播 ID 是直播 ID 而不是頻道 ID",
   "YoutubeAPIKey": "YouTube API 金鑰",
