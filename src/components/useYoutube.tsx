@@ -38,7 +38,8 @@ const useYoutube = async ({ handleSendChat }: Params) => {
       !ss.youtubeLiveId ||
       !ss.youtubeApiKey ||
       hs.chatProcessing ||
-      hs.chatProcessingCount > 0
+      hs.chatProcessingCount > 0 ||
+      !ss.youtubeMode
     ) {
       return
     }
@@ -72,15 +73,16 @@ const useYoutube = async ({ handleSendChat }: Params) => {
     preProcessAIResponse,
   ])
 
+  // fetchAndProcessCommentsCallback は依存配列に含めない
   useEffect(() => {
     console.log('chatProcessingCount:', chatProcessingCount)
     fetchAndProcessCommentsCallback()
   }, [
     chatProcessingCount,
-    fetchAndProcessCommentsCallback,
     conversationContinuityMode,
   ])
 
+  // fetchAndProcessCommentsCallback は依存配列に含めない
   useEffect(() => {
     if (youtubeNoCommentCount < 1) return
     // console.log('youtubeSleepMode:', youtubeSleepMode);
@@ -89,7 +91,6 @@ const useYoutube = async ({ handleSendChat }: Params) => {
     }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS)
   }, [
     youtubeNoCommentCount,
-    fetchAndProcessCommentsCallback,
     conversationContinuityMode,
   ])
 }
