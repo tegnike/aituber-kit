@@ -1,5 +1,9 @@
 {
-  "Settings": "Settings",
+  "Settings": "■ Settings",
+  "AISettings": "■ AI Settings",
+  "YoutubeSettings": "■ YouTube Settings",
+  "VoiceSettings": "■ Voice Settings",
+  "OtherSettings": "■ Other",
   "ExternalConnectionMode": "External Connection Mode (WebSocket, β version)",
   "YoutubeMode": "YouTube Mode",
   "YoutubeInfo": "The first character of the comment is '#', it is ignored.",
@@ -91,7 +95,7 @@
   "ElevenLabsVoiceId": "ElevenLabs Voice ID",
   "ElevenLabsVoiceIdInfo": "Voice ID can be selected from the URL below.",
   "CharacterName": "Character name",
-  "ShowCharacterName": "Display character name",
+  "ShowCharacterName": "Show character name in the answer box",
   "AdvancedSettings": "Advanced Settings",
   "ShowSettingsButton": "Show settings button",
   "ShowSettingsButtonInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) ."
