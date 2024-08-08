@@ -10,6 +10,7 @@ import { CodeLog } from './codeLog'
 import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
+import MarpSlides from './marpSlides' // Added
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
@@ -26,6 +27,15 @@ export const Menu = () => {
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
+
+  const [showMarpSlides, setShowMarpSlides] = useState(false) // Added
+  const [markdownContent, setMarkdownContent] = useState('') // Added
+
+  useEffect(() => {
+    fetch('/slides.md')
+      .then(response => response.text())
+      .then(text => setMarkdownContent(text))
+  }, []) // Added
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +94,7 @@ export const Menu = () => {
   return (
     <>
       <div className="absolute z-10 m-24">
-        <div className="grid md:grid-flow-col gap-[8px]">
+        <div className="grid md:grid-flow-col gap-[8px] mb-[8px]" style={{ width: "max-content"}}>
           <div className="md:order-1 order-2">
             {showSettingsButton && (
               <IconButton
@@ -163,7 +173,15 @@ export const Menu = () => {
               }}
             />
           </div>
+          <div className="order-5">
+            <IconButton
+              iconName="24/FrameEffect"
+              isProcessing={false}
+              onClick={() => setShowMarpSlides((prev) => !prev)}
+            />
+          </div>
         </div>
+        {showMarpSlides && <MarpSlides markdown={markdownContent} />}
       </div>
       {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
