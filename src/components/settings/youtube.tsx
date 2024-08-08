@@ -75,23 +75,23 @@ const YouTube = () => {
                     })
                   }
                 />
-                <div className="my-16 typography-20 font-bold">
-                  {t('ConversationContinuityMode')}
-                </div>
-                <div className="my-8">
-                  {t('ConversationContinuityModeInfo')}
-                </div>
-                <div className="my-8">
-                  {t('ConversationContinuityModeInfo2')}
-                </div>
-                <div className="my-8">
-                  {t('ConversationContinuityModeInfo3')}
-                </div>
-                {conversationContinuityMode ? (
+                <div className="my-24">
+                  <div className="my-16 typography-20 font-bold">
+                    {t('ConversationContinuityMode')}
+                  </div>
+                  <div className="my-8">
+                    {t('ConversationContinuityModeInfo')}
+                  </div>
+                  <div className="my-8">
+                    {t('ConversationContinuityModeInfo2')}
+                  </div>
+                  <div className="mb-16">
+                    {t('ConversationContinuityModeInfo3')}
+                  </div>
                   <TextButton
                     onClick={() =>
                       settingsStore.setState({
-                        conversationContinuityMode: false,
+                        conversationContinuityMode: !conversationContinuityMode,
                       })
                     }
                     disabled={
@@ -99,23 +99,9 @@ const YouTube = () => {
                       selectAIService !== 'anthropic'
                     }
                   >
-                    {t('StatusOn')}
+                    {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}
                   </TextButton>
-                ) : (
-                  <TextButton
-                    onClick={() =>
-                      settingsStore.setState({
-                        conversationContinuityMode: true,
-                      })
-                    }
-                    disabled={
-                      selectAIService !== 'openai' &&
-                      selectAIService !== 'anthropic'
-                    }
-                  >
-                    {t('StatusOff')}
-                  </TextButton>
-                )}
+                </div>
               </>
             )
           }

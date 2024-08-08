@@ -12,6 +12,7 @@ const AdvancedSettings = () => {
     (s) => s.changeEnglishToJapanese
   )
   const showSettingsButton = menuStore((s) => s.showSettingsButton)
+  const showCharacterName = settingsStore((s) => s.showCharacterName)
 
   const { t } = useTranslation()
 
@@ -20,7 +21,7 @@ const AdvancedSettings = () => {
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="flex items-center w-full px-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+            <Disclosure.Button className="flex items-center w-full pr-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
               <div className="flex items-center flex-grow">
                 <span className="typography-20 font-bold mr-8">
                   {t('AdvancedSettings')}
@@ -34,6 +35,20 @@ const AdvancedSettings = () => {
             </Disclosure.Button>
             <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
               <div className="pl-16">
+                <div className="my-16 typography-16 font-bold">
+                  {t('ShowCharacterName')}
+                </div>
+                <div className="my-8">
+                  <TextButton
+                    onClick={() =>
+                      settingsStore.setState((s) => ({
+                        showCharacterName: !s.showCharacterName,
+                      }))
+                    }
+                  >
+                    {showCharacterName ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
                 {selectLanguage === 'ja' && (
                   <div className="my-24">
                     <div className="my-16 typography-16 font-bold">

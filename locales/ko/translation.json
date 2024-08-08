@@ -1,5 +1,9 @@
 {
-  "Settings": "설정",
+  "Settings": "■ 설정",
+  "AISettings": "■ AI 설정",
+  "YoutubeSettings": "■ YouTube 설정",
+  "VoiceSettings": "■ 음성 설정",
+  "OtherSettings": "■ 기타",
   "ExternalConnectionMode": "외부 연동 모드 (WebSocket, 베타 버전)",
   "YoutubeMode": "YouTube 모드",
   "YoutubeInfo": "처음에 '#'이 있는 댓글은 무시됩니다.",
@@ -91,7 +95,7 @@
   "ElevenLabsVoiceId": "ElevenLabs 보이스ID",
   "ElevenLabsVoiceIdInfo": "보이스ID는 아래 URL에서 선택하십시오.",
   "CharacterName": "캐릭터 이름",
-  "ShowCharacterName": "캐릭터 이름 표시",
+  "ShowCharacterName": "답변란에 캐릭터 이름을 표시",
   "AdvancedSettings": "고급 설정",
   "ShowSettingsButton": "설정 버튼 표시",
   "ShowSettingsButtonInfo": "설정 화면은 Cmd + . (Mac) / Ctrl + . (Windows)를 눌러 표시할 수 있습니다."
