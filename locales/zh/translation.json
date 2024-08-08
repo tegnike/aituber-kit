@@ -1,5 +1,9 @@
 {
-  "Settings": "設定",
+  "Settings": "■ 設定",
+  "AISettings": "■ AI 設定",
+  "YoutubeSettings": "■ YouTube 設定",
+  "VoiceSettings": "■ 語音設定",
+  "OtherSettings": "■ 其他",
   "ExternalConnectionMode": "外部連線模式 (WebSocket, β版本）",
   "YoutubeMode": "YouTube 模式",
   "YoutubeInfo": "YouTube 直播 ID 是直播 ID 而不是頻道 ID",
@@ -91,7 +95,7 @@
   "ElevenLabsVoiceId": "ElevenLabs 语音ID",
   "ElevenLabsVoiceIdInfo": "请从下面的URL选择语音ID。",
   "CharacterName": "角色名字",
-  "ShowCharacterName": "角色名字显示",
+  "ShowCharacterName": "在回答框中显示角色名称",
   "AdvancedSettings": "高级设置",
   "ShowSettingsButton": "显示设置按钮",
   "ShowSettingsButtonInfo": "可以通过按 Cmd + . (Mac) / Ctrl + . (Windows) 来显示设置界面。"

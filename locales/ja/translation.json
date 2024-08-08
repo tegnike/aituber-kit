@@ -1,5 +1,9 @@
 {
-  "Settings": "設定",
+  "Settings": "■ 基本設定",
+  "AISettings": "■ AI設定",
+  "YoutubeSettings": "■ YouTube設定",
+  "VoiceSettings": "■ 音声設定",
+  "OtherSettings": "■ その他",
   "ExternalConnectionMode": "外部連携モード（WebSocket, β版）",
   "YoutubeMode": "YouTubeモード",
   "YoutubeInfo": "先頭が「#」のコメントは無視されます。",
@@ -92,7 +96,7 @@
   "ElevenLabsVoiceId": "ElevenLabs ボイスID",
   "ElevenLabsVoiceIdInfo": "ボイスIDは下記のURLから選択してください。",
   "CharacterName": "キャラクター名",
-  "ShowCharacterName": "キャラクター名表示",
+  "ShowCharacterName": "回答欄にキャラクター名を表示する",
   "AdvancedSettings": "詳細設定",
   "ShowSettingsButton": "設定ボタンを表示",
   "ShowSettingsButtonInfo": "設定画面は Cmd + . (Mac) / Ctrl + . (Windows) で表示することができます。"

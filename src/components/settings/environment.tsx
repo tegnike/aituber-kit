@@ -7,20 +7,7 @@ const Environment = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="my-40">
-      <div className="my-16 typography-20 font-bold">
-        {t('CharacterModelLabel')}
-      </div>
-      <div className="my-8">
-        <TextButton
-          onClick={() => {
-            const { fileInput } = menuStore.getState()
-            fileInput?.click()
-          }}
-        >
-          {t('OpenVRM')}
-        </TextButton>
-      </div>
+    <div className="my-24">
       <div className="my-16 typography-20 font-bold">
         {t('BackgroundImage')}
       </div>
