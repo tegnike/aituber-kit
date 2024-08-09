@@ -266,7 +266,8 @@ export const processAIResponse = async (
 }
 
 /**
- * アシスタントとの会話をう
+ * アシスタントとの会話を行う
+ * 画面のチャット欄から入力されたときに実行される処理
  */
 export const handleSendChatFn =
   (errors: {

@@ -4,7 +4,7 @@ import { MarpOptions } from '@marp-team/marp-core'
 import { IconButton } from './iconButton'
 import slideStore from '../features/stores/slide'
 import homeStore from '../features/stores/home'
-import { processReceivedMessage } from './handlers'
+import { processReceivedMessage } from '../features/chat/handlers'
 
 interface MarpSlidesProps {
   markdown: string
@@ -129,20 +129,6 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
             className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
           />
         </div>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '20px',
-          display: 'none',
-        }}
-      >
-        {[1, 2, 3, 4, 5].map((num) => (
-          <button key={num} onClick={() => goToSlide(num - 1)}>
-            {`Go to Slide ${num}`}
-          </button>
-        ))}
       </div>
     </div>
   )

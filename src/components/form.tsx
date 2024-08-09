@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
-import { handleSendChatFn } from './handlers'
+import { handleSendChatFn } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import useWebSocket from './useWebSocket'
 import useYoutube from './useYoutube'
