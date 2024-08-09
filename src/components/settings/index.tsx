@@ -13,6 +13,7 @@ import ModelProvider from './modelProvider'
 import Voice from './voice'
 import WebSocket from './websocket'
 import YouTube from './youtube'
+import Slide from './slide'
 
 type Props = {
   onClickClose: () => void
@@ -88,6 +89,15 @@ const Main = () => {
         <div className="my-40">
           {/* 音声エンジンの選択 */}
           <Voice />
+        </div>
+
+        <div className="my-24 typography-32 font-bold">
+          {t('SlideSettings')}
+        </div>
+
+        <div className="my-40">
+          {/* スライド設定 */}
+          <Slide />
         </div>
 
         <div className="my-24 typography-32 font-bold">

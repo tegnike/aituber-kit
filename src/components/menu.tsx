@@ -10,13 +10,15 @@ import { CodeLog } from './codeLog'
 import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
-import MarpSlides from './marpSlides' // Added
+import MarpSlides from './marpSlides'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const webSocketMode = settingsStore((s) => s.webSocketMode)
+  const slideMode = settingsStore((s) => s.slideMode)
+  const slideVisible = menuStore((s) => s.slideVisible)
   const chatLog = homeStore((s) => s.chatLog)
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
@@ -28,14 +30,13 @@ export const Menu = () => {
   const imageFileInputRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
 
-  const [showMarpSlides, setShowMarpSlides] = useState(false) // Added
-  const [markdownContent, setMarkdownContent] = useState('') // Added
+  const [markdownContent, setMarkdownContent] = useState('')
 
   useEffect(() => {
-    fetch('/slides.md')
-      .then(response => response.text())
-      .then(text => setMarkdownContent(text))
-  }, []) // Added
+    fetch('/slides/demo/slides.md')
+      .then((response) => response.text())
+      .then((text) => setMarkdownContent(text))
+  }, [])
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +75,6 @@ export const Menu = () => {
     }
   }, [])
 
-  // カメラが開いているかどうかの状態変更
   useEffect(() => {
     console.log('onChangeWebcamStatus')
     homeStore.setState({ webcamStatus: showWebcam })
@@ -94,7 +94,10 @@ export const Menu = () => {
   return (
     <>
       <div className="absolute z-10 m-24">
-        <div className="grid md:grid-flow-col gap-[8px] mb-[8px]" style={{ width: "max-content"}}>
+        <div
+          className="grid md:grid-flow-col gap-[8px] mb-[8px]"
+          style={{ width: 'max-content' }}
+        >
           <div className="md:order-1 order-2">
             {showSettingsButton && (
               <IconButton
@@ -173,15 +176,19 @@ export const Menu = () => {
               }}
             />
           </div>
-          <div className="order-5">
-            <IconButton
-              iconName="24/FrameEffect"
-              isProcessing={false}
-              onClick={() => setShowMarpSlides((prev) => !prev)}
-            />
-          </div>
+          {slideMode && (
+            <div className="order-5">
+              <IconButton
+                iconName="24/FrameEffect"
+                isProcessing={false}
+                onClick={() =>
+                  menuStore.setState({ slideVisible: !slideVisible })
+                }
+              />
+            </div>
+          )}
         </div>
-        {showMarpSlides && <MarpSlides markdown={markdownContent} />}
+        {slideMode && slideVisible && <MarpSlides markdown={markdownContent} />}
       </div>
       {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}

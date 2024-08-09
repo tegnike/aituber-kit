@@ -15,6 +15,7 @@ const YouTube = () => {
   const conversationContinuityMode = settingsStore(
     (s) => s.conversationContinuityMode
   )
+  const slideMode = settingsStore((s) => s.slideMode)
 
   const { t } = useTranslation()
 
@@ -75,33 +76,36 @@ const YouTube = () => {
                     })
                   }
                 />
-                <div className="my-24">
-                  <div className="my-16 typography-20 font-bold">
-                    {t('ConversationContinuityMode')}
+                {!slideMode && (
+                  <div className="my-24">
+                    <div className="my-16 typography-20 font-bold">
+                      {t('ConversationContinuityMode')}
+                    </div>
+                    <div className="my-8">
+                      {t('ConversationContinuityModeInfo')}
+                    </div>
+                    <div className="my-8">
+                      {t('ConversationContinuityModeInfo2')}
+                    </div>
+                    <div className="mb-16">
+                      {t('ConversationContinuityModeInfo3')}
+                    </div>
+                    <TextButton
+                      onClick={() =>
+                        settingsStore.setState({
+                          conversationContinuityMode:
+                            !conversationContinuityMode,
+                        })
+                      }
+                      disabled={
+                        selectAIService !== 'openai' &&
+                        selectAIService !== 'anthropic'
+                      }
+                    >
+                      {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}
+                    </TextButton>
                   </div>
-                  <div className="my-8">
-                    {t('ConversationContinuityModeInfo')}
-                  </div>
-                  <div className="my-8">
-                    {t('ConversationContinuityModeInfo2')}
-                  </div>
-                  <div className="mb-16">
-                    {t('ConversationContinuityModeInfo3')}
-                  </div>
-                  <TextButton
-                    onClick={() =>
-                      settingsStore.setState({
-                        conversationContinuityMode: !conversationContinuityMode,
-                      })
-                    }
-                    disabled={
-                      selectAIService !== 'openai' &&
-                      selectAIService !== 'anthropic'
-                    }
-                  >
-                    {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}
-                  </TextButton>
-                </div>
+                )}
               </>
             )
           }
