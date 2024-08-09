@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Language } from '@/features/constants/settings'
 import settingsStore from '@/features/stores/settings'
 
-const Language = () => {
+const LanguageSetting = () => {
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 
   const { t } = useTranslation()
 
   return (
-    <div className="my-40">
+    <div className="my-24">
       <div className="my-16 typography-20 font-bold">{t('Language')}</div>
       <div className="my-8">
         <select
@@ -76,4 +76,4 @@ const Language = () => {
     </div>
   )
 }
-export default Language
+export default LanguageSetting

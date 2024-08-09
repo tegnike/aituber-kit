@@ -1,4 +1,4 @@
-import Language from '@/components/settings/language'
+import { Language } from '@/features/constants/settings'
 
 function createWavHeader(dataLength: number) {
   const buffer = new ArrayBuffer(44)

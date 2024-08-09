@@ -2,9 +2,13 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
+import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { Link } from '../link'
+import { TextButton } from '../textButton'
 
 const ModelProvider = () => {
+  const webSocketMode = settingsStore((s) => s.webSocketMode)
+
   const openAiKey = settingsStore((s) => s.openAiKey)
   const anthropicKey = settingsStore((s) => s.anthropicKey)
   const googleKey = settingsStore((s) => s.googleKey)
@@ -14,24 +18,24 @@ const ModelProvider = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const localLlmUrl = settingsStore((s) => s.localLlmUrl)
+  const systemPrompt = settingsStore((s) => s.systemPrompt)
 
   const difyUrl = settingsStore((s) => s.difyUrl)
-  const difyConversationId = settingsStore((s) => s.difyConversationId)
 
   const { t } = useTranslation()
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
-    openai: 'gpt-3.5-turbo',
-    anthropic: 'claude-3-haiku-20240307',
+    openai: 'gpt-4o',
+    anthropic: 'claude-3.5-sonnet-20240620',
     google: 'gemini-1.5-pro',
     groq: 'gemma-7b-it',
     localLlm: '',
     dify: '',
   }
 
-  return (
+  return webSocketMode ? null : (
     <div className="my-40">
       <div className="my-16 typography-20 font-bold">
         {t('SelectAIService')}
@@ -72,6 +76,7 @@ const ModelProvider = () => {
           <option value="dify">Dify</option>
         </select>
       </div>
+
       {(() => {
         if (selectAIService === 'openai') {
           return (
@@ -345,6 +350,31 @@ const ModelProvider = () => {
           )
         }
       })()}
+
+      <div className="my-40">
+        <div className="my-8">
+          <div className="my-16 typography-20 font-bold">
+            {t('CharacterSettingsPrompt')}
+          </div>
+          {selectAIService === 'dify' && (
+            <div className="my-16">{t('DifyInstruction')}</div>
+          )}
+          <TextButton
+            onClick={() =>
+              settingsStore.setState({ systemPrompt: SYSTEM_PROMPT })
+            }
+          >
+            {t('CharacterSettingsReset')}
+          </TextButton>
+        </div>
+        <textarea
+          value={systemPrompt}
+          onChange={(e) =>
+            settingsStore.setState({ systemPrompt: e.target.value })
+          }
+          className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
+        ></textarea>
+      </div>
     </div>
   )
 }

@@ -7,7 +7,7 @@ import { IconButton } from '../iconButton'
 import AdvancedSettings from './advancedSettings'
 import Character from './character'
 import Environment from './environment'
-import Language from './language'
+import LanguageSetting from './language'
 import Log from './log'
 import ModelProvider from './modelProvider'
 import Voice from './voice'
@@ -51,22 +51,48 @@ const Main = () => {
       <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
         <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
 
-        <Language />
+        <div className="my-40">
+          {/* 言語設定 */}
+          <LanguageSetting />
 
-        {/* キャラクター名表示 */}
-        <Character />
+          {/* キャラクター設定 */}
+          <Character />
 
-        {/* VRMと背景画像の設定 */}
-        <Environment />
+          {/* 背景画像の設定 */}
+          <Environment />
+        </div>
 
-        {/* 外部接続モードの設定 */}
-        <WebSocket />
+        <div className="my-24 typography-32 font-bold">{t('AISettings')}</div>
 
-        {/* 外部連携モードでない時の設定 */}
-        <NonWebSocket />
+        <div className="my-40">
+          {/* 外部接続モードの設定 */}
+          <WebSocket />
 
-        {/* 音声エンジンの選択 */}
-        <Voice />
+          {/* AI設定 */}
+          <ModelProvider />
+        </div>
+
+        <div className="my-24 typography-32 font-bold">
+          {t('YoutubeSettings')}
+        </div>
+
+        <div className="my-40">
+          {/* YouTube設定 */}
+          <YouTube />
+        </div>
+
+        <div className="my-24 typography-32 font-bold">
+          {t('VoiceSettings')}
+        </div>
+
+        <div className="my-40">
+          {/* 音声エンジンの選択 */}
+          <Voice />
+        </div>
+
+        <div className="my-24 typography-32 font-bold">
+          {t('OtherSettings')}
+        </div>
 
         <AdvancedSettings />
 
@@ -82,16 +108,5 @@ const Footer = () => {
     <footer className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
       powered by ChatVRM of Pixiv
     </footer>
-  )
-}
-
-const NonWebSocket = () => {
-  const webSocketMode = settingsStore((s) => s.webSocketMode)
-
-  return webSocketMode ? null : (
-    <>
-      <ModelProvider />
-      <YouTube />
-    </>
   )
 }
