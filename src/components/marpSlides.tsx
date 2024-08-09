@@ -1,26 +1,53 @@
 import React, { useState } from 'react'
 import { Marp } from '@marp-team/marp-react'
 import { MarpOptions } from '@marp-team/marp-core'
+import { IconButton } from './iconButton'
+import slideStore from '../features/stores/slide'
 
 interface MarpSlidesProps {
   markdown: string
 }
 
 const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
-  const [currentSlide, setCurrentSlide] = useState<number>(0)
+  const isPlaying = slideStore((state) => state.isPlaying)
+  const currentSlide = slideStore((state) => state.currentSlide)
 
   const slides: string[] = markdown.split('---').map((slide) => slide.trim())
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => Math.min(prev + 1, slides.length - 1))
+    slideStore.setState({
+      currentSlide: Math.min(currentSlide + 1, slides.length - 1),
+    })
   }
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => Math.max(prev - 1, 0))
+    slideStore.setState({
+      currentSlide: Math.max(currentSlide - 1, 0),
+    })
   }
 
   const goToSlide = (index: number) => {
-    setCurrentSlide(index)
+    slideStore.setState({
+      currentSlide: index,
+    })
+  }
+
+  const toggleIsPlaying = () => {
+    const newIsPlaying = !isPlaying
+    slideStore.setState({
+      isPlaying: newIsPlaying,
+    })
+    if (newIsPlaying) {
+      console.log(getCurrentLines())
+    }
+  }
+
+  const getCurrentLines = () => {
+    const scripts = require('../../public/slides/demo/scripts.json')
+    const currentScript = scripts.find(
+      (script: { page: number }) => script.page === currentSlide
+    )
+    return currentScript ? currentScript.line : ''
   }
 
   const customTheme = `
@@ -62,11 +89,10 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
 
   const marpOptions: MarpOptions = {
     inlineSVG: true,
-    theme: 'custom',
   }
 
   return (
-    <div>
+    <div className="ml-16">
       <div
         style={{
           width: '60vw',
@@ -79,29 +105,43 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
       >
         <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
           <Marp
-            markdown={slides[currentSlide]}
+            markdown={`<!-- ${customTheme} -->\n${slides[currentSlide]}`}
             options={marpOptions}
-            customTheme={customTheme}
           />
         </div>
       </div>
       <div
-        style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: '20px',
+        }}
       >
-        <button
-          onClick={prevSlide}
-          disabled={currentSlide === 0}
-          style={buttonStyle}
-        >
-          Previous
-        </button>
-        <button
-          onClick={nextSlide}
-          disabled={currentSlide === slides.length - 1}
-          style={buttonStyle}
-        >
-          Next
-        </button>
+        <div style={{ flex: 1 }}></div>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+          <IconButton
+            iconName="24/Prev"
+            disabled={currentSlide === 0 || isPlaying}
+            onClick={prevSlide}
+            isProcessing={false}
+            className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
+          ></IconButton>
+          <IconButton
+            iconName="24/Next"
+            disabled={currentSlide === slides.length - 1 || isPlaying}
+            onClick={nextSlide}
+            isProcessing={false}
+            className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
+          ></IconButton>
+        </div>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <IconButton
+            iconName={isPlaying ? '24/PauseAlt' : '24/Play'}
+            onClick={toggleIsPlaying}
+            isProcessing={false}
+            className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
+          />
+        </div>
       </div>
       <div
         style={{
@@ -112,11 +152,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
         }}
       >
         {[1, 2, 3, 4, 5].map((num) => (
-          <button
-            key={num}
-            onClick={() => goToSlide(num - 1)}
-            style={buttonStyle}
-          >
+          <button key={num} onClick={() => goToSlide(num - 1)}>
             {`Go to Slide ${num}`}
           </button>
         ))}
@@ -124,16 +160,4 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
     </div>
   )
 }
-
-const buttonStyle: React.CSSProperties = {
-  padding: '10px 20px',
-  margin: '0 10px',
-  fontSize: '1em',
-  backgroundColor: '#4CAF50',
-  color: 'white',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-}
-
 export default MarpSlides
