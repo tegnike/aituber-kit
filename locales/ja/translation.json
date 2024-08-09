@@ -3,6 +3,7 @@
   "AISettings": "■ AI設定",
   "YoutubeSettings": "■ YouTube設定",
   "VoiceSettings": "■ 音声設定",
+  "SlideSettings": "■ スライド設定",
   "OtherSettings": "■ その他",
   "ExternalConnectionMode": "外部連携モード（WebSocket, β版）",
   "YoutubeMode": "YouTubeモード",

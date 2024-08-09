@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Marp } from '@marp-team/marp-react'
 import { MarpOptions } from '@marp-team/marp-core'
 import { IconButton } from './iconButton'
 import slideStore from '../features/stores/slide'
+import homeStore from '../features/stores/home'
+import { processReceivedMessage } from './handlers'
 
 interface MarpSlidesProps {
   markdown: string
@@ -11,14 +13,31 @@ interface MarpSlidesProps {
 const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const isPlaying = slideStore((state) => state.isPlaying)
   const currentSlide = slideStore((state) => state.currentSlide)
+  const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
 
   const slides: string[] = markdown.split('---').map((slide) => slide.trim())
 
-  const nextSlide = () => {
-    slideStore.setState({
-      currentSlide: Math.min(currentSlide + 1, slides.length - 1),
+  const readSlide = useCallback((slideIndex: number) => {
+    const getCurrentLines = () => {
+      const scripts = require('../../public/slides/demo/scripts.json')
+      const currentScript = scripts.find(
+        (script: { page: number }) => script.page === slideIndex
+      )
+      return currentScript ? currentScript.line : ''
+    }
+
+    const currentLines = getCurrentLines()
+    console.log(currentLines)
+    processReceivedMessage(currentLines)
+  }, [])
+
+  const nextSlide = useCallback(() => {
+    slideStore.setState((state) => {
+      const newSlide = Math.min(state.currentSlide + 1, slides.length - 1)
+      readSlide(newSlide)
+      return { currentSlide: newSlide }
     })
-  }
+  }, [readSlide, slides.length])
 
   const prevSlide = () => {
     slideStore.setState({
@@ -38,17 +57,23 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
       isPlaying: newIsPlaying,
     })
     if (newIsPlaying) {
-      console.log(getCurrentLines())
+      readSlide(currentSlide)
     }
   }
 
-  const getCurrentLines = () => {
-    const scripts = require('../../public/slides/demo/scripts.json')
-    const currentScript = scripts.find(
-      (script: { page: number }) => script.page === currentSlide
-    )
-    return currentScript ? currentScript.line : ''
-  }
+  useEffect(() => {
+    if (
+      chatProcessingCount === 0 &&
+      isPlaying &&
+      currentSlide < slides.length - 1
+    ) {
+      const timer = setTimeout(() => {
+        nextSlide()
+      }, 1000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slides.length])
 
   const customTheme = `
     /* @theme custom */
