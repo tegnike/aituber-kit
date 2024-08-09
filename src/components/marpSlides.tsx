@@ -34,10 +34,12 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const nextSlide = useCallback(() => {
     slideStore.setState((state) => {
       const newSlide = Math.min(state.currentSlide + 1, slides.length - 1)
-      readSlide(newSlide)
+      if (isPlaying) {
+        readSlide(newSlide)
+      }
       return { currentSlide: newSlide }
     })
-  }, [readSlide, slides.length])
+  }, [isPlaying, readSlide, slides.length])
 
   const prevSlide = () => {
     slideStore.setState({
@@ -75,43 +77,6 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
     }
   }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slides.length])
 
-  const customTheme = `
-    /* @theme custom */
-
-    section {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px;
-      box-sizing: border-box;
-      background-color: #ffffff;
-    }
-
-    h1 {
-      font-size: 2.5em;
-      color: #333;
-      margin-bottom: 0.5em;
-    }
-
-    h2 {
-      font-size: 1.8em;
-      color: #555;
-      margin-bottom: 0.5em;
-    }
-
-    ul {
-      font-size: 1.2em;
-      color: #444;
-      margin-left: 1em;
-    }
-
-    li {
-      margin-bottom: 0.5em;
-    }
-  `
-
   const marpOptions: MarpOptions = {
     inlineSVG: true,
   }
@@ -129,10 +94,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
         }}
       >
         <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-          <Marp
-            markdown={`<!-- ${customTheme} -->\n${slides[currentSlide]}`}
-            options={marpOptions}
-          />
+          <Marp markdown={`${slides[currentSlide]}`} options={marpOptions} />
         </div>
       </div>
       <div
