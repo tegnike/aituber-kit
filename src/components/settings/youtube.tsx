@@ -76,36 +76,34 @@ const YouTube = () => {
                     })
                   }
                 />
-                {!slideMode && (
-                  <div className="my-24">
-                    <div className="my-16 typography-20 font-bold">
-                      {t('ConversationContinuityMode')}
-                    </div>
-                    <div className="my-8">
-                      {t('ConversationContinuityModeInfo')}
-                    </div>
-                    <div className="my-8">
-                      {t('ConversationContinuityModeInfo2')}
-                    </div>
-                    <div className="mb-16">
-                      {t('ConversationContinuityModeInfo3')}
-                    </div>
-                    <TextButton
-                      onClick={() =>
-                        settingsStore.setState({
-                          conversationContinuityMode:
-                            !conversationContinuityMode,
-                        })
-                      }
-                      disabled={
-                        selectAIService !== 'openai' &&
-                        selectAIService !== 'anthropic'
-                      }
-                    >
-                      {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}
-                    </TextButton>
+                <div className="my-24">
+                  <div className="my-16 typography-20 font-bold">
+                    {t('ConversationContinuityMode')}
                   </div>
-                )}
+                  <div className="my-8">
+                    {t('ConversationContinuityModeInfo')}
+                  </div>
+                  <div className="my-8">
+                    {t('ConversationContinuityModeInfo2')}
+                  </div>
+                  <div className="mb-16">
+                    {t('ConversationContinuityModeInfo3')}
+                  </div>
+                  <TextButton
+                    onClick={() =>
+                      settingsStore.setState({
+                        conversationContinuityMode: !conversationContinuityMode,
+                      })
+                    }
+                    disabled={
+                      (selectAIService !== 'openai' &&
+                        selectAIService !== 'anthropic') ||
+                      slideMode
+                    }
+                  >
+                    {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}
+                  </TextButton>
+                </div>
               </>
             )
           }
