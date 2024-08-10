@@ -2,8 +2,11 @@ import { getAIChatResponseStream } from '@/features/chat/aiChatFactory'
 import { AIService, AIServiceConfig } from '@/features/constants/settings'
 import { textsToScreenplay, Message } from '@/features/messages/messages'
 import { speakCharacter } from '@/features/messages/speakCharacter'
+import { judgeSlide } from '@/features/slide/slideAIHelpers'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import slideStore from '@/features/stores/slide'
+import { goToSlide } from '@/components/marpSlides'
 
 /**
  * 文字列を処理する関数
@@ -281,6 +284,7 @@ export const handleSendChatFn =
 
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
+    const sls = slideStore.getState()
 
     if (ss.webSocketMode) {
       // 未メンテなので不具合がある可能性あり
@@ -380,6 +384,47 @@ export const handleSendChatFn =
         return
       }
 
+      let systemPrompt = ss.systemPrompt
+      if (ss.slideMode) {
+        if (sls.isPlaying) {
+          return
+        }
+
+        try {
+          let scripts = JSON.stringify(
+            require('../../../public/slides/demo/scripts.json')
+          )
+          systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
+
+          let supplement = { content: '' }
+          try {
+            supplement = JSON.parse(
+              require('../../../public/slides/demo/supplement.json')
+            )
+            systemPrompt = systemPrompt.replace(
+              '{{SUPPLEMENT}}',
+              supplement.content
+            )
+          } catch (e) {
+            console.error(e)
+          }
+
+          const answerString = await judgeSlide(
+            newMessage,
+            scripts,
+            supplement.content
+          )
+          const answer = JSON.parse(answerString)
+          if (answer.judge === 'true' && answer.page !== '') {
+            goToSlide(answer.page)
+            systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
+          }
+
+        } catch (e) {
+          console.error(e)
+        }
+      }
+
       homeStore.setState({ chatProcessing: true })
       // ユーザーの発言を追加して表示
       const messageLog: Message[] = [
@@ -422,7 +467,7 @@ export const handleSendChatFn =
       const messages: Message[] = [
         {
           role: 'system',
-          content: ss.systemPrompt,
+          content: systemPrompt,
         },
         ...processedMessageLog.slice(-10),
       ]

@@ -10,6 +10,12 @@ interface MarpSlidesProps {
   markdown: string
 }
 
+export const goToSlide = (index: number) => {
+  slideStore.setState({
+    currentSlide: index,
+  })
+}
+
 const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const isPlaying = slideStore((state) => state.isPlaying)
   const currentSlide = slideStore((state) => state.currentSlide)
@@ -17,19 +23,28 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
 
   const slides: string[] = markdown.split('---').map((slide) => slide.trim())
 
-  const readSlide = useCallback((slideIndex: number) => {
-    const getCurrentLines = () => {
-      const scripts = require('../../public/slides/demo/scripts.json')
-      const currentScript = scripts.find(
-        (script: { page: number }) => script.page === slideIndex
-      )
-      return currentScript ? currentScript.line : ''
-    }
+  const readSlide = useCallback(
+    (slideIndex: number) => {
+      const getCurrentLines = () => {
+        const scripts = require('../../public/slides/demo/scripts.json')
+        const currentScript = scripts.find(
+          (script: { page: number }) => script.page === slideIndex
+        )
+        return currentScript ? currentScript.line : ''
+      }
 
-    const currentLines = getCurrentLines()
-    console.log(currentLines)
-    processReceivedMessage(currentLines)
-  }, [])
+      const currentLines = getCurrentLines()
+      console.log(currentLines)
+      processReceivedMessage(currentLines)
+
+      if (currentSlide == slides.length - 1) {
+        slideStore.setState({
+          isPlaying: false,
+        })
+      }
+    },
+    [currentSlide, slides.length]
+  )
 
   const nextSlide = useCallback(() => {
     slideStore.setState((state) => {
@@ -44,12 +59,6 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const prevSlide = () => {
     slideStore.setState({
       currentSlide: Math.max(currentSlide - 1, 0),
-    })
-  }
-
-  const goToSlide = (index: number) => {
-    slideStore.setState({
-      currentSlide: index,
     })
   }
 
@@ -69,11 +78,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
       isPlaying &&
       currentSlide < slides.length - 1
     ) {
-      const timer = setTimeout(() => {
-        nextSlide()
-      }, 1000)
-
-      return () => clearTimeout(timer)
+      nextSlide()
     }
   }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slides.length])
 
