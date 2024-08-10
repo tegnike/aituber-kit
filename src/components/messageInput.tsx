@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
+import slideStore from '@/features/stores/slide'
 import { IconButton } from './iconButton'
 
 type Props = {
@@ -22,6 +23,7 @@ export const MessageInput = ({
   onClickSendButton,
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
+  const slidePlaying = slideStore((s) => s.isPlaying)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
 
@@ -81,7 +83,7 @@ export const MessageInput = ({
               }
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
-              disabled={chatProcessing}
+              disabled={chatProcessing || slidePlaying}
               className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"
               value={chatProcessing ? '' : userMessage}
               rows={rows}
