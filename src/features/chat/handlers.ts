@@ -419,7 +419,6 @@ export const handleSendChatFn =
             goToSlide(answer.page)
             systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
           }
-
         } catch (e) {
           console.error(e)
         }

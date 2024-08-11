@@ -6,6 +6,7 @@ import { TextButton } from '../textButton'
 
 const Slide = () => {
   const { t } = useTranslation()
+  const selectAIService = settingsStore((s) => s.selectAIService)
 
   const slideMode = settingsStore((s) => s.slideMode)
   const conversationContinuityMode = settingsStore(
@@ -29,12 +30,19 @@ const Slide = () => {
   return (
     <div className="my-40">
       <div className="my-16 typography-20 font-bold">{t('SlideMode')}</div>
+      <p className="">{t('SlideModeDescription')}</p>
       <div className="my-8">
-        <TextButton onClick={toggleSlideMode}>
+        <TextButton
+          onClick={toggleSlideMode}
+          disabled={
+            selectAIService !== 'openai' &&
+            selectAIService !== 'anthropic' &&
+            selectAIService !== 'google'
+          }
+        >
           {slideMode ? t('StatusOn') : t('StatusOff')}
         </TextButton>
       </div>
-      <p className="text-sm text-gray-600">{t('SlideModeDescription')}</p>
       {slideMode && (
         <p className="text-sm text-red-600 mt-2">{t('SlideModeWarning')}</p>
       )}
