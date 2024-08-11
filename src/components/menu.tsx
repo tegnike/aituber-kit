@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
+import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
 import { CodeLog } from './codeLog'
@@ -28,15 +29,17 @@ export const Menu = () => {
   const [showChatLog, setShowChatLog] = useState(false)
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
+
+  const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const { t } = useTranslation()
 
   const [markdownContent, setMarkdownContent] = useState('')
 
   useEffect(() => {
-    fetch('/slides/demo/slides.md')
+    fetch(`/slides/${selectedSlideDocs}/slides.md`)
       .then((response) => response.text())
       .then((text) => setMarkdownContent(text))
-  }, [])
+  }, [selectedSlideDocs])
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -19,6 +19,7 @@ export const goToSlide = (index: number) => {
 const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const isPlaying = slideStore((state) => state.isPlaying)
   const currentSlide = slideStore((state) => state.currentSlide)
+  const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
 
   const slides: string[] = markdown.split('---').map((slide) => slide.trim())
@@ -26,7 +27,9 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const readSlide = useCallback(
     (slideIndex: number) => {
       const getCurrentLines = () => {
-        const scripts = require('../../public/slides/demo/scripts.json')
+        const scripts = require(
+          `../../public/slides/${selectedSlideDocs}/scripts.json`
+        )
         const currentScript = scripts.find(
           (script: { page: number }) => script.page === slideIndex
         )
@@ -43,7 +46,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
         })
       }
     },
-    [currentSlide, slides.length]
+    [currentSlide, selectedSlideDocs, slides.length]
   )
 
   const nextSlide = useCallback(() => {

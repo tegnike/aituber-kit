@@ -392,14 +392,18 @@ export const handleSendChatFn =
 
         try {
           let scripts = JSON.stringify(
-            require('../../../public/slides/demo/scripts.json')
+            require(
+              `../../../public/slides/${sls.selectedSlideDocs}/scripts.json`
+            )
           )
           systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
 
           let supplement = { content: '' }
           try {
             supplement = JSON.parse(
-              require('../../../public/slides/demo/supplement.json')
+              require(
+                `../../../public/slides/${sls.selectedSlideDocs}/supplement.json`
+              )
             )
             systemPrompt = systemPrompt.replace(
               '{{SUPPLEMENT}}',
