@@ -23,9 +23,10 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const [slideCount, setSlideCount] = useState(0)
 
   useEffect(() => {
-    const marpitContainer = document.querySelector('.marpit')
-    if (marpitContainer) {
-      const slides = marpitContainer.querySelectorAll(':scope > svg')
+    // debugger
+    const currentMarpitContainer = document.querySelector('.marpit')
+    if (currentMarpitContainer) {
+      const slides = currentMarpitContainer.querySelectorAll(':scope > svg')
       slides.forEach((slide, i) => {
         const svgElement = slide as SVGElement
         if (i === currentSlide) {
@@ -35,7 +36,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
         }
       })
     }
-  }, [currentSlide])
+  }, [currentSlide, marpitContainer])
 
   useEffect(() => {
     const convertMarkdown = async () => {
