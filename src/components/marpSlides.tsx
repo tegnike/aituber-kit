@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { Marp } from '@marp-team/marp-react'
-import { MarpOptions } from '@marp-team/marp-core'
 import { IconButton } from './iconButton'
 import slideStore from '../features/stores/slide'
 import homeStore from '../features/stores/home'
@@ -17,12 +15,89 @@ export const goToSlide = (index: number) => {
 }
 
 const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
+  const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
   const isPlaying = slideStore((state) => state.isPlaying)
   const currentSlide = slideStore((state) => state.currentSlide)
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
+  const [slideCount, setSlideCount] = useState(0)
 
-  const slides: string[] = markdown.split('---').map((slide) => slide.trim())
+  useEffect(() => {
+    const marpitContainer = document.querySelector('.marpit')
+    if (marpitContainer) {
+      const slides = marpitContainer.querySelectorAll(':scope > svg')
+      slides.forEach((slide, i) => {
+        const svgElement = slide as SVGElement
+        if (i === currentSlide) {
+          svgElement.style.display = 'block'
+        } else {
+          svgElement.style.display = 'none'
+        }
+      })
+    }
+  }, [currentSlide])
+
+  useEffect(() => {
+    const convertMarkdown = async () => {
+      const response = await fetch('/api/convertMarkdown', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ slideName: selectedSlideDocs }),
+      })
+      const data = await response.json()
+
+      // HTMLをパースしてmarpit要素を取得
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(data.html, 'text/html')
+      const marpitElement = doc.querySelector('.marpit')
+      setMarpitContainer(marpitElement)
+
+      // スライド数を設定
+      if (marpitElement) {
+        const slides = marpitElement.querySelectorAll(':scope > svg')
+        setSlideCount(slides.length)
+
+        // 初期状態で最初のスライドを表示
+        slides.forEach((slide, i) => {
+          if (i === 0) {
+            slide.removeAttribute('hidden')
+          } else {
+            slide.setAttribute('hidden', '')
+          }
+        })
+      }
+
+      // CSSを動的に適用
+      const styleElement = document.createElement('style')
+      styleElement.textContent = data.css
+      document.head.appendChild(styleElement)
+
+      return () => {
+        document.head.removeChild(styleElement)
+      }
+    }
+
+    convertMarkdown()
+  }, [selectedSlideDocs])
+
+  useEffect(() => {
+    // カスタムCSSを適用
+    const customStyle = `
+      div.marpit > svg > foreignObject > section {
+        padding: 2em;
+      }
+    `
+    const styleElement = document.createElement('style')
+    styleElement.textContent = customStyle
+    document.head.appendChild(styleElement)
+
+    // コンポーネントのアンマウント時にスタイルを削除
+    return () => {
+      document.head.removeChild(styleElement)
+    }
+  }, [])
 
   const readSlide = useCallback(
     (slideIndex: number) => {
@@ -40,30 +115,30 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
       console.log(currentLines)
       processReceivedMessage(currentLines)
 
-      if (currentSlide == slides.length - 1) {
+      if (currentSlide === slideCount - 1) {
         slideStore.setState({
           isPlaying: false,
         })
       }
     },
-    [currentSlide, selectedSlideDocs, slides.length]
+    [currentSlide, selectedSlideDocs, slideCount]
   )
 
   const nextSlide = useCallback(() => {
     slideStore.setState((state) => {
-      const newSlide = Math.min(state.currentSlide + 1, slides.length - 1)
+      const newSlide = Math.min(state.currentSlide + 1, slideCount - 1)
       if (isPlaying) {
         readSlide(newSlide)
       }
       return { currentSlide: newSlide }
     })
-  }, [isPlaying, readSlide, slides.length])
+  }, [isPlaying, readSlide, slideCount])
 
-  const prevSlide = () => {
-    slideStore.setState({
-      currentSlide: Math.max(currentSlide - 1, 0),
-    })
-  }
+  const prevSlide = useCallback(() => {
+    slideStore.setState((state) => ({
+      currentSlide: Math.max(state.currentSlide - 1, 0),
+    }))
+  }, [])
 
   const toggleIsPlaying = () => {
     const newIsPlaying = !isPlaying
@@ -79,15 +154,11 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
     if (
       chatProcessingCount === 0 &&
       isPlaying &&
-      currentSlide < slides.length - 1
+      currentSlide < slideCount - 1
     ) {
       nextSlide()
     }
-  }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slides.length])
-
-  const marpOptions: MarpOptions = {
-    inlineSVG: true,
-  }
+  }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slideCount])
 
   return (
     <div className="ml-16">
@@ -101,9 +172,12 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
           boxShadow: '0 0 10px rgba(0,0,0,0.1)',
         }}
       >
-        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-          <Marp markdown={`${slides[currentSlide]}`} options={marpOptions} />
-        </div>
+        {marpitContainer && (
+          <div
+            style={{ width: '100%', height: '100%', overflow: 'hidden' }}
+            dangerouslySetInnerHTML={{ __html: marpitContainer.outerHTML }}
+          />
+        )}
       </div>
       <div
         style={{
@@ -123,7 +197,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
           ></IconButton>
           <IconButton
             iconName="24/Next"
-            disabled={currentSlide === slides.length - 1 || isPlaying}
+            disabled={currentSlide === slideCount - 1 || isPlaying}
             onClick={nextSlide}
             isProcessing={false}
             className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"

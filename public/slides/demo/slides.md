@@ -1,63 +1,67 @@
-# ChatGPTとは？
+---
+marp: true
+theme: custom
+class: lead
+paginate: true
+---
 
-## AIを知らない人のための簡単ガイド
+<!---
+_class: title
+--->
+
+### 見本テンプレート
+
+<br>
+<br>
+<br>
+
+> # タイトル
+>
+> ### サブタイトル
+
+<br>
+<br>
+<br>
+
+名前
 
 ---
 
-# ChatGPTの基本
+<!-- _header: ヘッダー -->
 
-- AIを使った対話システム
-- 人間のように会話ができる
-- さまざまな質問に答えられる
+# H1 あいうえおabcde
 
----
+## H2 あいうえおabcde
 
-# ChatGPTの特徴
+### H3 あいうえおabcde
 
-- 自然な会話が可能
-- 膨大な知識を持っている
-- 24時間利用可能
-- 多言語対応
+#### H4 あいうえおabcde
 
----
+##### H5 あいうえおabcde
 
-# ChatGPTの仕組み
+![bg right:33% height:100](https://github.com/marp-team/marp/blob/main/marp.png?raw=true)
 
-- 大量のデータから学習
-- パターンを認識して回答
-- 人工知能技術を活用
+<!-- footer: フッター -->
 
 ---
 
-# ChatGPTの活用例
+<!-- _header: ヘッダー -->
 
-- 質問応答
-- 文章作成支援
-- アイデア出し
-- プログラミング支援
+1. **太字太字太字太字太字**
 
----
+2. _斜字斜字斜字斜字斜字_
 
-# ChatGPTの利点
+3. 数式
+   $$
+   \int^2_0 (x+1)dx=\left[\frac{1}{2}x^2+x\right]^2_0=4
+   $$
+4. コード
 
-- 迅速な情報提供
-- 幅広い知識
-- 個人に合わせた対応
-- 学習・仕事の効率化
+```c
+#include <stdio.h>
 
----
-
-# ChatGPTの注意点
-
-- 情報の正確性に注意
-- 個人情報の取り扱い
-- 依存しすぎない
-- 人間の判断が重要
-
----
-
-# まとめ
-
-- ChatGPTは便利なAIツール
-- 正しく使えば大きな助けに
-- 人間の知恵と組み合わせて活用
+int main() {
+   printf("Hello, World!");
+   return 0;
+}
+```

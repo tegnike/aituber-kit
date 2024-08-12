@@ -61,7 +61,7 @@ const homeStore = create<HomeState>()(
       voicePlaying: false,
     }),
     {
-      name: 'home',
+      name: 'aitube-kit-home',
       partialize: ({ chatLog, codeLog, dontShowIntroduction }) => ({
         chatLog,
         codeLog,

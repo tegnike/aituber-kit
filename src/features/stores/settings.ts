@@ -119,7 +119,7 @@ const settingsStore = create<SettingsState>()(
       slideMode: false,
     }),
     {
-      name: 'settings',
+      name: 'aitube-kit-settings',
     }
   )
 )
