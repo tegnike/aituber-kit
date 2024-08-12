@@ -5,6 +5,7 @@ paginate: true
 ---
 
 <!-- _class: title -->
+
 # AITuberKitのスライドモード解説
 
 ![](/slides/demo/images/logo.png)
@@ -15,6 +16,7 @@ paginate: true
 
 - AITuberKitで会話できる状態にしておく
 - 対応AI:
+
   - OpenAI
   - Anthropic Claude
   - Google Gemini
@@ -29,6 +31,7 @@ paginate: true
 <div style="flex: 6;">
 
 最低限必要なファイル：
+
 1. `scripts.json`（台本）
 2. `slides.md`（Marpスライド）
 
@@ -101,6 +104,7 @@ paginate: true
 ---
 
 <!-- _class: end -->
+
 # ご視聴ありがとうございました
 
 不明点は作者にお問い合わせください！

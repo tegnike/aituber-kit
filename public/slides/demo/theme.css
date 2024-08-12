@@ -31,7 +31,8 @@ h2 {
   margin-bottom: 20px;
 }
 
-ul, ol {
+ul,
+ol {
   margin-left: 1em;
   margin-bottom: 20px;
   padding-left: 1em;
@@ -55,7 +56,7 @@ ol > li {
 
 ol > li::before {
   counter-increment: list;
-  content: counter(list) ".";
+  content: counter(list) '.';
   position: absolute;
   left: -1.5em;
   width: 1.5em;
@@ -73,7 +74,7 @@ ul > li {
 }
 
 ul > li::before {
-  content: "•";
+  content: '•';
   position: absolute;
   left: -1em;
   width: 1em;
@@ -81,7 +82,10 @@ ul > li::before {
 }
 
 /* ネストされたリストのスタイリング */
-ol ol, ul ul, ol ul, ul ol {
+ol ol,
+ul ul,
+ol ul,
+ul ol {
   margin-top: 10px;
   margin-bottom: 0;
   margin-left: 1em;

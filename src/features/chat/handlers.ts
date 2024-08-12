@@ -398,29 +398,25 @@ export const handleSendChatFn =
           )
           systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
 
-          let supplement = { content: '' }
+          let supplement = ''
           try {
-            supplement = JSON.parse(
-              require(
-                `../../../public/slides/${sls.selectedSlideDocs}/supplement.json`
-              )
+            const response = await fetch(
+              `/api/getSupplement?slideDocs=${sls.selectedSlideDocs}`
             )
-            systemPrompt = systemPrompt.replace(
-              '{{SUPPLEMENT}}',
-              supplement.content
-            )
+            if (!response.ok) {
+              throw new Error('Failed to fetch supplement')
+            }
+            const data = await response.json()
+            supplement = data.supplement
+            systemPrompt = systemPrompt.replace('{{SUPPLEMENT}}', supplement)
           } catch (e) {
-            console.error(e)
+            console.error('supplement.txtの読み込みに失敗しました:', e)
           }
 
-          const answerString = await judgeSlide(
-            newMessage,
-            scripts,
-            supplement.content
-          )
+          const answerString = await judgeSlide(newMessage, scripts, supplement)
           const answer = JSON.parse(answerString)
           if (answer.judge === 'true' && answer.page !== '') {
-            goToSlide(answer.page)
+            goToSlide(Number(answer.page))
             systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
           }
         } catch (e) {
