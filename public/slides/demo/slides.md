@@ -1,67 +1,107 @@
 ---
 marp: true
 theme: custom
-class: lead
 paginate: true
 ---
 
-<!---
-_class: title
---->
+<!-- _class: title -->
+# AITuberKitのスライドモード解説
 
-### 見本テンプレート
-
-<br>
-<br>
-<br>
-
-> # タイトル
->
-> ### サブタイトル
-
-<br>
-<br>
-<br>
-
-名前
+![](/slides/demo/images/logo.png)
 
 ---
 
-<!-- _header: ヘッダー -->
+# 準備
 
-# H1 あいうえおabcde
+- AITuberKitで会話できる状態にしておく
+- 対応AI:
+  - OpenAI
+  - Anthropic Claude
+  - Google Gemini
 
-## H2 あいうえおabcde
-
-### H3 あいうえおabcde
-
-#### H4 あいうえおabcde
-
-##### H5 あいうえおabcde
-
-![bg right:33% height:100](https://github.com/marp-team/marp/blob/main/marp.png?raw=true)
-
-<!-- footer: フッター -->
+- ※ まだの方はAITuberKitの解説noteを参照（https://note.com/nike_cha_n/n/ne98acb25e00f）
 
 ---
 
-<!-- _header: ヘッダー -->
+# スライドの用意
 
-1. **太字太字太字太字太字**
+<div class="columns">
+<div style="flex: 6;">
 
-2. _斜字斜字斜字斜字斜字_
+最低限必要なファイル：
+1. `scripts.json`（台本）
+2. `slides.md`（Marpスライド）
 
-3. 数式
-   $$
-   \int^2_0 (x+1)dx=\left[\frac{1}{2}x^2+x\right]^2_0=4
-   $$
-4. コード
+</div>
+<div style="flex: 6;">
 
-```c
-#include <stdio.h>
+![height:400px](/slides/demo/images/file-structure.png)
 
-int main() {
-   printf("Hello, World!");
-   return 0;
-}
-```
+</div>
+</div>
+
+---
+
+# デモフォルダの活用
+
+<div class="columns">
+<div style="flex: 7;">
+
+- `public/demo`フォルダを参照
+- デモフォルダをコピーして使用可能
+- 任意のフォルダ名で配置
+
+</div>
+<div style="flex: 5;">
+
+![height:300px](/slides/demo/images/demo-folder.png)
+
+</div>
+</div>
+
+---
+
+# スライドモードの有効化
+
+<div class="columns">
+<div>
+
+1. 設定画面を開く
+2. スライドモードを有効にする
+3. 使用するスライドフォルダ名を記入
+4. 設定画面を閉じる
+
+</div>
+<div>
+
+![height:400px](/slides/demo/images/settings-screen.png)
+
+</div>
+</div>
+
+---
+
+# スライドの開始
+
+- スライドが表示されていることを確認
+- 右下のボタンを押して開始
+
+<div style="text-align: center;">
+  <img src="/slides/demo/images/start-button.png" alt="開始ボタン" style="height: 300px; margin: 0 auto;">
+</div>
+
+---
+
+# 備考
+
+- 停止ボタンで次のスライドに進まない
+- 音声は現在のスライドの説明が終わるまで続く
+- 停止中はチャット欄から質問可能
+
+---
+
+<!-- _class: end -->
+# ご視聴ありがとうございました
+
+不明点は作者にお問い合わせください！
+X: @tegnike

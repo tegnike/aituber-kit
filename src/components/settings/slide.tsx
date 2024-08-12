@@ -60,7 +60,7 @@ const Slide = () => {
       {slideMode && (
         <>
           <div className="my-16 typography-20 font-bold">
-            {t('EnterSlideFolder')}
+            {t('SelectedSlideDocs')}
           </div>
           <input
             id="folder-input"
