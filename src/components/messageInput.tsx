@@ -47,11 +47,15 @@ export const MessageInput = ({
       !event.nativeEvent.isComposing &&
       event.keyCode !== 229 && // IME (Input Method Editor)
       event.key === 'Enter' &&
-      !event.shiftKey &&
-      userMessage.trim() !== ''
+      !event.shiftKey
     ) {
-      onClickSendButton(event as unknown as React.MouseEvent<HTMLButtonElement>)
-      setRows(1)
+      event.preventDefault() // デフォルトの挙動を防止
+      if (userMessage.trim() !== '') {
+        onClickSendButton(
+          event as unknown as React.MouseEvent<HTMLButtonElement>
+        )
+        setRows(1)
+      }
     } else if (event.key === 'Enter' && event.shiftKey) {
       setRows(rows + 1)
     } else if (
