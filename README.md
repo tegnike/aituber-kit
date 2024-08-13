@@ -180,6 +180,9 @@ npm run dev
   <a href="https://github.com/tsubouchi" title="tsubouchi">
     <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
   </a>
+  <a href="https://github.com/bunkaich" title="bunkaich">
+    <img src="https://github.com/bunkaich.png" width="40" height="40" alt="bunkaich">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名
