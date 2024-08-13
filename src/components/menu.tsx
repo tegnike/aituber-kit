@@ -11,7 +11,7 @@ import { CodeLog } from './codeLog'
 import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
-import MarpSlides from './marpSlides'
+import Slides from './slides'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
@@ -40,6 +40,9 @@ export const Menu = () => {
     fetch(`/slides/${selectedSlideDocs}/slides.md`)
       .then((response) => response.text())
       .then((text) => setMarkdownContent(text))
+      .catch((error) =>
+        console.error('Failed to fetch markdown content:', error)
+      )
   }, [selectedSlideDocs])
 
   const handleChangeVrmFile = useCallback(
@@ -195,7 +198,7 @@ export const Menu = () => {
         </div>
       </div>
       <div className="relative">
-        {slideMode && slideVisible && <MarpSlides markdown={markdownContent} />}
+        {slideMode && slideVisible && <Slides markdown={markdownContent} />}
       </div>
       {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}

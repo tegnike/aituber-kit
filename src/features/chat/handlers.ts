@@ -6,7 +6,7 @@ import { judgeSlide } from '@/features/slide/slideAIHelpers'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
-import { goToSlide } from '@/components/marpSlides'
+import { goToSlide } from '@/components/slides'
 
 /**
  * 文字列を処理する関数

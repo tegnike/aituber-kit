@@ -10,6 +10,10 @@ export default async function handler(
   if (req.method === 'POST') {
     const { slideName } = req.body as { slideName: string }
 
+    if (!slideName) {
+      return res.status(400).json({ message: 'slideName is required' })
+    }
+
     try {
       const markdownPath = path.join(
         process.cwd(),
@@ -20,19 +24,27 @@ export default async function handler(
       )
       const markdown = await fs.readFile(markdownPath, 'utf-8')
 
-      const cssPath = path.join(
-        process.cwd(),
-        'public',
-        'slides',
-        slideName,
-        'theme.css'
-      )
-      const css = await fs.readFile(cssPath, 'utf-8')
+      let css = ''
+      try {
+        const cssPath = path.join(
+          process.cwd(),
+          'public',
+          'slides',
+          slideName,
+          'theme.css'
+        )
+        css = await fs.readFile(cssPath, 'utf-8')
+      } catch (cssError) {
+        console.warn(`CSSファイルが見つかりません: ${slideName}/theme.css`)
+        // CSSファイルが見つからない場合は空文字列を使用
+      }
 
       const marpit = new Marpit({
         inlineSVG: true,
       })
-      marpit.themeSet.default = marpit.themeSet.add(css)
+      if (css) {
+        marpit.themeSet.default = marpit.themeSet.add(css)
+      }
 
       const { html, css: generatedCss } = marpit.render(markdown)
 

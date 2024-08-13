@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import settingsStore from '@/features/stores/settings'
 import menuStore from '@/features/stores/menu'
 import slideStore from '@/features/stores/slide'
@@ -15,6 +15,15 @@ const Slide = () => {
   )
 
   const selectedSlideDocs = slideStore((s) => s.selectedSlideDocs)
+  const [slideFolders, setSlideFolders] = useState<string[]>([])
+
+  useEffect(() => {
+    // フォルダリストを取得
+    fetch('/api/getSlideFolders')
+      .then((response) => response.json())
+      .then((data) => setSlideFolders(data))
+      .catch((error) => console.error('Error fetching slide folders:', error))
+  }, [])
 
   useEffect(() => {
     // 初期値を 'demo' に設定
@@ -37,7 +46,7 @@ const Slide = () => {
     }
   }
 
-  const handleFolderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     slideStore.setState({ selectedSlideDocs: e.target.value })
   }
 
@@ -62,14 +71,18 @@ const Slide = () => {
           <div className="my-16 typography-20 font-bold">
             {t('SelectedSlideDocs')}
           </div>
-          <input
-            id="folder-input"
-            type="text"
+          <select
+            id="folder-select"
             className="px-16 py-16 bg-surface1 hover:bg-surface1-hover rounded-8 w-full md:w-1/2"
             value={selectedSlideDocs}
             onChange={handleFolderChange}
-            placeholder="Enter folder name"
-          />
+          >
+            {slideFolders.map((folder) => (
+              <option key={folder} value={folder}>
+                {folder}
+              </option>
+            ))}
+          </select>
         </>
       )}
     </>

@@ -5,7 +5,7 @@ import { processReceivedMessage } from '../features/chat/handlers'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
 
-interface MarpSlidesProps {
+interface SlidesProps {
   markdown: string
 }
 
@@ -15,7 +15,7 @@ export const goToSlide = (index: number) => {
   })
 }
 
-const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
+const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
   const isPlaying = slideStore((state) => state.isPlaying)
   const currentSlide = slideStore((state) => state.currentSlide)
@@ -197,4 +197,4 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
     </>
   )
 }
-export default MarpSlides
+export default Slides
