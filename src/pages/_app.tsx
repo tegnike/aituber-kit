@@ -1,6 +1,7 @@
 import '@charcoal-ui/icons'
 import type { AppProps } from 'next/app'
 import React, { useEffect } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 
 import { isLanguageSupported } from '@/features/constants/settings'
 import homeStore from '@/features/stores/home'
@@ -33,5 +34,10 @@ export default function App({ Component, pageProps }: AppProps) {
     homeStore.setState({ userOnboarded: true })
   }, [])
 
-  return <Component {...pageProps} />
+  return (
+    <>
+      <Component {...pageProps} />
+      <Analytics />
+    </>
+  )
 }
