@@ -118,9 +118,9 @@ npm run dev
 #### Related
 
 - You can try it with the server app repository I created. [tegnike/aituber-server](https://github.com/tegnike/
-aituber-server)
+  aituber-server)
 - For detailed settings, please read "[Let's develop with a beautiful girl!! [Open Interpreter]](https://note.
-com/nike_cha_n/n/nabcfeb7aaf3f)".
+  com/nike_cha_n/n/nabcfeb7aaf3f)".
 
 ### Slide Mode
 
