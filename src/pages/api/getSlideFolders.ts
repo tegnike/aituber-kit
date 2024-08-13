@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
+import { NextApiRequest, NextApiResponse } from 'next'
 
-export default function handler(req: any, res: any) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const slidesDir = path.join(process.cwd(), 'public', 'slides')
 
   try {
