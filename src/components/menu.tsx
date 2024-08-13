@@ -24,6 +24,7 @@ export const Menu = () => {
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showSettingsButton = menuStore((s) => s.showSettingsButton)
+  const slidePlaying = slideStore((s) => s.isPlaying)
 
   const [showSettings, setShowSettings] = useState(false)
   const [showChatLog, setShowChatLog] = useState(false)
@@ -187,6 +188,7 @@ export const Menu = () => {
                 onClick={() =>
                   menuStore.setState({ slideVisible: !slideVisible })
                 }
+                disabled={slidePlaying}
               />
             </div>
           )}
@@ -197,7 +199,7 @@ export const Menu = () => {
       </div>
       {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
-      {!showChatLog && assistantMessage && (
+      {!showChatLog && assistantMessage && !slideVisible && (
         <AssistantText message={assistantMessage} />
       )}
       {showWebcam && navigator.mediaDevices && <Webcam />}

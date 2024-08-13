@@ -27,6 +27,7 @@ export const processReceivedMessage = async (
 ) => {
   const ss = settingsStore.getState()
   const hs = homeStore.getState()
+  const currentSlideMessages: string[] = []
 
   // 返答内容のタグ部分と返答部分を分離
   const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
@@ -104,9 +105,18 @@ export const processReceivedMessage = async (
             assistantMessage: currentAssistantMessage,
           })
           hs.incrementChatProcessingCount()
+          // スライド用のメッセージを更新
+          currentSlideMessages.push(sentence)
+          homeStore.setState({
+            slideMessages: currentSlideMessages,
+          })
         },
         () => {
           hs.decrementChatProcessingCount()
+          currentSlideMessages.shift()
+          homeStore.setState({
+            slideMessages: currentSlideMessages,
+          })
         }
       )
     } else {
@@ -330,7 +340,7 @@ export const handleSendChatFn =
           ]
           homeStore.setState({ codeLog: updateLog, chatProcessing: false })
         } else {
-          // その他のコメントの処理（現想定では使用されないはず）
+          // その他のコメントの処理（現想���では使用されないはず）
           console.log('error role:', role)
         }
       } else {

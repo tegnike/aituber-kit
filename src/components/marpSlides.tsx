@@ -168,7 +168,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
         style={{
           width: '80vw',
           height: 'calc(80vw * (9 / 16))',
-          top: 'calc(80vw * (1 / 16))',
+          top: 'calc((100vh - 80vw * (9 / 16)) / 2)',
           right: 0,
           left: 0,
           margin: 'auto',
@@ -180,7 +180,7 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
         className="absolute"
         style={{
           width: '80vw',
-          top: 'calc(80vw * (9 / 16))',
+          top: 'calc((100vh + 80vw * (7 / 16)) / 2)',
           right: 0,
           left: 0,
           margin: 'auto',
