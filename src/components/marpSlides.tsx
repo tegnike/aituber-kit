@@ -115,14 +115,8 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
       const currentLines = getCurrentLines()
       console.log(currentLines)
       processReceivedMessage(currentLines)
-
-      if (currentSlide === slideCount - 1) {
-        slideStore.setState({
-          isPlaying: false,
-        })
-      }
     },
-    [currentSlide, selectedSlideDocs, slideCount]
+    [selectedSlideDocs]
   )
 
   const nextSlide = useCallback(() => {
@@ -130,6 +124,10 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
       const newSlide = Math.min(state.currentSlide + 1, slideCount - 1)
       if (isPlaying) {
         readSlide(newSlide)
+      }
+      // 最後のスライドに達した場合、isPlayingをfalseに設定
+      if (newSlide === slideCount - 1) {
+        return { currentSlide: newSlide, isPlaying: false }
       }
       return { currentSlide: newSlide }
     })
