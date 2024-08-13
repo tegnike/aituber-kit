@@ -191,6 +191,8 @@ export const Menu = () => {
             </div>
           )}
         </div>
+      </div>
+      <div className="relative">
         {slideMode && slideVisible && <MarpSlides markdown={markdownContent} />}
       </div>
       {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}

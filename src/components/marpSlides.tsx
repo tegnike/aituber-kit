@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { IconButton } from './iconButton'
 import slideStore from '../features/stores/slide'
 import homeStore from '../features/stores/home'
 import { processReceivedMessage } from '../features/chat/handlers'
+import SlideContent from './slideContent'
+import SlideControls from './slideControls'
 
 interface MarpSlidesProps {
   markdown: string
@@ -23,7 +24,6 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   const [slideCount, setSlideCount] = useState(0)
 
   useEffect(() => {
-    // debugger
     const currentMarpitContainer = document.querySelector('.marpit')
     if (currentMarpitContainer) {
       const slides = currentMarpitContainer.querySelectorAll(':scope > svg')
@@ -162,58 +162,41 @@ const MarpSlides: React.FC<MarpSlidesProps> = ({ markdown }) => {
   }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slideCount])
 
   return (
-    <div className="ml-16">
+    <>
       <div
+        className="absolute"
         style={{
-          width: '60vw',
-          height: 'calc(60vw * (9 / 16))',
-          overflow: 'hidden',
-          border: '2px solid #333',
-          boxSizing: 'border-box',
-          boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+          width: '80vw',
+          height: 'calc(80vw * (9 / 16))',
+          top: 'calc(80vw * (1 / 16))',
+          right: 0,
+          left: 0,
+          margin: 'auto',
         }}
       >
-        {marpitContainer && (
-          <div
-            style={{ width: '100%', height: '100%', overflow: 'hidden' }}
-            dangerouslySetInnerHTML={{ __html: marpitContainer.outerHTML }}
-          />
-        )}
+        <SlideContent marpitContainer={marpitContainer} />
       </div>
       <div
+        className="absolute"
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginTop: '20px',
+          width: '80vw',
+          top: 'calc(80vw * (9 / 16))',
+          right: 0,
+          left: 0,
+          margin: 'auto',
+          zIndex: 10,
         }}
       >
-        <div style={{ flex: 1 }}></div>
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-          <IconButton
-            iconName="24/Prev"
-            disabled={currentSlide === 0 || isPlaying}
-            onClick={prevSlide}
-            isProcessing={false}
-            className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
-          ></IconButton>
-          <IconButton
-            iconName="24/Next"
-            disabled={currentSlide === slideCount - 1 || isPlaying}
-            onClick={nextSlide}
-            isProcessing={false}
-            className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
-          ></IconButton>
-        </div>
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton
-            iconName={isPlaying ? '24/PauseAlt' : '24/Play'}
-            onClick={toggleIsPlaying}
-            isProcessing={false}
-            className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
-          />
-        </div>
+        <SlideControls
+          currentSlide={currentSlide}
+          slideCount={slideCount}
+          isPlaying={isPlaying}
+          prevSlide={prevSlide}
+          nextSlide={nextSlide}
+          toggleIsPlaying={toggleIsPlaying}
+        />
       </div>
-    </div>
+    </>
   )
 }
 export default MarpSlides
