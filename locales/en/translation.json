@@ -3,6 +3,7 @@
   "AISettings": "■ AI Settings",
   "YoutubeSettings": "■ YouTube Settings",
   "VoiceSettings": "■ Voice Settings",
+  "SlideSettings": "■ Slide Settings",
   "OtherSettings": "■ Other",
   "ExternalConnectionMode": "External Connection Mode (WebSocket, β version)",
   "YoutubeMode": "YouTube Mode",
@@ -98,5 +99,8 @@
   "ShowCharacterName": "Show character name in the answer box",
   "AdvancedSettings": "Advanced Settings",
   "ShowSettingsButton": "Show settings button",
-  "ShowSettingsButtonInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) ."
+  "ShowSettingsButtonInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) .",
+  "SlideMode": "Slide Mode",
+  "SelectedSlideDocs": "Selected Slide Documents",
+  "SlideModeDescription": "This is a mode where AI automatically presents slides. It is only available when the selected AI service is OpenAI, Anthropic, or Google Gemini."
 }
