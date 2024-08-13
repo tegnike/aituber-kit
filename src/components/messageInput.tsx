@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
+import slideStore from '@/features/stores/slide'
 import { IconButton } from './iconButton'
 
 type Props = {
@@ -22,6 +23,7 @@ export const MessageInput = ({
   onClickSendButton,
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
+  const slidePlaying = slideStore((s) => s.isPlaying)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
 
@@ -45,11 +47,15 @@ export const MessageInput = ({
       !event.nativeEvent.isComposing &&
       event.keyCode !== 229 && // IME (Input Method Editor)
       event.key === 'Enter' &&
-      !event.shiftKey &&
-      userMessage.trim() !== ''
+      !event.shiftKey
     ) {
-      onClickSendButton(event as unknown as React.MouseEvent<HTMLButtonElement>)
-      setRows(1)
+      event.preventDefault() // デフォルトの挙動を防止
+      if (userMessage.trim() !== '') {
+        onClickSendButton(
+          event as unknown as React.MouseEvent<HTMLButtonElement>
+        )
+        setRows(1)
+      }
     } else if (event.key === 'Enter' && event.shiftKey) {
       setRows(rows + 1)
     } else if (
@@ -81,7 +87,7 @@ export const MessageInput = ({
               }
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
-              disabled={chatProcessing}
+              disabled={chatProcessing || slidePlaying}
               className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"
               value={chatProcessing ? '' : userMessage}
               rows={rows}

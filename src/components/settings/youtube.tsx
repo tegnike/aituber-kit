@@ -15,6 +15,7 @@ const YouTube = () => {
   const conversationContinuityMode = settingsStore(
     (s) => s.conversationContinuityMode
   )
+  const slideMode = settingsStore((s) => s.slideMode)
 
   const { t } = useTranslation()
 
@@ -95,8 +96,9 @@ const YouTube = () => {
                       })
                     }
                     disabled={
-                      selectAIService !== 'openai' &&
-                      selectAIService !== 'anthropic'
+                      (selectAIService !== 'openai' &&
+                        selectAIService !== 'anthropic') ||
+                      slideMode
                     }
                   >
                     {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}

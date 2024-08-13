@@ -14,6 +14,7 @@ export interface PersistedState {
 export interface TransientState {
   viewer: Viewer
   assistantMessage: string
+  slideMessages: string[]
   chatProcessing: boolean
   chatProcessingCount: number
   incrementChatProcessingCount: () => void
@@ -40,6 +41,7 @@ const homeStore = create<HomeState>()(
       // transient states
       viewer: new Viewer(),
       assistantMessage: '',
+      slideMessages: [],
       chatProcessing: false,
       chatProcessingCount: 0,
       incrementChatProcessingCount: () => {
@@ -61,7 +63,7 @@ const homeStore = create<HomeState>()(
       voicePlaying: false,
     }),
     {
-      name: 'home',
+      name: 'aitube-kit-home',
       partialize: ({ chatLog, codeLog, dontShowIntroduction }) => ({
         chatLog,
         codeLog,

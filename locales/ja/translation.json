@@ -3,6 +3,7 @@
   "AISettings": "■ AI設定",
   "YoutubeSettings": "■ YouTube設定",
   "VoiceSettings": "■ 音声設定",
+  "SlideSettings": "■ スライド設定",
   "OtherSettings": "■ その他",
   "ExternalConnectionMode": "外部連携モード（WebSocket, β版）",
   "YoutubeMode": "YouTubeモード",
@@ -99,5 +100,8 @@
   "ShowCharacterName": "回答欄にキャラクター名を表示する",
   "AdvancedSettings": "詳細設定",
   "ShowSettingsButton": "設定ボタンを表示",
-  "ShowSettingsButtonInfo": "設定画面は Cmd + . (Mac) / Ctrl + . (Windows) で表示することができます。"
+  "ShowSettingsButtonInfo": "設定画面は Cmd + . (Mac) / Ctrl + . (Windows) で表示することができます。",
+  "SlideMode": "スライドモード",
+  "SelectedSlideDocs": "使用するスライド",
+  "SlideModeDescription": "AIが自動でスライドを発表するモードです。選択しているAIサービスがOpenAIまたはAnthropicまたはGoogle Geminiの場合のみ有効です。"
 }
