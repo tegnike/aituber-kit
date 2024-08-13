@@ -64,7 +64,7 @@ npm run dev
 - It is an extended feature of [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM), which is the basis of this repository.
 - It can be tried relatively easily as long as you have an API key for various LLMs.
 - The recent conversation sentences are retained as memory.
-- It is multi modal, capable of recognizing images from the camera or uploaded images to generate responses.
+- It is multimodal, capable of recognizing images from the camera or uploaded images to generate responses.
 
 ### Usage
 
