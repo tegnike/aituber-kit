@@ -82,7 +82,7 @@ const settingsStore = create<SettingsState>()(
 
       // Model Provider
       selectAIService: 'openai',
-      selectAIModel: 'gpt-3.5-turbo',
+      selectAIModel: 'gpt-4o',
       localLlmUrl: '',
       selectVoice: 'voicevox',
       koeiroParam: DEFAULT_PARAM,
