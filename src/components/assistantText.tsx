@@ -5,7 +5,7 @@ export const AssistantText = ({ message }: { message: string }) => {
   const showCharacterName = settingsStore((s) => s.showCharacterName)
 
   return (
-    <div className="absolute bottom-0 left-0 md:mb-[96px] mb-[80px] w-full">
+    <div className="absolute bottom-0 left-0 md:mb-[96px] mb-[80px] w-full z-10">
       <div className="mx-auto max-w-4xl w-full p-16">
         <div className="bg-white rounded-8">
           {showCharacterName && (

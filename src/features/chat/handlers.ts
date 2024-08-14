@@ -549,6 +549,8 @@ export const handleSendChatFn =
             hs.modalImage &&
             ss.selectAIService === 'openai' &&
             (ss.selectAIModel === 'gpt-4o-mini' ||
+              ss.selectAIModel === 'chatgpt-4o-latest' ||
+              ss.selectAIModel === 'gpt-4o-2024-08-06' ||
               ss.selectAIModel === 'gpt-4o' ||
               ss.selectAIModel === 'gpt-4-turbo')
               ? [
@@ -572,6 +574,8 @@ export const handleSendChatFn =
           typeof message.content === 'string' ||
           (ss.selectAIService === 'openai' &&
             (ss.selectAIModel === 'gpt-4o-mini' ||
+              ss.selectAIModel === 'chatgpt-4o-latest' ||
+              ss.selectAIModel === 'gpt-4o-2024-08-06' ||
               ss.selectAIModel === 'gpt-4o' ||
               ss.selectAIModel === 'gpt-4-turbo'))
             ? message.content
