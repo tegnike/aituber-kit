@@ -141,6 +141,7 @@ export const processAIResponse = async (
 
   const ss = settingsStore.getState()
   const hs = homeStore.getState()
+  const currentSlideMessages: string[] = []
 
   const aiServiceConfig: AIServiceConfig = {
     openai: {
@@ -276,9 +277,18 @@ export const processAIResponse = async (
                 assistantMessage: currentAssistantMessage,
               })
               hs.incrementChatProcessingCount()
+              // スライド用のメッセージを更新
+              currentSlideMessages.push(sentence)
+              homeStore.setState({
+                slideMessages: currentSlideMessages,
+              })
             },
             () => {
               hs.decrementChatProcessingCount()
+              currentSlideMessages.shift()
+              homeStore.setState({
+                slideMessages: currentSlideMessages,
+              })
             }
           )
         } else {
@@ -304,9 +314,18 @@ export const processAIResponse = async (
               assistantMessage: currentAssistantMessage,
             })
             hs.incrementChatProcessingCount()
+            // スライド用のメッセージを更新
+            currentSlideMessages.push(receivedMessage)
+            homeStore.setState({
+              slideMessages: currentSlideMessages,
+            })
           },
           () => {
             hs.decrementChatProcessingCount()
+            currentSlideMessages.shift()
+            homeStore.setState({
+              slideMessages: currentSlideMessages,
+            })
           }
         )
 
