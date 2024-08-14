@@ -21,11 +21,10 @@
 
 ## Overview
 
-This repository has the following 3 features:
+This repository has mainly the following 2 features:
 
 1. Conversation with AI character
 2. AITuber streaming
-3. External integration mode (β version)
 
 I've written a detailed usage guide in the article below:
 
@@ -57,14 +56,14 @@ npm install
 npm run dev
 ```
 
-3. Open the URL [http://localhost:3000](http://localhost:3000)
+5. Open the URL [http://localhost:3000](http://localhost:3000)
 
 ## Conversation with AI Character
 
 - This is a feature to converse with an AI character.
 - It is an extended feature of [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM), which is the basis of this repository.
 - It can be tried relatively easily as long as you have an API key for various LLMs.
-- The recent 10 conversation sentences are retained as memory. (The number will be configurable in future updates)
+- The recent conversation sentences are retained as memory.
 - It is multimodal, capable of recognizing images from the camera or uploaded images to generate responses.
 
 ### Usage
@@ -77,7 +76,7 @@ npm run dev
    - Local LLM (No API key is required, but a local API server needs to be running.)
    - Dify Chatbot (No API key is required, but a local API server needs to be running.)
 2. Edit the character's setting prompt if necessary.
-3. Load a VRM file if needed.
+3. Load a VRM file and background file if available.
 4. Select a speech synthesis engine and configure voice settings if necessary.
    - For VOICEVOX, you can select a speaker from multiple options. The VOICEVOX app needs to be running beforehand.
    - For Koeiromap, you can finely adjust the voice. An API key is required.
@@ -91,7 +90,7 @@ npm run dev
 
 - It is possible to retrieve YouTube streaming comments and have the character speak.
 - A YouTube API key is required.
-- Comments starting with '#' are not read. (The string can be specified in future updates)
+- Comments starting with '#' are not read.
 
 ### Usage
 
@@ -101,23 +100,39 @@ npm run dev
 4. Start streaming on YouTube and confirm that the character reacts to comments.
 5. Turn on the conversation continuity mode to be able to speak even if there are no comments.
 
-## External Integration Mode (β version)
+## Other Features
+
+### External Integration Mode (β version)
 
 - You can send messages to the server app via WebSocket and get a response.
 - Unlike the above two, it does not complete within the front-end app, so the difficulty level is a bit higher.
-- ⚠ This mode is not maintained, so it may not work.
+- ⚠ This mode is currently not fully maintained, so it may not work.
 
-### Usage
+#### Usage
 
 1. Start the server app and open the `ws://127.0.0.1:8000/ws` endpoint.
 2. Turn on WebSocket mode in the settings screen.
 3. Configure other settings the same way as "Conversation with AI Character".
 4. Wait for messages from the server app and confirm that the character reacts.
 
-### Related
+#### Related
 
-- You can try it with the server app repository I created. [tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- For detailed settings, please read "[Let's develop with a beautiful girl!! [Open Interpreter]](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)".
+- You can try it with the server app repository I created. [tegnike/aituber-server](https://github.com/tegnike/
+  aituber-server)
+- For detailed settings, please read "[Let's develop with a beautiful girl!! [Open Interpreter]](https://note.
+  com/nike_cha_n/n/nabcfeb7aaf3f)".
+
+### Slide Mode
+
+- This is a mode where the AI character automatically presents slides.
+- You need to prepare slides and script files in advance.
+
+#### Usage
+
+1. Proceed to the point where you can interact with the AI character.
+2. Place the slide folder and script file in the designated folder.
+3. Turn on Slide Mode in the settings screen.
+4. Press the Start Slide button to begin the presentation.
 
 ## TIPS
 
@@ -179,6 +194,9 @@ Your support will greatly contribute to the development and improvement of the A
   </a>
   <a href="https://github.com/tsubouchi" title="tsubouchi">
     <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
+  </a>
+  <a href="https://github.com/bunkaich" title="bunkaich">
+    <img src="https://github.com/bunkaich.png" width="40" height="40" alt="bunkaich">
   </a>
 </p>
 

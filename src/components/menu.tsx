@@ -4,28 +4,46 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
+import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
 import { CodeLog } from './codeLog'
 import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
+import Slides from './slides'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const webSocketMode = settingsStore((s) => s.webSocketMode)
+  const slideMode = settingsStore((s) => s.slideMode)
+  const slideVisible = menuStore((s) => s.slideVisible)
   const chatLog = homeStore((s) => s.chatLog)
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showSettingsButton = menuStore((s) => s.showSettingsButton)
+  const slidePlaying = slideStore((s) => s.isPlaying)
 
   const [showSettings, setShowSettings] = useState(false)
   const [showChatLog, setShowChatLog] = useState(false)
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
+
+  const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const { t } = useTranslation()
+
+  const [markdownContent, setMarkdownContent] = useState('')
+
+  useEffect(() => {
+    fetch(`/slides/${selectedSlideDocs}/slides.md`)
+      .then((response) => response.text())
+      .then((text) => setMarkdownContent(text))
+      .catch((error) =>
+        console.error('Failed to fetch markdown content:', error)
+      )
+  }, [selectedSlideDocs])
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +82,6 @@ export const Menu = () => {
     }
   }, [])
 
-  // カメラが開いているかどうかの状態変更
   useEffect(() => {
     console.log('onChangeWebcamStatus')
     homeStore.setState({ webcamStatus: showWebcam })
@@ -83,8 +100,11 @@ export const Menu = () => {
 
   return (
     <>
-      <div className="absolute z-10 m-24">
-        <div className="grid md:grid-flow-col gap-[8px]">
+      <div className="absolute z-15 m-24">
+        <div
+          className="grid md:grid-flow-col gap-[8px] mb-40"
+          style={{ width: 'max-content' }}
+        >
           <div className="md:order-1 order-2">
             {showSettingsButton && (
               <IconButton
@@ -163,11 +183,26 @@ export const Menu = () => {
               }}
             />
           </div>
+          {slideMode && (
+            <div className="order-5">
+              <IconButton
+                iconName="24/FrameEffect"
+                isProcessing={false}
+                onClick={() =>
+                  menuStore.setState({ slideVisible: !slideVisible })
+                }
+                disabled={slidePlaying}
+              />
+            </div>
+          )}
         </div>
+      </div>
+      <div className="relative">
+        {slideMode && slideVisible && <Slides markdown={markdownContent} />}
       </div>
       {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
-      {!showChatLog && assistantMessage && (
+      {!showChatLog && assistantMessage && !slideVisible && (
         <AssistantText message={assistantMessage} />
       )}
       {showWebcam && navigator.mediaDevices && <Webcam />}

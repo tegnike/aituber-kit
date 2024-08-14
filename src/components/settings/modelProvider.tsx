@@ -2,9 +2,11 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
+import slideStore from '@/features/stores/slide'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
+import { useCallback } from 'react'
 
 const ModelProvider = () => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
@@ -35,6 +37,36 @@ const ModelProvider = () => {
     dify: '',
   }
 
+  const handleAIServiceChange = useCallback(
+    (newService: keyof typeof defaultModels) => {
+      settingsStore.setState({
+        selectAIService: newService,
+        selectAIModel: defaultModels[newService],
+      })
+
+      if (newService !== 'openai') {
+        homeStore.setState({ modalImage: '' })
+        menuStore.setState({ showWebcam: false })
+
+        if (newService !== 'anthropic') {
+          settingsStore.setState({
+            conversationContinuityMode: false,
+          })
+        }
+
+        if (newService !== 'anthropic' && newService !== 'google') {
+          settingsStore.setState({
+            slideMode: false,
+          })
+          slideStore.setState({
+            isPlaying: false,
+          })
+        }
+      }
+    },
+    []
+  )
+
   return webSocketMode ? null : (
     <div className="my-40">
       <div className="my-16 typography-20 font-bold">
@@ -44,29 +76,9 @@ const ModelProvider = () => {
         <select
           className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
           value={selectAIService}
-          onChange={(e) => {
-            const newService = e.target.value as keyof typeof defaultModels
-
-            settingsStore.setState({
-              selectAIService: newService,
-            })
-
-            if (newService !== 'openai') {
-              homeStore.setState({ modalImage: '' })
-              menuStore.setState({ showWebcam: false })
-
-              if (e.target.value !== 'anthropic') {
-                settingsStore.setState({
-                  conversationContinuityMode: false,
-                })
-              }
-            }
-
-            // 選択したAIサービスに基づいてデフォルトモデルを設定する
-            settingsStore.setState({
-              selectAIModel: defaultModels[newService],
-            })
-          }}
+          onChange={(e) =>
+            handleAIServiceChange(e.target.value as keyof typeof defaultModels)
+          }
         >
           <option value="openai">OpenAI</option>
           <option value="anthropic">Anthropic</option>

@@ -9,7 +9,12 @@ const ModalImage = () => {
   if (!modalImage) return null
 
   return (
-    <div className="row-span-1 flex justify-end max-h-[40vh]">
+    <div
+      className="absolute row-span-1 flex right-0 max-h-[40vh] z-10"
+      style={{
+        top: '40vh',
+      }}
+    >
       <div className="relative w-full md:max-w-[512px] max-w-[50%] m-16">
         <Image
           src={modalImage}

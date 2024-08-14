@@ -5,6 +5,7 @@ interface MenuState {
   showSettingsButton: boolean
   fileInput: HTMLInputElement | null
   bgFileInput: HTMLInputElement | null
+  slideVisible: boolean
 }
 
 const menuStore = create<MenuState>((set, get) => ({
@@ -12,5 +13,6 @@ const menuStore = create<MenuState>((set, get) => ({
   showSettingsButton: true,
   fileInput: null,
   bgFileInput: null,
+  slideVisible: true,
 }))
 export default menuStore

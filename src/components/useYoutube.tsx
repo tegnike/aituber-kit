@@ -4,7 +4,7 @@ import { Message } from '@/features/messages/messages'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments'
-import { processAIResponse } from './handlers'
+import { processAIResponse } from '../features/chat/handlers'
 
 const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 5000 // 5秒
 

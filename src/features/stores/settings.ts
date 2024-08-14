@@ -58,6 +58,7 @@ interface General {
   selectVoiceLanguage: VoiceLanguage
   changeEnglishToJapanese: boolean
   webSocketMode: boolean
+  slideMode: boolean
 }
 
 export type SettingsState = APIKeys &
@@ -115,9 +116,10 @@ const settingsStore = create<SettingsState>()(
       selectVoiceLanguage: 'ja-JP', // TODO: 要整理, ja-JP, en-US
       changeEnglishToJapanese: false,
       webSocketMode: false,
+      slideMode: false,
     }),
     {
-      name: 'settings',
+      name: 'aitube-kit-settings',
     }
   )
 )
