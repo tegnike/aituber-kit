@@ -144,9 +144,13 @@ export const Menu = () => {
               disabled={
                 !(
                   selectAIService === 'openai' &&
-                  ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo'].includes(
-                    selectAIModel
-                  )
+                  [
+                    'gpt-4o-mini',
+                    'chatgpt-4o-latest',
+                    'gpt-4o-2024-08-06',
+                    'gpt-4o',
+                    'gpt-4-turbo',
+                  ].includes(selectAIModel)
                 ) || youtubeMode
               }
             />
@@ -159,9 +163,13 @@ export const Menu = () => {
               disabled={
                 !(
                   selectAIService === 'openai' &&
-                  ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo'].includes(
-                    selectAIModel
-                  )
+                  [
+                    'gpt-4o-mini',
+                    'chatgpt-4o-latest',
+                    'gpt-4o-2024-08-06',
+                    'gpt-4o',
+                    'gpt-4-turbo',
+                  ].includes(selectAIModel)
                 ) || youtubeMode
               }
             />
