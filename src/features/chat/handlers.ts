@@ -131,6 +131,7 @@ export const processReceivedMessage = async (
  * @param currentChatLog ログに残るメッセージの配列
  * @param messages 解答生成に使用するメッセージの配列
  */
+// TODO: 上の関数とかなり処理が被るのでいずれまとめる
 export const processAIResponse = async (
   currentChatLog: Message[],
   messages: Message[]
@@ -139,6 +140,7 @@ export const processAIResponse = async (
   let stream
 
   const ss = settingsStore.getState()
+  const hs = homeStore.getState()
 
   const aiServiceConfig: AIServiceConfig = {
     openai: {
@@ -194,37 +196,121 @@ export const processAIResponse = async (
   try {
     while (true) {
       const { done, value } = await reader.read()
+      if (done && receivedMessage.length === 0) break
+
       if (value) receivedMessage += value
 
-      // 完全な文を処理
-      const sentenceMatch = receivedMessage.match(/^(.+?[。．.!?！？\n])/)
-      if (sentenceMatch) {
-        let sentence = sentenceMatch[0]
-        receivedMessage = receivedMessage.slice(sentence.length)
-
-        await processReceivedMessage(
-          sentence,
-          sentences,
-          aiTextLog,
-          tag,
-          isCodeBlock,
-          codeBlockText
-        )
+      // 返答内容のタグ部分と返答部分を分離
+      const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
+      if (tagMatch && tagMatch[0]) {
+        tag = tagMatch[0]
+        receivedMessage = receivedMessage.slice(tag.length)
       }
 
-      // ストリームが終了し、残りのメッセージがある場合
-      if (done) {
-        if (receivedMessage.length > 0) {
-          await processReceivedMessage(
-            receivedMessage,
-            sentences,
-            aiTextLog,
-            tag,
-            isCodeBlock,
-            codeBlockText
+      // 返答を一文単位で切り出して処理する
+      while (receivedMessage.length > 0) {
+        const sentenceMatch = receivedMessage.match(
+          /^(.+?[。．.!?！？\n]|.{20,}[、,])/
+        )
+        if (sentenceMatch?.[0]) {
+          let sentence = sentenceMatch[0]
+          // 区切った文字をsentencesに追加
+          sentences.push(sentence)
+          // 区切った文字の残りでreceivedMessageを更新
+          receivedMessage = receivedMessage.slice(sentence.length).trimStart()
+
+          // 発話不要/不可能な文字列だった場合はスキップ
+          if (
+            !sentence.includes('```') &&
+            !sentence.replace(
+              /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
+              ''
+            )
+          ) {
+            continue
+          }
+
+          // タグと返答を結合（音声再生で使用される）
+          let aiText = `${tag} ${sentence}`
+          console.log('aiText', aiText)
+
+          if (isCodeBlock && !sentence.includes('```')) {
+            codeBlockText += sentence
+            continue
+          }
+
+          if (sentence.includes('```')) {
+            if (isCodeBlock) {
+              // コードブロックの終了処理
+              const [codeEnd, ...restOfSentence] = sentence.split('```')
+              aiTextLog.push({
+                role: 'code',
+                content: codeBlockText + codeEnd,
+              })
+              aiText += `${tag} ${restOfSentence.join('```') || ''}`
+
+              // AssistantMessage欄の更新
+              homeStore.setState({ assistantMessage: sentences.join(' ') })
+
+              codeBlockText = ''
+              isCodeBlock = false
+            } else {
+              // コードブロックの開始処理
+              isCodeBlock = true
+              ;[aiText, codeBlockText] = aiText.split('```')
+            }
+
+            sentence = sentence.replace(/```/g, '')
+          }
+
+          const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
+          aiTextLog.push({ role: 'assistant', content: sentence })
+
+          // 文ごとに音声を生成 & 再生、返答を表示
+          const currentAssistantMessage = sentences.join(' ')
+
+          speakCharacter(
+            aiTalks[0],
+            () => {
+              homeStore.setState({
+                assistantMessage: currentAssistantMessage,
+              })
+              hs.incrementChatProcessingCount()
+            },
+            () => {
+              hs.decrementChatProcessingCount()
+            }
           )
+        } else {
+          // マッチする文がない場合、ループを抜ける
+          break
         }
-        break
+      }
+
+      // ストリームが終了し、receivedMessageが空でない場合の処理
+      if (done && receivedMessage.length > 0) {
+        // 残りのメッセージを処理
+        let aiText = `${tag} ${receivedMessage}`
+        const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
+        aiTextLog.push({ role: 'assistant', content: receivedMessage })
+        sentences.push(receivedMessage)
+
+        const currentAssistantMessage = sentences.join(' ')
+
+        speakCharacter(
+          aiTalks[0],
+          () => {
+            homeStore.setState({
+              assistantMessage: currentAssistantMessage,
+            })
+            hs.incrementChatProcessingCount()
+          },
+          () => {
+            hs.decrementChatProcessingCount()
+          }
+        )
+
+        receivedMessage = ''
       }
     }
   } catch (e) {
