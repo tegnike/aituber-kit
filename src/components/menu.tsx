@@ -100,7 +100,7 @@ export const Menu = () => {
 
   return (
     <>
-      <div className="absolute z-10 m-24">
+      <div className="absolute z-15 m-24">
         <div
           className="grid md:grid-flow-col gap-[8px] mb-40"
           style={{ width: 'max-content' }}

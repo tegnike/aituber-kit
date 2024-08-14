@@ -44,6 +44,7 @@ module.exports = {
       },
       zIndex: {
         5: '5',
+        15: '15',
       },
     },
   },
