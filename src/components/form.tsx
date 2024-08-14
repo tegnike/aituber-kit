@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
+import slideStore from '@/features/stores/slide'
 import { handleSendChatFn } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import useWebSocket from './useWebSocket'
@@ -15,7 +16,8 @@ export const Form = () => {
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
-  const assistantMessage = homeStore((s) => s.assistantMessage)
+  const slidePlaying = slideStore((s) => s.isPlaying)
+  const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
 
   const [delayedText, setDelayedText] = useState('')
 
@@ -51,7 +53,9 @@ export const Form = () => {
     [handleSendChat, webcamStatus, setDelayedText]
   )
 
-  return slideMode && slideVisible ? (
+  return slideMode &&
+    slideVisible &&
+    (slidePlaying || chatProcessingCount !== 0) ? (
     <SlideText />
   ) : (
     <MessageInputContainer onChatProcessStart={hookSendChat} />

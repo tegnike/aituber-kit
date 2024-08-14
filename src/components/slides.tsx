@@ -125,13 +125,16 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       if (isPlaying) {
         readSlide(newSlide)
       }
-      // 最後のスライドに達した場合、isPlayingをfalseに設定
-      if (newSlide === slideCount - 1) {
-        return { currentSlide: newSlide, isPlaying: false }
-      }
       return { currentSlide: newSlide }
     })
   }, [isPlaying, readSlide, slideCount])
+
+  useEffect(() => {
+    // 最後のスライドに達した場合、isPlayingをfalseに設定
+    if (currentSlide === slideCount - 1 && chatProcessingCount === 0) {
+      slideStore.setState({ isPlaying: false })
+    }
+  }, [currentSlide, slideCount, chatProcessingCount])
 
   const prevSlide = useCallback(() => {
     slideStore.setState((state) => ({
