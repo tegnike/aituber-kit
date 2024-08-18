@@ -1,5 +1,5 @@
 # ベースイメージとしてNode.js 18を使用
-FROM node:18
+FROM node:20
 
 # 作業ディレクトリを設定
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Next.jsをグローバルにインストール
-RUN npm install -g next
+RUN npm install next
 
 # アプリケーションをビルド
 RUN npm run build
