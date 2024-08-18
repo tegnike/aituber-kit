@@ -1,4 +1,4 @@
-# ベースイメージとしてNode.js 18を使用
+# ベースイメージとしてNode.js 20を使用
 FROM node:20
 
 # 作業ディレクトリを設定
@@ -12,9 +12,6 @@ RUN npm ci
 
 # アプリケーションのソースコードをコピー
 COPY . .
-
-# Next.jsをグローバルにインストール
-RUN npm install next
 
 # アプリケーションをビルド
 RUN npm run build
