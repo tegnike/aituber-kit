@@ -6,6 +6,13 @@
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
+   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/tegnike/aituber-kit"></a>
+</p>
+<p align="center">
+   <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/tegnike/aituber-kit"></a>
 </p>
 <p align="center">
    <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
@@ -28,7 +35,7 @@
 
 下記の記事に詳細な使用方法を記載しました。
 
-[![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+[![今日からあなたもAITuberデベロッパー｜��ケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
 ## 共通事前準備
 
@@ -122,7 +129,7 @@ npm run dev
 
 ### スライドモード
 
-- スライドをAIキャラが自動で発表するモードです。
+- スライドをAIキャラが自動で発表するモードで。
 - 予めスライドと台本ファイルを用意しておく必要があります。
 
 #### 使用方法
@@ -252,7 +259,7 @@ npm run dev
    ```
 
 5. **テスト**:
-   - 新しい言語でアプリケーションが正しく表示されるかテストします。
+   - 新しい言語でアプリケーション正しく表示されるかテストします。
 
 これで新しい言語のサポートがプロジェクトに追加されます。
 
