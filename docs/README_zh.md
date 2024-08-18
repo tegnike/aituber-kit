@@ -196,6 +196,12 @@ npm run dev
   <a href="https://github.com/bunkaich" title="bunkaich">
     <img src="https://github.com/bunkaich.png" width="40" height="40" alt="bunkaich">
   </a>
+  <a href="https://github.com/seiki-aliveland" title="seiki-aliveland">
+    <img src="https://github.com/seiki-aliveland.png" width="40" height="40" alt="seiki-aliveland">
+  </a>
+  <a href="https://github.com/rossy8417" title="rossy8417">
+    <img src="https://github.com/rossy8417.png" width="40" height="40" alt="rossy8417">
+  </a>
 </p>
 
 以及多位匿名贊助者
