@@ -1,5 +1,5 @@
-# ベースイメージとしてNode.js 16を使用
-FROM node:16
+# ベースイメージとしてNode.js 20を使用
+FROM node:20
 
 # 作業ディレクトリを設定
 WORKDIR /app
