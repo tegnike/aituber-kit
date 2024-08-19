@@ -18,5 +18,26 @@ paginate: true
 
 ---
 
+![bg](/slides/test/images/4.png)
 
+---
 
+![bg](/slides/test/images/5.png)
+
+---
+
+![bg](/slides/test/images/6.png)
+
+---
+
+![bg](/slides/test/images/7.png)
+
+---
+
+![bg](/slides/test/images/8.png)
+
+---
+
+![bg](/slides/test/images/9.png)
+
+---
