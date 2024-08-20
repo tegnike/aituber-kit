@@ -37,6 +37,8 @@ export const Menu = () => {
   const [markdownContent, setMarkdownContent] = useState('')
 
   useEffect(() => {
+    if (!selectedSlideDocs) return
+
     fetch(`/slides/${selectedSlideDocs}/slides.md`)
       .then((response) => response.text())
       .then((text) => setMarkdownContent(text))
