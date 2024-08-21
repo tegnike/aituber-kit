@@ -212,7 +212,7 @@ export const Menu = () => {
       </div>
       {webSocketMode ? showChatLog && <ChatLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
-      {!showChatLog && assistantMessage && !slideVisible && (
+      {!showChatLog && assistantMessage && (!slideMode || !slideVisible) && (
         <AssistantText message={assistantMessage} />
       )}
       {showWebcam && navigator.mediaDevices && <Webcam />}

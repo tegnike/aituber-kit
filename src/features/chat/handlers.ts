@@ -547,7 +547,7 @@ export const handleSendChatFn =
  * WebSocketからのテキストを受信したときの処理
  */
 export const handleReceiveTextFromWsFn =
-  () => async (text: string, role?: string) => {
+  () => async (text: string, role?: string, state?: string) => {
     if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()
@@ -562,7 +562,23 @@ export const handleReceiveTextFromWsFn =
     homeStore.setState({ chatProcessing: true })
 
     if (role !== 'user') {
-      if (role === 'assistant') {
+      const updateLog: Message[] = [...hs.chatLog]
+
+      if (state === 'start') {
+        // startの場合は何もしない（textは空文字のため）
+        console.log('Starting new response')
+      } else if (
+        updateLog.length > 0 &&
+        updateLog[updateLog.length - 1].role === role
+      ) {
+        // 既存のメッセージに追加
+        updateLog[updateLog.length - 1].content += text
+      } else {
+        // 新しいメッセージを追加
+        updateLog.push({ role: role, content: text })
+      }
+
+      if (role === 'assistant' && text !== '') {
         let aiText = `${'[neutral]'} ${text}`
         try {
           const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
@@ -571,15 +587,9 @@ export const handleReceiveTextFromWsFn =
           speakCharacter(
             aiTalks[0],
             () => {
-              // アシスタントの返答をログに追加
-              const updateLog: Message[] = [
-                ...hs.chatLog,
-                { role: 'assistant', content: text },
-              ]
-              // hs.incrementChatProcessingCount()
               homeStore.setState({
                 chatLog: updateLog,
-                assistantMessage: text,
+                assistantMessage: updateLog[updateLog.length - 1].content,
               })
             },
             () => {
@@ -589,18 +599,17 @@ export const handleReceiveTextFromWsFn =
         } catch (e) {
           console.error('Error in speakCharacter:', e)
         }
-      } else if (role === 'code' || role === 'output' || role === 'executing') {
-        const updateLog: Message[] = [
-          ...hs.chatLog,
-          { role: role, content: text },
-        ]
+      } else {
         homeStore.setState({
           chatLog: updateLog,
         })
-      } else {
-        console.log('error role:', role)
+      }
+
+      if (state === 'end') {
+        // レスポンスの終了処理
+        console.log('Response ended')
       }
     }
 
-    homeStore.setState({ chatProcessing: false })
+    homeStore.setState({ chatProcessing: state !== 'end' })
   }

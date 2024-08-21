@@ -12,7 +12,11 @@ interface TmpMessage {
 }
 
 interface Params {
-  handleReceiveTextFromWs: (text: string, role?: string) => Promise<void>
+  handleReceiveTextFromWs: (
+    text: string,
+    role?: string,
+    state?: string
+  ) => Promise<void>
 }
 
 const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
@@ -25,34 +29,9 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
 
   const processMessage = useCallback(
     async (message: TmpMessage) => {
-      if (message.state === 'start') {
-        setCurrentMessage({ role: '', text: '' })
-      } else if (message.state === 'end') {
-        if (currentMessage.role && currentMessage.text) {
-          await handleReceiveTextFromWs(
-            currentMessage.text,
-            currentMessage.role
-          )
-          setCurrentMessage({ role: '', text: '' })
-        }
-      } else {
-        if (currentMessage.role === message.role) {
-          setCurrentMessage((prev) => ({
-            ...prev,
-            text: prev.text + message.text,
-          }))
-        } else {
-          if (currentMessage.role && currentMessage.text) {
-            await handleReceiveTextFromWs(
-              currentMessage.text,
-              currentMessage.role
-            )
-          }
-          setCurrentMessage({ role: message.role, text: message.text })
-        }
-      }
+      await handleReceiveTextFromWs(message.text, message.role, message.state)
     },
-    [currentMessage.role, currentMessage.text, handleReceiveTextFromWs]
+    [handleReceiveTextFromWs]
   )
 
   useEffect(() => {
@@ -74,9 +53,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
     const handleMessage = (event: MessageEvent) => {
       console.log('Received message:', event.data)
       const jsonData = JSON.parse(event.data)
-      if (jsonData.text != '') {
-        setTmpMessages((prevMessages) => [...prevMessages, jsonData])
-      }
+      setTmpMessages((prevMessages) => [...prevMessages, jsonData])
     }
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)
