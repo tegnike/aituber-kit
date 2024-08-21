@@ -386,13 +386,14 @@ export const processAIResponse = async (
 /**
  * アシスタントとの会話を行う
  * 画面のチャット欄から入力されたときに実行される処理
+ * Youtubeでチャット取得した場合もこの関数を使用する
  */
 export const handleSendChatFn =
   (errors: {
     NotConnectedToExternalAssistant: string
     APIKeyNotEntered: string
   }) =>
-  async (text: string, role?: string) => {
+  async (text: string) => {
     const newMessage = text
 
     if (newMessage === null) return
@@ -406,68 +407,25 @@ export const handleSendChatFn =
       console.log('websocket mode: true')
       homeStore.setState({ chatProcessing: true })
 
-      if (role !== undefined && role !== 'user') {
-        // WebSocketからの返答を処理
+      // WebSocketで送信する処理
+      if (hs.ws?.readyState === WebSocket.OPEN) {
+        // ユーザーの発言を追加して表示
+        const updateLog: Message[] = [
+          ...hs.codeLog,
+          { role: 'user', content: newMessage },
+        ]
+        homeStore.setState({
+          chatLog: updateLog,
+          codeLog: updateLog,
+        })
 
-        if (role == 'assistant') {
-          let aiText = `${'[neutral]'} ${newMessage}`
-          try {
-            const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-
-            // 文ごとに音声を生成 & 再生、返答を表示
-            speakCharacter(aiTalks[0], async () => {
-              // アシスタントの返答をログに追加
-              const updateLog: Message[] = [
-                ...hs.codeLog,
-                { role: 'assistant', content: newMessage },
-              ]
-
-              homeStore.setState({
-                chatLog: updateLog,
-                codeLog: updateLog,
-                assistantMessage: newMessage,
-                chatProcessing: false,
-              })
-            })
-          } catch (e) {
-            homeStore.setState({
-              chatProcessing: false,
-            })
-          }
-        } else if (role == 'code' || role == 'output' || role == 'executing') {
-          // コードコメントの処理
-          // ループ完了後にAI応答をコードログに追加
-          const updateLog: Message[] = [
-            ...hs.codeLog,
-            { role: role, content: newMessage },
-          ]
-          homeStore.setState({ codeLog: updateLog, chatProcessing: false })
-        } else {
-          // その他のコメントの処理（現想���では使用されないはず）
-          console.log('error role:', role)
-        }
+        // WebSocket送信
+        hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
       } else {
-        // WebSocketで送信する処理
-
-        if (hs.ws?.readyState === WebSocket.OPEN) {
-          // ユーザーの発言を追加して表示
-          const updateLog: Message[] = [
-            ...hs.codeLog,
-            { role: 'user', content: newMessage },
-          ]
-          homeStore.setState({
-            chatLog: updateLog,
-            codeLog: updateLog,
-          })
-
-          // WebSocket送信
-          hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
-        } else {
-          homeStore.setState({
-            assistantMessage: errors['NotConnectedToExternalAssistant'],
-            chatProcessing: false,
-          })
-        }
+        homeStore.setState({
+          assistantMessage: errors['NotConnectedToExternalAssistant'],
+          chatProcessing: false,
+        })
       }
     } else {
       // ChatVRM original mode
@@ -595,5 +553,76 @@ export const handleSendChatFn =
       }
 
       homeStore.setState({ chatProcessing: false })
+    }
+  }
+
+/**
+ * WebSocketからのテキストを受信したときの処理
+ */
+export const handleReceiveTextFromWsFn =
+  () => async (text: string, role?: string) => {
+    const newMessage = text
+
+    if (newMessage === null) return
+
+    const ss = settingsStore.getState()
+    const hs = homeStore.getState()
+
+    if (!ss.webSocketMode) {
+      console.log('websocket mode: false')
+      return
+    }
+
+    // 未メンテなので不具合がある可能性あり
+    console.log('websocket mode: true')
+    homeStore.setState({ chatProcessing: true })
+
+    if (role !== undefined && role !== 'user') {
+      // WebSocketからの返答を処理
+
+      if (role == 'assistant') {
+        let aiText = `${'[neutral]'} ${newMessage}`
+        try {
+          const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
+
+          // 文ごとに音声を生成 & 再生、返答を表示
+          speakCharacter(
+            aiTalks[0],
+            () => {
+              // アシスタントの返答をログに追加
+              const updateLog: Message[] = [
+                ...hs.codeLog,
+                { role: 'assistant', content: newMessage },
+              ]
+              hs.assistantMessage
+              // hs.incrementChatProcessingCount()
+              homeStore.setState({
+                chatLog: updateLog,
+                codeLog: updateLog,
+                assistantMessage: newMessage,
+                chatProcessing: false,
+              })
+            },
+            () => {
+              // hs.decrementChatProcessingCount()
+            }
+          )
+        } catch (e) {
+          homeStore.setState({
+            chatProcessing: false,
+          })
+        }
+      } else if (role == 'code' || role == 'output' || role == 'executing') {
+        // コードコメントの処理
+        // ループ完了後にAI応答をコードログに追加
+        const updateLog: Message[] = [
+          ...hs.codeLog,
+          { role: role, content: newMessage },
+        ]
+        homeStore.setState({ codeLog: updateLog, chatProcessing: false })
+      } else {
+        // その他のコメントの処理（現在の想定では使用されないはず）
+        console.log('error role:', role)
+      }
     }
   }

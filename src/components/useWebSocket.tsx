@@ -11,10 +11,10 @@ interface TmpMessage {
 }
 
 interface Params {
-  handleSendChat: (text: string, role?: string) => Promise<void>
+  handleReceiveTextFromWs: (text: string, role?: string) => Promise<void>
 }
 
-const useWebSocket = ({ handleSendChat }: Params) => {
+const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
 
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
@@ -29,7 +29,9 @@ const useWebSocket = ({ handleSendChat }: Params) => {
     const handleMessage = (event: MessageEvent) => {
       console.log('Received message:', event.data)
       const jsonData = JSON.parse(event.data)
-      setTmpMessages((prevMessages) => [...prevMessages, jsonData])
+      if (jsonData.text != '') {
+        setTmpMessages((prevMessages) => [...prevMessages, jsonData])
+      }
     }
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)
@@ -76,8 +78,8 @@ const useWebSocket = ({ handleSendChat }: Params) => {
     if (tmpMessages.length > 0) {
       const message = tmpMessages[0]
       setTmpMessages((tmpMessages) => tmpMessages.slice(1))
-      handleSendChat(message.text, message.role)
+      handleReceiveTextFromWs(message.text, message.role)
     }
-  }, [tmpMessages, handleSendChat])
+  }, [tmpMessages, handleReceiveTextFromWs])
 }
 export default useWebSocket
