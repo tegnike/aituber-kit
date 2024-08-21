@@ -39,11 +39,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
         if (currentMessage.role === message.role) {
           setCurrentMessage((prev) => ({
             ...prev,
-            text:
-              prev.text +
-              (message.role === 'assistant'
-                ? message.text
-                : '\n' + message.text),
+            text: prev.text + message.text,
           }))
         } else {
           if (currentMessage.role && currentMessage.text) {

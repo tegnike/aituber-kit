@@ -28,9 +28,6 @@ export const ChatLog = () => {
     <div className="absolute w-col-span-7 max-w-full h-[100svh] pb-64 z-10">
       <div className="max-h-full px-16 pt-104 pb-64 overflow-y-auto scroll-hidden">
         {messages.map((msg, i) => {
-          const prevRole = i > 0 ? messages[i - 1].role : ''
-          const nextRole = i < messages.length - 1 ? messages[i + 1].role : ''
-
           return (
             <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
               {typeof msg.content === 'string' ? (
@@ -38,8 +35,6 @@ export const ChatLog = () => {
                   role={msg.role}
                   message={msg.content}
                   characterName={characterName}
-                  prevRole={prevRole}
-                  nextRole={nextRole}
                 />
               ) : (
                 <>
@@ -47,8 +42,6 @@ export const ChatLog = () => {
                     role={msg.role}
                     message={msg.content[0].text}
                     characterName={characterName}
-                    prevRole={prevRole}
-                    nextRole={nextRole}
                   />
                   <ChatImage
                     role={msg.role}
@@ -69,62 +62,36 @@ const Chat = ({
   role,
   message,
   characterName,
-  prevRole,
-  nextRole,
 }: {
   role: string
   message: string
   characterName: string
-  prevRole: string
-  nextRole: string
 }) => {
   const roleColor =
-    role !== 'user' ? 'bg-secondary text-white' : 'bg-base text-primary'
+    role !== 'user' ? 'bg-secondary text-white ' : 'bg-base text-primary'
   const roleText = role !== 'user' ? 'text-secondary' : 'text-primary'
   const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
 
-  const sameAsPrevRole = role === prevRole
-  const sameAsNextRole = role === nextRole
-
-  if (role === 'code') {
-    const messageLines = message.split('\n\n')
-    return (
-      <div
-        className={`mx-auto max-w-[32rem] ${!sameAsNextRole && 'mb-16'} ${offsetX}`}
-      >
-        <div
-          className={`px-24 ${!sameAsPrevRole && 'pt-16 rounded-t-8'} ${!sameAsNextRole && 'rounded-b-8 pb-16'} bg-[#1F2937] text-white`}
-        >
-          {messageLines.map((line, index) => (
-            <div
-              key={index}
-              className="typography-16 font-bold font-mono"
-              style={{ whiteSpace: 'pre-wrap', minHeight: '1em' }}
-            >
-              {line}
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div
-      className={`mx-auto max-w-[32rem] ${!sameAsNextRole && 'mb-16'} ${offsetX}`}
-    >
-      {!sameAsPrevRole && (
-        <div
-          className={`px-24 py-8 rounded-t-8 font-bold tracking-wider ${roleColor}`}
-        >
-          {role !== 'user' ? characterName || 'CHARACTER' : 'YOU'}
-        </div>
+    <div className={`mx-auto max-w-[32rem] my-16 ${offsetX}`}>
+      {role === 'code' ? (
+        <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-white p-16 rounded-8">
+          <code className="font-mono text-sm">{message}</code>
+        </pre>
+      ) : (
+        <>
+          <div
+            className={`px-24 py-8 rounded-t-8 font-bold tracking-wider ${roleColor}`}
+          >
+            {role !== 'user' ? characterName || 'CHARACTER' : 'YOU'}
+          </div>
+          <div className="px-24 py-16 bg-white rounded-b-8">
+            <div className={`typography-16 font-bold ${roleText}`}>
+              {message}
+            </div>
+          </div>
+        </>
       )}
-      <div
-        className={`px-24 py-16 bg-white ${sameAsNextRole ? '' : 'rounded-b-8'}`}
-      >
-        <div className={`typography-16 font-bold ${roleText}`}>{message}</div>
-      </div>
     </div>
   )
 }
