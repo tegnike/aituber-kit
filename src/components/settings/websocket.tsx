@@ -1,23 +1,10 @@
 import { useTranslation } from 'react-i18next'
-
-import homeStore from '@/features/stores/home'
-import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 
 const WebSocket = () => {
   const { t } = useTranslation()
-
   const webSocketMode = settingsStore((s) => s.webSocketMode)
-
-  const handleChangeYoutubeMode = (youtubeMode: boolean) => {
-    settingsStore.setState({ youtubeMode })
-
-    if (youtubeMode) {
-      homeStore.setState({ modalImage: '' })
-      menuStore.setState({ showWebcam: false })
-    }
-  }
 
   return (
     <div className="my-40">
@@ -28,7 +15,6 @@ const WebSocket = () => {
         <TextButton
           onClick={() => {
             settingsStore.setState({ webSocketMode: !webSocketMode })
-            webSocketMode && handleChangeYoutubeMode(false)
           }}
         >
           {webSocketMode ? t('StatusOn') : t('StatusOff')}
