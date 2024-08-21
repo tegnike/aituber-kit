@@ -7,7 +7,6 @@ import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
-import { CodeLog } from './codeLog'
 import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
@@ -120,14 +119,14 @@ export const Menu = () => {
             {showChatLog ? (
               <IconButton
                 iconName="24/CommentOutline"
-                label={webSocketMode ? t('CodeLog') : t('ChatLog')}
+                label={t('ChatLog')}
                 isProcessing={false}
                 onClick={() => setShowChatLog(false)}
               />
             ) : (
               <IconButton
                 iconName="24/CommentFill"
-                label={webSocketMode ? t('CodeLog') : t('ChatLog')}
+                label={t('ChatLog')}
                 isProcessing={false}
                 disabled={chatLog.length <= 0}
                 onClick={() => setShowChatLog(true)}
@@ -190,7 +189,7 @@ export const Menu = () => {
       <div className="relative">
         {slideMode && slideVisible && <Slides markdown={markdownContent} />}
       </div>
-      {webSocketMode ? showChatLog && <CodeLog /> : showChatLog && <ChatLog />}
+      {webSocketMode ? showChatLog && <ChatLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {!showChatLog && assistantMessage && !slideVisible && (
         <AssistantText message={assistantMessage} />

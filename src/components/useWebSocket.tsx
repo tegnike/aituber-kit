@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -8,18 +8,66 @@ interface TmpMessage {
   text: string
   role: string
   emotion: string
+  state: string
 }
 
 interface Params {
-  handleSendChat: (text: string, role?: string) => Promise<void>
+  handleReceiveTextFromWs: (text: string, role?: string) => Promise<void>
 }
 
-const useWebSocket = ({ handleSendChat }: Params) => {
+const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
-  const voicePlaying = homeStore((s) => s.voicePlaying)
-
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
+  const [currentMessage, setCurrentMessage] = useState<{
+    role: string
+    text: string
+  }>({ role: '', text: '' })
 
+  const processMessage = useCallback(
+    async (message: TmpMessage) => {
+      if (message.state === 'start') {
+        setCurrentMessage({ role: '', text: '' })
+      } else if (message.state === 'end') {
+        if (currentMessage.role && currentMessage.text) {
+          await handleReceiveTextFromWs(
+            currentMessage.text,
+            currentMessage.role
+          )
+          setCurrentMessage({ role: '', text: '' })
+        }
+      } else {
+        if (currentMessage.role === message.role) {
+          setCurrentMessage((prev) => ({
+            ...prev,
+            text:
+              prev.text +
+              (message.role === 'assistant'
+                ? message.text
+                : '\n' + message.text),
+          }))
+        } else {
+          if (currentMessage.role && currentMessage.text) {
+            await handleReceiveTextFromWs(
+              currentMessage.text,
+              currentMessage.role
+            )
+          }
+          setCurrentMessage({ role: message.role, text: message.text })
+        }
+      }
+    },
+    [currentMessage.role, currentMessage.text, handleReceiveTextFromWs]
+  )
+
+  useEffect(() => {
+    if (tmpMessages.length > 0) {
+      const message = tmpMessages[0]
+      setTmpMessages((prev) => prev.slice(1))
+      processMessage(message)
+    }
+  }, [tmpMessages, processMessage])
+
+  // WebSocket接続の設定（既存のコード）
   useEffect(() => {
     const ss = settingsStore.getState()
     if (!ss.webSocketMode) return
@@ -30,7 +78,9 @@ const useWebSocket = ({ handleSendChat }: Params) => {
     const handleMessage = (event: MessageEvent) => {
       console.log('Received message:', event.data)
       const jsonData = JSON.parse(event.data)
-      setTmpMessages((prevMessages) => [...prevMessages, jsonData])
+      if (jsonData.text != '') {
+        setTmpMessages((prevMessages) => [...prevMessages, jsonData])
+      }
     }
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)
@@ -72,16 +122,7 @@ const useWebSocket = ({ handleSendChat }: Params) => {
     }
   }, [webSocketMode])
 
-  // WebSocketモード用の処理
-  useEffect(() => {
-    if (tmpMessages.length > 0 && !voicePlaying) {
-      const message = tmpMessages[0]
-      if (message.role == 'assistant') {
-        homeStore.setState({ voicePlaying: true })
-      }
-      setTmpMessages((tmpMessages) => tmpMessages.slice(1))
-      handleSendChat(message.text, message.role)
-    }
-  }, [tmpMessages, voicePlaying, handleSendChat])
+  return null
 }
+
 export default useWebSocket

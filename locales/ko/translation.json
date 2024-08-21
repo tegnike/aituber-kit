@@ -63,7 +63,6 @@
   "ConversationHistoryReset": "대화 기록 재설정",
   "NotConnectedToExternalAssistant": "외부 어시스턴트와 연결되지 않았습니다.",
   "APIKeyNotEntered": "API 키가 입력되지 않았습니다.",
-  "CodeLog": "코드 로그",
   "ChatLog": "대화 로그",
   "EnterYourQuestion": "질문을 입력하세요",
   "AnswerGenerating": "답변 생성중",

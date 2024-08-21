@@ -7,7 +7,6 @@ import { Viewer } from '../vrmViewer/viewer'
 export interface PersistedState {
   userOnboarded: boolean
   chatLog: Message[]
-  codeLog: Message[]
   dontShowIntroduction: boolean
 }
 
@@ -24,7 +23,6 @@ export interface TransientState {
   triggerShutter: boolean
   webcamStatus: boolean
   ws: WebSocket | null
-  voicePlaying: boolean // WebSocketモード用の設定
 }
 
 export type HomeState = PersistedState & TransientState
@@ -35,7 +33,6 @@ const homeStore = create<HomeState>()(
       // persisted states
       userOnboarded: false,
       chatLog: [],
-      codeLog: [],
       dontShowIntroduction: false,
 
       // transient states
@@ -60,13 +57,11 @@ const homeStore = create<HomeState>()(
       triggerShutter: false,
       webcamStatus: false,
       ws: null,
-      voicePlaying: false,
     }),
     {
       name: 'aitube-kit-home',
-      partialize: ({ chatLog, codeLog, dontShowIntroduction }) => ({
+      partialize: ({ chatLog, dontShowIntroduction }) => ({
         chatLog,
-        codeLog,
         dontShowIntroduction,
       }),
     }
