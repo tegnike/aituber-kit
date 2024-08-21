@@ -103,7 +103,7 @@ export const fetchAndProcessComments = async (
   setYoutubeContinuationCount: (count: number) => void,
   youtubeSleepMode: boolean,
   setYoutubeSleepMode: (mode: boolean) => void,
-  handleSendChat: (text: string, role?: string) => void,
+  handleSendChat: (text: string) => void,
   preProcessAIResponse: (messages: Message[]) => void
 ): Promise<void> => {
   try {

@@ -24,7 +24,7 @@ const Log = () => {
         </div>
         <TextButton
           onClick={() => {
-            homeStore.setState({ chatLog: [], codeLog: [] })
+            homeStore.setState({ chatLog: [] })
             settingsStore.setState({ difyConversationId: '' })
           }}
         >
@@ -51,7 +51,6 @@ const Log = () => {
                     value={value.content}
                     onChange={(e) => {
                       handleChangeChatLog(index, e.target.value)
-                      handleChangeCodeLog(index, e.target.value)
                     }}
                   ></input>
                 ) : (
@@ -80,14 +79,4 @@ const handleChangeChatLog = (targetIndex: number, text: string) => {
   })
 
   homeStore.setState({ chatLog: newChatLog })
-}
-
-const handleChangeCodeLog = (targetIndex: number, text: string) => {
-  const hs = homeStore.getState()
-
-  const newCodeLog = hs.codeLog.map((m, i) => {
-    return i === targetIndex ? { role: m.role, content: text } : m
-  })
-
-  homeStore.setState({ chatLog: newCodeLog })
 }

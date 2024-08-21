@@ -9,7 +9,7 @@ import { processAIResponse } from '../features/chat/handlers'
 const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 5000 // 5秒
 
 interface Params {
-  handleSendChat: (text: string, role?: string) => Promise<void>
+  handleSendChat: (text: string) => Promise<void>
 }
 
 const useYoutube = async ({ handleSendChat }: Params) => {

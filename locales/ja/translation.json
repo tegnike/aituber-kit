@@ -64,7 +64,6 @@
   "ConversationHistoryReset": "会話履歴リセット",
   "NotConnectedToExternalAssistant": "外部アシスタントと接続されていません。",
   "APIKeyNotEntered": "APIキーが入力されていません。",
-  "CodeLog": "コードログ",
   "ChatLog": "会話ログ",
   "EnterYourQuestion": "聞きたいことをいれてね",
   "AnswerGenerating": "回答生成中",
