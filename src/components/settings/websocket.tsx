@@ -25,25 +25,14 @@ const WebSocket = () => {
         {t('ExternalConnectionMode')}
       </div>
       <div className="my-8">
-        {webSocketMode ? (
-          <TextButton
-            onClick={() => {
-              settingsStore.setState({ webSocketMode: false })
-              webSocketMode && handleChangeYoutubeMode(false)
-            }}
-          >
-            {t('StatusOn')}
-          </TextButton>
-        ) : (
-          <TextButton
-            onClick={() => {
-              settingsStore.setState({ webSocketMode: true })
-              webSocketMode && handleChangeYoutubeMode(false)
-            }}
-          >
-            {t('StatusOff')}
-          </TextButton>
-        )}
+        <TextButton
+          onClick={() => {
+            settingsStore.setState({ webSocketMode: !webSocketMode })
+            webSocketMode && handleChangeYoutubeMode(false)
+          }}
+        >
+          {webSocketMode ? t('StatusOn') : t('StatusOff')}
+        </TextButton>
       </div>
     </div>
   )
