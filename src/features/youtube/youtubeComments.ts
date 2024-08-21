@@ -8,6 +8,8 @@ import {
   checkIfResponseContinuationIsRequired,
   getMessagesForContinuation,
 } from '@/features/youtube/conversationContinuityFunctions'
+import { processAIResponse } from '../chat/handlers'
+import homeStore from '@/features/stores/home'
 
 export const getLiveChatId = async (
   liveId: string,
@@ -90,6 +92,11 @@ const retrieveLiveComments = async (
   return comments
 }
 
+const preProcessAIResponse = async (messages: Message[]) => {
+  const hs = homeStore.getState()
+  await processAIResponse(hs.chatLog, messages)
+}
+
 export const fetchAndProcessComments = async (
   messages: Message[],
   aiApiKey: string,
@@ -103,8 +110,7 @@ export const fetchAndProcessComments = async (
   setYoutubeContinuationCount: (count: number) => void,
   youtubeSleepMode: boolean,
   setYoutubeSleepMode: (mode: boolean) => void,
-  handleSendChat: (text: string, role?: string) => void,
-  preProcessAIResponse: (messages: Message[]) => void
+  handleSendChat: (text: string) => void
 ): Promise<void> => {
   try {
     const liveChatId = await getLiveChatId(liveId, youtubeKey)

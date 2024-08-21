@@ -4,7 +4,6 @@ import { Message } from '@/features/messages/messages'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments'
-import { processAIResponse } from '../features/chat/handlers'
 
 const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 5000 // 5秒
 
@@ -23,12 +22,6 @@ const useYoutube = async ({ handleSendChat }: Params) => {
   const [youtubeNoCommentCount, setYoutubeNoCommentCount] = useState(0)
   const [youtubeSleepMode, setYoutubeSleepMode] = useState(false)
 
-  const preProcessAIResponse = useCallback(async (messages: Message[]) => {
-    const hs = homeStore.getState()
-    await processAIResponse(hs.chatLog, messages)
-  }, [])
-
-  // YouTubeコメントを取得する処理
   const fetchAndProcessCommentsCallback = useCallback(async () => {
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
@@ -61,8 +54,7 @@ const useYoutube = async ({ handleSendChat }: Params) => {
       setYoutubeContinuationCount,
       youtubeSleepMode,
       setYoutubeSleepMode,
-      handleSendChat,
-      preProcessAIResponse
+      handleSendChat
     )
   }, [
     youtubeNextPageToken,
@@ -70,7 +62,6 @@ const useYoutube = async ({ handleSendChat }: Params) => {
     youtubeContinuationCount,
     youtubeSleepMode,
     handleSendChat,
-    preProcessAIResponse,
   ])
 
   // fetchAndProcessCommentsCallback は依存配列に含めない
