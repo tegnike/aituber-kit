@@ -16,7 +16,6 @@ interface Params {
 
 const useWebSocket = ({ handleSendChat }: Params) => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
-  const voicePlaying = homeStore((s) => s.voicePlaying)
 
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
 
@@ -74,14 +73,11 @@ const useWebSocket = ({ handleSendChat }: Params) => {
 
   // WebSocketモード用の処理
   useEffect(() => {
-    if (tmpMessages.length > 0 && !voicePlaying) {
+    if (tmpMessages.length > 0) {
       const message = tmpMessages[0]
-      if (message.role == 'assistant') {
-        homeStore.setState({ voicePlaying: true })
-      }
       setTmpMessages((tmpMessages) => tmpMessages.slice(1))
       handleSendChat(message.text, message.role)
     }
-  }, [tmpMessages, voicePlaying, handleSendChat])
+  }, [tmpMessages, handleSendChat])
 }
 export default useWebSocket

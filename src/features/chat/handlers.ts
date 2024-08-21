@@ -427,13 +427,11 @@ export const handleSendChatFn =
                 codeLog: updateLog,
                 assistantMessage: newMessage,
                 chatProcessing: false,
-                voicePlaying: false,
               })
             })
           } catch (e) {
             homeStore.setState({
               chatProcessing: false,
-              voicePlaying: false,
             })
           }
         } else if (role == 'code' || role == 'output' || role == 'executing') {
