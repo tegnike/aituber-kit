@@ -44,6 +44,11 @@ interface Integrations {
   difyConversationId: string
   youtubeMode: boolean
   youtubeLiveId: string
+  youtubePlaying: boolean
+  youtubeNextPageToken: string
+  youtubeContinuationCount: number
+  youtubeNoCommentCount: number
+  youtubeSleepMode: boolean
 }
 
 interface Character {
@@ -104,6 +109,11 @@ const settingsStore = create<SettingsState>()(
       difyConversationId: '',
       youtubeMode: false,
       youtubeLiveId: '',
+      youtubePlaying: false,
+      youtubeNextPageToken: '',
+      youtubeContinuationCount: 0,
+      youtubeNoCommentCount: 0,
+      youtubeSleepMode: false,
 
       // Character
       characterName: 'CHARACTER',
@@ -120,6 +130,44 @@ const settingsStore = create<SettingsState>()(
     }),
     {
       name: 'aitube-kit-settings',
+      partialize: (state) => ({
+        openAiKey: state.openAiKey,
+        anthropicKey: state.anthropicKey,
+        googleKey: state.googleKey,
+        groqKey: state.groqKey,
+        difyKey: state.difyKey,
+        koeiromapKey: state.koeiromapKey,
+        youtubeApiKey: state.youtubeApiKey,
+        elevenlabsApiKey: state.elevenlabsApiKey,
+        selectAIService: state.selectAIService,
+        selectAIModel: state.selectAIModel,
+        localLlmUrl: state.localLlmUrl,
+        selectVoice: state.selectVoice,
+        koeiroParam: state.koeiroParam,
+        googleTtsType: state.googleTtsType,
+        voicevoxSpeaker: state.voicevoxSpeaker,
+        stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
+        stylebertvits2ModelId: state.stylebertvits2ModelId,
+        stylebertvits2Style: state.stylebertvits2Style,
+        gsviTtsServerUrl: state.gsviTtsServerUrl,
+        gsviTtsModelId: state.gsviTtsModelId,
+        gsviTtsBatchSize: state.gsviTtsBatchSize,
+        gsviTtsSpeechRate: state.gsviTtsSpeechRate,
+        elevenlabsVoiceId: state.elevenlabsVoiceId,
+        difyUrl: state.difyUrl,
+        difyConversationId: state.difyConversationId,
+        youtubeMode: state.youtubeMode,
+        youtubeLiveId: state.youtubeLiveId,
+        characterName: state.characterName,
+        showCharacterName: state.showCharacterName,
+        systemPrompt: state.systemPrompt,
+        conversationContinuityMode: state.conversationContinuityMode,
+        selectLanguage: state.selectLanguage,
+        selectVoiceLanguage: state.selectVoiceLanguage,
+        changeEnglishToJapanese: state.changeEnglishToJapanese,
+        webSocketMode: state.webSocketMode,
+        slideMode: state.slideMode,
+      }),
     }
   )
 )

@@ -98,34 +98,26 @@ const preProcessAIResponse = async (messages: Message[]) => {
 }
 
 export const fetchAndProcessComments = async (
-  messages: Message[],
-  aiApiKey: string,
-  liveId: string,
-  youtubeKey: string,
-  youtubeNextPageToken: string,
-  setYoutubeNextPageToken: (token: string) => void,
-  youtubeNoCommentCount: number,
-  setYoutubeNoCommentCount: (count: number) => void,
-  youtubeContinuationCount: number,
-  setYoutubeContinuationCount: (count: number) => void,
-  youtubeSleepMode: boolean,
-  setYoutubeSleepMode: (mode: boolean) => void,
   handleSendChat: (text: string) => void
 ): Promise<void> => {
+  const ss = settingsStore.getState()
+  const hs = homeStore.getState()
+
   try {
-    const liveChatId = await getLiveChatId(liveId, youtubeKey)
-    const ss = settingsStore.getState()
+    const liveChatId = await getLiveChatId(ss.youtubeLiveId, ss.youtubeApiKey)
+    const aiApiKey =
+      ss.selectAIService === 'anthropic' ? ss.anthropicKey : ss.openAiKey
 
     if (liveChatId) {
       // 会話の継続が必要かどうかを確認
       if (
-        !youtubeSleepMode &&
-        youtubeContinuationCount < 1 &&
+        !ss.youtubeSleepMode &&
+        ss.youtubeContinuationCount < 1 &&
         ss.conversationContinuityMode
       ) {
         const isContinuationNeeded =
           await checkIfResponseContinuationIsRequired(
-            messages,
+            hs.chatLog,
             aiApiKey,
             ss.selectAIService,
             ss.selectAIModel
@@ -133,34 +125,37 @@ export const fetchAndProcessComments = async (
         if (isContinuationNeeded) {
           const continuationMessage = await getMessagesForContinuation(
             ss.systemPrompt,
-            messages
+            hs.chatLog
           )
           preProcessAIResponse(continuationMessage)
-          setYoutubeContinuationCount(youtubeContinuationCount + 1)
-          if (youtubeNoCommentCount < 1) {
-            setYoutubeNoCommentCount(1)
+          settingsStore.setState({
+            youtubeContinuationCount: ss.youtubeContinuationCount + 1,
+          })
+          if (ss.youtubeNoCommentCount < 1) {
+            settingsStore.setState({ youtubeNoCommentCount: 1 })
           }
           return
         }
       }
-      setYoutubeContinuationCount(0)
+      settingsStore.setState({ youtubeContinuationCount: 0 })
 
       // コメントを取得
       const youtubeComments = await retrieveLiveComments(
         liveChatId,
-        youtubeKey,
-        youtubeNextPageToken,
-        setYoutubeNextPageToken
+        ss.youtubeApiKey,
+        ss.youtubeNextPageToken,
+        (token: string) =>
+          settingsStore.setState({ youtubeNextPageToken: token })
       )
       // ランダムなコメントを選択して送信
       if (youtubeComments.length > 0) {
-        setYoutubeNoCommentCount(0)
-        setYoutubeSleepMode(false)
+        settingsStore.setState({ youtubeNoCommentCount: 0 })
+        settingsStore.setState({ youtubeSleepMode: false })
         let selectedComment = ''
         if (ss.conversationContinuityMode) {
           if (youtubeComments.length > 1) {
             selectedComment = await getBestComment(
-              messages,
+              hs.chatLog,
               youtubeComments,
               aiApiKey,
               ss.selectAIService,
@@ -178,7 +173,7 @@ export const fetchAndProcessComments = async (
 
         handleSendChat(selectedComment)
       } else {
-        const noCommentCount = youtubeNoCommentCount + 1
+        const noCommentCount = ss.youtubeNoCommentCount + 1
         if (ss.conversationContinuityMode) {
           if (
             noCommentCount < 3 ||
@@ -187,13 +182,13 @@ export const fetchAndProcessComments = async (
             // 会話の続きを生成
             const continuationMessage = await getMessagesForContinuation(
               ss.systemPrompt,
-              messages
+              hs.chatLog
             )
             preProcessAIResponse(continuationMessage)
           } else if (noCommentCount === 3) {
             // 新しいトピックを生成
             const anotherTopic = await getAnotherTopic(
-              messages,
+              hs.chatLog,
               aiApiKey,
               ss.selectAIService,
               ss.selectAIModel
@@ -201,7 +196,7 @@ export const fetchAndProcessComments = async (
             console.log('anotherTopic:', anotherTopic)
             const newTopicMessage = await getMessagesForNewTopic(
               ss.systemPrompt,
-              messages,
+              hs.chatLog,
               anotherTopic
             )
             preProcessAIResponse(newTopicMessage)
@@ -209,14 +204,14 @@ export const fetchAndProcessComments = async (
             // スリープモードにする
             const messagesForSleep = await getMessagesForSleep(
               ss.systemPrompt,
-              messages
+              hs.chatLog
             )
             preProcessAIResponse(messagesForSleep)
-            setYoutubeSleepMode(true)
+            settingsStore.setState({ youtubeSleepMode: true })
           }
         }
         console.log('YoutubeNoCommentCount:', noCommentCount)
-        setYoutubeNoCommentCount(noCommentCount)
+        settingsStore.setState({ youtubeNoCommentCount: noCommentCount })
       }
     }
   } catch (error) {

@@ -14,8 +14,8 @@ import Slides from './slides'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
-  const selectAIModel = settingsStore((s) => s.selectAIModel)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
+  const youtubePlaying = settingsStore((s) => s.youtubePlaying)
   const webSocketMode = settingsStore((s) => s.webSocketMode)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
@@ -99,6 +99,18 @@ export const Menu = () => {
     }
   }, [showWebcam])
 
+  const handleChangeYoutubePlaying = (youtubePlaying: boolean) => {
+    settingsStore.setState({ youtubePlaying: youtubePlaying })
+
+    if (!youtubePlaying) {
+      settingsStore.setState({
+        youtubeContinuationCount: 0,
+        youtubeNoCommentCount: 0,
+        youtubeSleepMode: false,
+      })
+    }
+  }
+
   return (
     <>
       <div className="absolute z-15 m-24">
@@ -134,41 +146,50 @@ export const Menu = () => {
             )}
           </div>
           {selectAIService === 'openai' && !youtubeMode && (
-            <div className="order-3">
-              <IconButton
-                iconName="24/Camera"
-                isProcessing={false}
-                onClick={() =>
-                  menuStore.setState(({ showWebcam }) => ({
-                    showWebcam: !showWebcam,
-                  }))
-                }
-              />
-            </div>
-          )}
-          {selectAIService === 'openai' && !youtubeMode && (
-            <div className="order-4">
-              <IconButton
-                iconName="24/AddImage"
-                isProcessing={false}
-                onClick={() => imageFileInputRef.current?.click()}
-              />
-              <input
-                type="file"
-                className="hidden"
-                accept="image/*"
-                ref={imageFileInputRef}
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) {
-                    const reader = new FileReader()
-                    reader.onload = (e) => {
-                      const imageUrl = e.target?.result as string
-                      homeStore.setState({ modalImage: imageUrl })
-                    }
-                    reader.readAsDataURL(file)
+            <>
+              <div className="order-3">
+                <IconButton
+                  iconName="24/Camera"
+                  isProcessing={false}
+                  onClick={() =>
+                    menuStore.setState(({ showWebcam }) => ({
+                      showWebcam: !showWebcam,
+                    }))
                   }
-                }}
+                />
+              </div>
+              <div className="order-4">
+                <IconButton
+                  iconName="24/AddImage"
+                  isProcessing={false}
+                  onClick={() => imageFileInputRef.current?.click()}
+                />
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  ref={imageFileInputRef}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) {
+                      const reader = new FileReader()
+                      reader.onload = (e) => {
+                        const imageUrl = e.target?.result as string
+                        homeStore.setState({ modalImage: imageUrl })
+                      }
+                      reader.readAsDataURL(file)
+                    }
+                  }}
+                />
+              </div>
+            </>
+          )}
+          {youtubeMode && (
+            <div className="order-5">
+              <IconButton
+                iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
+                isProcessing={false}
+                onClick={() => handleChangeYoutubePlaying(!youtubePlaying)}
               />
             </div>
           )}

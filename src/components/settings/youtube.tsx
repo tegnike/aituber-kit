@@ -25,6 +25,8 @@ const YouTube = () => {
     if (youtubeMode) {
       homeStore.setState({ modalImage: '' })
       menuStore.setState({ showWebcam: false })
+    } else {
+      settingsStore.setState({ youtubePlaying: false })
     }
   }
 
