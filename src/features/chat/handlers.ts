@@ -546,13 +546,7 @@ export const handleSendChatFn =
         {
           role: 'user',
           content:
-            hs.modalImage &&
-            ss.selectAIService === 'openai' &&
-            (ss.selectAIModel === 'gpt-4o-mini' ||
-              ss.selectAIModel === 'chatgpt-4o-latest' ||
-              ss.selectAIModel === 'gpt-4o-2024-08-06' ||
-              ss.selectAIModel === 'gpt-4o' ||
-              ss.selectAIModel === 'gpt-4-turbo')
+            hs.modalImage && ss.selectAIService === 'openai'
               ? [
                   { type: 'text', text: newMessage },
                   { type: 'image_url', image_url: { url: hs.modalImage } },
@@ -571,13 +565,7 @@ export const handleSendChatFn =
           ? message.role
           : 'assistant',
         content:
-          typeof message.content === 'string' ||
-          (ss.selectAIService === 'openai' &&
-            (ss.selectAIModel === 'gpt-4o-mini' ||
-              ss.selectAIModel === 'chatgpt-4o-latest' ||
-              ss.selectAIModel === 'gpt-4o-2024-08-06' ||
-              ss.selectAIModel === 'gpt-4o' ||
-              ss.selectAIModel === 'gpt-4-turbo'))
+          typeof message.content === 'string' || ss.selectAIService === 'openai'
             ? message.content
             : message.content[0].text,
       }))
