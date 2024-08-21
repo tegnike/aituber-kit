@@ -411,12 +411,11 @@ export const handleSendChatFn =
       if (hs.ws?.readyState === WebSocket.OPEN) {
         // ユーザーの発言を追加して表示
         const updateLog: Message[] = [
-          ...hs.codeLog,
+          ...hs.chatLog,
           { role: 'user', content: newMessage },
         ]
         homeStore.setState({
           chatLog: updateLog,
-          codeLog: updateLog,
         })
 
         // WebSocket送信
@@ -561,9 +560,7 @@ export const handleSendChatFn =
  */
 export const handleReceiveTextFromWsFn =
   () => async (text: string, role?: string) => {
-    const newMessage = text
-
-    if (newMessage === null) return
+    if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
@@ -573,15 +570,12 @@ export const handleReceiveTextFromWsFn =
       return
     }
 
-    // 未メンテなので不具合がある可能性あり
     console.log('websocket mode: true')
     homeStore.setState({ chatProcessing: true })
 
-    if (role !== undefined && role !== 'user') {
-      // WebSocketからの返答を処理
-
-      if (role == 'assistant') {
-        let aiText = `${'[neutral]'} ${newMessage}`
+    if (role !== 'user') {
+      if (role === 'assistant') {
+        let aiText = `${'[neutral]'} ${text}`
         try {
           const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
 
@@ -591,16 +585,13 @@ export const handleReceiveTextFromWsFn =
             () => {
               // アシスタントの返答をログに追加
               const updateLog: Message[] = [
-                ...hs.codeLog,
-                { role: 'assistant', content: newMessage },
+                ...hs.chatLog,
+                { role: 'assistant', content: text },
               ]
-              hs.assistantMessage
               // hs.incrementChatProcessingCount()
               homeStore.setState({
                 chatLog: updateLog,
-                codeLog: updateLog,
-                assistantMessage: newMessage,
-                chatProcessing: false,
+                assistantMessage: text,
               })
             },
             () => {
@@ -608,21 +599,20 @@ export const handleReceiveTextFromWsFn =
             }
           )
         } catch (e) {
-          homeStore.setState({
-            chatProcessing: false,
-          })
+          console.error('Error in speakCharacter:', e)
         }
-      } else if (role == 'code' || role == 'output' || role == 'executing') {
-        // コードコメントの処理
-        // ループ完了後にAI応答をコードログに追加
+      } else if (role === 'code' || role === 'output' || role === 'executing') {
         const updateLog: Message[] = [
-          ...hs.codeLog,
-          { role: role, content: newMessage },
+          ...hs.chatLog,
+          { role: role, content: text },
         ]
-        homeStore.setState({ codeLog: updateLog, chatProcessing: false })
+        homeStore.setState({
+          chatLog: updateLog,
+        })
       } else {
-        // その他のコメントの処理（現在の想定では使用されないはず）
         console.log('error role:', role)
       }
     }
+
+    homeStore.setState({ chatProcessing: false })
   }
