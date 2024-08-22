@@ -12,56 +12,34 @@ interface TmpMessage {
 }
 
 interface Params {
-  handleReceiveTextFromWs: (text: string, role?: string) => Promise<void>
+  handleReceiveTextFromWs: (
+    text: string,
+    role?: string,
+    state?: string
+  ) => Promise<void>
 }
 
 const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
-  const [currentMessage, setCurrentMessage] = useState<{
-    role: string
-    text: string
-  }>({ role: '', text: '' })
 
   const processMessage = useCallback(
     async (message: TmpMessage) => {
-      if (message.state === 'start') {
-        setCurrentMessage({ role: '', text: '' })
-      } else if (message.state === 'end') {
-        if (currentMessage.role && currentMessage.text) {
-          await handleReceiveTextFromWs(
-            currentMessage.text,
-            currentMessage.role
-          )
-          setCurrentMessage({ role: '', text: '' })
-        }
-      } else {
-        if (currentMessage.role === message.role) {
-          setCurrentMessage((prev) => ({
-            ...prev,
-            text:
-              prev.text +
-              (message.role === 'assistant'
-                ? message.text
-                : '\n' + message.text),
-          }))
-        } else {
-          if (currentMessage.role && currentMessage.text) {
-            await handleReceiveTextFromWs(
-              currentMessage.text,
-              currentMessage.role
-            )
-          }
-          setCurrentMessage({ role: message.role, text: message.text })
-        }
-      }
+      await handleReceiveTextFromWs(message.text, message.role, message.state)
     },
-    [currentMessage.role, currentMessage.text, handleReceiveTextFromWs]
+    [handleReceiveTextFromWs]
   )
 
   useEffect(() => {
     if (tmpMessages.length > 0) {
       const message = tmpMessages[0]
+      if (
+        message.role === 'output' ||
+        message.role === 'executing' ||
+        message.role === 'console'
+      ) {
+        message.role = 'code'
+      }
       setTmpMessages((prev) => prev.slice(1))
       processMessage(message)
     }
@@ -78,9 +56,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
     const handleMessage = (event: MessageEvent) => {
       console.log('Received message:', event.data)
       const jsonData = JSON.parse(event.data)
-      if (jsonData.text != '') {
-        setTmpMessages((prevMessages) => [...prevMessages, jsonData])
-      }
+      setTmpMessages((prevMessages) => [...prevMessages, jsonData])
     }
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)

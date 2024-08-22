@@ -57,6 +57,10 @@ export const Form = () => {
     [handleSendChat, webcamStatus, setDelayedText]
   )
 
+  useEffect(() => {
+    console.log('chatProcessingCount:', chatProcessingCount)
+  }, [chatProcessingCount])
+
   return slideMode &&
     slideVisible &&
     (slidePlaying || chatProcessingCount !== 0) ? (

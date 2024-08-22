@@ -9,7 +9,7 @@ const YouTube = () => {
   const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubeLiveId = settingsStore((s) => s.youtubeLiveId)
-
+  const webSocketMode = settingsStore((s) => s.webSocketMode)
   const selectAIService = settingsStore((s) => s.selectAIService)
 
   const conversationContinuityMode = settingsStore(
@@ -25,6 +25,8 @@ const YouTube = () => {
     if (youtubeMode) {
       homeStore.setState({ modalImage: '' })
       menuStore.setState({ showWebcam: false })
+    } else {
+      settingsStore.setState({ youtubePlaying: false })
     }
   }
 
@@ -98,7 +100,8 @@ const YouTube = () => {
                     disabled={
                       (selectAIService !== 'openai' &&
                         selectAIService !== 'anthropic') ||
-                      slideMode
+                      slideMode ||
+                      webSocketMode
                     }
                   >
                     {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}

@@ -14,8 +14,8 @@ import Slides from './slides'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
-  const selectAIModel = settingsStore((s) => s.selectAIModel)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
+  const youtubePlaying = settingsStore((s) => s.youtubePlaying)
   const webSocketMode = settingsStore((s) => s.webSocketMode)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
@@ -36,6 +36,8 @@ export const Menu = () => {
   const [markdownContent, setMarkdownContent] = useState('')
 
   useEffect(() => {
+    if (!selectedSlideDocs) return
+
     fetch(`/slides/${selectedSlideDocs}/slides.md`)
       .then((response) => response.text())
       .then((text) => setMarkdownContent(text))
@@ -97,6 +99,16 @@ export const Menu = () => {
     }
   }, [showWebcam])
 
+  useEffect(() => {
+    if (!youtubePlaying) {
+      settingsStore.setState({
+        youtubeContinuationCount: 0,
+        youtubeNoCommentCount: 0,
+        youtubeSleepMode: false,
+      })
+    }
+  }, [youtubePlaying])
+
   return (
     <>
       <div className="absolute z-15 m-24">
@@ -131,65 +143,58 @@ export const Menu = () => {
               />
             )}
           </div>
-          <div className="order-3">
-            <IconButton
-              iconName="24/Camera"
-              isProcessing={false}
-              onClick={() =>
-                menuStore.setState(({ showWebcam }) => ({
-                  showWebcam: !showWebcam,
-                }))
-              }
-              disabled={
-                !(
-                  selectAIService === 'openai' &&
-                  [
-                    'gpt-4o-mini',
-                    'chatgpt-4o-latest',
-                    'gpt-4o-2024-08-06',
-                    'gpt-4o',
-                    'gpt-4-turbo',
-                  ].includes(selectAIModel)
-                ) || youtubeMode
-              }
-            />
-          </div>
-          <div className="order-4">
-            <IconButton
-              iconName="24/AddImage"
-              isProcessing={false}
-              onClick={() => imageFileInputRef.current?.click()}
-              disabled={
-                !(
-                  selectAIService === 'openai' &&
-                  [
-                    'gpt-4o-mini',
-                    'chatgpt-4o-latest',
-                    'gpt-4o-2024-08-06',
-                    'gpt-4o',
-                    'gpt-4-turbo',
-                  ].includes(selectAIModel)
-                ) || youtubeMode
-              }
-            />
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              ref={imageFileInputRef}
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                if (file) {
-                  const reader = new FileReader()
-                  reader.onload = (e) => {
-                    const imageUrl = e.target?.result as string
-                    homeStore.setState({ modalImage: imageUrl })
+          {selectAIService === 'openai' && !youtubeMode && (
+            <>
+              <div className="order-3">
+                <IconButton
+                  iconName="24/Camera"
+                  isProcessing={false}
+                  onClick={() =>
+                    menuStore.setState(({ showWebcam }) => ({
+                      showWebcam: !showWebcam,
+                    }))
                   }
-                  reader.readAsDataURL(file)
+                />
+              </div>
+              <div className="order-4">
+                <IconButton
+                  iconName="24/AddImage"
+                  isProcessing={false}
+                  onClick={() => imageFileInputRef.current?.click()}
+                />
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  ref={imageFileInputRef}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) {
+                      const reader = new FileReader()
+                      reader.onload = (e) => {
+                        const imageUrl = e.target?.result as string
+                        homeStore.setState({ modalImage: imageUrl })
+                      }
+                      reader.readAsDataURL(file)
+                    }
+                  }}
+                />
+              </div>
+            </>
+          )}
+          {youtubeMode && (
+            <div className="order-5">
+              <IconButton
+                iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
+                isProcessing={false}
+                onClick={() =>
+                  settingsStore.setState({
+                    youtubePlaying: !youtubePlaying,
+                  })
                 }
-              }}
-            />
-          </div>
+              />
+            </div>
+          )}
           {slideMode && (
             <div className="order-5">
               <IconButton
@@ -209,7 +214,7 @@ export const Menu = () => {
       </div>
       {webSocketMode ? showChatLog && <ChatLog /> : showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
-      {!showChatLog && assistantMessage && !slideVisible && (
+      {!showChatLog && assistantMessage && (!slideMode || !slideVisible) && (
         <AssistantText message={assistantMessage} />
       )}
       {showWebcam && navigator.mediaDevices && <Webcam />}
