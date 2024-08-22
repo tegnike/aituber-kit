@@ -8,11 +8,11 @@ export interface PersistedState {
   userOnboarded: boolean
   chatLog: Message[]
   dontShowIntroduction: boolean
-  assistantMessage: string
 }
 
 export interface TransientState {
   viewer: Viewer
+  assistantMessage: string
   slideMessages: string[]
   chatProcessing: boolean
   chatProcessingCount: number
@@ -62,10 +62,9 @@ const homeStore = create<HomeState>()(
     }),
     {
       name: 'aitube-kit-home',
-      partialize: ({ chatLog, dontShowIntroduction, assistantMessage }) => ({
+      partialize: ({ chatLog, dontShowIntroduction }) => ({
         chatLog,
         dontShowIntroduction,
-        assistantMessage,
       }),
     }
   )

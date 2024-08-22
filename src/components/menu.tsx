@@ -99,9 +99,7 @@ export const Menu = () => {
     }
   }, [showWebcam])
 
-  const handleChangeYoutubePlaying = (youtubePlaying: boolean) => {
-    settingsStore.setState({ youtubePlaying: youtubePlaying })
-
+  useEffect(() => {
     if (!youtubePlaying) {
       settingsStore.setState({
         youtubeContinuationCount: 0,
@@ -109,7 +107,7 @@ export const Menu = () => {
         youtubeSleepMode: false,
       })
     }
-  }
+  }, [youtubePlaying])
 
   return (
     <>
@@ -189,7 +187,11 @@ export const Menu = () => {
               <IconButton
                 iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
                 isProcessing={false}
-                onClick={() => handleChangeYoutubePlaying(!youtubePlaying)}
+                onClick={() =>
+                  settingsStore.setState({
+                    youtubePlaying: !youtubePlaying,
+                  })
+                }
               />
             </div>
           )}
