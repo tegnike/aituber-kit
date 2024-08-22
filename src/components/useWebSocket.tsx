@@ -22,10 +22,6 @@ interface Params {
 const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
-  const [currentMessage, setCurrentMessage] = useState<{
-    role: string
-    text: string
-  }>({ role: '', text: '' })
 
   const processMessage = useCallback(
     async (message: TmpMessage) => {
@@ -37,6 +33,13 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
   useEffect(() => {
     if (tmpMessages.length > 0) {
       const message = tmpMessages[0]
+      if (
+        message.role === 'output' ||
+        message.role === 'executing' ||
+        message.role === 'console'
+      ) {
+        message.role = 'code'
+      }
       setTmpMessages((prev) => prev.slice(1))
       processMessage(message)
     }

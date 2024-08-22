@@ -567,15 +567,18 @@ export const handleReceiveTextFromWsFn =
       if (state === 'start') {
         // startの場合は何もしない（textは空文字のため）
         console.log('Starting new response')
+        homeStore.setState({ wsStreaming: false })
       } else if (
         updateLog.length > 0 &&
-        updateLog[updateLog.length - 1].role === role
+        updateLog[updateLog.length - 1].role === role &&
+        hs.wsStreaming
       ) {
         // 既存のメッセージに追加
         updateLog[updateLog.length - 1].content += text
       } else {
         // 新しいメッセージを追加
         updateLog.push({ role: role, content: text })
+        homeStore.setState({ wsStreaming: true })
       }
 
       if (role === 'assistant' && text !== '') {
@@ -589,7 +592,10 @@ export const handleReceiveTextFromWsFn =
             () => {
               homeStore.setState({
                 chatLog: updateLog,
-                assistantMessage: updateLog[updateLog.length - 1].content,
+                assistantMessage: (() => {
+                  const content = updateLog[updateLog.length - 1].content
+                  return typeof content === 'string' ? content : ''
+                })(),
               })
             },
             () => {
@@ -608,6 +614,7 @@ export const handleReceiveTextFromWsFn =
       if (state === 'end') {
         // レスポンスの終了処理
         console.log('Response ended')
+        homeStore.setState({ wsStreaming: false })
       }
     }
 

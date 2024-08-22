@@ -8,11 +8,11 @@ export interface PersistedState {
   userOnboarded: boolean
   chatLog: Message[]
   dontShowIntroduction: boolean
+  assistantMessage: string
 }
 
 export interface TransientState {
   viewer: Viewer
-  assistantMessage: string
   slideMessages: string[]
   chatProcessing: boolean
   chatProcessingCount: number
@@ -23,6 +23,7 @@ export interface TransientState {
   triggerShutter: boolean
   webcamStatus: boolean
   ws: WebSocket | null
+  wsStreaming: boolean
 }
 
 export type HomeState = PersistedState & TransientState
@@ -34,10 +35,10 @@ const homeStore = create<HomeState>()(
       userOnboarded: false,
       chatLog: [],
       dontShowIntroduction: false,
+      assistantMessage: '',
 
       // transient states
       viewer: new Viewer(),
-      assistantMessage: '',
       slideMessages: [],
       chatProcessing: false,
       chatProcessingCount: 0,
@@ -57,12 +58,14 @@ const homeStore = create<HomeState>()(
       triggerShutter: false,
       webcamStatus: false,
       ws: null,
+      wsStreaming: false,
     }),
     {
       name: 'aitube-kit-home',
-      partialize: ({ chatLog, dontShowIntroduction }) => ({
+      partialize: ({ chatLog, dontShowIntroduction, assistantMessage }) => ({
         chatLog,
         dontShowIntroduction,
+        assistantMessage,
       }),
     }
   )
