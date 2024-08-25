@@ -615,6 +615,7 @@ export const handleReceiveTextFromWsFn =
         // レスポンスの終了処理
         console.log('Response ended')
         homeStore.setState({ wsStreaming: false })
+        homeStore.setState({ chatProcessing: false })
       }
     }
 
