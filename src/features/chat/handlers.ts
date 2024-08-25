@@ -386,13 +386,14 @@ export const processAIResponse = async (
 /**
  * アシスタントとの会話を行う
  * 画面のチャット欄から入力されたときに実行される処理
+ * Youtubeでチャット取得した場合もこの関数を使用する
  */
 export const handleSendChatFn =
   (errors: {
     NotConnectedToExternalAssistant: string
     APIKeyNotEntered: string
   }) =>
-  async (text: string, role?: string) => {
+  async (text: string) => {
     const newMessage = text
 
     if (newMessage === null) return
@@ -406,70 +407,24 @@ export const handleSendChatFn =
       console.log('websocket mode: true')
       homeStore.setState({ chatProcessing: true })
 
-      if (role !== undefined && role !== 'user') {
-        // WebSocketからの返答を処理
+      // WebSocketで送信する処理
+      if (hs.ws?.readyState === WebSocket.OPEN) {
+        // ユーザーの発言を追加して表示
+        const updateLog: Message[] = [
+          ...hs.chatLog,
+          { role: 'user', content: newMessage },
+        ]
+        homeStore.setState({
+          chatLog: updateLog,
+        })
 
-        if (role == 'assistant') {
-          let aiText = `${'[neutral]'} ${newMessage}`
-          try {
-            const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-
-            // 文ごとに音声を生成 & 再生、返答を表示
-            speakCharacter(aiTalks[0], async () => {
-              // アシスタントの返答をログに追加
-              const updateLog: Message[] = [
-                ...hs.codeLog,
-                { role: 'assistant', content: newMessage },
-              ]
-
-              homeStore.setState({
-                chatLog: updateLog,
-                codeLog: updateLog,
-                assistantMessage: newMessage,
-                chatProcessing: false,
-                voicePlaying: false,
-              })
-            })
-          } catch (e) {
-            homeStore.setState({
-              chatProcessing: false,
-              voicePlaying: false,
-            })
-          }
-        } else if (role == 'code' || role == 'output' || role == 'executing') {
-          // コードコメントの処理
-          // ループ完了後にAI応答をコードログに追加
-          const updateLog: Message[] = [
-            ...hs.codeLog,
-            { role: role, content: newMessage },
-          ]
-          homeStore.setState({ codeLog: updateLog, chatProcessing: false })
-        } else {
-          // その他のコメントの処理（現想���では使用されないはず）
-          console.log('error role:', role)
-        }
+        // WebSocket送信
+        hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
       } else {
-        // WebSocketで送信する処理
-
-        if (hs.ws?.readyState === WebSocket.OPEN) {
-          // ユーザーの発言を追加して表示
-          const updateLog: Message[] = [
-            ...hs.codeLog,
-            { role: 'user', content: newMessage },
-          ]
-          homeStore.setState({
-            chatLog: updateLog,
-            codeLog: updateLog,
-          })
-
-          // WebSocket送信
-          hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
-        } else {
-          homeStore.setState({
-            assistantMessage: errors['NotConnectedToExternalAssistant'],
-            chatProcessing: false,
-          })
-        }
+        homeStore.setState({
+          assistantMessage: errors['NotConnectedToExternalAssistant'],
+          chatProcessing: false,
+        })
       }
     } else {
       // ChatVRM original mode
@@ -546,13 +501,7 @@ export const handleSendChatFn =
         {
           role: 'user',
           content:
-            hs.modalImage &&
-            ss.selectAIService === 'openai' &&
-            (ss.selectAIModel === 'gpt-4o-mini' ||
-              ss.selectAIModel === 'chatgpt-4o-latest' ||
-              ss.selectAIModel === 'gpt-4o-2024-08-06' ||
-              ss.selectAIModel === 'gpt-4o' ||
-              ss.selectAIModel === 'gpt-4-turbo')
+            hs.modalImage && ss.selectAIService === 'openai'
               ? [
                   { type: 'text', text: newMessage },
                   { type: 'image_url', image_url: { url: hs.modalImage } },
@@ -571,13 +520,7 @@ export const handleSendChatFn =
           ? message.role
           : 'assistant',
         content:
-          typeof message.content === 'string' ||
-          (ss.selectAIService === 'openai' &&
-            (ss.selectAIModel === 'gpt-4o-mini' ||
-              ss.selectAIModel === 'chatgpt-4o-latest' ||
-              ss.selectAIModel === 'gpt-4o-2024-08-06' ||
-              ss.selectAIModel === 'gpt-4o' ||
-              ss.selectAIModel === 'gpt-4-turbo'))
+          typeof message.content === 'string' || ss.selectAIService === 'openai'
             ? message.content
             : message.content[0].text,
       }))
@@ -598,4 +541,83 @@ export const handleSendChatFn =
 
       homeStore.setState({ chatProcessing: false })
     }
+  }
+
+/**
+ * WebSocketからのテキストを受信したときの処理
+ */
+export const handleReceiveTextFromWsFn =
+  () => async (text: string, role?: string, state?: string) => {
+    if (text === null || role === undefined) return
+
+    const ss = settingsStore.getState()
+    const hs = homeStore.getState()
+
+    if (!ss.webSocketMode) {
+      console.log('websocket mode: false')
+      return
+    }
+
+    console.log('websocket mode: true')
+    homeStore.setState({ chatProcessing: true })
+
+    if (role !== 'user') {
+      const updateLog: Message[] = [...hs.chatLog]
+
+      if (state === 'start') {
+        // startの場合は何もしない（textは空文字のため）
+        console.log('Starting new response')
+        homeStore.setState({ wsStreaming: false })
+      } else if (
+        updateLog.length > 0 &&
+        updateLog[updateLog.length - 1].role === role &&
+        hs.wsStreaming
+      ) {
+        // 既存のメッセージに追加
+        updateLog[updateLog.length - 1].content += text
+      } else {
+        // 新しいメッセージを追加
+        updateLog.push({ role: role, content: text })
+        homeStore.setState({ wsStreaming: true })
+      }
+
+      if (role === 'assistant' && text !== '') {
+        let aiText = `${'[neutral]'} ${text}`
+        try {
+          const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
+
+          // 文ごとに音声を生成 & 再生、返答を表示
+          speakCharacter(
+            aiTalks[0],
+            () => {
+              homeStore.setState({
+                chatLog: updateLog,
+                assistantMessage: (() => {
+                  const content = updateLog[updateLog.length - 1].content
+                  return typeof content === 'string' ? content : ''
+                })(),
+              })
+            },
+            () => {
+              // hs.decrementChatProcessingCount()
+            }
+          )
+        } catch (e) {
+          console.error('Error in speakCharacter:', e)
+        }
+      } else {
+        homeStore.setState({
+          chatLog: updateLog,
+        })
+      }
+
+      if (state === 'end') {
+        // レスポンスの終了処理
+        console.log('Response ended')
+        homeStore.setState({ wsStreaming: false })
+        homeStore.setState({ chatProcessing: false })
+      }
+    }
+
+    homeStore.setState({ chatProcessing: state !== 'end' })
   }
