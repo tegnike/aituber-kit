@@ -93,7 +93,6 @@ async function createSlideLine(imageBase64: string, apiKey: string, model: strin
         ],
         response_format: zodResponseFormat(ScriptsReasoning, "scripts_reasoning"),
     });
-    console.log('result', response);
 
     const result = JSON.parse(response.choices[0].message?.content || '{}');
     return result;
