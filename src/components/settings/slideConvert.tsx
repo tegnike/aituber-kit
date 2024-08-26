@@ -15,10 +15,13 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const [model, setModel] = useState<string>('gpt-4o')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const selectLanguage = settingsStore.getState().selectLanguage
+  const [selectedFileName, setSelectedFileName] = useState<string>('')
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
-      setFile(event.target.files[0])
+      const selectedFile = event.target.files[0]
+      setFile(selectedFile)
+      setSelectedFileName(selectedFile.name)
     }
   }
 
@@ -54,20 +57,36 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   }
 
   return (
-    <div>
+    <div className="my-24">
       <form onSubmit={handleFormSubmit}>
-        <div className="mt-24 mb-16 typography-20 font-bold">
+        <div className="my-16 mb-16 typography-20 font-bold">
           {t('PdfConvertLabel')}
         </div>
         <p className="">{t('PdfConvertDescription')}</p>
-        <div className="mt-16 font-bold">{t('PdfConvertFileUpload')}</div>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={handleFileChange}
-          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
-        />
-        <div className="mt-16 font-bold">{t('PdfConvertFolderName')}</div>
+        <div className="my-16 flex items-center">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="hidden"
+            id="fileInput"
+            accept=".pdf"
+          />
+          <TextButton
+            onClick={(e) => {
+              e.preventDefault()
+              document.getElementById('fileInput')?.click()
+            }}
+            type="button"
+          >
+            {t('PdfConvertFileUpload')}
+          </TextButton>
+          {selectedFileName && (
+            <span className="ml-16 text-ellipsis overflow-hidden">
+              {selectedFileName}
+            </span>
+          )}
+        </div>
+        <div className="my-16 font-bold">{t('PdfConvertFolderName')}</div>
         <input
           type="text"
           placeholder="Folder Name"
@@ -76,7 +95,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           required
           className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
         />
-        <div className="mt-16 font-bold">{t('PdfConvertModelSelect')}</div>
+        <div className="my-16 font-bold">{t('PdfConvertModelSelect')}</div>
         <select
           value={model}
           onChange={(e) => setModel(e.target.value)}
