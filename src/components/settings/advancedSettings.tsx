@@ -11,7 +11,8 @@ const AdvancedSettings = () => {
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
   )
-  const showSettingsButton = menuStore((s) => s.showSettingsButton)
+  const showControlPanel = menuStore((s) => s.showControlPanel)
+  const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
 
   const { t } = useTranslation()
@@ -35,19 +36,37 @@ const AdvancedSettings = () => {
             </Disclosure.Button>
             <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
               <div className="pl-16">
-                <div className="my-16 typography-16 font-bold">
-                  {t('ShowCharacterName')}
+                <div className="my-24">
+                  <div className="my-16 typography-16 font-bold">
+                    {t('ShowAssistantText')}
+                  </div>
+                  <div className="my-8">
+                    <TextButton
+                      onClick={() =>
+                        settingsStore.setState((s) => ({
+                          showAssistantText: !s.showAssistantText,
+                        }))
+                      }
+                    >
+                      {showAssistantText ? t('StatusOn') : t('StatusOff')}
+                    </TextButton>
+                  </div>
                 </div>
-                <div className="my-8">
-                  <TextButton
-                    onClick={() =>
-                      settingsStore.setState((s) => ({
-                        showCharacterName: !s.showCharacterName,
-                      }))
-                    }
-                  >
-                    {showCharacterName ? t('StatusOn') : t('StatusOff')}
-                  </TextButton>
+                <div className="my-24">
+                  <div className="my-16 typography-16 font-bold">
+                    {t('ShowCharacterName')}
+                  </div>
+                  <div className="my-8">
+                    <TextButton
+                      onClick={() =>
+                        settingsStore.setState((s) => ({
+                          showCharacterName: !s.showCharacterName,
+                        }))
+                      }
+                    >
+                      {showCharacterName ? t('StatusOn') : t('StatusOff')}
+                    </TextButton>
+                  </div>
                 </div>
                 {selectLanguage === 'ja' && (
                   <div className="my-24">
@@ -55,54 +74,37 @@ const AdvancedSettings = () => {
                       {t('EnglishToJapanese')}
                     </div>
                     <div className="my-8">
-                      {changeEnglishToJapanese ? (
-                        <TextButton
-                          onClick={() =>
-                            settingsStore.setState({
-                              changeEnglishToJapanese: false,
-                            })
-                          }
-                        >
-                          {t('StatusOn')}
-                        </TextButton>
-                      ) : (
-                        <TextButton
-                          onClick={() =>
-                            settingsStore.setState({
-                              changeEnglishToJapanese: true,
-                            })
-                          }
-                        >
-                          {t('StatusOff')}
-                        </TextButton>
-                      )}
+                      <TextButton
+                        onClick={() =>
+                          settingsStore.setState((prevState) => ({
+                            changeEnglishToJapanese:
+                              !prevState.changeEnglishToJapanese,
+                          }))
+                        }
+                      >
+                        {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
+                      </TextButton>
                     </div>
                   </div>
                 )}
-                <div className="my-16 typography-16 font-bold">
-                  {t('ShowSettingsButton')}
-                </div>
-                <div className="my-16 typography-16">
-                  {t('ShowSettingsButtonInfo')}
-                </div>
-                <div className="my-8">
-                  {showSettingsButton ? (
+                <div className="my-24">
+                  <div className="my-16 typography-16 font-bold">
+                    {t('ShowControlPanel')}
+                  </div>
+                  <div className="my-16 typography-16">
+                    {t('ShowControlPanelInfo')}
+                  </div>
+                  <div className="my-8">
                     <TextButton
                       onClick={() =>
-                        menuStore.setState({ showSettingsButton: false })
+                        menuStore.setState({
+                          showControlPanel: !showControlPanel,
+                        })
                       }
                     >
-                      {t('StatusOn')}
+                      {showControlPanel ? t('StatusOn') : t('StatusOff')}
                     </TextButton>
-                  ) : (
-                    <TextButton
-                      onClick={() =>
-                        menuStore.setState({ showSettingsButton: true })
-                      }
-                    >
-                      {t('StatusOff')}
-                    </TextButton>
-                  )}
+                  </div>
                 </div>
               </div>
             </Disclosure.Panel>
