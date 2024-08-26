@@ -102,8 +102,8 @@
   "CharacterName": "캐릭터 이름",
   "ShowCharacterName": "답변란에 캐릭터 이름을 표시",
   "AdvancedSettings": "고급 설정",
-  "ShowSettingsButton": "설정 버튼 표시",
-  "ShowSettingsButtonInfo": "설정 화면은 Cmd + . (Mac) / Ctrl + . (Windows)를 눌러 표시할 수 있습니다.",
+  "ShowControlPanel": "설정 버튼 표시",
+  "ShowControlPanelInfo": "설정 화면은 Cmd + . (Mac) / Ctrl + . (Windows)를 눌러 표시할 수 있습니다.",
   "SlideMode": "슬라이드 모드",
   "SelectedSlideDocs": "사용할 슬라이드",
   "SlideModeDescription": "AI가 자동으로 슬라이드를 발표하는 모드입니다. 선택한 AI 서비스가 OpenAI, Anthropic 또는 Google Gemini인 경우에만 사용 가능합니다."

@@ -22,7 +22,7 @@ export const Menu = () => {
   const chatLog = homeStore((s) => s.chatLog)
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
-  const showSettingsButton = menuStore((s) => s.showSettingsButton)
+  const ShowControlPanel = menuStore((s) => s.ShowControlPanel)
   const slidePlaying = slideStore((s) => s.isPlaying)
 
   const [showSettings, setShowSettings] = useState(false)
@@ -116,96 +116,98 @@ export const Menu = () => {
           className="grid md:grid-flow-col gap-[8px] mb-40"
           style={{ width: 'max-content' }}
         >
-          <div className="md:order-1 order-2">
-            {showSettingsButton && (
-              <IconButton
-                iconName="24/Settings"
-                isProcessing={false}
-                onClick={() => setShowSettings(true)}
-              ></IconButton>
-            )}
-          </div>
-          <div className="md:order-2 order-1">
-            {showChatLog ? (
-              <IconButton
-                iconName="24/CommentOutline"
-                label={t('ChatLog')}
-                isProcessing={false}
-                onClick={() => setShowChatLog(false)}
-              />
-            ) : (
-              <IconButton
-                iconName="24/CommentFill"
-                label={t('ChatLog')}
-                isProcessing={false}
-                disabled={chatLog.length <= 0}
-                onClick={() => setShowChatLog(true)}
-              />
-            )}
-          </div>
-          {selectAIService === 'openai' && !youtubeMode && (
+          {ShowControlPanel && (
             <>
-              <div className="order-3">
+              <div className="md:order-1 order-2">
                 <IconButton
-                  iconName="24/Camera"
+                  iconName="24/Settings"
                   isProcessing={false}
-                  onClick={() =>
-                    menuStore.setState(({ showWebcam }) => ({
-                      showWebcam: !showWebcam,
-                    }))
-                  }
-                />
+                  onClick={() => setShowSettings(true)}
+                ></IconButton>
               </div>
-              <div className="order-4">
-                <IconButton
-                  iconName="24/AddImage"
-                  isProcessing={false}
-                  onClick={() => imageFileInputRef.current?.click()}
-                />
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  ref={imageFileInputRef}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) {
-                      const reader = new FileReader()
-                      reader.onload = (e) => {
-                        const imageUrl = e.target?.result as string
-                        homeStore.setState({ modalImage: imageUrl })
+              <div className="md:order-2 order-1">
+                {showChatLog ? (
+                  <IconButton
+                    iconName="24/CommentOutline"
+                    label={t('ChatLog')}
+                    isProcessing={false}
+                    onClick={() => setShowChatLog(false)}
+                  />
+                ) : (
+                  <IconButton
+                    iconName="24/CommentFill"
+                    label={t('ChatLog')}
+                    isProcessing={false}
+                    disabled={chatLog.length <= 0}
+                    onClick={() => setShowChatLog(true)}
+                  />
+                )}
+              </div>
+              {selectAIService === 'openai' && !youtubeMode && (
+                <>
+                  <div className="order-3">
+                    <IconButton
+                      iconName="24/Camera"
+                      isProcessing={false}
+                      onClick={() =>
+                        menuStore.setState(({ showWebcam }) => ({
+                          showWebcam: !showWebcam,
+                        }))
                       }
-                      reader.readAsDataURL(file)
+                    />
+                  </div>
+                  <div className="order-4">
+                    <IconButton
+                      iconName="24/AddImage"
+                      isProcessing={false}
+                      onClick={() => imageFileInputRef.current?.click()}
+                    />
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      ref={imageFileInputRef}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          const reader = new FileReader()
+                          reader.onload = (e) => {
+                            const imageUrl = e.target?.result as string
+                            homeStore.setState({ modalImage: imageUrl })
+                          }
+                          reader.readAsDataURL(file)
+                        }
+                      }}
+                    />
+                  </div>
+                </>
+              )}
+              {youtubeMode && (
+                <div className="order-5">
+                  <IconButton
+                    iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
+                    isProcessing={false}
+                    onClick={() =>
+                      settingsStore.setState({
+                        youtubePlaying: !youtubePlaying,
+                      })
                     }
-                  }}
-                />
-              </div>
+                  />
+                </div>
+              )}
+              {slideMode && (
+                <div className="order-5">
+                  <IconButton
+                    iconName="24/FrameEffect"
+                    isProcessing={false}
+                    onClick={() =>
+                      menuStore.setState({ slideVisible: !slideVisible })
+                    }
+                    disabled={slidePlaying}
+                  />
+                </div>
+              )}
             </>
-          )}
-          {youtubeMode && (
-            <div className="order-5">
-              <IconButton
-                iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
-                isProcessing={false}
-                onClick={() =>
-                  settingsStore.setState({
-                    youtubePlaying: !youtubePlaying,
-                  })
-                }
-              />
-            </div>
-          )}
-          {slideMode && (
-            <div className="order-5">
-              <IconButton
-                iconName="24/FrameEffect"
-                isProcessing={false}
-                onClick={() =>
-                  menuStore.setState({ slideVisible: !slideVisible })
-                }
-                disabled={slidePlaying}
-              />
-            </div>
           )}
         </div>
       </div>

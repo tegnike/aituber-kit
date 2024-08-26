@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 interface MenuState {
   showWebcam: boolean
-  showSettingsButton: boolean
+  ShowControlPanel: boolean
   fileInput: HTMLInputElement | null
   bgFileInput: HTMLInputElement | null
   slideVisible: boolean
@@ -10,7 +10,7 @@ interface MenuState {
 
 const menuStore = create<MenuState>((set, get) => ({
   showWebcam: false,
-  showSettingsButton: true,
+  ShowControlPanel: true,
   fileInput: null,
   bgFileInput: null,
   slideVisible: true,

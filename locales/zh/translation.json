@@ -102,8 +102,8 @@
   "CharacterName": "角色名字",
   "ShowCharacterName": "在回答框中显示角色名称",
   "AdvancedSettings": "高级设置",
-  "ShowSettingsButton": "显示设置按钮",
-  "ShowSettingsButtonInfo": "可以通过按 Cmd + . (Mac) / Ctrl + . (Windows) 来显示设置界面。",
+  "ShowControlPanel": "显示设置按钮",
+  "ShowControlPanelInfo": "可以通过按 Cmd + . (Mac) / Ctrl + . (Windows) 来显示设置界面。",
   "SlideMode": "投影片模式",
   "SelectedSlideDocs": "使用的投影片",
   "SlideModeDescription": "這是一個 AI 自動展示投影片的模式。僅在選擇的 AI 服務為 OpenAI、Anthropic 或 Google Gemini 時有效。"
