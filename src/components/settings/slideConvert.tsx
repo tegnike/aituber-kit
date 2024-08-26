@@ -81,8 +81,11 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           onChange={(e) => setModel(e.target.value)}
           className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
         >
+          <option value="gpt-4o-mini">gpt-4o-mini</option>
+          <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
           <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
-          <option value="gpt-4o-mini-2024-07-18">gpt-4o-mini-2024-07-18</option>
+          <option value="gpt-4o">gpt-4o(2024-05-13)</option>
+          <option value="gpt-4-turbo">gpt-4-turbo</option>
         </select>
         <div className="my-16">
           <TextButton type="submit" disabled={isLoading}>
