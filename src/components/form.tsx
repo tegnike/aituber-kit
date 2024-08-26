@@ -5,7 +5,10 @@ import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import slideStore from '@/features/stores/slide'
-import { handleSendChatFn } from '../features/chat/handlers'
+import {
+  handleSendChatFn,
+  handleReceiveTextFromWsFn,
+} from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import useWebSocket from './useWebSocket'
 import useYoutube from './useYoutube'
@@ -26,9 +29,10 @@ export const Form = () => {
     NotConnectedToExternalAssistant: t('NotConnectedToExternalAssistant'),
     APIKeyNotEntered: t('APIKeyNotEntered'),
   })
+  const handleReceiveTextFromWs = handleReceiveTextFromWsFn()
 
   useYoutube({ handleSendChat })
-  useWebSocket({ handleSendChat })
+  useWebSocket({ handleReceiveTextFromWs })
 
   useEffect(() => {
     // テキストと画像がそろったら、チャットを送信
@@ -52,6 +56,10 @@ export const Form = () => {
     },
     [handleSendChat, webcamStatus, setDelayedText]
   )
+
+  useEffect(() => {
+    console.log('chatProcessingCount:', chatProcessingCount)
+  }, [chatProcessingCount])
 
   return slideMode &&
     slideVisible &&
