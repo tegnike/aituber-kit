@@ -54,6 +54,8 @@ const Slide = () => {
 
   const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     slideStore.setState({ selectedSlideDocs: e.target.value })
+    slideStore.setState({ isPlaying: false })
+    slideStore.setState({ currentSlide: 0 })
   }
 
   return (
