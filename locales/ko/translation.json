@@ -107,6 +107,7 @@
   "SlideMode": "슬라이드 모드",
   "SelectedSlideDocs": "사용할 슬라이드",
   "SlideModeDescription": "AI가 자동으로 슬라이드를 발표하는 모드입니다. 선택한 AI 서비스가 OpenAI, Anthropic 또는 Google Gemini인 경우에만 사용 가능합니다.",
+  "PdfConvertLabel": "PDF 슬라이드 변환",
   "PdfConvertDescription": "PDF를 슬라이드 모드 데이터로 변환합니다. 선택한 AI 서비스가 OpenAI인 경우에만 사용 가능합니다.",
   "PdfConvertFileUpload": "PDF 파일 선택",
   "PdfConvertFolderName": "저장 폴더 이름",

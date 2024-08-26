@@ -107,6 +107,7 @@
   "SlideMode": "Slide Mode",
   "SelectedSlideDocs": "Selected Slide Documents",
   "SlideModeDescription": "This is a mode where AI automatically presents slides. It is only available when the selected AI service is OpenAI, Anthropic, or Google Gemini.",
+  "PdfConvertLabel": "PDF Slide Conversion",
   "PdfConvertDescription": "Convert PDF to slide mode data. Available only when the selected AI service is OpenAI.",
   "PdfConvertFileUpload": "Select PDF file",
   "PdfConvertFolderName": "Save folder name",
