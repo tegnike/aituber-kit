@@ -4,8 +4,6 @@ import fs from 'fs'
 import path from 'path'
 import { createCanvas } from 'canvas'
 import { OpenAI } from 'openai'
-import { z } from 'zod'
-import { zodResponseFormat } from 'openai/helpers/zod'
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
 
 export const config = {
@@ -14,26 +12,21 @@ export const config = {
   },
 }
 
-const systemPrompt = `あなたはプレゼンテーションのプロです。画像でスライドが与えられますので、
-    初めて聞く人でもわかりやすいセリフを作成してください。以下の制約を守るようにしてください
-    - 初めと終わりのあいさつは不要です
-    - セリフは日本語で作成
-    - セリフでアルファベットを使う場合はその部分のみカタカナにすること
-    - 改行は入れないこと
-    - セリフの量は100秒程度で話せる量にすること
-    - 出力フォーマットは以下のjsonフォーマットの通りにすること。またjson以外の回答はしないこと
+const systemPrompt = `You are a presentation expert. Given an image of a slide, 
+    please create a script that is easy to understand for first-time listeners. Please follow these constraints:
+    - No need for opening and closing greetings
+    - Create the script in {{language}}
+    - If the language is Japanese, use katakana only for parts that use the alphabet
+    - Do not include line breaks
+    - The script for each slide should be no longer than about 60 seconds of speech
+    - The output format should follow the JSON format below. Do not provide any response other than JSON
     {{
     "line": str,
     "notes": str
     }}
-    - lineにはセリフ、notesにはセリフの内容を補強する内容を入れてください。
-    - notesの内容を元に質問を回答するため補足情報などを書くようにしてください。
+    - Put the script in "line", and any supporting content that couldn't be included in the script in "notes".
+    - Do not include any links in either the "line" or "notes" fields
     `
-
-const ScriptsReasoning = z.object({
-  line: z.string(),
-  notes: z.string(),
-})
 
 async function convertPdfToImages(pdfBuffer: Buffer): Promise<string[]> {
   // PDFファイルを読み込む
@@ -72,16 +65,22 @@ async function convertPdfToImages(pdfBuffer: Buffer): Promise<string[]> {
 async function createSlideLine(
   imageBase64: string,
   apiKey: string,
-  model: string
+  model: string,
+  selectLanguage: string,
+  previousResult: string | null
 ) {
-  const openai = new OpenAI({
-    apiKey: apiKey,
-    dangerouslyAllowBrowser: true,
-  })
-  const response = await openai.beta.chat.completions.parse({
+  const client = new OpenAI({ apiKey })
+  const additionalPrompt = previousResult
+    ? `Previous slide content: ${previousResult}`
+    : 'This is the first slide.'
+
+  const response = await client.chat.completions.create({
     model: `${model}`,
     messages: [
-      { role: 'system', content: systemPrompt },
+      {
+        role: 'system',
+        content: `${systemPrompt.replace('{{language}}', selectLanguage)}\n${additionalPrompt}`,
+      },
       {
         role: 'user',
         content: [
@@ -94,7 +93,7 @@ async function createSlideLine(
         ],
       },
     ],
-    response_format: zodResponseFormat(ScriptsReasoning, 'scripts_reasoning'),
+    response_format: { type: 'json_object' },
   })
 
   const result = JSON.parse(response.choices[0].message?.content || '{}')
@@ -118,6 +117,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       ? fields.apiKey[0]
       : fields.apiKey
     const model = Array.isArray(fields.model) ? fields.model[0] : fields.model
+    const selectLanguage = Array.isArray(fields.selectLanguage)
+      ? fields.selectLanguage[0]
+      : fields.selectLanguage
 
     if (!file) {
       res.status(400).send('No file uploaded')
@@ -141,21 +143,37 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const scriptList: unknown[] = []
-    let markdownContent = '---\nmarp: true\n---\n' // Markdownの初期コンテンツ
+    let markdownContent = '---\nmarp: true' // Markdownの初期コンテンツ
+    let previousResult: string | null = null
+
+    console.log('start convert')
+
+    const language = getLanguage(selectLanguage)
 
     for (let i = 0; i < images.length; i++) {
       const imgBase64 = images[i]
       if (apiKey && model) {
-        const slideLine = await createSlideLine(imgBase64, apiKey, model)
+        const slideLine = await createSlideLine(
+          imgBase64,
+          apiKey,
+          model,
+          language,
+          previousResult
+        )
         slideLine.page = i // ページ番号を追加
         scriptList.push(slideLine)
+        console.log(`=== slideLine ${i} ===`)
+        console.log(slideLine.line)
+        previousResult = slideLine.line
       } else {
         throw new Error('API Key and Model must not be undefined')
       }
 
       // Markdownコンテンツの形成
-      markdownContent += `![bg](${imgBase64})\n\n---\n`
+      markdownContent += `\n---\n![bg](${imgBase64})\n`
     }
+
+    console.log('end convert')
 
     // MarkdownファイルとJSONファイルを保存
     fs.writeFileSync(markdownPath, markdownContent)
@@ -163,6 +181,26 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res.status(200).json({ message: 'PDFが変換されました' })
   })
+}
+
+function getLanguage(selectLanguage: string | undefined) {
+  if (!selectLanguage) {
+    return 'Japanese'
+  }
+  switch (selectLanguage) {
+    case 'ja':
+      return 'Japanese'
+    case 'en':
+      return 'English'
+    case 'zh':
+      return 'Chinese'
+    case 'zh-TW':
+      return 'Chinese'
+    case 'ko':
+      return 'Korean'
+    default:
+      return 'Japanese'
+  }
 }
 
 export default handler

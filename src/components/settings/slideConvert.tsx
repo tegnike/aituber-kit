@@ -12,8 +12,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const [file, setFile] = useState<File | null>(null)
   const [folderName, setFolderName] = useState<string>('')
   const [apiKey] = useState<string>(settingsStore.getState().openAiKey)
-  const [model, setModel] = useState<string>('gpt-4o-2024-08-06')
+  const [model, setModel] = useState<string>('gpt-4o')
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const selectLanguage = settingsStore.getState().selectLanguage
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
@@ -35,6 +36,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     formData.append('folderName', folderName)
     formData.append('apiKey', apiKey)
     formData.append('model', model)
+    formData.append('selectLanguage', selectLanguage)
 
     const response = await fetch('/api/convertSlide', {
       method: 'POST',
