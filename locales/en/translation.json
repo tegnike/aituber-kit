@@ -100,6 +100,7 @@
   "ElevenLabsVoiceId": "ElevenLabs Voice ID",
   "ElevenLabsVoiceIdInfo": "Voice ID can be selected from the URL below.",
   "CharacterName": "Character name",
+  "ShowAssistantText": "Show answer box",
   "ShowCharacterName": "Show character name in the answer box",
   "AdvancedSettings": "Advanced Settings",
   "ShowControlPanel": "Show settings button",

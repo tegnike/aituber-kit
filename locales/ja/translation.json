@@ -101,6 +101,7 @@
   "ElevenLabsVoiceId": "ElevenLabs ボイスID",
   "ElevenLabsVoiceIdInfo": "ボイスIDは下記のURLから選択してください。",
   "CharacterName": "キャラクター名",
+  "ShowAssistantText": "回答欄を表示する",
   "ShowCharacterName": "回答欄にキャラクター名を表示する",
   "AdvancedSettings": "詳細設定",
   "ShowControlPanel": "操作パネルを表示する",

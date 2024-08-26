@@ -56,6 +56,7 @@ interface Integrations {
 
 interface Character {
   characterName: string
+  showAssistantText: boolean
   showCharacterName: boolean
   systemPrompt: string
   conversationContinuityMode: boolean
@@ -123,6 +124,7 @@ const settingsStore = create<SettingsState>()(
 
       // Character
       characterName: 'CHARACTER',
+      showAssistantText: true,
       showCharacterName: true,
       systemPrompt: SYSTEM_PROMPT,
       conversationContinuityMode: false,
@@ -168,6 +170,7 @@ const settingsStore = create<SettingsState>()(
         youtubeMode: state.youtubeMode,
         youtubeLiveId: state.youtubeLiveId,
         characterName: state.characterName,
+        showAssistantText: state.showAssistantText,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
         conversationContinuityMode: state.conversationContinuityMode,

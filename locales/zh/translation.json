@@ -100,6 +100,7 @@
   "ElevenLabsVoiceId": "ElevenLabs 语音ID",
   "ElevenLabsVoiceIdInfo": "请从下面的URL选择语音ID。",
   "CharacterName": "角色名字",
+  "ShowAssistantText": "顯示回答框",
   "ShowCharacterName": "在回答框中显示角色名称",
   "AdvancedSettings": "高级设置",
   "ShowControlPanel": "显示设置按钮",
