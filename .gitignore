@@ -42,3 +42,6 @@ credentials.json
 
 certificates
 .env
+
+/public/slides/*
+!/public/slides/demo/

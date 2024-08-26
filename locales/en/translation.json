@@ -106,5 +106,15 @@
   "ShowSettingsButtonInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) .",
   "SlideMode": "Slide Mode",
   "SelectedSlideDocs": "Selected Slide Documents",
-  "SlideModeDescription": "This is a mode where AI automatically presents slides. It is only available when the selected AI service is OpenAI, Anthropic, or Google Gemini."
+  "SlideModeDescription": "This is a mode where AI automatically presents slides. It is only available when the selected AI service is OpenAI, Anthropic, or Google Gemini.",
+  "PdfConvertLabel": "PDF Slide Conversion",
+  "PdfConvertDescription": "Convert PDF to slide mode data. Available only when the selected AI service is OpenAI.",
+  "PdfConvertFileUpload": "Select PDF file",
+  "PdfConvertFolderName": "Save folder name",
+  "PdfConvertModelSelect": "Select model",
+  "PdfConvertButton": "Convert PDF to slides",
+  "PdfConvertLoading": "Converting...",
+  "PdfConvertSuccess": "Conversion completed",
+  "PdfConvertError": "Conversion failed",
+  "PdfConvertSubmitError": "Please make sure the PDF file, folder name, and API key are set."
 }
