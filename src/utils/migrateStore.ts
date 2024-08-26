@@ -7,7 +7,7 @@ const migrateStore = () => {
   if (!rawStore) return
 
   type Store = Omit<SettingsState, 'selectLanguage'> &
-    Pick<PersistedState, 'chatLog' | 'codeLog' | 'dontShowIntroduction'> & {
+    Pick<PersistedState, 'chatLog' | 'dontShowIntroduction'> & {
       selectLanguage: string
     }
 

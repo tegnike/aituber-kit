@@ -21,6 +21,9 @@ const Voice = () => {
   const koeiroParam = settingsStore((s) => s.koeiroParam)
   const googleTtsType = settingsStore((s) => s.googleTtsType)
   const voicevoxSpeaker = settingsStore((s) => s.voicevoxSpeaker)
+  const voicevoxSpeed = settingsStore((s) => s.voicevoxSpeed)
+  const voicevoxPitch = settingsStore((s) => s.voicevoxPitch)
+  const voicevoxIntonation = settingsStore((s) => s.voicevoxIntonation)
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
@@ -195,19 +198,66 @@ const Voice = () => {
                     }
                     className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
                   >
-                    <option value="">選択してください</option>
+                    <option value="">{t('Select')}</option>
                     {speakers.map((speaker) => (
                       <option key={speaker.id} value={speaker.id}>
                         {speaker.speaker}
                       </option>
                     ))}
                   </select>
-                  <TextButton
-                    onClick={() => testVoice(voicevoxSpeaker)}
-                    className="ml-16"
-                  >
-                    ボイスを試聴する
+                  <TextButton onClick={() => testVoice()} className="ml-16">
+                    {t('TestVoice')}
                   </TextButton>
+                </div>
+                <div className="my-24">
+                  <div className="select-none">
+                    {t('VoicevoxSpeed')}: {voicevoxSpeed}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={2}
+                    step={0.01}
+                    value={voicevoxSpeed}
+                    className="mt-8 mb-16 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        voicevoxSpeed: Number(e.target.value),
+                      })
+                    }}
+                  ></input>
+                  <div className="select-none">
+                    {t('VoicevoxPitch')}: {voicevoxPitch}
+                  </div>
+                  <input
+                    type="range"
+                    min={-0.15}
+                    max={0.15}
+                    step={0.01}
+                    value={voicevoxPitch}
+                    className="mt-8 mb-16 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        voicevoxPitch: Number(e.target.value),
+                      })
+                    }}
+                  ></input>
+                  <div className="select-none">
+                    {t('VoicevoxIntonation')}: {voicevoxIntonation}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.0}
+                    max={2.0}
+                    step={0.01}
+                    value={voicevoxIntonation}
+                    className="mt-8 mb-16 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        voicevoxIntonation: Number(e.target.value),
+                      })
+                    }}
+                  ></input>
                 </div>
               </>
             )

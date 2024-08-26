@@ -5,6 +5,14 @@
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
+   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
+   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/tegnike/aituber-kit"></a>
+</p>
+<p align="center">
+   <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/tegnike/aituber-kit"></a>
 </p>
 <p align="center">
    <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
@@ -195,6 +203,12 @@ npm run dev
   </a>
   <a href="https://github.com/bunkaich" title="bunkaich">
     <img src="https://github.com/bunkaich.png" width="40" height="40" alt="bunkaich">
+  </a>
+  <a href="https://github.com/seiki-aliveland" title="seiki-aliveland">
+    <img src="https://github.com/seiki-aliveland.png" width="40" height="40" alt="seiki-aliveland">
+  </a>
+  <a href="https://github.com/rossy8417" title="rossy8417">
+    <img src="https://github.com/rossy8417.png" width="40" height="40" alt="rossy8417">
   </a>
 </p>
 

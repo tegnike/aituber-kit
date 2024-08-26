@@ -50,7 +50,10 @@ const createSpeakCharacter = () => {
       } else if (ss.selectVoice == 'voicevox') {
         buffer = await fetchAudioVoiceVox(
           screenplay.talk,
-          ss.voicevoxSpeaker
+          ss.voicevoxSpeaker,
+          ss.voicevoxSpeed,
+          ss.voicevoxPitch,
+          ss.voicevoxIntonation
         ).catch(() => null)
       } else if (ss.selectVoice == 'google') {
         const googleTtsTypeByLang = getGoogleTtsType(
@@ -164,7 +167,10 @@ export const fetchAudio = async (
 
 export const fetchAudioVoiceVox = async (
   talk: Talk,
-  speaker: string
+  speaker: string,
+  speed: number,
+  pitch: number,
+  intonation: number
 ): Promise<ArrayBuffer> => {
   console.log('speakerId:', speaker)
   const ttsQueryResponse = await fetch(
@@ -182,7 +188,9 @@ export const fetchAudioVoiceVox = async (
   }
   const ttsQueryJson = await ttsQueryResponse.json()
 
-  ttsQueryJson['speedScale'] = 1.1
+  ttsQueryJson['speedScale'] = speed
+  ttsQueryJson['pitchScale'] = pitch
+  ttsQueryJson['intonationScale'] = intonation
   const synthesisResponse = await fetch(
     VOICE_VOX_API_URL + '/synthesis?speaker=' + speaker,
     {
@@ -230,16 +238,21 @@ export const fetchAudioStyleBertVITS2 = async (
   return ttsVoice
 }
 
-export const testVoice = async (voicevoxSpeaker: string) => {
+export const testVoice = async () => {
+  const ss = settingsStore.getState()
   const talk: Talk = {
     message: 'ボイスボックスを使用します',
     speakerX: 0,
     speakerY: 0,
     style: 'talk',
   }
-  const buffer = await fetchAudioVoiceVox(talk, voicevoxSpeaker).catch(
-    () => null
-  )
+  const buffer = await fetchAudioVoiceVox(
+    talk,
+    ss.voicevoxSpeaker,
+    ss.voicevoxSpeed,
+    ss.voicevoxPitch,
+    ss.voicevoxIntonation
+  ).catch(() => null)
   if (buffer) {
     const screenplay: Screenplay = {
       expression: 'neutral',
