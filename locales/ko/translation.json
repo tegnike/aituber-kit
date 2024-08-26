@@ -113,7 +113,7 @@
   "PdfConvertModelSelect": "모델 선택",
   "PdfConvertButton": "PDF를 슬라이드로 변환",
   "PdfConvertLoading": "변환 중...",
-  "PdfConvertSucess": "변환 완료",
+  "PdfConvertSuccess": "변환 완료",
   "PdfConvertError": "변환 실패",
   "PdfConvertSubmitError": "PDF 파일, 폴더 이름, API 키가 설정되어 있는지 확인하세요."
 }

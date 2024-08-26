@@ -113,7 +113,7 @@
   "PdfConvertModelSelect": "选择模型",
   "PdfConvertButton": "将PDF转换为幻灯片",
   "PdfConvertLoading": "转换中...",
-  "PdfConvertSucess": "转换完成",
+  "PdfConvertSuccess": "转换完成",
   "PdfConvertError": "转换失败",
   "PdfConvertSubmitError": "请确保已设置PDF文件、文件夹名称和API密钥。"
 }

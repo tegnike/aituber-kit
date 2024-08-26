@@ -113,7 +113,7 @@
   "PdfConvertModelSelect": "Select model",
   "PdfConvertButton": "Convert PDF to slides",
   "PdfConvertLoading": "Converting...",
-  "PdfConvertSucess": "Conversion completed",
+  "PdfConvertSuccess": "Conversion completed",
   "PdfConvertError": "Conversion failed",
   "PdfConvertSubmitError": "Please make sure the PDF file, folder name, and API key are set."
 }

@@ -44,8 +44,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
 
     // フォルダ更新関数を呼び出す
     if (response.ok) {
-      onFolderUpdate() // 追加
-      alert(t('PdfConvertSucess'))
+      onFolderUpdate()
+      alert(t('PdfConvertSuccess'))
     } else {
       alert(t('PdfConvertError'))
     }
