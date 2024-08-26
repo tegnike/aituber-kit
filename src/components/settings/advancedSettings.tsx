@@ -11,7 +11,7 @@ const AdvancedSettings = () => {
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
   )
-  const ShowControlPanel = menuStore((s) => s.ShowControlPanel)
+  const showControlPanel = menuStore((s) => s.showControlPanel)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
 
@@ -51,11 +51,11 @@ const AdvancedSettings = () => {
                       {showAssistantText ? t('StatusOn') : t('StatusOff')}
                     </TextButton>
                   </div>
+                </div>
+                <div className="my-24">
                   <div className="my-16 typography-16 font-bold">
                     {t('ShowCharacterName')}
                   </div>
-                </div>
-                <div className="my-24">
                   <div className="my-8">
                     <TextButton
                       onClick={() =>
@@ -74,27 +74,16 @@ const AdvancedSettings = () => {
                       {t('EnglishToJapanese')}
                     </div>
                     <div className="my-8">
-                      {changeEnglishToJapanese ? (
-                        <TextButton
-                          onClick={() =>
-                            settingsStore.setState({
-                              changeEnglishToJapanese: false,
-                            })
-                          }
-                        >
-                          {t('StatusOn')}
-                        </TextButton>
-                      ) : (
-                        <TextButton
-                          onClick={() =>
-                            settingsStore.setState({
-                              changeEnglishToJapanese: true,
-                            })
-                          }
-                        >
-                          {t('StatusOff')}
-                        </TextButton>
-                      )}
+                      <TextButton
+                        onClick={() =>
+                          settingsStore.setState((prevState) => ({
+                            changeEnglishToJapanese:
+                              !prevState.changeEnglishToJapanese,
+                          }))
+                        }
+                      >
+                        {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
+                      </TextButton>
                     </div>
                   </div>
                 )}
@@ -106,23 +95,15 @@ const AdvancedSettings = () => {
                     {t('ShowControlPanelInfo')}
                   </div>
                   <div className="my-8">
-                    {ShowControlPanel ? (
-                      <TextButton
-                        onClick={() =>
-                          menuStore.setState({ ShowControlPanel: false })
-                        }
-                      >
-                        {t('StatusOn')}
-                      </TextButton>
-                    ) : (
-                      <TextButton
-                        onClick={() =>
-                          menuStore.setState({ ShowControlPanel: true })
-                        }
-                      >
-                        {t('StatusOff')}
-                      </TextButton>
-                    )}
+                    <TextButton
+                      onClick={() =>
+                        menuStore.setState({
+                          showControlPanel: !showControlPanel,
+                        })
+                      }
+                    >
+                      {showControlPanel ? t('StatusOn') : t('StatusOff')}
+                    </TextButton>
                   </div>
                 </div>
               </div>

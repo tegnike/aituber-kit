@@ -22,7 +22,7 @@ export const Menu = () => {
   const chatLog = homeStore((s) => s.chatLog)
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
-  const ShowControlPanel = menuStore((s) => s.ShowControlPanel)
+  const showControlPanel = menuStore((s) => s.showControlPanel)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
 
@@ -117,7 +117,7 @@ export const Menu = () => {
           className="grid md:grid-flow-col gap-[8px] mb-40"
           style={{ width: 'max-content' }}
         >
-          {ShowControlPanel && (
+          {showControlPanel && (
             <>
               <div className="md:order-1 order-2">
                 <IconButton
