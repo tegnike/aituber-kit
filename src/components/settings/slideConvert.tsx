@@ -36,13 +36,12 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     formData.append('apiKey', apiKey)
     formData.append('model', model)
 
-    const response = await fetch('/api/convert', {
+    const response = await fetch('/api/convertSlide', {
       method: 'POST',
       body: formData,
     })
     setIsLoading(false)
 
-    // alert(response.ok ? t('PdfConvertSucess') : t('PdfConvertError'));
     // フォルダ更新関数を呼び出す
     if (response.ok) {
       onFolderUpdate() // 追加
