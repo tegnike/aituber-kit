@@ -17,7 +17,7 @@ const Slide = () => {
 
   const selectedSlideDocs = slideStore((s) => s.selectedSlideDocs)
   const [slideFolders, setSlideFolders] = useState<string[]>([])
-  const [updateKey, setUpdateKey] = useState(0); 
+  const [updateKey, setUpdateKey] = useState(0)
 
   useEffect(() => {
     // フォルダリストを取得
@@ -35,8 +35,8 @@ const Slide = () => {
   }, [selectedSlideDocs])
 
   const handleFolderUpdate = () => {
-    setUpdateKey(prevKey => prevKey + 1);  // 更新トリガー
-  };
+    setUpdateKey((prevKey) => prevKey + 1) // 更新トリガー
+  }
 
   const toggleSlideMode = () => {
     const newSlideMode = !slideMode
@@ -90,7 +90,9 @@ const Slide = () => {
               </option>
             ))}
           </select>
-          {selectAIService === 'openai' && <SlideConvert onFolderUpdate={handleFolderUpdate}/>}
+          {selectAIService === 'openai' && (
+            <SlideConvert onFolderUpdate={handleFolderUpdate} />
+          )}
         </>
       )}
     </>
