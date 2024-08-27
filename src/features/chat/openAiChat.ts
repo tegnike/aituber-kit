@@ -1,30 +1,29 @@
-import { OpenAI } from 'openai'
 import { Message } from '../messages/messages'
-import { ChatCompletionMessageParam } from 'openai/resources'
 
 export async function getOpenAIChatResponse(
   messages: Message[],
   apiKey: string,
   model: string
 ) {
-  if (!apiKey) {
-    throw new Error('Invalid API Key')
+  try {
+    const response = await fetch('/api/openai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ messages, apiKey, model }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch OpenAI API response')
+    }
+
+    const data = await response.json()
+    return { message: data.message }
+  } catch (error) {
+    console.error('Error fetching OpenAI API response:', error)
+    throw error
   }
-
-  const openai = new OpenAI({
-    apiKey: apiKey,
-    dangerouslyAllowBrowser: true,
-  })
-
-  const data = await openai.chat.completions.create({
-    model: model,
-    messages: messages as ChatCompletionMessageParam[],
-  })
-
-  const [aiRes] = data.choices
-  const message = aiRes.message?.content || '回答生成時にエラーが発生しました。'
-
-  return { message: message }
 }
 
 export async function getOpenAIChatResponseStream(
@@ -32,38 +31,65 @@ export async function getOpenAIChatResponseStream(
   apiKey: string,
   model: string
 ) {
-  if (!apiKey) {
-    throw new Error('Invalid API Key')
-  }
+  try {
+    const response = await fetch('/api/openai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ messages, apiKey, model, stream: true }),
+    })
 
-  const openai = new OpenAI({
-    apiKey: apiKey,
-    dangerouslyAllowBrowser: true,
-  })
+    if (!response.ok) {
+      throw new Error('OpenAI APIリクエストに失敗しました')
+    }
 
-  const stream = await openai.chat.completions.create({
-    model: model,
-    messages: messages as ChatCompletionMessageParam[],
-    stream: true,
-    max_tokens: 200,
-  })
+    if (!response.body) {
+      throw new Error('OpenAI APIレスポンスが空です')
+    }
 
-  const res = new ReadableStream({
-    async start(controller: ReadableStreamDefaultController) {
-      try {
-        for await (const chunk of stream) {
-          const messagePiece = chunk.choices[0].delta.content
-          if (!!messagePiece) {
-            controller.enqueue(messagePiece)
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder('utf-8')
+
+    return new ReadableStream({
+      async start(controller) {
+        while (true) {
+          const { done, value } = await reader.read()
+
+          if (done) {
+            break
+          }
+
+          const chunk = decoder.decode(value)
+          const lines = chunk.split('\n')
+
+          for (const line of lines) {
+            if (line.startsWith('data:')) {
+              const data = line.substring(5).trim()
+              if (data !== '[DONE]') {
+                const event = JSON.parse(data)
+                switch (event.type) {
+                  case 'content_block_delta':
+                    controller.enqueue(event.text)
+                    break
+                  case 'error':
+                    throw new Error(
+                      `OpenAI API error: ${JSON.stringify(event.error)}`
+                    )
+                  case 'message_stop':
+                    controller.close()
+                    return
+                }
+              }
+            }
           }
         }
-      } catch (error) {
-        controller.error(error)
-      } finally {
-        controller.close()
-      }
-    },
-  })
 
-  return res
+        controller.close()
+      },
+    })
+  } catch (error) {
+    console.error('Error fetching OpenAI API response stream:', error)
+    throw error
+  }
 }

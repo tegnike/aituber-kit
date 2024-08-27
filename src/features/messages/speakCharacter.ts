@@ -271,7 +271,7 @@ export const fetchAudioVoiceGSVIApi = async (
   speed: number
 ): Promise<ArrayBuffer> => {
   const style = talk.style !== 'talk' ? talk.style : 'default'
-  const response = await fetch(url, {
+  const response = await fetch(url.replace(/\/$/, ''), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
