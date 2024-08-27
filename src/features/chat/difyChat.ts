@@ -24,7 +24,7 @@ export async function getDifyChatResponseStream(
     files: [],
   })
 
-  const response = await fetch(url, {
+  const response = await fetch(url.replace(/\/$/, ''), {
     method: 'POST',
     headers: headers,
     body: body,
