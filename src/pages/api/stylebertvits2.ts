@@ -42,7 +42,7 @@ export default async function handler(
 
   try {
     const voice = await fetch(
-      `${stylebertvits2ServerUrl}/voice?${queryParams}`,
+      `${stylebertvits2ServerUrl.replace(/\/$/, '')}/voice?${queryParams}`,
       {
         method: 'GET',
         headers: {

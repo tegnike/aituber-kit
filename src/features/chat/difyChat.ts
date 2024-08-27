@@ -24,7 +24,7 @@ export async function getDifyChatResponseStream(
     files: [],
   })
 
-  const response = await fetch(url, {
+  const response = await fetch(url.replace(/\/$/, ''), {
     method: 'POST',
     headers: headers,
     body: body,
@@ -48,7 +48,7 @@ export async function getDifyChatResponseStream(
             .filter((line) => line.startsWith('data:'))
           messages.forEach((message) => {
             const data = JSON.parse(message.slice(5)) // Remove 'data:' prefix
-            if (data.event === 'message') {
+            if (data.event === 'agent_message' || data.event === 'message') {
               controller.enqueue(data.answer)
               settingsStore.setState({
                 difyConversationId: data.conversation_id,

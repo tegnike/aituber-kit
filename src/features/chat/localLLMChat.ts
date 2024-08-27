@@ -7,7 +7,7 @@ export async function getLocalLLMChatResponseStream(
   model?: string
 ) {
   const response = await axios.post(
-    localLlmUrl,
+    localLlmUrl.replace(/\/$/, ''),
     {
       model: model,
       messages: messages,
