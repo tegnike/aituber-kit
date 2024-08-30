@@ -77,19 +77,22 @@ export async function getVercelAIChatResponseStream(
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder('utf-8')
+      let buffer = ''
 
       try {
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
 
-          const chunk = decoder.decode(value)
-          const lines = chunk.split('\n')
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
 
           for (const line of lines) {
             if (line.startsWith('0:')) {
-              const content = line.substring(2).trim().replace(/^"|"$/g, '')
-              controller.enqueue(content)
+              const content = line.substring(2).trim()
+              const decodedContent = JSON.parse(content)
+              controller.enqueue(decodedContent)
             }
           }
         }

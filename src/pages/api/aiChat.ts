@@ -1,3 +1,4 @@
+import { Message } from '@/features/messages/messages'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
@@ -101,15 +102,15 @@ export default async function handler(req: NextRequest) {
   }
 }
 
-function modifyMessages(aiService: string, messages: any[]) {
-  if (aiService === 'anthropic') {
+function modifyMessages(aiService: string, messages: Message[]) {
+  if (aiService === 'anthropic' || aiService === 'perplexity') {
     return modifyAnthropicMessages(messages)
   }
   return messages
 }
 
 // Anthropicのメッセージを修正する
-function modifyAnthropicMessages(messages: any[]) {
+function modifyAnthropicMessages(messages: Message[]) {
   const systemMessage = messages.find((message) => message.role === 'system')
   let userMessages = messages
     .filter((message) => message.role !== 'system')
@@ -125,23 +126,35 @@ function modifyAnthropicMessages(messages: any[]) {
 }
 
 // 同じroleのメッセージを結合する
-function consolidateMessages(messages: any[]) {
-  const consolidated: any[] = []
+function consolidateMessages(messages: Message[]) {
+  const consolidated: Message[] = []
   let lastRole: string | null = null
-  let combinedContent = ''
+  let combinedContent:
+    | string
+    | [
+        {
+          type: 'text'
+          text: string
+        },
+        {
+          type: 'image'
+          image: string
+        },
+      ]
 
   messages.forEach((message, index) => {
     if (message.role === lastRole) {
-      combinedContent += '\n' + message.content
+      if (typeof combinedContent === 'string') {
+        combinedContent += '\n' + message.content
+      } else {
+        combinedContent[0].text += '\n' + message.content
+      }
     } else {
       if (lastRole !== null) {
         consolidated.push({ role: lastRole, content: combinedContent })
       }
       lastRole = message.role
-      combinedContent =
-        typeof message.content === 'string'
-          ? message.content
-          : message.content[0].text
+      combinedContent = message.content
     }
 
     if (index === messages.length - 1) {
