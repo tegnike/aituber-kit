@@ -21,8 +21,13 @@ interface APIKeys {
   openaiKey: string
   anthropicKey: string
   googleKey: string
+  azureKey: string
   groqKey: string
   difyKey: string
+  cohereKey: string
+  mistralaiKey: string
+  perplexityKey: string
+  fireworksKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -91,7 +96,12 @@ const settingsStore = create<SettingsState>()(
       openaiKey: '',
       anthropicKey: '',
       googleKey: '',
+      azureKey: '',
       groqKey: '',
+      cohereKey: '',
+      mistralaiKey: '',
+      perplexityKey: '',
+      fireworksKey: '',
       difyKey: '',
       koeiromapKey: '',
       youtubeApiKey: '',
@@ -150,7 +160,12 @@ const settingsStore = create<SettingsState>()(
         openaiKey: state.openaiKey,
         anthropicKey: state.anthropicKey,
         googleKey: state.googleKey,
+        azureKey: state.azureKey,
         groqKey: state.groqKey,
+        cohereKey: state.cohereKey,
+        mistralaiKey: state.mistralaiKey,
+        perplexityKey: state.perplexityKey,
+        fireworksKey: state.fireworksKey,
         difyKey: state.difyKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,

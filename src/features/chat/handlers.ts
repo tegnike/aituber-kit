@@ -414,9 +414,29 @@ export const handleSendChatFn =
           !ss.googleKey &&
           !process.env.NEXT_PUBLIC_GOOGLE_KEY,
 
+        ss.selectAIService === 'azure' &&
+          !ss.azureKey &&
+          !process.env.NEXT_PUBLIC_AZURE_KEY,
+
         ss.selectAIService === 'groq' &&
           !ss.groqKey &&
           !process.env.NEXT_PUBLIC_GROQ_KEY,
+
+        ss.selectAIService === 'cohere' &&
+          !ss.cohereKey &&
+          !process.env.NEXT_PUBLIC_COHERE_KEY,
+
+        ss.selectAIService === 'mistralai' &&
+          !ss.mistralaiKey &&
+          !process.env.NEXT_PUBLIC_MISTRALAI_KEY,
+
+        ss.selectAIService === 'perplexity' &&
+          !ss.perplexityKey &&
+          !process.env.NEXT_PUBLIC_PERPLEXITY_KEY,
+
+        ss.selectAIService === 'fireworks' &&
+          !ss.fireworksKey &&
+          !process.env.NEXT_PUBLIC_FIREWORKS_KEY,
 
         ss.selectAIService === 'dify' &&
           !ss.difyKey &&

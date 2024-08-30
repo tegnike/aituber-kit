@@ -15,7 +15,12 @@ export async function getAIChatResponseStream(
     case 'openai':
     case 'anthropic':
     case 'google':
+    case 'azure':
     case 'groq':
+    case 'cohere':
+    case 'mistralai':
+    case 'perplexity':
+    case 'fireworks':
       return getVercelAIChatResponseStream(
         messages,
         ss[`${service}Key`] ||

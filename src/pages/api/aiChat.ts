@@ -1,10 +1,22 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
+import { createCohere } from '@ai-sdk/cohere'
+import { createMistral } from '@ai-sdk/mistral'
+import { createAzure } from '@ai-sdk/azure'
 import { streamText, generateText } from 'ai'
 import { NextRequest } from 'next/server'
 
-type AIServiceKey = 'openai' | 'anthropic' | 'google' | 'groq'
+type AIServiceKey =
+  | 'openai'
+  | 'anthropic'
+  | 'google'
+  | 'azure'
+  | 'groq'
+  | 'cohere'
+  | 'mistralai'
+  | 'perplexity'
+  | 'fireworks'
 type AIServiceConfig = Record<AIServiceKey, () => any>
 
 // Allow streaming responses up to 30 seconds
@@ -27,8 +39,23 @@ export default async function handler(req: NextRequest) {
     openai: () => createOpenAI({ apiKey }),
     anthropic: () => createAnthropic({ apiKey }),
     google: () => createGoogleGenerativeAI({ apiKey }),
+    azure: () =>
+      createAzure({
+        resourceName:
+          model.match(/https:\/\/(.+?)\.openai\.azure\.com/)?.[1] || '',
+        apiKey,
+      }),
     groq: () =>
       createOpenAI({ baseURL: 'https://api.groq.com/openai/v1', apiKey }),
+    cohere: () => createCohere({ apiKey }),
+    mistralai: () => createMistral({ apiKey }),
+    perplexity: () =>
+      createOpenAI({ baseURL: 'https://api.perplexity.ai/', apiKey }),
+    fireworks: () =>
+      createOpenAI({
+        baseURL: 'https://api.fireworks.ai/inference/v1',
+        apiKey,
+      }),
   }
   const aiServiceInstance = aiServiceConfig[aiService as AIServiceKey]
 
@@ -40,15 +67,21 @@ export default async function handler(req: NextRequest) {
   }
 
   const instance = aiServiceInstance()
-
   const modifiedMessages = modifyMessages(aiService, messages)
+  let modifiedModel = model
+  if (aiService === 'azure') {
+    modifiedModel =
+      model.match(/\/deployments\/(.+?)\/completions/)?.[1] || model
+  }
 
   if (stream) {
     try {
       const result = await streamText({
-        model: instance(model),
+        model: instance(modifiedModel),
         messages: modifiedMessages,
       })
+
+      console.log(result)
 
       return result.toDataStreamResponse()
     } catch (error) {

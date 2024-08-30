@@ -16,7 +16,10 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.48",
+    "@ai-sdk/azure": "^0.0.32",
+    "@ai-sdk/cohere": "^0.0.22",
     "@ai-sdk/google": "^0.0.46",
+    "@ai-sdk/mistral": "^0.0.38",
     "@ai-sdk/openai": "^0.0.54",
     "@anthropic-ai/sdk": "^0.20.8",
     "@charcoal-ui/icons": "^2.6.0",
