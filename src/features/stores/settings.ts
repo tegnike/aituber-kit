@@ -10,8 +10,15 @@ import {
   VoiceLanguage,
 } from '../constants/settings'
 
+export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
+export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
+
+type multiModalAPIKeys = {
+  [K in multiModalAIServiceKey as `${K}Key`]: string
+}
+
 interface APIKeys {
-  openAiKey: string
+  openaiKey: string
   anthropicKey: string
   googleKey: string
   groqKey: string
@@ -71,6 +78,7 @@ interface General {
 }
 
 export type SettingsState = APIKeys &
+  multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &
@@ -80,7 +88,7 @@ const settingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
       // API Keys
-      openAiKey: '',
+      openaiKey: '',
       anthropicKey: '',
       googleKey: '',
       groqKey: '',
@@ -139,7 +147,7 @@ const settingsStore = create<SettingsState>()(
     {
       name: 'aitube-kit-settings',
       partialize: (state) => ({
-        openAiKey: state.openAiKey,
+        openaiKey: state.openaiKey,
         anthropicKey: state.anthropicKey,
         googleKey: state.googleKey,
         groqKey: state.groqKey,

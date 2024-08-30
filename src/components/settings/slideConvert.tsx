@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, {
+  multiModalAIServiceKey,
+  multiModalAIServices,
+} from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 
 interface SlideConvertProps {
@@ -11,7 +14,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const { t } = useTranslation()
   const [file, setFile] = useState<File | null>(null)
   const [folderName, setFolderName] = useState<string>('')
-  const [apiKey] = useState<string>(settingsStore.getState().openAiKey)
+  const aiService = settingsStore.getState()
+    .selectAIService as multiModalAIServiceKey
+
   const [model, setModel] = useState<string>('gpt-4o')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const selectLanguage = settingsStore.getState().selectLanguage
@@ -27,6 +32,15 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
+
+    if (!multiModalAIServices.includes(aiService)) {
+      alert(t('InvalidAIService'))
+      return
+    }
+
+    const apiKeyName = `${aiService}Key` as const
+    const apiKey = settingsStore.getState()[apiKeyName]
+
     if (!file || !folderName || !apiKey || !model) {
       alert(t('PdfConvertSubmitError'))
       return
@@ -37,6 +51,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('folderName', folderName)
+    formData.append('aiService', aiService)
     formData.append('apiKey', apiKey)
     formData.append('model', model)
     formData.append('selectLanguage', selectLanguage)
@@ -101,11 +116,50 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           onChange={(e) => setModel(e.target.value)}
           className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
         >
-          <option value="gpt-4o-mini">gpt-4o-mini</option>
-          <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
-          <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
-          <option value="gpt-4o">gpt-4o(2024-05-13)</option>
-          <option value="gpt-4-turbo">gpt-4-turbo</option>
+          {aiService === 'openai' && (
+            <>
+              <option value="gpt-4o-mini">gpt-4o-mini</option>
+              <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
+              <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
+              <option value="gpt-4o">gpt-4o(2024-05-13)</option>
+              <option value="gpt-4-turbo">gpt-4-turbo</option>
+            </>
+          )}
+          {aiService === 'anthropic' && (
+            <>
+              <option value="claude-3-opus-20240229">
+                claude-3-opus-20240229
+              </option>
+              <option value="claude-3-5-sonnet-20240620">
+                claude-3.5-sonnet-20240620
+              </option>
+              <option value="claude-3-sonnet-20240229">
+                claude-3-sonnet-20240229
+              </option>
+              <option value="claude-3-haiku-20240307">
+                claude-3-haiku-20240307
+              </option>
+            </>
+          )}
+          {aiService === 'google' && (
+            <>
+              <option value="gemini-1.5-flash-exp-0827">
+                gemini-1.5-flash-exp-0827
+              </option>
+              <option value="gemini-1.5-pro-exp-0827">
+                gemini-1.5-pro-exp-0827
+              </option>
+              <option value="gemini-1.5-flash-8b-exp-0827">
+                gemini-1.5-flash-8b-exp-0827
+              </option>
+              <option value="gemini-1.5-pro-latest">
+                gemini-1.5-pro-latest
+              </option>
+              <option value="gemini-1.5-flash-latest">
+                gemini-1.5-flash-latest
+              </option>
+            </>
+          )}
         </select>
         <div className="my-16">
           <TextButton type="submit" disabled={isLoading}>

@@ -7,11 +7,12 @@ import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
+import { multiModalAIServices } from '@/features/stores/settings'
 
 const ModelProvider = () => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
 
-  const openAiKey = settingsStore((s) => s.openAiKey)
+  const openaiKey = settingsStore((s) => s.openaiKey)
   const anthropicKey = settingsStore((s) => s.anthropicKey)
   const googleKey = settingsStore((s) => s.googleKey)
   const groqKey = settingsStore((s) => s.groqKey)
@@ -30,7 +31,7 @@ const ModelProvider = () => {
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
     openai: 'gpt-4o',
-    anthropic: 'claude-3.5-sonnet-20240620',
+    anthropic: 'claude-3-5-sonnet-20240620',
     google: 'gemini-1.5-pro',
     groq: 'gemma-7b-it',
     localLlm: '',
@@ -44,24 +45,17 @@ const ModelProvider = () => {
         selectAIModel: defaultModels[newService],
       })
 
-      if (newService !== 'openai') {
+      if (!multiModalAIServices.includes(newService as any)) {
         homeStore.setState({ modalImage: '' })
         menuStore.setState({ showWebcam: false })
 
-        if (newService !== 'anthropic') {
-          settingsStore.setState({
-            conversationContinuityMode: false,
-          })
-        }
-
-        if (newService !== 'anthropic' && newService !== 'google') {
-          settingsStore.setState({
-            slideMode: false,
-          })
-          slideStore.setState({
-            isPlaying: false,
-          })
-        }
+        settingsStore.setState({
+          conversationContinuityMode: false,
+          slideMode: false,
+        })
+        slideStore.setState({
+          isPlaying: false,
+        })
       }
     },
     []
@@ -100,9 +94,9 @@ const ModelProvider = () => {
                 className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                 type="text"
                 placeholder="sk-..."
-                value={openAiKey}
+                value={openaiKey}
                 onChange={(e) =>
-                  settingsStore.setState({ openAiKey: e.target.value })
+                  settingsStore.setState({ openaiKey: e.target.value })
                 }
               />
               <div className="my-16">

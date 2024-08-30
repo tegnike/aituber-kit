@@ -4,6 +4,7 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { multiModalAIServices } from '@/features/stores/settings'
 
 const YouTube = () => {
   const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
@@ -98,8 +99,7 @@ const YouTube = () => {
                       })
                     }
                     disabled={
-                      (selectAIService !== 'openai' &&
-                        selectAIService !== 'anthropic') ||
+                      !multiModalAIServices.includes(selectAIService as any) ||
                       slideMode ||
                       webSocketMode
                     }

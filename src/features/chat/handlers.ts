@@ -1,5 +1,5 @@
 import { getAIChatResponseStream } from '@/features/chat/aiChatFactory'
-import { AIService, AIServiceConfig } from '@/features/constants/settings'
+import { AIService } from '@/features/constants/settings'
 import { textsToScreenplay, Message } from '@/features/messages/messages'
 import { speakCharacter } from '@/features/messages/speakCharacter'
 import { judgeSlide } from '@/features/slide/slideAIHelpers'
@@ -143,39 +143,10 @@ export const processAIResponse = async (
   const hs = homeStore.getState()
   const currentSlideMessages: string[] = []
 
-  const aiServiceConfig: AIServiceConfig = {
-    openai: {
-      key: ss.openAiKey || process.env.NEXT_PUBLIC_OPEN_AI_KEY || '',
-      model: ss.selectAIModel,
-    },
-    anthropic: {
-      key: ss.anthropicKey || process.env.NEXT_PUBLIC_ANTHROPIC_KEY || '',
-      model: ss.selectAIModel,
-    },
-    google: {
-      key: ss.googleKey || process.env.NEXT_PUBLIC_GOOGLE_KEY || '',
-      model: ss.selectAIModel,
-    },
-    localLlm: {
-      url: ss.localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
-      model: ss.selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || '',
-    },
-    groq: {
-      key: ss.groqKey || process.env.NEXT_PUBLIC_GROQ_KEY || '',
-      model: ss.selectAIModel,
-    },
-    dify: {
-      key: ss.difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || '',
-      url: ss.difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || '',
-      conversationId: ss.difyConversationId,
-    },
-  }
-
   try {
     stream = await getAIChatResponseStream(
       ss.selectAIService as AIService,
-      messages,
-      aiServiceConfig
+      messages
     )
   } catch (e) {
     console.error(e)
@@ -197,6 +168,8 @@ export const processAIResponse = async (
   try {
     while (true) {
       const { done, value } = await reader.read()
+      console.log(done)
+      console.log(value)
       if (done && receivedMessage.length === 0) break
 
       if (value) receivedMessage += value
@@ -345,9 +318,9 @@ export const processAIResponse = async (
       if (
         typeof item.content != 'string' &&
         item.content[0] &&
-        item.content[1].image_url
+        item.content[1]
       ) {
-        lastImageUrl = item.content[1].image_url.url
+        lastImageUrl = item.content[1].image
       }
 
       const lastItem = acc[acc.length - 1]
@@ -365,7 +338,7 @@ export const processAIResponse = async (
             ...item,
             content: [
               { type: 'text', text: text.trim() },
-              { type: 'image_url', image_url: { url: lastImageUrl } },
+              { type: 'image', image: lastImageUrl },
             ],
           })
           lastImageUrl = ''
@@ -430,7 +403,7 @@ export const handleSendChatFn =
       // ChatVRM original mode
       const emptyKeys = [
         ss.selectAIService === 'openai' &&
-          !ss.openAiKey &&
+          !ss.openaiKey &&
           !process.env.NEXT_PUBLIC_OPEN_AI_KEY,
 
         ss.selectAIService === 'anthropic' &&
@@ -500,13 +473,12 @@ export const handleSendChatFn =
         ...hs.chatLog,
         {
           role: 'user',
-          content:
-            hs.modalImage && ss.selectAIService === 'openai'
-              ? [
-                  { type: 'text', text: newMessage },
-                  { type: 'image_url', image_url: { url: hs.modalImage } },
-                ]
-              : newMessage,
+          content: hs.modalImage
+            ? [
+                { type: 'text', text: newMessage },
+                { type: 'image', image: hs.modalImage },
+              ]
+            : newMessage,
         },
       ]
       if (hs.modalImage) {
@@ -515,14 +487,17 @@ export const handleSendChatFn =
       homeStore.setState({ chatLog: messageLog })
 
       // TODO: AIに送信するメッセージの加工、処理がひどいので要修正
-      const processedMessageLog = messageLog.map((message) => ({
+      // 画像は直近のものしか送らない
+      const processedMessageLog = messageLog.map((message, index) => ({
         role: ['assistant', 'user', 'system'].includes(message.role)
           ? message.role
           : 'assistant',
         content:
-          typeof message.content === 'string' || ss.selectAIService === 'openai'
+          index === messageLog.length - 1
             ? message.content
-            : message.content[0].text,
+            : Array.isArray(message.content)
+              ? message.content[0].text
+              : message.content,
       }))
 
       const messages: Message[] = [

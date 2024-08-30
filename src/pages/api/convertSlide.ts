@@ -3,8 +3,16 @@ import formidable from 'formidable'
 import fs from 'fs'
 import path from 'path'
 import { createCanvas } from 'canvas'
-import { OpenAI } from 'openai'
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
+
+import { createOpenAI } from '@ai-sdk/openai'
+import { createAnthropic } from '@ai-sdk/anthropic'
+import { createGoogleGenerativeAI } from '@ai-sdk/google'
+import { generateObject } from 'ai'
+
+import { multiModalAIServiceKey } from '@/features/stores/settings'
+
+type AIServiceConfig = Record<multiModalAIServiceKey, () => any>
 
 export const config = {
   api: {
@@ -62,20 +70,40 @@ async function convertPdfToImages(pdfBuffer: Buffer): Promise<string[]> {
   return images
 }
 
+interface SlideLineResponse {
+  line: string
+  notes: string
+  page?: number
+}
+
 async function createSlideLine(
   imageBase64: string,
   apiKey: string,
+  aiService: string,
   model: string,
   selectLanguage: string,
   previousResult: string | null
-) {
-  const client = new OpenAI({ apiKey })
+): Promise<SlideLineResponse> {
   const additionalPrompt = previousResult
     ? `Previous slide content: ${previousResult}`
     : 'This is the first slide.'
 
-  const response = await client.chat.completions.create({
-    model: `${model}`,
+  const aiServiceConfig: AIServiceConfig = {
+    openai: () => createOpenAI({ apiKey }),
+    anthropic: () => createAnthropic({ apiKey }),
+    google: () => createGoogleGenerativeAI({ apiKey }),
+  }
+
+  const aiServiceInstance = aiServiceConfig[aiService as multiModalAIServiceKey]
+
+  if (!aiServiceInstance) {
+    throw new Error('Invalid AI service')
+  }
+
+  const instance = aiServiceInstance()
+
+  const response = await generateObject({
+    model: instance(model),
     messages: [
       {
         role: 'system',
@@ -85,19 +113,21 @@ async function createSlideLine(
         role: 'user',
         content: [
           {
-            type: 'image_url',
-            image_url: {
-              url: `${imageBase64}`,
-            },
+            type: 'text',
+            text: '',
+          },
+          {
+            type: 'image',
+            image: `${imageBase64}`,
           },
         ],
       },
     ],
-    response_format: { type: 'json_object' },
+    output: 'no-schema',
+    mode: 'json',
   })
 
-  const result = JSON.parse(response.choices[0].message?.content || '{}')
-  return result
+  return response.object as unknown as SlideLineResponse
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -109,17 +139,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return
     }
 
+    const getField = (fieldName: string) => {
+      const field = fields[fieldName]
+      return Array.isArray(field) ? field[0] : field
+    }
+
     const file = Array.isArray(files.file) ? files.file[0] : files.file
-    const folderName = Array.isArray(fields.folderName)
-      ? fields.folderName[0]
-      : fields.folderName
-    const apiKey = Array.isArray(fields.apiKey)
-      ? fields.apiKey[0]
-      : fields.apiKey
-    const model = Array.isArray(fields.model) ? fields.model[0] : fields.model
-    const selectLanguage = Array.isArray(fields.selectLanguage)
-      ? fields.selectLanguage[0]
-      : fields.selectLanguage
+    const folderName = getField('folderName')
+    const aiService = getField('aiService')
+    const apiKey = getField('apiKey')
+    const model = getField('model')
+    const selectLanguage = getField('selectLanguage')
 
     if (!file) {
       res.status(400).send('No file uploaded')
@@ -152,10 +182,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     for (let i = 0; i < images.length; i++) {
       const imgBase64 = images[i]
-      if (apiKey && model) {
+      if (aiService && apiKey && model) {
         const slideLine = await createSlideLine(
           imgBase64,
           apiKey,
+          aiService,
           model,
           language,
           previousResult
