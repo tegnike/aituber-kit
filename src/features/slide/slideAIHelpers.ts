@@ -20,7 +20,9 @@ export const judgeSlide = async (
   const apiKey = ss[apiKeyName]
 
   if (!apiKey) {
-    throw new Error('API key not found')
+    throw new Error(
+      `API key for ${aiService} is missing. Unable to proceed with the AI service.`
+    )
   }
 
   const systemMessage = `

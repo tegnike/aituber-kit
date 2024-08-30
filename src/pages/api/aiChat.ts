@@ -63,7 +63,7 @@ export default async function handler(req: NextRequest) {
       model: instance(model),
       messages: modifiedMessages,
     })
-    debugger
+
     return result
   }
 }

@@ -22,11 +22,15 @@ export async function getVercelAIChatResponse(
     })
 
     if (!response.ok) {
-      throw new Error(`API request to ${aiService} failed`)
+      throw new Error(
+        `API request to ${aiService} failed with status ${response.status} and body ${await response.text()}`
+      )
     }
 
     if (!response.body) {
-      throw new Error(`API response from ${aiService} is empty`)
+      throw new Error(
+        `API response from ${aiService} is empty, status ${response.status}`
+      )
     }
 
     const data = await response.json()
@@ -58,13 +62,17 @@ export async function getVercelAIChatResponseStream(
   })
 
   if (!response.ok) {
-    throw new Error(`API request to ${aiService} failed`)
+    throw new Error(
+      `API request to ${aiService} failed with status ${response.status} and body ${await response.text()}`
+    )
   }
 
   return new ReadableStream({
     async start(controller) {
       if (!response.body) {
-        throw new Error(`API response from ${aiService} is empty`)
+        throw new Error(
+          `API response from ${aiService} is empty, status ${response.status}`
+        )
       }
 
       const reader = response.body.getReader()
