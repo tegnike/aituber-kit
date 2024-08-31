@@ -219,6 +219,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/rossy8417" title="rossy8417">
     <img src="https://github.com/rossy8417.png" width="40" height="40" alt="rossy8417">
   </a>
+  <a href="https://github.com/gijigae" title="gijigae">
+    <img src="https://github.com/gijigae.png" width="40" height="40" alt="gijigae">
+  </a>
 </p>
 
 Plus multiple private sponsors
