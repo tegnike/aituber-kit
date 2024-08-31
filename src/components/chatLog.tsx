@@ -45,7 +45,7 @@ export const ChatLog = () => {
                   />
                   <ChatImage
                     role={msg.role}
-                    imageUrl={msg.content[1].image_url.url}
+                    imageUrl={msg.content[1].image}
                     characterName={characterName}
                   />
                 </>

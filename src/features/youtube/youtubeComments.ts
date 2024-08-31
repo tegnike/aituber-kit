@@ -105,8 +105,6 @@ export const fetchAndProcessComments = async (
 
   try {
     const liveChatId = await getLiveChatId(ss.youtubeLiveId, ss.youtubeApiKey)
-    const aiApiKey =
-      ss.selectAIService === 'anthropic' ? ss.anthropicKey : ss.openAiKey
 
     if (liveChatId) {
       // 会話の継続が必要かどうかを確認
@@ -116,12 +114,7 @@ export const fetchAndProcessComments = async (
         ss.conversationContinuityMode
       ) {
         const isContinuationNeeded =
-          await checkIfResponseContinuationIsRequired(
-            hs.chatLog,
-            aiApiKey,
-            ss.selectAIService,
-            ss.selectAIModel
-          )
+          await checkIfResponseContinuationIsRequired(hs.chatLog)
         if (isContinuationNeeded) {
           const continuationMessage = await getMessagesForContinuation(
             ss.systemPrompt,
@@ -153,17 +146,7 @@ export const fetchAndProcessComments = async (
         settingsStore.setState({ youtubeSleepMode: false })
         let selectedComment = ''
         if (ss.conversationContinuityMode) {
-          if (youtubeComments.length > 1) {
-            selectedComment = await getBestComment(
-              hs.chatLog,
-              youtubeComments,
-              aiApiKey,
-              ss.selectAIService,
-              ss.selectAIModel
-            )
-          } else {
-            selectedComment = youtubeComments[0].userComment
-          }
+          selectedComment = await getBestComment(hs.chatLog, youtubeComments)
         } else {
           selectedComment =
             youtubeComments[Math.floor(Math.random() * youtubeComments.length)]
@@ -187,12 +170,7 @@ export const fetchAndProcessComments = async (
             preProcessAIResponse(continuationMessage)
           } else if (noCommentCount === 3) {
             // 新しいトピックを生成
-            const anotherTopic = await getAnotherTopic(
-              hs.chatLog,
-              aiApiKey,
-              ss.selectAIService,
-              ss.selectAIModel
-            )
+            const anotherTopic = await getAnotherTopic(hs.chatLog)
             console.log('anotherTopic:', anotherTopic)
             const newTopicMessage = await getMessagesForNewTopic(
               ss.systemPrompt,

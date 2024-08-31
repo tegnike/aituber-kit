@@ -1,7 +1,8 @@
-import { Message } from '@/features/messages/messages'
-import { getOpenAIChatResponse } from '@/features/chat/openAiChat'
-import { getAnthropicChatResponse } from '@/features/chat/anthropicChat'
-import settingsStore from '@/features/stores/settings'
+import { getVercelAIChatResponse } from '@/features/chat/vercelAIChat'
+import settingsStore, {
+  multiModalAIServiceKey,
+  multiModalAIServices,
+} from '@/features/stores/settings'
 
 export const judgeSlide = async (
   queryText: string,
@@ -9,6 +10,20 @@ export const judgeSlide = async (
   supplement: string
 ): Promise<string> => {
   const ss = settingsStore.getState()
+  const aiService = ss.selectAIService as multiModalAIServiceKey
+
+  if (!multiModalAIServices.includes(aiService)) {
+    throw new Error('Invalid AI service')
+  }
+
+  const apiKeyName = `${aiService}Key` as const
+  const apiKey = ss[apiKeyName]
+
+  if (!apiKey) {
+    throw new Error(
+      `API key for ${aiService} is missing. Unable to proceed with the AI service.`
+    )
+  }
 
   const systemMessage = `
 You are an AI tasked with determining whether a user's comment is a question about a given script document and supplementary text, and if so, which page of the document is most relevant to the question. Follow these instructions carefully:
@@ -46,27 +61,14 @@ ${supplement}
 Based on the user's comment and the content of both the script document and supplementary text, provide "only" your final answer in the specified JSON format.
 `
 
-  if (ss.selectAIService === 'openai') {
-    const response = await getOpenAIChatResponse(
-      [
-        { role: 'system', content: systemMessage },
-        { role: 'user', content: queryText },
-      ],
-      ss.openAiKey,
-      ss.selectAIModel
-    )
-    return response.message
-  } else if (ss.selectAIService === 'anthropic') {
-    const response = await getAnthropicChatResponse(
-      [
-        { role: 'system', content: systemMessage },
-        { role: 'user', content: queryText },
-      ],
-      ss.anthropicKey,
-      ss.selectAIModel
-    )
-    return response.message
-  } else {
-    throw new Error('Unsupported AI service')
-  }
+  const response = await getVercelAIChatResponse(
+    [
+      { role: 'system', content: systemMessage },
+      { role: 'user', content: queryText },
+    ],
+    aiService,
+    apiKey,
+    ss.selectAIModel
+  )
+  return response.text
 }

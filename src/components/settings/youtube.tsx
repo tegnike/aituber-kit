@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
+import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
+import { multiModalAIServices } from '@/features/stores/settings'
 
 const YouTube = () => {
   const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
@@ -25,6 +27,8 @@ const YouTube = () => {
     if (youtubeMode) {
       homeStore.setState({ modalImage: '' })
       menuStore.setState({ showWebcam: false })
+      settingsStore.setState({ slideMode: false })
+      slideStore.setState({ isPlaying: false })
     } else {
       settingsStore.setState({ youtubePlaying: false })
     }
@@ -98,8 +102,7 @@ const YouTube = () => {
                       })
                     }
                     disabled={
-                      (selectAIService !== 'openai' &&
-                        selectAIService !== 'anthropic') ||
+                      !multiModalAIServices.includes(selectAIService as any) ||
                       slideMode ||
                       webSocketMode
                     }
