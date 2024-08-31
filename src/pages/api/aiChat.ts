@@ -5,7 +5,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
 import { createAzure } from '@ai-sdk/azure'
-import { streamText, generateText } from 'ai'
+import { streamText, generateText, CoreMessage } from 'ai'
 import { NextRequest } from 'next/server'
 
 type AIServiceKey =
@@ -68,7 +68,7 @@ export default async function handler(req: NextRequest) {
   }
 
   const instance = aiServiceInstance()
-  const modifiedMessages = modifyMessages(aiService, messages)
+  const modifiedMessages: Message[] = modifyMessages(aiService, messages)
   let modifiedModel = model
   if (aiService === 'azure') {
     modifiedModel =
@@ -79,7 +79,7 @@ export default async function handler(req: NextRequest) {
     try {
       const result = await streamText({
         model: instance(modifiedModel),
-        messages: modifiedMessages,
+        messages: modifiedMessages as CoreMessage[],
       })
 
       console.log(result)
@@ -95,14 +95,14 @@ export default async function handler(req: NextRequest) {
   } else {
     const result = await generateText({
       model: instance(model),
-      messages: modifiedMessages,
+      messages: modifiedMessages as CoreMessage[],
     })
 
     return result
   }
 }
 
-function modifyMessages(aiService: string, messages: Message[]) {
+function modifyMessages(aiService: string, messages: Message[]): Message[] {
   if (aiService === 'anthropic' || aiService === 'perplexity') {
     return modifyAnthropicMessages(messages)
   }
@@ -110,8 +110,10 @@ function modifyMessages(aiService: string, messages: Message[]) {
 }
 
 // Anthropicのメッセージを修正する
-function modifyAnthropicMessages(messages: Message[]) {
-  const systemMessage = messages.find((message) => message.role === 'system')
+function modifyAnthropicMessages(messages: Message[]): Message[] {
+  const systemMessage: Message | undefined = messages.find(
+    (message) => message.role === 'system'
+  )
   let userMessages = messages
     .filter((message) => message.role !== 'system')
     .filter((message) => message.content !== '')
@@ -122,7 +124,10 @@ function modifyAnthropicMessages(messages: Message[]) {
     userMessages.shift()
   }
 
-  return [systemMessage, ...userMessages]
+  const result: Message[] = systemMessage
+    ? [systemMessage, ...userMessages]
+    : userMessages
+  return result
 }
 
 // 同じroleのメッセージを結合する

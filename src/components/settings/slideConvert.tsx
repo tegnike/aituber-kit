@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore, {
   multiModalAIServiceKey,
@@ -17,7 +17,24 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const aiService = settingsStore.getState()
     .selectAIService as multiModalAIServiceKey
 
-  const [model, setModel] = useState<string>('gpt-4o')
+  const [model, setModel] = useState<string>('')
+
+  useEffect(() => {
+    switch (aiService) {
+      case 'openai':
+        setModel('gpt-4o')
+        break
+      case 'anthropic':
+        setModel('claude-3-5-sonnet-20240620')
+        break
+      case 'google':
+        setModel('gemini-1.5-flash-latest')
+        break
+      default:
+        setModel('')
+    }
+  }, [aiService])
+
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const selectLanguage = settingsStore.getState().selectLanguage
   const [selectedFileName, setSelectedFileName] = useState<string>('')
