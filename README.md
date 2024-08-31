@@ -37,6 +37,13 @@
 
 [![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
+## 開発環境
+
+このプロジェクトは以下の環境で開発されています：
+
+- Node.js: ^20.0.0
+- npm: 10.8.1
+
 ## 共通事前準備
 
 1. リポジトリをローカルにクローンします。

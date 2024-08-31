@@ -38,6 +38,14 @@
 
 [![今天成為AITuber開發者 | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
+## 開發環境
+
+此項目在以下環境中開發：
+
+- Node.js: ^20.0.0
+- npm: 10.8.1
+
+
 ## 共同準備
 
 1. 將存儲庫克隆到本地。

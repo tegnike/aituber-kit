@@ -38,6 +38,13 @@ I've written a detailed usage guide in the article below:
 
 [![You are AITuber Developer from Today | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
+## Development Environment
+
+This project is developed in the following environment:
+
+- Node.js: ^20.0.0
+- npm: 10.8.1
+
 ## Common Preparations
 
 1. Clone the repository to your local machine.
