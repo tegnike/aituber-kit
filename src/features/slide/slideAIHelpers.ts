@@ -70,5 +70,5 @@ Based on the user's comment and the content of both the script document and supp
     apiKey,
     ss.selectAIModel
   )
-  return response.message
+  return response.text
 }

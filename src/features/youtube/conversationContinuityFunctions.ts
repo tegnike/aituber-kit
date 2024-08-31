@@ -174,7 +174,7 @@ ${lastTenMessages}
 
   const response = await fetchAIResponse(queryMessages)
 
-  return response.message
+  return response.text
 }
 
 /**
@@ -226,7 +226,7 @@ export const getAnotherTopic = async (messages: Message[]): Promise<string> => {
 
   const response = await fetchAIResponse(queryMessages)
 
-  return response.message
+  return response.text
 }
 
 /**
@@ -334,8 +334,8 @@ B: 見てみたいな。送ってくれない？
   let answer
   try {
     const response = await fetchAIResponse(queryMessages)
-    console.log('response.message:', response.message)
-    const responseJson = JSON.parse(response.message)
+    console.log('response.message:', response.text)
+    const responseJson = JSON.parse(response.text)
     answer = responseJson.answer
     answer = answer.toString()
   } catch (error) {

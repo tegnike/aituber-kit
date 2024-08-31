@@ -82,8 +82,6 @@ export default async function handler(req: NextRequest) {
         messages: modifiedMessages as CoreMessage[],
       })
 
-      console.log(result)
-
       return result.toDataStreamResponse()
     } catch (error) {
       console.error('Error in OpenAI API call:', error)
@@ -98,7 +96,10 @@ export default async function handler(req: NextRequest) {
       messages: modifiedMessages as CoreMessage[],
     })
 
-    return result
+    return new Response(JSON.stringify({ text: result.text }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }
 

@@ -168,8 +168,6 @@ export const processAIResponse = async (
   try {
     while (true) {
       const { done, value } = await reader.read()
-      console.log(done)
-      console.log(value)
       if (done && receivedMessage.length === 0) break
 
       if (value) receivedMessage += value

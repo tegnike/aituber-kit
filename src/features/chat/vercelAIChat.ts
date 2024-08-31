@@ -34,7 +34,7 @@ export async function getVercelAIChatResponse(
     }
 
     const data = await response.json()
-    return { message: data.message }
+    return { text: data.text }
   } catch (error) {
     console.error(`Error fetching ${aiService} API response:`, error)
     throw error
