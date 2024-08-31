@@ -55,7 +55,7 @@ const Log = () => {
                   ></input>
                 ) : (
                   <Image
-                    src={value.content[1].image_url.url}
+                    src={value.content[1].image}
                     alt="画像"
                     width={500}
                     height={500}

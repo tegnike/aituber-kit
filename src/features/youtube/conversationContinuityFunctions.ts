@@ -1,24 +1,42 @@
 import { Message } from '@/features/messages/messages'
-import { getOpenAIChatResponse } from '@/features/chat/openAiChat'
-import { getAnthropicChatResponse } from '@/features/chat/anthropicChat'
+import { getVercelAIChatResponse } from '@/features/chat/vercelAIChat'
+import settingsStore, {
+  multiModalAIServiceKey,
+  multiModalAIServices,
+} from '@/features/stores/settings'
 
-const fetchAIResponse = async (
-  queryMessages: any[],
-  aiApiKey: string,
-  selectAIService: string,
-  selectAIModel: string
-): Promise<any> => {
-  if (selectAIService === 'openai') {
-    return await getOpenAIChatResponse(queryMessages, aiApiKey, selectAIModel)
-  } else if (selectAIService === 'anthropic') {
-    return await getAnthropicChatResponse(
-      queryMessages,
-      aiApiKey,
-      selectAIModel
-    )
-  } else {
-    throw new Error('Unsupported AI service')
+const getAIConfig = () => {
+  const ss = settingsStore.getState()
+  const aiService = ss.selectAIService as multiModalAIServiceKey
+
+  if (!multiModalAIServices.includes(aiService)) {
+    throw new Error('Invalid AI service')
   }
+
+  const apiKeyName = `${aiService}Key` as const
+  const apiKey = ss[apiKeyName]
+
+  if (!apiKey) {
+    throw new Error(
+      `API key for ${aiService} is missing. Unable to proceed with the AI service.`
+    )
+  }
+
+  return {
+    aiApiKey: apiKey,
+    selectAIService: aiService,
+    selectAIModel: ss.selectAIModel,
+  }
+}
+
+const fetchAIResponse = async (queryMessages: any[]): Promise<any> => {
+  const { aiApiKey, selectAIService, selectAIModel } = getAIConfig()
+  return await getVercelAIChatResponse(
+    queryMessages,
+    aiApiKey,
+    selectAIService,
+    selectAIModel
+  )
 }
 
 /**
@@ -112,16 +130,11 @@ const getLastMessages = (
  *
  * @param {Message[]} messages - メッセージの配列
  * @param {any[]} youtubeComments - Youtubeのコメントの配列
- * @param {string} openAiKey - OpenAIのAPIキー
- * @param {string} selectAIModel - 使用するモデル
  * @returns {Promise<string>} - 最適なコメント
  */
 export const getBestComment = async (
   messages: Message[],
-  youtubeComments: any[],
-  aiApiKey: string,
-  selectAIService: string,
-  selectAIModel: string
+  youtubeComments: any[]
 ): Promise<string> => {
   console.log('getBestComment')
   const lastTenMessages = getLastMessages(messages, 10)
@@ -159,14 +172,9 @@ ${lastTenMessages}
     },
   ]
 
-  const response = await fetchAIResponse(
-    queryMessages,
-    aiApiKey,
-    selectAIService,
-    selectAIModel
-  )
+  const response = await fetchAIResponse(queryMessages)
 
-  return response.message
+  return response.text
 }
 
 /**
@@ -194,16 +202,9 @@ export const getMessagesForSleep = async (
  * メッセージを受け取り、最新の4つのメッセージを使用して別の話題を取得します。
  *
  * @param {Message[]} messages - メッセージの配列
- * @param {string} openAiKey - OpenAIのAPIキー
- * @param {string} selectAIModel - 使用するモデル
  * @returns {Promise<string>} - 別の話題
  */
-export const getAnotherTopic = async (
-  messages: Message[],
-  aiApiKey: string,
-  selectAIService: string,
-  selectAIModel: string
-): Promise<string> => {
+export const getAnotherTopic = async (messages: Message[]): Promise<string> => {
   console.log('getAnotherTopic')
   const lastTenMessages = getLastMessages(messages, 10)
   const queryMessages = [
@@ -223,14 +224,9 @@ export const getAnotherTopic = async (
     ...lastTenMessages,
   ]
 
-  const response = await fetchAIResponse(
-    queryMessages,
-    aiApiKey,
-    selectAIService,
-    selectAIModel
-  )
+  const response = await fetchAIResponse(queryMessages)
 
-  return response.message
+  return response.text
 }
 
 /**
@@ -260,15 +256,10 @@ export const getMessagesForNewTopic = async (
  * メッセージを受け取り、次の発言者を判断します。
  *
  * @param {Message[]} messages - メッセージの配列
- * @param {string} openAiKey - OpenAIのAPIキー
- * @param {string} selectAIModel - 使用するモデル
  * @returns {Promise<boolean>} - 次の発言者
  */
 export const checkIfResponseContinuationIsRequired = async (
-  messages: Message[],
-  aiApiKey: string,
-  selectAIService: string,
-  selectAIModel: string
+  messages: Message[]
 ): Promise<boolean> => {
   console.log('checkIfResponseContinuationIsRequired')
   const lastTenMessages = getLastMessages(messages, 10)
@@ -277,7 +268,7 @@ export const checkIfResponseContinuationIsRequired = async (
   }
 
   const systemMessage = `与えられた会話文の文脈から、次にどの話者が発言すべきかを判断してください。
-最後の話者が話を続けるべきならば "true" を、逆に交代が必要な場合は "false" を返します。
+最後��話者が話を続けるべきならば "true" を、逆に交代が必要な場合は "false" を返します。
 回答はJSON形式で、answerとreasonの2つのキーを持つオブジェクトとしてください。
 
 ## 例
@@ -342,14 +333,9 @@ B: 見てみたいな。送ってくれない？
   // エラーが発生した場合はfalseを返す
   let answer
   try {
-    const response = await fetchAIResponse(
-      queryMessages,
-      aiApiKey,
-      selectAIService,
-      selectAIModel
-    )
-    console.log('response.message:', response.message)
-    const responseJson = JSON.parse(response.message)
+    const response = await fetchAIResponse(queryMessages)
+    console.log('response.message:', response.text)
+    const responseJson = JSON.parse(response.text)
     answer = responseJson.answer
     answer = answer.toString()
   } catch (error) {

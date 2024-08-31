@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, {
+  multiModalAIServices,
+  multiModalAIServiceKey,
+} from '@/features/stores/settings'
 import menuStore from '@/features/stores/menu'
 import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
@@ -66,9 +69,9 @@ const Slide = () => {
         <TextButton
           onClick={toggleSlideMode}
           disabled={
-            selectAIService !== 'openai' &&
-            selectAIService !== 'anthropic' &&
-            selectAIService !== 'google'
+            !multiModalAIServices.includes(
+              selectAIService as multiModalAIServiceKey
+            )
           }
         >
           {slideMode ? t('StatusOn') : t('StatusOff')}
@@ -92,9 +95,9 @@ const Slide = () => {
               </option>
             ))}
           </select>
-          {selectAIService === 'openai' && (
-            <SlideConvert onFolderUpdate={handleFolderUpdate} />
-          )}
+          {multiModalAIServices.includes(
+            selectAIService as multiModalAIServiceKey
+          ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
         </>
       )}
     </>

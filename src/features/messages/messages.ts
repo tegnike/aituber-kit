@@ -6,10 +6,7 @@ export type Message = {
   role: string // "assistant" | "system" | "user";
   content:
     | string
-    | [
-        { type: string; text: string },
-        { type: string; image_url: { url: string } },
-      ] // マルチモーダル拡張
+    | [{ type: 'text'; text: string }, { type: 'image'; image: string }] // マルチモーダル拡張
 }
 
 const talkStyles = [
