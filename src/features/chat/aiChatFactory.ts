@@ -1,54 +1,46 @@
 import { Message } from '@/features/messages/messages'
-import { AIService, AIServiceConfig } from '@/features/constants/settings'
-import { getAnthropicChatResponseStream } from './anthropicChat'
-import { getDifyChatResponseStream } from './difyChat'
-import { getGoogleChatResponseStream } from './googleChat'
-import { getGroqChatResponseStream } from './groqChat'
+import { AIService } from '@/features/constants/settings'
 import { getLocalLLMChatResponseStream } from './localLLMChat'
-import { getOpenAIChatResponseStream } from './openAiChat'
+import { getDifyChatResponseStream } from './difyChat'
+import { getVercelAIChatResponseStream } from './vercelAIChat'
+import settingsStore from '@/features/stores/settings'
 
 export async function getAIChatResponseStream(
   service: AIService,
-  messages: Message[],
-  config: AIServiceConfig
+  messages: Message[]
 ): Promise<ReadableStream<string> | null> {
+  const ss = settingsStore.getState()
+
   switch (service) {
     case 'openai':
-      return getOpenAIChatResponseStream(
-        messages,
-        config.openai.key,
-        config.openai.model
-      )
     case 'anthropic':
-      return getAnthropicChatResponseStream(
-        messages,
-        config.anthropic.key,
-        config.anthropic.model
-      )
     case 'google':
-      return getGoogleChatResponseStream(
+    case 'azure':
+    case 'groq':
+    case 'cohere':
+    case 'mistralai':
+    case 'perplexity':
+    case 'fireworks':
+      return getVercelAIChatResponseStream(
         messages,
-        config.google.key,
-        config.google.model
+        ss[`${service}Key`] ||
+          process.env[`NEXT_PUBLIC_${service.toUpperCase()}_KEY`] ||
+          '',
+        service,
+        ss.selectAIModel
       )
     case 'localLlm':
       return getLocalLLMChatResponseStream(
         messages,
-        config.localLlm.url,
-        config.localLlm.model
-      )
-    case 'groq':
-      return getGroqChatResponseStream(
-        messages,
-        config.groq.key,
-        config.groq.model
+        ss.localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
+        ss.selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || ''
       )
     case 'dify':
       return getDifyChatResponseStream(
         messages,
-        config.dify.key,
-        config.dify.url,
-        config.dify.conversationId
+        ss.difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || '',
+        ss.difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || '',
+        ss.difyConversationId
       )
     default:
       throw new Error(`Unsupported AI service: ${service}`)

@@ -38,6 +38,14 @@
 
 [![오늘부터 당신도 AITuber 개발자｜니케짱](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
+## 개발 환경
+
+이 프로젝트는 다음과 같은 환경에서 개발되었습니다:
+
+- Node.js: ^20.0.0
+- npm: 10.8.1
+
+
 ## 공통 사전 준비
 
 1. 리포지토리를 로컬에 클론합니다.
@@ -209,6 +217,9 @@ npm run dev
   </a>
   <a href="https://github.com/rossy8417" title="rossy8417">
     <img src="https://github.com/rossy8417.png" width="40" height="40" alt="rossy8417">
+  </a>
+  <a href="https://github.com/gijigae" title="gijigae">
+    <img src="https://github.com/gijigae.png" width="40" height="40" alt="gijigae">
   </a>
 </p>
 

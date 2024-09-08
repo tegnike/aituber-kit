@@ -10,12 +10,24 @@ import {
   VoiceLanguage,
 } from '../constants/settings'
 
+export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
+export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
+
+type multiModalAPIKeys = {
+  [K in multiModalAIServiceKey as `${K}Key`]: string
+}
+
 interface APIKeys {
-  openAiKey: string
+  openaiKey: string
   anthropicKey: string
   googleKey: string
+  azureKey: string
   groqKey: string
   difyKey: string
+  cohereKey: string
+  mistralaiKey: string
+  perplexityKey: string
+  fireworksKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -71,6 +83,7 @@ interface General {
 }
 
 export type SettingsState = APIKeys &
+  multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &
@@ -80,10 +93,15 @@ const settingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
       // API Keys
-      openAiKey: '',
+      openaiKey: '',
       anthropicKey: '',
       googleKey: '',
+      azureKey: '',
       groqKey: '',
+      cohereKey: '',
+      mistralaiKey: '',
+      perplexityKey: '',
+      fireworksKey: '',
       difyKey: '',
       koeiromapKey: '',
       youtubeApiKey: '',
@@ -139,10 +157,15 @@ const settingsStore = create<SettingsState>()(
     {
       name: 'aitube-kit-settings',
       partialize: (state) => ({
-        openAiKey: state.openAiKey,
+        openaiKey: state.openaiKey,
         anthropicKey: state.anthropicKey,
         googleKey: state.googleKey,
+        azureKey: state.azureKey,
         groqKey: state.groqKey,
+        cohereKey: state.cohereKey,
+        mistralaiKey: state.mistralaiKey,
+        perplexityKey: state.perplexityKey,
+        fireworksKey: state.fireworksKey,
         difyKey: state.difyKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,

@@ -161,7 +161,7 @@ export const Menu = () => {
                   />
                 )}
               </div>
-              {selectAIService === 'openai' && !youtubeMode && (
+              {!youtubeMode && (
                 <>
                   <div className="order-3">
                     <IconButton
