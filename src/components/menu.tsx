@@ -11,6 +11,7 @@ import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
 import Slides from './slides'
+import Capture from './capture'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
@@ -22,6 +23,7 @@ export const Menu = () => {
   const chatLog = homeStore((s) => s.chatLog)
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
+  const showCapture = menuStore((s) => s.showCapture)
   const showControlPanel = menuStore((s) => s.showControlPanel)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
@@ -101,6 +103,11 @@ export const Menu = () => {
   }, [showWebcam])
 
   useEffect(() => {
+    console.log('onChangeCaptureStatus')
+    homeStore.setState({ captureStatus: showCapture })
+  }, [showCapture])
+
+  useEffect(() => {
     if (!youtubePlaying) {
       settingsStore.setState({
         youtubeContinuationCount: 0,
@@ -109,6 +116,16 @@ export const Menu = () => {
       })
     }
   }, [youtubePlaying])
+
+  const toggleCapture = useCallback(() => {
+    menuStore.setState(({ showCapture }) => ({ showCapture: !showCapture }))
+    menuStore.setState({ showWebcam: false }) // Captureを表示するときWebcamを非表示にする
+  }, [])
+
+  const toggleWebcam = useCallback(() => {
+    menuStore.setState(({ showWebcam }) => ({ showWebcam: !showWebcam }))
+    menuStore.setState({ showCapture: false }) // Webcamを表示するときCaptureを非表示にする
+  }, [])
 
   return (
     <>
@@ -148,13 +165,26 @@ export const Menu = () => {
                 <>
                   <div className="order-3">
                     <IconButton
+                      iconName="24/FrameEffect"
+                      isProcessing={false}
+                      onClick={toggleCapture}
+                      // onClick={() =>
+                      //   menuStore.setState(({ showCapture }) => ({
+                      //     showCapture: !showCapture,
+                      //   }))
+                      // }
+                    />
+                  </div>
+                  <div className="order-4">
+                    <IconButton
                       iconName="24/Camera"
                       isProcessing={false}
-                      onClick={() =>
-                        menuStore.setState(({ showWebcam }) => ({
-                          showWebcam: !showWebcam,
-                        }))
-                      }
+                      onClick={toggleWebcam}
+                      // onClick={() =>
+                      //   menuStore.setState(({ showWebcam }) => ({
+                      //     showWebcam: !showWebcam,
+                      //   }))
+                      // }
                     />
                   </div>
                   <div className="order-4">
@@ -222,6 +252,7 @@ export const Menu = () => {
         (!slideMode || !slideVisible) &&
         showAssistantText && <AssistantText message={assistantMessage} />}
       {showWebcam && navigator.mediaDevices && <Webcam />}
+      {showCapture && <Capture />}
       {showPermissionModal && (
         <div className="modal">
           <div className="modal-content">

@@ -22,6 +22,7 @@ export interface TransientState {
   modalImage: string
   triggerShutter: boolean
   webcamStatus: boolean
+  captureStatus: boolean
   ws: WebSocket | null
   wsStreaming: boolean
 }
@@ -57,6 +58,7 @@ const homeStore = create<HomeState>()(
       modalImage: '',
       triggerShutter: false,
       webcamStatus: false,
+      captureStatus: false,
       ws: null,
       wsStreaming: false,
     }),
