@@ -168,11 +168,6 @@ export const Menu = () => {
                       iconName="24/FrameEffect"
                       isProcessing={false}
                       onClick={toggleCapture}
-                      // onClick={() =>
-                      //   menuStore.setState(({ showCapture }) => ({
-                      //     showCapture: !showCapture,
-                      //   }))
-                      // }
                     />
                   </div>
                   <div className="order-4">
@@ -180,11 +175,6 @@ export const Menu = () => {
                       iconName="24/Camera"
                       isProcessing={false}
                       onClick={toggleWebcam}
-                      // onClick={() =>
-                      //   menuStore.setState(({ showWebcam }) => ({
-                      //     showWebcam: !showWebcam,
-                      //   }))
-                      // }
                     />
                   </div>
                   <div className="order-4">
