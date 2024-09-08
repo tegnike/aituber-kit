@@ -17,7 +17,7 @@ import { SlideText } from './slideText'
 export const Form = () => {
   const modalImage = homeStore((s) => s.modalImage)
   const webcamStatus = homeStore((s) => s.webcamStatus)
-  const caputureStatus = homeStore((s) => s.captureStatus)
+  const captureStatus = homeStore((s) => s.captureStatus)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
   const slidePlaying = slideStore((s) => s.isPlaying)
@@ -48,14 +48,14 @@ export const Form = () => {
       homeStore.setState({ triggerShutter: true })
 
       // MENUの中でshowCameraがtrueの場合、画像が取得されるまで待機
-      if (webcamStatus || caputureStatus) {
+      if (webcamStatus || captureStatus) {
         // Webcamが開いている場合
         setDelayedText(text) // 画像が取得されるまで遅延させる
       } else {
         handleSendChat(text)
       }
     },
-    [handleSendChat, webcamStatus, caputureStatus, setDelayedText]
+    [handleSendChat, webcamStatus, captureStatus, setDelayedText]
   )
 
   useEffect(() => {
