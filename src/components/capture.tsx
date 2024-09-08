@@ -76,21 +76,16 @@ const Capture = () => {
   }
 
   const handleCapture = useCallback(() => {
-    console.log(videoRef.current)
-    console.log(mediaStreamRef.current)
     if (videoRef.current && mediaStreamRef.current) {
-      console.log('Screenshot - MediaStream:', mediaStreamRef.current)
       const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d')
       const { videoWidth, videoHeight } = videoRef.current
 
       canvas.width = videoWidth
       canvas.height = videoHeight
-      // context?.drawImage(videoRef.current, 0, 0, videoWidth, videoHeight)
       context?.drawImage(videoRef.current, 0, 0)
 
       const dataUrl = canvas.toDataURL('image/png')
-      console.log('Screenshot captured:')
 
       if (dataUrl !== '') {
         console.log('capture')
@@ -101,8 +96,6 @@ const Capture = () => {
       } else {
         homeStore.setState({ modalImage: '' })
       }
-      // const response = await sendToAI(dataUrl)
-      // setAiResponse(response)
     } else {
       console.error('Video or media stream is not available')
     }
@@ -113,6 +106,22 @@ const Capture = () => {
       handleCapture()
     }
   }, [triggerShutter, handleCapture])
+
+  useEffect(() => {
+    const videoElement = videoRef.current
+
+    return () => {
+      if (mediaStreamRef.current) {
+        const tracks = mediaStreamRef.current.getTracks()
+        tracks.forEach((track) => track.stop())
+        mediaStreamRef.current = null
+      }
+      captureStartedRef.current = false
+      if (videoElement) {
+        videoElement.srcObject = null
+      }
+    }
+  }, [])
 
   return (
     <div className="absolute row-span-1 flex right-0 max-h-[40vh] z-10">
