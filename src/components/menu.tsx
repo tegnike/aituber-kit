@@ -165,7 +165,7 @@ export const Menu = () => {
                 <>
                   <div className="order-3">
                     <IconButton
-                      iconName="24/FrameEffect"
+                      iconName="24/ShareIos"
                       isProcessing={false}
                       onClick={toggleCapture}
                     />
