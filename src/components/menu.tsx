@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, {
+  multiModalAIServiceKey,
+} from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
@@ -12,6 +14,7 @@ import Settings from './settings'
 import { Webcam } from './webcam'
 import Slides from './slides'
 import Capture from './capture'
+import { multiModalAIServices } from '@/features/stores/settings'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
@@ -161,48 +164,51 @@ export const Menu = () => {
                   />
                 )}
               </div>
-              {!youtubeMode && (
-                <>
-                  <div className="order-3">
-                    <IconButton
-                      iconName="24/ShareIos"
-                      isProcessing={false}
-                      onClick={toggleCapture}
-                    />
-                  </div>
-                  <div className="order-4">
-                    <IconButton
-                      iconName="24/Camera"
-                      isProcessing={false}
-                      onClick={toggleWebcam}
-                    />
-                  </div>
-                  <div className="order-4">
-                    <IconButton
-                      iconName="24/AddImage"
-                      isProcessing={false}
-                      onClick={() => imageFileInputRef.current?.click()}
-                    />
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      ref={imageFileInputRef}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) {
-                          const reader = new FileReader()
-                          reader.onload = (e) => {
-                            const imageUrl = e.target?.result as string
-                            homeStore.setState({ modalImage: imageUrl })
+              {!youtubeMode &&
+                multiModalAIServices.includes(
+                  selectAIService as multiModalAIServiceKey
+                ) && (
+                  <>
+                    <div className="order-3">
+                      <IconButton
+                        iconName="24/ShareIos"
+                        isProcessing={false}
+                        onClick={toggleCapture}
+                      />
+                    </div>
+                    <div className="order-4">
+                      <IconButton
+                        iconName="24/Camera"
+                        isProcessing={false}
+                        onClick={toggleWebcam}
+                      />
+                    </div>
+                    <div className="order-4">
+                      <IconButton
+                        iconName="24/AddImage"
+                        isProcessing={false}
+                        onClick={() => imageFileInputRef.current?.click()}
+                      />
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        ref={imageFileInputRef}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            const reader = new FileReader()
+                            reader.onload = (e) => {
+                              const imageUrl = e.target?.result as string
+                              homeStore.setState({ modalImage: imageUrl })
+                            }
+                            reader.readAsDataURL(file)
                           }
-                          reader.readAsDataURL(file)
-                        }
-                      }}
-                    />
-                  </div>
-                </>
-              )}
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
               {youtubeMode && (
                 <div className="order-5">
                   <IconButton
