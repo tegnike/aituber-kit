@@ -22,6 +22,7 @@ export interface TransientState {
   modalImage: string
   triggerShutter: boolean
   webcamStatus: boolean
+  captureStatus: boolean
   ws: WebSocket | null
   wsStreaming: boolean
 }
@@ -57,16 +58,24 @@ const homeStore = create<HomeState>()(
       modalImage: '',
       triggerShutter: false,
       webcamStatus: false,
+      captureStatus: false,
       ws: null,
       wsStreaming: false,
     }),
     {
       name: 'aitube-kit-home',
       partialize: ({ chatLog, dontShowIntroduction }) => ({
-        chatLog,
+        chatLog: chatLog.map((message: Message) => ({
+          ...message,
+          content:
+            typeof message.content === 'string'
+              ? message.content
+              : message.content[0].text,
+        })),
         dontShowIntroduction,
       }),
     }
   )
 )
+
 export default homeStore
