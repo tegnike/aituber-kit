@@ -65,10 +65,17 @@ const homeStore = create<HomeState>()(
     {
       name: 'aitube-kit-home',
       partialize: ({ chatLog, dontShowIntroduction }) => ({
-        chatLog,
+        chatLog: chatLog.map((message: Message) => ({
+          ...message,
+          content:
+            typeof message.content === 'string'
+              ? message.content
+              : message.content[0].text,
+        })),
         dontShowIntroduction,
       }),
     }
   )
 )
+
 export default homeStore
