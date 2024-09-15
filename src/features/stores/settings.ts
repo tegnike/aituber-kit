@@ -45,6 +45,7 @@ interface ModelProvider {
   voicevoxPitch: number
   voicevoxIntonation: number
   stylebertvits2ServerUrl: string
+  stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
   stylebertvits2Style: string
   gsviTtsServerUrl: string
@@ -120,6 +121,7 @@ const settingsStore = create<SettingsState>()(
       voicevoxPitch: 0.0,
       voicevoxIntonation: 1.0,
       stylebertvits2ServerUrl: 'http://127.0.0.1:5000',
+      stylebertvits2ApiKey: '',
       stylebertvits2ModelId: '0',
       stylebertvits2Style: 'Neutral',
       gsviTtsServerUrl:
@@ -181,6 +183,7 @@ const settingsStore = create<SettingsState>()(
         voicevoxPitch: state.voicevoxPitch,
         voicevoxIntonation: state.voicevoxIntonation,
         stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
+        stylebertvits2ApiKey: state.stylebertvits2ApiKey,
         stylebertvits2ModelId: state.stylebertvits2ModelId,
         stylebertvits2Style: state.stylebertvits2Style,
         gsviTtsServerUrl: state.gsviTtsServerUrl,

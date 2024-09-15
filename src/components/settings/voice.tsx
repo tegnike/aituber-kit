@@ -27,6 +27,7 @@ const Voice = () => {
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
+  const stylebertvits2ApiKey = settingsStore((s) => s.stylebertvits2ApiKey)
   const stylebertvits2ModelId = settingsStore((s) => s.stylebertvits2ModelId)
   const stylebertvits2Style = settingsStore((s) => s.stylebertvits2Style)
   const gsviTtsServerUrl = settingsStore((s) => s.gsviTtsServerUrl)
@@ -309,7 +310,7 @@ const Voice = () => {
                   <br />
                 </div>
                 <div className="mt-16 font-bold">
-                  {t('StyleBeatVITS2LocalServerURL')}
+                  {t('StyleBeatVITS2ServerURL')}
                 </div>
                 <div className="mt-8">
                   <input
@@ -320,6 +321,22 @@ const Voice = () => {
                     onChange={(e) =>
                       settingsStore.setState({
                         stylebertvits2ServerUrl: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-16 font-bold">
+                  {t('StyleBeatVITS2ApiKey')}
+                </div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="..."
+                    value={stylebertvits2ApiKey}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        stylebertvits2ApiKey: e.target.value,
                       })
                     }
                   />

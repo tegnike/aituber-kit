@@ -68,6 +68,7 @@ const createSpeakCharacter = () => {
         buffer = await fetchAudioStyleBertVITS2(
           screenplay.talk,
           ss.stylebertvits2ServerUrl,
+          ss.stylebertvits2ApiKey,
           ss.stylebertvits2ModelId,
           ss.stylebertvits2Style,
           ss.selectLanguage
@@ -224,6 +225,7 @@ export const fetchAudioGoogle = async (
 export const fetchAudioStyleBertVITS2 = async (
   talk: Talk,
   stylebertvits2ServerUrl: string,
+  stylebertvits2ApiKey: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
   selectLanguage: Language
@@ -231,6 +233,7 @@ export const fetchAudioStyleBertVITS2 = async (
   const ttsVoice = await synthesizeStyleBertVITS2Api(
     talk.message,
     stylebertvits2ServerUrl,
+    stylebertvits2ApiKey,
     stylebertvits2ModelId,
     stylebertvits2Style,
     selectLanguage
