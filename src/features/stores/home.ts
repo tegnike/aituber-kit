@@ -35,12 +35,7 @@ const homeStore = create<HomeState>()(
       // persisted states
       userOnboarded: false,
       chatLog: [],
-      showIntroduction:
-        process.env.NEXT_PUBLIC_SHOW_INTRODUCTION === 'true'
-          ? true
-          : process.env.NEXT_PUBLIC_SHOW_INTRODUCTION === 'false'
-            ? false
-            : true,
+      showIntroduction: process.env.NEXT_PUBLIC_SHOW_INTRODUCTION !== 'false',
       assistantMessage: '',
 
       // transient states

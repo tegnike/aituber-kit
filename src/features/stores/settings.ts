@@ -178,15 +178,8 @@ const settingsStore = create<SettingsState>()(
         (process.env.NEXT_PUBLIC_SELECT_VOICE_LANGUAGE as VoiceLanguage) ||
         'ja-JP',
       changeEnglishToJapanese:
-        process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true'
-          ? true
-          : false,
-      showControlPanel:
-        process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL === 'true'
-          ? true
-          : process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL === 'false'
-            ? false
-            : true,
+        process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
+      showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
       webSocketMode:
         process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true' ? true : false,
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true' ? true : false,
