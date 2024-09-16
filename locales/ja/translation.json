@@ -127,6 +127,7 @@
   "PdfConvertSuccess": "変換が完了しました",
   "PdfConvertError": "変換に失敗しました",
   "PdfConvertSubmitError": "PDFファイル、フォルダ名、APIキーが設定されているか確認をしてください",
+  "LocalStorageReset": "設定をリセットする（ページが再読み込みされます）",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
     "AIInvalidProperty": "AIサービスの設定値が正しくありません",

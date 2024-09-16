@@ -19,6 +19,16 @@ const AdvancedSettings = () => {
 
   return (
     <div className="my-40">
+      <div className="my-40 grid-cols-2">
+        <TextButton
+          onClick={() => {
+            settingsStore.persist.clearStorage()
+            window.location.reload()
+          }}
+        >
+          {t('LocalStorageReset')}
+        </TextButton>
+      </div>
       <Disclosure>
         {({ open }) => (
           <>
