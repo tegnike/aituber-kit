@@ -11,7 +11,7 @@ const AdvancedSettings = () => {
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
   )
-  const showControlPanel = menuStore((s) => s.showControlPanel)
+  const showControlPanel = settingsStore((s) => s.showControlPanel)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
 
@@ -97,7 +97,7 @@ const AdvancedSettings = () => {
                   <div className="my-8">
                     <TextButton
                       onClick={() =>
-                        menuStore.setState({
+                        settingsStore.setState({
                           showControlPanel: !showControlPanel,
                         })
                       }

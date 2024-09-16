@@ -122,5 +122,13 @@
   "PdfConvertLoading": "转换中...",
   "PdfConvertSuccess": "转换完成",
   "PdfConvertError": "转换失败",
-  "PdfConvertSubmitError": "请确保已设置PDF文件、文件夹名称和API密钥。"
+  "PdfConvertSubmitError": "请确保已设置PDF文件、文件夹名称和API密钥。",
+  "Errors": {
+    "EmptyAPIKey": "API 密钥未设置",
+    "AIInvalidProperty": "AI 服务设置值不正确",
+    "AIAPIError": "AI API 执行时发生错误",
+    "InvalidAIService": "选择的 AI 服务不正确",
+    "MethodNotAllowed": "请求不适当",
+    "UnexpectedError": "意外的错误发生"
+  }
 }

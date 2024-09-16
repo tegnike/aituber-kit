@@ -398,53 +398,6 @@ export const handleSendChatFn =
         })
       }
     } else {
-      // ChatVRM original mode
-      const emptyKeys = [
-        ss.selectAIService === 'openai' &&
-          !ss.openaiKey &&
-          !process.env.NEXT_PUBLIC_OPEN_AI_KEY,
-
-        ss.selectAIService === 'anthropic' &&
-          !ss.anthropicKey &&
-          !process.env.NEXT_PUBLIC_ANTHROPIC_KEY,
-
-        ss.selectAIService === 'google' &&
-          !ss.googleKey &&
-          !process.env.NEXT_PUBLIC_GOOGLE_KEY,
-
-        ss.selectAIService === 'azure' &&
-          !ss.azureKey &&
-          !process.env.NEXT_PUBLIC_AZURE_KEY,
-
-        ss.selectAIService === 'groq' &&
-          !ss.groqKey &&
-          !process.env.NEXT_PUBLIC_GROQ_KEY,
-
-        ss.selectAIService === 'cohere' &&
-          !ss.cohereKey &&
-          !process.env.NEXT_PUBLIC_COHERE_KEY,
-
-        ss.selectAIService === 'mistralai' &&
-          !ss.mistralaiKey &&
-          !process.env.NEXT_PUBLIC_MISTRALAI_KEY,
-
-        ss.selectAIService === 'perplexity' &&
-          !ss.perplexityKey &&
-          !process.env.NEXT_PUBLIC_PERPLEXITY_KEY,
-
-        ss.selectAIService === 'fireworks' &&
-          !ss.fireworksKey &&
-          !process.env.NEXT_PUBLIC_FIREWORKS_KEY,
-
-        ss.selectAIService === 'dify' &&
-          !ss.difyKey &&
-          !process.env.NEXT_PUBLIC_DIFY_KEY,
-      ]
-      if (emptyKeys.includes(true)) {
-        homeStore.setState({ assistantMessage: errors['APIKeyNotEntered'] })
-        return
-      }
-
       let systemPrompt = ss.systemPrompt
       if (ss.slideMode) {
         if (sls.isPlaying) {

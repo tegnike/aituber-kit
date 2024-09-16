@@ -43,9 +43,28 @@ export default async function handler(
 ) {
   const body = req.body
   const message = body.message
-  const voiceId = body.voiceId
-  const apiKey = body.apiKey
+  const voiceId = body.voiceId || process.env.ELEVENLABS_VOICE_ID
+  const apiKey = body.apiKey || process.env.ELEVENLABS_API_KEY
   const language = body.language
+
+  if (!apiKey) {
+    return new Response(
+      JSON.stringify({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+  }
+  if (!voiceId) {
+    return new Response(
+      JSON.stringify({ error: 'Empty Voice ID', errorCode: 'EMPTY_PROPERTY' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+  }
 
   try {
     const response = await fetch(

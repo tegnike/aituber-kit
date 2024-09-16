@@ -29,7 +29,8 @@ export default async function handler(
   const body = req.body // JSON.parse を削除
   const message = body.message
   const stylebertvits2ModelId = body.stylebertvits2ModelId
-  const stylebertvits2ServerUrl = body.stylebertvits2ServerUrl
+  const stylebertvits2ServerUrl =
+    body.stylebertvits2ServerUrl || process.env.STYLEBERTVITS2_SERVER_URL
   const stylebertvits2Style = body.stylebertvits2Style
   const selectLanguage = getLanguageCode(body.selectLanguage)
 

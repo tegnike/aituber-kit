@@ -23,23 +23,21 @@ export async function getAIChatResponseStream(
     case 'fireworks':
       return getVercelAIChatResponseStream(
         messages,
-        ss[`${service}Key`] ||
-          process.env[`NEXT_PUBLIC_${service.toUpperCase()}_KEY`] ||
-          '',
+        ss[`${service}Key`] || '',
         service,
         ss.selectAIModel
       )
     case 'localLlm':
       return getLocalLLMChatResponseStream(
         messages,
-        ss.localLlmUrl || process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
-        ss.selectAIModel || process.env.NEXT_PUBLIC_LOCAL_LLM_MODEL || ''
+        ss.localLlmUrl,
+        ss.selectAIModel
       )
     case 'dify':
       return getDifyChatResponseStream(
         messages,
-        ss.difyKey || process.env.NEXT_PUBLIC_DIFY_KEY || '',
-        ss.difyUrl || process.env.NEXT_PUBLIC_DIFY_URL || '',
+        ss.difyKey || '',
+        ss.difyUrl || '',
         ss.difyConversationId
       )
     default:
