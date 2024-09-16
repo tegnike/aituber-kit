@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, {
+  multiModalAIServiceKey,
+} from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
@@ -11,6 +13,8 @@ import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
 import Slides from './slides'
+import Capture from './capture'
+import { multiModalAIServices } from '@/features/stores/settings'
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
@@ -23,6 +27,7 @@ export const Menu = () => {
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
+  const showCapture = menuStore((s) => s.showCapture)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
 
@@ -101,6 +106,11 @@ export const Menu = () => {
   }, [showWebcam])
 
   useEffect(() => {
+    console.log('onChangeCaptureStatus')
+    homeStore.setState({ captureStatus: showCapture })
+  }, [showCapture])
+
+  useEffect(() => {
     if (!youtubePlaying) {
       settingsStore.setState({
         youtubeContinuationCount: 0,
@@ -109,6 +119,16 @@ export const Menu = () => {
       })
     }
   }, [youtubePlaying])
+
+  const toggleCapture = useCallback(() => {
+    menuStore.setState(({ showCapture }) => ({ showCapture: !showCapture }))
+    menuStore.setState({ showWebcam: false }) // Captureを表示するときWebcamを非表示にする
+  }, [])
+
+  const toggleWebcam = useCallback(() => {
+    menuStore.setState(({ showWebcam }) => ({ showWebcam: !showWebcam }))
+    menuStore.setState({ showCapture: false }) // Webcamを表示するときCaptureを非表示にする
+  }, [])
 
   return (
     <>
@@ -144,45 +164,51 @@ export const Menu = () => {
                   />
                 )}
               </div>
-              {!youtubeMode && (
-                <>
-                  <div className="order-3">
-                    <IconButton
-                      iconName="24/Camera"
-                      isProcessing={false}
-                      onClick={() =>
-                        menuStore.setState(({ showWebcam }) => ({
-                          showWebcam: !showWebcam,
-                        }))
-                      }
-                    />
-                  </div>
-                  <div className="order-4">
-                    <IconButton
-                      iconName="24/AddImage"
-                      isProcessing={false}
-                      onClick={() => imageFileInputRef.current?.click()}
-                    />
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      ref={imageFileInputRef}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) {
-                          const reader = new FileReader()
-                          reader.onload = (e) => {
-                            const imageUrl = e.target?.result as string
-                            homeStore.setState({ modalImage: imageUrl })
+              {!youtubeMode &&
+                multiModalAIServices.includes(
+                  selectAIService as multiModalAIServiceKey
+                ) && (
+                  <>
+                    <div className="order-3">
+                      <IconButton
+                        iconName="24/ShareIos"
+                        isProcessing={false}
+                        onClick={toggleCapture}
+                      />
+                    </div>
+                    <div className="order-4">
+                      <IconButton
+                        iconName="24/Camera"
+                        isProcessing={false}
+                        onClick={toggleWebcam}
+                      />
+                    </div>
+                    <div className="order-4">
+                      <IconButton
+                        iconName="24/AddImage"
+                        isProcessing={false}
+                        onClick={() => imageFileInputRef.current?.click()}
+                      />
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        ref={imageFileInputRef}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            const reader = new FileReader()
+                            reader.onload = (e) => {
+                              const imageUrl = e.target?.result as string
+                              homeStore.setState({ modalImage: imageUrl })
+                            }
+                            reader.readAsDataURL(file)
                           }
-                          reader.readAsDataURL(file)
-                        }
-                      }}
-                    />
-                  </div>
-                </>
-              )}
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
               {youtubeMode && (
                 <div className="order-5">
                   <IconButton
@@ -222,6 +248,7 @@ export const Menu = () => {
         (!slideMode || !slideVisible) &&
         showAssistantText && <AssistantText message={assistantMessage} />}
       {showWebcam && navigator.mediaDevices && <Webcam />}
+      {showCapture && <Capture />}
       {showPermissionModal && (
         <div className="modal">
           <div className="modal-content">
