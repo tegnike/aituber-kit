@@ -71,6 +71,8 @@ const createSpeakCharacter = () => {
           ss.stylebertvits2ApiKey,
           ss.stylebertvits2ModelId,
           ss.stylebertvits2Style,
+          ss.stylebertvits2SdpRatio,
+          ss.stylebertvits2Length,
           ss.selectLanguage
         ).catch(() => null)
       } else if (ss.selectVoice == 'gsvitts') {
@@ -228,6 +230,8 @@ export const fetchAudioStyleBertVITS2 = async (
   stylebertvits2ApiKey: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
+  stylebertvits2SdpRatio: number,
+  stylebertvits2Length: number,
   selectLanguage: Language
 ): Promise<ArrayBuffer> => {
   const ttsVoice = await synthesizeStyleBertVITS2Api(
@@ -236,6 +240,8 @@ export const fetchAudioStyleBertVITS2 = async (
     stylebertvits2ApiKey,
     stylebertvits2ModelId,
     stylebertvits2Style,
+    stylebertvits2SdpRatio,
+    stylebertvits2Length,
     selectLanguage
   )
   return ttsVoice

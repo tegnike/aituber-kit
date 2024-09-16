@@ -48,6 +48,8 @@ interface ModelProvider {
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
   stylebertvits2Style: string
+  stylebertvits2SdpRatio: number
+  stylebertvits2Length: number
   gsviTtsServerUrl: string
   gsviTtsModelId: string
   gsviTtsBatchSize: number
@@ -124,6 +126,8 @@ const settingsStore = create<SettingsState>()(
       stylebertvits2ApiKey: '',
       stylebertvits2ModelId: '0',
       stylebertvits2Style: 'Neutral',
+      stylebertvits2SdpRatio: 0.2,
+      stylebertvits2Length: 1.0,
       gsviTtsServerUrl:
         process.env.NEXT_PUBLIC_LOCAL_TTS_URL || 'http://127.0.0.1:5000/tts',
       gsviTtsModelId: '',
@@ -186,6 +190,8 @@ const settingsStore = create<SettingsState>()(
         stylebertvits2ApiKey: state.stylebertvits2ApiKey,
         stylebertvits2ModelId: state.stylebertvits2ModelId,
         stylebertvits2Style: state.stylebertvits2Style,
+        stylebertvits2SdpRatio: state.stylebertvits2SdpRatio,
+        stylebertvits2Length: state.stylebertvits2Length,
         gsviTtsServerUrl: state.gsviTtsServerUrl,
         gsviTtsModelId: state.gsviTtsModelId,
         gsviTtsBatchSize: state.gsviTtsBatchSize,

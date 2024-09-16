@@ -32,6 +32,8 @@ export default async function handler(
   const stylebertvits2ServerUrl = body.stylebertvits2ServerUrl
   const stylebertvits2ApiKey = body.stylebertvits2ApiKey
   const stylebertvits2Style = body.stylebertvits2Style
+  const stylebertvits2SdpRatio = body.stylebertvits2SdpRatio
+  const stylebertvits2Length = body.stylebertvits2Length
   const selectLanguage = getLanguageCode(body.selectLanguage)
 
   try {
@@ -40,6 +42,8 @@ export default async function handler(
         text: message,
         model_id: stylebertvits2ModelId,
         style: stylebertvits2Style,
+        sdp_ratio: stylebertvits2SdpRatio,
+        length: stylebertvits2Length,
         language: selectLanguage,
       })
 
@@ -81,6 +85,8 @@ export default async function handler(
               model_id: stylebertvits2ModelId,
               text: message,
               style: stylebertvits2Style,
+              sdp_ratio: stylebertvits2SdpRatio,
+              length: stylebertvits2Length,
               language: selectLanguage,
             },
           }),
