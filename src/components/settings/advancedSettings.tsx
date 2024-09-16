@@ -11,7 +11,7 @@ const AdvancedSettings = () => {
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
   )
-  const showControlPanel = menuStore((s) => s.showControlPanel)
+  const showControlPanel = settingsStore((s) => s.showControlPanel)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
 
@@ -19,6 +19,16 @@ const AdvancedSettings = () => {
 
   return (
     <div className="my-40">
+      <div className="my-40 grid-cols-2">
+        <TextButton
+          onClick={() => {
+            settingsStore.persist.clearStorage()
+            window.location.reload()
+          }}
+        >
+          {t('LocalStorageReset')}
+        </TextButton>
+      </div>
       <Disclosure>
         {({ open }) => (
           <>
@@ -97,7 +107,7 @@ const AdvancedSettings = () => {
                   <div className="my-8">
                     <TextButton
                       onClick={() =>
-                        menuStore.setState({
+                        settingsStore.setState({
                           showControlPanel: !showControlPanel,
                         })
                       }

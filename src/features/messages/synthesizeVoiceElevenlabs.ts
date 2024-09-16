@@ -38,39 +38,31 @@ export async function synthesizeVoiceElevenlabsApi(
   voiceId: string,
   language: Language
 ) {
-  const res = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=pcm_16000`,
-    {
+  const body = {
+    message,
+    voiceId,
+    apiKey,
+    language,
+  }
+
+  try {
+    const res = await fetch('/api/elevenLabs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'xi-api-key': apiKey,
-        accept: 'audio/mpeg',
       },
-      body: JSON.stringify({
-        text: message,
-        model_id: 'eleven_turbo_v2_5',
-        language_code: language,
-      }),
+      body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+      throw new Error(
+        `APIからの応答が異常です。ステータスコード: ${res.status}`
+      )
     }
-  )
 
-  if (!res.ok) {
-    throw new Error(`ElevenLabs API request failed with status: ${res.status}`)
+    const buffer = await res.arrayBuffer()
+    return { audio: new Uint8Array(buffer) }
+  } catch (error: any) {
+    throw new Error(`APIリクエスト中にエラーが発生しました: ${error.message}`)
   }
-
-  const pcmData = await res.arrayBuffer()
-  const wavHeader = createWavHeader(pcmData.byteLength)
-  const wavData = new Uint8Array(wavHeader.byteLength + pcmData.byteLength)
-  wavData.set(new Uint8Array(wavHeader), 0)
-  wavData.set(new Uint8Array(pcmData), wavHeader.byteLength)
-
-  // Convert the ArrayBuffer to a Blob
-  const blob = new Blob([wavData.buffer], { type: 'audio/wav' })
-
-  // Create a temporary URL for the Blob
-  const audioURL = URL.createObjectURL(blob)
-
-  // return { audio: audioURL };
-  return { audio: wavData }
 }

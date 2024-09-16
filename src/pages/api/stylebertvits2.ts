@@ -29,8 +29,10 @@ export default async function handler(
   const body = req.body // JSON.parse を削除
   const message = body.message
   const stylebertvits2ModelId = body.stylebertvits2ModelId
-  const stylebertvits2ServerUrl = body.stylebertvits2ServerUrl
-  const stylebertvits2ApiKey = body.stylebertvits2ApiKey
+  const stylebertvits2ServerUrl =
+    body.stylebertvits2ServerUrl || process.env.STYLEBERTVITS2_SERVER_URL
+  const stylebertvits2ApiKey =
+    body.stylebertvits2ApiKey || process.env.STYLEBERTVITS2_API_KEY
   const stylebertvits2Style = body.stylebertvits2Style
   const stylebertvits2SdpRatio = body.stylebertvits2SdpRatio
   const stylebertvits2Length = body.stylebertvits2Length

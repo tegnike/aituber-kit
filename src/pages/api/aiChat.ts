@@ -29,42 +29,89 @@ export const config = {
 
 export default async function handler(req: NextRequest) {
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({
+        error: 'Method Not Allowed',
+        errorCode: 'METHOD_NOT_ALLOWED',
+      }),
+      {
+        status: 405,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
   }
 
   const { messages, apiKey, aiService, model, stream } = await req.json()
+
+  let aiApiKey = apiKey
+  if (!aiApiKey) {
+    const envKey = `${aiService.toUpperCase()}_KEY` as keyof typeof process.env
+    const envApiKey = process.env[envKey]
+
+    aiApiKey = envApiKey
+  }
+
+  if (!aiApiKey) {
+    return new Response(
+      JSON.stringify({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+  }
+
+  if (!aiService || !model) {
+    return new Response(
+      JSON.stringify({
+        error: 'Invalid AI service or model',
+        errorCode: 'AIInvalidProperty',
+      }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+  }
+
   const aiServiceConfig: AIServiceConfig = {
-    openai: () => createOpenAI({ apiKey }),
-    anthropic: () => createAnthropic({ apiKey }),
-    google: () => createGoogleGenerativeAI({ apiKey }),
+    openai: () => createOpenAI({ apiKey: aiApiKey }),
+    anthropic: () => createAnthropic({ apiKey: aiApiKey }),
+    google: () => createGoogleGenerativeAI({ apiKey: aiApiKey }),
     azure: () =>
       createAzure({
         resourceName:
           model.match(/https:\/\/(.+?)\.openai\.azure\.com/)?.[1] || '',
-        apiKey,
+        apiKey: aiApiKey,
       }),
     groq: () =>
-      createOpenAI({ baseURL: 'https://api.groq.com/openai/v1', apiKey }),
-    cohere: () => createCohere({ apiKey }),
-    mistralai: () => createMistral({ apiKey }),
+      createOpenAI({
+        baseURL: 'https://api.groq.com/openai/v1',
+        apiKey: aiApiKey,
+      }),
+    cohere: () => createCohere({ apiKey: aiApiKey }),
+    mistralai: () => createMistral({ apiKey: aiApiKey }),
     perplexity: () =>
-      createOpenAI({ baseURL: 'https://api.perplexity.ai/', apiKey }),
+      createOpenAI({ baseURL: 'https://api.perplexity.ai/', apiKey: aiApiKey }),
     fireworks: () =>
       createOpenAI({
         baseURL: 'https://api.fireworks.ai/inference/v1',
-        apiKey,
+        apiKey: aiApiKey,
       }),
   }
   const aiServiceInstance = aiServiceConfig[aiService as AIServiceKey]
 
   if (!aiServiceInstance) {
-    return new Response(JSON.stringify({ error: 'Invalid AI service' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({
+        error: 'Invalid AI service',
+        errorCode: 'InvalidAIService',
+      }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
   }
 
   const instance = aiServiceInstance()
@@ -75,31 +122,38 @@ export default async function handler(req: NextRequest) {
       model.match(/\/deployments\/(.+?)\/completions/)?.[1] || model
   }
 
-  if (stream) {
-    try {
+  try {
+    if (stream) {
       const result = await streamText({
         model: instance(modifiedModel),
         messages: modifiedMessages as CoreMessage[],
       })
 
       return result.toDataStreamResponse()
-    } catch (error) {
-      console.error('Error in OpenAI API call:', error)
-      return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-        status: 500,
+    } else {
+      const result = await generateText({
+        model: instance(model),
+        messages: modifiedMessages as CoreMessage[],
+      })
+
+      return new Response(JSON.stringify({ text: result.text }), {
+        status: 200,
         headers: { 'Content-Type': 'application/json' },
       })
     }
-  } else {
-    const result = await generateText({
-      model: instance(model),
-      messages: modifiedMessages as CoreMessage[],
-    })
+  } catch (error) {
+    console.error('Error in AI API call:', error)
 
-    return new Response(JSON.stringify({ text: result.text }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({
+        error: 'Unexpected Error',
+        errorCode: 'AIAPIError',
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
   }
 }
 

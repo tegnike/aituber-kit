@@ -12,19 +12,17 @@ import {
 } from '@/features/constants/settings'
 
 export const Introduction = () => {
-  const dontShowIntroduction = homeStore((s) => s.dontShowIntroduction)
+  const showIntroduction = homeStore((s) => s.showIntroduction)
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 
-  const [showIntroduction, setShowIntroduction] = useState(false)
+  const [displayIntroduction, setDisplayIntroduction] = useState(false)
   const [opened, setOpened] = useState(true)
 
   const { t } = useTranslation()
 
   useEffect(() => {
-    // wait for local storage to be fully initialized
-    // to prevent a flash of <Introduction />
-    setShowIntroduction(!homeStore.getState().dontShowIntroduction)
-  }, [dontShowIntroduction])
+    setDisplayIntroduction(homeStore.getState().showIntroduction)
+  }, [showIntroduction])
 
   const updateLanguage = () => {
     console.log('i18n.language', i18n.language)
@@ -54,7 +52,7 @@ export const Introduction = () => {
     })
   }
 
-  return showIntroduction && opened ? (
+  return displayIntroduction && opened ? (
     <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
       <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
         <IconButton
@@ -128,15 +126,14 @@ export const Introduction = () => {
           </div>
         </div>
 
-        {/* dontShowIntroductionのチェックボックスを表示 */}
         <div className="my-24">
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={dontShowIntroduction}
+              checked={showIntroduction}
               onChange={(e) => {
                 homeStore.setState({
-                  dontShowIntroduction: e.target.checked,
+                  showIntroduction: e.target.checked,
                 })
                 updateLanguage()
               }}

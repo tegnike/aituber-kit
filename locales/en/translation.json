@@ -125,5 +125,14 @@
   "PdfConvertLoading": "Converting...",
   "PdfConvertSuccess": "Conversion completed",
   "PdfConvertError": "Conversion failed",
-  "PdfConvertSubmitError": "Please make sure the PDF file, folder name, and API key are set."
+  "PdfConvertSubmitError": "Please make sure the PDF file, folder name, and API key are set.",
+  "LocalStorageReset": "Reset settings (page will be reloaded)",
+  "Errors": {
+    "EmptyAPIKey": "API key is not set",
+    "AIInvalidProperty": "AI service settings are incorrect",
+    "AIAPIError": "An error occurred while executing the AI API",
+    "InvalidAIService": "The selected AI service is not valid",
+    "MethodNotAllowed": "The request is not appropriate",
+    "UnexpectedError": "An unexpected error occurred"
+  }
 }

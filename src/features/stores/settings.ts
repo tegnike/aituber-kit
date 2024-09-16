@@ -67,6 +67,7 @@ interface Integrations {
   youtubeContinuationCount: number
   youtubeNoCommentCount: number
   youtubeSleepMode: boolean
+  conversationContinuityMode: boolean
 }
 
 interface Character {
@@ -74,13 +75,13 @@ interface Character {
   showAssistantText: boolean
   showCharacterName: boolean
   systemPrompt: string
-  conversationContinuityMode: boolean
 }
 
 interface General {
   selectLanguage: Language
   selectVoiceLanguage: VoiceLanguage
   changeEnglishToJapanese: boolean
+  showControlPanel: boolean
   webSocketMode: boolean
   slideMode: boolean
 }
@@ -106,59 +107,82 @@ const settingsStore = create<SettingsState>()(
       perplexityKey: '',
       fireworksKey: '',
       difyKey: '',
-      koeiromapKey: '',
-      youtubeApiKey: '',
+      koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
+      youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
 
       // Model Provider
-      selectAIService: 'openai',
-      selectAIModel: 'gpt-4o',
-      localLlmUrl: '',
-      selectVoice: 'voicevox',
+      selectAIService:
+        (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai',
+      selectAIModel: process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4',
+      localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
+      selectVoice:
+        (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
       koeiroParam: DEFAULT_PARAM,
       googleTtsType:
         process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE || 'en-US-Neural2-F',
-      voicevoxSpeaker: '46',
-      voicevoxSpeed: 1.0,
-      voicevoxPitch: 0.0,
-      voicevoxIntonation: 1.0,
-      stylebertvits2ServerUrl: 'http://127.0.0.1:5000',
+      voicevoxSpeaker: process.env.NEXT_PUBLIC_VOICEVOX_SPEAKER || '46',
+      voicevoxSpeed:
+        parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_SPEED || '1.0') || 1.0,
+      voicevoxPitch:
+        parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_PITCH || '0.0') || 0.0,
+      voicevoxIntonation:
+        parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_INTONATION || '1.0') || 1.0,
+      stylebertvits2ServerUrl: '',
+      stylebertvits2ModelId:
+        process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
       stylebertvits2ApiKey: '',
-      stylebertvits2ModelId: '0',
-      stylebertvits2Style: 'Neutral',
-      stylebertvits2SdpRatio: 0.2,
-      stylebertvits2Length: 1.0,
+      stylebertvits2Style:
+        process.env.NEXT_PUBLIC_STYLEBERTVITS2_STYLE || 'Neutral',
+      stylebertvits2SdpRatio:
+        parseFloat(process.env.NEXT_PUBLIC_STYLEBERTVITS2_SDP_RATIO || '0.2') ||
+        0.2,
+      stylebertvits2Length:
+        parseFloat(process.env.NEXT_PUBLIC_STYLEBERTVITS2_LENGTH || '1.0') ||
+        1.0,
       gsviTtsServerUrl:
-        process.env.NEXT_PUBLIC_LOCAL_TTS_URL || 'http://127.0.0.1:5000/tts',
-      gsviTtsModelId: '',
-      gsviTtsBatchSize: 2,
-      gsviTtsSpeechRate: 1.0,
+        process.env.NEXT_PUBLIC_GSVI_TTS_URL || 'http://127.0.0.1:5000/tts',
+      gsviTtsModelId: process.env.NEXT_PUBLIC_GSVI_TTS_MODEL_ID || '0',
+      gsviTtsBatchSize:
+        parseInt(process.env.NEXT_PUBLIC_GSVI_TTS_BATCH_SIZE || '2') || 2,
+      gsviTtsSpeechRate:
+        parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') ||
+        1.0,
       elevenlabsVoiceId: '',
 
       // Integrations
       difyUrl: '',
       difyConversationId: '',
-      youtubeMode: false,
-      youtubeLiveId: '',
+      youtubeMode:
+        process.env.NEXT_PUBLIC_YOUTUBE_MODE === 'true' ? true : false,
+      youtubeLiveId: process.env.NEXT_PUBLIC_YOUTUBE_LIVE_ID || '',
       youtubePlaying: false,
       youtubeNextPageToken: '',
       youtubeContinuationCount: 0,
       youtubeNoCommentCount: 0,
       youtubeSleepMode: false,
-
-      // Character
-      characterName: 'CHARACTER',
-      showAssistantText: true,
-      showCharacterName: true,
-      systemPrompt: SYSTEM_PROMPT,
       conversationContinuityMode: false,
 
+      // Character
+      characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
+      showAssistantText:
+        process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
+      showCharacterName:
+        process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
+      systemPrompt: SYSTEM_PROMPT,
+
       // General
-      selectLanguage: 'ja',
-      selectVoiceLanguage: 'ja-JP', // TODO: 要整理, ja-JP, en-US
-      changeEnglishToJapanese: false,
-      webSocketMode: false,
-      slideMode: false,
+      selectLanguage:
+        (process.env.NEXT_PUBLIC_SELECT_LANGUAGE as Language) || 'ja',
+      selectVoiceLanguage:
+        (process.env.NEXT_PUBLIC_SELECT_VOICE_LANGUAGE as VoiceLanguage) ||
+        'ja-JP',
+      changeEnglishToJapanese:
+        process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
+      showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
+      webSocketMode:
+        process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true' ? true : false,
+      slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true' ? true : false,
     }),
     {
       name: 'aitube-kit-settings',
@@ -199,18 +223,15 @@ const settingsStore = create<SettingsState>()(
         elevenlabsVoiceId: state.elevenlabsVoiceId,
         difyUrl: state.difyUrl,
         difyConversationId: state.difyConversationId,
-        youtubeMode: state.youtubeMode,
         youtubeLiveId: state.youtubeLiveId,
         characterName: state.characterName,
         showAssistantText: state.showAssistantText,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
-        conversationContinuityMode: state.conversationContinuityMode,
         selectLanguage: state.selectLanguage,
         selectVoiceLanguage: state.selectVoiceLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         webSocketMode: state.webSocketMode,
-        slideMode: state.slideMode,
       }),
     }
   )
