@@ -6,43 +6,39 @@ export async function getDifyChatResponseStream(
   apiKey: string,
   url: string,
   conversationId: string
-) {
-  if (!apiKey) {
-    throw new Error('Invalid API Key')
-  }
-
-  const headers = {
-    Authorization: `Bearer ${apiKey}`,
-    'Content-Type': 'application/json',
-  }
-  const body = JSON.stringify({
-    inputs: {},
-    query: messages[messages.length - 1].content, // messages[-1] は TypeScript では無効です
-    response_mode: 'streaming',
-    conversation_id: conversationId,
-    user: 'aituber-kit',
-    files: [],
-  })
-
-  const response = await fetch(url.replace(/\/$/, ''), {
+): Promise<ReadableStream<string>> {
+  const response = await fetch('/api/difyChat', {
     method: 'POST',
-    headers: headers,
-    body: body,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: messages[messages.length - 1].content,
+      apiKey,
+      url,
+      conversationId,
+      stream: true,
+    }),
   })
 
-  if (!response.body) {
-    throw new Error('Invalid response body')
+  if (!response.ok) {
+    throw new Error(`API request to Dify failed with status ${response.status}`)
   }
 
-  const reader = response.body.getReader()
-
-  const res = new ReadableStream({
+  return new ReadableStream({
     async start(controller) {
+      if (!response.body) {
+        throw new Error('API response from Dify is empty')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder('utf-8')
+
       try {
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
-          const textChunk = new TextDecoder('utf-8').decode(value)
+          const textChunk = decoder.decode(value, { stream: true })
           const messages = textChunk
             .split('\n')
             .filter((line) => line.startsWith('data:'))
@@ -60,9 +56,8 @@ export async function getDifyChatResponseStream(
         controller.error(error)
       } finally {
         controller.close()
+        reader.releaseLock()
       }
     },
   })
-
-  return res
 }
