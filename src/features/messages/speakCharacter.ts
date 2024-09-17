@@ -13,8 +13,7 @@ interface EnglishToJapanese {
   [key: string]: string
 }
 
-const VOICE_VOX_API_URL =
-  process.env.NEXT_PUBLIC_VOICE_VOX_API_URL || 'http://localhost:50021'
+const VOICE_VOX_API_URL = 'http://localhost:50021'
 const typedEnglishToJapanese = englishToJapanese as EnglishToJapanese
 
 const createSpeakCharacter = () => {
@@ -68,8 +67,11 @@ const createSpeakCharacter = () => {
         buffer = await fetchAudioStyleBertVITS2(
           screenplay.talk,
           ss.stylebertvits2ServerUrl,
+          ss.stylebertvits2ApiKey,
           ss.stylebertvits2ModelId,
           ss.stylebertvits2Style,
+          ss.stylebertvits2SdpRatio,
+          ss.stylebertvits2Length,
           ss.selectLanguage
         ).catch(() => null)
       } else if (ss.selectVoice == 'gsvitts') {
@@ -224,15 +226,21 @@ export const fetchAudioGoogle = async (
 export const fetchAudioStyleBertVITS2 = async (
   talk: Talk,
   stylebertvits2ServerUrl: string,
+  stylebertvits2ApiKey: string,
   stylebertvits2ModelId: string,
   stylebertvits2Style: string,
+  stylebertvits2SdpRatio: number,
+  stylebertvits2Length: number,
   selectLanguage: Language
 ): Promise<ArrayBuffer> => {
   const ttsVoice = await synthesizeStyleBertVITS2Api(
     talk.message,
     stylebertvits2ServerUrl,
+    stylebertvits2ApiKey,
     stylebertvits2ModelId,
     stylebertvits2Style,
+    stylebertvits2SdpRatio,
+    stylebertvits2Length,
     selectLanguage
   )
   return ttsVoice

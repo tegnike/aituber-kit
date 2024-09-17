@@ -27,8 +27,11 @@ const Voice = () => {
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
+  const stylebertvits2ApiKey = settingsStore((s) => s.stylebertvits2ApiKey)
   const stylebertvits2ModelId = settingsStore((s) => s.stylebertvits2ModelId)
   const stylebertvits2Style = settingsStore((s) => s.stylebertvits2Style)
+  const stylebertvits2SdpRatio = settingsStore((s) => s.stylebertvits2SdpRatio)
+  const stylebertvits2Length = settingsStore((s) => s.stylebertvits2Length)
   const gsviTtsServerUrl = settingsStore((s) => s.gsviTtsServerUrl)
   const gsviTtsModelId = settingsStore((s) => s.gsviTtsModelId)
   const gsviTtsBatchSize = settingsStore((s) => s.gsviTtsBatchSize)
@@ -309,7 +312,7 @@ const Voice = () => {
                   <br />
                 </div>
                 <div className="mt-16 font-bold">
-                  {t('StyleBeatVITS2LocalServerURL')}
+                  {t('StyleBeatVITS2ServerURL')}
                 </div>
                 <div className="mt-8">
                   <input
@@ -320,6 +323,22 @@ const Voice = () => {
                     onChange={(e) =>
                       settingsStore.setState({
                         stylebertvits2ServerUrl: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-16 font-bold">
+                  {t('StyleBeatVITS2ApiKey')}
+                </div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="..."
+                    value={stylebertvits2ApiKey}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        stylebertvits2ApiKey: e.target.value,
                       })
                     }
                   />
@@ -356,6 +375,38 @@ const Voice = () => {
                     }
                   />
                 </div>
+                <div className="mt-16 font-bold">
+                  {t('StyleBeatVITS2SdpRatio')}: {stylebertvits2SdpRatio}
+                </div>
+                <input
+                  type="range"
+                  min={0.0}
+                  max={1.0}
+                  step={0.01}
+                  value={stylebertvits2SdpRatio}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      stylebertvits2SdpRatio: Number(e.target.value),
+                    })
+                  }}
+                ></input>
+                <div className="mt-16 font-bold">
+                  {t('StyleBeatVITS2Length')}: {stylebertvits2Length}
+                </div>
+                <input
+                  type="range"
+                  min={0.0}
+                  max={2.0}
+                  step={0.01}
+                  value={stylebertvits2Length}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      stylebertvits2Length: Number(e.target.value),
+                    })
+                  }}
+                ></input>
               </>
             )
           } else if (selectVoice === 'gsvitts') {

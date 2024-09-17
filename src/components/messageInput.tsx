@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
@@ -26,6 +26,7 @@ export const MessageInput = ({
   const slidePlaying = slideStore((s) => s.isPlaying)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const { t } = useTranslation()
 
@@ -39,6 +40,11 @@ export const MessageInput = ({
       }, 200)
 
       return () => clearInterval(interval)
+    } else {
+      if (textareaRef.current) {
+        textareaRef.current.value = ''
+        textareaRef.current.focus()
+      }
     }
   }, [chatProcessing])
 
@@ -76,10 +82,12 @@ export const MessageInput = ({
               iconName="24/Microphone"
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
               isProcessing={isMicRecording}
+              isProcessingIcon={'24/PauseAlt'}
               disabled={chatProcessing}
               onClick={onClickMicButton}
             />
             <textarea
+              ref={textareaRef}
               placeholder={
                 chatProcessing
                   ? `${t('AnswerGenerating')}${loadingDots}`

@@ -3,12 +3,14 @@ import { ButtonHTMLAttributes } from 'react'
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconName: keyof KnownIconType
   isProcessing: boolean
+  isProcessingIcon?: keyof KnownIconType
   label?: string
 }
 
 export const IconButton = ({
   iconName,
   isProcessing,
+  isProcessingIcon,
   label,
   ...rest
 }: Props) => {
@@ -20,7 +22,7 @@ export const IconButton = ({
       `}
     >
       {isProcessing ? (
-        <pixiv-icon name={'24/Dot'} scale="1"></pixiv-icon>
+        <pixiv-icon name={isProcessingIcon || '24/Dot'} scale="1"></pixiv-icon>
       ) : (
         <pixiv-icon name={iconName} scale="1"></pixiv-icon>
       )}
