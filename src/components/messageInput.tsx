@@ -76,6 +76,7 @@ export const MessageInput = ({
               iconName="24/Microphone"
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
               isProcessing={isMicRecording}
+              isProcessingIcon={'24/PauseAlt'}
               disabled={chatProcessing}
               onClick={onClickMicButton}
             />
