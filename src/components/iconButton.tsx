@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes } from 'react'
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   iconName: keyof KnownIconType
   isProcessing: boolean
-  isProcessingIcon?: string
+  isProcessingIcon?: keyof KnownIconType
   label?: string
 }
 
