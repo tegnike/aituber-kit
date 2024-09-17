@@ -1,96 +1,127 @@
-import { useState, useEffect, useCallback } from 'react'
-
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { MessageInput } from '@/components/messageInput'
-import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 
 type Props = {
   onChatProcessStart: (text: string) => void
 }
 
-/**
- * テキスト入力と音声入力を提供する
- *
- * 音声認識の完了時は自動で送信し、返答文の生成中は入力を無効化する
- *
- */
 export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
-  const chatProcessing = homeStore((s) => s.chatProcessing)
   const [userMessage, setUserMessage] = useState('')
-  const [speechRecognition, setSpeechRecognition] =
-    useState<SpeechRecognition>()
-  const [isMicRecording, setIsMicRecording] = useState(false)
-
-  // 音声認識の結果を処理する
-  const handleRecognitionResult = useCallback(
-    (event: SpeechRecognitionEvent) => {
-      const text = event.results[0][0].transcript
-      setUserMessage(text)
-
-      // 発言の終了時
-      if (event.results[0].isFinal) {
-        setUserMessage(text)
-        // 返答文の生成を開始
-        onChatProcessStart(text)
-      }
-    },
-    [onChatProcessStart]
-  )
-
-  // 無音が続いた場合も終了する
-  const handleRecognitionEnd = useCallback(() => {
-    setIsMicRecording(false)
-  }, [])
-
-  const handleClickMicButton = useCallback(() => {
-    if (isMicRecording) {
-      speechRecognition?.abort()
-      setIsMicRecording(false)
-
-      return
-    }
-
-    speechRecognition?.start()
-    setIsMicRecording(true)
-  }, [isMicRecording, speechRecognition])
-
-  const handleClickSendButton = useCallback(() => {
-    onChatProcessStart(userMessage)
-  }, [onChatProcessStart, userMessage])
+  const [isListening, setIsListening] = useState(false)
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
+  const keyPressStartTime = useRef<number | null>(null)
+  const transcriptRef = useRef('')
+  const isKeyboardTriggered = useRef(false)
 
   useEffect(() => {
     const SpeechRecognition =
-      window.webkitSpeechRecognition || window.SpeechRecognition
+      window.SpeechRecognition || window.webkitSpeechRecognition
+    if (SpeechRecognition) {
+      const newRecognition = new SpeechRecognition()
+      const ss = settingsStore.getState()
+      newRecognition.lang = ss.selectVoiceLanguage
+      newRecognition.continuous = true
+      newRecognition.interimResults = true
 
-    // FirefoxなどSpeechRecognition非対応環境対策
-    if (!SpeechRecognition) {
-      return
+      newRecognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join('')
+        transcriptRef.current = transcript
+        setUserMessage(transcript)
+      }
+
+      newRecognition.onerror = (event) => {
+        console.error('音声認識エラー:', event.error)
+        setIsListening(false)
+      }
+
+      setRecognition(newRecognition)
     }
-    const ss = settingsStore.getState()
-    const recognition = new SpeechRecognition()
-    recognition.lang = ss.selectVoiceLanguage
-    recognition.interimResults = true // 認識の途中結果を返す
-    recognition.continuous = false // 発言の終了時に認識を終了する
+  }, [])
 
-    recognition.addEventListener('result', handleRecognitionResult)
-    recognition.addEventListener('end', handleRecognitionEnd)
+  const startListening = useCallback(() => {
+    if (recognition && !isListening) {
+      transcriptRef.current = ''
+      setUserMessage('')
+      recognition.start()
+      setIsListening(true)
+    }
+  }, [recognition, isListening])
 
-    setSpeechRecognition(recognition)
-  }, [handleRecognitionResult, handleRecognitionEnd])
+  const stopListening = useCallback(() => {
+    if (recognition && isListening) {
+      recognition.stop()
+      setIsListening(false)
+      if (isKeyboardTriggered.current) {
+        const pressDuration = Date.now() - (keyPressStartTime.current || 0)
+        if (pressDuration >= 1000 && transcriptRef.current.trim()) {
+          onChatProcessStart(transcriptRef.current)
+          setUserMessage('')
+        }
+        isKeyboardTriggered.current = false
+      } else if (transcriptRef.current.trim()) {
+        onChatProcessStart(transcriptRef.current)
+        setUserMessage('')
+      }
+    }
+  }, [recognition, isListening, onChatProcessStart])
+
+  const toggleListening = useCallback(() => {
+    if (isListening) {
+      stopListening()
+    } else {
+      startListening()
+    }
+  }, [isListening, startListening, stopListening])
 
   useEffect(() => {
-    if (!chatProcessing) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.altKey || e.metaKey) && !isListening) {
+        keyPressStartTime.current = Date.now()
+        isKeyboardTriggered.current = true
+        startListening()
+      }
+    }
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Alt' || e.key === 'Meta') {
+        stopListening()
+        keyPressStartTime.current = null
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [isListening, startListening, stopListening])
+
+  const handleSendMessage = useCallback(() => {
+    if (userMessage.trim()) {
+      onChatProcessStart(userMessage)
       setUserMessage('')
     }
-  }, [chatProcessing])
+  }, [userMessage, onChatProcessStart])
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setUserMessage(e.target.value)
+    },
+    []
+  )
 
   return (
     <MessageInput
       userMessage={userMessage}
-      isMicRecording={isMicRecording}
-      onChangeUserMessage={(e) => setUserMessage(e.target.value)}
-      onClickMicButton={handleClickMicButton}
-      onClickSendButton={handleClickSendButton}
+      isMicRecording={isListening}
+      onChangeUserMessage={handleInputChange}
+      onClickMicButton={toggleListening}
+      onClickSendButton={handleSendMessage}
     />
   )
 }
