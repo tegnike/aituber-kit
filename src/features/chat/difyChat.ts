@@ -47,22 +47,35 @@ export async function getDifyChatResponseStream(
 
         const reader = response.body.getReader()
         const decoder = new TextDecoder('utf-8')
+        let buffer = ''
 
         try {
           while (true) {
             const { done, value } = await reader.read()
             if (done) break
-            const textChunk = decoder.decode(value, { stream: true })
-            const messages = textChunk
-              .split('\n')
-              .filter((line) => line.startsWith('data:'))
-            messages.forEach((message) => {
-              const data = JSON.parse(message.slice(5)) // Remove 'data:' prefix
-              if (data.event === 'agent_message' || data.event === 'message') {
-                controller.enqueue(data.answer)
-                settingsStore.setState({
-                  difyConversationId: data.conversation_id,
-                })
+            buffer += decoder.decode(value, { stream: true })
+
+            // 改行で分割し、最後の不完全な行をバッファに保持
+            let lines = buffer.split('\n')
+            buffer = lines.pop() || ''
+
+            lines.forEach((line) => {
+              if (line.startsWith('data:')) {
+                const jsonStr = line.slice(5) // 'data:' プレフィックスを除去
+                try {
+                  const data = JSON.parse(jsonStr)
+                  if (
+                    data.event === 'agent_message' ||
+                    data.event === 'message'
+                  ) {
+                    controller.enqueue(data.answer)
+                    settingsStore.setState({
+                      difyConversationId: data.conversation_id,
+                    })
+                  }
+                } catch (error) {
+                  console.error('Error parsing JSON:', error)
+                }
               }
             })
           }
