@@ -1,4 +1,5 @@
 import { Form } from '@/components/form'
+import MessageReceiver from '@/components/messageReceiver'
 import { Introduction } from '@/components/introduction'
 import { Menu } from '@/components/menu'
 import { Meta } from '@/components/meta'
@@ -19,6 +20,7 @@ const Home = () => {
       <Form />
       <Menu />
       <ModalImage />
+      <MessageReceiver />
     </div>
   )
 }
