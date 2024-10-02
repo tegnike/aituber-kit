@@ -8,12 +8,12 @@ import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
 import { synthesizeVoiceApi } from './synthesizeVoice'
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
+import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 
 interface EnglishToJapanese {
   [key: string]: string
 }
 
-const VOICE_VOX_API_URL = 'http://localhost:50021'
 const typedEnglishToJapanese = englishToJapanese as EnglishToJapanese
 
 const createSpeakCharacter = () => {
@@ -47,7 +47,7 @@ const createSpeakCharacter = () => {
           () => null
         )
       } else if (ss.selectVoice == 'voicevox') {
-        buffer = await fetchAudioVoiceVox(
+        buffer = await synthesizeVoiceVoicevoxApi(
           screenplay.talk,
           ss.voicevoxSpeaker,
           ss.voicevoxSpeed,
@@ -167,51 +167,6 @@ export const fetchAudio = async (
   return buffer
 }
 
-export const fetchAudioVoiceVox = async (
-  talk: Talk,
-  speaker: string,
-  speed: number,
-  pitch: number,
-  intonation: number
-): Promise<ArrayBuffer> => {
-  console.log('speakerId:', speaker)
-  const ttsQueryResponse = await fetch(
-    VOICE_VOX_API_URL +
-      '/audio_query?speaker=' +
-      speaker +
-      '&text=' +
-      encodeURIComponent(talk.message),
-    {
-      method: 'POST',
-    }
-  )
-  if (!ttsQueryResponse.ok) {
-    throw new Error('Failed to fetch TTS query.')
-  }
-  const ttsQueryJson = await ttsQueryResponse.json()
-
-  ttsQueryJson['speedScale'] = speed
-  ttsQueryJson['pitchScale'] = pitch
-  ttsQueryJson['intonationScale'] = intonation
-  const synthesisResponse = await fetch(
-    VOICE_VOX_API_URL + '/synthesis?speaker=' + speaker,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Transfer-Encoding': 'chunked',
-      },
-      body: JSON.stringify(ttsQueryJson),
-    }
-  )
-  if (!synthesisResponse.ok) {
-    throw new Error('Failed to fetch TTS synthesis result.')
-  }
-  const blob = await synthesisResponse.blob()
-  const buffer = await blob.arrayBuffer()
-  return buffer
-}
-
 export const fetchAudioGoogle = async (
   talk: Talk,
   ttsType: string
@@ -254,7 +209,7 @@ export const testVoice = async () => {
     speakerY: 0,
     style: 'talk',
   }
-  const buffer = await fetchAudioVoiceVox(
+  const buffer = await synthesizeVoiceVoicevoxApi(
     talk,
     ss.voicevoxSpeaker,
     ss.voicevoxSpeed,
