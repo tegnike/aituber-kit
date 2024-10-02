@@ -14,6 +14,7 @@ import Voice from './voice'
 import WebSocket from './websocket'
 import YouTube from './youtube'
 import Slide from './slide'
+import MessageReceiverSetting from './messageReceiver' // 追加
 
 type Props = {
   onClickClose: () => void
@@ -105,6 +106,9 @@ const Main = () => {
         </div>
 
         <AdvancedSettings />
+
+        {/* MessageReceiver設定を追加 */}
+        <MessageReceiverSetting />
 
         {/* チャットログの設定 */}
         <Log />

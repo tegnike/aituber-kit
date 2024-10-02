@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import { processReceivedMessage } from '@/features/chat/handlers'
+import settingsStore from '@/features/stores/settings'
 
 interface Message {
   id: number
@@ -9,17 +10,20 @@ interface Message {
 const MessageReceiver = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [lastId, setLastId] = useState(0)
-  const [clientId] = useState(uuidv4()) // 初回レンダリング時にUUIDを生成
+  const clientId = settingsStore((state) => state.clientId)
 
   useEffect(() => {
-    // 一定間隔でサーバーから新しいメッセージを取得
+    if (!clientId) return // clientIdがない場合は何もしない
+
     const intervalId = setInterval(() => {
       fetch(`/api/messages?lastId=${lastId}&clientId=${clientId}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.messages && data.messages.length > 0) {
             setMessages((prevMessages) => [...prevMessages, ...data.messages])
-            // 最後のメッセージIDを更新
+            data.messages.forEach((message) => {
+              processReceivedMessage(message.message)
+            })
             const newLastId = data.messages[data.messages.length - 1].id
             setLastId(newLastId)
           }
@@ -27,7 +31,7 @@ const MessageReceiver = () => {
         .catch((error) => {
           console.error('Error fetching messages:', error)
         })
-    }, 1000) // 1秒ごとにポーリング
+    }, 1000)
 
     return () => {
       clearInterval(intervalId)
