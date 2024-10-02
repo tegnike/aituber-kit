@@ -1,19 +1,13 @@
 import { reduceTalkStyle } from '@/utils/reduceTalkStyle'
-import { TalkStyle } from '../messages/messages'
+import { Talk } from './messages'
 
-export async function synthesizeVoiceKoeiromapApi(
-  message: string,
-  speakerX: number,
-  speakerY: number,
-  style: TalkStyle,
-  apiKey: string
-) {
-  const reducedStyle = reduceTalkStyle(style)
+export async function synthesizeVoiceKoeiromapApi(talk: Talk, apiKey: string) {
+  const reducedStyle = reduceTalkStyle(talk.style)
 
   const body = {
-    message: message,
-    speakerX: speakerX,
-    speakerY: speakerY,
+    message: talk.message,
+    speakerX: talk.speakerX,
+    speakerY: talk.speakerY,
     style: reducedStyle,
     apiKey: apiKey,
   }
@@ -26,6 +20,13 @@ export async function synthesizeVoiceKoeiromapApi(
     body: JSON.stringify(body),
   })
   const data = await res.json()
+  const url = data.audio
 
-  return { audio: data.audio }
+  if (url == null) {
+    throw new Error('Something went wrong')
+  }
+
+  const resAudio = await fetch(url)
+  const buffer = await resAudio.arrayBuffer()
+  return buffer
 }

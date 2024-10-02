@@ -1,7 +1,8 @@
+import { Talk } from './messages'
 import { Language } from '@/features/constants/settings'
 
 export async function synthesizeStyleBertVITS2Api(
-  message: string,
+  talk: Talk,
   stylebertvits2ServerUrl: string,
   stylebertvits2ApiKey: string,
   stylebertvits2ModelId: string,
@@ -11,7 +12,7 @@ export async function synthesizeStyleBertVITS2Api(
   selectLanguage: Language
 ) {
   const body = {
-    message: message,
+    message: talk.message,
     stylebertvits2ServerUrl: stylebertvits2ServerUrl,
     stylebertvits2ApiKey: stylebertvits2ApiKey,
     stylebertvits2ModelId: stylebertvits2ModelId,

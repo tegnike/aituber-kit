@@ -1,4 +1,3 @@
-import { Language } from '@/features/constants/settings'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import englishToJapanese from '@/utils/englishToJapanese.json'
@@ -9,6 +8,7 @@ import { synthesizeVoiceKoeiromapApi } from './synthesizeVoiceKoeiromap'
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
+import { synthesizeVoiceGSVIApi } from './synthesizeVoiceGSVI'
 
 interface EnglishToJapanese {
   [key: string]: string
@@ -43,9 +43,10 @@ const createSpeakCharacter = () => {
       }
       let buffer
       if (ss.selectVoice == 'koeiromap') {
-        buffer = await fetchAudio(screenplay.talk, ss.koeiromapKey).catch(
-          () => null
-        )
+        buffer = await synthesizeVoiceKoeiromapApi(
+          screenplay.talk,
+          ss.koeiromapKey
+        ).catch(() => null)
       } else if (ss.selectVoice == 'voicevox') {
         buffer = await synthesizeVoiceVoicevoxApi(
           screenplay.talk,
@@ -55,16 +56,13 @@ const createSpeakCharacter = () => {
           ss.voicevoxIntonation
         ).catch(() => null)
       } else if (ss.selectVoice == 'google') {
-        const googleTtsTypeByLang = getGoogleTtsType(
+        buffer = await synthesizeVoiceGoogleApi(
+          screenplay.talk,
           ss.googleTtsType,
           ss.selectLanguage
-        )
-        buffer = await fetchAudioGoogle(
-          screenplay.talk,
-          googleTtsTypeByLang
         ).catch(() => null)
       } else if (ss.selectVoice == 'stylebertvits2') {
-        buffer = await fetchAudioStyleBertVITS2(
+        buffer = await synthesizeStyleBertVITS2Api(
           screenplay.talk,
           ss.stylebertvits2ServerUrl,
           ss.stylebertvits2ApiKey,
@@ -75,7 +73,7 @@ const createSpeakCharacter = () => {
           ss.selectLanguage
         ).catch(() => null)
       } else if (ss.selectVoice == 'gsvitts') {
-        buffer = await fetchAudioVoiceGSVIApi(
+        buffer = await synthesizeVoiceGSVIApi(
           screenplay.talk,
           ss.gsviTtsServerUrl,
           ss.gsviTtsModelId,
@@ -83,7 +81,7 @@ const createSpeakCharacter = () => {
           ss.gsviTtsSpeechRate
         ).catch(() => null)
       } else if (ss.selectVoice == 'elevenlabs') {
-        buffer = await fetchAudioElevenlabs(
+        buffer = await synthesizeVoiceElevenlabsApi(
           screenplay.talk,
           ss.elevenlabsApiKey,
           ss.elevenlabsVoiceId,
@@ -122,86 +120,9 @@ function convertEnglishToJapaneseReading(text: string): string {
   }, text)
 }
 
-function getGoogleTtsType(
-  googleTtsType: string,
-  selectLanguage: Language
-): string {
-  if (googleTtsType) return googleTtsType
-  return getGppgleTtsType(selectLanguage) || ''
-}
-
-function getGppgleTtsType(selectLanguage: Language): string {
-  switch (selectLanguage) {
-    case 'ja':
-      return 'ja-JP-Standard-B'
-    case 'en':
-      return 'en-US-Neural2-F'
-    case 'zh':
-      return 'cmn-TW-Standard-A'
-    default:
-      return 'en-US-Neural2-F'
-  }
-}
-
 export const speakCharacter = createSpeakCharacter()
 
-export const fetchAudio = async (
-  talk: Talk,
-  apiKey: string
-): Promise<ArrayBuffer> => {
-  const ttsVoice = await synthesizeVoiceKoeiromapApi(
-    talk.message,
-    talk.speakerX,
-    talk.speakerY,
-    talk.style,
-    apiKey
-  )
-  const url = ttsVoice.audio
-
-  if (url == null) {
-    throw new Error('Something went wrong')
-  }
-
-  const resAudio = await fetch(url)
-  const buffer = await resAudio.arrayBuffer()
-  return buffer
-}
-
-export const fetchAudioGoogle = async (
-  talk: Talk,
-  ttsType: string
-): Promise<ArrayBuffer> => {
-  const ttsVoice = await synthesizeVoiceGoogleApi(talk.message, ttsType)
-  const uint8Array = new Uint8Array(ttsVoice.audio.data)
-  const arrayBuffer: ArrayBuffer = uint8Array.buffer
-
-  return arrayBuffer
-}
-
-export const fetchAudioStyleBertVITS2 = async (
-  talk: Talk,
-  stylebertvits2ServerUrl: string,
-  stylebertvits2ApiKey: string,
-  stylebertvits2ModelId: string,
-  stylebertvits2Style: string,
-  stylebertvits2SdpRatio: number,
-  stylebertvits2Length: number,
-  selectLanguage: Language
-): Promise<ArrayBuffer> => {
-  const ttsVoice = await synthesizeStyleBertVITS2Api(
-    talk.message,
-    stylebertvits2ServerUrl,
-    stylebertvits2ApiKey,
-    stylebertvits2ModelId,
-    stylebertvits2Style,
-    stylebertvits2SdpRatio,
-    stylebertvits2Length,
-    selectLanguage
-  )
-  return ttsVoice
-}
-
-export const testVoice = async () => {
+export const testVoiceVox = async () => {
   const ss = settingsStore.getState()
   const talk: Talk = {
     message: 'ボイスボックスを使用します',
@@ -224,55 +145,4 @@ export const testVoice = async () => {
     const hs = homeStore.getState()
     await hs.viewer.model?.speak(buffer, screenplay)
   }
-}
-
-export const fetchAudioVoiceGSVIApi = async (
-  talk: Talk,
-  url: string,
-  character: string,
-  batchsize: number,
-  speed: number
-): Promise<ArrayBuffer> => {
-  const style = talk.style !== 'talk' ? talk.style : 'default'
-  const response = await fetch(url.replace(/\/$/, ''), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      character: character,
-      emotion: style,
-      text: talk.message,
-      batch_size: batchsize,
-      speed: speed.toString(),
-      stream: true,
-    }),
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch TTS audio.')
-  }
-
-  const blob = await response.blob()
-  const buffer = await blob.arrayBuffer()
-  return buffer
-}
-
-export const fetchAudioElevenlabs = async (
-  talk: Talk,
-  apiKey: string,
-  voiceId: string,
-  language: Language
-): Promise<ArrayBuffer> => {
-  const ttsVoice = await synthesizeVoiceElevenlabsApi(
-    apiKey,
-    talk.message,
-    voiceId,
-    language
-  )
-
-  // const uint8Array = new Uint8Array(ttsVoice.audio);
-  const arrayBuffer: ArrayBuffer = ttsVoice.audio.buffer
-
-  return arrayBuffer
 }
