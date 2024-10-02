@@ -5,7 +5,7 @@ import englishToJapanese from '@/utils/englishToJapanese.json'
 import { wait } from '@/utils/wait'
 import { Screenplay, Talk } from './messages'
 import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
-import { synthesizeVoiceApi } from './synthesizeVoice'
+import { synthesizeVoiceKoeiromapApi } from './synthesizeVoiceKoeiromap'
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
@@ -149,7 +149,7 @@ export const fetchAudio = async (
   talk: Talk,
   apiKey: string
 ): Promise<ArrayBuffer> => {
-  const ttsVoice = await synthesizeVoiceApi(
+  const ttsVoice = await synthesizeVoiceKoeiromapApi(
     talk.message,
     talk.speakerX,
     talk.speakerY,
