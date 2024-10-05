@@ -322,7 +322,11 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
           console.error('無効なオーディオバッファーを受信しました')
         }
       }
-      if (jsonData.type === 'response.audio.done') {
+      if (
+        (jsonData.type === 'response.audio.delta' &&
+          accumulatedAudioDataRef.current.buffer.byteLength > 50000) ||
+        jsonData.type === 'response.audio.done'
+      ) {
         const arrayBuffer = accumulatedAudioDataRef.current.buffer
         try {
           // サンプリングレートを適切な値に設定（例: 24000Hz）
