@@ -32,16 +32,32 @@ export class LipSync {
   }
 
   public async playFromArrayBuffer(buffer: ArrayBuffer, onEnded?: () => void) {
-    const audioBuffer = await this.audio.decodeAudioData(buffer)
+    try {
+      // バッファの型チェック
+      if (!(buffer instanceof ArrayBuffer)) {
+        throw new Error('入力されたバッファがArrayBuffer形式ではありません')
+      }
 
-    const bufferSource = this.audio.createBufferSource()
-    bufferSource.buffer = audioBuffer
+      // バッファの内容確認
+      console.log('バッファサイズ:', buffer.byteLength)
 
-    bufferSource.connect(this.audio.destination)
-    bufferSource.connect(this.analyser)
-    bufferSource.start()
-    if (onEnded) {
-      bufferSource.addEventListener('ended', onEnded)
+      // デバッグ用のログ
+      console.log('デコード開始')
+      const audioBuffer = await this.audio.decodeAudioData(buffer)
+      console.log('デコード成功')
+
+      const bufferSource = this.audio.createBufferSource()
+      bufferSource.buffer = audioBuffer
+
+      bufferSource.connect(this.audio.destination)
+      bufferSource.connect(this.analyser)
+      bufferSource.start()
+      if (onEnded) {
+        bufferSource.addEventListener('ended', onEnded)
+      }
+    } catch (error) {
+      console.error('オーディオデータのデコードに失敗しました:', error)
+      // エラーハンドリングのロジックをここに追加
     }
   }
 

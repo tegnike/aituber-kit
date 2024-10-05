@@ -337,7 +337,7 @@ export const handleSendChatFn =
         })
 
         // WebSocket送信
-        hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
+        // hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
       } else {
         homeStore.setState({
           assistantMessage: errors['NotConnectedToExternalAssistant'],
@@ -439,7 +439,21 @@ export const handleSendChatFn =
  * WebSocketからのテキストを受信したときの処理
  */
 export const handleReceiveTextFromWsFn =
-  () => async (text: string, role?: string, state?: string) => {
+  () =>
+  async (text: string, role?: string, state?: string, buffer?: ArrayBuffer) => {
+    speakCharacter(
+      {
+        talk: {
+          style: '',
+          message: buffer,
+          speakerX: 0,
+          speakerY: 0,
+        },
+      },
+      () => {},
+      () => {}
+    )
+
     if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()

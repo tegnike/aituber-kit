@@ -41,6 +41,7 @@ const createSpeakCharacter = () => {
       if (now - lastTime < 1000) {
         await wait(1000 - (now - lastTime))
       }
+      return screenplay.talk.message
       let buffer
       if (ss.selectVoice == 'koeiromap') {
         buffer = await synthesizeVoiceKoeiromapApi(
