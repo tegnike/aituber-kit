@@ -12,7 +12,7 @@ import { goToSlide } from '@/components/slides'
  * 受け取ったメッセージを解析し、文単位で処理する共通関数
  */
 const processReceivedMessage = (
-  receivedMessage: string,
+  initialMessage: string,
   options: {
     tag: string
     isCodeBlock: boolean
@@ -33,94 +33,94 @@ const processReceivedMessage = (
     currentSlideMessages,
   } = options
 
+  let remainingMessage = initialMessage
+
   // タグと返答を分離
-  const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
+  const tagMatch = remainingMessage.match(/^\[(.*?)\]/)
   if (tagMatch && tagMatch[0]) {
     tag = tagMatch[0]
-    receivedMessage = receivedMessage.slice(tag.length)
+    remainingMessage = remainingMessage.slice(tag.length)
   }
 
   // メッセージを文単位で処理
-  while (receivedMessage.length > 0) {
-    const sentenceMatch = receivedMessage.match(
+  while (remainingMessage.length > 0) {
+    const sentenceMatch = remainingMessage.match(
       /^(.+?[。．.!?！？\n]|.{20,}[、,])/
     )
-    if (sentenceMatch?.[0]) {
-      let sentence = sentenceMatch[0]
-      sentences.push(sentence)
-      receivedMessage = receivedMessage.slice(sentence.length).trimStart()
+    let currentSentence = sentenceMatch?.[0] || remainingMessage
+    sentences.push(currentSentence)
+    remainingMessage = remainingMessage
+      .slice(currentSentence.length)
+      .trimStart()
 
-      if (
-        !sentence.includes('```') &&
-        !sentence.replace(
-          /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
-          ''
-        )
-      ) {
-        continue
-      }
-
-      let aiText = `${tag} ${sentence}`
-      console.log('aiText', aiText)
-
-      if (isCodeBlock && !sentence.includes('```')) {
-        codeBlockText += sentence
-        continue
-      }
-
-      if (sentence.includes('```')) {
-        if (isCodeBlock) {
-          const [codeEnd, ...restOfSentence] = sentence.split('```')
-          aiTextLog.push({
-            role: 'code',
-            content: codeBlockText + codeEnd,
-          })
-          aiText += `${tag} ${restOfSentence.join('```') || ''}`
-
-          homeStore.setState({ assistantMessage: sentences.join(' ') })
-
-          codeBlockText = ''
-          isCodeBlock = false
-        } else {
-          isCodeBlock = true
-          ;[aiText, codeBlockText] = aiText.split('```')
-        }
-
-        sentence = sentence.replace(/```/g, '')
-      }
-
-      const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-      aiTextLog.push({ role: 'assistant', content: sentence })
-
-      const currentAssistantMessage = sentences.join(' ')
-
-      speakCharacter(
-        aiTalks[0],
-        () => {
-          homeStore.setState({
-            assistantMessage: currentAssistantMessage,
-          })
-          hs.incrementChatProcessingCount()
-          currentSlideMessages.push(sentence)
-          homeStore.setState({
-            slideMessages: currentSlideMessages,
-          })
-        },
-        () => {
-          hs.decrementChatProcessingCount()
-          currentSlideMessages.shift()
-          homeStore.setState({
-            slideMessages: currentSlideMessages,
-          })
-        }
+    if (
+      !currentSentence.includes('```') &&
+      !currentSentence.replace(
+        /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
+        ''
       )
-    } else {
-      break
+    ) {
+      continue
     }
+
+    let aiText = `${tag} ${currentSentence}`
+    console.log('aiText', aiText)
+
+    if (isCodeBlock && !currentSentence.includes('```')) {
+      codeBlockText += currentSentence
+      continue
+    }
+
+    if (currentSentence.includes('```')) {
+      if (isCodeBlock) {
+        const [codeEnd, ...restOfSentence] = currentSentence.split('```')
+        aiTextLog.push({
+          role: 'code',
+          content: codeBlockText + codeEnd,
+        })
+        aiText += `${tag} ${restOfSentence.join('```') || ''}`
+
+        homeStore.setState({ assistantMessage: sentences.join(' ') })
+
+        codeBlockText = ''
+        isCodeBlock = false
+      } else {
+        isCodeBlock = true
+        ;[aiText, codeBlockText] = aiText.split('```')
+      }
+
+      currentSentence = currentSentence.replace(/```/g, '')
+    }
+
+    const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
+    aiTextLog.push({ role: 'assistant', content: currentSentence })
+
+    const currentAssistantMessage = sentences.join(' ')
+
+    speakCharacter(
+      aiTalks[0],
+      () => {
+        homeStore.setState({
+          assistantMessage: currentAssistantMessage,
+        })
+        hs.incrementChatProcessingCount()
+        currentSlideMessages.push(currentSentence)
+        homeStore.setState({
+          slideMessages: currentSlideMessages,
+        })
+      },
+      () => {
+        hs.decrementChatProcessingCount()
+        currentSlideMessages.shift()
+        homeStore.setState({
+          slideMessages: currentSlideMessages,
+        })
+      }
+    )
   }
 
   return {
-    remainingMessage: receivedMessage,
+    remainingMessage,
     tag,
     isCodeBlock,
     codeBlockText,
