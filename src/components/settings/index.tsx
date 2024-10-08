@@ -14,7 +14,7 @@ import Voice from './voice'
 import WebSocket from './websocket'
 import YouTube from './youtube'
 import Slide from './slide'
-import MessageReceiverSetting from './messageReceiver' // 追加
+import MessageReceiverSetting from './messageReceiver'
 
 type Props = {
   onClickClose: () => void

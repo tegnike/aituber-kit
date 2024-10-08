@@ -84,8 +84,8 @@ interface General {
   showControlPanel: boolean
   webSocketMode: boolean
   slideMode: boolean
-  messageReceiverEnabled: boolean // 追加
-  clientId: string // 追加
+  messageReceiverEnabled: boolean
+  clientId: string
 }
 
 export type SettingsState = APIKeys &
@@ -185,8 +185,8 @@ const settingsStore = create<SettingsState>()(
       webSocketMode:
         process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true' ? true : false,
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true' ? true : false,
-      messageReceiverEnabled: false, // 追加
-      clientId: '', // 追加
+      messageReceiverEnabled: false,
+      clientId: '',
     }),
     {
       name: 'aitube-kit-settings',

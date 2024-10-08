@@ -44,7 +44,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     messagesPerClient[clientId].messages.push({ id: nextId++, message })
     messagesPerClient[clientId].lastAccessed = Date.now()
 
-    res.status(201).json({ status: 'Message sent' })
+    res.status(201).json({ message: 'Successfully sent' })
   } else if (req.method === 'GET') {
     // クライアントのキューが存在しない場合は作成
     if (!messagesPerClient[clientId]) {
@@ -56,6 +56,8 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     // クライアントのキューから新しいメッセージを取得
     const clientQueue = messagesPerClient[clientId]
     const newMessages = clientQueue.messages.filter((msg) => msg.id > lastId)
+
+    console.log(newMessages)
 
     res.status(200).json({ messages: newMessages })
 

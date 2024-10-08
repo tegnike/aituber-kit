@@ -6,13 +6,13 @@ import { Meta } from '@/components/meta'
 import ModalImage from '@/components/modalImage'
 import VrmViewer from '@/components/vrmViewer'
 import homeStore from '@/features/stores/home'
-import settingsStore from '@/features/stores/settings' // 追加
+import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
 import { buildUrl } from '@/utils/buildUrl'
 
 const Home = () => {
   const bgUrl = homeStore((s) => `url(${buildUrl(s.backgroundImageUrl)})`)
-  const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled) // 追加
+  const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
 
   return (
     <div className="min-h-screen bg-cover" style={{ backgroundImage: bgUrl }}>
@@ -22,7 +22,7 @@ const Home = () => {
       <Form />
       <Menu />
       <ModalImage />
-      {messageReceiverEnabled && <MessageReceiver />} {/* 条件付きレンダリング */}
+      {messageReceiverEnabled && <MessageReceiver />}
     </div>
   )
 }
