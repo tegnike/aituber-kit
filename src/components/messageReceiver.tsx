@@ -1,4 +1,3 @@
-import { Message } from '@/features/messages/messages'
 import { useEffect, useState } from 'react'
 import { processReceivedMessage } from '@/features/chat/handlers'
 import settingsStore from '@/features/stores/settings'
