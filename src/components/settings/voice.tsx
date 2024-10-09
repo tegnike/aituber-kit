@@ -7,7 +7,7 @@ import {
   PRESET_D,
 } from '@/features/constants/koeiroParam'
 import { AIVoice } from '@/features/constants/settings'
-import { testVoice } from '@/features/messages/speakCharacter'
+import { testVoiceVox } from '@/features/messages/speakCharacter'
 import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
@@ -208,7 +208,7 @@ const Voice = () => {
                       </option>
                     ))}
                   </select>
-                  <TextButton onClick={() => testVoice()} className="ml-16">
+                  <TextButton onClick={() => testVoiceVox()} className="ml-16">
                     {t('TestVoice')}
                   </TextButton>
                 </div>

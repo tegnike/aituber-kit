@@ -84,6 +84,8 @@ interface General {
   showControlPanel: boolean
   webSocketMode: boolean
   slideMode: boolean
+  messageReceiverEnabled: boolean
+  clientId: string
 }
 
 export type SettingsState = APIKeys &
@@ -183,6 +185,8 @@ const settingsStore = create<SettingsState>()(
       webSocketMode:
         process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true' ? true : false,
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true' ? true : false,
+      messageReceiverEnabled: false,
+      clientId: '',
     }),
     {
       name: 'aitube-kit-settings',
@@ -232,8 +236,11 @@ const settingsStore = create<SettingsState>()(
         selectVoiceLanguage: state.selectVoiceLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         webSocketMode: state.webSocketMode,
+        messageReceiverEnabled: state.messageReceiverEnabled,
+        clientId: state.clientId,
       }),
     }
   )
 )
+
 export default settingsStore
