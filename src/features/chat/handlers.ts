@@ -20,9 +20,9 @@ export const speakMessageHandler = async (receivedMessage: string) => {
   let isCodeBlock: boolean = false
   let codeBlockText: string = ''
   let logText: string = ''
-  let assistantMessage = []
+  let assistantMessage: string[] = []
   let remainingMessage = receivedMessage
-  let prevRemainingMessage = ''
+  let prevRemainingMessage: string = ''
   const addedChatLog: Message[] = []
   const delimiter = '```'
 
