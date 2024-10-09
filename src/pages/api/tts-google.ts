@@ -3,7 +3,8 @@ import textToSpeech from '@google-cloud/text-to-speech'
 import { google } from '@google-cloud/text-to-speech/build/protos/protos'
 
 type Data = {
-  audio: Uint8Array
+  audio?: Uint8Array
+  error?: string
 }
 
 export default async function handler(
