@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
 type Data = {
-  audio: string
+  audio?: Uint8Array
+  error?: string
 }
 
 export default async function handler(

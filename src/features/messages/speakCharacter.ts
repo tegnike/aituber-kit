@@ -43,51 +43,56 @@ const createSpeakCharacter = () => {
       }
       return screenplay.talk.message
       let buffer
-      if (ss.selectVoice == 'koeiromap') {
-        buffer = await synthesizeVoiceKoeiromapApi(
-          screenplay.talk,
-          ss.koeiromapKey
-        ).catch(() => null)
-      } else if (ss.selectVoice == 'voicevox') {
-        buffer = await synthesizeVoiceVoicevoxApi(
-          screenplay.talk,
-          ss.voicevoxSpeaker,
-          ss.voicevoxSpeed,
-          ss.voicevoxPitch,
-          ss.voicevoxIntonation
-        ).catch(() => null)
-      } else if (ss.selectVoice == 'google') {
-        buffer = await synthesizeVoiceGoogleApi(
-          screenplay.talk,
-          ss.googleTtsType,
-          ss.selectLanguage
-        ).catch(() => null)
-      } else if (ss.selectVoice == 'stylebertvits2') {
-        buffer = await synthesizeStyleBertVITS2Api(
-          screenplay.talk,
-          ss.stylebertvits2ServerUrl,
-          ss.stylebertvits2ApiKey,
-          ss.stylebertvits2ModelId,
-          ss.stylebertvits2Style,
-          ss.stylebertvits2SdpRatio,
-          ss.stylebertvits2Length,
-          ss.selectLanguage
-        ).catch(() => null)
-      } else if (ss.selectVoice == 'gsvitts') {
-        buffer = await synthesizeVoiceGSVIApi(
-          screenplay.talk,
-          ss.gsviTtsServerUrl,
-          ss.gsviTtsModelId,
-          ss.gsviTtsBatchSize,
-          ss.gsviTtsSpeechRate
-        ).catch(() => null)
-      } else if (ss.selectVoice == 'elevenlabs') {
-        buffer = await synthesizeVoiceElevenlabsApi(
-          screenplay.talk,
-          ss.elevenlabsApiKey,
-          ss.elevenlabsVoiceId,
-          ss.selectLanguage
-        ).catch(() => null)
+      try {
+        if (ss.selectVoice == 'koeiromap') {
+          buffer = await synthesizeVoiceKoeiromapApi(
+            screenplay.talk,
+            ss.koeiromapKey
+          )
+        } else if (ss.selectVoice == 'voicevox') {
+          buffer = await synthesizeVoiceVoicevoxApi(
+            screenplay.talk,
+            ss.voicevoxSpeaker,
+            ss.voicevoxSpeed,
+            ss.voicevoxPitch,
+            ss.voicevoxIntonation
+          )
+        } else if (ss.selectVoice == 'google') {
+          buffer = await synthesizeVoiceGoogleApi(
+            screenplay.talk,
+            ss.googleTtsType,
+            ss.selectLanguage
+          )
+        } else if (ss.selectVoice == 'stylebertvits2') {
+          buffer = await synthesizeStyleBertVITS2Api(
+            screenplay.talk,
+            ss.stylebertvits2ServerUrl,
+            ss.stylebertvits2ApiKey,
+            ss.stylebertvits2ModelId,
+            ss.stylebertvits2Style,
+            ss.stylebertvits2SdpRatio,
+            ss.stylebertvits2Length,
+            ss.selectLanguage
+          )
+        } else if (ss.selectVoice == 'gsvitts') {
+          buffer = await synthesizeVoiceGSVIApi(
+            screenplay.talk,
+            ss.gsviTtsServerUrl,
+            ss.gsviTtsModelId,
+            ss.gsviTtsBatchSize,
+            ss.gsviTtsSpeechRate
+          )
+        } else if (ss.selectVoice == 'elevenlabs') {
+          buffer = await synthesizeVoiceElevenlabsApi(
+            screenplay.talk,
+            ss.elevenlabsApiKey,
+            ss.elevenlabsVoiceId,
+            ss.selectLanguage
+          )
+        }
+      } catch (error) {
+        handleTTSError(error, ss.selectVoice)
+        return null
       }
       lastTime = Date.now()
       return buffer
@@ -119,6 +124,30 @@ function convertEnglishToJapaneseReading(text: string): string {
     const regex = new RegExp(`\\b${englishWord}\\b`, 'gi')
     return result.replace(regex, japaneseReading)
   }, text)
+}
+
+let isAlertShown = false
+
+function handleTTSError(error: unknown, serviceName: string): void {
+  let message: string
+  if (error instanceof Error) {
+    message = error.message
+  } else if (typeof error === 'string') {
+    message = error
+  } else {
+    message = '不明なエラーが発生しました'
+  }
+  const errorMessage = `${serviceName} TTSサービスでエラーが発生しました: ${message}`
+
+  if (!isAlertShown) {
+    alert(errorMessage)
+    isAlertShown = true
+    setTimeout(() => {
+      isAlertShown = false
+    }, 5000) // 5秒後にフラグをリセット
+  }
+
+  console.error(errorMessage)
 }
 
 export const speakCharacter = createSpeakCharacter()

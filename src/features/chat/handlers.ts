@@ -9,159 +9,123 @@ import slideStore from '@/features/stores/slide'
 import { goToSlide } from '@/components/slides'
 
 /**
- * 受け取ったメッセージを解析し、文単位で処理する共通関数
- */
-const processReceivedMessage = (
-  receivedMessage: string,
-  options: {
-    tag: string
-    isCodeBlock: boolean
-    codeBlockText: string
-    sentences: string[]
-    aiTextLog: Message[]
-    currentSlideMessages: string[]
-  },
-  ss: any,
-  hs: any
-) => {
-  let {
-    tag,
-    isCodeBlock,
-    codeBlockText,
-    sentences,
-    aiTextLog,
-    currentSlideMessages,
-  } = options
-
-  // タグと返答を分離
-  const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
-  if (tagMatch && tagMatch[0]) {
-    tag = tagMatch[0]
-    receivedMessage = receivedMessage.slice(tag.length)
-  }
-
-  // メッセージを文単位で処理
-  while (receivedMessage.length > 0) {
-    const sentenceMatch = receivedMessage.match(
-      /^(.+?[。．.!?！？\n]|.{20,}[、,])/
-    )
-    if (sentenceMatch?.[0]) {
-      let sentence = sentenceMatch[0]
-      sentences.push(sentence)
-      receivedMessage = receivedMessage.slice(sentence.length).trimStart()
-
-      if (
-        !sentence.includes('```') &&
-        !sentence.replace(
-          /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
-          ''
-        )
-      ) {
-        continue
-      }
-
-      let aiText = `${tag} ${sentence}`
-      console.log('aiText', aiText)
-
-      if (isCodeBlock && !sentence.includes('```')) {
-        codeBlockText += sentence
-        continue
-      }
-
-      if (sentence.includes('```')) {
-        if (isCodeBlock) {
-          const [codeEnd, ...restOfSentence] = sentence.split('```')
-          aiTextLog.push({
-            role: 'code',
-            content: codeBlockText + codeEnd,
-          })
-          aiText += `${tag} ${restOfSentence.join('```') || ''}`
-
-          homeStore.setState({ assistantMessage: sentences.join(' ') })
-
-          codeBlockText = ''
-          isCodeBlock = false
-        } else {
-          isCodeBlock = true
-          ;[aiText, codeBlockText] = aiText.split('```')
-        }
-
-        sentence = sentence.replace(/```/g, '')
-      }
-
-      const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-      aiTextLog.push({ role: 'assistant', content: sentence })
-
-      const currentAssistantMessage = sentences.join(' ')
-
-      speakCharacter(
-        aiTalks[0],
-        () => {
-          homeStore.setState({
-            assistantMessage: currentAssistantMessage,
-          })
-          hs.incrementChatProcessingCount()
-          currentSlideMessages.push(sentence)
-          homeStore.setState({
-            slideMessages: currentSlideMessages,
-          })
-        },
-        () => {
-          hs.decrementChatProcessingCount()
-          currentSlideMessages.shift()
-          homeStore.setState({
-            slideMessages: currentSlideMessages,
-          })
-        }
-      )
-    } else {
-      break
-    }
-  }
-
-  return {
-    remainingMessage: receivedMessage,
-    tag,
-    isCodeBlock,
-    codeBlockText,
-  }
-}
-
-/**
  * 受け取ったメッセージを処理し、AIの応答を生成して発話させる
  * @param receivedMessage 処理する文字列
  */
-export const speakMessage = async (receivedMessage: string) => {
+export const speakMessageHandler = async (receivedMessage: string) => {
   const ss = settingsStore.getState()
   const hs = homeStore.getState()
   const currentSlideMessages: string[] = []
 
-  let aiTextLog: Message[] = []
-  let tag: string = ''
   let isCodeBlock: boolean = false
   let codeBlockText: string = ''
-  const sentences: string[] = []
+  let logText: string = ''
+  let assistantMessage: string[] = []
+  let remainingMessage = receivedMessage
+  let prevRemainingMessage: string = ''
+  const addedChatLog: Message[] = []
+  const delimiter = '```'
 
-  console.log('speakMessage', receivedMessage)
+  while (remainingMessage.length > 0 || isCodeBlock) {
+    let sentence = ''
+    prevRemainingMessage = remainingMessage
 
-  const result = processReceivedMessage(
-    receivedMessage,
-    {
-      tag,
-      isCodeBlock,
-      codeBlockText,
-      sentences,
-      aiTextLog,
-      currentSlideMessages,
-    },
-    ss,
-    hs
-  )
+    if (remainingMessage.includes(delimiter)) {
+      // コードブロックの分割
+      isCodeBlock = true
+      const [first, ...rest] = remainingMessage.split(delimiter)
+      ;[remainingMessage, codeBlockText] = [
+        first,
+        rest.join(delimiter).replace(/^\n/, ''),
+      ]
+    } else if (remainingMessage == '' && isCodeBlock) {
+      // コードブロックの分割
+      let code = ''
+      const [first, ...rest] = codeBlockText.split(delimiter)
+      ;[code, remainingMessage] = [first, rest.join(delimiter)]
+      addedChatLog.push({
+        role: 'assistant',
+        content: logText,
+      })
+      addedChatLog.push({
+        role: 'code',
+        content: code,
+      })
 
-  // 変数の更新
-  tag = result.tag
-  isCodeBlock = result.isCodeBlock
-  codeBlockText = result.codeBlockText
+      codeBlockText = ''
+      logText = ''
+      isCodeBlock = false
+    }
+
+    // 返答内容のタグ部分と返答部分を分離
+    let tag: string = ''
+    const tagMatch = remainingMessage.match(/^\[(.*?)\]/)
+    if (tagMatch?.[0]) {
+      tag = tagMatch[0]
+      remainingMessage = remainingMessage.slice(tag.length)
+    }
+
+    const sentenceMatch = remainingMessage.match(
+      /^(.{1,19}?[。．.!?！？\n]|.{20,}?[、,])/
+    )
+    if (sentenceMatch?.[0]) {
+      sentence = sentenceMatch?.[0]
+      // 区切った文字の残りでremainingMessageを更新
+      remainingMessage = remainingMessage.slice(sentence.length).trimStart()
+    }
+
+    if (remainingMessage != '' && remainingMessage == prevRemainingMessage) {
+      sentence = prevRemainingMessage
+      remainingMessage = ''
+    }
+
+    // 発話不要/不可能な文字列だった場合はスキップ
+    if (
+      sentence == '' ||
+      sentence.replace(
+        /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
+        ''
+      ) == ''
+    ) {
+      continue
+    }
+
+    // 区切った文字をassistantMessageに追加
+    assistantMessage.push(sentence)
+    // タグと返答を結合（音声再生で使用される）
+    let aiText = tag ? `${tag} ${sentence}` : sentence
+
+    const aiTalks = textsToScreenplay([aiText], ss.koeiroParam) // TODO
+    logText = logText + ' ' + sentence
+
+    speakCharacter(
+      aiTalks[0],
+      () => {
+        homeStore.setState({
+          assistantMessage: assistantMessage.join(' '),
+        })
+        hs.incrementChatProcessingCount()
+        // スライド用のメッセージを更新
+        currentSlideMessages.push(sentence)
+      },
+      () => {
+        hs.decrementChatProcessingCount()
+        currentSlideMessages.shift()
+        homeStore.setState({
+          slideMessages: currentSlideMessages,
+        })
+      }
+    )
+  } // while loop end
+
+  addedChatLog.push({
+    role: 'assistant',
+    content: logText,
+  })
+  homeStore.setState({
+    slideMessages: currentSlideMessages,
+    chatLog: [...hs.chatLog, ...addedChatLog],
+  })
 }
 
 /**
@@ -169,6 +133,7 @@ export const speakMessage = async (receivedMessage: string) => {
  * @param currentChatLog ログに残るメッセージの配列
  * @param messages 解答生成に使用するメッセージの配列
  */
+// TODO: 上の関数とかなり処理が被るのでいずれまとめる
 export const processAIResponse = async (
   currentChatLog: Message[],
   messages: Message[]
@@ -197,12 +162,11 @@ export const processAIResponse = async (
 
   const reader = stream.getReader()
   let receivedMessage = ''
-  let aiTextLog: Message[] = []
+  let aiTextLog: Message[] = [] // 会話ログ欄で使用
   let tag = ''
   let isCodeBlock = false
   let codeBlockText = ''
-  const sentences: string[] = []
-
+  const sentences = new Array<string>() // AssistantMessage欄で使用
   try {
     while (true) {
       const { done, value } = await reader.read()
@@ -210,45 +174,135 @@ export const processAIResponse = async (
 
       if (value) receivedMessage += value
 
-      const result = processReceivedMessage(
-        receivedMessage,
-        {
-          tag,
-          isCodeBlock,
-          codeBlockText,
-          sentences,
-          aiTextLog,
-          currentSlideMessages,
-        },
-        ss,
-        hs
-      )
+      // 返答内容のタグ部分と返答部分を分離
+      const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
+      if (tagMatch && tagMatch[0]) {
+        tag = tagMatch[0]
+        receivedMessage = receivedMessage.slice(tag.length)
+      }
 
-      // 変数の更新
-      receivedMessage = result.remainingMessage
-      tag = result.tag
-      isCodeBlock = result.isCodeBlock
-      codeBlockText = result.codeBlockText
+      // 返答を一文単位で切り出して処理する
+      while (receivedMessage.length > 0) {
+        const sentenceMatch = receivedMessage.match(
+          /^(.+?[。．.!?！？\n]|.{20,}[、,])/
+        )
+        if (sentenceMatch?.[0]) {
+          let sentence = sentenceMatch[0]
+          // 区切った文字をsentencesに追加
+          sentences.push(sentence)
+          // 区切った文字の残りでreceivedMessageを更新
+          receivedMessage = receivedMessage.slice(sentence.length).trimStart()
 
+          // 発話不要/不可能な文字列だった場合はスキップ
+          if (
+            !sentence.includes('```') &&
+            !sentence.replace(
+              /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
+              ''
+            )
+          ) {
+            continue
+          }
+
+          // タグと返答を結合（音声再生で使用される）
+          let aiText = `${tag} ${sentence}`
+          console.log('aiText', aiText)
+
+          if (isCodeBlock && !sentence.includes('```')) {
+            codeBlockText += sentence
+            continue
+          }
+
+          if (sentence.includes('```')) {
+            if (isCodeBlock) {
+              // コードブロックの終了処理
+              const [codeEnd, ...restOfSentence] = sentence.split('```')
+              aiTextLog.push({
+                role: 'code',
+                content: codeBlockText + codeEnd,
+              })
+              aiText += `${tag} ${restOfSentence.join('```') || ''}`
+
+              // AssistantMessage欄の更新
+              homeStore.setState({ assistantMessage: sentences.join(' ') })
+
+              codeBlockText = ''
+              isCodeBlock = false
+            } else {
+              // コードブロックの開始処理
+              isCodeBlock = true
+              ;[aiText, codeBlockText] = aiText.split('```')
+            }
+
+            sentence = sentence.replace(/```/g, '')
+          }
+
+          const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
+          aiTextLog.push({ role: 'assistant', content: sentence })
+
+          // 文ごとに音声を生成 & 再生、返答を表示
+          const currentAssistantMessage = sentences.join(' ')
+
+          speakCharacter(
+            aiTalks[0],
+            () => {
+              homeStore.setState({
+                assistantMessage: currentAssistantMessage,
+              })
+              hs.incrementChatProcessingCount()
+              // スライド用のメッセージを更新
+              currentSlideMessages.push(sentence)
+              homeStore.setState({
+                slideMessages: currentSlideMessages,
+              })
+            },
+            () => {
+              hs.decrementChatProcessingCount()
+              currentSlideMessages.shift()
+              homeStore.setState({
+                slideMessages: currentSlideMessages,
+              })
+            }
+          )
+        } else {
+          // マッチする文がない場合、ループを抜ける
+          break
+        }
+      }
+
+      // ストリームが終了し、receivedMessageが空でない場合の処理
       if (done && receivedMessage.length > 0) {
-        const finalResult = processReceivedMessage(
-          receivedMessage,
-          {
-            tag,
-            isCodeBlock,
-            codeBlockText,
-            sentences,
-            aiTextLog,
-            currentSlideMessages,
+        // 残りのメッセージを処理
+        let aiText = `${tag} ${receivedMessage}`
+        const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
+        aiTextLog.push({ role: 'assistant', content: receivedMessage })
+        sentences.push(receivedMessage)
+
+        const currentAssistantMessage = sentences.join(' ')
+
+        speakCharacter(
+          aiTalks[0],
+          () => {
+            homeStore.setState({
+              assistantMessage: currentAssistantMessage,
+            })
+            hs.incrementChatProcessingCount()
+            // スライド用のメッセージを更新
+            currentSlideMessages.push(receivedMessage)
+            homeStore.setState({
+              slideMessages: currentSlideMessages,
+            })
           },
-          ss,
-          hs
+          () => {
+            hs.decrementChatProcessingCount()
+            currentSlideMessages.shift()
+            homeStore.setState({
+              slideMessages: currentSlideMessages,
+            })
+          }
         )
 
-        receivedMessage = finalResult.remainingMessage
-        tag = finalResult.tag
-        isCodeBlock = finalResult.isCodeBlock
-        codeBlockText = finalResult.codeBlockText
+        receivedMessage = ''
       }
     }
   } catch (e) {
@@ -257,7 +311,7 @@ export const processAIResponse = async (
     reader.releaseLock()
   }
 
-  // 会話ログの更新
+  // 直前のroleとじゃらば、contentを結合し、空のcontentを除外する
   let lastImageUrl = ''
   aiTextLog = aiTextLog
     .reduce((acc: Message[], item: Message) => {
@@ -322,6 +376,7 @@ export const handleSendChatFn =
     const sls = slideStore.getState()
 
     if (ss.webSocketMode) {
+      // 未メンテなので不具合がある可能性あり
       console.log('websocket mode: true')
       homeStore.setState({ chatProcessing: true })
 
@@ -404,6 +459,7 @@ export const handleSendChatFn =
       }
       homeStore.setState({ chatLog: messageLog })
 
+      // TODO: AIに送信するメッセージの加工、処理がひどいので要修正
       // 画像は直近のものしか送らない
       const processedMessageLog = messageLog.map((message, index) => ({
         role: ['assistant', 'user', 'system'].includes(message.role)
@@ -504,7 +560,9 @@ export const handleReceiveTextFromWsFn =
                 })(),
               })
             },
-            () => {}
+            () => {
+              // hs.decrementChatProcessingCount()
+            }
           )
         } catch (e) {
           console.error('Error in speakCharacter:', e)
