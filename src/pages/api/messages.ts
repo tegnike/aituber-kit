@@ -23,10 +23,10 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === 'POST') {
-    const { message } = req.body
+    const { messages } = req.body
 
-    if (!message) {
-      res.status(400).json({ error: 'Message is required' })
+    if (!Array.isArray(messages) || messages.length === 0) {
+      res.status(400).json({ error: 'Messages array is required' })
       return
     }
 
@@ -39,11 +39,14 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // メッセージをクライアントのキューに追加
-    messagesPerClient[clientId].messages.push({
-      timestamp: Date.now(),
-      message,
+    const timestamp = Date.now()
+    messages.forEach((message) => {
+      messagesPerClient[clientId].messages.push({
+        timestamp,
+        message,
+      })
     })
-    messagesPerClient[clientId].lastAccessed = Date.now()
+    messagesPerClient[clientId].lastAccessed = timestamp
 
     res.status(201).json({ message: 'Successfully sent' })
   } else if (req.method === 'GET') {

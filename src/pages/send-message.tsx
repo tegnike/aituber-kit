@@ -3,7 +3,7 @@ import { IconButton } from '@/components/iconButton'
 import settingsStore from '@/features/stores/settings'
 
 const SendMessage = () => {
-  const [message, setMessage] = useState('')
+  const [messages, setMessages] = useState(Array(5).fill(''))
   const [clientId, setClientId] = useState('')
   const [response, setResponse] = useState('')
 
@@ -16,7 +16,7 @@ const SendMessage = () => {
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault()
-    if (!message.trim() || !clientId.trim()) return
+    if (!messages.some((msg) => msg.trim()) || !clientId.trim()) return
 
     const url = new URL('/api/messages', window.location.origin)
     url.searchParams.append('clientId', clientId.trim())
@@ -27,7 +27,9 @@ const SendMessage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({
+          messages: messages.filter((msg) => msg.trim()),
+        }),
       })
 
       if (!res.ok) {
@@ -41,7 +43,7 @@ const SendMessage = () => {
 
       const data = await res.json()
       setResponse(JSON.stringify(data, null, 2))
-      setMessage('')
+      setMessages(Array(5).fill(''))
     } catch (error) {
       console.error('Error:', error)
       setResponse(
@@ -50,7 +52,10 @@ const SendMessage = () => {
     }
   }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (
+    e: KeyboardEvent<HTMLTextAreaElement>,
+    index: number
+  ) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault()
       handleSubmit()
@@ -67,7 +72,7 @@ const SendMessage = () => {
             </div>
             <pre className="bg-[#1F2937] text-white rounded-16 w-full p-16 typography-16 font-bold whitespace-pre-wrap break-words">
               <code>
-                {`curl -X POST -H "Content-Type: application/json" -d '{"message": "こんにちは、今日もいい天気ですね。"}' 'http://localhost:3000/api/messages/?clientId=${clientId}'`}
+                {`curl -X POST -H "Content-Type: application/json" -d '{"messages": ["こんにちは、今日もいい天気ですね。", "今日の予定を教えてください。"]}' 'http://localhost:3000/api/messages/?clientId=${clientId}'`}
               </code>
             </pre>
           </div>
@@ -85,28 +90,41 @@ const SendMessage = () => {
               disabled={!!settingsStore.getState().clientId}
             />
           </div>
-          <div className="my-8">
+          <div className="mt-8">
             <div className="text-text-primary typography-16 font-bold mb-8">
-              Message
+              Messages
             </div>
-            <div className="grid grid-flow-col gap-[8px] grid-cols-[1fr_min-content]">
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold"
-                rows={3}
-                style={{
-                  lineHeight: '1.5',
-                  padding: '8px 16px',
-                  resize: 'vertical',
-                  minHeight: '4.5em',
-                }}
-              />
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className="my-8 grid grid-flow-col  grid-cols-[1fr_min-content]"
+              >
+                <textarea
+                  value={message}
+                  onChange={(e) => {
+                    const newMessages = [...messages]
+                    newMessages[index] = e.target.value
+                    setMessages(newMessages)
+                  }}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold"
+                  rows={2}
+                  style={{
+                    lineHeight: '1.5',
+                    padding: '8px 16px',
+                    resize: 'vertical',
+                    minHeight: '4.5em',
+                  }}
+                />
+              </div>
+            ))}
+            <div className="flex justify-end mt-8">
               <IconButton
                 iconName="24/Send"
-                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-                disabled={!message.trim() || !clientId.trim()}
+                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled w-[120px] h-[48px] flex items-center justify-center"
+                disabled={
+                  !messages.some((msg) => msg.trim()) || !clientId.trim()
+                }
                 type="submit"
                 isProcessing={false}
               />
@@ -114,7 +132,7 @@ const SendMessage = () => {
           </div>
         </form>
         {response && (
-          <div className="mt-4 w-full">
+          <div className="mt-16 w-full">
             <pre className="bg-gray-100 p-2 rounded overflow-auto max-h-60">
               {response}
             </pre>
