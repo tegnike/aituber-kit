@@ -1,48 +1,59 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { processReceivedMessage } from '@/features/chat/handlers'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 
+class Message {
+  timestamp: number
+  message: string
+
+  constructor(timestamp: number, message: string) {
+    this.timestamp = timestamp
+    this.message = message
+  }
+}
+
 const MessageReceiver = () => {
-  const [lastId, setLastId] = useState(0)
-  const chatLog = homeStore((state) => state.chatLog)
+  const [lastTimestamp, setLastTimestamp] = useState(0)
   const clientId = settingsStore((state) => state.clientId)
 
+  const updateChatLog = useCallback((messages: Message[]) => {
+    homeStore.setState((state) => ({
+      chatLog: [
+        ...state.chatLog,
+        ...messages.map((message) => ({
+          role: 'assistant',
+          content: message.message,
+        })),
+      ],
+    }))
+    messages.forEach((message) => processReceivedMessage(message.message))
+  }, [])
+
   useEffect(() => {
-    if (!clientId) return // clientIdがない場合は何もしない
+    if (!clientId) return
 
-    const intervalId = setInterval(() => {
-      fetch(`/api/messages?lastId=${lastId}&clientId=${clientId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.messages && data.messages.length > 0) {
-            data.messages.forEach(
-              (message: { id: number; message: string }) => {
-                homeStore.setState({
-                  chatLog: [
-                    ...chatLog,
-                    {
-                      role: 'assistant',
-                      content: message.message,
-                    },
-                  ],
-                })
-                processReceivedMessage(message.message)
-              }
-            )
-            const newLastId = data.messages[data.messages.length - 1].id
-            setLastId(newLastId)
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching messages:', error)
-        })
-    }, 1000)
-
-    return () => {
-      clearInterval(intervalId)
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(
+          `/api/messages?lastTimestamp=${lastTimestamp}&clientId=${clientId}`
+        )
+        const data = await response.json()
+        if (data.messages && data.messages.length > 0) {
+          updateChatLog(data.messages)
+          const newLastTimestamp =
+            data.messages[data.messages.length - 1].timestamp
+          setLastTimestamp(newLastTimestamp)
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error)
+      }
     }
-  }, [lastId, clientId, chatLog])
+
+    const intervalId = setInterval(fetchMessages, 1000) // 5秒ごとに変更
+
+    return () => clearInterval(intervalId)
+  }, [lastTimestamp, clientId, updateChatLog]) // chatLogを依存配列から除外し、updateChatLogを追加
 
   return <></>
 }

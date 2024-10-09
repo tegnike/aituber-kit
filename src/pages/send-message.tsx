@@ -18,17 +18,17 @@ const SendMessage = () => {
     e?.preventDefault()
     if (!message.trim() || !clientId.trim()) return
 
+    const url = new URL('/api/messages', window.location.origin)
+    url.searchParams.append('clientId', clientId.trim())
+
     try {
-      const res = await fetch(
-        `/api/messages?clientId=${encodeURIComponent(clientId)}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message }),
-        }
-      )
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      })
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`)

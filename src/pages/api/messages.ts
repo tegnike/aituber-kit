@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 interface Message {
-  id: number
+  timestamp: number
   message: string
 }
 
@@ -11,8 +11,6 @@ interface MessageQueue {
 }
 
 let messagesPerClient: { [clientId: string]: MessageQueue } = {}
-
-let nextId = 1 // メッセージのIDを管理
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5 // 5分
 
@@ -41,7 +39,10 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // メッセージをクライアントのキューに追加
-    messagesPerClient[clientId].messages.push({ id: nextId++, message })
+    messagesPerClient[clientId].messages.push({
+      timestamp: Date.now(),
+      message,
+    })
     messagesPerClient[clientId].lastAccessed = Date.now()
 
     res.status(201).json({ message: 'Successfully sent' })
@@ -51,11 +52,13 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       messagesPerClient[clientId] = { messages: [], lastAccessed: Date.now() }
     }
 
-    const lastId = parseInt(req.query.lastId as string, 10) || 0
+    const lastTimestamp = parseInt(req.query.lastTimestamp as string, 10) || 0
 
     // クライアントのキューから新しいメッセージを取得
     const clientQueue = messagesPerClient[clientId]
-    const newMessages = clientQueue.messages.filter((msg) => msg.id > lastId)
+    const newMessages = clientQueue.messages.filter(
+      (msg) => msg.timestamp > lastTimestamp
+    )
 
     console.log(newMessages)
 
@@ -63,7 +66,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 
     // 取得済みのメッセージをキューから削除
     clientQueue.messages = clientQueue.messages.filter(
-      (msg) => msg.id <= lastId
+      (msg) => msg.timestamp <= lastTimestamp
     )
     clientQueue.lastAccessed = Date.now()
   } else {
