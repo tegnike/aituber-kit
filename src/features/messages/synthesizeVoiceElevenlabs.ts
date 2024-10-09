@@ -7,14 +7,14 @@ export async function synthesizeVoiceElevenlabsApi(
   voiceId: string,
   language: Language
 ) {
-  const body = {
-    message: talk.message,
-    voiceId,
-    apiKey,
-    language,
-  }
-
   try {
+    const body = {
+      message: talk.message,
+      voiceId,
+      apiKey,
+      language,
+    }
+
     const res = await fetch('/api/elevenLabs', {
       method: 'POST',
       headers: {
@@ -25,7 +25,7 @@ export async function synthesizeVoiceElevenlabsApi(
 
     if (!res.ok) {
       throw new Error(
-        `APIからの応答が異常です。ステータスコード: ${res.status}`
+        `ElevenLabs APIからの応答が異常です。ステータスコード: ${res.status}`
       )
     }
 
@@ -34,7 +34,11 @@ export async function synthesizeVoiceElevenlabsApi(
     const arrayBuffer: ArrayBuffer = audio.buffer
 
     return arrayBuffer
-  } catch (error: any) {
-    throw new Error(`APIリクエスト中にエラーが発生しました: ${error.message}`)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`ElevenLabsでエラーが発生しました: ${error.message}`)
+    } else {
+      throw new Error('ElevenLabsで不明なエラーが発生しました')
+    }
   }
 }
