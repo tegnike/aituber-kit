@@ -55,22 +55,16 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       messagesPerClient[clientId] = { messages: [], lastAccessed: Date.now() }
     }
 
-    const lastTimestamp = parseInt(req.query.lastTimestamp as string, 10) || 0
-
-    // クライアントのキューから新しいメッセージを取得
+    // クライアントのキューから全てのメッセージを取得
     const clientQueue = messagesPerClient[clientId]
-    const newMessages = clientQueue.messages.filter(
-      (msg) => msg.timestamp > lastTimestamp
-    )
+    const newMessages = clientQueue.messages
 
     console.log(newMessages)
 
     res.status(200).json({ messages: newMessages })
 
-    // 取得済みのメッセージをキューから削除
-    clientQueue.messages = clientQueue.messages.filter(
-      (msg) => msg.timestamp <= lastTimestamp
-    )
+    // キューをクリア
+    clientQueue.messages = []
     clientQueue.lastAccessed = Date.now()
   } else {
     res.status(405).json({ error: 'Method not allowed' })
