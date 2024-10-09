@@ -31,20 +31,51 @@ export class LipSync {
     }
   }
 
-  public async playFromArrayBuffer(buffer: ArrayBuffer, onEnded?: () => void) {
+  public async playFromArrayBuffer(
+    buffer: ArrayBuffer,
+    onEnded?: () => void,
+    isPCM16: boolean = true
+  ) {
     try {
       // バッファの型チェック
       if (!(buffer instanceof ArrayBuffer)) {
         throw new Error('入力されたバッファがArrayBuffer形式ではありません')
       }
 
-      // バッファの内容確認
       console.log('バッファサイズ:', buffer.byteLength)
 
-      // デバッグ用のログ
-      console.log('デコード開始')
-      const audioBuffer = await this.audio.decodeAudioData(buffer)
-      console.log('デコード成功')
+      // バッファの長さチェック
+      if (buffer.byteLength === 0) {
+        throw new Error('バッファが空です')
+      }
+
+      let audioBuffer: AudioBuffer
+
+      if (isPCM16) {
+        // PCM16形式の場合
+        const pcmData = new Int16Array(buffer)
+        console.log('PCMデータ長:', pcmData.length)
+
+        if (pcmData.length === 0) {
+          throw new Error('PCMデータが空です')
+        }
+
+        const floatData = new Float32Array(pcmData.length)
+        for (let i = 0; i < pcmData.length; i++) {
+          floatData[i] = pcmData[i] / 32768.0
+        }
+        // WebSocketから受け取ったデータのサンプリングレートを使用（例: 24000Hz）
+        const sampleRate = 24000
+        audioBuffer = this.audio.createBuffer(1, floatData.length, sampleRate)
+        audioBuffer.getChannelData(0).set(floatData)
+      } else {
+        // 通常の圧縮音声ファイルの場合
+        console.log('デコード開始')
+        audioBuffer = await this.audio.decodeAudioData(buffer)
+        console.log('デコード成功')
+      }
+
+      console.log('オーディオバッファ長:', audioBuffer.length)
 
       const bufferSource = this.audio.createBufferSource()
       bufferSource.buffer = audioBuffer
@@ -56,8 +87,11 @@ export class LipSync {
         bufferSource.addEventListener('ended', onEnded)
       }
     } catch (error) {
-      console.error('オーディオデータのデコードに失敗しました:', error)
+      console.error('オーディオデータの処理に失敗しました:', error)
       // エラーハンドリングのロジックをここに追加
+      if (onEnded) {
+        onEnded() // エラー時にもonEndedコールバックを呼び出す
+      }
     }
   }
 
