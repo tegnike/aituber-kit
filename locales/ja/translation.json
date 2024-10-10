@@ -139,5 +139,8 @@
   "MessageReceiver": "外部からの指示を受け付ける",
   "MessageReceiverDescription": "APIを利用してAIキャラの発言を外部から指示することができます。",
   "ClientID": "Client ID",
-  "OpenSendMessagePage": "メッセージ送信ページを開く"
+  "OpenSendMessagePage": "メッセージ送信ページを開く",
+  "RealtimeAPIMode": "リアルタイムAPIモード",
+  "AzureEndpoint": "Azure Endpoint",
+  "AzureDeployment": "Azure Deployment"
 }

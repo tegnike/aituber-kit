@@ -21,12 +21,7 @@ export async function getAIChatResponseStream(
     case 'mistralai':
     case 'perplexity':
     case 'fireworks':
-      return getVercelAIChatResponseStream(
-        messages,
-        ss[`${service}Key`] || '',
-        service,
-        ss.selectAIModel
-      )
+      return getVercelAIChatResponseStream(messages)
     case 'localLlm':
       return getLocalLLMChatResponseStream(
         messages,

@@ -392,7 +392,7 @@ export const handleSendChatFn =
         })
 
         // WebSocket送信
-        hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
+        // hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
       } else {
         homeStore.setState({
           assistantMessage: errors['NotConnectedToExternalAssistant'],
@@ -501,12 +501,13 @@ export const handleReceiveTextFromWsFn =
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
 
-    if (!ss.webSocketMode) {
+    if (ss.webSocketMode) {
+      console.log('websocket mode: true')
+    } else {
       console.log('websocket mode: false')
       return
     }
 
-    console.log('websocket mode: true')
     homeStore.setState({ chatProcessing: true })
 
     if (role !== 'user') {
@@ -560,6 +561,69 @@ export const handleReceiveTextFromWsFn =
       }
 
       if (state === 'end') {
+        // レスポンスの終了処理
+        console.log('Response ended')
+        homeStore.setState({ wsStreaming: false })
+        homeStore.setState({ chatProcessing: false })
+      }
+    }
+
+    homeStore.setState({ chatProcessing: state !== 'end' })
+  }
+
+/**
+ * RealtimeAPIからのテキストまたは音声データを受信したときの処理
+ */
+export const handleReceiveTextFromRtFn =
+  () =>
+  async (
+    text?: string,
+    role?: string,
+    state?: string,
+    buffer?: ArrayBuffer
+  ) => {
+    if ((text === null && buffer === null) || role === undefined) return
+
+    const ss = settingsStore.getState()
+    const hs = homeStore.getState()
+
+    if (ss.realtimeAPIMode) {
+      console.log('realtime api mode: true')
+    } else {
+      console.log('realtime api mode: false')
+      return
+    }
+
+    homeStore.setState({ chatProcessing: true })
+
+    if (role == 'assistant') {
+      const updateLog: Message[] = [...hs.chatLog]
+
+      if (state?.includes('response.audio')) {
+        try {
+          speakCharacter(
+            {
+              talk: {
+                style: '',
+                message: buffer,
+                speakerX: 0,
+                speakerY: 0,
+              },
+            },
+            () => {},
+            () => {}
+          )
+        } catch (e) {
+          console.error('Error in speakCharacter:', e)
+        }
+      } else if (state === 'response.content_part.done') {
+        updateLog.push({ role: role, content: text })
+        homeStore.setState({
+          chatLog: updateLog,
+        })
+      }
+
+      if (state === 'response.audio.done') {
         // レスポンスの終了処理
         console.log('Response ended')
         homeStore.setState({ wsStreaming: false })

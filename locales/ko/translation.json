@@ -138,5 +138,8 @@
   "MessageReceiver": "외부에서 지시를 받는다",
   "MessageReceiverDescription": "API를 사용하여 AI 캐릭터의 말을 외부에서 지시할 수 있습니다.",
   "ClientID": "Client ID",
-  "OpenSendMessagePage": "메시지 보내기 페이지 열기"
+  "OpenSendMessagePage": "메시지 보내기 페이지 열기",
+  "RealtimeAPIMode": "리얼타임 API 모드",
+  "AzureEndpoint": "Azure Endpoint",
+  "AzureDeployment": "Azure Deployment"
 }

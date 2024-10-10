@@ -8,9 +8,11 @@ import slideStore from '@/features/stores/slide'
 import {
   handleSendChatFn,
   handleReceiveTextFromWsFn,
+  handleReceiveTextFromRtFn,
 } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import useWebSocket from './useWebSocket'
+import useRealtimeAPI from './useRealtimeAPI'
 import useYoutube from './useYoutube'
 import { SlideText } from './slideText'
 
@@ -31,9 +33,11 @@ export const Form = () => {
     APIKeyNotEntered: t('APIKeyNotEntered'),
   })
   const handleReceiveTextFromWs = handleReceiveTextFromWsFn()
+  const handleReceiveTextFromRt = handleReceiveTextFromRtFn()
 
   useYoutube({ handleSendChat })
   useWebSocket({ handleReceiveTextFromWs })
+  useRealtimeAPI({ handleReceiveTextFromRt })
 
   useEffect(() => {
     // テキストと画像がそろったら、チャットを送信

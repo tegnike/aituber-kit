@@ -11,11 +11,13 @@ import { multiModalAIServices } from '@/features/stores/settings'
 
 const ModelProvider = () => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
-
+  const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const openaiKey = settingsStore((s) => s.openaiKey)
   const anthropicKey = settingsStore((s) => s.anthropicKey)
   const googleKey = settingsStore((s) => s.googleKey)
   const azureKey = settingsStore((s) => s.azureKey)
+  const azureEndpoint = settingsStore((s) => s.azureEndpoint)
+  const azureDeployment = settingsStore((s) => s.azureDeployment)
   const groqKey = settingsStore((s) => s.groqKey)
   const cohereKey = settingsStore((s) => s.cohereKey)
   const mistralaiKey = settingsStore((s) => s.mistralaiKey)
@@ -70,6 +72,15 @@ const ModelProvider = () => {
     },
     []
   )
+
+  const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
+    settingsStore.setState({
+      realtimeAPIMode: newMode,
+    })
+
+    if (newMode) {
+    }
+  }, [])
 
   return webSocketMode ? null : (
     <div className="my-40">
@@ -126,32 +137,48 @@ const ModelProvider = () => {
               </div>
               <div className="my-24">
                 <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
+                  {t('RealtimeAPIMode')}
                 </div>
-                <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                  value={selectAIModel}
-                  onChange={(e) => {
-                    const model = e.target.value
-                    settingsStore.setState({ selectAIModel: model })
-
-                    if (
-                      model !== 'gpt-4-turbo' &&
-                      model !== 'gpt-4-o' &&
-                      model !== 'gpt-4-o-mini'
-                    ) {
-                      homeStore.setState({ modalImage: '' })
-                      menuStore.setState({ showWebcam: false })
-                    }
-                  }}
-                >
-                  <option value="gpt-4o-mini">gpt-4o-mini</option>
-                  <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
-                  <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
-                  <option value="gpt-4o">gpt-4o(2024-05-13)</option>
-                  <option value="gpt-4-turbo">gpt-4-turbo</option>
-                </select>
+                <div className="my-8">
+                  <TextButton
+                    onClick={() => {
+                      handleRealtimeAPIModeChange(!realtimeAPIMode)
+                    }}
+                  >
+                    {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
+              {!realtimeAPIMode && (
+                <div className="my-24">
+                  <div className="my-16 typography-20 font-bold">
+                    {t('SelectModel')}
+                  </div>
+                  <select
+                    className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    value={selectAIModel}
+                    onChange={(e) => {
+                      const model = e.target.value
+                      settingsStore.setState({ selectAIModel: model })
+
+                      if (
+                        model !== 'gpt-4-turbo' &&
+                        model !== 'gpt-4-o' &&
+                        model !== 'gpt-4-o-mini'
+                      ) {
+                        homeStore.setState({ modalImage: '' })
+                        menuStore.setState({ showWebcam: false })
+                      }
+                    }}
+                  >
+                    <option value="gpt-4o-mini">gpt-4o-mini</option>
+                    <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
+                    <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
+                    <option value="gpt-4o">gpt-4o(2024-05-13)</option>
+                    <option value="gpt-4-turbo">gpt-4-turbo</option>
+                  </select>
+                </div>
+              )}
             </>
           )
         } else if (selectAIService === 'anthropic') {
@@ -289,21 +316,50 @@ const ModelProvider = () => {
               </div>
               <div className="my-24">
                 <div className="my-16 typography-20 font-bold">
-                  {t('AzureAPIURL')}
+                  {t('AzureEndpoint')}
                 </div>
                 <div className="my-16">
-                  ex.
-                  https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOYMENT_NAME/completions?api-version=2024-06-01
+                  Chat API ex. https://RESOURCE_NAME.openai.azure.com
+                  <br />
+                  Realtime API ex. wss://RESOURCE_NAME.openai.azure.com
                 </div>
                 <input
                   className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                   type="text"
                   placeholder="..."
-                  value={selectAIModel}
+                  value={azureEndpoint}
                   onChange={(e) =>
-                    settingsStore.setState({ selectAIModel: e.target.value })
+                    settingsStore.setState({ azureEndpoint: e.target.value })
                   }
                 />
+              </div>
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('AzureDeployment')}
+                </div>
+                <input
+                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  type="text"
+                  placeholder="..."
+                  value={azureDeployment}
+                  onChange={(e) =>
+                    settingsStore.setState({ azureDeployment: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('RealtimeAPIMode')}
+                </div>
+                <div className="my-8">
+                  <TextButton
+                    onClick={() => {
+                      handleRealtimeAPIModeChange(!realtimeAPIMode)
+                    }}
+                  >
+                    {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
             </>
           )
