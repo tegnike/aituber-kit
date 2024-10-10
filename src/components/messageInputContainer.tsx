@@ -3,6 +3,9 @@ import { MessageInput } from '@/components/messageInput'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 
+// AudioContext の型定義を拡張
+type AudioContextType = typeof AudioContext
+
 type Props = {
   onChatProcessStart: (text: string) => void
 }
@@ -13,7 +16,6 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
-  const audioChunks = useRef<Blob[]>([])
   const keyPressStartTime = useRef<number | null>(null)
   const transcriptRef = useRef('')
   const isKeyboardTriggered = useRef(false)
@@ -48,7 +50,9 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   }, [])
 
   useEffect(() => {
-    const context = new (window.AudioContext || window.webkitAudioContext)()
+    const AudioContextClass = (window.AudioContext ||
+      (window as any).webkitAudioContext) as AudioContextType
+    const context = new AudioContextClass()
     setAudioContext(context)
   }, [])
 

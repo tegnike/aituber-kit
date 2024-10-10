@@ -1,42 +1,8 @@
 import { Message } from '@/features/messages/messages'
 import { getVercelAIChatResponse } from '@/features/chat/vercelAIChat'
-import settingsStore, {
-  multiModalAIServiceKey,
-  multiModalAIServices,
-} from '@/features/stores/settings'
-
-const getAIConfig = () => {
-  const ss = settingsStore.getState()
-  const aiService = ss.selectAIService as multiModalAIServiceKey
-
-  if (!multiModalAIServices.includes(aiService)) {
-    throw new Error('Invalid AI service')
-  }
-
-  const apiKeyName = `${aiService}Key` as const
-  const apiKey = ss[apiKeyName]
-
-  if (!apiKey) {
-    throw new Error(
-      `API key for ${aiService} is missing. Unable to proceed with the AI service.`
-    )
-  }
-
-  return {
-    aiApiKey: apiKey,
-    selectAIService: aiService,
-    selectAIModel: ss.selectAIModel,
-  }
-}
 
 const fetchAIResponse = async (queryMessages: any[]): Promise<any> => {
-  const { aiApiKey, selectAIService, selectAIModel } = getAIConfig()
-  return await getVercelAIChatResponse(
-    queryMessages,
-    aiApiKey,
-    selectAIService,
-    selectAIModel
-  )
+  return await getVercelAIChatResponse(queryMessages)
 }
 
 /**

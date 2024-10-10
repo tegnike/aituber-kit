@@ -138,5 +138,8 @@
   "MessageReceiver": "Receive instructions from outside",
   "MessageReceiverDescription": "You can use API to instruct AI characters to speak from outside.",
   "ClientID": "Client ID",
-  "OpenSendMessagePage": "Open Send Message Page"
+  "OpenSendMessagePage": "Open Send Message Page",
+  "RealtimeAPIMode": "Realtime API Mode",
+  "AzureEndpoint": "Azure Endpoint",
+  "AzureDeployment": "Azure Deployment"
 }
