@@ -376,7 +376,6 @@ export const handleSendChatFn =
     const sls = slideStore.getState()
 
     if (ss.webSocketMode || ss.realtimeAPIMode) {
-      // TODO: 処理の検証
       homeStore.setState({ chatProcessing: true })
 
       if (hs.ws?.readyState === WebSocket.OPEN) {
@@ -491,7 +490,6 @@ export const handleSendChatFn =
  */
 export const handleReceiveTextFromWsFn =
   () => async (text: string, role?: string, state?: string) => {
-    debugger
     if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()
@@ -578,7 +576,7 @@ export const handleReceiveTextFromRtFn =
     state?: string,
     buffer?: ArrayBuffer
   ) => {
-    if ((text === null && buffer === null) || role === undefined) return
+    if ((!text && !buffer) || role === undefined) return
 
     const ss = settingsStore.getState()
     const hs = homeStore.getState()

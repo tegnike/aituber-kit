@@ -187,11 +187,9 @@ const settingsStore = create<SettingsState>()(
       changeEnglishToJapanese:
         process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
-      webSocketMode:
-        process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true' ? true : false,
-      realtimeAPIMode:
-        process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' ? true : false,
-      slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true' ? true : false,
+      webSocketMode: process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true',
+      realtimeAPIMode: process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true',
+      slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
     }),

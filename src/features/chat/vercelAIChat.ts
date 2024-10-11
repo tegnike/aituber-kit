@@ -151,13 +151,8 @@ export async function getVercelAIChatResponseStream(
             error
           )
 
-          return new ReadableStream({
-            start(controller) {
-              const errorMessage = handleApiError('AIAPIError')
-              controller.enqueue(errorMessage)
-              controller.close()
-            },
-          })
+          const errorMessage = handleApiError('AIAPIError')
+          controller.enqueue(errorMessage)
         } finally {
           controller.close()
           reader.releaseLock()

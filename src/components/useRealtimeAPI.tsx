@@ -3,10 +3,6 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 
-const SYSTEM_PROMPT = `
-You are a helpful assistant.
-`
-
 ///取得したコメントをストックするリストの作成（tmpMessages）
 interface TmpMessage {
   text: string
@@ -72,12 +68,8 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       throw new Error(`Both items must be Int16Array`)
     }
     const newValues = new Int16Array(left.length + right.length)
-    for (let i = 0; i < left.length; i++) {
-      newValues[i] = left[i]
-    }
-    for (let j = 0; j < right.length; j++) {
-      newValues[left.length + j] = right[j]
-    }
+    newValues.set(left, 0)
+    newValues.set(right, left.length)
     return newValues
   }
 
@@ -123,7 +115,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
             type: 'session.update',
             session: {
               modalities: ['text', 'audio'],
-              instructions: 'System settings:\n' + SYSTEM_PROMPT,
+              instructions: ss.systemPrompt,
               voice: 'shimmer',
               input_audio_format: 'pcm16',
               output_audio_format: 'pcm16',
@@ -145,8 +137,10 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       switch (jsonData.type) {
         case 'error':
           console.log('エラーデータを受信しました', jsonData)
+          break
         case 'conversation.item.created':
           console.log('コンテキストデータを受信しました', jsonData)
+          break
         case 'response.audio.delta':
           console.log('オーディオデータを受信しました', jsonData)
           if (jsonData.delta) {
@@ -164,6 +158,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           } else {
             console.error('無効なオーディオバッファーを受信しました')
           }
+          break
         case 'response.content_part.done':
           if (jsonData.part && jsonData.part.transcript) {
             processMessage({
@@ -173,13 +168,15 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
               state: jsonData.type,
             })
           }
+          break
         case 'conversation.item.input_audio_transcription.completed':
           console.log('音声データの音声認識が完了しました', jsonData)
+          break
       }
 
       if (
         (jsonData.type === 'response.audio.delta' &&
-          accumulatedAudioDataRef.current.buffer.byteLength > 100_000) ||
+          accumulatedAudioDataRef.current?.buffer.byteLength > 100_000) ||
         jsonData.type === 'response.audio.done'
       ) {
         const arrayBuffer = accumulatedAudioDataRef.current.buffer

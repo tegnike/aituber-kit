@@ -31,7 +31,11 @@ export class LipSync {
     }
   }
 
-  public async playFromArrayBuffer(buffer: ArrayBuffer, onEnded?: () => void) {
+  public async playFromArrayBuffer(
+    buffer: ArrayBuffer,
+    onEnded?: () => void,
+    sampleRate: number = 24000
+  ) {
     try {
       // バッファの型チェック
       if (!(buffer instanceof ArrayBuffer)) {
@@ -58,10 +62,10 @@ export class LipSync {
 
         const floatData = new Float32Array(pcmData.length)
         for (let i = 0; i < pcmData.length; i++) {
-          floatData[i] = pcmData[i] / 32768.0
+          floatData[i] =
+            pcmData[i] < 0 ? pcmData[i] / 32768.0 : pcmData[i] / 32767.0
         }
-        // WebSocketから受け取ったデータのサンプリングレートを使用（例: 24000Hz）
-        const sampleRate = 24000
+
         audioBuffer = this.audio.createBuffer(1, floatData.length, sampleRate)
         audioBuffer.getChannelData(0).set(floatData)
       } else {
@@ -99,9 +103,33 @@ export class LipSync {
 
   // PCM16形式かどうかを判断するメソッド
   private detectPCM16(buffer: ArrayBuffer): boolean {
-    // ここでPCM16形式かどうかを判断するロジックを実装
-    // 例: ヘッダー情報やデータの特徴を確認
-    // 簡単な例として、バッファサイズが偶数であることを確認
-    return buffer.byteLength % 2 === 0 && buffer.byteLength > 44
+    // バッファサイズが偶数であることを確認
+    if (buffer.byteLength % 2 !== 0) {
+      return false
+    }
+
+    // サンプルデータの範囲をチェック
+    const int16Array = new Int16Array(buffer)
+    let isWithinRange = true
+    for (let i = 0; i < Math.min(1000, int16Array.length); i++) {
+      if (int16Array[i] < -32768 || int16Array[i] > 32767) {
+        isWithinRange = false
+        break
+      }
+    }
+
+    // データの分布を簡単にチェック
+    let nonZeroCount = 0
+    for (let i = 0; i < Math.min(1000, int16Array.length); i++) {
+      if (int16Array[i] !== 0) {
+        nonZeroCount++
+      }
+    }
+
+    // 少なくともデータの10%が非ゼロであることを確認
+    const hasReasonableDistribution =
+      nonZeroCount > Math.min(1000, int16Array.length) * 0.1
+
+    return isWithinRange && hasReasonableDistribution
   }
 }

@@ -11,10 +11,7 @@ type Props = {
 }
 
 export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
-  // isListeningをuseRefに変更
   const isListeningRef = useRef(false)
-  // 既存のuseStateは削除
-  // const [isListening, setIsListening] = useState(false)
 
   const [userMessage, setUserMessage] = useState('')
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
@@ -209,7 +206,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [isListeningRef.current, startListening, stopListening])
+  }, [startListening, stopListening])
 
   const handleSendMessage = useCallback(() => {
     if (userMessage.trim()) {

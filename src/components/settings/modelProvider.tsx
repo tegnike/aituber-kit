@@ -163,8 +163,8 @@ const ModelProvider = () => {
 
                       if (
                         model !== 'gpt-4-turbo' &&
-                        model !== 'gpt-4-o' &&
-                        model !== 'gpt-4-o-mini'
+                        model !== 'gpt-4o' &&
+                        model !== 'gpt-4o-mini'
                       ) {
                         homeStore.setState({ modalImage: '' })
                         menuStore.setState({ showWebcam: false })
