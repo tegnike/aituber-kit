@@ -75,7 +75,8 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     return { text: data.text }
   } catch (error: any) {
     console.error(`Error fetching ${selectAIService} API response:`, error)
-    return { text: handleApiError(error.cause.errorCode) }
+    const errorCode = error.cause?.errorCode || 'AIAPIError'
+    return { text: handleApiError(errorCode) }
   }
 }
 

@@ -30,10 +30,8 @@ export async function synthesizeVoiceElevenlabsApi(
     }
 
     const buffer = await res.arrayBuffer()
-    const audio = new Uint8Array(buffer)
-    const arrayBuffer: ArrayBuffer = audio.buffer
 
-    return arrayBuffer
+    return buffer
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`ElevenLabsでエラーが発生しました: ${error.message}`)

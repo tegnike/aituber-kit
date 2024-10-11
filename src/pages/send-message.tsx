@@ -2,8 +2,10 @@ import { useState, KeyboardEvent, useEffect } from 'react'
 import { IconButton } from '@/components/iconButton'
 import settingsStore from '@/features/stores/settings'
 
+const INPUT_FIELD_NUM = 5
+
 const SendMessage = () => {
-  const [messages, setMessages] = useState(Array(5).fill(''))
+  const [messages, setMessages] = useState(Array(INPUT_FIELD_NUM).fill(''))
   const [clientId, setClientId] = useState('')
   const [response, setResponse] = useState('')
 
@@ -52,10 +54,7 @@ const SendMessage = () => {
     }
   }
 
-  const handleKeyDown = (
-    e: KeyboardEvent<HTMLTextAreaElement>,
-    index: number
-  ) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault()
       handleSubmit()

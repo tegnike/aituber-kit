@@ -11,8 +11,7 @@ type Props = {
 }
 
 export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
-  const isListeningRef = useRef(false)
-
+  const realtimeAPIMode = settingsStore.getState().realtimeAPIMode
   const [userMessage, setUserMessage] = useState('')
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
@@ -22,6 +21,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const isKeyboardTriggered = useRef(false)
   const audioBufferRef = useRef<Float32Array | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
+  const isListeningRef = useRef(false)
 
   useEffect(() => {
     const SpeechRecognition =
@@ -68,7 +68,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       }
       isListeningRef.current = true // setIsListeningの代わりに直接更新
 
-      if (settingsStore.getState().realtimeAPIMode) {
+      if (realtimeAPIMode) {
         audioChunksRef.current = [] // 音声チャンクをリセット
 
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -99,7 +99,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       recognition.stop()
       isListeningRef.current = false // setIsListeningの代わりに直接更新
 
-      if (settingsStore.getState().realtimeAPIMode) {
+      if (realtimeAPIMode) {
         if (mediaRecorder) {
           mediaRecorder.stop()
           mediaRecorder.ondataavailable = null

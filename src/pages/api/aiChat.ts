@@ -69,10 +69,12 @@ export default async function handler(req: NextRequest) {
     )
   }
 
-  let modifiedAzureEndpoint =
-    azureEndpoint !== '' ? azureEndpoint : process.env.AZURE_ENDPOINT
-  let modifiedAzureDeployment =
-    azureDeployment !== '' ? azureDeployment : process.env.AZURE_DEPLOYMENT
+  let modifiedAzureEndpoint = azureEndpoint
+    ? azureEndpoint
+    : process.env.AZURE_ENDPOINT
+  let modifiedAzureDeployment = azureDeployment
+    ? azureDeployment
+    : process.env.AZURE_DEPLOYMENT
   let modifiedModel = aiService === 'azure' ? modifiedAzureDeployment : model
 
   if (!aiService || !modifiedModel) {

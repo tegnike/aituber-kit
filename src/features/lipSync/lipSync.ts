@@ -34,6 +34,7 @@ export class LipSync {
   public async playFromArrayBuffer(
     buffer: ArrayBuffer,
     onEnded?: () => void,
+    isNeedDecode: boolean = true,
     sampleRate: number = 24000
   ) {
     try {
@@ -50,15 +51,11 @@ export class LipSync {
       let audioBuffer: AudioBuffer
 
       // PCM16形式かどうかを判断
-      const isPCM16 = this.detectPCM16(buffer)
+      // const isPCM16 = this.detectPCM16(buffer)
 
-      if (isPCM16) {
+      if (!isNeedDecode) {
         // PCM16形式の場合
         const pcmData = new Int16Array(buffer)
-
-        if (pcmData.length === 0) {
-          throw new Error('The input buffer is empty')
-        }
 
         const floatData = new Float32Array(pcmData.length)
         for (let i = 0; i < pcmData.length; i++) {

@@ -176,7 +176,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
       if (
         (jsonData.type === 'response.audio.delta' &&
-          accumulatedAudioDataRef.current?.buffer.byteLength > 100_000) ||
+          accumulatedAudioDataRef.current?.buffer?.byteLength > 100_000) ||
         jsonData.type === 'response.audio.done'
       ) {
         const arrayBuffer = accumulatedAudioDataRef.current.buffer

@@ -36,6 +36,8 @@ const createSpeakCharacter = () => {
       )
     }
 
+    let isNeedDecode = true
+
     const fetchPromise = prevFetchPromise.then(async () => {
       const now = Date.now()
       if (now - lastTime < 1000) {
@@ -46,6 +48,7 @@ const createSpeakCharacter = () => {
       try {
         if (screenplay.talk.message == '' && screenplay.talk.buffer) {
           buffer = screenplay.talk.buffer
+          isNeedDecode = false
         } else if (ss.selectVoice == 'koeiromap') {
           buffer = await synthesizeVoiceKoeiromapApi(
             screenplay.talk,
@@ -107,7 +110,7 @@ const createSpeakCharacter = () => {
           return
         }
         const hs = homeStore.getState()
-        return hs.viewer.model?.speak(audioBuffer, screenplay)
+        return hs.viewer.model?.speak(audioBuffer, screenplay, isNeedDecode)
       }
     )
     prevSpeakPromise.then(() => {

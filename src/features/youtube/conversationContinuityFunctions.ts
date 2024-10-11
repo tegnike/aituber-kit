@@ -2,7 +2,7 @@ import { Message } from '@/features/messages/messages'
 import { getVercelAIChatResponse } from '@/features/chat/vercelAIChat'
 
 const fetchAIResponse = async (queryMessages: any[]): Promise<any> => {
-  return await getVercelAIChatResponse(queryMessages)
+  return getVercelAIChatResponse(queryMessages)
 }
 
 /**

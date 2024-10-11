@@ -59,8 +59,6 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     const clientQueue = messagesPerClient[clientId]
     const newMessages = clientQueue.messages
 
-    console.log(newMessages)
-
     res.status(200).json({ messages: newMessages })
 
     // キューをクリア

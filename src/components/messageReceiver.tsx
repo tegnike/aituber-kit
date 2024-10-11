@@ -29,6 +29,9 @@ const MessageReceiver = () => {
         const response = await fetch(
           `/api/messages?lastTimestamp=${lastTimestamp}&clientId=${clientId}`
         )
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
         const data = await response.json()
         if (data.messages && data.messages.length > 0) {
           speakMessage(data.messages)
@@ -41,7 +44,7 @@ const MessageReceiver = () => {
       }
     }
 
-    const intervalId = setInterval(fetchMessages, 1000) // 5秒ごとに変更
+    const intervalId = setInterval(fetchMessages, 1000)
 
     return () => clearInterval(intervalId)
   }, [lastTimestamp, clientId, speakMessage])
