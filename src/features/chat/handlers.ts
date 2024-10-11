@@ -595,15 +595,17 @@ export const handleReceiveTextFromRtFn =
     if (role == 'assistant') {
       const updateLog: Message[] = [...hs.chatLog]
 
-      if (state?.includes('response.audio')) {
+      if (state?.includes('response.audio') && buffer !== undefined) {
         try {
           speakCharacter(
             {
+              expression: 'neutral',
               talk: {
-                style: '',
-                message: buffer,
+                style: 'talk',
                 speakerX: 0,
                 speakerY: 0,
+                message: '',
+                buffer: buffer,
               },
             },
             () => {},
@@ -612,7 +614,7 @@ export const handleReceiveTextFromRtFn =
         } catch (e) {
           console.error('Error in speakCharacter:', e)
         }
-      } else if (state === 'response.content_part.done') {
+      } else if (state === 'response.content_part.done' && text !== undefined) {
         updateLog.push({ role: role, content: text })
         homeStore.setState({
           chatLog: updateLog,
