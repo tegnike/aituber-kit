@@ -77,9 +77,6 @@ const ModelProvider = () => {
     settingsStore.setState({
       realtimeAPIMode: newMode,
     })
-
-    if (newMode) {
-    }
   }, [])
 
   return webSocketMode ? null : (
