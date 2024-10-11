@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import settingsStore from '@/features/stores/settings'
-import homeStore from '@/features/stores/home'
 
 class Message {
   timestamp: number
@@ -44,10 +43,11 @@ const MessageReceiver = () => {
       }
     }
 
+    fetchMessages()
     const intervalId = setInterval(fetchMessages, 1000)
 
     return () => clearInterval(intervalId)
-  }, [lastTimestamp, clientId, speakMessage])
+  }, [clientId, speakMessage])
 
   return <></>
 }

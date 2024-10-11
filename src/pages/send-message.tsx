@@ -105,7 +105,7 @@ const SendMessage = () => {
                     newMessages[index] = e.target.value
                     setMessages(newMessages)
                   }}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  onKeyDown={(e) => handleKeyDown(e)}
                   className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold"
                   rows={2}
                   style={{
