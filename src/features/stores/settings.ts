@@ -31,6 +31,8 @@ interface APIKeys {
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
+  azureEndpoint: string
+  azureDeployment: string
 }
 
 interface ModelProvider {
@@ -83,6 +85,7 @@ interface General {
   changeEnglishToJapanese: boolean
   showControlPanel: boolean
   webSocketMode: boolean
+  realtimeAPIMode: boolean
   slideMode: boolean
   messageReceiverEnabled: boolean
   clientId: string
@@ -112,6 +115,8 @@ const settingsStore = create<SettingsState>()(
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
+      azureEndpoint: '',
+      azureDeployment: '',
 
       // Model Provider
       selectAIService:
@@ -182,9 +187,9 @@ const settingsStore = create<SettingsState>()(
       changeEnglishToJapanese:
         process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
-      webSocketMode:
-        process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true' ? true : false,
-      slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true' ? true : false,
+      webSocketMode: process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true',
+      realtimeAPIMode: process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true',
+      slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
     }),
@@ -204,6 +209,8 @@ const settingsStore = create<SettingsState>()(
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
+        azureEndpoint: state.azureEndpoint,
+        azureDeployment: state.azureDeployment,
         selectAIService: state.selectAIService,
         selectAIModel: state.selectAIModel,
         localLlmUrl: state.localLlmUrl,
@@ -236,6 +243,7 @@ const settingsStore = create<SettingsState>()(
         selectVoiceLanguage: state.selectVoiceLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         webSocketMode: state.webSocketMode,
+        realtimeAPIMode: state.realtimeAPIMode,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
       }),

@@ -375,12 +375,9 @@ export const handleSendChatFn =
     const hs = homeStore.getState()
     const sls = slideStore.getState()
 
-    if (ss.webSocketMode) {
-      // 未メンテなので不具合がある可能性あり
-      console.log('websocket mode: true')
+    if (ss.webSocketMode || ss.realtimeAPIMode) {
       homeStore.setState({ chatProcessing: true })
 
-      // WebSocketで送信する処理
       if (hs.ws?.readyState === WebSocket.OPEN) {
         // ユーザーの発言を追加して表示
         const updateLog: Message[] = [
@@ -390,9 +387,6 @@ export const handleSendChatFn =
         homeStore.setState({
           chatLog: updateLog,
         })
-
-        // WebSocket送信
-        hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
       } else {
         homeStore.setState({
           assistantMessage: errors['NotConnectedToExternalAssistant'],
@@ -501,12 +495,13 @@ export const handleReceiveTextFromWsFn =
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
 
-    if (!ss.webSocketMode) {
+    if (ss.webSocketMode) {
+      console.log('websocket mode: true')
+    } else {
       console.log('websocket mode: false')
       return
     }
 
-    console.log('websocket mode: true')
     homeStore.setState({ chatProcessing: true })
 
     if (role !== 'user') {
@@ -568,4 +563,61 @@ export const handleReceiveTextFromWsFn =
     }
 
     homeStore.setState({ chatProcessing: state !== 'end' })
+  }
+
+/**
+ * RealtimeAPIからのテキストまたは音声データを受信したときの処理
+ */
+export const handleReceiveTextFromRtFn =
+  () =>
+  async (
+    text?: string,
+    role?: string,
+    state?: string,
+    buffer?: ArrayBuffer
+  ) => {
+    if ((!text && !buffer) || role === undefined) return
+
+    const ss = settingsStore.getState()
+    const hs = homeStore.getState()
+
+    if (ss.realtimeAPIMode) {
+      console.log('realtime api mode: true')
+    } else {
+      console.log('realtime api mode: false')
+      return
+    }
+
+    homeStore.setState({ chatProcessing: true })
+
+    if (role == 'assistant') {
+      const updateLog: Message[] = [...hs.chatLog]
+
+      if (state?.includes('response.audio') && buffer !== undefined) {
+        try {
+          speakCharacter(
+            {
+              expression: 'neutral',
+              talk: {
+                style: 'talk',
+                speakerX: 0,
+                speakerY: 0,
+                message: '',
+                buffer: buffer,
+              },
+            },
+            () => {},
+            () => {}
+          )
+        } catch (e) {
+          console.error('Error in speakCharacter:', e)
+        }
+      } else if (state === 'response.content_part.done' && text !== undefined) {
+        updateLog.push({ role: role, content: text })
+        homeStore.setState({
+          chatLog: updateLog,
+        })
+      }
+    }
+    homeStore.setState({ chatProcessing: false })
   }

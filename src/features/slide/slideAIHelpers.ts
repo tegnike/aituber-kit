@@ -61,14 +61,9 @@ ${supplement}
 Based on the user's comment and the content of both the script document and supplementary text, provide "only" your final answer in the specified JSON format.
 `
 
-  const response = await getVercelAIChatResponse(
-    [
-      { role: 'system', content: systemMessage },
-      { role: 'user', content: queryText },
-    ],
-    aiService,
-    apiKey,
-    ss.selectAIModel
-  )
+  const response = await getVercelAIChatResponse([
+    { role: 'system', content: systemMessage },
+    { role: 'user', content: queryText },
+  ])
   return response.text
 }
