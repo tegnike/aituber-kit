@@ -375,12 +375,10 @@ export const handleSendChatFn =
     const hs = homeStore.getState()
     const sls = slideStore.getState()
 
-    if (ss.webSocketMode) {
-      // 未メンテなので不具合がある可能性あり
-      console.log('websocket mode: true')
+    if (ss.webSocketMode || ss.realtimeAPIMode) {
+      // TODO: 処理の検証
       homeStore.setState({ chatProcessing: true })
 
-      // WebSocketで送信する処理
       if (hs.ws?.readyState === WebSocket.OPEN) {
         // ユーザーの発言を追加して表示
         const updateLog: Message[] = [
@@ -390,9 +388,6 @@ export const handleSendChatFn =
         homeStore.setState({
           chatLog: updateLog,
         })
-
-        // WebSocket送信
-        // hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
       } else {
         homeStore.setState({
           assistantMessage: errors['NotConnectedToExternalAssistant'],
@@ -496,6 +491,7 @@ export const handleSendChatFn =
  */
 export const handleReceiveTextFromWsFn =
   () => async (text: string, role?: string, state?: string) => {
+    debugger
     if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()
@@ -622,14 +618,6 @@ export const handleReceiveTextFromRtFn =
           chatLog: updateLog,
         })
       }
-
-      if (state === 'response.audio.done') {
-        // レスポンスの終了処理
-        console.log('Response ended')
-        homeStore.setState({ wsStreaming: false })
-        homeStore.setState({ chatProcessing: false })
-      }
     }
-
-    homeStore.setState({ chatProcessing: state !== 'end' })
+    homeStore.setState({ chatProcessing: false })
   }

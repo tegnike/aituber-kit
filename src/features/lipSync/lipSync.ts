@@ -31,33 +31,29 @@ export class LipSync {
     }
   }
 
-  public async playFromArrayBuffer(
-    buffer: ArrayBuffer,
-    onEnded?: () => void,
-    isPCM16: boolean = true
-  ) {
+  public async playFromArrayBuffer(buffer: ArrayBuffer, onEnded?: () => void) {
     try {
       // バッファの型チェック
       if (!(buffer instanceof ArrayBuffer)) {
-        throw new Error('入力されたバッファがArrayBuffer形式ではありません')
+        throw new Error('The input buffer is not in ArrayBuffer format')
       }
-
-      console.log('バッファサイズ:', buffer.byteLength)
 
       // バッファの長さチェック
       if (buffer.byteLength === 0) {
-        throw new Error('バッファが空です')
+        throw new Error('The input buffer is empty')
       }
 
       let audioBuffer: AudioBuffer
 
+      // PCM16形式かどうかを判断
+      const isPCM16 = this.detectPCM16(buffer)
+
       if (isPCM16) {
         // PCM16形式の場合
         const pcmData = new Int16Array(buffer)
-        console.log('PCMデータ長:', pcmData.length)
 
         if (pcmData.length === 0) {
-          throw new Error('PCMデータが空です')
+          throw new Error('The input buffer is empty')
         }
 
         const floatData = new Float32Array(pcmData.length)
@@ -70,12 +66,13 @@ export class LipSync {
         audioBuffer.getChannelData(0).set(floatData)
       } else {
         // 通常の圧縮音声ファイルの場合
-        console.log('デコード開始')
-        audioBuffer = await this.audio.decodeAudioData(buffer)
-        console.log('デコード成功')
+        try {
+          audioBuffer = await this.audio.decodeAudioData(buffer)
+        } catch (decodeError) {
+          console.error('Failed to decode audio data:', decodeError)
+          throw new Error('The audio data could not be decoded')
+        }
       }
-
-      console.log('オーディオバッファ長:', audioBuffer.length)
 
       const bufferSource = this.audio.createBufferSource()
       bufferSource.buffer = audioBuffer
@@ -87,10 +84,9 @@ export class LipSync {
         bufferSource.addEventListener('ended', onEnded)
       }
     } catch (error) {
-      console.error('オーディオデータの処理に失敗しました:', error)
-      // エラーハンドリングのロジックをここに追加
+      console.error('Failed to play audio:', error)
       if (onEnded) {
-        onEnded() // エラー時にもonEndedコールバックを呼び出す
+        onEnded()
       }
     }
   }
@@ -99,5 +95,13 @@ export class LipSync {
     const res = await fetch(url)
     const buffer = await res.arrayBuffer()
     this.playFromArrayBuffer(buffer, onEnded)
+  }
+
+  // PCM16形式かどうかを判断するメソッド
+  private detectPCM16(buffer: ArrayBuffer): boolean {
+    // ここでPCM16形式かどうかを判断するロジックを実装
+    // 例: ヘッダー情報やデータの特徴を確認
+    // 簡単な例として、バッファサイズが偶数であることを確認
+    return buffer.byteLength % 2 === 0 && buffer.byteLength > 44
   }
 }

@@ -173,6 +173,8 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
               state: jsonData.type,
             })
           }
+        case 'conversation.item.input_audio_transcription.completed':
+          console.log('音声データの音声認識が完了しました', jsonData)
       }
 
       if (

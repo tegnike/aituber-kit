@@ -11,8 +11,12 @@ type Props = {
 }
 
 export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
+  // isListeningをuseRefに変更
+  const isListeningRef = useRef(false)
+  // 既存のuseStateは削除
+  // const [isListening, setIsListening] = useState(false)
+
   const [userMessage, setUserMessage] = useState('')
-  const [isListening, setIsListening] = useState(false)
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
@@ -42,7 +46,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
 
       newRecognition.onerror = (event) => {
         console.error('音声認識エラー:', event.error)
-        setIsListening(false)
+        isListeningRef.current = false
       }
 
       setRecognition(newRecognition)
@@ -56,114 +60,88 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     setAudioContext(context)
   }, [])
 
-  // Float32Array を PCM16 ArrayBuffer に変換する関数
-  const floatTo16BitPCM = (float32Array: Float32Array) => {
-    const buffer = new ArrayBuffer(float32Array.length * 2)
-    const view = new DataView(buffer)
-    for (let i = 0; i < float32Array.length; i++) {
-      const s = Math.max(-1, Math.min(1, float32Array[i]))
-      view.setInt16(i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true)
-    }
-    return buffer
-  }
-
-  // リサンプリング関数
-  const resampleAudio = (
-    audioData: Float32Array,
-    fromSampleRate: number,
-    toSampleRate: number
-  ): Float32Array => {
-    const ratio = fromSampleRate / toSampleRate
-    const newLength = Math.round(audioData.length / ratio)
-    const result = new Float32Array(newLength)
-
-    for (let i = 0; i < newLength; i++) {
-      const position = i * ratio
-      const leftIndex = Math.floor(position)
-      const rightIndex = Math.ceil(position)
-      const fraction = position - leftIndex
-
-      if (rightIndex >= audioData.length) {
-        result[i] = audioData[leftIndex]
-      } else {
-        result[i] =
-          (1 - fraction) * audioData[leftIndex] +
-          fraction * audioData[rightIndex]
-      }
-    }
-
-    return result
-  }
-
-  // Float32Array を base64エンコードされた PCM16 データに変換する関数
-  const base64EncodeAudio = (float32Array: Float32Array) => {
-    const arrayBuffer = floatTo16BitPCM(float32Array)
-    let binary = ''
-    const bytes = new Uint8Array(arrayBuffer)
-    const chunkSize = 0x8000 // 32KB chunk size
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-      binary += String.fromCharCode.apply(
-        null,
-        Array.from(bytes.subarray(i, i + chunkSize))
-      )
-    }
-    return btoa(binary)
-  }
-
   const startListening = useCallback(() => {
-    if (recognition && !isListening && audioContext) {
+    if (recognition && !isListeningRef.current && audioContext) {
       transcriptRef.current = ''
       setUserMessage('')
-      recognition.start()
-      setIsListening(true)
-      audioChunksRef.current = [] // 音声チャンクをリセット
+      try {
+        recognition.start()
+      } catch (error) {
+        console.error('Error starting recognition:', error)
+      }
+      isListeningRef.current = true // setIsListeningの代わりに直接更新
 
-      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-        const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
-        setMediaRecorder(recorder)
+      if (settingsStore.getState().realtimeAPIMode) {
+        audioChunksRef.current = [] // 音声チャンクをリセット
 
-        recorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            audioChunksRef.current.push(event.data)
-            console.log('音声チャンク追加:', audioChunksRef.current.length)
-          }
-        }
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+          setMediaRecorder(recorder)
 
-        recorder.start(100) // より小さな間隔でデータを収集
-      })
-    }
-  }, [recognition, isListening, audioContext])
-
-  const stopListening = useCallback(async () => {
-    if (recognition && isListening) {
-      recognition.stop()
-      setIsListening(false)
-      if (mediaRecorder) {
-        mediaRecorder.stop()
-        await new Promise<void>((resolve) => {
-          mediaRecorder.onstop = async () => {
-            console.log('MediaRecorder停止')
-            if (audioChunksRef.current.length > 0) {
-              const audioBlob = new Blob(audioChunksRef.current, {
-                type: 'audio/webm',
-              })
-              const arrayBuffer = await audioBlob.arrayBuffer()
-              const audioBuffer =
-                await audioContext!.decodeAudioData(arrayBuffer)
-              const processedData = processAudio(audioBuffer)
-              console.log('処理後のデータ長:', processedData.length)
-              audioBufferRef.current = processedData // ここを変更
-              resolve()
-            } else {
-              console.error('音声チャンクが空です')
-              resolve()
+          recorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              if (!isListeningRef.current) {
+                recognition.stop()
+                recorder.stop()
+                recorder.ondataavailable = null
+                return
+              }
+              audioChunksRef.current.push(event.data)
+              console.log('音声チャンク追加:', audioChunksRef.current.length)
             }
           }
+
+          recorder.start(100) // より小さな間隔でデータを収集
         })
       }
-      sendAudioBuffer()
     }
-  }, [recognition, isListening, mediaRecorder, audioContext])
+  }, [recognition, audioContext])
+
+  const stopListening = useCallback(async () => {
+    if (recognition && isListeningRef.current) {
+      recognition.stop()
+      isListeningRef.current = false // setIsListeningの代わりに直接更新
+
+      if (settingsStore.getState().realtimeAPIMode) {
+        if (mediaRecorder) {
+          mediaRecorder.stop()
+          mediaRecorder.ondataavailable = null
+          await new Promise<void>((resolve) => {
+            mediaRecorder.onstop = async () => {
+              console.log('MediaRecorder停止')
+              if (audioChunksRef.current.length > 0) {
+                const audioBlob = new Blob(audioChunksRef.current, {
+                  type: 'audio/webm',
+                })
+                const arrayBuffer = await audioBlob.arrayBuffer()
+                const audioBuffer =
+                  await audioContext!.decodeAudioData(arrayBuffer)
+                const processedData = processAudio(audioBuffer)
+
+                audioBufferRef.current = processedData
+                resolve()
+              } else {
+                console.error('音声チャンクが空です')
+                resolve()
+              }
+            }
+          })
+        }
+        sendAudioBuffer()
+      }
+
+      const trimmedTranscriptRef = transcriptRef.current.trim()
+      if (isKeyboardTriggered.current) {
+        const pressDuration = Date.now() - (keyPressStartTime.current || 0)
+        // 押してから1秒以上 かつ 文字が存在する場合のみ送信
+        if (pressDuration >= 1000 && trimmedTranscriptRef) {
+          onChatProcessStart(trimmedTranscriptRef)
+          setUserMessage('')
+        }
+        isKeyboardTriggered.current = false
+      }
+    }
+  }, [recognition, mediaRecorder, audioContext])
 
   const sendAudioBuffer = useCallback(() => {
     if (audioBufferRef.current && audioBufferRef.current.length > 0) {
@@ -189,11 +167,6 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
             },
           })
         )
-        // ws.send(
-        //   JSON.stringify({
-        //     type: 'input_audio_buffer.commit',
-        //   })
-        // )
         ws.send(
           JSON.stringify({
             type: 'response.create',
@@ -207,16 +180,16 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   }, [])
 
   const toggleListening = useCallback(() => {
-    if (isListening) {
+    if (isListeningRef.current) {
       stopListening()
     } else {
       startListening()
     }
-  }, [isListening, startListening, stopListening])
+  }, [startListening, stopListening])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.altKey || e.metaKey) && !isListening) {
+      if (e.key === 'Alt' && !isListeningRef.current) {
         keyPressStartTime.current = Date.now()
         isKeyboardTriggered.current = true
         startListening()
@@ -224,7 +197,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     }
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'Alt' || e.key === 'Meta') {
+      if (e.key === 'Alt') {
         stopListening()
       }
     }
@@ -236,7 +209,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [isListening, startListening, stopListening])
+  }, [isListeningRef.current, startListening, stopListening])
 
   const handleSendMessage = useCallback(() => {
     if (userMessage.trim()) {
@@ -255,7 +228,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   return (
     <MessageInput
       userMessage={userMessage}
-      isMicRecording={isListening}
+      isMicRecording={isListeningRef.current} // isListeningの代わりにisListeningRef.currentを使用
       onChangeUserMessage={handleInputChange}
       onClickMicButton={toggleListening}
       onClickSendButton={handleSendMessage}
@@ -307,4 +280,30 @@ const processAudio = (audioBuffer: AudioBuffer): Float32Array => {
 
   // リサンプリング
   return resampleAudio(monoData, audioBuffer.sampleRate, targetSampleRate)
+}
+
+// Float32Array を PCM16 ArrayBuffer に変換する関数
+const floatTo16BitPCM = (float32Array: Float32Array) => {
+  const buffer = new ArrayBuffer(float32Array.length * 2)
+  const view = new DataView(buffer)
+  for (let i = 0; i < float32Array.length; i++) {
+    const s = Math.max(-1, Math.min(1, float32Array[i]))
+    view.setInt16(i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true)
+  }
+  return buffer
+}
+
+// Float32Array を base64エンコードされた PCM16 データに変換する関数
+const base64EncodeAudio = (float32Array: Float32Array) => {
+  const arrayBuffer = floatTo16BitPCM(float32Array)
+  let binary = ''
+  const bytes = new Uint8Array(arrayBuffer)
+  const chunkSize = 0x8000 // 32KB chunk size
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(
+      null,
+      Array.from(bytes.subarray(i, i + chunkSize))
+    )
+  }
+  return btoa(binary)
 }
