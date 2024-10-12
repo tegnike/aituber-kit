@@ -34,6 +34,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       newRecognition.interimResults = true
 
       newRecognition.onresult = (event) => {
+        if (!isListeningRef.current) return
+
         const transcript = Array.from(event.results)
           .map((result) => result[0].transcript)
           .join('')
@@ -92,7 +94,43 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         })
       }
     }
-  }, [recognition, audioContext])
+  }, [recognition, audioContext, realtimeAPIMode])
+
+  const sendAudioBuffer = useCallback(() => {
+    if (audioBufferRef.current && audioBufferRef.current.length > 0) {
+      const base64Chunk = base64EncodeAudio(audioBufferRef.current)
+      const ws = homeStore.getState().ws
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        console.log(
+          'バッファを送信します。長さ:',
+          audioBufferRef.current.length
+        )
+        ws.send(
+          JSON.stringify({
+            type: 'conversation.item.create',
+            item: {
+              type: 'message',
+              role: 'user',
+              content: [
+                {
+                  type: 'input_audio',
+                  audio: base64Chunk,
+                },
+              ],
+            },
+          })
+        )
+        ws.send(
+          JSON.stringify({
+            type: 'response.create',
+          })
+        )
+      }
+      audioBufferRef.current = null // 送信後にバッファをクリア
+    } else {
+      console.error('音声バッファが空です')
+    }
+  }, [])
 
   const stopListening = useCallback(async () => {
     if (recognition && isListeningRef.current) {
@@ -138,43 +176,14 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         isKeyboardTriggered.current = false
       }
     }
-  }, [recognition, mediaRecorder, audioContext])
-
-  const sendAudioBuffer = useCallback(() => {
-    if (audioBufferRef.current && audioBufferRef.current.length > 0) {
-      const base64Chunk = base64EncodeAudio(audioBufferRef.current)
-      const ws = homeStore.getState().ws
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        console.log(
-          'バッファを送信します。長さ:',
-          audioBufferRef.current.length
-        )
-        ws.send(
-          JSON.stringify({
-            type: 'conversation.item.create',
-            item: {
-              type: 'message',
-              role: 'user',
-              content: [
-                {
-                  type: 'input_audio',
-                  audio: base64Chunk,
-                },
-              ],
-            },
-          })
-        )
-        ws.send(
-          JSON.stringify({
-            type: 'response.create',
-          })
-        )
-      }
-      audioBufferRef.current = null // 送信後にバッファをクリア
-    } else {
-      console.error('音声バッファが空です')
-    }
-  }, [])
+  }, [
+    recognition,
+    realtimeAPIMode,
+    mediaRecorder,
+    sendAudioBuffer,
+    audioContext,
+    onChatProcessStart,
+  ])
 
   const toggleListening = useCallback(() => {
     if (isListeningRef.current) {
@@ -225,7 +234,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   return (
     <MessageInput
       userMessage={userMessage}
-      isMicRecording={isListeningRef.current} // isListeningの代わりにisListeningRef.currentを使用
+      isMicRecording={isListeningRef.current}
       onChangeUserMessage={handleInputChange}
       onClickMicButton={toggleListening}
       onClickSendButton={handleSendMessage}

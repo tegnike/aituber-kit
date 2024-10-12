@@ -99,7 +99,7 @@ export const MessageInput = ({
               onKeyDown={handleKeyPress}
               disabled={chatProcessing || slidePlaying || realtimeAPIMode}
               className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"
-              value={chatProcessing ? '' : userMessage}
+              value={userMessage}
               rows={rows}
               style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}
             ></textarea>
