@@ -134,5 +134,12 @@
     "InvalidAIService": "The selected AI service is not valid",
     "MethodNotAllowed": "The request is not appropriate",
     "UnexpectedError": "An unexpected error occurred"
-  }
+  },
+  "MessageReceiver": "Receive instructions from outside",
+  "MessageReceiverDescription": "You can use API to instruct AI characters to speak from outside.",
+  "ClientID": "Client ID",
+  "OpenSendMessagePage": "Open Send Message Page",
+  "RealtimeAPIMode": "Realtime API Mode",
+  "AzureEndpoint": "Azure Endpoint",
+  "AzureDeployment": "Azure Deployment"
 }

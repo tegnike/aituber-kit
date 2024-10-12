@@ -1,6 +1,35 @@
 import { Message } from '../messages/messages'
-import settingsStore from '@/features/stores/settings'
 import i18next from 'i18next'
+import settingsStore, {
+  multiModalAIServiceKey,
+  multiModalAIServices,
+} from '@/features/stores/settings'
+
+const getAIConfig = () => {
+  const ss = settingsStore.getState()
+  const aiService = ss.selectAIService as multiModalAIServiceKey
+
+  if (!multiModalAIServices.includes(aiService)) {
+    throw new Error('Invalid AI service')
+  }
+
+  const apiKeyName = `${aiService}Key` as const
+  const apiKey = ss[apiKeyName]
+
+  if (!apiKey) {
+    throw new Error(
+      `API key for ${aiService} is missing. Unable to proceed with the AI service.`
+    )
+  }
+
+  return {
+    aiApiKey: apiKey,
+    selectAIService: aiService,
+    selectAIModel: ss.selectAIModel,
+    azureEndpoint: ss.azureEndpoint,
+    azureDeployment: ss.azureDeployment,
+  }
+}
 
 function handleApiError(errorCode: string): string {
   const languageCode = settingsStore.getState().selectLanguage
@@ -8,12 +37,15 @@ function handleApiError(errorCode: string): string {
   return i18next.t(`Errors.${errorCode || 'AIAPIError'}`)
 }
 
-export async function getVercelAIChatResponse(
-  messages: Message[],
-  apiKey: string,
-  aiService: string,
-  model: string
-) {
+export async function getVercelAIChatResponse(messages: Message[]) {
+  const {
+    aiApiKey,
+    selectAIService,
+    selectAIModel,
+    azureEndpoint,
+    azureDeployment,
+  } = getAIConfig()
+
   try {
     const response = await fetch('/api/aiChat', {
       method: 'POST',
@@ -22,9 +54,11 @@ export async function getVercelAIChatResponse(
       },
       body: JSON.stringify({
         messages,
-        apiKey,
-        aiService,
-        model,
+        apiKey: aiApiKey,
+        aiService: selectAIService,
+        model: selectAIModel,
+        azureEndpoint: azureEndpoint,
+        azureDeployment: azureDeployment,
         stream: false,
       }),
     })
@@ -32,7 +66,7 @@ export async function getVercelAIChatResponse(
     if (!response.ok) {
       const responseBody = await response.json()
       throw new Error(
-        `API request to ${aiService} failed with status ${response.status} and body ${responseBody.error}`,
+        `API request to ${selectAIService} failed with status ${response.status} and body ${responseBody.error}`,
         { cause: { errorCode: responseBody.errorCode } }
       )
     }
@@ -40,17 +74,23 @@ export async function getVercelAIChatResponse(
     const data = await response.json()
     return { text: data.text }
   } catch (error: any) {
-    console.error(`Error fetching ${aiService} API response:`, error)
-    return { text: handleApiError(error.cause.errorCode) }
+    console.error(`Error fetching ${selectAIService} API response:`, error)
+    const errorCode = error.cause?.errorCode || 'AIAPIError'
+    return { text: handleApiError(errorCode) }
   }
 }
 
 export async function getVercelAIChatResponseStream(
-  messages: Message[],
-  apiKey: string,
-  aiService: string,
-  model: string
+  messages: Message[]
 ): Promise<ReadableStream<string>> {
+  const {
+    aiApiKey,
+    selectAIService,
+    selectAIModel,
+    azureEndpoint,
+    azureDeployment,
+  } = getAIConfig()
+
   const response = await fetch('/api/aiChat', {
     method: 'POST',
     headers: {
@@ -58,9 +98,11 @@ export async function getVercelAIChatResponseStream(
     },
     body: JSON.stringify({
       messages,
-      apiKey,
-      aiService,
-      model,
+      apiKey: aiApiKey,
+      aiService: selectAIService,
+      model: selectAIModel,
+      azureEndpoint: azureEndpoint,
+      azureDeployment: azureDeployment,
       stream: true,
     }),
   })
@@ -69,7 +111,7 @@ export async function getVercelAIChatResponseStream(
     if (!response.ok) {
       const responseBody = await response.json()
       throw new Error(
-        `API request to ${aiService} failed with status ${response.status} and body ${responseBody.error}`,
+        `API request to ${selectAIService} failed with status ${response.status} and body ${responseBody.error}`,
         { cause: { errorCode: responseBody.errorCode } }
       )
     }
@@ -78,7 +120,7 @@ export async function getVercelAIChatResponseStream(
       async start(controller) {
         if (!response.body) {
           throw new Error(
-            `API response from ${aiService} is empty, status ${response.status}`,
+            `API response from ${selectAIService} is empty, status ${response.status}`,
             { cause: { errorCode: 'AIAPIError' } }
           )
         }
@@ -105,15 +147,13 @@ export async function getVercelAIChatResponseStream(
             }
           }
         } catch (error) {
-          console.error(`Error fetching ${aiService} API response:`, error)
+          console.error(
+            `Error fetching ${selectAIService} API response:`,
+            error
+          )
 
-          return new ReadableStream({
-            start(controller) {
-              const errorMessage = handleApiError('AIAPIError')
-              controller.enqueue(errorMessage)
-              controller.close()
-            },
-          })
+          const errorMessage = handleApiError('AIAPIError')
+          controller.enqueue(errorMessage)
         } finally {
           controller.close()
           reader.releaseLock()

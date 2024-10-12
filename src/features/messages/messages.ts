@@ -24,6 +24,7 @@ export type Talk = {
   speakerX: number
   speakerY: number
   message: string
+  buffer?: ArrayBuffer
 }
 
 const emotions = ['neutral', 'happy', 'angry', 'sad', 'relaxed'] as const

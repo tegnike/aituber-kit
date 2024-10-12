@@ -69,12 +69,20 @@ export class Model {
   /**
    * 音声を再生し、リップシンクを行う
    */
-  public async speak(buffer: ArrayBuffer, screenplay: Screenplay) {
+  public async speak(
+    buffer: ArrayBuffer,
+    screenplay: Screenplay,
+    isNeedDecode: boolean = true
+  ) {
     this.emoteController?.playEmotion(screenplay.expression)
     await new Promise((resolve) => {
-      this._lipSync?.playFromArrayBuffer(buffer, () => {
-        resolve(true)
-      })
+      this._lipSync?.playFromArrayBuffer(
+        buffer,
+        () => {
+          resolve(true)
+        },
+        isNeedDecode
+      )
     })
   }
 

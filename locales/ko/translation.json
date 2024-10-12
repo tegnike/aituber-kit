@@ -134,5 +134,12 @@
     "InvalidAIService": "선택한 AI 서비스가 올바르지 않습니다",
     "MethodNotAllowed": "요청이 적절하지 않습니다",
     "UnexpectedError": "예기치 않은 오류가 발생했습니다"
-  }
+  },
+  "MessageReceiver": "외부에서 지시를 받는다",
+  "MessageReceiverDescription": "API를 사용하여 AI 캐릭터의 말을 외부에서 지시할 수 있습니다.",
+  "ClientID": "Client ID",
+  "OpenSendMessagePage": "메시지 보내기 페이지 열기",
+  "RealtimeAPIMode": "리얼타임 API 모드",
+  "AzureEndpoint": "Azure Endpoint",
+  "AzureDeployment": "Azure Deployment"
 }

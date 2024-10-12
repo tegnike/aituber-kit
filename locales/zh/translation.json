@@ -134,5 +134,12 @@
     "InvalidAIService": "选择的 AI 服务不正确",
     "MethodNotAllowed": "请求不适当",
     "UnexpectedError": "意外的错误发生"
-  }
+  },
+  "MessageReceiver": "接收外部指示",
+  "MessageReceiverDescription": "你可以使用 API 来指示 AI 角色从外部说话。",
+  "ClientID": "Client ID",
+  "OpenSendMessagePage": "開啟發送訊息頁面",
+  "RealtimeAPIMode": "實時API模式",
+  "AzureEndpoint": "Azure Endpoint",
+  "AzureDeployment": "Azure Deployment"
 }

@@ -220,6 +220,9 @@ npm run dev
   <a href="https://github.com/gijigae" title="gijigae">
     <img src="https://github.com/gijigae.png" width="40" height="40" alt="gijigae">
   </a>
+  <a href="https://github.com/takm-reason" title="takm-reason">
+    <img src="https://github.com/takm-reason.png" width="40" height="40" alt="takm-reason">
+  </a>
 </p>
 
 그 외, 다수의 비공개 스폰서
