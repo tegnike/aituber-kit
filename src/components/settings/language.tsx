@@ -25,10 +25,7 @@ const LanguageSetting = () => {
 
             switch (newLanguage) {
               case 'ja':
-                settingsStore.setState({
-                  selectLanguage: 'ja',
-                  selectVoiceLanguage: 'ja-JP',
-                })
+                settingsStore.setState({ selectLanguage: 'ja' })
 
                 i18n.changeLanguage('ja')
                 break
@@ -38,7 +35,6 @@ const LanguageSetting = () => {
                 if (jaVoiceSelected) {
                   settingsStore.setState({ selectVoice: 'google' })
                 }
-                settingsStore.setState({ selectVoiceLanguage: 'en-US' })
 
                 i18n.changeLanguage('en')
                 break
@@ -48,7 +44,6 @@ const LanguageSetting = () => {
                 if (jaVoiceSelected) {
                   settingsStore.setState({ selectVoice: 'google' })
                 }
-                settingsStore.setState({ selectVoiceLanguage: 'zh-TW' })
 
                 i18n.changeLanguage('zh-TW')
                 break
@@ -58,7 +53,6 @@ const LanguageSetting = () => {
                 if (jaVoiceSelected) {
                   settingsStore.setState({ selectVoice: 'google' })
                 }
-                settingsStore.setState({ selectVoiceLanguage: 'ko-KR' })
 
                 i18n.changeLanguage('ko')
                 break

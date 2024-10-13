@@ -81,7 +81,6 @@ interface Character {
 
 interface General {
   selectLanguage: Language
-  selectVoiceLanguage: VoiceLanguage
   changeEnglishToJapanese: boolean
   showControlPanel: boolean
   webSocketMode: boolean
@@ -105,7 +104,7 @@ const settingsStore = create<SettingsState>()(
       openaiKey: '',
       anthropicKey: '',
       googleKey: '',
-      azureKey: '',
+      azureKey: process.env.NEXT_PUBLIC_AZURE_KEY || '',
       groqKey: '',
       cohereKey: '',
       mistralaiKey: '',
@@ -115,8 +114,8 @@ const settingsStore = create<SettingsState>()(
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
-      azureEndpoint: '',
-      azureDeployment: '',
+      azureEndpoint: process.env.NEXT_PUBLIC_AZURE_ENDPOINT || '',
+      azureDeployment: process.env.NEXT_PUBLIC_AZURE_DEPLOYMENT || '',
 
       // Model Provider
       selectAIService:
@@ -181,9 +180,6 @@ const settingsStore = create<SettingsState>()(
       // General
       selectLanguage:
         (process.env.NEXT_PUBLIC_SELECT_LANGUAGE as Language) || 'ja',
-      selectVoiceLanguage:
-        (process.env.NEXT_PUBLIC_SELECT_VOICE_LANGUAGE as VoiceLanguage) ||
-        'ja-JP',
       changeEnglishToJapanese:
         process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
@@ -240,7 +236,6 @@ const settingsStore = create<SettingsState>()(
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
         selectLanguage: state.selectLanguage,
-        selectVoiceLanguage: state.selectVoiceLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         webSocketMode: state.webSocketMode,
         realtimeAPIMode: state.realtimeAPIMode,

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { MessageInput } from '@/components/messageInput'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
+import { VoiceLanguage } from '@/features/constants/settings'
 
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
@@ -23,13 +24,30 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
 
+  const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
+    switch (selectLanguage) {
+      case 'ja':
+        return 'ja-JP'
+      case 'en':
+        return 'en-US'
+      case 'zh':
+        return 'zh-TW'
+      case 'zh-TW':
+        return 'zh-TW'
+      case 'ko':
+        return 'ko-KR'
+      default:
+        return 'ja-JP'
+    }
+  }
+
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition
     if (SpeechRecognition) {
       const newRecognition = new SpeechRecognition()
       const ss = settingsStore.getState()
-      newRecognition.lang = ss.selectVoiceLanguage
+      newRecognition.lang = getVoiceLanguageCode(ss.selectLanguage)
       newRecognition.continuous = true
       newRecognition.interimResults = true
 
