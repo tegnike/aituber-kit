@@ -23,6 +23,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const audioBufferRef = useRef<Float32Array | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
+  const [isListening, setIsListening] = useState(false)
 
   const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
     switch (selectLanguage) {
@@ -86,7 +87,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       } catch (error) {
         console.error('Error starting recognition:', error)
       }
-      isListeningRef.current = true // setIsListeningの代わりに直接更新
+      isListeningRef.current = true
+      setIsListening(true)
 
       if (realtimeAPIMode) {
         audioChunksRef.current = [] // 音声チャンクをリセット
@@ -153,7 +155,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const stopListening = useCallback(async () => {
     if (recognition && isListeningRef.current) {
       recognition.stop()
-      isListeningRef.current = false // setIsListeningの代わりに直接更新
+      isListeningRef.current = false
+      setIsListening(false)
 
       if (realtimeAPIMode) {
         if (mediaRecorder) {
@@ -207,6 +210,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     if (isListeningRef.current) {
       stopListening()
     } else {
+      keyPressStartTime.current = Date.now()
+      isKeyboardTriggered.current = true
       startListening()
     }
   }, [startListening, stopListening])
@@ -252,7 +257,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   return (
     <MessageInput
       userMessage={userMessage}
-      isMicRecording={isListeningRef.current}
+      isMicRecording={isListening} // useState の値を使用
       onChangeUserMessage={handleInputChange}
       onClickMicButton={toggleListening}
       onClickSendButton={handleSendMessage}
