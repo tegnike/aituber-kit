@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { MessageInput } from '@/components/messageInput'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
+import { VoiceLanguage } from '@/features/constants/settings'
 
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
@@ -22,6 +23,24 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const audioBufferRef = useRef<Float32Array | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
+  const [isListening, setIsListening] = useState(false)
+
+  const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
+    switch (selectLanguage) {
+      case 'ja':
+        return 'ja-JP'
+      case 'en':
+        return 'en-US'
+      case 'zh':
+        return 'zh-TW'
+      case 'zh-TW':
+        return 'zh-TW'
+      case 'ko':
+        return 'ko-KR'
+      default:
+        return 'ja-JP'
+    }
+  }
 
   useEffect(() => {
     const SpeechRecognition =
@@ -29,7 +48,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     if (SpeechRecognition) {
       const newRecognition = new SpeechRecognition()
       const ss = settingsStore.getState()
-      newRecognition.lang = ss.selectVoiceLanguage
+      newRecognition.lang = getVoiceLanguageCode(ss.selectLanguage)
       newRecognition.continuous = true
       newRecognition.interimResults = true
 
@@ -68,7 +87,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       } catch (error) {
         console.error('Error starting recognition:', error)
       }
-      isListeningRef.current = true // setIsListeningの代わりに直接更新
+      isListeningRef.current = true
+      setIsListening(true)
 
       if (realtimeAPIMode) {
         audioChunksRef.current = [] // 音声チャンクをリセット
@@ -135,7 +155,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const stopListening = useCallback(async () => {
     if (recognition && isListeningRef.current) {
       recognition.stop()
-      isListeningRef.current = false // setIsListeningの代わりに直接更新
+      isListeningRef.current = false
+      setIsListening(false)
 
       if (realtimeAPIMode) {
         if (mediaRecorder) {
@@ -189,6 +210,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     if (isListeningRef.current) {
       stopListening()
     } else {
+      keyPressStartTime.current = Date.now()
+      isKeyboardTriggered.current = true
       startListening()
     }
   }, [startListening, stopListening])
@@ -234,7 +257,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   return (
     <MessageInput
       userMessage={userMessage}
-      isMicRecording={isListeningRef.current}
+      isMicRecording={isListening} // useState の値を使用
       onChangeUserMessage={handleInputChange}
       onClickMicButton={toggleListening}
       onClickSendButton={handleSendMessage}

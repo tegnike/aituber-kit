@@ -216,7 +216,10 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           'openai-beta.realtime-v1',
         ])
       } else if (ss.selectAIService === 'azure') {
-        const url = `${ss.azureEndpoint}/openai/realtime?api-version=2024-10-01-preview&deployment=${ss.azureDeployment}&api-key=${ss.azureKey}`
+        const url =
+          `${ss.azureEndpoint}&api-key=${ss.azureKey}` ||
+          `${process.env.AZURE_ENDPOINT}&api-key=${ss.azureKey}` ||
+          ''
         ws = new WebSocket(url, [])
       } else {
         return null

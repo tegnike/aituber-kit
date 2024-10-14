@@ -29,26 +29,8 @@ export const Introduction = () => {
 
     let languageCode = i18n.language
 
-    const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
-      switch (selectLanguage) {
-        case 'ja':
-          return 'ja-JP'
-        case 'en':
-          return 'en-US'
-        case 'zh':
-          return 'zh-TW'
-        case 'zh-TW':
-          return 'zh-TW'
-        case 'ko':
-          return 'ko-KR'
-        default:
-          return 'ja-JP'
-      }
-    }
-
     settingsStore.setState({
       selectLanguage: isLanguageSupported(languageCode) ? languageCode : 'ja',
-      selectVoiceLanguage: getVoiceLanguageCode(languageCode),
     })
   }
 

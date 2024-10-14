@@ -140,6 +140,5 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "Open Send Message Page",
   "RealtimeAPIMode": "Realtime API Mode",
-  "AzureEndpoint": "Azure Endpoint",
-  "AzureDeployment": "Azure Deployment"
+  "AzureEndpoint": "Azure Endpoint"
 }
