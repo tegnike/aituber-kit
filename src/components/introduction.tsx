@@ -6,10 +6,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { IconButton } from './iconButton'
 import { Link } from './link'
-import {
-  VoiceLanguage,
-  isLanguageSupported,
-} from '@/features/constants/settings'
+import { isLanguageSupported } from '@/features/constants/settings'
 
 export const Introduction = () => {
   const showIntroduction = homeStore((s) => s.showIntroduction)
