@@ -32,7 +32,6 @@ interface APIKeys {
   youtubeApiKey: string
   elevenlabsApiKey: string
   azureEndpoint: string
-  azureDeployment: string
 }
 
 interface ModelProvider {
@@ -101,7 +100,7 @@ const settingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
       // API Keys
-      openaiKey: '',
+      openaiKey: process.env.NEXT_PUBLIC_OPENAI_KEY || '',
       anthropicKey: '',
       googleKey: '',
       azureKey: process.env.NEXT_PUBLIC_AZURE_KEY || '',
@@ -115,7 +114,6 @@ const settingsStore = create<SettingsState>()(
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
       azureEndpoint: process.env.NEXT_PUBLIC_AZURE_ENDPOINT || '',
-      azureDeployment: process.env.NEXT_PUBLIC_AZURE_DEPLOYMENT || '',
 
       // Model Provider
       selectAIService:
@@ -206,7 +204,6 @@ const settingsStore = create<SettingsState>()(
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
         azureEndpoint: state.azureEndpoint,
-        azureDeployment: state.azureDeployment,
         selectAIService: state.selectAIService,
         selectAIModel: state.selectAIModel,
         localLlmUrl: state.localLlmUrl,

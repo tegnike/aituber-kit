@@ -140,6 +140,5 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "開啟發送訊息頁面",
   "RealtimeAPIMode": "實時API模式",
-  "AzureEndpoint": "Azure Endpoint",
-  "AzureDeployment": "Azure Deployment"
+  "AzureEndpoint": "Azure Endpoint"
 }

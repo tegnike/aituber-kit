@@ -17,7 +17,6 @@ const ModelProvider = () => {
   const googleKey = settingsStore((s) => s.googleKey)
   const azureKey = settingsStore((s) => s.azureKey)
   const azureEndpoint = settingsStore((s) => s.azureEndpoint)
-  const azureDeployment = settingsStore((s) => s.azureDeployment)
   const groqKey = settingsStore((s) => s.groqKey)
   const cohereKey = settingsStore((s) => s.cohereKey)
   const mistralaiKey = settingsStore((s) => s.mistralaiKey)
@@ -316,9 +315,11 @@ const ModelProvider = () => {
                   {t('AzureEndpoint')}
                 </div>
                 <div className="my-16">
-                  Chat API ex. https://RESOURCE_NAME.openai.azure.com
+                  Chat API ex.
+                  https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION
                   <br />
-                  Realtime API ex. wss://RESOURCE_NAME.openai.azure.com
+                  Realtime API ex.
+                  https://RESOURCE_NAME.openai.azure.com/openai/realtime?api-version=API_VERSION&deployment=DEPLOYMENT_NAME
                 </div>
                 <input
                   className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
@@ -327,20 +328,6 @@ const ModelProvider = () => {
                   value={azureEndpoint}
                   onChange={(e) =>
                     settingsStore.setState({ azureEndpoint: e.target.value })
-                  }
-                />
-              </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('AzureDeployment')}
-                </div>
-                <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-                  type="text"
-                  placeholder="..."
-                  value={azureDeployment}
-                  onChange={(e) =>
-                    settingsStore.setState({ azureDeployment: e.target.value })
                   }
                 />
               </div>

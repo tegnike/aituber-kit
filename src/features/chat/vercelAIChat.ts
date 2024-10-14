@@ -27,7 +27,6 @@ const getAIConfig = () => {
     selectAIService: aiService,
     selectAIModel: ss.selectAIModel,
     azureEndpoint: ss.azureEndpoint,
-    azureDeployment: ss.azureDeployment,
   }
 }
 
@@ -38,13 +37,8 @@ function handleApiError(errorCode: string): string {
 }
 
 export async function getVercelAIChatResponse(messages: Message[]) {
-  const {
-    aiApiKey,
-    selectAIService,
-    selectAIModel,
-    azureEndpoint,
-    azureDeployment,
-  } = getAIConfig()
+  const { aiApiKey, selectAIService, selectAIModel, azureEndpoint } =
+    getAIConfig()
 
   try {
     const response = await fetch('/api/aiChat', {
@@ -58,7 +52,6 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         aiService: selectAIService,
         model: selectAIModel,
         azureEndpoint: azureEndpoint,
-        azureDeployment: azureDeployment,
         stream: false,
       }),
     })
@@ -83,13 +76,8 @@ export async function getVercelAIChatResponse(messages: Message[]) {
 export async function getVercelAIChatResponseStream(
   messages: Message[]
 ): Promise<ReadableStream<string>> {
-  const {
-    aiApiKey,
-    selectAIService,
-    selectAIModel,
-    azureEndpoint,
-    azureDeployment,
-  } = getAIConfig()
+  const { aiApiKey, selectAIService, selectAIModel, azureEndpoint } =
+    getAIConfig()
 
   const response = await fetch('/api/aiChat', {
     method: 'POST',
@@ -102,7 +90,6 @@ export async function getVercelAIChatResponseStream(
       aiService: selectAIService,
       model: selectAIModel,
       azureEndpoint: azureEndpoint,
-      azureDeployment: azureDeployment,
       stream: true,
     }),
   })
