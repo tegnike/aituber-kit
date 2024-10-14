@@ -3,12 +3,7 @@ import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
-import {
-  AIService,
-  AIVoice,
-  Language,
-  VoiceLanguage,
-} from '../constants/settings'
+import { AIService, AIVoice, Language } from '../constants/settings'
 
 export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
@@ -173,7 +168,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
       showCharacterName:
         process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
-      systemPrompt: SYSTEM_PROMPT,
+      systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
 
       // General
       selectLanguage:
