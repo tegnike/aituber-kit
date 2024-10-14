@@ -140,6 +140,5 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "메시지 보내기 페이지 열기",
   "RealtimeAPIMode": "리얼타임 API 모드",
-  "AzureEndpoint": "Azure Endpoint",
-  "AzureDeployment": "Azure Deployment"
+  "AzureEndpoint": "Azure Endpoint"
 }
