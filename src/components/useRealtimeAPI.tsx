@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import RealtimeAPITools from './realtimeAPITools'
+import realtimeAPIToolsConfig from './realtimeAPITools.json'
 
 ///取得したコメントをストックするリストの作成（tmpMessages）
 interface TmpMessage {
@@ -110,26 +112,32 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
     const handleOpen = (event: Event) => {
       console.log('WebSocket connection opened:', event)
       if (ws) {
-        ws.send(
-          JSON.stringify({
-            type: 'session.update',
-            session: {
-              modalities: ['text', 'audio'],
-              instructions: ss.systemPrompt,
-              voice: 'shimmer',
-              input_audio_format: 'pcm16',
-              output_audio_format: 'pcm16',
-              input_audio_transcription: {
-                model: 'whisper-1',
-              },
-              turn_detection: null,
-              temperature: 0.8,
-              max_response_output_tokens: 4096,
+        const wsConfig = {
+          type: 'session.update',
+          session: {
+            modalities: ['text', 'audio'],
+            instructions: ss.systemPrompt,
+            voice: 'shimmer',
+            input_audio_format: 'pcm16',
+            output_audio_format: 'pcm16',
+            input_audio_transcription: {
+              model: 'whisper-1',
             },
-          })
-        )
+            turn_detection: null,
+            temperature: 0.8,
+            max_response_output_tokens: 4096,
+          },
+        }
+        // realtimeAPITools.jsonからツール情報を取得
+        if (realtimeAPIToolsConfig && realtimeAPIToolsConfig.length > 0) {
+          ;(wsConfig.session as any).tools = realtimeAPIToolsConfig
+          ;(wsConfig.session as any).tool_choice = 'auto'
+        }
+        const wsConfigString = JSON.stringify(wsConfig)
+        ws.send(wsConfigString)
       }
     }
+
     const handleMessage = (event: MessageEvent) => {
       const jsonData = JSON.parse(event.data)
       console.log('Received message:', jsonData.type)
@@ -172,6 +180,41 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         case 'conversation.item.input_audio_transcription.completed':
           console.log('音声データの音声認識が完了しました', jsonData)
           break
+        case 'response.function_call_arguments.done':
+          console.log('response.function_call_arguments.done: 開始', jsonData)
+          if (jsonData.name && jsonData.arguments && jsonData.call_id) {
+            const { name: funcName, arguments: argsString, call_id } = jsonData
+            console.log('関数呼び出し情報:', { funcName, argsString, call_id })
+            try {
+              const args = JSON.parse(argsString)
+              console.log('パース済み引数:', args)
+              if (funcName in RealtimeAPITools) {
+                console.log(`関数 ${funcName} を実行します`)
+                const result = (RealtimeAPITools as any)[funcName](
+                  ...Object.values(args)
+                )
+                if (result instanceof Promise) {
+                  result.then((res) => {
+                    console.log('Promise結果:', res)
+                    sendFunctionCallOutput(call_id, res)
+                  })
+                } else {
+                  console.log('同期結果:', result)
+                  sendFunctionCallOutput(call_id, result)
+                }
+              } else {
+                console.log(
+                  `関数 ${funcName} は RealtimeAPITools に存在しません`
+                )
+              }
+            } catch (error) {
+              console.error('関数引数のパースエラー:', error)
+            }
+          } else {
+            console.log('必要な情報が不足しています:', jsonData)
+          }
+          console.log('response.function_call_arguments.done: 終了')
+          break
       }
 
       if (
@@ -179,7 +222,8 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           accumulatedAudioDataRef.current?.buffer?.byteLength > 100_000) ||
         jsonData.type === 'response.audio.done'
       ) {
-        const arrayBuffer = accumulatedAudioDataRef.current.buffer
+        const arrayBuffer = accumulatedAudioDataRef.current
+          .buffer as ArrayBuffer
         // 累積データをリセット
         accumulatedAudioDataRef.current = new Int16Array()
         try {
@@ -197,9 +241,34 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         }
       }
     }
+
+    const sendFunctionCallOutput = (callId: string, output: any) => {
+      const response = {
+        type: 'conversation.item.create',
+        item: {
+          type: 'function_call_output',
+          call_id: callId,
+          output: JSON.stringify(output),
+        },
+      }
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(response))
+        ws.send(
+          JSON.stringify({
+            type: 'response.create',
+          })
+        )
+      } else {
+        console.error(
+          'WebSocket is not open. Cannot send function call output.'
+        )
+      }
+    }
+
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)
     }
+
     const handleClose = (event: Event) => {
       console.log('WebSocket connection closed:', event)
     }
