@@ -1,5 +1,5 @@
 class RealtimeAPITools {
-  async get_weather(
+  async get_current_weather(
     latitude: number,
     longitude: number,
     timezone: string,

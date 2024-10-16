@@ -1,8 +1,8 @@
 [
   {
     "type": "function",
-    "name": "get_weather",
-    "description": "Retrieves the current weather for a given timezone, latitude, longitude coordinate pair. Specify a label for the location. Please respond to the user before calling the tool",
+    "name": "get_current_weather",
+    "description": "Retrieves the current weather for a given timezone, latitude, longitude coordinate pair. Specify a label for the location.",
     "parameters": {
       "type": "object",
       "properties": {
