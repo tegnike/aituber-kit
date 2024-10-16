@@ -102,7 +102,7 @@
   "GSVITTSModelID": "GSVI TTS Model ID",
   "GSVITTSBatchSize": "GSVI TTS Batch Size (1 ~ 100 The larger the value, the faster the inference speed, but it might exhaust memory if too large.)",
   "GSVITTSSpeechRate": "Speech Rate (0.5 ~ 2.0 The bigger the value, the faster it is.)",
-  "UsingElevenLabs": "Using ElevenLabs",
+  "UsingElevenLabs": "ElevenLabs",
   "ElevenLabsInfo": "ElevenLabs API is used. It supports multiple languages. API key can be obtained from the URL below.",
   "ElevenLabsApiKey": "ElevenLabs API Key",
   "ElevenLabsVoiceId": "ElevenLabs Voice ID",
