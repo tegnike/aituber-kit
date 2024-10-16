@@ -6,6 +6,8 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - .:/work
+      - .:/app
+      - /app/node_modules
     env_file:
       - .env
+    command: npm run dev
