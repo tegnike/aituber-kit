@@ -138,19 +138,19 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       }
     }
 
-    const handleMessage = (event: MessageEvent) => {
+    const handleMessage = async (event: MessageEvent) => {
       const jsonData = JSON.parse(event.data)
       console.log('Received message:', jsonData.type)
 
       switch (jsonData.type) {
         case 'error':
-          console.log('エラーデータを受信しました', jsonData)
+          console.log('Received error data', jsonData)
           break
         case 'conversation.item.created':
-          console.log('コンテキストデータを受信しました', jsonData)
+          console.log('Received context data', jsonData)
           break
         case 'response.audio.delta':
-          console.log('オーディオデータを受信しました', jsonData)
+          console.log('Received audio data', jsonData)
           if (jsonData.delta) {
             const arrayBuffer = base64ToArrayBuffer(jsonData.delta)
             if (arrayBuffer.byteLength > 0) {
@@ -161,10 +161,10 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
                 appendValues
               )
             } else {
-              console.error('無効なオーディオバッファーを受信しました')
+              console.error('Received invalid audio buffer')
             }
           } else {
-            console.error('無効なオーディオバッファーを受信しました')
+            console.error('Received invalid audio buffer')
           }
           break
         case 'response.content_part.done':
@@ -178,42 +178,30 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           }
           break
         case 'conversation.item.input_audio_transcription.completed':
-          console.log('音声データの音声認識が完了しました', jsonData)
+          console.log('Audio data transcription completed', jsonData)
           break
         case 'response.function_call_arguments.done':
-          console.log('response.function_call_arguments.done: 開始', jsonData)
+          console.log('Function call arguments completed', jsonData)
           if (jsonData.name && jsonData.arguments && jsonData.call_id) {
             const { name: funcName, arguments: argsString, call_id } = jsonData
-            console.log('関数呼び出し情報:', { funcName, argsString, call_id })
             try {
               const args = JSON.parse(argsString)
-              console.log('パース済み引数:', args)
               if (funcName in RealtimeAPITools) {
-                console.log(`関数 ${funcName} を実行します`)
-                const result = (RealtimeAPITools as any)[funcName](
+                console.log(`Executing function ${funcName}`)
+                const result = await (RealtimeAPITools as any)[funcName](
                   ...Object.values(args)
                 )
-                if (result instanceof Promise) {
-                  result.then((res) => {
-                    console.log('Promise結果:', res)
-                    sendFunctionCallOutput(call_id, res)
-                  })
-                } else {
-                  console.log('同期結果:', result)
-                  sendFunctionCallOutput(call_id, result)
-                }
+                console.log('関数実行結果:', result)
+                sendFunctionCallOutput(call_id, result)
               } else {
                 console.log(
-                  `関数 ${funcName} は RealtimeAPITools に存在しません`
+                  `Error: Function ${funcName} is not defined in RealtimeAPITools`
                 )
               }
             } catch (error) {
               console.error('関数引数のパースエラー:', error)
             }
-          } else {
-            console.log('必要な情報が不足しています:', jsonData)
           }
-          console.log('response.function_call_arguments.done: 終了')
           break
       }
 
@@ -242,7 +230,10 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       }
     }
 
-    const sendFunctionCallOutput = (callId: string, output: any) => {
+    const sendFunctionCallOutput = (
+      callId: string,
+      output: Record<string, unknown>
+    ) => {
       const response = {
         type: 'conversation.item.create',
         item: {
