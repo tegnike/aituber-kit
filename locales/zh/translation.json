@@ -100,7 +100,7 @@
   "GSVITTSInfo": "GSVI TTS 設定",
   "GSVITTSServerUrl": "語音推理端點URL",
   "GSVITTSModelID": "GSVI TTS 模型ID",
-  "GSVITTSBatchSize": "GSVI TTS 批次大小 (1 ~ 100 數值越大推理速度越快，太大可能會用完記憶體)",
+  "GSVITTSBatchSize": "GSVI TTS 批次大小 (1 ~ 100 數值越大推理速���越快，太大可能會用完記憶體)",
   "GSVITTSSpeechRate": "語速 (0.5 ~ 2.0 數字越大越快)",
   "UsingElevenLabs": "使用 ElevenLabs",
   "ElevenLabsInfo": "使用 ElevenLabs API。支持多种语言。请从下面的URL获取API密钥。",
@@ -140,5 +140,13 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "開啟發送訊息頁面",
   "RealtimeAPIMode": "實時API模式",
-  "AzureEndpoint": "Azure Endpoint"
+  "AzureEndpoint": "Azure Endpoint",
+  "Toasts": {
+    "WebSocketConnectionError": "WebSocket连接发生错误",
+    "WebSocketConnectionClosed": "WebSocket连接已关闭",
+    "WebSocketConnectionAttempt": "正在尝试WebSocket连接...",
+    "WebSocketConnectionSuccess": "WebSocket连接成功",
+    "FunctionExecuting": "正在执行{{funcName}}",
+    "FunctionExecutionFailed": "{{funcName}}执行失败"
+  }
 }

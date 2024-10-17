@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -21,6 +22,7 @@ interface Params {
 }
 
 const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
+  const { t } = useTranslation()
   const webSocketMode = settingsStore((s) => s.webSocketMode)
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
 
@@ -61,7 +63,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
       console.log('WebSocket connection opened:', event)
       removeToast()
       toastStore.getState().addToast({
-        message: 'WebSocket接続に成功しました',
+        message: t('Toasts.WebSocketConnectionSuccess'),
         type: 'success',
         duration: 3000,
         tag: 'websocket-connection-success',
@@ -74,12 +76,19 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
     }
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)
+      removeToast()
+      toastStore.getState().addToast({
+        message: t('Toasts.WebSocketConnectionError'),
+        type: 'error',
+        duration: 5000,
+        tag: 'websocket-connection-error',
+      })
     }
     const handleClose = (event: Event) => {
       console.log('WebSocket connection closed:', event)
       removeToast()
       toastStore.getState().addToast({
-        message: 'WebSocket接続が閉じられました',
+        message: t('Toasts.WebSocketConnectionClosed'),
         type: 'error',
         duration: 3000,
         tag: 'websocket-connection-close',
@@ -89,7 +98,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
     function setupWebsocket() {
       removeToast()
       toastStore.getState().addToast({
-        message: 'WebSocket接続を試みています...',
+        message: t('Toasts.WebSocketConnectionAttempt'),
         type: 'info',
         duration: 10000,
         tag: 'websocket-connection-info',
@@ -125,7 +134,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
       ws.close()
       homeStore.setState({ ws: null })
     }
-  }, [webSocketMode])
+  }, [webSocketMode, t])
 
   return null
 }

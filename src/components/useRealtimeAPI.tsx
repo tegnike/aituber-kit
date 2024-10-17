@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -25,6 +26,7 @@ interface Params {
 }
 
 const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
+  const { t } = useTranslation()
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const accumulatedAudioDataRef = useRef<Int16Array>(new Int16Array())
 
@@ -120,7 +122,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       console.log('WebSocket connection opened:', event)
       removeToast()
       toastStore.getState().addToast({
-        message: 'WebSocket接続に成功しました',
+        message: t('Toasts.WebSocketConnectionSuccess'),
         type: 'success',
         duration: 3000,
         tag: 'websocket-connection-success',
@@ -198,22 +200,40 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           console.log('Function call arguments completed', jsonData)
           if (jsonData.name && jsonData.arguments && jsonData.call_id) {
             const { name: funcName, arguments: argsString, call_id } = jsonData
+            let toastId: string | null = null
             try {
               const args = JSON.parse(argsString)
               if (funcName in RealtimeAPITools) {
                 console.log(`Executing function ${funcName}`)
+                toastId = toastStore.getState().addToast({
+                  message: t('Toasts.FunctionExecuting', { funcName }),
+                  type: 'info',
+                  duration: 120000,
+                  tag: `run-${funcName}`,
+                })
                 const result = await (RealtimeAPITools as any)[funcName](
                   ...Object.values(args)
                 )
-                console.log('関数実行結果:', result)
                 sendFunctionCallOutput(call_id, result)
+                if (toastId) {
+                  toastStore.getState().removeToast(toastId)
+                }
               } else {
                 console.log(
                   `Error: Function ${funcName} is not defined in RealtimeAPITools`
                 )
               }
             } catch (error) {
-              console.error('関数引数のパースエラー:', error)
+              console.error('Error parsing function arguments:', error)
+              if (toastId) {
+                toastStore.getState().removeToast(toastId)
+              }
+              toastId = toastStore.getState().addToast({
+                message: t('Toasts.FunctionExecutionFailed', { funcName }),
+                type: 'error',
+                duration: 3000,
+                tag: `run-${funcName}`,
+              })
             }
           }
           break
@@ -274,7 +294,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       console.error('WebSocket error:', event)
       removeToast()
       toastStore.getState().addToast({
-        message: 'WebSocket接続にエラーが発生しました',
+        message: t('Toasts.WebSocketConnectionError'),
         type: 'error',
         duration: 5000,
         tag: 'websocket-connection-error',
@@ -285,7 +305,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       console.log('WebSocket connection closed:', event)
       removeToast()
       toastStore.getState().addToast({
-        message: 'WebSocket接続が閉じられました',
+        message: t('Toasts.WebSocketConnectionClosed'),
         type: 'error',
         duration: 3000,
         tag: 'websocket-connection-close',
@@ -297,7 +317,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
       removeToast()
       toastStore.getState().addToast({
-        message: 'WebSocket接続を試みています...',
+        message: t('Toasts.WebSocketConnectionAttempt'),
         type: 'info',
         duration: 10000,
         tag: 'websocket-connection-info',
@@ -354,7 +374,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         homeStore.setState({ ws: null })
       }
     }
-  }, [realtimeAPIMode, processMessage])
+  }, [realtimeAPIMode, processMessage, t])
 
   return null
 }
