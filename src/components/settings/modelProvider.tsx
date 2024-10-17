@@ -319,7 +319,7 @@ const ModelProvider = () => {
                   https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION
                   <br />
                   Realtime API ex.
-                  https://RESOURCE_NAME.openai.azure.com/openai/realtime?api-version=API_VERSION&deployment=DEPLOYMENT_NAME
+                  wss://RESOURCE_NAME.openai.azure.com/openai/realtime?api-version=API_VERSION&deployment=DEPLOYMENT_NAME
                 </div>
                 <input
                   className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
