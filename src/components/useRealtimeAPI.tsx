@@ -4,6 +4,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import RealtimeAPITools from './realtimeAPITools'
 import realtimeAPIToolsConfig from './realtimeAPITools.json'
+import toastStore from '@/features/stores/toast'
 
 ///取得したコメントをストックするリストの作成（tmpMessages）
 interface TmpMessage {
@@ -104,13 +105,26 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
     return true
   }
 
-  // WebSocket接続の設定（既存のコード）
+  // WebSocket接続の設定
   useEffect(() => {
     const ss = settingsStore.getState()
     if (!ss.realtimeAPIMode || !ss.selectAIService) return
 
+    let connectionToastId: string | null = null
+
     const handleOpen = (event: Event) => {
       console.log('WebSocket connection opened:', event)
+      toastStore.getState().removeToast('websocket-connection-error')
+      toastStore.getState().removeToast('websocket-connection-close')
+      if (connectionToastId) {
+        toastStore.getState().removeToast(connectionToastId)
+      }
+      connectionToastId = toastStore.getState().addToast({
+        message: 'WebSocket接続に成功しました',
+        type: 'success',
+        duration: 3000,
+        tag: 'websocket-connection-success',
+      })
       if (ws) {
         const wsConfig = {
           type: 'session.update',
@@ -258,14 +272,42 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)
+      if (connectionToastId) {
+        toastStore.getState().removeToast(connectionToastId)
+      }
+      connectionToastId = toastStore.getState().addToast({
+        message: 'WebSocket接続にエラーが発生しました',
+        type: 'error',
+        duration: 5000,
+        tag: 'websocket-connection-error',
+      })
     }
 
     const handleClose = (event: Event) => {
       console.log('WebSocket connection closed:', event)
+      if (connectionToastId) {
+        toastStore.getState().removeToast(connectionToastId)
+      }
+      connectionToastId = toastStore.getState().addToast({
+        message: 'WebSocket接続が閉じられました',
+        type: 'error',
+        duration: 3000,
+        tag: 'websocket-connection-close',
+      })
     }
 
     function setupWebsocket() {
       let ws: WebSocket
+
+      if (connectionToastId) {
+        toastStore.getState().removeToast(connectionToastId)
+      }
+      connectionToastId = toastStore.getState().addToast({
+        message: 'WebSocket接続を試みています...',
+        type: 'info',
+        duration: 10000,
+        tag: 'websocket-connection-info',
+      })
 
       if (ss.selectAIService === 'openai') {
         const url =
@@ -316,6 +358,9 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       if (ws) {
         ws.close()
         homeStore.setState({ ws: null })
+      }
+      if (connectionToastId) {
+        toastStore.getState().removeToast(connectionToastId)
       }
     }
   }, [realtimeAPIMode, processMessage])

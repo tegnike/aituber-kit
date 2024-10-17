@@ -5,15 +5,15 @@ export interface Toast {
   message: string
   type: 'success' | 'error' | 'info'
   duration?: number
-  tag?: string // タグプロパティを追加
+  tag?: string
   closing?: boolean
 }
 
 interface ToastState {
   toasts: Toast[]
   addToast: (toast: Omit<Toast, 'id'>) => string | null
-  removeToast: (id: string) => void
-  closeToast: (id: string) => void
+  removeToast: (identifier: string) => void
+  closeToast: (identifier: string) => void
 }
 
 const toastStore = create<ToastState>((set, get) => ({
@@ -22,7 +22,6 @@ const toastStore = create<ToastState>((set, get) => ({
     const { tag } = toast
     const currentToasts = get().toasts
 
-    // タグが指定されていて、同じタグのトーストが既に存在する場合は追加しない
     if (tag && currentToasts.some((t) => t.tag === tag)) {
       return null
     }
@@ -33,22 +32,27 @@ const toastStore = create<ToastState>((set, get) => ({
     }))
     return id
   },
-  removeToast: (id) =>
+  removeToast: (identifier) =>
     set((state) => ({
-      toasts: state.toasts.filter((toast) => toast.id !== id),
+      toasts: state.toasts.filter(
+        (toast) => toast.id !== identifier && toast.tag !== identifier
+      ),
     })),
-  closeToast: (id) => {
+  closeToast: (identifier) => {
     set((state) => ({
       toasts: state.toasts.map((toast) =>
-        toast.id === id ? { ...toast, closing: true } : toast
+        toast.id === identifier || toast.tag === identifier
+          ? { ...toast, closing: true }
+          : toast
       ),
     }))
-    // トーストを閉じるアニメーションの後に削除
     setTimeout(() => {
       set((state) => ({
-        toasts: state.toasts.filter((toast) => toast.id !== id),
+        toasts: state.toasts.filter(
+          (toast) => toast.id !== identifier && toast.tag !== identifier
+        ),
       }))
-    }, 300) // アニメーションの時間に合わせて調整
+    }, 300)
   },
 }))
 
