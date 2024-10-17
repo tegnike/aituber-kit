@@ -18,21 +18,24 @@ const Home = () => {
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
 
   useEffect(() => {
-    // ページがロードされたときに1つのトーストメッセージを表示
+    // ページがロードされたときにトーストメッセージを表示
     toastStore.getState().addToast({
       message: 'ページが正常にロードされました',
       type: 'success',
       duration: 500000,
+      tag: 'page-load-success',
     })
     toastStore.getState().addToast({
-      message: 'ページが正常にロードされました',
+      message: 'エラーが発生しました',
       type: 'error',
-      duration: 500000,
+      duration: 5000,
+      tag: 'page-load-error',
     })
     toastStore.getState().addToast({
-      message: 'ページが正常にロードされました',
+      message: '情報メッセージ',
       type: 'info',
-      duration: 500000,
+      duration: 5000,
+      tag: 'page-load-info',
     })
   }, [])
 

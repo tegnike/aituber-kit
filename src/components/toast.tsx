@@ -7,6 +7,7 @@ type ToastProps = {
   type: 'success' | 'error' | 'info'
   onClose: () => void
   duration?: number
+  closing?: boolean
 }
 
 export const Toast = ({
@@ -14,6 +15,7 @@ export const Toast = ({
   type,
   onClose,
   duration = 5000,
+  closing = false,
 }: ToastProps) => {
   const { t } = useTranslation()
 
@@ -48,15 +50,21 @@ export const Toast = ({
   }
 
   return (
-    <div className="cursor-pointer top-4 right-4 p-4 rounded-16 text-text1 shadow-lg text-sm flex items-center mb-8 bg-white bg-opacity-80">
-      <IconButton
-        iconName={getIconName()}
-        isProcessing={false}
-        onClick={onClose}
-        iconColor={getIconColor()} // iconColorプロパティを使用
-        className="!p-2 !bg-transparent !hover:bg-black/10"
-      />
-      <span className="mr-2">{t(message)}</span>
+    <div
+      className={`cursor-pointer top-4 right-4 p-4 rounded-16 text-text1 shadow-lg text-sm flex items-center justify-between mb-8 bg-white bg-opacity-80 transition-opacity duration-300 ${
+        closing ? 'opacity-0' : 'opacity-100'
+      }`}
+    >
+      <div className="flex items-center">
+        <IconButton
+          iconName={getIconName()}
+          isProcessing={false}
+          onClick={onClose}
+          iconColor={getIconColor()}
+          className="!p-2 !bg-transparent !hover:bg-black/10"
+        />
+        <span className="mr-2">{t(message)}</span>
+      </div>
       <IconButton
         iconName="24/Close"
         isProcessing={false}

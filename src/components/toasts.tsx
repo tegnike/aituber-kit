@@ -11,17 +11,18 @@ export const Toasts: React.FC = () => {
     return () => unsubscribe()
   }, [])
 
-  const removeToast = toastStore.getState().removeToast
+  const closeToast = toastStore.getState().closeToast
 
   return (
-    <div className="absolute top-4 right-4 z-15 font-bold m-24">
+    <div className="absolute top-4 right-4 z-15 font-bold m-24 w-[calc(100%-48px)] md:w-[350px]">
       {toasts.map((toast) => (
         <Toast
           key={toast.id}
           message={toast.message}
           type={toast.type}
           duration={toast.duration}
-          onClose={() => removeToast(toast.id)}
+          onClose={() => closeToast(toast.id)}
+          closing={toast.closing}
         />
       ))}
     </div>
