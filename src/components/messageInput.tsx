@@ -108,7 +108,7 @@ export const MessageInput = ({
               iconName="24/Send"
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
               isProcessing={chatProcessing}
-              disabled={chatProcessing || !userMessage}
+              disabled={chatProcessing || !userMessage || realtimeAPIMode}
               onClick={onClickSendButton}
             />
           </div>
