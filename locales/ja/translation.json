@@ -134,12 +134,21 @@
     "AIAPIError": "AI API実行時にエラーが発生しました",
     "InvalidAIService": "選択しているAIサービスが正しくありません",
     "MethodNotAllowed": "リクエストが適切でありません",
-    "UnexpectedError": "予期せぬエラーが発生しました"
+    "TTSServiceError": "{{serviceName}} TTSサービスでエラーが発生しました: {{message}}",
+    "UnexpectedError": "不明なエラーが発生しました"
   },
   "MessageReceiver": "外部からの指示を受け付ける",
   "MessageReceiverDescription": "APIを利用してAIキャラの発言を外部から指示することができます。",
   "ClientID": "Client ID",
   "OpenSendMessagePage": "メッセージ送信ページを開く",
   "RealtimeAPIMode": "リアルタイムAPIモード",
-  "AzureEndpoint": "Azure Endpoint"
+  "AzureEndpoint": "Azure Endpoint",
+  "Toasts": {
+    "WebSocketConnectionError": "WebSocket接続にエラーが発生しました",
+    "WebSocketConnectionClosed": "WebSocket接続が閉じられました",
+    "WebSocketConnectionAttempt": "WebSocket接続を試みています...",
+    "WebSocketConnectionSuccess": "WebSocket接続に成功しました",
+    "FunctionExecuting": "{{funcName}}を実行しています",
+    "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました"
+  }
 }

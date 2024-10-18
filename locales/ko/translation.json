@@ -133,6 +133,7 @@
     "AIAPIError": "AI API 실행 중 오류가 발생했습니다",
     "InvalidAIService": "선택한 AI 서비스가 올바르지 않습니다",
     "MethodNotAllowed": "요청이 적절하지 않습니다",
+    "TTSServiceError": "{{serviceName}} TTS 서비스에서 오류가 발생했습니다: {{message}}",
     "UnexpectedError": "예기치 않은 오류가 발생했습니다"
   },
   "MessageReceiver": "외부에서 지시를 받는다",
@@ -140,5 +141,13 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "메시지 보내기 페이지 열기",
   "RealtimeAPIMode": "리얼타임 API 모드",
-  "AzureEndpoint": "Azure Endpoint"
+  "AzureEndpoint": "Azure Endpoint",
+  "Toasts": {
+    "WebSocketConnectionError": "WebSocket 연결에 오류가 발생했습니다",
+    "WebSocketConnectionClosed": "WebSocket 연결이 닫혔습니다",
+    "WebSocketConnectionAttempt": "WebSocket 연결을 시도하고 있습니다...",
+    "WebSocketConnectionSuccess": "WebSocket 연결에 성공했습니다",
+    "FunctionExecuting": "{{funcName}}을(를) 실행하고 있습니다",
+    "FunctionExecutionFailed": "{{funcName}}의 실행에 실패했습니다"
+  }
 }

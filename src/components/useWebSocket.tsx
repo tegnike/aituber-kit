@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import toastStore from '@/features/stores/toast'
 
 ///取得したコメントをストックするリストの作成（tmpMessages）
 interface TmpMessage {
@@ -20,6 +22,7 @@ interface Params {
 }
 
 const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
+  const { t } = useTranslation()
   const webSocketMode = settingsStore((s) => s.webSocketMode)
   const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
 
@@ -45,13 +48,26 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
     }
   }, [tmpMessages, processMessage])
 
-  // WebSocket接続の設定（既存のコード）
+  function removeToast() {
+    toastStore.getState().removeToast('websocket-connection-error')
+    toastStore.getState().removeToast('websocket-connection-close')
+    toastStore.getState().removeToast('websocket-connection-info')
+  }
+
+  // WebSocket接続の設定（既存のコードを修正）
   useEffect(() => {
     const ss = settingsStore.getState()
     if (!ss.webSocketMode) return
 
     const handleOpen = (event: Event) => {
       console.log('WebSocket connection opened:', event)
+      removeToast()
+      toastStore.getState().addToast({
+        message: t('Toasts.WebSocketConnectionSuccess'),
+        type: 'success',
+        duration: 3000,
+        tag: 'websocket-connection-success',
+      })
     }
     const handleMessage = (event: MessageEvent) => {
       console.log('Received message:', event.data)
@@ -60,12 +76,34 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
     }
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)
+      removeToast()
+      toastStore.getState().addToast({
+        message: t('Toasts.WebSocketConnectionError'),
+        type: 'error',
+        duration: 5000,
+        tag: 'websocket-connection-error',
+      })
     }
     const handleClose = (event: Event) => {
       console.log('WebSocket connection closed:', event)
+      removeToast()
+      toastStore.getState().addToast({
+        message: t('Toasts.WebSocketConnectionClosed'),
+        type: 'error',
+        duration: 3000,
+        tag: 'websocket-connection-close',
+      })
     }
 
     function setupWebsocket() {
+      removeToast()
+      toastStore.getState().addToast({
+        message: t('Toasts.WebSocketConnectionAttempt'),
+        type: 'info',
+        duration: 10000,
+        tag: 'websocket-connection-info',
+      })
+
       const ws = new WebSocket('ws://localhost:8000/ws')
       ws.addEventListener('open', handleOpen)
       ws.addEventListener('message', handleMessage)
@@ -96,7 +134,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
       ws.close()
       homeStore.setState({ ws: null })
     }
-  }, [webSocketMode])
+  }, [webSocketMode, t])
 
   return null
 }

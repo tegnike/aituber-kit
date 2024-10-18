@@ -5,6 +5,7 @@ import { Menu } from '@/components/menu'
 import { Meta } from '@/components/meta'
 import ModalImage from '@/components/modalImage'
 import VrmViewer from '@/components/vrmViewer'
+import { Toasts } from '@/components/toasts'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
@@ -23,7 +24,9 @@ const Home = () => {
       <Menu />
       <ModalImage />
       {messageReceiverEnabled && <MessageReceiver />}
+      <Toasts />
     </div>
   )
 }
+
 export default Home
