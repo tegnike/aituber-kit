@@ -133,8 +133,6 @@ function convertEnglishToJapaneseReading(text: string): string {
   }, text)
 }
 
-let isAlertShown = false
-
 function handleTTSError(error: unknown, serviceName: string): void {
   let message: string
   if (error instanceof Error) {
@@ -149,18 +147,12 @@ function handleTTSError(error: unknown, serviceName: string): void {
     message,
   })
 
-  if (!isAlertShown) {
-    toastStore.getState().addToast({
-      message: errorMessage,
-      type: 'error',
-      duration: 5000,
-      tag: 'tts-error',
-    })
-    isAlertShown = true
-    setTimeout(() => {
-      isAlertShown = false
-    }, 5000)
-  }
+  toastStore.getState().addToast({
+    message: errorMessage,
+    type: 'error',
+    duration: 5000,
+    tag: 'tts-error',
+  })
 
   console.error(errorMessage)
 }

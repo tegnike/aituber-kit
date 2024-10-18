@@ -5,13 +5,12 @@ import { useEffect, useState } from 'react'
 
 export const Toasts: React.FC = () => {
   const [toasts, setToasts] = useState(toastStore.getState().toasts)
+  const closeToast = toastStore((state) => state.closeToast)
 
   useEffect(() => {
     const unsubscribe = toastStore.subscribe((state) => setToasts(state.toasts))
     return () => unsubscribe()
   }, [])
-
-  const closeToast = toastStore.getState().closeToast
 
   return (
     <div className="absolute top-4 right-4 z-15 font-bold m-24 w-[calc(100%-48px)] md:w-[350px]">
