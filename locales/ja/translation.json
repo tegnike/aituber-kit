@@ -134,7 +134,8 @@
     "AIAPIError": "AI API実行時にエラーが発生しました",
     "InvalidAIService": "選択しているAIサービスが正しくありません",
     "MethodNotAllowed": "リクエストが適切でありません",
-    "UnexpectedError": "予期せぬエラーが発生しました"
+    "TTSServiceError": "{{serviceName}} TTSサービスでエラーが発生しました: {{message}}",
+    "UnexpectedError": "不明なエラーが発生しました"
   },
   "MessageReceiver": "外部からの指示を受け付ける",
   "MessageReceiverDescription": "APIを利用してAIキャラの発言を外部から指示することができます。",

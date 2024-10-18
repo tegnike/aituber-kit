@@ -133,6 +133,7 @@
     "AIAPIError": "AI API 실행 중 오류가 발생했습니다",
     "InvalidAIService": "선택한 AI 서비스가 올바르지 않습니다",
     "MethodNotAllowed": "요청이 적절하지 않습니다",
+    "TTSServiceError": "{{serviceName}} TTS 서비스에서 오류가 발생했습니다: {{message}}",
     "UnexpectedError": "예기치 않은 오류가 발생했습니다"
   },
   "MessageReceiver": "외부에서 지시를 받는다",

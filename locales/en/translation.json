@@ -133,6 +133,7 @@
     "AIAPIError": "An error occurred while executing the AI API",
     "InvalidAIService": "The selected AI service is not valid",
     "MethodNotAllowed": "The request is not appropriate",
+    "TTSServiceError": "An error occurred in the {{serviceName}} TTS service: {{message}}",
     "UnexpectedError": "An unexpected error occurred"
   },
   "MessageReceiver": "Receive instructions from outside",
