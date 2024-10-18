@@ -1,11 +1,14 @@
 const { light, dark } = require('@charcoal-ui/theme')
 const { createTailwindConfig } = require('@charcoal-ui/tailwind-config')
-/**
- * @type {import('tailwindcss/tailwind-config').TailwindConfig}
- */
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: true,
-  content: ['./src/**/*.tsx', './src/**/*.html'],
+  darkMode: 'class',
+  content: [
+    './src/**/*.{js,ts,jsx,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+  ],
   presets: [
     createTailwindConfig({
       version: 'v3',
@@ -27,6 +30,14 @@ module.exports = {
         'secondary-disabled': '#FF617F4D',
         base: '#FBE2CA',
         'text-primary': '#514062',
+
+        // トースト用のより鮮明な色定義
+        'toast-info': '#007BFF',
+        'toast-info-hover': '#0056B3',
+        'toast-error': '#DC3545',
+        'toast-error-hover': '#BD2130',
+        'toast-success': '#28A745',
+        'toast-success-hover': '#218838',
       },
       fontFamily: {
         M_PLUS_2: ['Montserrat', 'M_PLUS_2', 'sans-serif'],

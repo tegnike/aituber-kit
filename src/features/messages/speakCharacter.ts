@@ -9,6 +9,8 @@ import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 import { synthesizeVoiceGSVIApi } from './synthesizeVoiceGSVI'
+import toastStore from '@/features/stores/toast'
+import i18next from 'i18next'
 
 interface EnglishToJapanese {
   [key: string]: string
@@ -131,8 +133,6 @@ function convertEnglishToJapaneseReading(text: string): string {
   }, text)
 }
 
-let isAlertShown = false
-
 function handleTTSError(error: unknown, serviceName: string): void {
   let message: string
   if (error instanceof Error) {
@@ -140,17 +140,19 @@ function handleTTSError(error: unknown, serviceName: string): void {
   } else if (typeof error === 'string') {
     message = error
   } else {
-    message = '不明なエラーが発生しました'
+    message = i18next.t('Errors.UnexpectedError')
   }
-  const errorMessage = `${serviceName} TTSサービスでエラーが発生しました: ${message}`
+  const errorMessage = i18next.t('Errors.TTSServiceError', {
+    serviceName,
+    message,
+  })
 
-  if (!isAlertShown) {
-    alert(errorMessage)
-    isAlertShown = true
-    setTimeout(() => {
-      isAlertShown = false
-    }, 5000) // 5秒後にフラグをリセット
-  }
+  toastStore.getState().addToast({
+    message: errorMessage,
+    type: 'error',
+    duration: 5000,
+    tag: 'tts-error',
+  })
 
   console.error(errorMessage)
 }

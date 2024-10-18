@@ -133,6 +133,7 @@
     "AIAPIError": "An error occurred while executing the AI API",
     "InvalidAIService": "The selected AI service is not valid",
     "MethodNotAllowed": "The request is not appropriate",
+    "TTSServiceError": "An error occurred in the {{serviceName}} TTS service: {{message}}",
     "UnexpectedError": "An unexpected error occurred"
   },
   "MessageReceiver": "Receive instructions from outside",
@@ -140,5 +141,13 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "Open Send Message Page",
   "RealtimeAPIMode": "Realtime API Mode",
-  "AzureEndpoint": "Azure Endpoint"
+  "AzureEndpoint": "Azure Endpoint",
+  "Toasts": {
+    "WebSocketConnectionError": "Error occurred in WebSocket connection",
+    "WebSocketConnectionClosed": "WebSocket connection closed",
+    "WebSocketConnectionAttempt": "Attempting WebSocket connection...",
+    "WebSocketConnectionSuccess": "WebSocket connection successful",
+    "FunctionExecuting": "Executing {{funcName}}",
+    "FunctionExecutionFailed": "Execution of {{funcName}} failed"
+  }
 }
