@@ -8,10 +8,8 @@ import VrmViewer from '@/components/vrmViewer'
 import { Toasts } from '@/components/toasts'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
-import toastStore from '@/features/stores/toast'
 import '@/lib/i18n'
 import { buildUrl } from '@/utils/buildUrl'
-import { useEffect } from 'react'
 
 const Home = () => {
   const bgUrl = homeStore((s) => `url(${buildUrl(s.backgroundImageUrl)})`)
