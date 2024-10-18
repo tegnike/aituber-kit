@@ -19,12 +19,6 @@ export const judgeSlide = async (
   const apiKeyName = `${aiService}Key` as const
   const apiKey = ss[apiKeyName]
 
-  if (!apiKey) {
-    throw new Error(
-      `API key for ${aiService} is missing. Unable to proceed with the AI service.`
-    )
-  }
-
   const systemMessage = `
 You are an AI tasked with determining whether a user's comment is a question about a given script document and supplementary text, and if so, which page of the document is most relevant to the question. Follow these instructions carefully:
 

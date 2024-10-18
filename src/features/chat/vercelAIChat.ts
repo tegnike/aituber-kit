@@ -16,12 +16,6 @@ const getAIConfig = () => {
   const apiKeyName = `${aiService}Key` as const
   const apiKey = ss[apiKeyName]
 
-  if (!apiKey) {
-    throw new Error(
-      `API key for ${aiService} is missing. Unable to proceed with the AI service.`
-    )
-  }
-
   return {
     aiApiKey: apiKey,
     selectAIService: aiService,
