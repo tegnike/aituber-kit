@@ -68,6 +68,10 @@ const ModelProvider = () => {
           isPlaying: false,
         })
       }
+
+      if (newService !== 'openai' && newService !== 'azure') {
+        settingsStore.setState({ realtimeAPIMode: false })
+      }
     },
     []
   )

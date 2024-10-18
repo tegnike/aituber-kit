@@ -177,7 +177,12 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
       webSocketMode: process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true',
-      realtimeAPIMode: process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true',
+      realtimeAPIMode:
+        (process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
+          ['openai', 'azure'].includes(
+            process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
+          )) ||
+        false,
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
