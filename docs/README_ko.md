@@ -152,7 +152,7 @@ npm run dev
 ### VRM 모델 및 배경 고정 방법
 
 - `public/AvatarSample_B.vrm`에서 VRM 모델 데이터를 변경합니다. 이름은 변경하지 마십시오.
-- `public/bg-c.jpg`에서 배경 이미지를 변경합니다. 이름은 변경하지 마십시오.
+- `public/bg-c.png`에서 배경 이미지를 변경합니다. 이름은 변경하지 마십시오.
 
 ### 환경 변수 설정
 

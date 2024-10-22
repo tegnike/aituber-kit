@@ -152,7 +152,7 @@ npm run dev
 ### VRM模型和背景固定方法
 
 - 在 `public/AvatarSample_B.vrm` 更改VRM模型數據。請不要更改名稱。
-- 在 `public/bg-c.jpg` 更改背景圖片。請不要更改名稱。
+- 在 `public/bg-c.png` 更改背景圖片。請不要更改名稱。
 
 ### 設置環境變量
 

@@ -154,7 +154,7 @@ npm run dev
 ### VRM Model and Background Fixing Method
 
 - Change the VRM model data at `public/AvatarSample_B.vrm`. Do not change the name.
-- Change the background image at `public/bg-c.jpg`. Do not change the name.
+- Change the background image at `public/bg-c.png`. Do not change the name.
 
 ### Setting Environment Variables
 
