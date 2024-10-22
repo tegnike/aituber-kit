@@ -36,7 +36,7 @@ const ModelProvider = () => {
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
     openai: 'gpt-4o',
-    anthropic: 'claude-3-5-sonnet-20240620',
+    anthropic: 'claude-3-5-sonnet-20241022',
     google: 'gemini-1.5-pro',
     azure: '',
     groq: 'gemma-7b-it',
@@ -192,11 +192,8 @@ const ModelProvider = () => {
                   <option value="claude-3-opus-20240229">
                     claude-3-opus-20240229
                   </option>
-                  <option value="claude-3-5-sonnet-20240620">
+                  <option value="claude-3-5-sonnet-20241022">
                     claude-3.5-sonnet-20240620
-                  </option>
-                  <option value="claude-3-sonnet-20240229">
-                    claude-3-sonnet-20240229
                   </option>
                   <option value="claude-3-haiku-20240307">
                     claude-3-haiku-20240307
