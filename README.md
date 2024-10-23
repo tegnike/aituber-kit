@@ -16,7 +16,7 @@
 </p>
 <p align="center">
    <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
-   <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
+   <a href="https://discord.gg/5rHEue52nZ"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
@@ -151,7 +151,7 @@ npm run dev
 ### VRMモデル、背景固定方法
 
 - VRMモデルは `public/AvatarSample_B.vrm` のデータを変更してください。名称は変更しないでください。
-- 背景画像は `public/bg-c.jpg` の画像を変更してください。名称は変更しないでください。
+- 背景画像は `public/bg-c.png` の画像を変更してください。名称は変更しないでください。
 
 ### 環境変数の設定
 
@@ -221,6 +221,9 @@ npm run dev
   </a>
   <a href="https://github.com/takm-reason" title="takm-reason">
     <img src="https://github.com/takm-reason.png" width="40" height="40" alt="takm-reason">
+  </a>
+  <a href="https://github.com/haoling" title="haoling">
+    <img src="https://github.com/haoling.png" width="40" height="40" alt="haoling">
   </a>
 </p>
 

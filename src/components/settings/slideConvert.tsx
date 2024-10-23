@@ -25,7 +25,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
         setModel('gpt-4o')
         break
       case 'anthropic':
-        setModel('claude-3-5-sonnet-20240620')
+        setModel('claude-3-5-sonnet-20241022')
         break
       case 'google':
         setModel('gemini-1.5-flash-latest')
@@ -147,11 +147,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
               <option value="claude-3-opus-20240229">
                 claude-3-opus-20240229
               </option>
-              <option value="claude-3-5-sonnet-20240620">
-                claude-3.5-sonnet-20240620
-              </option>
-              <option value="claude-3-sonnet-20240229">
-                claude-3-sonnet-20240229
+              <option value="claude-3-5-sonnet-20241022">
+                claude-3.5-sonnet-20241022
               </option>
               <option value="claude-3-haiku-20240307">
                 claude-3-haiku-20240307

@@ -17,7 +17,7 @@
 <p align="center">
    <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
-   <a href="https://discord.gg/T96PTvrs"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
+   <a href="https://discord.gg/5rHEue52nZ"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
@@ -152,7 +152,7 @@ npm run dev
 ### VRM 모델 및 배경 고정 방법
 
 - `public/AvatarSample_B.vrm`에서 VRM 모델 데이터를 변경합니다. 이름은 변경하지 마십시오.
-- `public/bg-c.jpg`에서 배경 이미지를 변경합니다. 이름은 변경하지 마십시오.
+- `public/bg-c.png`에서 배경 이미지를 변경합니다. 이름은 변경하지 마십시오.
 
 ### 환경 변수 설정
 
@@ -222,6 +222,9 @@ npm run dev
   </a>
   <a href="https://github.com/takm-reason" title="takm-reason">
     <img src="https://github.com/takm-reason.png" width="40" height="40" alt="takm-reason">
+  </a>
+  <a href="https://github.com/haoling" title="haoling">
+    <img src="https://github.com/haoling.png" width="40" height="40" alt="haoling">
   </a>
 </p>
 
