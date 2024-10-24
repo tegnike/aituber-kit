@@ -144,7 +144,7 @@ A16: The license terms apply to forked projects as well.
 
 **Q17: What happens if I switch to commercial use after starting as non-commercial use?**
 
-A17: If commercial use is confirmed after starting as personal use, educational purposes, or non-profit use, we will charge the license fee from the start of commercial use. Please obtain the appropriate license.
+A17: If commercial use is confirmed after starting with personal use, educational purposes, or non-profit use, we will charge the license fee from the start of commercial use. Please obtain the appropriate license.
 
 **Q18: What happens to the license if there is a version upgrade?**
 

@@ -243,8 +243,8 @@ Plus multiple private sponsors
 
 From version v2.0.0, this project adopts a **custom license**.
 
-- **Free Use**
-  - Free use is available for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
+- **Non-Commercial Use**
+  - Non-Commercial Use is available for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
 
 - **Commercial License**
   - A separate commercial license is required for commercial use.
