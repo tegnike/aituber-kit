@@ -330,4 +330,3 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 - Add a new language README (`README_fr.md`), logo usage terms (`logo_licence_fr.md`), and VRM model usage terms (`vrm_licence_fr.md`) to the `docs` directory.
 
 ```
-</rewritten_chunk>
