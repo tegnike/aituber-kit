@@ -2,13 +2,13 @@
   <img style="max-width: 100%;" src="./logo.png">
 </h1>
 
-**通知：从版本v2.0.0开始，本项目采用双重许可方式（MIT许可证 + 商业许可证）。如果您计划将其用于商业目的，请查看[使用协议](#使用协议)部分。**
+**通知：从版本v2.0.0开始，本项目采用自定义许可方式。如果您计划将其用于商业目的，请查看[使用协议](#使用协议)部分。**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
-   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: MIT/Commercial" src="https://img.shields.io/badge/License-MIT%2FCommercial-blue"></a>
+   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: Custom" src="https://img.shields.io/badge/License-Custom-blue"></a>
 </p>
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
@@ -238,10 +238,10 @@ npm run dev
 
 ### 许可证
 
-从版本v2.0.0开始，本项目采用**双重许可方式**（MIT许可证 + 商业许可证）。
+从版本v2.0.0开始，本项目采用**自定义许可方式**。
 
-- **开源许可证 (MIT)**
-  - MIT许可证适用于非营利目的的个人使用、教育目的和非营利目的的使用。
+- **无偿使用**
+  - 非营利目的的个人使用、教育目的和非营利目的的使用是无偿的。
 
 - **商业许可证**
   - 商业目的的使用需要另外获取商业许可证。

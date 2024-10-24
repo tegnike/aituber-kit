@@ -2,13 +2,13 @@
   <img style="max-width: 100%;" src="./logo.png">
 </h1>
 
-**공지사항: 버전 v2.0.0부터 이 프로젝트는 이중 라이선스 방식(MIT 라이선스 + 상업용 라이선스)을 채택하고 있습니다. 상업적 목적으로 사용하실 경우 [이용 약관](#이용-약관) 섹션을 확인해 주시기 바랍니다.**
+**공지사항: 버전 v2.0.0부터 이 프로젝트는 커스텀 라이선스를 채택하고 있습니다. 상업적 목적으로 사용하실 경우 [이용 약관](#이용-약관) 섹션을 확인해 주시기 바랍니다.**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
-   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: MIT/Commercial" src="https://img.shields.io/badge/License-MIT%2FCommercial-blue"></a>
+   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: Custom" src="https://img.shields.io/badge/License-Custom-blue"></a>
 </p>
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
@@ -163,7 +163,7 @@ npm run dev
 
 ### 기타
 
-- 대화 내역은 설정 화면에서 재설정할 수 있��니다.
+- 대화 내역은 설정 화면에서 재설정할 수 있니다.
 - 다양한 설정 항목은 브라우저에 저장됩니다.
 - 코드 블록으로 둘러싸인 요소는 TTS에서 읽히지 않습니다.
 
@@ -239,10 +239,10 @@ npm run dev
 
 ### 라이선스
 
-버전 v2.0.0부터 이 프로젝트는 **이중 라이선스 방식**(MIT 라이선스 + 상업용 라이선스)을 채택하고 있습니다.
+버전 v2.0.0부터 이 프로젝트는 **커스텀 라이선스**를 채택하고 있습니다.
 
-- **오픈소스 라이선스 (MIT)**
-  - 영리 목적이 아닌 개인 사용, 교육 목적, 비영리 목적의 사용에 대해서는 MIT 라이선스가 적용됩니다.
+- **무상 이용**
+  - 영리 목적이 아닌 개인 사용, 교육 목적, 비영리 목적의 사용은 무상으로 이용 가능합니다.
 
 - **상업용 라이선스**
   - 상업적 목적으로 사용하는 경우에는 별도의 상업용 라이선스 취득이 필요합니다.

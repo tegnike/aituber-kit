@@ -2,13 +2,13 @@
   <img style="max-width: 100%;" src="./logo.png">
 </h1>
 
-**Notice: From version v2.0.0, this project adopts a dual-license approach (MIT License + Commercial License). If you plan to use it for commercial purposes, please check the [Usage Agreement](#usage-agreement) section.**
+**Notice: From version v2.0.0, this project adopts a custom license. If you plan to use it for commercial purposes, please check the [Usage Agreement](#usage-agreement) section.**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
-   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: MIT/Commercial" src="https://img.shields.io/badge/License-MIT%2FCommercial-blue"></a>
+   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: Custom" src="https://img.shields.io/badge/License-Custom-blue"></a>
 </p>
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
@@ -241,10 +241,10 @@ Plus multiple private sponsors
 
 ### License
 
-From version v2.0.0, this project adopts a **dual-license approach** (MIT License + Commercial License).
+From version v2.0.0, this project adopts a **custom license**.
 
-- **Open Source License (MIT)**
-  - MIT License applies to personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
+- **Free Use**
+  - Free use is available for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
 
 - **Commercial License**
   - A separate commercial license is required for commercial use.
@@ -330,3 +330,4 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 - Add a new language README (`README_fr.md`), logo usage terms (`logo_licence_fr.md`), and VRM model usage terms (`vrm_licence_fr.md`) to the `docs` directory.
 
 ```
+
