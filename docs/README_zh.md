@@ -2,11 +2,13 @@
   <img style="max-width: 100%;" src="./logo.png">
 </h1>
 
+**通知：从版本v2.0.0开始，本项目采用双重许可方式（MIT许可证 + 商业许可证）。如果您计划将其用于商业目的，请查看[使用协议](#使用协议)部分。**
+
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
-   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: MIT/Commercial" src="https://img.shields.io/badge/License-MIT%2FCommercial-blue"></a>
 </p>
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
@@ -26,7 +28,6 @@
    <a href="./README_en.md">【英語】</a>｜
    <a href="./README_ko.md">【韓語】</a>
 </h3>
-
 ## 概覽
 
 此存儲庫主要具有以下2個功能：
@@ -230,8 +231,20 @@ npm run dev
 
 以及多位匿名贊助者
 
-## 使用協議
+## 使用协议
 
-- 許可證遵循[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)，使用MIT許可證。
-- [商標使用協議](./logo_licence_zh.md)
-- [VRM模型使用協議](./vrm_licence_zh.md)
+### 许可证
+
+从版本v2.0.0开始，本项目采用**双重许可方式**（MIT许可证 + 商业许可证）。
+
+- **开源许可证 (MIT)**
+  - MIT许可证适用于非营利目的的个人使用、教育目的和非营利目的的使用。
+
+- **商业许可证**
+  - 商业目的的使用需要另外获取商业许可证。
+  - 详细信息请查看[关于许可证](./license_en.md)。
+
+### 其他
+
+- [标志使用协议](./logo_licence_en.md)
+- [VRM模型使用协议](./vrm_licence_en.md)
