@@ -1,0 +1,29 @@
+[
+  {
+    "type": "function",
+    "name": "get_current_weather",
+    "description": "Retrieves the current weather for a given timezone, latitude, longitude coordinate pair. Specify a label for the location.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "description": "Latitude"
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "Timezone"
+        },
+        "location": {
+          "type": "string",
+          "description": "Name of the location"
+        }
+      },
+      "required": ["timezone", "latitude", "longitude", "location"]
+    }
+  }
+]

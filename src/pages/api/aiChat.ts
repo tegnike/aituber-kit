@@ -41,7 +41,8 @@ export default async function handler(req: NextRequest) {
     )
   }
 
-  const { messages, apiKey, aiService, model, stream } = await req.json()
+  const { messages, apiKey, aiService, model, azureEndpoint, stream } =
+    await req.json()
 
   let aiApiKey = apiKey
   if (!aiApiKey) {
@@ -61,7 +62,18 @@ export default async function handler(req: NextRequest) {
     )
   }
 
-  if (!aiService || !model) {
+  let modifiedAzureEndpoint = (
+    azureEndpoint ||
+    process.env.AZURE_ENDPOINT ||
+    ''
+  ).replace(/^https:\/\/|\.openai\.azure\.com.*$/g, '')
+  let modifiedAzureDeployment =
+    (azureEndpoint || process.env.AZURE_ENDPOINT || '').match(
+      /\/deployments\/([^\/]+)/
+    )?.[1] || ''
+  let modifiedModel = aiService === 'azure' ? modifiedAzureDeployment : model
+
+  if (!aiService || !modifiedModel) {
     return new Response(
       JSON.stringify({
         error: 'Invalid AI service or model',
@@ -80,8 +92,7 @@ export default async function handler(req: NextRequest) {
     google: () => createGoogleGenerativeAI({ apiKey: aiApiKey }),
     azure: () =>
       createAzure({
-        resourceName:
-          model.match(/https:\/\/(.+?)\.openai\.azure\.com/)?.[1] || '',
+        resourceName: modifiedAzureEndpoint,
         apiKey: aiApiKey,
       }),
     groq: () =>
@@ -116,11 +127,6 @@ export default async function handler(req: NextRequest) {
 
   const instance = aiServiceInstance()
   const modifiedMessages: Message[] = modifyMessages(aiService, messages)
-  let modifiedModel = model
-  if (aiService === 'azure') {
-    modifiedModel =
-      model.match(/\/deployments\/(.+?)\/completions/)?.[1] || model
-  }
 
   try {
     if (stream) {

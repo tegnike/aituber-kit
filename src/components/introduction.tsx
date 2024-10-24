@@ -6,10 +6,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { IconButton } from './iconButton'
 import { Link } from './link'
-import {
-  VoiceLanguage,
-  isLanguageSupported,
-} from '@/features/constants/settings'
+import { isLanguageSupported } from '@/features/constants/settings'
 
 export const Introduction = () => {
   const showIntroduction = homeStore((s) => s.showIntroduction)
@@ -29,26 +26,8 @@ export const Introduction = () => {
 
     let languageCode = i18n.language
 
-    const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
-      switch (selectLanguage) {
-        case 'ja':
-          return 'ja-JP'
-        case 'en':
-          return 'en-US'
-        case 'zh':
-          return 'zh-TW'
-        case 'zh-TW':
-          return 'zh-TW'
-        case 'ko':
-          return 'ko-KR'
-        default:
-          return 'ja-JP'
-      }
-    }
-
     settingsStore.setState({
       selectLanguage: isLanguageSupported(languageCode) ? languageCode : 'ja',
-      selectVoiceLanguage: getVoiceLanguageCode(languageCode),
     })
   }
 

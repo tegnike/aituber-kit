@@ -228,6 +228,9 @@ npm run dev
   <a href="https://github.com/haoling" title="haoling">
     <img src="https://github.com/haoling.png" width="40" height="40" alt="haoling">
   </a>
+  <a href="https://github.com/FoundD-oka" title="FoundD-oka">
+    <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
+  </a>
 </p>
 
 그 외, 다수의 비공개 스폰서

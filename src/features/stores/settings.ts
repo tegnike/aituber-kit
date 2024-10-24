@@ -3,12 +3,7 @@ import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
-import {
-  AIService,
-  AIVoice,
-  Language,
-  VoiceLanguage,
-} from '../constants/settings'
+import { AIService, AIVoice, Language } from '../constants/settings'
 
 export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
@@ -31,6 +26,7 @@ interface APIKeys {
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
+  azureEndpoint: string
 }
 
 interface ModelProvider {
@@ -79,11 +75,13 @@ interface Character {
 
 interface General {
   selectLanguage: Language
-  selectVoiceLanguage: VoiceLanguage
   changeEnglishToJapanese: boolean
   showControlPanel: boolean
   webSocketMode: boolean
+  realtimeAPIMode: boolean
   slideMode: boolean
+  messageReceiverEnabled: boolean
+  clientId: string
 }
 
 export type SettingsState = APIKeys &
@@ -97,10 +95,10 @@ const settingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
       // API Keys
-      openaiKey: '',
+      openaiKey: process.env.NEXT_PUBLIC_OPENAI_KEY || '',
       anthropicKey: '',
       googleKey: '',
-      azureKey: '',
+      azureKey: process.env.NEXT_PUBLIC_AZURE_KEY || '',
       groqKey: '',
       cohereKey: '',
       mistralaiKey: '',
@@ -110,6 +108,7 @@ const settingsStore = create<SettingsState>()(
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
+      azureEndpoint: process.env.NEXT_PUBLIC_AZURE_ENDPOINT || '',
 
       // Model Provider
       selectAIService:
@@ -169,20 +168,24 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
       showCharacterName:
         process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
-      systemPrompt: SYSTEM_PROMPT,
+      systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
 
       // General
       selectLanguage:
         (process.env.NEXT_PUBLIC_SELECT_LANGUAGE as Language) || 'ja',
-      selectVoiceLanguage:
-        (process.env.NEXT_PUBLIC_SELECT_VOICE_LANGUAGE as VoiceLanguage) ||
-        'ja-JP',
       changeEnglishToJapanese:
         process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
-      webSocketMode:
-        process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true' ? true : false,
-      slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true' ? true : false,
+      webSocketMode: process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true',
+      realtimeAPIMode:
+        (process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
+          ['openai', 'azure'].includes(
+            process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
+          )) ||
+        false,
+      slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
+      messageReceiverEnabled: false,
+      clientId: '',
     }),
     {
       name: 'aitube-kit-settings',
@@ -200,6 +203,7 @@ const settingsStore = create<SettingsState>()(
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
+        azureEndpoint: state.azureEndpoint,
         selectAIService: state.selectAIService,
         selectAIModel: state.selectAIModel,
         localLlmUrl: state.localLlmUrl,
@@ -229,11 +233,14 @@ const settingsStore = create<SettingsState>()(
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
         selectLanguage: state.selectLanguage,
-        selectVoiceLanguage: state.selectVoiceLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         webSocketMode: state.webSocketMode,
+        realtimeAPIMode: state.realtimeAPIMode,
+        messageReceiverEnabled: state.messageReceiverEnabled,
+        clientId: state.clientId,
       }),
     }
   )
 )
+
 export default settingsStore

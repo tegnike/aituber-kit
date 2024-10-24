@@ -230,6 +230,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/haoling" title="haoling">
     <img src="https://github.com/haoling.png" width="40" height="40" alt="haoling">
   </a>
+  <a href="https://github.com/FoundD-oka" title="FoundD-oka">
+    <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
+  </a>
 </p>
 
 Plus multiple private sponsors
@@ -327,4 +330,3 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 - Add a new language README (`README_fr.md`), logo usage terms (`logo_licence_fr.md`), and VRM model usage terms (`vrm_licence_fr.md`) to the `docs` directory.
 
 ```
-</rewritten_chunk>

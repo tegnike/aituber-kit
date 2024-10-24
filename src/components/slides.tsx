@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import slideStore from '../features/stores/slide'
-import homeStore from '../features/stores/home'
-import { processReceivedMessage } from '../features/chat/handlers'
+import slideStore from '@/features/stores/slide'
+import homeStore from '@/features/stores/home'
+import { speakMessageHandler } from '@/features/chat/handlers'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
 
@@ -114,7 +114,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
 
       const currentLines = getCurrentLines()
       console.log(currentLines)
-      processReceivedMessage(currentLines)
+      speakMessageHandler(currentLines)
     },
     [selectedSlideDocs]
   )
