@@ -72,11 +72,11 @@ If you are unsure about license selection or have questions, please contact supp
 
 ## Regarding Project Forks
 
-When **forking this project**, these license terms apply to the forked project. Commercial use or redistribution of forks may require separate commercial licenses. For details, please refer to the [Project FAQ](docs/licensing-faq_en.md).
+When **forking this project**, these license terms apply to the forked project. Commercial use or redistribution of forks may require separate commercial licenses. For details, please refer to the [Project FAQ](docs/license-faq_en.md).
 
 ## Additional Information
 
-For detailed information about licensing, specific use cases, and frequently asked questions, please refer to the [Project FAQ](docs/licensing-faq_en.md). If you have any questions, please contact us individually.
+For detailed information about licensing, specific use cases, and frequently asked questions, please refer to the [Project FAQ](docs/license-faq_en.md). If you have any questions, please contact us individually.
 
 ## Scope of Commercial License
 
