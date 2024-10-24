@@ -1,83 +1,79 @@
 # License
 
-This project has adopted a dual licensing model from version v2.0.0 onwards.
+This project is provided under the following custom license from version **v2.0.0** onwards. For version **v1.x.x**, the MIT license applies.
 
-## 1. Open Source License (MIT)
+## Terms of Use
 
-The MIT License applies to personal use for non-commercial purposes, educational purposes, and non-profit purposes.
-Additionally, the MIT License applies to demonstrations at exhibitions and events aimed at increasing project awareness.
+### 1. Free Use
 
-MIT License
+The project can be used for free if the following conditions are met:
 
-Copyright (c) 2024 Nike
+- **Personal Use**: When an individual uses it for non-commercial purposes.
+- **Educational Purpose**: When educational institutions or educators use it for educational purposes.
+- **Non-Profit Purpose**: When non-profit organizations use it for non-profit activities.
+- **Exhibitions and Demonstrations**: For exhibitions or events aimed at increasing the project's recognition.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this repository and associated documentation files (the "Repository"), to deal in the Repository without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Repository, and to permit persons to whom the Repository is furnished to do so, subject to the following conditions:
+### 2. Commercial Use
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Repository.
+For commercial purposes, one of the following commercial licenses must be obtained.
 
-THE REPOSITORY IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE REPOSITORY OR THE USE OR OTHER DEALINGS IN THE REPOSITORY.
+#### 2.1 Standard License
 
-## 2. Commercial License
-
-A separate commercial license is required for commercial use. Commercial licenses are provided under the following conditions:
-
-### 1. Standard License
-
-- **Target**: Companies or sole proprietors using the software internally for commercial purposes or redistributing modified software to **up to one company**
+- **Target**: Companies or sole proprietors using it commercially within their own company or modifying the software and redistributing it to **up to one company**.
 - **Scope of Use**:
-  - Internal company use (unlimited locations and users)
-  - Software modification allowed
-  - **Redistribution/resale allowed to one company only**
-- **Price**: ¥100,000 (tax included) (For purchases in currencies other than JPY, conversion will be based on the exchange rate at the time of purchase.)
+  - Use within the company (unlimited number of locations and users)
+  - Software modification is possible
+  - **Redistribution/resale is possible to up to one company**
+- **Price**: ¥100,000 including tax
 
-### 2. Developer License
+#### 2.2 Developer License
 
-- **Target**: Companies or developers who modify and provide software to **multiple third parties (up to 5 companies)**
+- **Target**: Companies or developers modifying the software and providing it to **multiple third parties**.
 - **Scope of Use**:
-  - Software modification and redistribution allowed (up to 5 companies)
-  - Unlimited locations and users at redistribution destinations
-- **Price**: ¥300,000 (tax included) (For purchases in currencies other than JPY, conversion will be based on the exchange rate at the time of purchase.)
+  - Software modification and **redistribution is possible (up to 5 companies)**
+  - Unlimited number of locations and users at redistribution destinations
+- **Price**: ¥300,000 including tax
 
-### 3. Enterprise License
+#### 2.3 Enterprise License
 
-- **Target**: Companies requiring extensive redistribution or provision to numerous clients
+- **Target**: Companies providing extensive redistribution or to many clients.
 - **Scope of Use**:
-  - Software modification and **unlimited redistribution** allowed
-  - Unlimited locations and users at redistribution destinations
-- **Price**: ¥1,000,000 (tax included) (For purchases in currencies other than JPY, conversion will be based on the exchange rate at the time of purchase.)
+  - Software modification and **unlimited redistribution is possible**
+  - Unlimited number of locations and users at redistribution destinations
+- **Price**: ¥1,000,000 including tax
 
-### 4. Custom License
+#### 2.4 Custom License
 
-- **Target**: Cases requiring special requirements or additional contract terms
-- **Scope of Use**: Individually negotiated
-- **Price**: Individual quote
+- **Target**: When special requirements or additional contract conditions are needed
+- **Scope of Use**: Negotiated individually
+- **Price**: Quoted individually
 
-**Important Notes:**
+## Notes
 
-- All commercial licenses are **one-time purchases**.
-- Licenses have **no expiration date** (can be used perpetually).
-- Licenses **do not include support**. Please inquire separately if support is needed.
-- Applies to the **latest version** at the time of license acquisition. Major updates may require upgrade fees.
-- If commercial use is confirmed after beginning use for non-profit personal, educational, or non-profit purposes, commercial license fees will be charged from the start of commercial use.
-- **Demonstrations at exhibitions and events** aimed at increasing project awareness are exempt from commercial licensing requirements.
+- All commercial licenses are **one-time purchase**.
+- Licenses have **no expiration** (perpetual use is possible).
+- Licenses do not include **support**. If support is needed, please consult separately.
+- Licenses apply to the **latest version** at the time of acquisition. Upgrade fees may apply if there is a major update.
+- If commercial use is confirmed after starting use as personal, educational, or non-profit use, **commercial license fees will be charged from the start of commercial use**.
+- **Exhibitions and demonstrations** aimed at increasing the project's recognition are not subject to commercial licenses.
 
-For commercial license details and purchase information, please contact support@aituberkit.com.
+For details and purchase methods of commercial licenses, please contact support@aituberkit.com.
 
 ## License Selection
 
-1. The MIT License automatically applies to **personal use, educational purposes, and non-profit purposes**.
-2. For **commercial purposes**, an appropriate commercial license must be purchased.
+1. For **personal use, educational purposes, non-profit purposes, and exhibitions/demonstrations**, you can use it for free.
+2. For **commercial purposes**, you need to purchase the appropriate commercial license.
 
-If you are unsure about license selection or have questions, please contact support@aituberkit.com.
+If you are unsure about license selection or have questions, please feel free to contact **support@aituberkit.com**.
 
-## Regarding Project Forks
+## Forking the Project
 
-When **forking this project**, these license terms apply to the forked project. Commercial use or redistribution of forks may require separate commercial licenses. For details, please refer to the [Project FAQ](license-faq_en.md).
-
-## Additional Information
-
-For detailed information about licensing, specific use cases, and frequently asked questions, please refer to the [Project FAQ](license-faq_en.md). If you have any questions, please contact us individually.
+When **forking this project**, the license terms also apply to the forked project. If you conduct commercial use or redistribution of the fork, **a separate commercial license is required**. For details, please refer to the [project FAQ](license-faq.md).
 
 ## Scope of Commercial License
 
-The commercial license applies **only to code included in the main branch** of this project. Branches other than the main branch cannot be used commercially. Commercial users must use release versions from the main branch.
+The commercial license applies only to the code included in the **main branch** of this project. Commercial use of branches other than the main branch or past versions is not allowed. Commercial users must use the release version from the main branch.
+
+## Additional Information
+
+For detailed information about the license, specific usage examples, and frequently asked questions, please refer to the [project FAQ](license-faq.md). If you have any questions, please contact us individually.
