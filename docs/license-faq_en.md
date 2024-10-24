@@ -6,9 +6,9 @@
 
 A1: To ensure sustainable development and better value delivery for the project. Revenue from commercial licenses will be used for continuous project improvement.
 
-**Q2: What happens to existing versions?**
+**Q2: What happens to existing versions (v1.x.x)?**
 
-A2: Existing versions will continue to be available under the MIT license. A custom license will apply from the new major version (v2.0.0) onwards.
+A2: Existing versions (v1.x.x) will continue to be available under the MIT license. A custom license will apply from the new major version (v2.0.0) onwards.
 
 **Q3: Is there any impact on personal use?**
 
