@@ -375,7 +375,7 @@ export const handleSendChatFn =
     const hs = homeStore.getState()
     const sls = slideStore.getState()
 
-    if (ss.webSocketMode || ss.realtimeAPIMode) {
+    if (ss.webSocketMode) {
       homeStore.setState({ chatProcessing: true })
 
       if (hs.ws?.readyState === WebSocket.OPEN) {
@@ -387,6 +387,9 @@ export const handleSendChatFn =
         homeStore.setState({
           chatLog: updateLog,
         })
+
+        // WebSocket送信
+        hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
       } else {
         homeStore.setState({
           assistantMessage: errors['NotConnectedToExternalAssistant'],
