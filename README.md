@@ -2,11 +2,13 @@
   <img style="max-width: 100%;" src="./docs/logo.png">
 </h1>
 
+**お知らせ: 本プロジェクトはバージョン v2.0.0 以降、デュアルライセンス方式（MITライセンス + 商用ライセンス）を採用しています。商用目的でご利用の場合は、[ライセンス](#利用規約)セクションをご確認ください。**
+
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
-   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/tegnike/aituber-kit"></a>
+   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: MIT/Commercial" src="https://img.shields.io/badge/License-MIT%2FCommercial-blue"></a>
 </p>
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
@@ -231,9 +233,18 @@ npm run dev
 
 ## 利用規約
 
-- ライセンスは [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM) に準拠し、MITライセンスとしています。
+本プロジェクトは、バージョン v2.0.0 以降、**デュアルライセンス方式**（MITライセンス + 商用ライセンス）を採用しています。
+
+- **オープンソースライセンス (MIT)**
+  - 営利目的以外での個人利用、教育目的、非営利目的での使用に関しては、MITライセンスが適用されます。
+
+- **商用ライセンス**
+  - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
+
+- [ライセンスについて](./docs/lisence.md)をご確認ください。
 - [ロゴの利用規約](./docs/logo_licence.md)
 - [VRMモデルの利用規約](./docs/vrm_licence.md)
+
 
 ## コントリビューター用TIPS
 
