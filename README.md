@@ -2,7 +2,7 @@
   <img style="max-width: 100%;" src="./docs/logo.png">
 </h1>
 
-**お知らせ: 本プロジェクトはバージョン v2.0.0 以降、デュアルライセンス方式（MITライセンス + 商用ライセンス）を採用しています。商用目的でご利用の場合は、[ライセンス](#利用規約)セクションをご確認ください。**
+**お知らせ: 本プロジェクトはバージョン v2.0.0 以降、デュアルライセンス方式（MITライセンス + 商用ライセンス）を採用しています。商用目的でご利用の場合は、[利用規約](#利用規約) セクションをご確認ください。**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
@@ -233,6 +233,8 @@ npm run dev
 
 ## 利用規約
 
+### ライセンス
+
 本プロジェクトは、バージョン v2.0.0 以降、**デュアルライセンス方式**（MITライセンス + 商用ライセンス）を採用しています。
 
 - **オープンソースライセンス (MIT)**
@@ -240,8 +242,10 @@ npm run dev
 
 - **商用ライセンス**
   - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
+  - 詳細は、[ライセンスについて](./docs/license.md)をご確認ください。
 
-- [ライセンスについて](./docs/lisence.md)をご確認ください。
+### その他
+
 - [ロゴの利用規約](./docs/logo_licence.md)
 - [VRMモデルの利用規約](./docs/vrm_licence.md)
 
