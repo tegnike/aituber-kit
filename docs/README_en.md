@@ -230,6 +230,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/haoling" title="haoling">
     <img src="https://github.com/haoling.png" width="40" height="40" alt="haoling">
   </a>
+  <a href="https://github.com/FoundD-oka" title="FoundD-oka">
+    <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
+  </a>
 </p>
 
 Plus multiple private sponsors
