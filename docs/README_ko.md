@@ -79,28 +79,35 @@ npm run dev
 
 - AI 캐릭터와 대화할 수 있는 기능입니다.
 - 이 저장소의 기반이 되는 [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)을 확장한 기능입니다.
-- 다양한 LLM의 API 키만 있으면 비교적 쉽게 시도해볼 수 있습니다.
+- 각종 LLM의 API 키만 있으면 쉽게 시작할 수 있습니다.
 - 최근의 대화 문장을 기억으로 보존합니다.
 - 멀티모달로, 카메라에서의 영상이나 업로드한 이미지를 인식하여 답변을 생성할 수 있습니다.
 
 ### 사용 방법
 
-1. 설정 화면에서 다양한 LLM의 API 키를 입력합니다.
+1. 설정 화면에서 각종 LLM의 API 키를 입력합니다.
    - OpenAI
    - Anthropic
    - Google Gemini
+   - Azure OpenAI
    - Groq
-   - Local LLM (API 키는 필요 없지만 로컬 API 서버를 실행해야 합니다.)
-   - Dify Chatbot (API 키는 필요 없지만 로컬 API 서버를 실행해야 합니다.)
+   - Cohere
+   - Mistral AI
+   - Perplexity
+   - Fireworks
+   - 로컬 LLM
+   - Dify (Chatbot or Agent)
 2. 필요한 경우 캐릭터의 설정 프롬프트를 편집합니다.
-3. 필요한 경우 VRM 파일을 로드합니다.
+3. 필요한 경우 캐릭터의 VRM 파일 및 배경 파일을 업로드합니다.
 4. 음성 합성 엔진을 선택하고 필요한 경우 음성 설정을 구성합니다.
-   - VOICEVOX의 경우 여러 옵션에서 스피커를 선택할 수 있습니다. 사전에 VOICEVOX 앱을 실행해야 합니다.
-   - Koeiromap의 경우 음성을 세밀하게 조정할 수 있습니다. API 키가 필요합니다.
-   - Google TTS의 경우 일본어 외의 언어도 선택할 수 있습니다. 자격 증명 정보가 필요합니다.
-   - Style-Bert-VITS2의 경우 로컬 API 서버를 실행해야 합니다.
-   - GSVI TTS의 경우 로컬 API 서버를 실행해야 합니다.
-   - ElevenLabs는 다양한 언어 선택이 가능합니다. API 키를 입력하세요.
+   - VOICEVOX: 여러 옵션에서 스피커를 선택할 수 있습니다. 사전에 VOICEVOX 앱을 실행해야 합니다.
+   - Koeiromap: 세밀하게 음성을 조정할 수 있습니다. API 키가 필요합니다.
+   - Google TTS: 일본어 외의 언어도 선택 가능합니다. credential 정보가 필요합니다.
+   - Style-Bert-VITS2: 로컬 API 서버를 실행해야 합니다.
+   - GSVI TTS: 로컬 API 서버를 실행해야 합니다.
+   - ElevenLabs: 다양한 언어 선택이 가능합니다. API 키를 입력하세요.
+   - OpenAI: API 키가 필요합니다.
+   - Azure OpenAI: API 키가 필요합니다.
 5. 입력 양식에서 캐릭터와 대화를 시작합니다. 마이크 입력도 가능합니다.
 
 ## AITuber 스트리밍
@@ -119,18 +126,17 @@ npm run dev
 
 ## 기타 기능
 
-### 외부 통합 모드（베타 버전）
+### 외부 연계 모드
 
-- WebSocket을 통해 서버 앱에 메시지를 보내고 응답을 받을 수 있습니다.
-- 위의 두 가지와 달리 프론트엔드 앱 내에서 완료되지 않으므로 난이도가 약간 높습니다.
-- ⚠ 이 모드는 현재 완전히 유지보수되지 않아 작동하지 않을 수 있습니다.
+- WebSocket을 통해 서버 앱에 요청을 전송하고 응답을 받을 수 있습니다.
+- 별도의 서버 앱을 준비해야 합니다.
 
 #### 사용 방법
 
 1. 서버 앱을 시작하고 `ws://127.0.0.1:8000/ws` 엔드포인트를 엽니다.
 2. 설정 화면에서 WebSocket 모드를 켭니다.
 3. 다른 설정은 "AI 캐릭터와 대화"와 동일한 방식으로 구성합니다.
-4. 서버 앱에서 메시지를 기다리고 캐릭터가 반응하는지 확인합니다.
+4. 입력 양식에서 요청을 전송하고 서버 앱에서 응답이 반환되는지 확인합니다.
 
 #### 관련 사항
 
@@ -149,6 +155,22 @@ npm run dev
 3. 설정 화면에서 슬라이드 모드를 켭니다.
 4. 슬라이드 시작 버튼을 눌러 발표를 시작합니다.
 
+### Realtime API 모드
+
+- OpenAI의 Realtime API를 사용하여 낮은 지연으로 캐릭터와 대화할 수 있는 모드입니다.
+- 함수 실행을 정의할 수 있습니다.
+
+#### 사용 방법
+
+1. AI 서비스에서 OpenAI 또는 Azure OpenAI를 선택합니다.
+2. Realtime API 모드를 켭니다.
+3. 마이크를 사용하여 대화합니다.
+
+#### 함수 실행
+
+- src/components/realtimeAPITools.tsx, src/components/realtimeAPITools.json에 새로운 함수를 정의합니다.
+- 기존의 get_current_weather 함수를 참고하세요.
+
 ## 팁
 
 ### VRM 모델 및 배경 고정 방법
@@ -161,11 +183,26 @@ npm run dev
 - 일부 구성 값은 `.env` 파일 내용에서 참조할 수 있습니다.
 - 설정 화면에 입력된 경우 해당 값이 우선적으로 적용됩니다.
 
+### 마이크 입력 방법 (2가지 패턴)
+
+1. Alt (또는 option) 키를 누르고 있는 동안 입력 => 떼면 전송
+2. 마이크 버튼 클릭 (한 번 클릭하면 입력 시작) => 다시 클릭하면 전송
+
 ### 기타
 
 - 대화 내역은 설정 화면에서 재설정할 수 있니다.
 - 다양한 설정 항목은 브라우저에 저장됩니다.
 - 코드 블록으로 둘러싸인 요소는 TTS에서 읽히지 않습니다.
+
+## 관련 기사
+
+- [오늘부터 당신도 AITuber 개발자｜니케짱](https://note.com/nike_cha_n/n/ne98acb25e00f)
+- [미소녀와 함께 개발해보자!! [Open Interpreter]](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
+- [슬라이드 발표는 AI가 하는 시대!!!!](https://note.com/nike_cha_n/n/n867081a598f1)
+- [AITuberKit에 멀티모달 기능을 추가해서 AI 캐릭터와 집에서 한잔 해보자](https://note.com/nike_cha_n/n/n6d8e330561e4)
+- [AITuberKit × Dify로 초간단 챗봇 구축](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
+- [Dify를 Xserver에서 인터넷에 공개하기](https://note.com/nike_cha_n/n/n23467824b22b)
+- [고급 음성 모드인 Realtime API를 시도해보자](https://note.com/nike_cha_n/n/ne51c16ddadd0)
 
 ## 스폰서 모집
 
@@ -231,6 +268,9 @@ npm run dev
   <a href="https://github.com/FoundD-oka" title="FoundD-oka">
     <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
   </a>
+  <a href="https://github.com/terisuke" title="terisuke">
+    <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
+  </a>
 </p>
 
 그 외, 다수의 비공개 스폰서
@@ -242,6 +282,7 @@ npm run dev
 버전 v2.0.0부터 이 프로젝트는 **커스텀 라이선스**를 채택하고 있습니다.
 
 - **무상 이용**
+
   - 영리 목적이 아닌 개인 사용, 교육 목적, 비영리 목적의 사용은 무상으로 이용 가능합니다.
 
 - **상업용 라이선스**
@@ -252,3 +293,4 @@ npm run dev
 
 - [로고 이용 약관](./logo_licence_en.md)
 - [VRM 모델 이용 약관](./vrm_licence_en.md)
+

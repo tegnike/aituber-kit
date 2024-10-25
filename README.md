@@ -77,8 +77,8 @@ npm run dev
 ## AIキャラとの対話
 
 - AIキャラと会話する機能です。
-- このリポジトリの元になっている[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)を拡張した機能です。
-- 各種LLMのAPIキーさえあれば比較的簡単に試すことが可能です。
+- このリポジトリの元になっている [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM) を拡張した機能です。
+- 各種LLMのAPIキーさえあれば簡単に始めることが可能です。
 - 直近の会話文を記憶として保持します。
 - マルチモーダルで、カメラからの映像やアップロードした画像を認識して回答を生成することが可能です。
 
@@ -88,19 +88,26 @@ npm run dev
    - OpenAI
    - Anthropic
    - Google Gemini
+   - Azure OpenAI
    - Groq
-   - ローカルLLM（APIキーは不要ですが、ローカルAPIサーバーを起動しておく必要があります。）
-   - Dify Chatbot（APIキーは不要ですが、ローカルAPIサーバーを起動しておく必要があります。）
+   - Cohere
+   - Mistral AI
+   - Perplexity
+   - Fireworks
+   - ローカルLLM
+   - Dify（Chatbot or Agent）
 2. 必要に応じてキャラクターの設定プロンプトを編集します。
-3. 用意がある場合は、VRMファイルおよび背景ファイルをアップロードします。
+3. 必要に応じてキャラクターのVRMファイルおよび背景ファイルをアップロードします。
 4. 音声合成エンジンを選択し、必要に応じて声の設定を行います。
-   - VOICEVOXの場合は複数の選択肢から話者を選ぶことができます。予めVOICEVOXアプリを起動しておく必要があります。
-   - Koeiromapの場合は、細かく音声を調整することが可能です。APIキーの入力が必要です。
-   - Google TTSの場合は日本語以外の言語も選択可能です。credential情報が必要です。
-   - Style-Bert-VITS2は、ローカルAPIサーバーを起動しておく必要があります。
-   - GSVI TTSは、ローカルAPIサーバーを起動しておく必要があります。
-   - ElevenLabsは様々な言語の選択が可能です。APIキーを入力してください。
-5. 入力フォームからキャラクターと会話を開始します。マイク入力も可能。
+   - VOICEVOX: 複数の選択肢から話者を選ぶことができます。予めVOICEVOXアプリを起動しておく必要があります。
+   - Koeiromap: 細かく音声を調整することが可能です。APIキーの入力が必要です。
+   - Google TTS: 日本語以外の言語も選択可能です。credential情報が必要です。
+   - Style-Bert-VITS2: ローカルAPIサーバーを起動しておく必要があります。
+   - GSVI TTS: ローカルAPIサーバーを起動しておく必要があります。
+   - ElevenLabs: 様々な言語の選択が可能です。APIキーの入力が必要です。
+   - OpenAI: APIキーの入力が必要です。
+   - Azure OpenAI: APIキーの入力が必要です。
+5. 入力フォームからキャラクターと会話を開始します。マイク入力も可能です。
 
 ## AITuber配信
 
@@ -118,23 +125,22 @@ npm run dev
 
 ## その他の機能
 
-### 外部連携モード（β版）
+### 外部連携モード
 
-- WebSocketでサーバーアプリにメッセージを送信して、レスポンスを取得することができます。
-- 上記2つと異なり、フロントアプリで完結しないため少し難易度が高いです。
-- ⚠ 現在メンテナンスしきれていないため、動かない可能性があります。
+- WebSocketでサーバーアプリにリクエストを送信して、レスポンスを取得することができます。
+- 別途サーバーアプリを用意する必要があります。
 
 #### 使用方法
 
 1. サーバーアプリを起動し、`ws://127.0.0.1:8000/ws` エンドポイントを開きます。
 2. 設定画面でWebSocketモードをONにします。
 3. 他の設定は「AIキャラとの対話」と同様に行います。
-4. サーバーアプリからのメッセージを待ち、キャラクターが反応するのを確認します。
+4. 入力フォームからリクエストを送信し、サーバーアプリからのリクエストが返却されるのを確認します。
 
 #### 関連
 
-- 私が作成したサーバーアプリのリポジトリで試すことが可能です。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- 詳しい設定は「[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)」を読んでください。
+- こちらのサーバーアプリのリポジトリですぐに試すことが可能です。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
+- 詳しい設定は「[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)」をお読みください。
 
 ### スライドモード
 
@@ -143,10 +149,30 @@ npm run dev
 
 #### 使用方法
 
-1. 予めAIキャラと対話できるところまで進めておきます。
+1. AIキャラと対話できるところまで進めておきます。
 2. スライドフォルダと台本ファイルを指定のフォルダに配置します。
 3. 設定画面でスライドモードをONにします。
 4. スライド開始ボタンを押して発表を開始します。
+
+#### 関連
+
+- 詳しい設定は「[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)」をお読みください。
+
+### Realtime APIモード
+
+- OpenAIのRealtime APIを使用して、低遅延でキャラと対話できるモードです。
+- 関数実行を定義することができます。
+
+#### 使用方法
+
+1. AIサービスでOpenAIまたはAzure OpenAIを選択します。
+2. Realtime APIモードをONにします。
+3. マイクを使用して話しかけます。
+
+#### 関数実行
+
+- src/components/realtimeAPITools.tsx, src/components/realtimeAPITools.json に新しい関数を定義します。
+- 既存の get_current_weather 関数を参考にしてください。
 
 ## TIPS
 
@@ -158,13 +184,28 @@ npm run dev
 ### 環境変数の設定
 
 - 一部の設定値は `.env` ファイルの内容を参照することができます。
-- 設定画面で入力した場合は、その値が優先されます。
+- 設定画面で入力した場合は、環境変数で指定された値よりも優先されます。
+
+### マイク入力方法（2パターン）
+
+1. Alt (or option) キーを押している間入力受付 => 離したら送信
+2. マイクボタンをクリック（一度押したら入力受付）=> もう一度クリックで送信
 
 ### その他
 
-- 会話履歴は設定画面でリセットすることができます。
-- 各種設定項目はブラウザに保存されます。
+- 設定情報・会話履歴は設定画面でリセットすることができます。
+- 各種設定項目はブラウザにローカルストレージとして保存されます。
 - コードブロックで囲まれた要素はTTSで読まれません。
+
+## 関連記事
+
+- [今日からあなたもAITuberデベロッパー｜ニケちゃん](https://note.com/nike_cha_n/n/ne98acb25e00f)
+- [美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
+- [スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)
+- [AITuberKitにマルチモーダル機能を追加したのでAIキャラと宅飲みしてみる](https://note.com/nike_cha_n/n/n6d8e330561e4)
+- [AITuberKit × Dify で超簡単チャットボット構築](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
+- [DifyをXserverでインターネットに公開する](https://note.com/nike_cha_n/n/n23467824b22b)
+- [高度な音声モード こと Realtime API を試してみる](https://note.com/nike_cha_n/n/ne51c16ddadd0)
 
 ## スポンサー募集
 
@@ -230,6 +271,9 @@ npm run dev
   <a href="https://github.com/FoundD-oka" title="FoundD-oka">
     <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
   </a>
+  <a href="https://github.com/terisuke" title="terisuke">
+    <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名
@@ -241,6 +285,7 @@ npm run dev
 本プロジェクトは、バージョン v2.0.0 以降、**カスタムライセンス**を採用しています。
 
 - **無償利用**
+
   - 営利目的以外での個人利用、教育目的、非営利目的での使用は無償で利用可能です。
 
 - **商用ライセンス**

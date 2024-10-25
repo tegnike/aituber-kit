@@ -79,7 +79,7 @@ npm run dev
 
 - This is a feature to converse with an AI character.
 - It is an extended feature of [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM), which is the basis of this repository.
-- It can be tried relatively easily as long as you have an API key for various LLMs.
+- It can be easily started as long as you have an API key for various LLMs.
 - The recent conversation sentences are retained as memory.
 - It is multimodal, capable of recognizing images from the camera or uploaded images to generate responses.
 
@@ -89,18 +89,25 @@ npm run dev
    - OpenAI
    - Anthropic
    - Google Gemini
+   - Azure OpenAI
    - Groq
-   - Local LLM (No API key is required, but a local API server needs to be running.)
-   - Dify Chatbot (No API key is required, but a local API server needs to be running.)
+   - Cohere
+   - Mistral AI
+   - Perplexity
+   - Fireworks
+   - Local LLM
+   - Dify (Chatbot or Agent)
 2. Edit the character's setting prompt if necessary.
-3. Load a VRM file and background file if available.
+3. Load a VRM file and background file if needed.
 4. Select a speech synthesis engine and configure voice settings if necessary.
-   - For VOICEVOX, you can select a speaker from multiple options. The VOICEVOX app needs to be running beforehand.
-   - For Koeiromap, you can finely adjust the voice. An API key is required.
-   - For Google TTS, languages other than Japanese can also be selected. Credential information is required.
-   - For Style-Bert-VITS2, a local API server needs to be running.
-   - For GSVI TTS, a local API server needs to be running.
-   - ElevenLabs supports various language selection. Please enter the API key.
+   - VOICEVOX: You can select a speaker from multiple options. The VOICEVOX app needs to be running beforehand.
+   - Koeiromap: You can finely adjust the voice. An API key is required.
+   - Google TTS: Languages other than Japanese can also be selected. Credential information is required.
+   - Style-Bert-VITS2: A local API server needs to be running.
+   - GSVI TTS: A local API server needs to be running.
+   - ElevenLabs: Various language selection is possible. Please enter the API key.
+   - OpenAI: API key is required.
+   - Azure OpenAI: API key is required.
 5. Start conversing with the character from the input form. Microphone input is also possible.
 
 ## AITuber Streaming
@@ -119,25 +126,22 @@ npm run dev
 
 ## Other Features
 
-### External Integration Mode (β version)
+### External Integration Mode
 
-- You can send messages to the server app via WebSocket and get a response.
-- Unlike the above two, it does not complete within the front-end app, so the difficulty level is a bit higher.
-- ⚠ This mode is currently not fully maintained, so it may not work.
+- You can send requests to the server app via WebSocket and get responses.
+- A separate server app needs to be prepared.
 
 #### Usage
 
 1. Start the server app and open the `ws://127.0.0.1:8000/ws` endpoint.
 2. Turn on WebSocket mode in the settings screen.
 3. Configure other settings the same way as "Conversation with AI Character".
-4. Wait for messages from the server app and confirm that the character reacts.
+4. Send requests from the input form and confirm that responses are returned from the server app.
 
 #### Related
 
-- You can try it with the server app repository I created. [tegnike/aituber-server](https://github.com/tegnike/
-  aituber-server)
-- For detailed settings, please read "[Let's develop with a beautiful girl!! [Open Interpreter]](https://note.
-  com/nike_cha_n/n/nabcfeb7aaf3f)".
+- You can try it immediately with this server app repository. [tegnike/aituber-server](https://github.com/tegnike/aituber-server)
+- For detailed settings, please read "[Let's develop with a beautiful girl!! [Open Interpreter]](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)".
 
 ### Slide Mode
 
@@ -150,6 +154,25 @@ npm run dev
 2. Place the slide folder and script file in the designated folder.
 3. Turn on Slide Mode in the settings screen.
 4. Press the Start Slide button to begin the presentation.
+#### Related
+
+- For detailed settings, please read "[AI Does Slide Presentations Now!!!!](https://note.com/nike_cha_n/n/n867081a598f1)".
+
+### Realtime API Mode
+
+- This is a mode where you can interact with the character with low latency using OpenAI's Realtime API.
+- Function execution can be defined.
+
+#### Usage
+
+1. Select OpenAI or Azure OpenAI as the AI service.
+2. Turn on Realtime API mode.
+3. Use the microphone to talk to the character.
+
+#### Function Execution
+
+- Define new functions in src/components/realtimeAPITools.tsx and src/components/realtimeAPITools.json.
+- Refer to the existing get_current_weather function as an example.
 
 ## TIPS
 
@@ -163,11 +186,26 @@ npm run dev
 - Some configuration values can be referenced from the `.env` file contents.
 - If entered in the settings screen, that value takes precedence.
 
+### Microphone Input Methods (2 Patterns)
+
+1. Hold Alt (or option) key to record => Release to send
+2. Click microphone button (click once to start recording) => Click again to send
+
 ### Other
 
-- Conversation history can be reset in the settings screen.
-- Various settings are stored in the browser.
+- Settings and conversation history can be reset in the settings screen.
+- Various settings are stored in the browser's local storage.
 - Elements enclosed in code blocks are not read by TTS.
+
+## Related Articles
+
+- [You are AITuber Developer from Today | Nike-chan](https://note.com/nike_cha_n/n/ne98acb25e00f)
+- [Let's develop with a beautiful girl!! [Open Interpreter]](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
+- [AI Does Slide Presentations Now!!!!](https://note.com/nike_cha_n/n/n867081a598f1)
+- [Added Multimodal Features to AITuberKit, So Let's Have a Drink at Home with AI Character](https://note.com/nike_cha_n/n/n6d8e330561e4)
+- [AITuberKit × Dify for Super Easy Chatbot Building](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
+- [Publishing Dify on the Internet with Xserver](https://note.com/nike_cha_n/n/n23467824b22b)
+- [Try the Advanced Voice Mode Called Realtime API](https://note.com/nike_cha_n/n/ne51c16ddadd0)
 
 ## Seeking Sponsors
 
@@ -233,6 +271,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/FoundD-oka" title="FoundD-oka">
     <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
   </a>
+  <a href="https://github.com/terisuke" title="terisuke">
+    <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
+  </a>
 </p>
 
 Plus multiple private sponsors
@@ -244,6 +285,7 @@ Plus multiple private sponsors
 From version v2.0.0, this project adopts a **custom license**.
 
 - **Non-Commercial Use**
+
   - Non-Commercial Use is available for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
 
 - **Commercial License**
@@ -330,4 +372,5 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 - Add a new language README (`README_fr.md`), logo usage terms (`logo_licence_fr.md`), and VRM model usage terms (`vrm_licence_fr.md`) to the `docs` directory.
 
 ```
+
 
