@@ -234,7 +234,7 @@ export const checkIfResponseContinuationIsRequired = async (
   }
 
   const systemMessage = `与えられた会話文の文脈から、次にどの話者が発言すべきかを判断してください。
-最後��話者が話を続けるべきならば "true" を、逆に交代が必要な場合は "false" を返します。
+最後の話者が話を続けるべきならば "true" を、逆に交代が必要な場合は "false" を返します。
 回答はJSON形式で、answerとreasonの2つのキーを持つオブジェクトとしてください。
 
 ## 例

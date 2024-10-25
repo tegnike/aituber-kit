@@ -5,8 +5,8 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 
-///取得したコメントをストックするリストの作成（tmpMessages）
-interface TmpMessage {
+///取得したコメントをストックするリストの作成（receivedMessages）
+interface ReceivedMessage {
   text: string
   role: string
   emotion: string
@@ -17,6 +17,7 @@ interface Params {
   handleReceiveTextFromWs: (
     text: string,
     role?: string,
+    emotion?: string,
     state?: string
   ) => Promise<void>
 }
@@ -24,18 +25,25 @@ interface Params {
 const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
   const { t } = useTranslation()
   const webSocketMode = settingsStore((s) => s.webSocketMode)
-  const [tmpMessages, setTmpMessages] = useState<TmpMessage[]>([])
+  const [receivedMessages, setReceivedMessages] = useState<ReceivedMessage[]>(
+    []
+  )
 
   const processMessage = useCallback(
-    async (message: TmpMessage) => {
-      await handleReceiveTextFromWs(message.text, message.role, message.state)
+    async (message: ReceivedMessage) => {
+      await handleReceiveTextFromWs(
+        message.text,
+        message.role,
+        message.emotion,
+        message.state
+      )
     },
     [handleReceiveTextFromWs]
   )
 
   useEffect(() => {
-    if (tmpMessages.length > 0) {
-      const message = tmpMessages[0]
+    if (receivedMessages.length > 0) {
+      const message = receivedMessages[0]
       if (
         message.role === 'output' ||
         message.role === 'executing' ||
@@ -43,10 +51,10 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
       ) {
         message.role = 'code'
       }
-      setTmpMessages((prev) => prev.slice(1))
+      setReceivedMessages((prev) => prev.slice(1))
       processMessage(message)
     }
-  }, [tmpMessages, processMessage])
+  }, [receivedMessages, processMessage])
 
   function removeToast() {
     toastStore.getState().removeToast('websocket-connection-error')
@@ -72,7 +80,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
     const handleMessage = (event: MessageEvent) => {
       console.log('Received message:', event.data)
       const jsonData = JSON.parse(event.data)
-      setTmpMessages((prevMessages) => [...prevMessages, jsonData])
+      setReceivedMessages((prevMessages) => [...prevMessages, jsonData])
     }
     const handleError = (event: Event) => {
       console.error('WebSocket error:', event)

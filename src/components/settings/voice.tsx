@@ -6,7 +6,11 @@ import {
   PRESET_C,
   PRESET_D,
 } from '@/features/constants/koeiroParam'
-import { AIVoice } from '@/features/constants/settings'
+import {
+  AIVoice,
+  OpenAITTSVoice,
+  OpenAITTSModel,
+} from '@/features/constants/settings'
 import { testVoiceVox } from '@/features/messages/speakCharacter'
 import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
@@ -37,6 +41,12 @@ const Voice = () => {
   const gsviTtsBatchSize = settingsStore((s) => s.gsviTtsBatchSize)
   const gsviTtsSpeechRate = settingsStore((s) => s.gsviTtsSpeechRate)
   const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId)
+  const openaiTTSKey = settingsStore((s) => s.openaiTTSKey)
+  const openaiTTSVoice = settingsStore((s) => s.openaiTTSVoice)
+  const openaiTTSModel = settingsStore((s) => s.openaiTTSModel)
+  const openaiTTSSpeed = settingsStore((s) => s.openaiTTSSpeed)
+  const azureTTSKey = settingsStore((s) => s.azureTTSKey)
+  const azureTTSEndpoint = settingsStore((s) => s.azureTTSEndpoint)
 
   const { t } = useTranslation()
 
@@ -60,6 +70,8 @@ const Voice = () => {
           <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
           <option value="gsvitts">{t('UsingGSVITTS')}</option>
           <option value="elevenlabs">{t('UsingElevenLabs')}</option>
+          <option value="openai">{t('UsingOpenAITTS')}</option>
+          <option value="azure">{t('UsingAzureTTS')}</option> {/* 追加 */}
         </select>
       </div>
       <div className="my-40">
@@ -520,6 +532,146 @@ const Voice = () => {
                     }
                   />
                 </div>
+              </>
+            )
+          } else if (selectVoice === 'openai') {
+            return (
+              <>
+                <div>{t('OpenAITTSInfo')}</div>
+                <div className="mt-16 font-bold">{t('OpenAIAPIKeyLabel')}</div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="..."
+                    value={openaiTTSKey}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        openaiTTSKey: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-16 font-bold">{t('OpenAITTSVoice')}</div>
+                <div className="mt-8">
+                  <select
+                    value={openaiTTSVoice}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        openaiTTSVoice: e.target.value as OpenAITTSVoice,
+                      })
+                    }
+                    className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  >
+                    <option value="alloy">alloy</option>
+                    <option value="echo">echo</option>
+                    <option value="fable">fable</option>
+                    <option value="onyx">onyx</option>
+                    <option value="nova">nova</option>
+                    <option value="shimmer">shimmer</option>
+                  </select>
+                </div>
+                <div className="mt-16 font-bold">{t('OpenAITTSModel')}</div>
+                <div className="mt-8">
+                  <select
+                    value={openaiTTSModel}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        openaiTTSModel: e.target.value as OpenAITTSModel,
+                      })
+                    }
+                    className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  >
+                    <option value="tts-1">tts-1</option>
+                    <option value="tts-1-hd">tts-1-hd</option>
+                  </select>
+                </div>
+                <div className="mt-16 font-bold">
+                  {t('OpenAITTSSpeed')}: {openaiTTSSpeed}
+                </div>
+                <input
+                  type="range"
+                  min={0.25}
+                  max={4.0}
+                  step={0.01}
+                  value={openaiTTSSpeed}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      openaiTTSSpeed: Number(e.target.value),
+                    })
+                  }}
+                />
+              </>
+            )
+          } else if (selectVoice === 'azure') {
+            return (
+              <>
+                <div>{t('AzureTTSInfo')}</div>
+                <div className="mt-16 font-bold">{t('AzureAPIKeyLabel')}</div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="..."
+                    value={azureTTSKey}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        azureTTSKey: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-16 font-bold">{t('AzureEndpoint')}</div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="..."
+                    value={azureTTSEndpoint}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        azureTTSEndpoint: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-16 font-bold">{t('OpenAITTSVoice')}</div>
+                <div className="mt-8">
+                  <select
+                    value={openaiTTSVoice}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        openaiTTSVoice: e.target.value as OpenAITTSVoice,
+                      })
+                    }
+                    className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  >
+                    <option value="alloy">alloy</option>
+                    <option value="echo">echo</option>
+                    <option value="fable">fable</option>
+                    <option value="onyx">onyx</option>
+                    <option value="nova">nova</option>
+                    <option value="shimmer">shimmer</option>
+                  </select>
+                </div>
+                <div className="mt-16 font-bold">{t('OpenAITTSModel')}</div>
+                <div className="mt-16 font-bold">
+                  {t('OpenAITTSSpeed')}: {openaiTTSSpeed}
+                </div>
+                <input
+                  type="range"
+                  min={0.25}
+                  max={4.0}
+                  step={0.01}
+                  value={openaiTTSSpeed}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      openaiTTSSpeed: Number(e.target.value),
+                    })
+                  }}
+                />
               </>
             )
           }

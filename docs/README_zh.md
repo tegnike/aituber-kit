@@ -78,7 +78,7 @@ npm run dev
 
 - 這是與AI角色對話的功能。
 - 它是此存儲庫的基礎[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)的擴展功能。
-- 只要您有各種LLM的API密鑰，就可以相對輕鬆地嘗試。
+- 只要您有各種LLM的API密鑰，就可以輕鬆開始使用。
 - 最近的對話句子作為記憶保留。
 - 它是多模態的，能夠識別來自攝像頭的圖像或上傳的圖像來生成回應。
 
@@ -88,18 +88,25 @@ npm run dev
    - OpenAI
    - Anthropic
    - Google Gemini
+   - Azure OpenAI
    - Groq
-   - Local LLM（不需要API密鑰，但需要運行本地API服務器。）
-   - Dify Chatbot（不需要API密鑰，但需要運行本地API服務器。）
+   - Cohere
+   - Mistral AI
+   - Perplexity
+   - Fireworks
+   - 本地LLM
+   - Dify（Chatbot或Agent）
 2. 如有必要，編輯角色的設置提示。
 3. 如有需要，加載VRM文件和背景文件。
 4. 選擇語音合成引擎並根據需要配置語音設置。
-   - 對於VOICEVOX，您可以從多個選項中選擇發言者。需要事先運行VOICEVOX應用程序。
-   - 對於Koeiromap，您可以細微調整語音。需要API密鑰。
-   - 對於Google TTS，還可以選擇日語以外的語言。需要憑證信息。
-   - 對於Style-Bert-VITS2，需要運行本地API服務器。
-   - 對於GSVI TTS，需要運行本地API服務器。
-   - ElevenLabs支持多种语言选择。请输入API密钥。
+   - VOICEVOX：您可以從多個選項中選擇發言者。需要事先運行VOICEVOX應用程序。
+   - Koeiromap：您可以細微調整語音。需要API密鑰。
+   - Google TTS：還可以選擇日語以外的語言。需要憑證信息。
+   - Style-Bert-VITS2：需要運行本地API服務器。
+   - GSVI TTS：需要運行本地API服務器。
+   - ElevenLabs：支持多種語言選擇。需要輸入API密鑰。
+   - OpenAI：需要API密鑰。
+   - Azure OpenAI：需要API密鑰。
 5. 從輸入表單開始與角色對話。也可以使用麥克風輸入。
 
 ## AITuber直播
@@ -118,22 +125,21 @@ npm run dev
 
 ## 其他功能
 
-### 外部整合模式（β版本）
+### 外部整合模式
 
-- 您可以通過WebSocket向服務器應用程序發送消息並獲得響應。
-- 與上述兩者不同，它不在前端應用程序中完成，因此難度略高。
-- ⚠ 此模式目前未完全維護，可能無法正常運行。
+- 您可以通過WebSocket向服務器應用程序發送請求並獲得響應。
+- 需要另外準備服務器應用程序。
 
 #### 使用方法
 
 1. 啟動服務器應用程序並打開 `ws://127.0.0.1:8000/ws` 端點。
 2. 在設置屏幕中打開WebSocket模式。
 3. 與"與AI角色對話"相同的方式配置其他設置。
-4. 等待服務器應用程序的消息並確認角色的反應。
+4. 從輸入表單發送請求，並確認從服務器應用程序返回響應。
 
 #### 相關
 
-- 您可以嘗試我創建的服務器應用程序存儲庫。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
+- 您可以使用此服務器應用程序存儲庫立即進行嘗試。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
 - 請閱讀"[與美少女一起開發吧！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)"以獲得詳細設置。
 
 ### 幻燈片模式
@@ -148,6 +154,22 @@ npm run dev
 3. 在設置屏幕中打開幻燈片模式。
 4. 按下開始幻燈片按鈕開始演示。
 
+### Realtime API模式
+
+- 使用OpenAI的Realtime API，可以以低延遲與角色對話。
+- 可以定義函數執行。
+
+#### 使用方法
+
+1. 在AI服務中選擇OpenAI或Azure OpenAI。
+2. 打開Realtime API模式。
+3. 使用麥克風進行對話。
+
+#### 函數執行
+
+- 在src/components/realtimeAPITools.tsx和src/components/realtimeAPITools.json中定義新函數。
+- 請參考現有的get_current_weather函數。
+
 ## 小貼士
 
 ### VRM模型和背景固定方法
@@ -160,11 +182,26 @@ npm run dev
 - 某些配置值可以從 `.env` 文件內容中參考。
 - 如果在設置屏幕中輸入，則該值優先。
 
+### 麥克風輸入方法（2種模式）
+
+1. 按住Alt（或option）鍵進行輸入 => 釋放發送
+2. 點擊麥克風按鈕（點擊一次開始錄音）=> 再次點擊發送
+
 ### 其他
 
-- 可以在設置屏幕中重置對話歷史。
-- 各種設置存儲在瀏覽器中。
-- 代码块中的元素不会被TTS读取。
+- 設置信息和對話歷史可以在設置屏幕中重置。
+- 各種設置項目保存在瀏覽器的本地存儲中。
+- 代碼塊中的元素不會被TTS讀取。
+
+## 相關文章
+
+- [今天成為AITuber開發者 | Nike-chan](https://note.com/nike_cha_n/n/ne98acb25e00f)
+- [與美少女一起開發吧！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
+- [AI時代的幻燈片演示！！！！](https://note.com/nike_cha_n/n/n867081a598f1)
+- [AITuberKit添加了多模態功能，讓我們與AI角色一起在家喝一杯](https://note.com/nike_cha_n/n/n6d8e330561e4)
+- [AITuberKit × Dify 超簡單聊天機器人構建](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
+- [在Xserver上公開Dify](https://note.com/nike_cha_n/n/n23467824b22b)
+- [嘗試高級語音模式 Realtime API](https://note.com/nike_cha_n/n/ne51c16ddadd0)
 
 ## 尋求贊助
 
@@ -230,6 +267,9 @@ npm run dev
   <a href="https://github.com/FoundD-oka" title="FoundD-oka">
     <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
   </a>
+  <a href="https://github.com/terisuke" title="terisuke">
+    <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
+  </a>
 </p>
 
 以及多位匿名贊助者
@@ -241,6 +281,7 @@ npm run dev
 从版本v2.0.0开始，本项目采用**自定义许可方式**。
 
 - **无偿使用**
+
   - 非营利目的的个人使用、教育目的和非营利目的的使用是无偿的。
 
 - **商业许可证**
@@ -251,3 +292,4 @@ npm run dev
 
 - [标志使用协议](./logo_licence_en.md)
 - [VRM模型使用协议](./vrm_licence_en.md)
+

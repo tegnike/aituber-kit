@@ -80,7 +80,7 @@
   "EnterYourQuestion": "在此輸入您的問題",
   "AnswerGenerating": "正在生成回答",
   "AboutThisApplication": "關於這個應用程式",
-  "AboutThisApplicationDescription": "只需使用網頁瀏覽器，即可通過麥克風或文字輸入、語音合成與 3D 角色對話。你可以更換角色（VRM）、設定性格和���整語音。<br />設定可以從左上角的選單按鈕進行更改。",
+  "AboutThisApplicationDescription": "只需使用網頁瀏覽器，即可通過麥克風或文字輸入、語音合成與 3D 角色對話。你可以更換角色（VRM）、設定性格和調整語音。<br />設定可以從左上角的選單按鈕進行更改。",
   "TechnologyIntroduction": "技術介紹",
   "TechnologyIntroductionDescription1": "這個應用程式是基於 pixiv 公司的 <b>ChatVRM</b> 改造而成。原始程式碼請參考",
   "TechnologyIntroductionLink1": "這裡",
@@ -100,7 +100,7 @@
   "GSVITTSInfo": "GSVI TTS 設定",
   "GSVITTSServerUrl": "語音推理端點URL",
   "GSVITTSModelID": "GSVI TTS 模型ID",
-  "GSVITTSBatchSize": "GSVI TTS 批次大小 (1 ~ 100 數值越大推理速���快，太大可能會用完記憶體)",
+  "GSVITTSBatchSize": "GSVI TTS 批次大小 (1 ~ 100 數值越大推理速度越快，太大可能會用完記憶體)",
   "GSVITTSSpeechRate": "語速 (0.5 ~ 2.0 數字越大越快)",
   "UsingElevenLabs": "使用 ElevenLabs",
   "ElevenLabsInfo": "使用 ElevenLabs API。支持多种语言。请从下面的URL获取API密钥。",
@@ -141,6 +141,9 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "開啟發送訊息頁面",
   "RealtimeAPIMode": "實時API模式",
+  "RealtimeAPIModeContentType": "送信類型",
+  "InputText": "文本",
+  "InputAudio": "音頻",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "WebSocket连接发生错误",
@@ -149,5 +152,12 @@
     "WebSocketConnectionSuccess": "WebSocket连接成功",
     "FunctionExecuting": "正在执行{{funcName}}",
     "FunctionExecutionFailed": "{{funcName}}执行失败"
-  }
+  },
+  "UsingOpenAITTS": "使用 OpenAI",
+  "OpenAITTSInfo": "使用 OpenAI。它支持多种语言。如果您选择 OpenAI 作为 AI 服务，则不需要设置下面的 API 密钥。",
+  "OpenAITTSVoice": "语音类型",
+  "OpenAITTSModel": "模型",
+  "OpenAITTSSpeed": "话速",
+  "UsingAzureTTS": "使用 Azure OpenAI",
+  "AzureTTSInfo": "使用 Azure OpenAI。它支持多种语言。"
 }

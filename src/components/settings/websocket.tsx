@@ -15,6 +15,7 @@ const WebSocket = () => {
     if (newMode) {
       settingsStore.setState({
         conversationContinuityMode: false,
+        realtimeAPIMode: false,
       })
     }
   }, [])
