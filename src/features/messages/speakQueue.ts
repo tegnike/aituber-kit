@@ -9,6 +9,7 @@ type SpeakTask = {
 }
 
 export class SpeakQueue {
+  private static readonly QUEUE_CHECK_DELAY = 1500
   private queue: SpeakTask[] = []
   private isProcessing = false
 
@@ -30,29 +31,36 @@ export class SpeakQueue {
           await hs.viewer.model?.speak(audioBuffer, screenplay, isNeedDecode)
           onComplete?.()
         } catch (error) {
-          console.error('Error processing speak task:', error)
+          console.error(
+            'An error occurred while processing the speech synthesis task:',
+            error
+          )
+          if (error instanceof Error) {
+            console.error('Error details:', error.message)
+          }
         }
       }
     }
 
     this.isProcessing = false
+    this.scheduleNeutralExpression()
+  }
 
-    // 一定時間待って、その間に新しいキューが追加されていないことを確認
-    const checkQueueEmpty = async () => {
-      const initialLength = this.queue.length
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+  private async scheduleNeutralExpression() {
+    const initialLength = this.queue.length
+    await new Promise((resolve) =>
+      setTimeout(resolve, SpeakQueue.QUEUE_CHECK_DELAY)
+    )
 
-      // 待機時間後もキューが空のままであることを確認
-      if (
-        initialLength === 0 &&
-        this.queue.length === 0 &&
-        !this.isProcessing
-      ) {
-        await hs.viewer.model?.playEmotion('neutral')
-      }
+    if (this.shouldResetToNeutral(initialLength)) {
+      const hs = homeStore.getState()
+      console.log('play neutral')
+      await hs.viewer.model?.playEmotion('neutral')
     }
+  }
 
-    checkQueueEmpty()
+  private shouldResetToNeutral(initialLength: number): boolean {
+    return initialLength === 0 && this.queue.length === 0 && !this.isProcessing
   }
 
   clearQueue() {
