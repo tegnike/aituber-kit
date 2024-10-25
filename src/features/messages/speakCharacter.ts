@@ -11,7 +11,7 @@ import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 import { synthesizeVoiceGSVIApi } from './synthesizeVoiceGSVI'
 import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
-import { SpeakQueue } from './SpeakQueue'
+import { SpeakQueue } from './speakQueue'
 
 interface EnglishToJapanese {
   [key: string]: string
