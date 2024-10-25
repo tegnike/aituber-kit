@@ -150,5 +150,10 @@
     "WebSocketConnectionSuccess": "WebSocket接続に成功しました",
     "FunctionExecuting": "{{funcName}}を実行しています",
     "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました"
-  }
+  },
+  "UsingOpenAITTS": "OpenAIを使用する",
+  "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
+  "OpenAITTSVoice": "ボイスタイプ",
+  "OpenAITTSModel": "モデル",
+  "OpenAITTSSpeed": "話速"
 }

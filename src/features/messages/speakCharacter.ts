@@ -9,6 +9,7 @@ import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 import { synthesizeVoiceGSVIApi } from './synthesizeVoiceGSVI'
+import { synthesizeVoiceOpenAIApi } from './synthesizeVoiceOpenAI'
 import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
 
@@ -95,6 +96,14 @@ const createSpeakCharacter = () => {
             ss.elevenlabsApiKey,
             ss.elevenlabsVoiceId,
             ss.selectLanguage
+          )
+        } else if (ss.selectVoice == 'openai') {
+          buffer = await synthesizeVoiceOpenAIApi(
+            screenplay.talk,
+            ss.openaiTTSKey || ss.openaiKey,
+            ss.openaiTTSVoice,
+            ss.openaiTTSModel,
+            ss.openaiTTSSpeed
           )
         }
       } catch (error) {

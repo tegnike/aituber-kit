@@ -3,7 +3,13 @@ import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
-import { AIService, AIVoice, Language } from '../constants/settings'
+import {
+  AIService,
+  AIVoice,
+  Language,
+  OpenAITTSVoice,
+  OpenAITTSModel,
+} from '../constants/settings'
 
 export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
@@ -51,6 +57,10 @@ interface ModelProvider {
   gsviTtsBatchSize: number
   gsviTtsSpeechRate: number
   elevenlabsVoiceId: string
+  openaiTTSKey: string
+  openaiTTSVoice: OpenAITTSVoice
+  openaiTTSModel: OpenAITTSModel
+  openaiTTSSpeed: number
 }
 
 interface Integrations {
@@ -148,6 +158,14 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') ||
         1.0,
       elevenlabsVoiceId: '',
+      openaiTTSKey: '',
+      openaiTTSVoice:
+        (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) ||
+        'shimmer',
+      openaiTTSModel:
+        (process.env.NEXT_PUBLIC_OPENAI_TTS_MODEL as OpenAITTSModel) || 'tts-1',
+      openaiTTSSpeed:
+        parseFloat(process.env.NEXT_PUBLIC_OPENAI_TTS_SPEED || '1.0') || 1.0,
 
       // Integrations
       difyUrl: '',
@@ -238,6 +256,10 @@ const settingsStore = create<SettingsState>()(
         realtimeAPIMode: state.realtimeAPIMode,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
+        openaiTTSKey: state.openaiTTSKey,
+        openaiTTSVoice: state.openaiTTSVoice,
+        openaiTTSModel: state.openaiTTSModel,
+        openaiTTSSpeed: state.openaiTTSSpeed,
       }),
     }
   )
