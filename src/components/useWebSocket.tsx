@@ -17,6 +17,7 @@ interface Params {
   handleReceiveTextFromWs: (
     text: string,
     role?: string,
+    emotion?: string,
     state?: string
   ) => Promise<void>
 }
@@ -24,11 +25,18 @@ interface Params {
 const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
   const { t } = useTranslation()
   const webSocketMode = settingsStore((s) => s.webSocketMode)
-  const [receivedMessages, setReceivedMessages] = useState<ReceivedMessage[]>([])
+  const [receivedMessages, setReceivedMessages] = useState<ReceivedMessage[]>(
+    []
+  )
 
   const processMessage = useCallback(
     async (message: ReceivedMessage) => {
-      await handleReceiveTextFromWs(message.text, message.role, message.state)
+      await handleReceiveTextFromWs(
+        message.text,
+        message.role,
+        message.emotion,
+        message.state
+      )
     },
     [handleReceiveTextFromWs]
   )

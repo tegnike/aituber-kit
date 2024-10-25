@@ -492,7 +492,13 @@ export const handleSendChatFn =
  * WebSocketからのテキストを受信したときの処理
  */
 export const handleReceiveTextFromWsFn =
-  () => async (text: string, role?: string, state?: string) => {
+  () =>
+  async (
+    text: string,
+    role?: string,
+    emotion: string = 'neutral',
+    state?: string
+  ) => {
     if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()
@@ -528,7 +534,7 @@ export const handleReceiveTextFromWsFn =
       }
 
       if (role === 'assistant' && text !== '') {
-        let aiText = `${'[neutral]'} ${text}`
+        let aiText = `[${emotion}] ${text}`
         try {
           const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
 
