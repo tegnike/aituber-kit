@@ -3,7 +3,13 @@ import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
-import { AIService, AIVoice, Language } from '../constants/settings'
+import {
+  AIService,
+  AIVoice,
+  Language,
+  OpenAITTSVoice,
+  OpenAITTSModel,
+} from '../constants/settings'
 
 export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
@@ -27,6 +33,9 @@ interface APIKeys {
   youtubeApiKey: string
   elevenlabsApiKey: string
   azureEndpoint: string
+  openaiTTSKey: string
+  azureTTSKey: string
+  azureTTSEndpoint: string
 }
 
 interface ModelProvider {
@@ -51,6 +60,9 @@ interface ModelProvider {
   gsviTtsBatchSize: number
   gsviTtsSpeechRate: number
   elevenlabsVoiceId: string
+  openaiTTSVoice: OpenAITTSVoice
+  openaiTTSModel: OpenAITTSModel
+  openaiTTSSpeed: number
 }
 
 interface Integrations {
@@ -79,6 +91,7 @@ interface General {
   showControlPanel: boolean
   webSocketMode: boolean
   realtimeAPIMode: boolean
+  realtimeAPIModeContentType: string
   slideMode: boolean
   messageReceiverEnabled: boolean
   clientId: string
@@ -148,6 +161,16 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') ||
         1.0,
       elevenlabsVoiceId: '',
+      openaiTTSKey: '',
+      openaiTTSVoice:
+        (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) ||
+        'shimmer',
+      openaiTTSModel:
+        (process.env.NEXT_PUBLIC_OPENAI_TTS_MODEL as OpenAITTSModel) || 'tts-1',
+      openaiTTSSpeed:
+        parseFloat(process.env.NEXT_PUBLIC_OPENAI_TTS_SPEED || '1.0') || 1.0,
+      azureTTSKey: '',
+      azureTTSEndpoint: '',
 
       // Integrations
       difyUrl: '',
@@ -183,6 +206,8 @@ const settingsStore = create<SettingsState>()(
             process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
           )) ||
         false,
+      realtimeAPIModeContentType:
+        process.env.NEXT_PUBLIC_REALTIME_API_MODE_CONTENT_TYPE || 'input_text',
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
@@ -236,8 +261,15 @@ const settingsStore = create<SettingsState>()(
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         webSocketMode: state.webSocketMode,
         realtimeAPIMode: state.realtimeAPIMode,
+        realtimeAPIModeContentType: state.realtimeAPIModeContentType,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
+        openaiTTSKey: state.openaiTTSKey,
+        openaiTTSVoice: state.openaiTTSVoice,
+        openaiTTSModel: state.openaiTTSModel,
+        openaiTTSSpeed: state.openaiTTSSpeed,
+        azureTTSKey: state.azureTTSKey,
+        azureTTSEndpoint: state.azureTTSEndpoint,
       }),
     }
   )

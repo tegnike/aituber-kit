@@ -12,6 +12,9 @@ import { multiModalAIServices } from '@/features/stores/settings'
 const ModelProvider = () => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
+  const realtimeAPIModeContentType = settingsStore(
+    (s) => s.realtimeAPIModeContentType
+  )
   const openaiKey = settingsStore((s) => s.openaiKey)
   const anthropicKey = settingsStore((s) => s.anthropicKey)
   const googleKey = settingsStore((s) => s.googleKey)
@@ -148,6 +151,26 @@ const ModelProvider = () => {
                     {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
                 </div>
+                {realtimeAPIMode && (
+                  <>
+                    <div className="my-16 font-bold">
+                      {t('RealtimeAPIModeContentType')}
+                    </div>
+                    <select
+                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      value={realtimeAPIModeContentType}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          realtimeAPIModeContentType: model,
+                        })
+                      }}
+                    >
+                      <option value="input_text">{t('InputText')}</option>
+                      <option value="input_audio">{t('InputAudio')}</option>
+                    </select>
+                  </>
+                )}
               </div>
               {!realtimeAPIMode && (
                 <div className="my-24">

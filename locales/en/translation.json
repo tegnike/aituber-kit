@@ -141,6 +141,9 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "Open Send Message Page",
   "RealtimeAPIMode": "Realtime API Mode",
+  "RealtimeAPIModeContentType": "Send Type",
+  "InputText": "Text",
+  "InputAudio": "Audio",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "Error occurred in WebSocket connection",
@@ -149,5 +152,12 @@
     "WebSocketConnectionSuccess": "WebSocket connection successful",
     "FunctionExecuting": "Executing {{funcName}}",
     "FunctionExecutionFailed": "Execution of {{funcName}} failed"
-  }
+  },
+  "UsingOpenAITTS": "Using OpenAI",
+  "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",
+  "OpenAITTSVoice": "Voice type",
+  "OpenAITTSModel": "Model",
+  "OpenAITTSSpeed": "Speed",
+  "UsingAzureTTS": "Using Azure OpenAI",
+  "AzureTTSInfo": "Using Azure OpenAI. It supports multiple languages."
 }
