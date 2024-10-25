@@ -244,6 +244,7 @@ Plus multiple private sponsors
 From version v2.0.0, this project adopts a **custom license**.
 
 - **Non-Commercial Use**
+
   - Non-Commercial Use is available for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
 
 - **Commercial License**
@@ -331,3 +332,4 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 
 ```
 
+```
