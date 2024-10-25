@@ -37,6 +37,21 @@ export class SpeakQueue {
 
     this.isProcessing = false
 
+    // 一定時間待って、その間に新しいキューが追加されていないことを確認
+    const checkQueueEmpty = async () => {
+      const initialLength = this.queue.length
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      // 待機時間後もキューが空のままであることを確認
+      if (
+        initialLength === 0 &&
+        this.queue.length === 0 &&
+        !this.isProcessing
+      ) {
+        await hs.viewer.model?.playEmotion('neutral')
+      }
+    }
+
     checkQueueEmpty()
   }
 
