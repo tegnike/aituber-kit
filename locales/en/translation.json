@@ -154,5 +154,7 @@
   "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",
   "OpenAITTSVoice": "Voice type",
   "OpenAITTSModel": "Model",
-  "OpenAITTSSpeed": "Speed"
+  "OpenAITTSSpeed": "Speed",
+  "UsingAzureTTS": "Using Azure OpenAI",
+  "AzureTTSInfo": "Using Azure OpenAI. It supports multiple languages."
 }

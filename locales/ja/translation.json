@@ -155,5 +155,7 @@
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
   "OpenAITTSVoice": "ボイスタイプ",
   "OpenAITTSModel": "モデル",
-  "OpenAITTSSpeed": "話速"
+  "OpenAITTSSpeed": "話速",
+  "UsingAzureTTS": "Azure OpenAIを使用する",
+  "AzureTTSInfo": "Azure OpenAIを使用しています。多言語に対応可能です。"
 }

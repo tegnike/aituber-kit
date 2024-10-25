@@ -33,6 +33,9 @@ interface APIKeys {
   youtubeApiKey: string
   elevenlabsApiKey: string
   azureEndpoint: string
+  openaiTTSKey: string
+  azureTTSKey: string
+  azureTTSEndpoint: string
 }
 
 interface ModelProvider {
@@ -57,7 +60,6 @@ interface ModelProvider {
   gsviTtsBatchSize: number
   gsviTtsSpeechRate: number
   elevenlabsVoiceId: string
-  openaiTTSKey: string
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
@@ -166,6 +168,8 @@ const settingsStore = create<SettingsState>()(
         (process.env.NEXT_PUBLIC_OPENAI_TTS_MODEL as OpenAITTSModel) || 'tts-1',
       openaiTTSSpeed:
         parseFloat(process.env.NEXT_PUBLIC_OPENAI_TTS_SPEED || '1.0') || 1.0,
+      azureTTSKey: '',
+      azureTTSEndpoint: '',
 
       // Integrations
       difyUrl: '',
@@ -260,6 +264,8 @@ const settingsStore = create<SettingsState>()(
         openaiTTSVoice: state.openaiTTSVoice,
         openaiTTSModel: state.openaiTTSModel,
         openaiTTSSpeed: state.openaiTTSSpeed,
+        azureTTSKey: state.azureTTSKey,
+        azureTTSEndpoint: state.azureTTSEndpoint,
       }),
     }
   )

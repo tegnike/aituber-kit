@@ -154,5 +154,7 @@
   "OpenAITTSInfo": "使用 OpenAI。它支持多种语言。如果您选择 OpenAI 作为 AI 服务，则不需要设置下面的 API 密钥。",
   "OpenAITTSVoice": "语音类型",
   "OpenAITTSModel": "模型",
-  "OpenAITTSSpeed": "话速"
+  "OpenAITTSSpeed": "话速",
+  "UsingAzureTTS": "使用 Azure OpenAI",
+  "AzureTTSInfo": "使用 Azure OpenAI。它支持多种语言。"
 }

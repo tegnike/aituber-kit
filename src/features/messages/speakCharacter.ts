@@ -10,6 +10,7 @@ import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 import { synthesizeVoiceGSVIApi } from './synthesizeVoiceGSVI'
 import { synthesizeVoiceOpenAIApi } from './synthesizeVoiceOpenAI'
+import { synthesizeVoiceAzureOpenAIApi } from './synthesizeVoiceAzureOpenAI'
 import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
 
@@ -103,6 +104,14 @@ const createSpeakCharacter = () => {
             ss.openaiTTSKey || ss.openaiKey,
             ss.openaiTTSVoice,
             ss.openaiTTSModel,
+            ss.openaiTTSSpeed
+          )
+        } else if (ss.selectVoice == 'azure') {
+          buffer = await synthesizeVoiceAzureOpenAIApi(
+            screenplay.talk,
+            ss.azureTTSKey || ss.azureKey,
+            ss.azureTTSEndpoint || ss.azureEndpoint,
+            ss.openaiTTSVoice,
             ss.openaiTTSSpeed
           )
         }
