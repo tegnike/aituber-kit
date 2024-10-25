@@ -1,5 +1,10 @@
 import * as THREE from 'three'
-import { VRM, VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm'
+import {
+  VRM,
+  VRMExpressionPresetName,
+  VRMLoaderPlugin,
+  VRMUtils,
+} from '@pixiv/three-vrm'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { VRMAnimation } from '../../lib/VRMAnimation/VRMAnimation'
 import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlugin/VRMLookAtSmootherLoaderPlugin'
@@ -84,6 +89,13 @@ export class Model {
         isNeedDecode
       )
     })
+  }
+
+  /**
+   * 感情表現を再生する
+   */
+  public async playEmotion(preset: VRMExpressionPresetName) {
+    this.emoteController?.playEmotion(preset)
   }
 
   public update(delta: number): void {

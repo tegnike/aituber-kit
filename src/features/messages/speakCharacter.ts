@@ -13,6 +13,7 @@ import { synthesizeVoiceOpenAIApi } from './synthesizeVoiceOpenAI'
 import { synthesizeVoiceAzureOpenAIApi } from './synthesizeVoiceAzureOpenAI'
 import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
+import { SpeakQueue } from './speakQueue'
 
 interface EnglishToJapanese {
   [key: string]: string
@@ -20,10 +21,11 @@ interface EnglishToJapanese {
 
 const typedEnglishToJapanese = englishToJapanese as EnglishToJapanese
 
+const speakQueue = new SpeakQueue()
+
 const createSpeakCharacter = () => {
   let lastTime = 0
   let prevFetchPromise: Promise<unknown> = Promise.resolve()
-  let prevSpeakPromise: Promise<unknown> = Promise.resolve()
 
   return (
     screenplay: Screenplay,
@@ -34,7 +36,6 @@ const createSpeakCharacter = () => {
     onStart?.()
 
     if (ss.changeEnglishToJapanese && ss.selectLanguage === 'ja') {
-      // 英単語を日本語で読み上げる
       screenplay.talk.message = convertEnglishToJapaneseReading(
         screenplay.talk.message
       )
@@ -124,17 +125,17 @@ const createSpeakCharacter = () => {
     })
 
     prevFetchPromise = fetchPromise
-    prevSpeakPromise = Promise.all([fetchPromise, prevSpeakPromise]).then(
-      ([audioBuffer]) => {
-        if (!audioBuffer) {
-          return
-        }
-        const hs = homeStore.getState()
-        return hs.viewer.model?.speak(audioBuffer, screenplay, isNeedDecode)
-      }
-    )
-    prevSpeakPromise.then(() => {
-      onComplete?.()
+
+    // キューを使用した処理に変更
+    fetchPromise.then((audioBuffer) => {
+      if (!audioBuffer) return
+
+      speakQueue.addTask({
+        audioBuffer,
+        screenplay,
+        isNeedDecode,
+        onComplete,
+      })
     })
   }
 }
