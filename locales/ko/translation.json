@@ -141,6 +141,9 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "메시지 보내기 페이지 열기",
   "RealtimeAPIMode": "리얼타임 API 모드",
+  "RealtimeAPIModeContentType": "보내기 타입",
+  "InputText": "텍스트",
+  "InputAudio": "음성",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "WebSocket 연결에 오류가 발생했습니다",

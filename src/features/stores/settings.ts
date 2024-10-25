@@ -91,6 +91,7 @@ interface General {
   showControlPanel: boolean
   webSocketMode: boolean
   realtimeAPIMode: boolean
+  realtimeAPIModeContentType: string
   slideMode: boolean
   messageReceiverEnabled: boolean
   clientId: string
@@ -205,6 +206,8 @@ const settingsStore = create<SettingsState>()(
             process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
           )) ||
         false,
+      realtimeAPIModeContentType:
+        process.env.NEXT_PUBLIC_REALTIME_API_MODE_CONTENT_TYPE || 'input_text',
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
@@ -258,6 +261,7 @@ const settingsStore = create<SettingsState>()(
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         webSocketMode: state.webSocketMode,
         realtimeAPIMode: state.realtimeAPIMode,
+        realtimeAPIModeContentType: state.realtimeAPIModeContentType,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
         openaiTTSKey: state.openaiTTSKey,

@@ -141,6 +141,9 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "Open Send Message Page",
   "RealtimeAPIMode": "Realtime API Mode",
+  "RealtimeAPIModeContentType": "Send Type",
+  "InputText": "Text",
+  "InputAudio": "Audio",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "Error occurred in WebSocket connection",
