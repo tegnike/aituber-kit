@@ -233,6 +233,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/FoundD-oka" title="FoundD-oka">
     <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
   </a>
+  <a href="https://github.com/terisuke" title="terisuke">
+    <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
+  </a>
 </p>
 
 Plus multiple private sponsors
