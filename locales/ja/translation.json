@@ -142,6 +142,9 @@
   "ClientID": "Client ID",
   "OpenSendMessagePage": "メッセージ送信ページを開く",
   "RealtimeAPIMode": "リアルタイムAPIモード",
+  "RealtimeAPIModeContentType": "送信タイプ",
+  "InputText": "テキスト",
+  "InputAudio": "音声",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "WebSocket接続にエラーが発生しました",
@@ -150,5 +153,12 @@
     "WebSocketConnectionSuccess": "WebSocket接続に成功しました",
     "FunctionExecuting": "{{funcName}}を実行しています",
     "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました"
-  }
+  },
+  "UsingOpenAITTS": "OpenAIを使用する",
+  "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
+  "OpenAITTSVoice": "ボイスタイプ",
+  "OpenAITTSModel": "モデル",
+  "OpenAITTSSpeed": "話速",
+  "UsingAzureTTS": "Azure OpenAIを使用する",
+  "AzureTTSInfo": "Azure OpenAIを使用しています。多言語に対応可能です。"
 }

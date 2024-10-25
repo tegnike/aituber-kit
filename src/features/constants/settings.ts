@@ -36,6 +36,8 @@ export type AIVoice =
   | 'stylebertvits2'
   | 'gsvitts'
   | 'elevenlabs'
+  | 'openai'
+  | 'azure'
 
 export type Language = 'en' | 'ja' | 'ko' | 'zh' // ISO 639-1
 
@@ -45,3 +47,12 @@ export const isLanguageSupported = (language: string): language is Language =>
   LANGUAGES.includes(language as Language)
 
 export type VoiceLanguage = 'en-US' | 'ja-JP' | 'ko-KR' | 'zh-TW'
+
+export type OpenAITTSVoice =
+  | 'alloy'
+  | 'echo'
+  | 'fable'
+  | 'onyx'
+  | 'nova'
+  | 'shimmer'
+export type OpenAITTSModel = 'tts-1' | 'tts-1-hd'

@@ -119,24 +119,35 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const sendAudioBuffer = useCallback(() => {
     if (audioBufferRef.current && audioBufferRef.current.length > 0) {
       const base64Chunk = base64EncodeAudio(audioBufferRef.current)
+      const ss = settingsStore.getState()
       const ws = homeStore.getState().ws
       if (ws && ws.readyState === WebSocket.OPEN) {
-        console.log(
-          'バッファを送信します。長さ:',
-          audioBufferRef.current.length
-        )
+        let sendContent: { type: string; text?: string; audio?: string }[]
+        if (ss.realtimeAPIModeContentType === 'input_audio') {
+          console.log('Sending buffer. Length:', audioBufferRef.current.length)
+          sendContent = [
+            {
+              type: 'input_audio',
+              audio: base64Chunk,
+            },
+          ]
+        } else {
+          const currentText = transcriptRef.current.trim()
+          console.log('Sending text. userMessage:', currentText)
+          sendContent = [
+            {
+              type: 'input_text',
+              text: currentText,
+            },
+          ]
+        }
         ws.send(
           JSON.stringify({
             type: 'conversation.item.create',
             item: {
               type: 'message',
               role: 'user',
-              content: [
-                {
-                  type: 'input_audio',
-                  audio: base64Chunk,
-                },
-              ],
+              content: sendContent,
             },
           })
         )
