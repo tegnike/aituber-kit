@@ -142,6 +142,7 @@
   "OpenSendMessagePage": "Open Send Message Page",
   "RealtimeAPIMode": "Realtime API Mode",
   "RealtimeAPIModeContentType": "Send Type",
+  "RealtimeAPIModeVoice": "Voice Type",
   "InputText": "Text",
   "InputAudio": "Audio",
   "AzureEndpoint": "Azure Endpoint",

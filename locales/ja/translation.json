@@ -143,6 +143,7 @@
   "OpenSendMessagePage": "メッセージ送信ページを開く",
   "RealtimeAPIMode": "リアルタイムAPIモード",
   "RealtimeAPIModeContentType": "送信タイプ",
+  "RealtimeAPIModeVoice": "ボイスタイプ",
   "InputText": "テキスト",
   "InputAudio": "音声",
   "AzureEndpoint": "Azure Endpoint",

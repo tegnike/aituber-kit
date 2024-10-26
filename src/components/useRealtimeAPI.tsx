@@ -133,7 +133,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           session: {
             modalities: ['text', 'audio'],
             instructions: ss.systemPrompt,
-            voice: 'shimmer',
+            voice: ss.realtimeAPIModeVoice,
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: {

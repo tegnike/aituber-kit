@@ -8,6 +8,10 @@ import { Link } from '../link'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
 import { multiModalAIServices } from '@/features/stores/settings'
+import {
+  RealtimeAPIModeContentType,
+  RealtimeAPIModeVoice,
+} from '@/features/constants/settings'
 
 const ModelProvider = () => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
@@ -15,6 +19,7 @@ const ModelProvider = () => {
   const realtimeAPIModeContentType = settingsStore(
     (s) => s.realtimeAPIModeContentType
   )
+  const realtimeAPIModeVoice = settingsStore((s) => s.realtimeAPIModeVoice)
   const openaiKey = settingsStore((s) => s.openaiKey)
   const anthropicKey = settingsStore((s) => s.anthropicKey)
   const googleKey = settingsStore((s) => s.googleKey)
@@ -162,12 +167,30 @@ const ModelProvider = () => {
                       onChange={(e) => {
                         const model = e.target.value
                         settingsStore.setState({
-                          realtimeAPIModeContentType: model,
+                          realtimeAPIModeContentType:
+                            model as RealtimeAPIModeContentType,
                         })
                       }}
                     >
                       <option value="input_text">{t('InputText')}</option>
                       <option value="input_audio">{t('InputAudio')}</option>
+                    </select>
+                    <div className="my-16 font-bold">
+                      {t('RealtimeAPIModeVoice')}
+                    </div>
+                    <select
+                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      value={realtimeAPIModeVoice}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          realtimeAPIModeVoice: model as RealtimeAPIModeVoice,
+                        })
+                      }}
+                    >
+                      <option value="alloy">alloy</option>
+                      <option value="echo">echo</option>
+                      <option value="shimmer">shimmer</option>
                     </select>
                   </>
                 )}
@@ -368,6 +391,44 @@ const ModelProvider = () => {
                     {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
                 </div>
+                {realtimeAPIMode && (
+                  <>
+                    <div className="my-16 font-bold">
+                      {t('RealtimeAPIModeContentType')}
+                    </div>
+                    <select
+                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      value={realtimeAPIModeContentType}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          realtimeAPIModeContentType:
+                            model as RealtimeAPIModeContentType,
+                        })
+                      }}
+                    >
+                      <option value="input_text">{t('InputText')}</option>
+                      <option value="input_audio">{t('InputAudio')}</option>
+                    </select>
+                    <div className="my-16 font-bold">
+                      {t('RealtimeAPIModeVoice')}
+                    </div>
+                    <select
+                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      value={realtimeAPIModeVoice}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          realtimeAPIModeVoice: model as RealtimeAPIModeVoice,
+                        })
+                      }}
+                    >
+                      <option value="alloy">alloy</option>
+                      <option value="echo">echo</option>
+                      <option value="shimmer">shimmer</option>
+                    </select>
+                  </>
+                )}
               </div>
             </>
           )

@@ -142,6 +142,7 @@
   "OpenSendMessagePage": "메시지 보내기 페이지 열기",
   "RealtimeAPIMode": "리얼타임 API 모드",
   "RealtimeAPIModeContentType": "보내기 타입",
+  "RealtimeAPIModeVoice": "음성 타입",
   "InputText": "텍스트",
   "InputAudio": "음성",
   "AzureEndpoint": "Azure Endpoint",

@@ -9,6 +9,8 @@ import {
   Language,
   OpenAITTSVoice,
   OpenAITTSModel,
+  RealtimeAPIModeContentType,
+  RealtimeAPIModeVoice,
 } from '../constants/settings'
 
 export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
@@ -91,7 +93,8 @@ interface General {
   showControlPanel: boolean
   webSocketMode: boolean
   realtimeAPIMode: boolean
-  realtimeAPIModeContentType: string
+  realtimeAPIModeContentType: RealtimeAPIModeContentType
+  realtimeAPIModeVoice: RealtimeAPIModeVoice
   slideMode: boolean
   messageReceiverEnabled: boolean
   clientId: string
@@ -207,7 +210,13 @@ const settingsStore = create<SettingsState>()(
           )) ||
         false,
       realtimeAPIModeContentType:
-        process.env.NEXT_PUBLIC_REALTIME_API_MODE_CONTENT_TYPE || 'input_text',
+        (process.env
+          .NEXT_PUBLIC_REALTIME_API_MODE_CONTENT_TYPE as RealtimeAPIModeContentType) ||
+        'input_text',
+      realtimeAPIModeVoice:
+        (process.env
+          .NEXT_PUBLIC_REALTIME_API_MODE_VOICE as RealtimeAPIModeVoice) ||
+        'shimmer',
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
@@ -262,6 +271,7 @@ const settingsStore = create<SettingsState>()(
         webSocketMode: state.webSocketMode,
         realtimeAPIMode: state.realtimeAPIMode,
         realtimeAPIModeContentType: state.realtimeAPIModeContentType,
+        realtimeAPIModeVoice: state.realtimeAPIModeVoice,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
         openaiTTSKey: state.openaiTTSKey,
