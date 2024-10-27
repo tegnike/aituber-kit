@@ -142,8 +142,11 @@
   "OpenSendMessagePage": "메시지 보내기 페이지 열기",
   "RealtimeAPIMode": "리얼타임 API 모드",
   "RealtimeAPIModeContentType": "보내기 타입",
+  "RealtimeAPIModeVoice": "음성 타입",
   "InputText": "텍스트",
   "InputAudio": "음성",
+  "UpdateRealtimeAPISettings": "리얼타임 API 설정 업데이트",
+  "UpdateRealtimeAPISettingsInfo": "API 키, Azure Endpoint, 보이스 타입, 시스템 프롬프트를 업데이트한 경우 업데이트 버튼을 눌러 새로운 WebSocket 세션을 시작하십시오.",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "WebSocket 연결에 오류가 발생했습니다",

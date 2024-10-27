@@ -120,7 +120,7 @@ const Main = () => {
 const Footer = () => {
   return (
     <footer className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
-      powered by ChatVRM of Pixiv
+      powered by ChatVRM from Pixiv. version 1.0.0
     </footer>
   )
 }
