@@ -8,6 +8,13 @@ import { Link } from '../link'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
 import { multiModalAIServices } from '@/features/stores/settings'
+import {
+  RealtimeAPIModeContentType,
+  RealtimeAPIModeVoice,
+} from '@/features/constants/settings'
+import toastStore from '@/features/stores/toast'
+import { sendSessionUpdate } from '@/components/realtimeAPIUtils'
+import { reconnectWebSocket } from '@/components/realtimeAPIUtils'
 
 const ModelProvider = () => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
@@ -15,6 +22,7 @@ const ModelProvider = () => {
   const realtimeAPIModeContentType = settingsStore(
     (s) => s.realtimeAPIModeContentType
   )
+  const realtimeAPIModeVoice = settingsStore((s) => s.realtimeAPIModeVoice)
   const openaiKey = settingsStore((s) => s.openaiKey)
   const anthropicKey = settingsStore((s) => s.anthropicKey)
   const googleKey = settingsStore((s) => s.googleKey)
@@ -33,6 +41,8 @@ const ModelProvider = () => {
   const systemPrompt = settingsStore((s) => s.systemPrompt)
 
   const difyUrl = settingsStore((s) => s.difyUrl)
+
+  const ws = homeStore((s) => s.ws)
 
   const { t } = useTranslation()
 
@@ -84,6 +94,17 @@ const ModelProvider = () => {
       realtimeAPIMode: newMode,
     })
   }, [])
+
+  const handleUpdate = useCallback(() => {
+    const newWs = reconnectWebSocket(t)
+    if (!newWs) {
+      toastStore.getState().addToast({
+        message: t('Toasts.WebSocketReconnectFailed'),
+        type: 'error',
+        duration: 3000,
+      })
+    }
+  }, [t])
 
   return webSocketMode ? null : (
     <div className="my-40">
@@ -162,13 +183,39 @@ const ModelProvider = () => {
                       onChange={(e) => {
                         const model = e.target.value
                         settingsStore.setState({
-                          realtimeAPIModeContentType: model,
+                          realtimeAPIModeContentType:
+                            model as RealtimeAPIModeContentType,
                         })
                       }}
                     >
                       <option value="input_text">{t('InputText')}</option>
                       <option value="input_audio">{t('InputAudio')}</option>
                     </select>
+                    <div className="my-16 font-bold">
+                      {t('RealtimeAPIModeVoice')}
+                    </div>
+                    <select
+                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      value={realtimeAPIModeVoice}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          realtimeAPIModeVoice: model as RealtimeAPIModeVoice,
+                        })
+                      }}
+                    >
+                      <option value="alloy">alloy</option>
+                      <option value="echo">echo</option>
+                      <option value="shimmer">shimmer</option>
+                    </select>
+                    <div className="my-16">
+                      <div className="my-16">
+                        {t('UpdateRealtimeAPISettingsInfo')}
+                      </div>
+                      <TextButton onClick={handleUpdate}>
+                        {t('UpdateRealtimeAPISettings')}
+                      </TextButton>
+                    </div>
                   </>
                 )}
               </div>
@@ -368,6 +415,52 @@ const ModelProvider = () => {
                     {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
                 </div>
+                {realtimeAPIMode && (
+                  <>
+                    <div className="my-16 font-bold">
+                      {t('RealtimeAPIModeContentType')}
+                    </div>
+                    <select
+                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      value={realtimeAPIModeContentType}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          realtimeAPIModeContentType:
+                            model as RealtimeAPIModeContentType,
+                        })
+                      }}
+                    >
+                      <option value="input_text">{t('InputText')}</option>
+                      <option value="input_audio">{t('InputAudio')}</option>
+                    </select>
+                    <div className="my-16 font-bold">
+                      {t('RealtimeAPIModeVoice')}
+                    </div>
+                    <select
+                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      value={realtimeAPIModeVoice}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          realtimeAPIModeVoice: model as RealtimeAPIModeVoice,
+                        })
+                      }}
+                    >
+                      <option value="alloy">alloy</option>
+                      <option value="echo">echo</option>
+                      <option value="shimmer">shimmer</option>
+                    </select>
+                    <div className="my-16">
+                      <div className="my-16">
+                        {t('UpdateRealtimeAPISettingsInfo')}
+                      </div>
+                      <TextButton onClick={handleUpdate}>
+                        {t('UpdateRealtimeAPISettings')}
+                      </TextButton>
+                    </div>
+                  </>
+                )}
               </div>
             </>
           )

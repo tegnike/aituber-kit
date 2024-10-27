@@ -142,8 +142,11 @@
   "OpenSendMessagePage": "Open Send Message Page",
   "RealtimeAPIMode": "Realtime API Mode",
   "RealtimeAPIModeContentType": "Send Type",
+  "RealtimeAPIModeVoice": "Voice Type",
   "InputText": "Text",
   "InputAudio": "Audio",
+  "UpdateRealtimeAPISettings": "Update Realtime API Settings",
+  "UpdateRealtimeAPISettingsInfo": "When updating the API key, Azure Endpoint, voice type, or system prompt, please press the update button to start a new WebSocket session.",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "Error occurred in WebSocket connection",

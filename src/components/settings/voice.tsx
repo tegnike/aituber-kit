@@ -224,7 +224,7 @@ const Voice = () => {
                     {t('TestVoice')}
                   </TextButton>
                 </div>
-                <div className="my-24">
+                <div className="my-24 font-bold">
                   <div className="select-none">
                     {t('VoicevoxSpeed')}: {voicevoxSpeed}
                   </div>

@@ -396,6 +396,17 @@ export const handleSendChatFn =
           chatProcessing: false,
         })
       }
+    } else if (ss.realtimeAPIMode) {
+      if (hs.ws?.readyState === WebSocket.OPEN) {
+        // ユーザーの発言を追加して表示
+        const updateLog: Message[] = [
+          ...hs.chatLog,
+          { role: 'user', content: newMessage },
+        ]
+        homeStore.setState({
+          chatLog: updateLog,
+        })
+      }
     } else {
       let systemPrompt = ss.systemPrompt
       if (ss.slideMode) {

@@ -154,6 +154,7 @@ npm run dev
 2. Place the slide folder and script file in the designated folder.
 3. Turn on Slide Mode in the settings screen.
 4. Press the Start Slide button to begin the presentation.
+
 #### Related
 
 - For detailed settings, please read "[AI Does Slide Presentations Now!!!!](https://note.com/nike_cha_n/n/n867081a598f1)".
@@ -374,3 +375,4 @@ const getVoiceLanguageCode = (selectLanguage: string) => {
 ```
 
 
+```

@@ -142,8 +142,11 @@
   "OpenSendMessagePage": "開啟發送訊息頁面",
   "RealtimeAPIMode": "實時API模式",
   "RealtimeAPIModeContentType": "送信類型",
+  "RealtimeAPIModeVoice": "語音類型",
   "InputText": "文本",
   "InputAudio": "音頻",
+  "UpdateRealtimeAPISettings": "更新實時API設定",
+  "UpdateRealtimeAPISettingsInfo": "當更新 API 密鑰、Azure Endpoint、語音類型或系統提示時，請按更新按鈕以開始新的 WebSocket 會話。",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "WebSocket连接发生错误",
