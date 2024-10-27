@@ -12,6 +12,9 @@ import {
   RealtimeAPIModeContentType,
   RealtimeAPIModeVoice,
 } from '@/features/constants/settings'
+import toastStore from '@/features/stores/toast'
+import { sendSessionUpdate } from '@/components/realtimeAPIUtils'
+import { reconnectWebSocket } from '@/components/realtimeAPIUtils'
 
 const ModelProvider = () => {
   const webSocketMode = settingsStore((s) => s.webSocketMode)
@@ -38,6 +41,8 @@ const ModelProvider = () => {
   const systemPrompt = settingsStore((s) => s.systemPrompt)
 
   const difyUrl = settingsStore((s) => s.difyUrl)
+
+  const ws = homeStore((s) => s.ws)
 
   const { t } = useTranslation()
 
@@ -89,6 +94,17 @@ const ModelProvider = () => {
       realtimeAPIMode: newMode,
     })
   }, [])
+
+  const handleUpdate = useCallback(() => {
+    const newWs = reconnectWebSocket(t)
+    if (!newWs) {
+      toastStore.getState().addToast({
+        message: t('Toasts.WebSocketReconnectFailed'),
+        type: 'error',
+        duration: 3000,
+      })
+    }
+  }, [t])
 
   return webSocketMode ? null : (
     <div className="my-40">
@@ -192,6 +208,14 @@ const ModelProvider = () => {
                       <option value="echo">echo</option>
                       <option value="shimmer">shimmer</option>
                     </select>
+                    <div className="my-16">
+                      <div className="my-16">
+                        {t('UpdateRealtimeAPISettingsInfo')}
+                      </div>
+                      <TextButton onClick={handleUpdate}>
+                        {t('UpdateRealtimeAPISettings')}
+                      </TextButton>
+                    </div>
                   </>
                 )}
               </div>
@@ -427,6 +451,14 @@ const ModelProvider = () => {
                       <option value="echo">echo</option>
                       <option value="shimmer">shimmer</option>
                     </select>
+                    <div className="my-16">
+                      <div className="my-16">
+                        {t('UpdateRealtimeAPISettingsInfo')}
+                      </div>
+                      <TextButton onClick={handleUpdate}>
+                        {t('UpdateRealtimeAPISettings')}
+                      </TextButton>
+                    </div>
                   </>
                 )}
               </div>
