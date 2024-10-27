@@ -75,7 +75,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
     if (ws) {
       ws.addEventListener('open', handleOpen)
       ws.addEventListener('message', (event) =>
-        handleMessage(event, accumulatedAudioDataRef, processMessage, ws, t)
+        handleMessage(event, accumulatedAudioDataRef, processMessage, ws!, t)
       )
       ws.addEventListener('error', handleError)
       ws.addEventListener('close', handleClose)
@@ -97,7 +97,13 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         if (ws) {
           ws.addEventListener('open', handleOpen)
           ws.addEventListener('message', (event) =>
-            handleMessage(event, accumulatedAudioDataRef, processMessage, ws, t)
+            handleMessage(
+              event,
+              accumulatedAudioDataRef,
+              processMessage,
+              ws!,
+              t
+            )
           )
           ws.addEventListener('error', handleError)
           ws.addEventListener('close', handleClose)
