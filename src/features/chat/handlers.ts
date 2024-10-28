@@ -1,5 +1,4 @@
 import { getAIChatResponseStream } from '@/features/chat/aiChatFactory'
-import { AIService } from '@/features/constants/settings'
 import { textsToScreenplay, Message } from '@/features/messages/messages'
 import { speakCharacter } from '@/features/messages/speakCharacter'
 import { judgeSlide } from '@/features/slide/slideAIHelpers'
@@ -146,10 +145,7 @@ export const processAIResponse = async (
   const currentSlideMessages: string[] = []
 
   try {
-    stream = await getAIChatResponseStream(
-      ss.selectAIService as AIService,
-      messages
-    )
+    stream = await getAIChatResponseStream(messages)
   } catch (e) {
     console.error(e)
     stream = null
