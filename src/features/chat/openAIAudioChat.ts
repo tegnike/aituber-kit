@@ -1,9 +1,20 @@
 import { Message } from '@/features/messages/messages'
 import OpenAI from 'openai'
 import settingsStore from '@/features/stores/settings'
+import { handleReceiveTextFromRtFn } from './handlers'
+import {
+  base64ToArrayBuffer,
+  AudioBufferManager,
+} from '@/utils/audioBufferManager'
 
 export async function getOpenAIAudioChatResponseStream(
-  messages: Message[]
+  messages: Message[],
+  handleReceiveTextFromRt: (
+    text: string,
+    role?: string,
+    state?: string,
+    buffer?: ArrayBuffer
+  ) => Promise<void>
 ): Promise<ReadableStream<string>> {
   const ss = settingsStore.getState()
   const openai = new OpenAI({
@@ -26,16 +37,28 @@ export async function getOpenAIAudioChatResponseStream(
       },
     })
 
-    // ストリームをReadableStreamに変換
     return new ReadableStream({
       async start(controller) {
+        // handleReceiveText を handleReceiveTextFromRtFn() から取得
+        const handleReceiveText = handleReceiveTextFromRtFn()
+
+        const bufferManager = new AudioBufferManager(async (buffer) => {
+          await handleReceiveText('', 'assistant', 'response.audio', buffer)
+        })
+
         for await (const chunk of response) {
-          console.log(chunk.choices[0])
-          const content = chunk.choices[0]?.delta?.audio?.transcript
-          if (content) {
-            controller.enqueue(content)
+          const audio = chunk.choices[0]?.delta?.audio
+          if (audio) {
+            if (audio.transcript) {
+              controller.enqueue(audio.transcript)
+            } else if (audio.data) {
+              bufferManager.addData(base64ToArrayBuffer(audio.data))
+            }
           }
         }
+
+        // ストリーム終了後に残っているバッファを送信
+        await bufferManager.flush()
         controller.close()
       },
     })

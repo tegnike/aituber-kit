@@ -599,6 +599,8 @@ export const handleReceiveTextFromRtFn =
 
     if (ss.realtimeAPIMode) {
       console.log('realtime api mode: true')
+    } else if (ss.audioMode) {
+      console.log('audio mode: true')
     } else {
       console.log('realtime api mode: false')
       return
@@ -610,6 +612,7 @@ export const handleReceiveTextFromRtFn =
       const updateLog: Message[] = [...hs.chatLog]
 
       if (state?.includes('response.audio') && buffer !== undefined) {
+        console.log('response.audio:')
         try {
           speakCharacter(
             {

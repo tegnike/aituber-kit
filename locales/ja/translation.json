@@ -144,7 +144,7 @@
   "RealtimeAPIMode": "リアルタイムAPIモード",
   "RealtimeAPIModeContentType": "送信タイプ",
   "RealtimeAPIModeVoice": "ボイスタイプ",
-  "AudioMode": "オーディオモード",
+  "AudioMode": "オーディオモード（Beta）",
   "InputText": "テキスト",
   "InputAudio": "音声",
   "UpdateRealtimeAPISettings": "リアルタイムAPI設定を更新",
