@@ -8,13 +8,7 @@ import {
 } from '@/utils/audioBufferManager'
 
 export async function getOpenAIAudioChatResponseStream(
-  messages: Message[],
-  handleReceiveTextFromRt: (
-    text: string,
-    role?: string,
-    state?: string,
-    buffer?: ArrayBuffer
-  ) => Promise<void>
+  messages: Message[]
 ): Promise<ReadableStream<string>> {
   const ss = settingsStore.getState()
   const openai = new OpenAI({
