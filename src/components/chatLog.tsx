@@ -3,12 +3,15 @@ import { useEffect, useRef } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import { messageSelectors } from '@/features/messages/messageSelectors'
 
 export const ChatLog = () => {
   const chatScrollRef = useRef<HTMLDivElement>(null)
 
   const characterName = settingsStore((s) => s.characterName)
-  const messages = homeStore((s) => s.chatLog)
+  const messages = messageSelectors.getTextAndImageMessages(
+    homeStore((s) => s.chatLog)
+  )
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({

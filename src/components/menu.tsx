@@ -20,10 +20,8 @@ export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
-  const webSocketMode = settingsStore((s) => s.webSocketMode)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
-  const chatLog = homeStore((s) => s.chatLog)
   const assistantMessage = homeStore((s) => s.assistantMessage)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
@@ -159,7 +157,7 @@ export const Menu = () => {
                     iconName="24/CommentFill"
                     label={t('ChatLog')}
                     isProcessing={false}
-                    disabled={chatLog.length <= 0}
+                    disabled={false}
                     onClick={() => setShowChatLog(true)}
                   />
                 )}
@@ -241,7 +239,7 @@ export const Menu = () => {
       <div className="relative">
         {slideMode && slideVisible && <Slides markdown={markdownContent} />}
       </div>
-      {webSocketMode ? showChatLog && <ChatLog /> : showChatLog && <ChatLog />}
+      {showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {!showChatLog &&
         assistantMessage &&

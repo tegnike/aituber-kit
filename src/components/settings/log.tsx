@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { messageSelectors } from '@/features/messages/messageSelectors'
 
 const Log = () => {
-  const chatLog = homeStore((s) => s.chatLog)
+  const chatLog = messageSelectors.getTextAndImageMessages(
+    homeStore((s) => s.chatLog)
+  )
   const selectAIService = settingsStore((s) => s.selectAIService)
 
   const { t } = useTranslation()
@@ -72,9 +75,11 @@ const Log = () => {
 export default Log
 
 const handleChangeChatLog = (targetIndex: number, text: string) => {
-  const hs = homeStore.getState()
+  const chatLog = messageSelectors.getTextAndImageMessages(
+    homeStore((s) => s.chatLog)
+  )
 
-  const newChatLog = hs.chatLog.map((m, i) => {
+  const newChatLog = chatLog.map((m, i) => {
     return i === targetIndex ? { role: m.role, content: text } : m
   })
 
