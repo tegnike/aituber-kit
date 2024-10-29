@@ -54,6 +54,8 @@ const createSpeakCharacter = () => {
         if (screenplay.talk.message == '' && screenplay.talk.buffer) {
           buffer = screenplay.talk.buffer
           isNeedDecode = false
+        } else if (ss.audioMode) {
+          buffer = null
         } else if (ss.selectVoice == 'koeiromap') {
           buffer = await synthesizeVoiceKoeiromapApi(
             screenplay.talk,

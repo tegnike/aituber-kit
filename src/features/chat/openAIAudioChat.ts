@@ -1,16 +1,19 @@
 import { Message } from '@/features/messages/messages'
 import OpenAI from 'openai'
 import settingsStore from '@/features/stores/settings'
+import homeStore from '@/features/stores/home'
 import { handleReceiveTextFromRtFn } from './handlers'
 import {
   base64ToArrayBuffer,
   AudioBufferManager,
 } from '@/utils/audioBufferManager'
+import { messageSelectors } from '../messages/messageSelectors'
 
 export async function getOpenAIAudioChatResponseStream(
   messages: Message[]
 ): Promise<ReadableStream<string>> {
   const ss = settingsStore.getState()
+  const hs = homeStore.getState()
   const openai = new OpenAI({
     apiKey: ss.openaiKey,
     dangerouslyAllowBrowser: true,
@@ -19,10 +22,7 @@ export async function getOpenAIAudioChatResponseStream(
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-audio-preview',
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
+      messages: messageSelectors.getAudioMessages(messages),
       stream: true,
       modalities: ['text', 'audio'],
       audio: {
@@ -45,8 +45,15 @@ export async function getOpenAIAudioChatResponseStream(
           if (audio) {
             if (audio.transcript) {
               controller.enqueue(audio.transcript)
-            } else if (audio.data) {
+            }
+            if (audio.data) {
               bufferManager.addData(base64ToArrayBuffer(audio.data))
+            }
+            if (audio.id) {
+              hs.chatLog.push({
+                role: 'assistant',
+                audio: { id: audio.id },
+              })
             }
           }
         }

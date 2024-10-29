@@ -18,6 +18,21 @@ export const messageSelectors = {
       })
   },
 
+  getAudioMessages: (messages: Message[]): Message[] => {
+    return messages.filter((message) => {
+      // userの場合：contentがstring型のメッセージのみを許可
+      if (message.role === 'user') {
+        return typeof message.content === 'string'
+      }
+      // assistantの場合：audioプロパティを持つメッセージのみを許可
+      if (message.role === 'assistant') {
+        return message.audio !== undefined
+      }
+      // その他のroleは除外
+      return false
+    })
+  },
+
   getProcessedMessages: (messages: Message[]): Message[] => {
     return messages
       .map((message, index) => ({
@@ -80,9 +95,11 @@ export const messageSelectors = {
     return messages.map((message: Message) => ({
       ...message,
       content:
-        typeof message.content === 'string'
-          ? message.content
-          : message.content[0].text,
+        message.content === undefined
+          ? ''
+          : typeof message.content === 'string'
+            ? message.content
+            : message.content[0].text,
     }))
   },
 }
