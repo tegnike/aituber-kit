@@ -13,9 +13,9 @@ import {
   OpenAITTSVoice,
   RealtimeAPIModeContentType,
   RealtimeAPIModeVoice,
+  RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
 import toastStore from '@/features/stores/toast'
-import { sendSessionUpdate } from '@/components/realtimeAPIUtils'
 import { reconnectWebSocket } from '@/components/realtimeAPIUtils'
 
 const ModelProvider = () => {
@@ -222,8 +222,13 @@ const ModelProvider = () => {
                       }}
                     >
                       <option value="alloy">alloy</option>
+                      <option value="ash">ash</option>
+                      <option value="ballad">ballad</option>
+                      <option value="coral">coral</option>
                       <option value="echo">echo</option>
+                      <option value="sage">sage</option>
                       <option value="shimmer">shimmer</option>
+                      <option value="verse">verse</option>
                     </select>
                     <div className="my-16">
                       <div className="my-16">
@@ -514,12 +519,21 @@ const ModelProvider = () => {
                       onChange={(e) => {
                         const model = e.target.value
                         settingsStore.setState({
-                          realtimeAPIModeVoice: model as RealtimeAPIModeVoice,
+                          realtimeAPIModeVoice:
+                            model as RealtimeAPIModeAzureVoice,
                         })
                       }}
                     >
                       <option value="alloy">alloy</option>
+                      <option value="amuch">amuch</option>
+                      <option value="breeze">breeze</option>
+                      <option value="cove">cove</option>
+                      <option value="dan">dan</option>
                       <option value="echo">echo</option>
+                      <option value="elan">elan</option>
+                      <option value="ember">ember</option>
+                      <option value="jupiter">jupiter</option>
+                      <option value="marilyn">marilyn</option>
                       <option value="shimmer">shimmer</option>
                     </select>
                     <div className="my-16">
