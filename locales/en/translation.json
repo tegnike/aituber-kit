@@ -143,6 +143,7 @@
   "RealtimeAPIMode": "Realtime API Mode",
   "RealtimeAPIModeContentType": "Send Type",
   "RealtimeAPIModeVoice": "Voice Type",
+  "AudioMode": "Audio Mode (Beta)",
   "InputText": "Text",
   "InputAudio": "Audio",
   "UpdateRealtimeAPISettings": "Update Realtime API Settings",

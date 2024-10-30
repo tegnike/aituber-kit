@@ -143,6 +143,7 @@
   "RealtimeAPIMode": "리얼타임 API 모드",
   "RealtimeAPIModeContentType": "보내기 타입",
   "RealtimeAPIModeVoice": "음성 타입",
+  "AudioMode": "오디오 모드 (Beta)",
   "InputText": "텍스트",
   "InputAudio": "음성",
   "UpdateRealtimeAPISettings": "리얼타임 API 설정 업데이트",

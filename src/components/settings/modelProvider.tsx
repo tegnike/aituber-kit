@@ -252,7 +252,7 @@ const ModelProvider = () => {
                 {audioMode && (
                   <>
                     <div className="my-16 font-bold">
-                      {t('AudioModeInputType')}
+                      {t('RealtimeAPIModeContentType')}
                     </div>
                     <select
                       className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
@@ -267,7 +267,9 @@ const ModelProvider = () => {
                       <option value="input_text">{t('InputText')}</option>
                       <option value="input_audio">{t('InputAudio')}</option>
                     </select>
-                    <div className="my-16 font-bold">{t('AudioModeVoice')}</div>
+                    <div className="my-16 font-bold">
+                      {t('realtimeAPIModeVoice')}
+                    </div>
                     <select
                       className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                       value={audioModeVoice}
