@@ -11,6 +11,7 @@ import {
   OpenAITTSModel,
   RealtimeAPIModeContentType,
   RealtimeAPIModeVoice,
+  RealtimeAPIModeAzureVoice,
   AudioModeInputType,
 } from '../constants/settings'
 
@@ -95,7 +96,7 @@ interface General {
   webSocketMode: boolean
   realtimeAPIMode: boolean
   realtimeAPIModeContentType: RealtimeAPIModeContentType
-  realtimeAPIModeVoice: RealtimeAPIModeVoice
+  realtimeAPIModeVoice: RealtimeAPIModeVoice | RealtimeAPIModeAzureVoice
   audioMode: boolean
   audioModeInputType: AudioModeInputType
   audioModeVoice: OpenAITTSVoice
