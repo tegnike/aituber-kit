@@ -4,9 +4,10 @@ import { KoeiroParam } from '../constants/koeiroParam'
 // ChatGPT API
 export type Message = {
   role: string // "assistant" | "system" | "user";
-  content:
+  content?:
     | string
     | [{ type: 'text'; text: string }, { type: 'image'; image: string }] // マルチモーダル拡張
+  audio?: { id: string }
 }
 
 const talkStyles = [

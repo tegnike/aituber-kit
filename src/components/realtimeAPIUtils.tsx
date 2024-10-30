@@ -3,6 +3,10 @@ import homeStore from '@/features/stores/home'
 import toastStore from '@/features/stores/toast'
 import RealtimeAPITools from './realtimeAPITools'
 import realtimeAPIToolsConfig from './realtimeAPITools.json'
+import {
+  base64ToArrayBuffer,
+  AudioBufferManager,
+} from '@/utils/audioBufferManager'
 
 export function sendSessionUpdate(ws: WebSocket) {
   const ss = settingsStore.getState()
@@ -51,23 +55,6 @@ export interface Params {
   ) => Promise<void>
 }
 
-export function base64ToArrayBuffer(base64: string): ArrayBuffer {
-  const binaryString = atob(base64)
-  const len = binaryString.length
-  const bytes = new Uint8Array(len)
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i)
-  }
-
-  const arrayBuffer = bytes.buffer
-  if (!validateAudioBuffer(arrayBuffer)) {
-    console.error('Invalid audio buffer')
-    return new ArrayBuffer(0)
-  }
-
-  return arrayBuffer
-}
-
 export function mergeInt16Arrays(
   left: Int16Array | ArrayBuffer,
   right: Int16Array | ArrayBuffer
@@ -85,31 +72,6 @@ export function mergeInt16Arrays(
   newValues.set(left, 0)
   newValues.set(right, left.length)
   return newValues
-}
-
-export function validateAudioBuffer(buffer: ArrayBuffer): boolean {
-  if (buffer.byteLength < 1024 || buffer.byteLength > 1024 * 1024) {
-    console.error(`Invalid buffer size: ${buffer.byteLength} bytes`)
-    return false
-  }
-
-  if (buffer.byteLength % 2 !== 0) {
-    console.error('Buffer size is not even, which is required for 16-bit PCM')
-    return false
-  }
-
-  const int16Array = new Int16Array(buffer)
-  const isInValidRange = int16Array.every(
-    (value) => value >= -32768 && value <= 32767
-  )
-  if (!isInValidRange) {
-    console.error(
-      'Audio data contains values outside the valid range for 16-bit PCM'
-    )
-    return false
-  }
-
-  return true
 }
 
 export function removeToast() {
@@ -145,7 +107,7 @@ export function sendFunctionCallOutput(
 
 export async function handleMessage(
   event: MessageEvent,
-  accumulatedAudioDataRef: React.MutableRefObject<Int16Array>,
+  accumulatedAudioDataRef: React.MutableRefObject<AudioBufferManager>,
   processMessage: (message: TmpMessage) => Promise<void>,
   ws: WebSocket,
   t: (key: string, options?: any) => string
@@ -165,11 +127,7 @@ export async function handleMessage(
       if (jsonData.delta) {
         const arrayBuffer = base64ToArrayBuffer(jsonData.delta)
         if (arrayBuffer.byteLength > 0) {
-          const appendValues = new Int16Array(arrayBuffer)
-          accumulatedAudioDataRef.current = mergeInt16Arrays(
-            accumulatedAudioDataRef.current,
-            appendValues
-          )
+          accumulatedAudioDataRef.current.addData(arrayBuffer)
         } else {
           console.error('Received invalid audio buffer')
         }
@@ -231,28 +189,9 @@ export async function handleMessage(
         }
       }
       break
-  }
-
-  if (
-    (jsonData.type === 'response.audio.delta' &&
-      accumulatedAudioDataRef.current?.buffer?.byteLength > 100_000) ||
-    jsonData.type === 'response.audio.done'
-  ) {
-    const arrayBuffer = accumulatedAudioDataRef.current.buffer as ArrayBuffer
-    accumulatedAudioDataRef.current = new Int16Array()
-    try {
-      if (arrayBuffer) {
-        await processMessage({
-          text: '',
-          role: 'assistant',
-          emotion: '',
-          state: jsonData.type,
-          buffer: arrayBuffer,
-        })
-      }
-    } catch (error) {
-      console.error('Audio processing error:', error)
-    }
+    case 'response.audio.done':
+      await accumulatedAudioDataRef.current.flush()
+      break
   }
 }
 

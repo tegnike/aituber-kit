@@ -23,12 +23,14 @@ const Slide = () => {
   const [updateKey, setUpdateKey] = useState(0)
 
   useEffect(() => {
-    // フォルダリストを取得
-    fetch('/api/getSlideFolders')
-      .then((response) => response.json())
-      .then((data) => setSlideFolders(data))
-      .catch((error) => console.error('Error fetching slide folders:', error))
-  }, [updateKey])
+    if (slideMode) {
+      // フォルダリストを取得
+      fetch('/api/getSlideFolders')
+        .then((response) => response.json())
+        .then((data) => setSlideFolders(data))
+        .catch((error) => console.error('Error fetching slide folders:', error))
+    }
+  }, [slideMode, updateKey])
 
   useEffect(() => {
     // 初期値を 'demo' に設定

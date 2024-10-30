@@ -11,11 +11,22 @@ import {
   removeToast,
   sendSessionUpdate,
 } from './realtimeAPIUtils'
+import { AudioBufferManager } from '@/utils/audioBufferManager'
 
 const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
   const { t } = useTranslation()
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
-  const accumulatedAudioDataRef = useRef<Int16Array>(new Int16Array())
+  const accumulatedAudioDataRef = useRef<AudioBufferManager>(
+    new AudioBufferManager(async (buffer) => {
+      await processMessage({
+        text: '',
+        role: 'assistant',
+        emotion: '',
+        state: 'response.audio',
+        buffer: buffer,
+      })
+    })
+  )
 
   const processMessage = useCallback(
     async (message: TmpMessage) => {
@@ -118,6 +129,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         ws.close()
         homeStore.setState({ ws: null })
       }
+      accumulatedAudioDataRef.current.flush()
     }
   }, [realtimeAPIMode, processMessage, t])
 

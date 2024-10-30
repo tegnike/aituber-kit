@@ -59,3 +59,4 @@ export type OpenAITTSModel = 'tts-1' | 'tts-1-hd'
 
 export type RealtimeAPIModeContentType = 'input_text' | 'input_audio'
 export type RealtimeAPIModeVoice = 'alloy' | 'echo' | 'shimmer'
+export type AudioModeInputType = 'input_text' | 'input_audio'

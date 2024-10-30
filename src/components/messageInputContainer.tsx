@@ -251,6 +251,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     }
   }, [startListening, stopListening])
 
+  // メッセージ送信
   const handleSendMessage = useCallback(() => {
     if (userMessage.trim()) {
       onChatProcessStart(userMessage)
@@ -258,6 +259,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     }
   }, [userMessage, onChatProcessStart])
 
+  // メッセージ入力
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setUserMessage(e.target.value)
