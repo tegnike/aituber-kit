@@ -3,19 +3,12 @@ import { Message } from './messages'
 export const messageSelectors = {
   // テキストまたは画像を含むメッセージのみを取得
   getTextAndImageMessages: (messages: Message[]): Message[] => {
-    return messages
-      .filter(
-        (message) => message.content !== null && message.content !== undefined
+    return messages.filter((message): boolean => {
+      if (!message.content) return false
+      return (
+        typeof message.content === 'string' || Array.isArray(message.content)
       )
-      .filter((message) => {
-        if (
-          typeof message.content === 'string' ||
-          Array.isArray(message.content)
-        ) {
-          return true
-        }
-        return false
-      })
+    })
   },
 
   getAudioMessages: (messages: Message[]): Message[] => {
