@@ -43,12 +43,12 @@ export const ChatLog = () => {
                 <>
                   <Chat
                     role={msg.role}
-                    message={msg.content[0].text}
+                    message={msg.content ? msg.content[0].text : ''}
                     characterName={characterName}
                   />
                   <ChatImage
                     role={msg.role}
-                    imageUrl={msg.content[1].image}
+                    imageUrl={msg.content ? msg.content[1].image : ''}
                     characterName={characterName}
                   />
                 </>

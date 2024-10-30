@@ -54,6 +54,7 @@ export const messageSelectors = {
     return messages
       .reduce((acc: Message[], item: Message) => {
         if (
+          item.content &&
           typeof item.content != 'string' &&
           item.content[0] &&
           item.content[1]
@@ -63,16 +64,17 @@ export const messageSelectors = {
 
         const lastItem = acc[acc.length - 1]
         if (lastItem && lastItem.role === item.role) {
-          if (typeof item.content != 'string') {
+          if (typeof item.content != 'string' && item.content) {
             lastItem.content += ' ' + item.content[0].text
           } else {
             lastItem.content += ' ' + item.content
           }
         } else {
-          const text =
-            typeof item.content != 'string'
+          const text = item.content
+            ? typeof item.content != 'string'
               ? item.content[0].text
               : item.content
+            : ''
           if (lastImageUrl != '') {
             acc.push({
               ...item,
