@@ -8,6 +8,7 @@ import {
   AudioBufferManager,
 } from '@/utils/audioBufferManager'
 import { messageSelectors } from '../messages/messageSelectors'
+import { ChatCompletionMessageParam } from 'openai/resources'
 
 export async function getOpenAIAudioChatResponseStream(
   messages: Message[]
@@ -22,7 +23,9 @@ export async function getOpenAIAudioChatResponseStream(
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-audio-preview',
-      messages: messageSelectors.getAudioMessages(messages),
+      messages: messageSelectors.getAudioMessages(
+        messages
+      ) as ChatCompletionMessageParam[],
       stream: true,
       modalities: ['text', 'audio'],
       audio: {
@@ -41,7 +44,7 @@ export async function getOpenAIAudioChatResponseStream(
         })
 
         for await (const chunk of response) {
-          const audio = chunk.choices[0]?.delta?.audio
+          const audio = (chunk.choices[0]?.delta as any)?.audio
           if (audio) {
             if (audio.transcript) {
               controller.enqueue(audio.transcript)

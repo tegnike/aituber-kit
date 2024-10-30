@@ -220,7 +220,7 @@ function consolidateMessages(messages: Message[]) {
         consolidated.push({ role: lastRole, content: combinedContent })
       }
       lastRole = message.role
-      combinedContent = message.content
+      combinedContent = message.content || ''
     }
 
     if (index === messages.length - 1) {
