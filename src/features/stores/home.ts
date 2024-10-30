@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 
 import { Message } from '@/features/messages/messages'
 import { Viewer } from '../vrmViewer/viewer'
+import { messageSelectors } from '../messages/messageSelectors'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -65,13 +66,7 @@ const homeStore = create<HomeState>()(
     {
       name: 'aitube-kit-home',
       partialize: ({ chatLog, showIntroduction }) => ({
-        chatLog: chatLog.map((message: Message) => ({
-          ...message,
-          content:
-            typeof message.content === 'string'
-              ? message.content
-              : message.content[0].text,
-        })),
+        chatLog: messageSelectors.cutImageMessage(chatLog),
         showIntroduction,
       }),
     }

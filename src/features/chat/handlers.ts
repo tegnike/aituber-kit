@@ -1,5 +1,4 @@
 import { getAIChatResponseStream } from '@/features/chat/aiChatFactory'
-import { AIService } from '@/features/constants/settings'
 import { textsToScreenplay, Message } from '@/features/messages/messages'
 import { speakCharacter } from '@/features/messages/speakCharacter'
 import { judgeSlide } from '@/features/slide/slideAIHelpers'
@@ -7,6 +6,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { goToSlide } from '@/components/slides'
+import { messageSelectors } from '../messages/messageSelectors'
 
 /**
  * 受け取ったメッセージを処理し、AIの応答を生成して発話させる
@@ -146,10 +146,7 @@ export const processAIResponse = async (
   const currentSlideMessages: string[] = []
 
   try {
-    stream = await getAIChatResponseStream(
-      ss.selectAIService as AIService,
-      messages
-    )
+    stream = await getAIChatResponseStream(messages)
   } catch (e) {
     console.error(e)
     stream = null
@@ -311,44 +308,7 @@ export const processAIResponse = async (
     reader.releaseLock()
   }
 
-  // 直前のroleとじゃらば、contentを結合し、空のcontentを除外する
-  let lastImageUrl = ''
-  aiTextLog = aiTextLog
-    .reduce((acc: Message[], item: Message) => {
-      if (
-        typeof item.content != 'string' &&
-        item.content[0] &&
-        item.content[1]
-      ) {
-        lastImageUrl = item.content[1].image
-      }
-
-      const lastItem = acc[acc.length - 1]
-      if (lastItem && lastItem.role === item.role) {
-        if (typeof item.content != 'string') {
-          lastItem.content += ' ' + item.content[0].text
-        } else {
-          lastItem.content += ' ' + item.content
-        }
-      } else {
-        const text =
-          typeof item.content != 'string' ? item.content[0].text : item.content
-        if (lastImageUrl != '') {
-          acc.push({
-            ...item,
-            content: [
-              { type: 'text', text: text.trim() },
-              { type: 'image', image: lastImageUrl },
-            ],
-          })
-          lastImageUrl = ''
-        } else {
-          acc.push({ ...item, content: text.trim() })
-        }
-      }
-      return acc
-    }, [])
-    .filter((item) => item.content !== '')
+  aiTextLog = messageSelectors.getProcessedMessages(aiTextLog)
 
   homeStore.setState({
     chatLog: [...currentChatLog, ...aiTextLog],
@@ -467,26 +427,12 @@ export const handleSendChatFn =
       }
       homeStore.setState({ chatLog: messageLog })
 
-      // TODO: AIに送信するメッセージの加工、処理がひどいので要修正
-      // 画像は直近のものしか送らない
-      const processedMessageLog = messageLog.map((message, index) => ({
-        role: ['assistant', 'user', 'system'].includes(message.role)
-          ? message.role
-          : 'assistant',
-        content:
-          index === messageLog.length - 1
-            ? message.content
-            : Array.isArray(message.content)
-              ? message.content[0].text
-              : message.content,
-      }))
-
       const messages: Message[] = [
         {
           role: 'system',
           content: systemPrompt,
         },
-        ...processedMessageLog.slice(-10),
+        ...messageSelectors.getProcessedMessages(messageLog),
       ]
 
       try {
@@ -603,6 +549,8 @@ export const handleReceiveTextFromRtFn =
 
     if (ss.realtimeAPIMode) {
       console.log('realtime api mode: true')
+    } else if (ss.audioMode) {
+      console.log('audio mode: true')
     } else {
       console.log('realtime api mode: false')
       return
@@ -614,6 +562,7 @@ export const handleReceiveTextFromRtFn =
       const updateLog: Message[] = [...hs.chatLog]
 
       if (state?.includes('response.audio') && buffer !== undefined) {
+        console.log('response.audio:')
         try {
           speakCharacter(
             {

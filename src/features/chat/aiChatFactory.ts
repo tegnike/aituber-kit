@@ -4,14 +4,18 @@ import { getLocalLLMChatResponseStream } from './localLLMChat'
 import { getDifyChatResponseStream } from './difyChat'
 import { getVercelAIChatResponseStream } from './vercelAIChat'
 import settingsStore from '@/features/stores/settings'
+import { getOpenAIAudioChatResponseStream } from '@/features/chat/openAIAudioChat'
 
 export async function getAIChatResponseStream(
-  service: AIService,
   messages: Message[]
 ): Promise<ReadableStream<string> | null> {
   const ss = settingsStore.getState()
 
-  switch (service) {
+  if (ss.selectAIService == 'openai' && ss.audioMode) {
+    return getOpenAIAudioChatResponseStream(messages)
+  }
+
+  switch (ss.selectAIService as AIService) {
     case 'openai':
     case 'anthropic':
     case 'google':
@@ -36,6 +40,6 @@ export async function getAIChatResponseStream(
         ss.difyConversationId
       )
     default:
-      throw new Error(`Unsupported AI service: ${service}`)
+      throw new Error(`Unsupported AI service: ${ss.selectAIService}`)
   }
 }

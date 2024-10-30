@@ -143,6 +143,7 @@
   "RealtimeAPIMode": "實時API模式",
   "RealtimeAPIModeContentType": "送信類型",
   "RealtimeAPIModeVoice": "語音類型",
+  "AudioMode": "音頻模式（Beta）",
   "InputText": "文本",
   "InputAudio": "音頻",
   "UpdateRealtimeAPISettings": "更新實時API設定",

@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { messageSelectors } from '@/features/messages/messageSelectors'
 
 const Log = () => {
-  const chatLog = homeStore((s) => s.chatLog)
+  const chatLog = messageSelectors.getTextAndImageMessages(
+    homeStore((s) => s.chatLog)
+  )
   const selectAIService = settingsStore((s) => s.selectAIService)
 
   const { t } = useTranslation()
@@ -36,32 +39,34 @@ const Log = () => {
         <div className="my-8">
           {chatLog.map((value, index) => {
             return (
-              <div
-                key={index}
-                className="my-8 grid grid-flow-col  grid-cols-[min-content_1fr] gap-x-fixed"
-              >
-                <div className="w-[64px] py-8">
-                  {value.role === 'assistant' ? 'Character' : 'You'}
+              value.content && (
+                <div
+                  key={index}
+                  className="my-8 grid grid-flow-col  grid-cols-[min-content_1fr] gap-x-fixed"
+                >
+                  <div className="w-[64px] py-8">
+                    {value.role === 'assistant' ? 'Character' : 'You'}
+                  </div>
+                  {typeof value.content == 'string' ? (
+                    <input
+                      key={index}
+                      className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
+                      type="text"
+                      value={value.content}
+                      onChange={(e) => {
+                        handleChangeChatLog(index, e.target.value)
+                      }}
+                    ></input>
+                  ) : (
+                    <Image
+                      src={value.content[1].image}
+                      alt="画像"
+                      width={500}
+                      height={500}
+                    />
+                  )}
                 </div>
-                {typeof value.content == 'string' ? (
-                  <input
-                    key={index}
-                    className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
-                    type="text"
-                    value={value.content}
-                    onChange={(e) => {
-                      handleChangeChatLog(index, e.target.value)
-                    }}
-                  ></input>
-                ) : (
-                  <Image
-                    src={value.content[1].image}
-                    alt="画像"
-                    width={500}
-                    height={500}
-                  />
-                )}
-              </div>
+              )
             )
           })}
         </div>
@@ -72,9 +77,11 @@ const Log = () => {
 export default Log
 
 const handleChangeChatLog = (targetIndex: number, text: string) => {
-  const hs = homeStore.getState()
+  const chatLog = messageSelectors.getTextAndImageMessages(
+    homeStore((s) => s.chatLog)
+  )
 
-  const newChatLog = hs.chatLog.map((m, i) => {
+  const newChatLog = chatLog.map((m, i) => {
     return i === targetIndex ? { role: m.role, content: text } : m
   })
 
