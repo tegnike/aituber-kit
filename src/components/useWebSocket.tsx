@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
+import useWebSocketStore from '@/features/stores/websocketStore'
 
 ///取得したコメントをストックするリストの作成（receivedMessages）
 interface ReceivedMessage {
   text: string
   role: string
   emotion: string
-  state: string
+  type: string
 }
 
 interface Params {
@@ -18,7 +19,7 @@ interface Params {
     text: string,
     role?: string,
     emotion?: string,
-    state?: string
+    type?: string
   ) => Promise<void>
 }
 
@@ -35,7 +36,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
         message.text,
         message.role,
         message.emotion,
-        message.state
+        message.type
       )
     },
     [handleReceiveTextFromWs]
@@ -120,7 +121,15 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
       return ws
     }
     let ws = setupWebsocket()
-    homeStore.setState({ ws })
+    useWebSocketStore.getState().wsManager?.disconnect()
+    useWebSocketStore.getState().initializeWebSocket(t, async (message) => {
+      await handleReceiveTextFromWs(
+        message.text,
+        message.role,
+        message.emotion,
+        message.type
+      )
+    })
 
     const reconnectInterval = setInterval(() => {
       const ss = settingsStore.getState()
@@ -133,16 +142,24 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
         console.log('try reconnecting...')
         ws.close()
         ws = setupWebsocket()
-        homeStore.setState({ ws })
+        useWebSocketStore.getState().wsManager?.disconnect()
+        useWebSocketStore.getState().initializeWebSocket(t, async (message) => {
+          await handleReceiveTextFromWs(
+            message.text,
+            message.role,
+            message.emotion,
+            message.type
+          )
+        })
       }
     }, 1000)
 
     return () => {
       clearInterval(reconnectInterval)
       ws.close()
-      homeStore.setState({ ws: null })
+      useWebSocketStore.getState().disconnect()
     }
-  }, [webSocketMode, t])
+  }, [webSocketMode, t, handleReceiveTextFromWs])
 
   return null
 }

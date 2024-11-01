@@ -3,6 +3,7 @@ import { MessageInput } from '@/components/messageInput'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import { VoiceLanguage } from '@/features/constants/settings'
+import useWebSocketStore from '@/features/stores/websocketStore'
 
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
@@ -120,9 +121,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     if (audioBufferRef.current && audioBufferRef.current.length > 0) {
       const base64Chunk = base64EncodeAudio(audioBufferRef.current)
       const ss = settingsStore.getState()
-      const ws = homeStore.getState().ws
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        let sendContent: { type: string; text?: string; audio?: string }[]
+      const wsManager = useWebSocketStore.getState().wsManager
+      if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
+        let sendContent: { type: string; text?: string; audio?: string }[] = []
+
         if (ss.realtimeAPIModeContentType === 'input_audio') {
           console.log('Sending buffer. Length:', audioBufferRef.current.length)
           sendContent = [
@@ -134,28 +136,33 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         } else {
           const currentText = transcriptRef.current.trim()
           console.log('Sending text. userMessage:', currentText)
-          sendContent = [
-            {
-              type: 'input_text',
-              text: currentText,
-            },
-          ]
+          if (currentText) {
+            sendContent = [
+              {
+                type: 'input_text',
+                text: currentText,
+              },
+            ]
+          }
         }
-        ws.send(
-          JSON.stringify({
-            type: 'conversation.item.create',
-            item: {
-              type: 'message',
-              role: 'user',
-              content: sendContent,
-            },
-          })
-        )
-        ws.send(
-          JSON.stringify({
-            type: 'response.create',
-          })
-        )
+
+        if (sendContent.length > 0) {
+          wsManager.websocket.send(
+            JSON.stringify({
+              type: 'conversation.item.create',
+              item: {
+                type: 'message',
+                role: 'user',
+                content: sendContent,
+              },
+            })
+          )
+          wsManager.websocket.send(
+            JSON.stringify({
+              type: 'response.create',
+            })
+          )
+        }
       }
       audioBufferRef.current = null // 送信後にバッファをクリア
     } else {

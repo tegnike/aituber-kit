@@ -1,39 +1,29 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
-import toastStore from '@/features/stores/toast'
-import {
-  TmpMessage,
-  Params,
-  setupWebsocket,
-  handleMessage,
-  removeToast,
-  sendSessionUpdate,
-} from './realtimeAPIUtils'
-import { AudioBufferManager } from '@/utils/audioBufferManager'
+import { TmpMessage } from './realtimeAPIUtils'
+import useWebSocketStore from '@/features/stores/websocketStore'
+
+interface Params {
+  handleReceiveTextFromRt: (
+    text: string,
+    role?: string,
+    type?: string,
+    buffer?: ArrayBuffer
+  ) => Promise<void>
+}
 
 const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
   const { t } = useTranslation()
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
-  const accumulatedAudioDataRef = useRef<AudioBufferManager>(
-    new AudioBufferManager(async (buffer) => {
-      await processMessage({
-        text: '',
-        role: 'assistant',
-        emotion: '',
-        state: 'response.audio',
-        buffer: buffer,
-      })
-    })
-  )
 
   const processMessage = useCallback(
     async (message: TmpMessage) => {
       await handleReceiveTextFromRt(
         message.text,
         message.role,
-        message.state,
+        message.type,
         message.buffer
       )
     },
@@ -44,92 +34,28 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
     const ss = settingsStore.getState()
     if (!ss.realtimeAPIMode || !ss.selectAIService) return
 
-    const handleOpen = (event: Event) => {
-      console.log('WebSocket connection opened:', event)
-      removeToast()
-      // chatLogを空配列に初期化
-      homeStore.setState({ ws: ws, chatLog: [] })
-      toastStore.getState().addToast({
-        message: t('Toasts.WebSocketConnectionSuccess'),
-        type: 'success',
-        duration: 3000,
-        tag: 'websocket-connection-success',
-      })
-      if (ws) {
-        sendSessionUpdate(ws)
-      }
-    }
+    useWebSocketStore.getState().initializeWebSocket(t, processMessage)
 
-    const handleError = (event: Event) => {
-      console.error('WebSocket error:', event)
-      removeToast()
-      toastStore.getState().addToast({
-        message: t('Toasts.WebSocketConnectionError'),
-        type: 'error',
-        duration: 5000,
-        tag: 'websocket-connection-error',
-      })
-    }
-
-    const handleClose = (event: Event) => {
-      console.log('WebSocket connection closed:', event)
-      removeToast()
-      toastStore.getState().addToast({
-        message: t('Toasts.WebSocketConnectionClosed'),
-        type: 'error',
-        duration: 3000,
-        tag: 'websocket-connection-close',
-      })
-    }
-
-    let ws = setupWebsocket(t)
-    if (ws) {
-      ws.addEventListener('open', handleOpen)
-      ws.addEventListener('message', (event) =>
-        handleMessage(event, accumulatedAudioDataRef, processMessage, ws!, t)
-      )
-      ws.addEventListener('error', handleError)
-      ws.addEventListener('close', handleClose)
-    }
-    homeStore.setState({ ws })
+    const wsManager = useWebSocketStore.getState().wsManager
 
     const reconnectInterval = setInterval(() => {
       const ss = settingsStore.getState()
       if (
         ss.realtimeAPIMode &&
-        ws &&
-        ws.readyState !== WebSocket.OPEN &&
-        ws.readyState !== WebSocket.CONNECTING
+        wsManager?.websocket &&
+        wsManager.websocket.readyState !== WebSocket.OPEN &&
+        wsManager.websocket.readyState !== WebSocket.CONNECTING
       ) {
         homeStore.setState({ chatProcessing: false })
-        console.log('try reconnecting...')
-        ws.close()
-        ws = setupWebsocket(t)
-        if (ws) {
-          ws.addEventListener('open', handleOpen)
-          ws.addEventListener('message', (event) =>
-            handleMessage(
-              event,
-              accumulatedAudioDataRef,
-              processMessage,
-              ws!,
-              t
-            )
-          )
-          ws.addEventListener('error', handleError)
-          ws.addEventListener('close', handleClose)
-        }
-        homeStore.setState({ ws })
+        console.log('再接続を試みています...')
+        wsManager.disconnect()
+        useWebSocketStore.getState().initializeWebSocket(t, processMessage)
       }
     }, 2000)
 
     return () => {
       clearInterval(reconnectInterval)
-      if (ws) {
-        ws.close()
-        homeStore.setState({ ws: null })
-      }
-      accumulatedAudioDataRef.current.flush()
+      useWebSocketStore.getState().disconnect()
     }
   }, [realtimeAPIMode, processMessage, t])
 

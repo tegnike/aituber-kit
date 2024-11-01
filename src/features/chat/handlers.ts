@@ -7,6 +7,7 @@ import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { goToSlide } from '@/components/slides'
 import { messageSelectors } from '../messages/messageSelectors'
+import useWebSocketStore from '@/features/stores/websocketStore'
 
 /**
  * 受け取ったメッセージを処理し、AIの応答を生成して発話させる
@@ -334,11 +335,12 @@ export const handleSendChatFn =
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
     const sls = slideStore.getState()
+    const wsManager = useWebSocketStore.getState().wsManager
 
     if (ss.webSocketMode) {
       homeStore.setState({ chatProcessing: true })
 
-      if (hs.ws?.readyState === WebSocket.OPEN) {
+      if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
         // ユーザーの発言を追加して表示
         const updateLog: Message[] = [
           ...hs.chatLog,
@@ -349,7 +351,9 @@ export const handleSendChatFn =
         })
 
         // WebSocket送信
-        hs.ws.send(JSON.stringify({ content: newMessage, type: 'chat' }))
+        wsManager.websocket.send(
+          JSON.stringify({ content: newMessage, type: 'chat' })
+        )
       } else {
         homeStore.setState({
           assistantMessage: errors['NotConnectedToExternalAssistant'],
@@ -357,7 +361,7 @@ export const handleSendChatFn =
         })
       }
     } else if (ss.realtimeAPIMode) {
-      if (hs.ws?.readyState === WebSocket.OPEN) {
+      if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
         // ユーザーの発言を追加して表示
         const updateLog: Message[] = [
           ...hs.chatLog,
@@ -454,12 +458,13 @@ export const handleReceiveTextFromWsFn =
     text: string,
     role?: string,
     emotion: string = 'neutral',
-    state?: string
+    type?: string
   ) => {
     if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
+    const wsManager = useWebSocketStore.getState().wsManager
 
     if (ss.webSocketMode) {
       console.log('websocket mode: true')
@@ -473,21 +478,19 @@ export const handleReceiveTextFromWsFn =
     if (role !== 'user') {
       const updateLog: Message[] = [...hs.chatLog]
 
-      if (state === 'start') {
+      if (type === 'start') {
         // startの場合は何もしない（textは空文字のため）
         console.log('Starting new response')
-        homeStore.setState({ wsStreaming: false })
       } else if (
         updateLog.length > 0 &&
         updateLog[updateLog.length - 1].role === role &&
-        hs.wsStreaming
+        wsManager?.streaming
       ) {
         // 既存のメッセージに追加
         updateLog[updateLog.length - 1].content += text
       } else {
         // 新しいメッセージを追加
         updateLog.push({ role: role, content: text })
-        homeStore.setState({ wsStreaming: true })
       }
 
       if (role === 'assistant' && text !== '') {
@@ -520,15 +523,14 @@ export const handleReceiveTextFromWsFn =
         })
       }
 
-      if (state === 'end') {
+      if (type === 'end') {
         // レスポンスの終了処理
         console.log('Response ended')
-        homeStore.setState({ wsStreaming: false })
         homeStore.setState({ chatProcessing: false })
       }
     }
 
-    homeStore.setState({ chatProcessing: state !== 'end' })
+    homeStore.setState({ chatProcessing: type !== 'end' })
   }
 
 /**
@@ -536,12 +538,7 @@ export const handleReceiveTextFromWsFn =
  */
 export const handleReceiveTextFromRtFn =
   () =>
-  async (
-    text?: string,
-    role?: string,
-    state?: string,
-    buffer?: ArrayBuffer
-  ) => {
+  async (text?: string, role?: string, type?: string, buffer?: ArrayBuffer) => {
     if ((!text && !buffer) || role === undefined) return
 
     const ss = settingsStore.getState()
@@ -561,7 +558,7 @@ export const handleReceiveTextFromRtFn =
     if (role == 'assistant') {
       const updateLog: Message[] = [...hs.chatLog]
 
-      if (state?.includes('response.audio') && buffer !== undefined) {
+      if (type?.includes('response.audio') && buffer !== undefined) {
         console.log('response.audio:')
         try {
           speakCharacter(
@@ -581,7 +578,7 @@ export const handleReceiveTextFromRtFn =
         } catch (e) {
           console.error('Error in speakCharacter:', e)
         }
-      } else if (state === 'response.content_part.done' && text !== undefined) {
+      } else if (type === 'response.content_part.done' && text !== undefined) {
         updateLog.push({ role: role, content: text })
         homeStore.setState({
           chatLog: updateLog,

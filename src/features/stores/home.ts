@@ -24,8 +24,6 @@ export interface TransientState {
   triggerShutter: boolean
   webcamStatus: boolean
   captureStatus: boolean
-  ws: WebSocket | null
-  wsStreaming: boolean
 }
 
 export type HomeState = PersistedState & TransientState
@@ -60,8 +58,6 @@ const homeStore = create<HomeState>()(
       triggerShutter: false,
       webcamStatus: false,
       captureStatus: false,
-      ws: null,
-      wsStreaming: false,
     }),
     {
       name: 'aitube-kit-home',
