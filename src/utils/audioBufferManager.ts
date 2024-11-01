@@ -18,6 +18,7 @@ export class AudioBufferManager {
   }
 
   addData(newData: ArrayBuffer): void {
+    console.log('Adding data to buffer:', newData.byteLength)
     this.buffer = this.mergeArrayBuffers(this.buffer, newData)
     if (this.buffer.byteLength >= this.BUFFER_THRESHOLD) {
       this.sendBuffer()

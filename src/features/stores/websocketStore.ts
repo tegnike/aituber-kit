@@ -6,11 +6,13 @@ interface WebSocketState {
   wsManager: WebSocketManager | null
   initializeWebSocket: (
     t: (key: string, options?: any) => string,
-    processMessage: (message: TmpMessage) => Promise<void>
-  ) => void
-  sendFunctionCallOutput: (
-    callId: string,
-    output: Record<string, unknown>
+    handlers: {
+      onOpen?: (event: Event) => void
+      onMessage?: (event: MessageEvent) => Promise<void>
+      onError?: (event: Event) => void
+      onClose?: (event: Event) => void
+    },
+    connectWebsocket: () => WebSocket | null
   ) => void
   disconnect: () => void
   reconnect: () => boolean
@@ -18,17 +20,22 @@ interface WebSocketState {
 
 const useWebSocketStore = create<WebSocketState>((set, get) => ({
   wsManager: null,
-  initializeWebSocket: (t, processMessage) => {
-    const manager = new WebSocketManager(t, processMessage)
+  initializeWebSocket: (t, handlers = {}, connectWebsocket) => {
+    const defaultHandlers = {
+      onOpen: (event: Event) => {},
+      onMessage: async (event: MessageEvent) => {},
+      onError: (event: Event) => {},
+      onClose: (event: Event) => {},
+      ...handlers,
+      connectWebsocket,
+    }
+    const manager = new WebSocketManager(t, defaultHandlers, connectWebsocket)
     manager.connect()
     set({ wsManager: manager })
   },
-  sendFunctionCallOutput: (callId, output) => {
-    const { wsManager } = get()
-    wsManager?.sendFunctionCallOutput(callId, output)
-  },
   disconnect: () => {
     const { wsManager } = get()
+    console.log('disconnect 1')
     wsManager?.disconnect()
     set({ wsManager: null })
   },
