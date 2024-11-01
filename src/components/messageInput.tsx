@@ -5,6 +5,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { IconButton } from './iconButton'
+import toastStore from '@/features/stores/toast'
 
 type Props = {
   userMessage: string
@@ -27,6 +28,7 @@ export const MessageInput = ({
   const slidePlaying = slideStore((s) => s.isPlaying)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
+  const [showPermissionModal, setShowPermissionModal] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
 
@@ -75,8 +77,28 @@ export const MessageInput = ({
     }
   }
 
+  const handleMicClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onClickMicButton(event)
+  }
+
   return (
     <div className="absolute bottom-0 z-20 w-screen">
+      {showPermissionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-surface1 p-24 rounded-16 max-w-md">
+            <h3 className="typography-20 font-bold mb-16">
+              {t('MicrophonePermission')}
+            </h3>
+            <p className="mb-16">{t('MicrophonePermissionMessage')}</p>
+            <button
+              className="bg-secondary hover:bg-secondary-hover px-16 py-8 rounded-8"
+              onClick={() => setShowPermissionModal(false)}
+            >
+              {t('Close')}
+            </button>
+          </div>
+        </div>
+      )}
       <div className="bg-base text-black">
         <div className="mx-auto max-w-4xl p-16">
           <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
@@ -86,7 +108,7 @@ export const MessageInput = ({
               isProcessing={isMicRecording}
               isProcessingIcon={'24/PauseAlt'}
               disabled={chatProcessing}
-              onClick={onClickMicButton}
+              onClick={handleMicClick}
             />
             <textarea
               ref={textareaRef}

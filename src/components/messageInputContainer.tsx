@@ -4,6 +4,8 @@ import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import { VoiceLanguage } from '@/features/constants/settings'
 import useWebSocketStore from '@/features/stores/websocketStore'
+import { useTranslation } from 'react-i18next'
+import toastStore from '@/features/stores/toast'
 
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
@@ -25,6 +27,31 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
+
+  const { t } = useTranslation()
+
+  const checkMicrophonePermission = async (): Promise<boolean> => {
+    // Firefoxの場合はエラーメッセージを表示して終了
+    if (navigator.userAgent.toLowerCase().includes('firefox')) {
+      toastStore.getState().addToast({
+        message: t('Toasts.FirefoxNotSupported'),
+        type: 'error',
+        tag: 'microphone-permission-error-firefox',
+      })
+      return false
+    }
+
+    try {
+      // getUserMediaを直接呼び出し、ブラウザのネイティブ許可モーダルを表示
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      stream.getTracks().forEach((track) => track.stop())
+      return true
+    } catch (error) {
+      // ユーザーが明示的に拒否した場合や、その他のエラーの場合
+      console.error('Microphone permission error:', error)
+      return false
+    }
+  }
 
   const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
     switch (selectLanguage) {
@@ -79,7 +106,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     setAudioContext(context)
   }, [])
 
-  const startListening = useCallback(() => {
+  const startListening = useCallback(async () => {
+    const hasPermission = await checkMicrophonePermission()
+    if (!hasPermission) return
+
     if (recognition && !isListeningRef.current && audioContext) {
       transcriptRef.current = ''
       setUserMessage('')
@@ -235,11 +265,11 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   }, [startListening, stopListening])
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
       if (e.key === 'Alt' && !isListeningRef.current) {
         keyPressStartTime.current = Date.now()
         isKeyboardTriggered.current = true
-        startListening()
+        await startListening()
       }
     }
 
