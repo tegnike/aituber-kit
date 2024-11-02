@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { SessionConfig, TmpMessage } from './realtimeAPIUtils'
-import useWebSocketStore from '@/features/stores/websocketStore'
+import webSocketStore from '@/features/stores/websocketStore'
 import { base64ToArrayBuffer } from './realtimeAPIUtils'
 import RealtimeAPITools from './realtimeAPITools.json'
 import { AudioBufferManager } from '@/utils/audioBufferManager'
@@ -47,7 +47,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
   const sendFunctionCallOutput = useCallback(
     (callId: string, output: Record<string, unknown>) => {
-      const wsManager = useWebSocketStore.getState().wsManager
+      const wsManager = webSocketStore.getState().wsManager
       if (wsManager) {
         const response = {
           type: 'conversation.item.create',
@@ -121,7 +121,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
   const handleMessageType = useCallback(
     async (jsonData: any, type: string) => {
-      const wsManager = useWebSocketStore.getState().wsManager
+      const wsManager = webSocketStore.getState().wsManager
 
       console.log('Received message type:', type)
 
@@ -170,7 +170,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
   const sendSessionUpdate = useCallback(() => {
     const ss = settingsStore.getState()
-    const wsManager = useWebSocketStore.getState().wsManager
+    const wsManager = webSocketStore.getState().wsManager
     if (
       wsManager?.websocket &&
       wsManager.websocket.readyState === WebSocket.OPEN
@@ -262,11 +262,9 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       onClose: onClose,
     }
 
-    useWebSocketStore
-      .getState()
-      .initializeWebSocket(t, handlers, connectWebsocket)
+    webSocketStore.getState().initializeWebSocket(t, handlers, connectWebsocket)
 
-    const wsManager = useWebSocketStore.getState().wsManager
+    const wsManager = webSocketStore.getState().wsManager
 
     const reconnectInterval = setInterval(() => {
       const ss = settingsStore.getState()
@@ -279,7 +277,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         homeStore.setState({ chatProcessing: false })
         console.log('try reconnecting...')
         wsManager.disconnect()
-        useWebSocketStore
+        webSocketStore
           .getState()
           .initializeWebSocket(t, handlers, connectWebsocket)
       }
@@ -287,7 +285,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
     return () => {
       clearInterval(reconnectInterval)
-      useWebSocketStore.getState().disconnect()
+      webSocketStore.getState().disconnect()
     }
   }, [realtimeAPIMode, processMessage, t, onOpen, onMessage, onError, onClose])
 

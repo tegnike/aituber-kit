@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { MessageInput } from '@/components/messageInput'
 import settingsStore from '@/features/stores/settings'
-import homeStore from '@/features/stores/home'
 import { VoiceLanguage } from '@/features/constants/settings'
-import useWebSocketStore from '@/features/stores/websocketStore'
+import webSocketStore from '@/features/stores/websocketStore'
 import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
 
@@ -151,7 +150,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     if (audioBufferRef.current && audioBufferRef.current.length > 0) {
       const base64Chunk = base64EncodeAudio(audioBufferRef.current)
       const ss = settingsStore.getState()
-      const wsManager = useWebSocketStore.getState().wsManager
+      const wsManager = webSocketStore.getState().wsManager
       if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
         let sendContent: { type: string; text?: string; audio?: string }[] = []
 

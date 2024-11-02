@@ -11,7 +11,7 @@ import {
   handleReceiveTextFromRtFn,
 } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
-import useWebSocket from './useWebSocket'
+import useExternalLinkage from './useExternalLinkage'
 import useRealtimeAPI from './useRealtimeAPI'
 import useYoutube from './useYoutube'
 import { SlideText } from './slideText'
@@ -36,7 +36,7 @@ export const Form = () => {
   const handleReceiveTextFromRt = handleReceiveTextFromRtFn()
 
   useYoutube({ handleSendChat })
-  useWebSocket({ handleReceiveTextFromWs })
+  useExternalLinkage({ handleReceiveTextFromWs })
   useRealtimeAPI({ handleReceiveTextFromRt })
 
   useEffect(() => {

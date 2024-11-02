@@ -15,10 +15,10 @@ import {
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
 import toastStore from '@/features/stores/toast'
-import useWebSocketStore from '@/features/stores/websocketStore'
+import webSocketStore from '@/features/stores/websocketStore'
 
 const ModelProvider = () => {
-  const webSocketMode = settingsStore((s) => s.webSocketMode)
+  const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const realtimeAPIModeContentType = settingsStore(
     (s) => s.realtimeAPIModeContentType
@@ -109,7 +109,7 @@ const ModelProvider = () => {
   }, [])
 
   const handleUpdate = useCallback(() => {
-    const wsManager = useWebSocketStore.getState().wsManager
+    const wsManager = webSocketStore.getState().wsManager
     if (!wsManager || !wsManager.reconnect()) {
       toastStore.getState().addToast({
         message: t('Toasts.WebSocketReconnectFailed'),
@@ -119,7 +119,7 @@ const ModelProvider = () => {
     }
   }, [t])
 
-  return webSocketMode ? null : (
+  return externalLinkageMode ? null : (
     <div className="my-40">
       <div className="my-16 typography-20 font-bold">
         {t('SelectAIService')}

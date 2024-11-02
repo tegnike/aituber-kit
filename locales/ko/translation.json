@@ -5,7 +5,7 @@
   "VoiceSettings": "■ 음성 설정",
   "SlideSettings": "■ 슬라이드 설정",
   "OtherSettings": "■ 기타",
-  "ExternalConnectionMode": "외부 연동 모드 (WebSocket, 베타 버전)",
+  "ExternalLinkageMode": "외부 연동 모드 (WebSocket)",
   "YoutubeMode": "YouTube 모드",
   "YoutubeInfo": "처음에 '#'이 있는 댓글은 무시됩니다.",
   "YoutubeAPIKey": "YouTube API 키",

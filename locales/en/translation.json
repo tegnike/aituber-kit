@@ -5,7 +5,7 @@
   "VoiceSettings": "■ Voice Settings",
   "SlideSettings": "■ Slide Settings",
   "OtherSettings": "■ Other",
-  "ExternalConnectionMode": "External Connection Mode (WebSocket, β version)",
+  "ExternalLinkageMode": "External Linkage Mode (WebSocket)",
   "YoutubeMode": "YouTube Mode",
   "YoutubeInfo": "The first character of the comment is '#', it is ignored.",
   "YoutubeAPIKey": "YouTube API Key",

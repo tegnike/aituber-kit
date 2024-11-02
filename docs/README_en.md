@@ -126,7 +126,7 @@ npm run dev
 
 ## Other Features
 
-### External Integration Mode
+### External Linkage Mode
 
 - You can send requests to the server app via WebSocket and get responses.
 - A separate server app needs to be prepared.
@@ -134,7 +134,7 @@ npm run dev
 #### Usage
 
 1. Start the server app and open the `ws://127.0.0.1:8000/ws` endpoint.
-2. Turn on WebSocket mode in the settings screen.
+2. Turn on External Linkage Mode in the settings screen.
 3. Configure other settings the same way as "Conversation with AI Character".
 4. Send requests from the input form and confirm that responses are returned from the server app.
 

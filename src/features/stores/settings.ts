@@ -93,7 +93,7 @@ interface General {
   selectLanguage: Language
   changeEnglishToJapanese: boolean
   showControlPanel: boolean
-  webSocketMode: boolean
+  externalLinkageMode: boolean
   realtimeAPIMode: boolean
   realtimeAPIModeContentType: RealtimeAPIModeContentType
   realtimeAPIModeVoice: RealtimeAPIModeVoice | RealtimeAPIModeAzureVoice
@@ -207,7 +207,8 @@ const settingsStore = create<SettingsState>()(
       changeEnglishToJapanese:
         process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
-      webSocketMode: process.env.NEXT_PUBLIC_WEB_SOCKET_MODE === 'true',
+      externalLinkageMode:
+        process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
       realtimeAPIMode:
         (process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
           ['openai', 'azure'].includes(
@@ -280,7 +281,7 @@ const settingsStore = create<SettingsState>()(
         systemPrompt: state.systemPrompt,
         selectLanguage: state.selectLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
-        webSocketMode: state.webSocketMode,
+        externalLinkageMode: state.externalLinkageMode,
         realtimeAPIMode: state.realtimeAPIMode,
         realtimeAPIModeContentType: state.realtimeAPIModeContentType,
         realtimeAPIModeVoice: state.realtimeAPIModeVoice,

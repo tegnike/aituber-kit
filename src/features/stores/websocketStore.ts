@@ -18,7 +18,7 @@ interface WebSocketState {
   reconnect: () => boolean
 }
 
-const useWebSocketStore = create<WebSocketState>((set, get) => ({
+const webSocketStore = create<WebSocketState>((set, get) => ({
   wsManager: null,
   initializeWebSocket: (t, handlers = {}, connectWebsocket) => {
     const defaultHandlers = {
@@ -45,4 +45,4 @@ const useWebSocketStore = create<WebSocketState>((set, get) => ({
   },
 }))
 
-export default useWebSocketStore
+export default webSocketStore

@@ -7,7 +7,7 @@ import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { goToSlide } from '@/components/slides'
 import { messageSelectors } from '../messages/messageSelectors'
-import useWebSocketStore from '@/features/stores/websocketStore'
+import webSocketStore from '@/features/stores/websocketStore'
 
 /**
  * 受け取ったメッセージを処理し、AIの応答を生成して発話させる
@@ -335,9 +335,9 @@ export const handleSendChatFn =
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
     const sls = slideStore.getState()
-    const wsManager = useWebSocketStore.getState().wsManager
+    const wsManager = webSocketStore.getState().wsManager
 
-    if (ss.webSocketMode) {
+    if (ss.externalLinkageMode) {
       homeStore.setState({ chatProcessing: true })
 
       if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
@@ -464,12 +464,12 @@ export const handleReceiveTextFromWsFn =
 
     const ss = settingsStore.getState()
     const hs = homeStore.getState()
-    const wsManager = useWebSocketStore.getState().wsManager
+    const wsManager = webSocketStore.getState().wsManager
 
-    if (ss.webSocketMode) {
-      console.log('websocket mode: true')
+    if (ss.externalLinkageMode) {
+      console.log('ExternalLinkage Mode: true')
     } else {
-      console.log('websocket mode: false')
+      console.log('ExternalLinkage Mode: false')
       return
     }
 

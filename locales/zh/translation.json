@@ -5,7 +5,7 @@
   "VoiceSettings": "■ 語音設定",
   "SlideSettings": "■ 投影片設定",
   "OtherSettings": "■ 其他",
-  "ExternalConnectionMode": "外部連線模式 (WebSocket, β版本）",
+  "ExternalLinkageMode": "外部連線模式 (WebSocket）",
   "YoutubeMode": "YouTube 模式",
   "YoutubeInfo": "YouTube 直播 ID 是直播 ID 而不是頻道 ID",
   "YoutubeAPIKey": "YouTube API 金鑰",

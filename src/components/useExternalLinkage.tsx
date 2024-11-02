@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
-import useWebSocketStore from '@/features/stores/websocketStore'
+import webSocketStore from '@/features/stores/websocketStore'
 
 ///取得したコメントをストックするリストの作成（receivedMessages）
 interface TmpMessage {
@@ -22,9 +22,9 @@ interface Params {
   ) => Promise<void>
 }
 
-const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
+const useExternalLinkage = ({ handleReceiveTextFromWs }: Params) => {
   const { t } = useTranslation()
-  const webSocketMode = settingsStore((s) => s.webSocketMode)
+  const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const [receivedMessages, setTmpMessages] = useState<TmpMessage[]>([])
 
   const processMessage = useCallback(
@@ -56,7 +56,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
 
   useEffect(() => {
     const ss = settingsStore.getState()
-    if (!ss.webSocketMode) return
+    if (!ss.externalLinkageMode) return
 
     const handleOpen = (event: Event) => {}
     const handleMessage = async (event: MessageEvent) => {
@@ -77,16 +77,14 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
       return new WebSocket('ws://localhost:8000/ws')
     }
 
-    useWebSocketStore
-      .getState()
-      .initializeWebSocket(t, handlers, connectWebsocket)
+    webSocketStore.getState().initializeWebSocket(t, handlers, connectWebsocket)
 
-    const wsManager = useWebSocketStore.getState().wsManager
+    const wsManager = webSocketStore.getState().wsManager
 
     const reconnectInterval = setInterval(() => {
       const ss = settingsStore.getState()
       if (
-        ss.webSocketMode &&
+        ss.externalLinkageMode &&
         wsManager?.websocket &&
         wsManager.websocket.readyState !== WebSocket.OPEN &&
         wsManager.websocket.readyState !== WebSocket.CONNECTING
@@ -94,7 +92,7 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
         homeStore.setState({ chatProcessing: false })
         console.log('try reconnecting...')
         wsManager.disconnect()
-        useWebSocketStore
+        webSocketStore
           .getState()
           .initializeWebSocket(t, handlers, connectWebsocket)
       }
@@ -102,11 +100,11 @@ const useWebSocket = ({ handleReceiveTextFromWs }: Params) => {
 
     return () => {
       clearInterval(reconnectInterval)
-      useWebSocketStore.getState().disconnect()
+      webSocketStore.getState().disconnect()
     }
-  }, [webSocketMode, t])
+  }, [externalLinkageMode, t])
 
   return null
 }
 
-export default useWebSocket
+export default useExternalLinkage
