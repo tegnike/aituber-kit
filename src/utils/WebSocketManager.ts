@@ -6,7 +6,7 @@ type TranslationFunction = (key: string, options?: any) => string
 export class WebSocketManager {
   private ws: WebSocket | null = null
   private t: TranslationFunction
-  private isStreaming: boolean = false
+  private isTextBlockStarted: boolean = false
   private handlers: {
     onOpen: (event: Event) => void
     onMessage: (event: MessageEvent) => Promise<void>
@@ -100,7 +100,6 @@ export class WebSocketManager {
   public disconnect() {
     if (this.ws) {
       this.ws.close()
-      this.setStreaming(false)
     }
   }
 
@@ -108,12 +107,12 @@ export class WebSocketManager {
     return this.ws
   }
 
-  public get streaming(): boolean {
-    return this.isStreaming
+  public get textBlockStarted(): boolean {
+    return this.isTextBlockStarted
   }
 
-  setStreaming(value: boolean) {
-    this.isStreaming = value
+  setTextBlockStarted(value: boolean) {
+    this.isTextBlockStarted = value
   }
 
   public reconnect(): boolean {

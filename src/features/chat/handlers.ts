@@ -481,16 +481,18 @@ export const handleReceiveTextFromWsFn =
       if (type === 'start') {
         // startの場合は何もしない（textは空文字のため）
         console.log('Starting new response')
+        wsManager?.setTextBlockStarted(false)
       } else if (
         updateLog.length > 0 &&
         updateLog[updateLog.length - 1].role === role &&
-        wsManager?.streaming
+        wsManager?.textBlockStarted
       ) {
         // 既存のメッセージに追加
         updateLog[updateLog.length - 1].content += text
       } else {
         // 新しいメッセージを追加
         updateLog.push({ role: role, content: text })
+        wsManager?.setTextBlockStarted(true)
       }
 
       if (role === 'assistant' && text !== '') {
@@ -526,6 +528,7 @@ export const handleReceiveTextFromWsFn =
       if (type === 'end') {
         // レスポンスの終了処理
         console.log('Response ended')
+        wsManager?.setTextBlockStarted(false)
         homeStore.setState({ chatProcessing: false })
       }
     }

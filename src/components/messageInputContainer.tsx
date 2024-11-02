@@ -136,7 +136,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
                 return
               }
               audioChunksRef.current.push(event.data)
-              console.log('音声チャンク追加:', audioChunksRef.current.length)
+              console.log('add audio chunk:', audioChunksRef.current.length)
             }
           }
 
@@ -211,7 +211,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
           mediaRecorder.ondataavailable = null
           await new Promise<void>((resolve) => {
             mediaRecorder.onstop = async () => {
-              console.log('MediaRecorder停止')
+              console.log('stop MediaRecorder')
               if (audioChunksRef.current.length > 0) {
                 const audioBlob = new Blob(audioChunksRef.current, {
                   type: 'audio/webm',

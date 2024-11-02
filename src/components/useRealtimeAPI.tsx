@@ -144,7 +144,6 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           break
         case 'response.content_part.done':
           if (jsonData.part && jsonData.part.transcript) {
-            wsManager?.setStreaming(true)
             await processMessage({
               text: jsonData.part.transcript,
               role: 'assistant',
@@ -160,7 +159,6 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
           await handleFunctionCall(jsonData)
           break
         case 'response.audio.done':
-          wsManager?.setStreaming(false)
           await accumulatedAudioDataRef.current.flush()
           break
       }

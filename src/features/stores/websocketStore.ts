@@ -35,7 +35,6 @@ const webSocketStore = create<WebSocketState>((set, get) => ({
   },
   disconnect: () => {
     const { wsManager } = get()
-    console.log('disconnect 1')
     wsManager?.disconnect()
     set({ wsManager: null })
   },

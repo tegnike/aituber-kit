@@ -5,7 +5,6 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { IconButton } from './iconButton'
-import toastStore from '@/features/stores/toast'
 
 type Props = {
   userMessage: string
