@@ -6,10 +6,12 @@ import { Meta } from '@/components/meta'
 import ModalImage from '@/components/modalImage'
 import VrmViewer from '@/components/vrmViewer'
 import { Toasts } from '@/components/toasts'
+import { WebSocketManager } from '@/components/websocketManager'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
 import { buildUrl } from '@/utils/buildUrl'
+import { YoutubeManager } from '@/components/youtubeManager'
 
 const Home = () => {
   const bgUrl = homeStore((s) => `url(${buildUrl(s.backgroundImageUrl)})`)
@@ -25,6 +27,8 @@ const Home = () => {
       <ModalImage />
       {messageReceiverEnabled && <MessageReceiver />}
       <Toasts />
+      <WebSocketManager />
+      <YoutubeManager />
     </div>
   )
 }
