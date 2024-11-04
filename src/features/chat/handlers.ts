@@ -67,7 +67,7 @@ export const speakMessageHandler = async (receivedMessage: string) => {
     }
 
     const sentenceMatch = remainingMessage.match(
-      /^(.{1,19}?[。．.!?！？\n]|.{20,}?[、,])/
+      /^(.{1,19}?[。．.!?！？\n]|.{20,}?[、,。．.!?！？\n])/
     )
     if (sentenceMatch?.[0]) {
       sentence = sentenceMatch?.[0]
@@ -172,17 +172,45 @@ export const processAIResponse = async (
 
       if (value) receivedMessage += value
 
-      // 返答内容のタグ部分と返答部分を分離
-      const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
-      if (tagMatch && tagMatch[0]) {
-        tag = tagMatch[0]
-        receivedMessage = receivedMessage.slice(tag.length)
-      }
-
       // 返答を一文単位で切り出して処理する
       while (receivedMessage.length > 0) {
+        if (isCodeBlock && !receivedMessage.includes('```')) {
+          codeBlockText += receivedMessage
+          continue
+        }
+
+        if (receivedMessage.includes('```')) {
+          if (isCodeBlock) {
+            // コードブロックの終了処理
+            const [codeEnd, ...restOfSentence] = receivedMessage.split('```')
+            aiTextLog.push({
+              role: 'code',
+              content: codeBlockText + codeEnd,
+            })
+
+            receivedMessage = restOfSentence.join('```')
+
+            codeBlockText = ''
+            isCodeBlock = false
+          } else {
+            // コードブロックの開始処理
+            isCodeBlock = true
+            ;[receivedMessage, codeBlockText] = receivedMessage.split('```')
+          }
+        }
+
+        // 先頭の改行を削除
+        receivedMessage = receivedMessage.trimStart()
+
+        // 返答内容のタグ部分と返答部分を分離
+        const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
+        if (tagMatch && tagMatch[0]) {
+          tag = tagMatch[0]
+          receivedMessage = receivedMessage.slice(tag.length)
+        }
+
         const sentenceMatch = receivedMessage.match(
-          /^(.+?[。．.!?！？\n]|.{20,}[、,])/
+          /^(.{1,19}?[。．.!?！？\n]|.{20,}?[、,。．.!?！？\n])/
         )
         if (sentenceMatch?.[0]) {
           let sentence = sentenceMatch[0]
@@ -205,35 +233,6 @@ export const processAIResponse = async (
           // タグと返答を結合（音声再生で使用される）
           let aiText = `${tag} ${sentence}`
           console.log('aiText', aiText)
-
-          if (isCodeBlock && !sentence.includes('```')) {
-            codeBlockText += sentence
-            continue
-          }
-
-          if (sentence.includes('```')) {
-            if (isCodeBlock) {
-              // コードブロックの終了処理
-              const [codeEnd, ...restOfSentence] = sentence.split('```')
-              aiTextLog.push({
-                role: 'code',
-                content: codeBlockText + codeEnd,
-              })
-              aiText += `${tag} ${restOfSentence.join('```') || ''}`
-
-              // AssistantMessage欄の更新
-              homeStore.setState({ assistantMessage: sentences.join(' ') })
-
-              codeBlockText = ''
-              isCodeBlock = false
-            } else {
-              // コードブロックの開始処理
-              isCodeBlock = true
-              ;[aiText, codeBlockText] = aiText.split('```')
-            }
-
-            sentence = sentence.replace(/```/g, '')
-          }
 
           const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
           aiTextLog.push({ role: 'assistant', content: sentence })
@@ -309,7 +308,7 @@ export const processAIResponse = async (
     reader.releaseLock()
   }
 
-  aiTextLog = messageSelectors.getProcessedMessages(aiTextLog)
+  aiTextLog = messageSelectors.normalizeMessages(aiTextLog)
 
   homeStore.setState({
     chatLog: [...currentChatLog, ...aiTextLog],
