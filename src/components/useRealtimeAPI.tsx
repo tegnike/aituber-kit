@@ -5,7 +5,8 @@ import settingsStore from '@/features/stores/settings'
 import { SessionConfig, TmpMessage } from './realtimeAPIUtils'
 import webSocketStore from '@/features/stores/websocketStore'
 import { base64ToArrayBuffer } from './realtimeAPIUtils'
-import RealtimeAPITools from './realtimeAPITools.json'
+import RealtimeAPITools from './realtimeAPITools'
+import RealtimeAPIToolsJson from './realtimeAPITools.json'
 import { AudioBufferManager } from '@/utils/audioBufferManager'
 import toastStore from '@/features/stores/toast'
 
@@ -82,7 +83,10 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         let toastId: string | null = null
         try {
           const args = JSON.parse(argsString)
-          if (funcName in RealtimeAPITools) {
+          const functionDef = RealtimeAPIToolsJson.find(
+            (tool) => tool.name === funcName
+          )
+          if (functionDef) {
             console.log(`Executing function ${funcName}`)
             toastId = toastStore.getState().addToast({
               message: t('Toasts.FunctionExecuting', { funcName }),
@@ -98,7 +102,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
               toastStore.getState().removeToast(toastId)
             }
           } else {
-            console.log(
+            console.error(
               `Error: Function ${funcName} is not defined in RealtimeAPITools`
             )
           }
@@ -191,8 +195,8 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
       }
 
       // realtimeAPITools.jsonからツール情報を取得
-      if (RealtimeAPITools && RealtimeAPITools.length > 0) {
-        ;(wsConfig.session as any).tools = RealtimeAPITools
+      if (RealtimeAPIToolsJson && RealtimeAPIToolsJson.length > 0) {
+        ;(wsConfig.session as any).tools = RealtimeAPIToolsJson
         ;(wsConfig.session as any).tool_choice = 'auto'
       }
 
