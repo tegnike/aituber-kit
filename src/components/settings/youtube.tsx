@@ -11,7 +11,7 @@ const YouTube = () => {
   const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubeLiveId = settingsStore((s) => s.youtubeLiveId)
-  const webSocketMode = settingsStore((s) => s.webSocketMode)
+  const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const selectAIService = settingsStore((s) => s.selectAIService)
 
   const conversationContinuityMode = settingsStore(
@@ -104,7 +104,7 @@ const YouTube = () => {
                     disabled={
                       !multiModalAIServices.includes(selectAIService as any) ||
                       slideMode ||
-                      webSocketMode
+                      externalLinkageMode
                     }
                   >
                     {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}

@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { MessageInput } from '@/components/messageInput'
 import settingsStore from '@/features/stores/settings'
-import homeStore from '@/features/stores/home'
 import { VoiceLanguage } from '@/features/constants/settings'
+import webSocketStore from '@/features/stores/websocketStore'
+import { useTranslation } from 'react-i18next'
+import toastStore from '@/features/stores/toast'
 
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
@@ -24,6 +26,31 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
+
+  const { t } = useTranslation()
+
+  const checkMicrophonePermission = async (): Promise<boolean> => {
+    // Firefoxの場合はエラーメッセージを表示して終了
+    if (navigator.userAgent.toLowerCase().includes('firefox')) {
+      toastStore.getState().addToast({
+        message: t('Toasts.FirefoxNotSupported'),
+        type: 'error',
+        tag: 'microphone-permission-error-firefox',
+      })
+      return false
+    }
+
+    try {
+      // getUserMediaを直接呼び出し、ブラウザのネイティブ許可モーダルを表示
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      stream.getTracks().forEach((track) => track.stop())
+      return true
+    } catch (error) {
+      // ユーザーが明示的に拒否した場合や、その他のエラーの場合
+      console.error('Microphone permission error:', error)
+      return false
+    }
+  }
 
   const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
     switch (selectLanguage) {
@@ -78,7 +105,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     setAudioContext(context)
   }, [])
 
-  const startListening = useCallback(() => {
+  const startListening = useCallback(async () => {
+    const hasPermission = await checkMicrophonePermission()
+    if (!hasPermission) return
+
     if (recognition && !isListeningRef.current && audioContext) {
       transcriptRef.current = ''
       setUserMessage('')
@@ -106,7 +136,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
                 return
               }
               audioChunksRef.current.push(event.data)
-              console.log('音声チャンク追加:', audioChunksRef.current.length)
+              console.log('add audio chunk:', audioChunksRef.current.length)
             }
           }
 
@@ -120,9 +150,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     if (audioBufferRef.current && audioBufferRef.current.length > 0) {
       const base64Chunk = base64EncodeAudio(audioBufferRef.current)
       const ss = settingsStore.getState()
-      const ws = homeStore.getState().ws
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        let sendContent: { type: string; text?: string; audio?: string }[]
+      const wsManager = webSocketStore.getState().wsManager
+      if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
+        let sendContent: { type: string; text?: string; audio?: string }[] = []
+
         if (ss.realtimeAPIModeContentType === 'input_audio') {
           console.log('Sending buffer. Length:', audioBufferRef.current.length)
           sendContent = [
@@ -134,28 +165,33 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         } else {
           const currentText = transcriptRef.current.trim()
           console.log('Sending text. userMessage:', currentText)
-          sendContent = [
-            {
-              type: 'input_text',
-              text: currentText,
-            },
-          ]
+          if (currentText) {
+            sendContent = [
+              {
+                type: 'input_text',
+                text: currentText,
+              },
+            ]
+          }
         }
-        ws.send(
-          JSON.stringify({
-            type: 'conversation.item.create',
-            item: {
-              type: 'message',
-              role: 'user',
-              content: sendContent,
-            },
-          })
-        )
-        ws.send(
-          JSON.stringify({
-            type: 'response.create',
-          })
-        )
+
+        if (sendContent.length > 0) {
+          wsManager.websocket.send(
+            JSON.stringify({
+              type: 'conversation.item.create',
+              item: {
+                type: 'message',
+                role: 'user',
+                content: sendContent,
+              },
+            })
+          )
+          wsManager.websocket.send(
+            JSON.stringify({
+              type: 'response.create',
+            })
+          )
+        }
       }
       audioBufferRef.current = null // 送信後にバッファをクリア
     } else {
@@ -175,7 +211,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
           mediaRecorder.ondataavailable = null
           await new Promise<void>((resolve) => {
             mediaRecorder.onstop = async () => {
-              console.log('MediaRecorder停止')
+              console.log('stop MediaRecorder')
               if (audioChunksRef.current.length > 0) {
                 const audioBlob = new Blob(audioChunksRef.current, {
                   type: 'audio/webm',
@@ -228,11 +264,11 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   }, [startListening, stopListening])
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
       if (e.key === 'Alt' && !isListeningRef.current) {
         keyPressStartTime.current = Date.now()
         isKeyboardTriggered.current = true
-        startListening()
+        await startListening()
       }
     }
 

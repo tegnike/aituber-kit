@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
@@ -16,10 +15,10 @@ import {
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
 import toastStore from '@/features/stores/toast'
-import { reconnectWebSocket } from '@/components/realtimeAPIUtils'
+import webSocketStore from '@/features/stores/websocketStore'
 
 const ModelProvider = () => {
-  const webSocketMode = settingsStore((s) => s.webSocketMode)
+  const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const realtimeAPIModeContentType = settingsStore(
     (s) => s.realtimeAPIModeContentType
@@ -47,8 +46,6 @@ const ModelProvider = () => {
 
   const difyUrl = settingsStore((s) => s.difyUrl)
 
-  const ws = homeStore((s) => s.ws)
-
   const { t } = useTranslation()
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
@@ -75,7 +72,6 @@ const ModelProvider = () => {
       })
 
       if (!multiModalAIServices.includes(newService as any)) {
-        homeStore.setState({ modalImage: '' })
         menuStore.setState({ showWebcam: false })
 
         settingsStore.setState({
@@ -113,8 +109,8 @@ const ModelProvider = () => {
   }, [])
 
   const handleUpdate = useCallback(() => {
-    const newWs = reconnectWebSocket(t)
-    if (!newWs) {
+    const wsManager = webSocketStore.getState().wsManager
+    if (!wsManager || !wsManager.reconnect()) {
       toastStore.getState().addToast({
         message: t('Toasts.WebSocketReconnectFailed'),
         type: 'error',
@@ -123,7 +119,7 @@ const ModelProvider = () => {
     }
   }, [t])
 
-  return webSocketMode ? null : (
+  return externalLinkageMode ? null : (
     <div className="my-40">
       <div className="my-16 typography-20 font-bold">
         {t('SelectAIService')}
@@ -312,7 +308,6 @@ const ModelProvider = () => {
                         model !== 'gpt-4o' &&
                         model !== 'gpt-4o-mini'
                       ) {
-                        homeStore.setState({ modalImage: '' })
                         menuStore.setState({ showWebcam: false })
                       }
                     }}

@@ -5,7 +5,7 @@
   "VoiceSettings": "■ 音声設定",
   "SlideSettings": "■ スライド設定",
   "OtherSettings": "■ その他",
-  "ExternalConnectionMode": "外部連携モード（WebSocket, β版）",
+  "ExternalLinkageMode": "外部連携モード（WebSocket）",
   "YoutubeMode": "YouTubeモード",
   "YoutubeInfo": "先頭が「#」のコメントは無視されます。",
   "YoutubeAPIKey": "YouTube API キー",
@@ -156,7 +156,8 @@
     "WebSocketConnectionAttempt": "WebSocket接続を試みています...",
     "WebSocketConnectionSuccess": "WebSocket接続に成功しました",
     "FunctionExecuting": "{{funcName}}を実行しています",
-    "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました"
+    "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました",
+    "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません"
   },
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",

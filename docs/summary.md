@@ -1384,7 +1384,7 @@ Dockerfileには関数の定義は含まれていませんが、主要なステ�
 - handleYoutubeApiKeyChange: YouTube API キーの変更を処理します。
 - handleYoutubeLiveIdChange: YouTube ライブIDの変更を処理します。
 - handleChangeKoeiroParam: Koeiro パラメータの変更を処理します。
-- handleWebSocketMode: WebSocketモードの切り替えを処理します。
+- handleExternalLinkageMode: WebSocketモードの切り替えを処理します。
 - handleConversationContinuityMode: 会話継続モードの切り替えを処理します。
 - handleClickOpenVrmFile: VRMファイル選択ダイアログを開きます。
 - handleClickOpenBgFile: 背景画像ファイル選択ダイアログを開きます。
