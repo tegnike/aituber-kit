@@ -1,7 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import settingsStore from '@/features/stores/settings'
 import { GitHubLink } from '../githubLink'
 import { IconButton } from '../iconButton'
 import AdvancedSettings from './advancedSettings'
@@ -11,7 +10,7 @@ import LanguageSetting from './language'
 import Log from './log'
 import ModelProvider from './modelProvider'
 import Voice from './voice'
-import WebSocket from './websocket'
+import ExternalLinkage from './externalLinkage'
 import YouTube from './youtube'
 import Slide from './slide'
 import MessageReceiverSetting from './messageReceiver'
@@ -68,7 +67,7 @@ const Main = () => {
 
         <div className="my-40">
           {/* 外部接続モードの設定 */}
-          <WebSocket />
+          <ExternalLinkage />
 
           {/* AI設定 */}
           <ModelProvider />

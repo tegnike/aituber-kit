@@ -3,13 +3,13 @@ import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
 
-const WebSocket = () => {
+const ExternalLinkage = () => {
   const { t } = useTranslation()
-  const webSocketMode = settingsStore((s) => s.webSocketMode)
+  const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
 
-  const handleWebSocketModeChange = useCallback((newMode: boolean) => {
+  const handleExternalLinkageModeChange = useCallback((newMode: boolean) => {
     settingsStore.setState({
-      webSocketMode: newMode,
+      externalLinkageMode: newMode,
     })
 
     if (newMode) {
@@ -23,18 +23,18 @@ const WebSocket = () => {
   return (
     <div className="my-40">
       <div className="my-16 typography-20 font-bold">
-        {t('ExternalConnectionMode')}
+        {t('ExternalLinkageMode')}
       </div>
       <div className="my-8">
         <TextButton
           onClick={() => {
-            handleWebSocketModeChange(!webSocketMode)
+            handleExternalLinkageModeChange(!externalLinkageMode)
           }}
         >
-          {webSocketMode ? t('StatusOn') : t('StatusOff')}
+          {externalLinkageMode ? t('StatusOn') : t('StatusOff')}
         </TextButton>
       </div>
     </div>
   )
 }
-export default WebSocket
+export default ExternalLinkage
