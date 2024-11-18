@@ -1,6 +1,6 @@
-<h1 align="center">
-  <img style="max-width: 100%;" src="./logo.png">
-</h1>
+# AITuberKit
+
+<img style="max-width: 100%;" src="./logo.png">
 
 **공지사항: 버전 v2.0.0부터 이 프로젝트는 커스텀 라이선스를 채택하고 있습니다. 상업적 목적으로 사용하실 경우 [이용 약관](#이용-약관) 섹션을 확인해 주시기 바랍니다.**
 
@@ -270,6 +270,9 @@ npm run dev
   </a>
   <a href="https://github.com/terisuke" title="terisuke">
     <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
+  </a>
+  <a href="https://github.com/konpeita" title="konpeita">
+    <img src="https://github.com/konpeita.png" width="40" height="40" alt="konpeita">
   </a>
 </p>
 
