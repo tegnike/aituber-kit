@@ -8,6 +8,7 @@ import { synthesizeVoiceKoeiromapApi } from './synthesizeVoiceKoeiromap'
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
+import { synthesizeVoiceAivisSpeechApi } from './synthesizeVoiceAivisSpeech'
 import { synthesizeVoiceGSVIApi } from './synthesizeVoiceGSVI'
 import { synthesizeVoiceOpenAIApi } from './synthesizeVoiceOpenAI'
 import { synthesizeVoiceAzureOpenAIApi } from './synthesizeVoiceAzureOpenAI'
@@ -85,6 +86,14 @@ const createSpeakCharacter = () => {
             ss.stylebertvits2SdpRatio,
             ss.stylebertvits2Length,
             ss.selectLanguage
+          )
+        } else if (ss.selectVoice == 'aivis_speech') {
+          buffer = await synthesizeVoiceAivisSpeechApi(
+            screenplay.talk,
+            ss.aivisSpeechSpeaker,
+            ss.aivisSpeechSpeed,
+            ss.aivisSpeechPitch,
+            ss.aivisSpeechIntonation
           )
         } else if (ss.selectVoice == 'gsvitts') {
           buffer = await synthesizeVoiceGSVIApi(
@@ -194,6 +203,31 @@ export const testVoiceVox = async () => {
     ss.voicevoxSpeed,
     ss.voicevoxPitch,
     ss.voicevoxIntonation
+  ).catch(() => null)
+  if (buffer) {
+    const screenplay: Screenplay = {
+      expression: 'neutral',
+      talk: talk,
+    }
+    const hs = homeStore.getState()
+    await hs.viewer.model?.speak(buffer, screenplay)
+  }
+}
+
+export const testAivisSpeech = async () => {
+  const ss = settingsStore.getState()
+  const talk: Talk = {
+    message: 'AIVIS Speechを使用します',
+    speakerX: 0,
+    speakerY: 0,
+    style: 'talk',
+  }
+  const buffer = await synthesizeVoiceAivisSpeechApi(
+    talk,
+    ss.aivisSpeechSpeaker,
+    ss.aivisSpeechSpeed,
+    ss.aivisSpeechPitch,
+    ss.aivisSpeechIntonation
   ).catch(() => null)
   if (buffer) {
     const screenplay: Screenplay = {

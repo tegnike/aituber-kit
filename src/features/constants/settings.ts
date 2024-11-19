@@ -34,6 +34,7 @@ export type AIVoice =
   | 'google'
   | 'voicevox'
   | 'stylebertvits2'
+  | 'aivis_speech'
   | 'gsvitts'
   | 'elevenlabs'
   | 'openai'
