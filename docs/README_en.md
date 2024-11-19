@@ -104,6 +104,7 @@ npm run dev
    - Koeiromap: You can finely adjust the voice. An API key is required.
    - Google TTS: Languages other than Japanese can also be selected. Credential information is required.
    - Style-Bert-VITS2: A local API server needs to be running.
+   - AivisSpeech: The AivisSpeech app needs to be running beforehand.
    - GSVI TTS: A local API server needs to be running.
    - ElevenLabs: Various language selection is possible. Please enter the API key.
    - OpenAI: API key is required.
