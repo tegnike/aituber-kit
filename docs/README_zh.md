@@ -103,6 +103,7 @@ npm run dev
    - Koeiromap：您可以細微調整語音。需要API密鑰。
    - Google TTS：還可以選擇日語以外的語言。需要憑證信息。
    - Style-Bert-VITS2：需要運行本地API服務器。
+   - AivisSpeech: 需要事先運行AivisSpeech應用程序。
    - GSVI TTS：需要運行本地API服務器。
    - ElevenLabs：支持多種語言選擇。需要輸入API密鑰。
    - OpenAI：需要API密鑰。

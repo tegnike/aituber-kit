@@ -12,10 +12,12 @@ import {
   OpenAITTSModel,
 } from '@/features/constants/settings'
 import { testVoiceVox } from '@/features/messages/speakCharacter'
+import { testAivisSpeech } from '@/features/messages/speakCharacter'
 import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
 import speakers from '../speakers.json'
+import speakers_aivis from '../speakers_aivis.json'
 
 const Voice = () => {
   const koeiromapKey = settingsStore((s) => s.koeiromapKey)
@@ -28,6 +30,10 @@ const Voice = () => {
   const voicevoxSpeed = settingsStore((s) => s.voicevoxSpeed)
   const voicevoxPitch = settingsStore((s) => s.voicevoxPitch)
   const voicevoxIntonation = settingsStore((s) => s.voicevoxIntonation)
+  const aivisSpeechSpeaker = settingsStore((s) => s.aivisSpeechSpeaker)
+  const aivisSpeechSpeed = settingsStore((s) => s.aivisSpeechSpeed)
+  const aivisSpeechPitch = settingsStore((s) => s.aivisSpeechPitch)
+  const aivisSpeechIntonation = settingsStore((s) => s.aivisSpeechIntonation)
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
@@ -68,6 +74,7 @@ const Voice = () => {
           <option value="koeiromap">{t('UsingKoeiromap')}</option>
           <option value="google">{t('UsingGoogleTTS')}</option>
           <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
+          <option value="aivis_speech">{t('UsingAivisSpeech')}</option>
           <option value="gsvitts">{t('UsingGSVITTS')}</option>
           <option value="elevenlabs">{t('UsingElevenLabs')}</option>
           <option value="openai">{t('UsingOpenAITTS')}</option>
@@ -419,6 +426,94 @@ const Voice = () => {
                     })
                   }}
                 ></input>
+              </>
+            )
+          } else if (selectVoice === 'aivis_speech') {
+            return (
+              <>
+                <div>
+                  {t('AivisSpeechInfo')}
+                  <br />
+                  <Link
+                    url="https://aivis-project.com/"
+                    label="https://aivis-project.com/"
+                  />
+                </div>
+                <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
+                <div className="flex items-center">
+                  <select
+                    value={aivisSpeechSpeaker}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        aivisSpeechSpeaker: e.target.value,
+                      })
+                    }
+                    className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  >
+                    <option value="">{t('Select')}</option>
+                    {speakers_aivis.map((speaker) => (
+                      <option key={speaker.id} value={speaker.id}>
+                        {speaker.speaker}
+                      </option>
+                    ))}
+                  </select>
+                  <TextButton
+                    onClick={() => testAivisSpeech()}
+                    className="ml-16"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
+                </div>
+                <div className="my-24 font-bold">
+                  <div className="select-none">
+                    {t('AivisSpeechSpeed')}: {aivisSpeechSpeed}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={2}
+                    step={0.01}
+                    value={aivisSpeechSpeed}
+                    className="mt-8 mb-16 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisSpeechSpeed: Number(e.target.value),
+                      })
+                    }}
+                  ></input>
+                  <div className="select-none">
+                    {t('AivisSpeechPitch')}: {aivisSpeechPitch}
+                  </div>
+                  <input
+                    type="range"
+                    min={-0.15}
+                    max={0.15}
+                    step={0.01}
+                    value={aivisSpeechPitch}
+                    className="mt-8 mb-16 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisSpeechPitch: Number(e.target.value),
+                      })
+                    }}
+                  ></input>
+                  <div className="select-none">
+                    {t('AivisSpeechIntonation')}: {aivisSpeechIntonation}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.0}
+                    max={2.0}
+                    step={0.01}
+                    value={aivisSpeechIntonation}
+                    className="mt-8 mb-16 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisSpeechIntonation: Number(e.target.value),
+                      })
+                    }}
+                  ></input>
+                </div>
               </>
             )
           } else if (selectVoice === 'gsvitts') {

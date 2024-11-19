@@ -103,6 +103,7 @@ npm run dev
    - Koeiromap: 細かく音声を調整することが可能です。APIキーの入力が必要です。
    - Google TTS: 日本語以外の言語も選択可能です。credential情報が必要です。
    - Style-Bert-VITS2: ローカルAPIサーバーを起動しておく必要があります。
+   - AivisSpeech: 予めAivisSpeechアプリを起動しておく必要があります。
    - GSVI TTS: ローカルAPIサーバーを起動しておく必要があります。
    - ElevenLabs: 様々な言語の選択が可能です。APIキーの入力が必要です。
    - OpenAI: APIキーの入力が必要です。
