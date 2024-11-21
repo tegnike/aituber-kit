@@ -124,4 +124,8 @@ export class WebSocketManager {
 
     return true
   }
+
+  public isConnected(): boolean {
+    return this.ws !== null && this.ws.readyState === WebSocket.OPEN
+  }
 }

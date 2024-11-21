@@ -312,10 +312,10 @@ const ModelProvider = () => {
                       }
                     }}
                   >
-                    <option value="gpt-4o-mini">gpt-4o-mini</option>
                     <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
+                    <option value="gpt-4o-mini">gpt-4o-mini</option>
                     <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
-                    <option value="gpt-4o">gpt-4o(2024-05-13)</option>
+                    <option value="gpt-4o-2024-11-20">gpt-4o-2024-11-20</option>
                     <option value="gpt-4-turbo">gpt-4-turbo</option>
                   </select>
                 </div>

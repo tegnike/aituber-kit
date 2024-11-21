@@ -63,6 +63,7 @@
   "AivisSpeechSpeed": "Speed",
   "AivisSpeechPitch": "Pitch",
   "AivisSpeechIntonation": "Intonation",
+  "UpdateSpeakerList": "Update Speaker List",
   "UsingGoogleTTS": "Google TTS",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Using Style-Bert-VITS2. It supports only Japanese, English, and Chinese. If using a local API, you need to download and launch the app that suits your environment from the site below. Please also set up an API key if necessary.",
