@@ -439,7 +439,7 @@ const Voice = () => {
                     label="https://aivis-project.com/"
                   />
                 </div>
-                <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
+                <div className="mt-16 font-bold">{t('AivisSpeechSpeaker')}</div>
                 <div className="flex items-center">
                   <select
                     value={aivisSpeechSpeaker}
@@ -462,6 +462,28 @@ const Voice = () => {
                     className="ml-16"
                   >
                     {t('TestVoice')}
+                  </TextButton>
+                  <TextButton
+                    onClick={async () => {
+                      const response = await fetch('/api/update-aivis-speakers')
+                      if (response.ok) {
+                        // 話者リストを再読み込み
+                        const updatedSpeakersResponse = await fetch(
+                          '/speakers_aivis.json'
+                        )
+                        const updatedSpeakers =
+                          await updatedSpeakersResponse.json()
+                        // speakers_aivisを更新
+                        speakers_aivis.splice(
+                          0,
+                          speakers_aivis.length,
+                          ...updatedSpeakers
+                        )
+                      }
+                    }}
+                    className="ml-16"
+                  >
+                    {t('UpdateSpeakerList')}
                   </TextButton>
                 </div>
                 <div className="my-24 font-bold">
