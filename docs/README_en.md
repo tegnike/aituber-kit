@@ -1,6 +1,6 @@
-<h1 align="center">
-  <img style="max-width: 100%;" src="./logo.png">
-</h1>
+# AITuberKit
+
+<img style="max-width: 100%;" src="./logo.png">
 
 **Notice: From version v2.0.0, this project adopts a custom license. If you plan to use it for commercial purposes, please check the [Usage Agreement](#usage-agreement) section.**
 
@@ -275,6 +275,9 @@ Your support will greatly contribute to the development and improvement of the A
   </a>
   <a href="https://github.com/terisuke" title="terisuke">
     <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
+  </a>
+  <a href="https://github.com/konpeita" title="konpeita">
+    <img src="https://github.com/konpeita.png" width="40" height="40" alt="konpeita">
   </a>
 </p>
 
