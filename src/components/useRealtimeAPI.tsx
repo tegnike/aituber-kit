@@ -231,6 +231,9 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
   const onClose = useCallback((event: Event) => {}, [])
 
   const connectWebsocket: () => WebSocket | null = () => {
+    const wsManager = webSocketStore.getState().wsManager
+    if (wsManager?.isConnected()) return wsManager.websocket
+
     const ss = settingsStore.getState()
     if (!ss.selectAIService) return null
 

@@ -73,13 +73,14 @@ const useExternalLinkage = ({ handleReceiveTextFromWs }: Params) => {
       onClose: handleClose,
     }
 
+    const wsManager = webSocketStore.getState().wsManager
+
     function connectWebsocket() {
+      if (wsManager?.isConnected()) return wsManager.websocket
       return new WebSocket('ws://localhost:8000/ws')
     }
 
     webSocketStore.getState().initializeWebSocket(t, handlers, connectWebsocket)
-
-    const wsManager = webSocketStore.getState().wsManager
 
     const reconnectInterval = setInterval(() => {
       const ss = settingsStore.getState()
