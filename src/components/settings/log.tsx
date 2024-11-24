@@ -14,6 +14,14 @@ const Log = () => {
 
   const { t } = useTranslation()
 
+  const handleChangeChatLog = (targetIndex: number, text: string) => {
+    const newChatLog = chatLog.map((m, i) => {
+      return i === targetIndex ? { role: m.role, content: text } : m
+    })
+
+    homeStore.setState({ chatLog: newChatLog })
+  }
+
   return (
     <div className="my-40">
       <div className="my-8 grid-cols-2">
@@ -75,15 +83,3 @@ const Log = () => {
   )
 }
 export default Log
-
-const handleChangeChatLog = (targetIndex: number, text: string) => {
-  const chatLog = messageSelectors.getTextAndImageMessages(
-    homeStore((s) => s.chatLog)
-  )
-
-  const newChatLog = chatLog.map((m, i) => {
-    return i === targetIndex ? { role: m.role, content: text } : m
-  })
-
-  homeStore.setState({ chatLog: newChatLog })
-}

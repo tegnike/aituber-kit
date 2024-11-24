@@ -69,4 +69,20 @@ const homeStore = create<HomeState>()(
   )
 )
 
+// chatLogの変更を監視して保存
+homeStore.subscribe((state, prevState) => {
+  if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
+    fetch('/api/save-chat-log', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages: state.chatLog,
+        isNewFile: prevState.chatLog.length === 0,
+      }),
+    }).catch((error) => console.error('Error saving chat log:', error))
+  }
+})
+
 export default homeStore

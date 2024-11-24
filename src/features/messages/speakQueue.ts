@@ -1,9 +1,9 @@
-import { Screenplay } from './messages'
+import { Talk } from './messages'
 import homeStore from '@/features/stores/home'
 
 type SpeakTask = {
   audioBuffer: ArrayBuffer
-  screenplay: Screenplay
+  talk: Talk
   isNeedDecode: boolean
   onComplete?: () => void
 }
@@ -27,8 +27,8 @@ export class SpeakQueue {
       const task = this.queue.shift()
       if (task) {
         try {
-          const { audioBuffer, screenplay, isNeedDecode, onComplete } = task
-          await hs.viewer.model?.speak(audioBuffer, screenplay, isNeedDecode)
+          const { audioBuffer, talk, isNeedDecode, onComplete } = task
+          await hs.viewer.model?.speak(audioBuffer, talk, isNeedDecode)
           onComplete?.()
         } catch (error) {
           console.error(
