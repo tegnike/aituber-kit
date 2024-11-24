@@ -1,5 +1,5 @@
 import { getAIChatResponseStream } from '@/features/chat/aiChatFactory'
-import { textsToScreenplay, Message } from '@/features/messages/messages'
+import { Message, EmotionType } from '@/features/messages/messages'
 import { speakCharacter } from '@/features/messages/speakCharacter'
 import { judgeSlide } from '@/features/slide/slideAIHelpers'
 import homeStore from '@/features/stores/home'
@@ -58,12 +58,12 @@ export const speakMessageHandler = async (receivedMessage: string) => {
       isCodeBlock = false
     }
 
-    // 返答内容のタグ部分と返答部分を分離
-    let tag: string = ''
-    const tagMatch = remainingMessage.match(/^\[(.*?)\]/)
-    if (tagMatch?.[0]) {
-      tag = tagMatch[0]
-      remainingMessage = remainingMessage.slice(tag.length)
+    // 返答内容の感情部分と返答部分を分離
+    let emotion: string = ''
+    const emotionMatch = remainingMessage.match(/^\[(.*?)\]/)
+    if (emotionMatch?.[0]) {
+      emotion = emotionMatch[0]
+      remainingMessage = remainingMessage.slice(emotion.length)
     }
 
     const sentenceMatch = remainingMessage.match(
@@ -93,14 +93,17 @@ export const speakMessageHandler = async (receivedMessage: string) => {
 
     // 区切った文字をassistantMessageに追加
     assistantMessage.push(sentence)
-    // タグと返答を結合（音声再生で使用される）
-    let aiText = tag ? `${tag} ${sentence}` : sentence
-
-    const aiTalks = textsToScreenplay([aiText], ss.koeiroParam) // TODO
-    logText = logText + ' ' + sentence
+    // em感情と返答を結合（音声再生で使用される）
+    let aiText = emotion ? `${emotion} ${sentence}` : sentence
+    logText = logText + ' ' + aiText
 
     speakCharacter(
-      aiTalks[0],
+      {
+        message: sentence,
+        emotion: emotion.includes('[')
+          ? (emotion.slice(1, -1) as EmotionType)
+          : 'neutral',
+      },
       () => {
         homeStore.setState({
           assistantMessage: assistantMessage.join(' '),
@@ -161,7 +164,7 @@ export const processAIResponse = async (
   const reader = stream.getReader()
   let receivedMessage = ''
   let aiTextLog: Message[] = [] // 会話ログ欄で使用
-  let tag = ''
+  let emotion = ''
   let isCodeBlock = false
   let codeBlockText = ''
   const sentences = new Array<string>() // AssistantMessage欄で使用
@@ -202,11 +205,11 @@ export const processAIResponse = async (
         // 先頭の改行を削除
         receivedMessage = receivedMessage.trimStart()
 
-        // 返答内容のタグ部分と返答部分を分離
-        const tagMatch = receivedMessage.match(/^\[(.*?)\]/)
-        if (tagMatch && tagMatch[0]) {
-          tag = tagMatch[0]
-          receivedMessage = receivedMessage.slice(tag.length)
+        // 返答内容の感情部分と返答部分を分離
+        const emotionMatch = receivedMessage.match(/^\[(.*?)\]/)
+        if (emotionMatch && emotionMatch[0]) {
+          emotion = emotionMatch[0]
+          receivedMessage = receivedMessage.slice(emotion.length)
         }
 
         const sentenceMatch = receivedMessage.match(
@@ -230,18 +233,20 @@ export const processAIResponse = async (
             continue
           }
 
-          // タグと返答を結合（音声再生で使用される）
-          let aiText = `${tag} ${sentence}`
-          console.log('aiText', aiText)
-
-          const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-          aiTextLog.push({ role: 'assistant', content: sentence })
+          // 感情と返答を結合（音声再生で使用される）
+          let aiText = `${emotion} ${sentence}`
+          aiTextLog.push({ role: 'assistant', content: aiText })
 
           // 文ごとに音声を生成 & 再生、返答を表示
           const currentAssistantMessage = sentences.join(' ')
 
           speakCharacter(
-            aiTalks[0],
+            {
+              message: sentence,
+              emotion: emotion.includes('[')
+                ? (emotion.slice(1, -1) as EmotionType)
+                : 'neutral',
+            },
             () => {
               homeStore.setState({
                 assistantMessage: currentAssistantMessage,
@@ -270,15 +275,19 @@ export const processAIResponse = async (
       // ストリームが終了し、receivedMessageが空でない場合の処理
       if (done && receivedMessage.length > 0) {
         // 残りのメッセージを処理
-        let aiText = `${tag} ${receivedMessage}`
-        const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-        aiTextLog.push({ role: 'assistant', content: receivedMessage })
+        let aiText = `${emotion} ${receivedMessage}`
+        aiTextLog.push({ role: 'assistant', content: aiText })
         sentences.push(receivedMessage)
 
         const currentAssistantMessage = sentences.join(' ')
 
         speakCharacter(
-          aiTalks[0],
+          {
+            message: receivedMessage,
+            emotion: emotion.includes('[')
+              ? (emotion.slice(1, -1) as EmotionType)
+              : 'neutral',
+          },
           () => {
             homeStore.setState({
               assistantMessage: currentAssistantMessage,
@@ -456,7 +465,7 @@ export const handleReceiveTextFromWsFn =
   async (
     text: string,
     role?: string,
-    emotion: string = 'neutral',
+    emotion: EmotionType = 'neutral',
     type?: string
   ) => {
     if (text === null || role === undefined) return
@@ -497,11 +506,12 @@ export const handleReceiveTextFromWsFn =
       if (role === 'assistant' && text !== '') {
         let aiText = `[${emotion}] ${text}`
         try {
-          const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-
           // 文ごとに音声を生成 & 再生、返答を表示
           speakCharacter(
-            aiTalks[0],
+            {
+              message: text,
+              emotion: emotion,
+            },
             () => {
               homeStore.setState({
                 chatLog: updateLog,
@@ -565,14 +575,9 @@ export const handleReceiveTextFromRtFn =
         try {
           speakCharacter(
             {
-              expression: 'neutral',
-              talk: {
-                style: 'talk',
-                speakerX: 0,
-                speakerY: 0,
-                message: '',
-                buffer: buffer,
-              },
+              emotion: 'neutral',
+              message: '',
+              buffer: buffer,
             },
             () => {},
             () => {}
