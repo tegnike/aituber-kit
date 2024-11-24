@@ -6,7 +6,8 @@ export type Message = {
   audio?: { id: string }
 }
 
-export type EmotionType = 'neutral' | 'happy' | 'angry' | 'sad' | 'relaxed'
+export const EMOTIONS = ['neutral', 'happy', 'angry', 'sad', 'relaxed'] as const
+export type EmotionType = (typeof EMOTIONS)[number]
 
 export type Talk = {
   emotion: EmotionType

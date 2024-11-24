@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { useEffect, useRef } from 'react'
+import { EMOTIONS } from '@/features/messages/messages'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -70,6 +71,9 @@ const Chat = ({
   message: string
   characterName: string
 }) => {
+  const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'g')
+  const processedMessage = message.replace(emotionPattern, '')
+
   const roleColor =
     role !== 'user' ? 'bg-secondary text-white ' : 'bg-base text-primary'
   const roleText = role !== 'user' ? 'text-secondary' : 'text-primary'
@@ -90,7 +94,7 @@ const Chat = ({
           </div>
           <div className="px-24 py-16 bg-white rounded-b-8">
             <div className={`typography-16 font-bold ${roleText}`}>
-              {message}
+              {processedMessage}
             </div>
           </div>
         </>
