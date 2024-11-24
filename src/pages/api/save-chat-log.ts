@@ -26,7 +26,7 @@ export default async function handler(
               }
             }
             return content
-          })
+          }),
         }
       }
       return msg
