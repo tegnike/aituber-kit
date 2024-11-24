@@ -8,7 +8,7 @@ export async function synthesizeVoiceGSVIApi(
   speed: number
 ): Promise<ArrayBuffer> {
   try {
-    const style = talk.style !== 'talk' ? talk.style : 'default'
+    const style = 'default'
     const response = await fetch(url.replace(/\/$/, ''), {
       method: 'POST',
       headers: {

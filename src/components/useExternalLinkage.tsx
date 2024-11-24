@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
+import { EmotionType } from '@/features/messages/messages'
 
 ///取得したコメントをストックするリストの作成（receivedMessages）
 interface TmpMessage {
   text: string
   role: string
-  emotion: string
+  emotion: EmotionType
   type: string
 }
 
@@ -17,7 +18,7 @@ interface Params {
   handleReceiveTextFromWs: (
     text: string,
     role?: string,
-    emotion?: string,
+    emotion?: EmotionType,
     type?: string
   ) => Promise<void>
 }

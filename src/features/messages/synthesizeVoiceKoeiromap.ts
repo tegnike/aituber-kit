@@ -1,14 +1,18 @@
-import { reduceTalkStyle } from '@/utils/reduceTalkStyle'
-import { Talk } from './messages'
+import { EmotionType, Talk } from './messages'
+import { KoeiroParam } from '@/features/constants/koeiroParam'
 
-export async function synthesizeVoiceKoeiromapApi(talk: Talk, apiKey: string) {
+export async function synthesizeVoiceKoeiromapApi(
+  talk: Talk,
+  apiKey: string,
+  koeiroParam: KoeiroParam
+) {
   try {
-    const reducedStyle = reduceTalkStyle(talk.style)
+    const reducedStyle = emotionToTalkStyle(talk.emotion)
 
     const body = {
       message: talk.message,
-      speakerX: talk.speakerX,
-      speakerY: talk.speakerY,
+      speakerX: koeiroParam.speakerX,
+      speakerY: koeiroParam.speakerY,
       style: reducedStyle,
       apiKey: apiKey,
     }
@@ -49,5 +53,18 @@ export async function synthesizeVoiceKoeiromapApi(talk: Talk, apiKey: string) {
     } else {
       throw new Error('Koeiromapで不明なエラーが発生しました')
     }
+  }
+}
+
+const emotionToTalkStyle = (emotion: EmotionType): string => {
+  switch (emotion) {
+    case 'angry':
+      return 'angry'
+    case 'happy':
+      return 'happy'
+    case 'sad':
+      return 'sad'
+    default:
+      return 'talk'
   }
 }

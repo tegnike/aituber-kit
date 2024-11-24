@@ -10,7 +10,7 @@ import { VRMAnimation } from '../../lib/VRMAnimation/VRMAnimation'
 import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlugin/VRMLookAtSmootherLoaderPlugin'
 import { LipSync } from '../lipSync/lipSync'
 import { EmoteController } from '../emoteController/emoteController'
-import { Screenplay } from '../messages/messages'
+import { Talk } from '../messages/messages'
 
 /**
  * 3Dキャラクターを管理するクラス
@@ -76,10 +76,10 @@ export class Model {
    */
   public async speak(
     buffer: ArrayBuffer,
-    screenplay: Screenplay,
+    talk: Talk,
     isNeedDecode: boolean = true
   ) {
-    this.emoteController?.playEmotion(screenplay.expression)
+    this.emoteController?.playEmotion(talk.emotion)
     await new Promise((resolve) => {
       this._lipSync?.playFromArrayBuffer(
         buffer,

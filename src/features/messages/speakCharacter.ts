@@ -2,7 +2,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import englishToJapanese from '@/utils/englishToJapanese.json'
 import { wait } from '@/utils/wait'
-import { Screenplay, Talk } from './messages'
+import { Talk } from './messages'
 import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
 import { synthesizeVoiceKoeiromapApi } from './synthesizeVoiceKoeiromap'
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
@@ -28,18 +28,12 @@ const createSpeakCharacter = () => {
   let lastTime = 0
   let prevFetchPromise: Promise<unknown> = Promise.resolve()
 
-  return (
-    screenplay: Screenplay,
-    onStart?: () => void,
-    onComplete?: () => void
-  ) => {
+  return (talk: Talk, onStart?: () => void, onComplete?: () => void) => {
     const ss = settingsStore.getState()
     onStart?.()
 
     if (ss.changeEnglishToJapanese && ss.selectLanguage === 'ja') {
-      screenplay.talk.message = convertEnglishToJapaneseReading(
-        screenplay.talk.message
-      )
+      talk.message = convertEnglishToJapaneseReading(talk.message)
     }
 
     let isNeedDecode = true
@@ -52,19 +46,20 @@ const createSpeakCharacter = () => {
 
       let buffer
       try {
-        if (screenplay.talk.message == '' && screenplay.talk.buffer) {
-          buffer = screenplay.talk.buffer
+        if (talk.message == '' && talk.buffer) {
+          buffer = talk.buffer
           isNeedDecode = false
         } else if (ss.audioMode) {
           buffer = null
         } else if (ss.selectVoice == 'koeiromap') {
           buffer = await synthesizeVoiceKoeiromapApi(
-            screenplay.talk,
-            ss.koeiromapKey
+            talk,
+            ss.koeiromapKey,
+            ss.koeiroParam
           )
         } else if (ss.selectVoice == 'voicevox') {
           buffer = await synthesizeVoiceVoicevoxApi(
-            screenplay.talk,
+            talk,
             ss.voicevoxSpeaker,
             ss.voicevoxSpeed,
             ss.voicevoxPitch,
@@ -72,13 +67,13 @@ const createSpeakCharacter = () => {
           )
         } else if (ss.selectVoice == 'google') {
           buffer = await synthesizeVoiceGoogleApi(
-            screenplay.talk,
+            talk,
             ss.googleTtsType,
             ss.selectLanguage
           )
         } else if (ss.selectVoice == 'stylebertvits2') {
           buffer = await synthesizeStyleBertVITS2Api(
-            screenplay.talk,
+            talk,
             ss.stylebertvits2ServerUrl,
             ss.stylebertvits2ApiKey,
             ss.stylebertvits2ModelId,
@@ -89,7 +84,7 @@ const createSpeakCharacter = () => {
           )
         } else if (ss.selectVoice == 'aivis_speech') {
           buffer = await synthesizeVoiceAivisSpeechApi(
-            screenplay.talk,
+            talk,
             ss.aivisSpeechSpeaker,
             ss.aivisSpeechSpeed,
             ss.aivisSpeechPitch,
@@ -97,7 +92,7 @@ const createSpeakCharacter = () => {
           )
         } else if (ss.selectVoice == 'gsvitts') {
           buffer = await synthesizeVoiceGSVIApi(
-            screenplay.talk,
+            talk,
             ss.gsviTtsServerUrl,
             ss.gsviTtsModelId,
             ss.gsviTtsBatchSize,
@@ -105,14 +100,14 @@ const createSpeakCharacter = () => {
           )
         } else if (ss.selectVoice == 'elevenlabs') {
           buffer = await synthesizeVoiceElevenlabsApi(
-            screenplay.talk,
+            talk,
             ss.elevenlabsApiKey,
             ss.elevenlabsVoiceId,
             ss.selectLanguage
           )
         } else if (ss.selectVoice == 'openai') {
           buffer = await synthesizeVoiceOpenAIApi(
-            screenplay.talk,
+            talk,
             ss.openaiTTSKey || ss.openaiKey,
             ss.openaiTTSVoice,
             ss.openaiTTSModel,
@@ -120,7 +115,7 @@ const createSpeakCharacter = () => {
           )
         } else if (ss.selectVoice == 'azure') {
           buffer = await synthesizeVoiceAzureOpenAIApi(
-            screenplay.talk,
+            talk,
             ss.azureTTSKey || ss.azureKey,
             ss.azureTTSEndpoint || ss.azureEndpoint,
             ss.openaiTTSVoice,
@@ -143,7 +138,7 @@ const createSpeakCharacter = () => {
 
       speakQueue.addTask({
         audioBuffer,
-        screenplay,
+        talk,
         isNeedDecode,
         onComplete,
       })
@@ -193,9 +188,7 @@ export const testVoiceVox = async () => {
   const ss = settingsStore.getState()
   const talk: Talk = {
     message: 'ボイスボックスを使用します',
-    speakerX: 0,
-    speakerY: 0,
-    style: 'talk',
+    emotion: 'neutral',
   }
   const buffer = await synthesizeVoiceVoicevoxApi(
     talk,
@@ -205,12 +198,8 @@ export const testVoiceVox = async () => {
     ss.voicevoxIntonation
   ).catch(() => null)
   if (buffer) {
-    const screenplay: Screenplay = {
-      expression: 'neutral',
-      talk: talk,
-    }
     const hs = homeStore.getState()
-    await hs.viewer.model?.speak(buffer, screenplay)
+    await hs.viewer.model?.speak(buffer, talk)
   }
 }
 
@@ -218,9 +207,7 @@ export const testAivisSpeech = async () => {
   const ss = settingsStore.getState()
   const talk: Talk = {
     message: 'AIVIS Speechを使用します',
-    speakerX: 0,
-    speakerY: 0,
-    style: 'talk',
+    emotion: 'neutral',
   }
   const buffer = await synthesizeVoiceAivisSpeechApi(
     talk,
@@ -230,11 +217,7 @@ export const testAivisSpeech = async () => {
     ss.aivisSpeechIntonation
   ).catch(() => null)
   if (buffer) {
-    const screenplay: Screenplay = {
-      expression: 'neutral',
-      talk: talk,
-    }
     const hs = homeStore.getState()
-    await hs.viewer.model?.speak(buffer, screenplay)
+    await hs.viewer.model?.speak(buffer, talk)
   }
 }
