@@ -44,3 +44,5 @@ certificates
 
 /public/slides/*
 !/public/slides/demo/
+
+/logs/*
