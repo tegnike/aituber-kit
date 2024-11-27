@@ -20,7 +20,8 @@ export default async function handler(req: NextRequest) {
 
   const { query, apiKey, url, conversationId, stream } = await req.json()
 
-  if (!apiKey && !process.env.DIFY_KEY) {
+  const difyKey = apiKey || process.env.DIFY_KEY
+  if (!difyKey) {
     return new Response(
       JSON.stringify({ error: 'Dify Empty API Key', errorCode: 'EmptyAPIKey' }),
       {
@@ -29,7 +30,20 @@ export default async function handler(req: NextRequest) {
       }
     )
   }
-  if (!url && !process.env.DIFY_URL) {
+  const cleanUrl = (url: string) => {
+    const trimmedUrl = url.replace(/\/$/, '')
+    return trimmedUrl.endsWith('/chat-messages')
+      ? trimmedUrl
+      : `${trimmedUrl}/chat-messages`
+  }
+
+  const difyUrl = url
+    ? cleanUrl(url)
+    : process.env.DIFY_URL
+      ? cleanUrl(process.env.DIFY_URL)
+      : ''
+
+  if (!difyUrl) {
     return new Response(
       JSON.stringify({
         error: 'Dify Empty URL',
@@ -43,7 +57,7 @@ export default async function handler(req: NextRequest) {
   }
 
   const headers = {
-    Authorization: `Bearer ${apiKey || process.env.DIFY_KEY}`,
+    Authorization: `Bearer ${difyKey}`,
     'Content-Type': 'application/json',
   }
   const body = JSON.stringify({
@@ -56,14 +70,11 @@ export default async function handler(req: NextRequest) {
   })
 
   try {
-    const response = await fetch(
-      url.replace(/\/$/, '') || process.env.DIFY_URL,
-      {
-        method: 'POST',
-        headers: headers,
-        body: body,
-      }
-    )
+    const response = await fetch(difyUrl, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    })
 
     if (!response.ok) {
       return new Response(

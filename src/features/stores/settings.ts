@@ -193,7 +193,7 @@ const settingsStore = create<SettingsState>()(
       azureTTSEndpoint: '',
 
       // Integrations
-      difyUrl: '',
+      difyUrl: 'https://api.dify.ai/v1',
       difyConversationId: '',
       youtubeMode:
         process.env.NEXT_PUBLIC_YOUTUBE_MODE === 'true' ? true : false,
