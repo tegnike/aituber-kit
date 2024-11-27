@@ -163,7 +163,8 @@
     "WebSocketConnectionSuccess": "WebSocket連線成功",
     "FunctionExecuting": "正在執行{{funcName}}",
     "FunctionExecutionFailed": "{{funcName}}執行失敗",
-    "FirefoxNotSupported": "Firefox不支援此功能"
+    "FirefoxNotSupported": "Firefox不支援此功能",
+    "SpeechRecognitionError": "語音認識發生錯誤"
   },
   "UsingOpenAITTS": "使用 OpenAI",
   "OpenAITTSInfo": "使用 OpenAI。它支援多種語言。如果您選擇 OpenAI 作為 AI 服務，則不需要設定下面的 API 金鑰。",
