@@ -38,7 +38,7 @@
   "GroqInfo": "Groq API 直接從瀏覽器存取。",
   "DifyInfo": "Dify 只支援聊天機器人和代理型態。",
   "DifyInfo2": "會話履歴的長度取決於Dify聊天機器人的規格。",
-  "DifyInfo3": "例：http://localhost:80/v1/chat-messages",
+  "DifyInfo3": "例：https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "如果您正在使用 Dify，則此係統提示將不會被使用。請將 Dify 聊天機器人設定為系統提示。",
   "EnterURL": "輸入 URL",
   "CharacterModelLabel": "角色模型",
@@ -163,7 +163,8 @@
     "WebSocketConnectionSuccess": "WebSocket連線成功",
     "FunctionExecuting": "正在執行{{funcName}}",
     "FunctionExecutionFailed": "{{funcName}}執行失敗",
-    "FirefoxNotSupported": "Firefox不支援此功能"
+    "FirefoxNotSupported": "Firefox不支援此功能",
+    "SpeechRecognitionError": "語音認識發生錯誤"
   },
   "UsingOpenAITTS": "使用 OpenAI",
   "OpenAITTSInfo": "使用 OpenAI。它支援多種語言。如果您選擇 OpenAI 作為 AI 服務，則不需要設定下面的 API 金鑰。",

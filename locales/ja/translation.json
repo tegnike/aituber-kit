@@ -38,7 +38,7 @@
   "GroqInfo": "Groq APIはブラウザから直接アクセスしています。",
   "DifyInfo": "Difyでは、チャットボット または エージェントタイプのみ対応しています。",
   "DifyInfo2": "会話履歴の長さはDifyチャットボットの設定に依存します。",
-  "DifyInfo3": "例：http://localhost:80/v1/chat-messages",
+  "DifyInfo3": "例：https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "Difyを使用している場合、このシステムプロンプトは使用されません。Difyチャットボットに設定してください。",
   "EnterURL": "URLを入力",
   "CharacterModelLabel": "キャラクターモデル",
@@ -164,7 +164,8 @@
     "WebSocketConnectionSuccess": "WebSocket接続に成功しました",
     "FunctionExecuting": "{{funcName}}を実行しています",
     "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました",
-    "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません"
+    "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません",
+    "SpeechRecognitionError": "音声認識エラーが発生しました"
   },
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",

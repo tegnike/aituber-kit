@@ -38,7 +38,7 @@
   "GroqInfo": "Groq API is accessed directly from the browser.",
   "DifyInfo": "Dify only supports chatbot and agent type.",
   "DifyInfo2": "The length of the conversation history is dependent on the specifications of Dify.",
-  "DifyInfo3": "Example: http://localhost:80/v1/chat-messages",
+  "DifyInfo3": "Example: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "If you are using Dify, the system prompt will not be used. Please set Dify chatbot.",
   "EnterURL": "URL",
   "CharacterModelLabel": "Character Model",
@@ -163,7 +163,8 @@
     "WebSocketConnectionSuccess": "WebSocket connection successful",
     "FunctionExecuting": "Executing {{funcName}}",
     "FunctionExecutionFailed": "Execution of {{funcName}} failed",
-    "FirefoxNotSupported": "This feature is not supported on Firefox"
+    "FirefoxNotSupported": "This feature is not supported on Firefox",
+    "SpeechRecognitionError": "Speech recognition error occurred"
   },
   "UsingOpenAITTS": "Using OpenAI",
   "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",
