@@ -2,7 +2,7 @@
 
 ## 概要
 
-この文書は、[aituber-kit](https://github.com/tegnike/aituber-kit) リポジトリで提供されている[VRMモデル](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/AvatarSample_B.vrm)の利用規約を定めます。
+この文書は、[aituber-kit](https://github.com/tegnike/aituber-kit) リポジトリで提供されている [ニケちゃんVRMモデルv1](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v1.vrm)、[ニケちゃんVRMモデルv2](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v2.vrm)、[ニケちゃんVRMモデルv2（アウター）](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v2_outerwear.vrm)の利用規約を定めます。
 
 ## 著作権
 
@@ -33,3 +33,9 @@
 ## 連絡先
 
 モデルの使用に関して不明点がある場合は、リポジトリのイシューを通じてお問い合わせください。
+
+## VRMモデル制作者情報
+
+- ニケちゃんVRMモデルv1：[琳 様](https://github.com/rin_tyn25)
+- ニケちゃんVRMモデルv2：[たまごん 様](https://github.com/@_TAMA_GON_)
+- ニケちゃんVRMモデルv2（アウター）：[たまごん 様](https://github.com/@_TAMA_GON_)

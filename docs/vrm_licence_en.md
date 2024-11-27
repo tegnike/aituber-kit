@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document sets out the terms of use for the [VRM model](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/AvatarSample_B.vrm) provided in the [aituber-kit](https://github.com/tegnike/aituber-kit) repository.
+This document specifies the terms of use for the [Nikechan VRM Model v1](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v1.vrm), [Nikechan VRM Model v2](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v2.vrm), and [Nikechan VRM Model v2 (Outerwear)](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v2_outerwear.vrm) provided in the [aituber-kit](https://github.com/tegnike/aituber-kit) repository.
 
 ## Copyright
 
@@ -33,3 +33,9 @@ The owner of the repository has the right to change this agreement without notic
 ## Contact
 
 If you have any questions about the use of the model, please contact us through the repository's issues.
+
+## VRM Model Creator Information
+
+- Nikechan VRM Model v1: [琳 様](https://github.com/rin_tyn25)
+- Nikechan VRM Model v2: [たまごん 様](https://github.com/@_TAMA_GON_)
+- Nikechan VRM Model v2 (Outerwear): [たまごん 様](https://github.com/@_TAMA_GON_)
