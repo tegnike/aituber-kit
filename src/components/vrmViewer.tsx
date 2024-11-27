@@ -7,9 +7,9 @@ export default function VrmViewer() {
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (canvas) {
       const { viewer } = homeStore.getState()
-      const { selectedVrm } = settingsStore.getState()
+      const { selectedVrmPath } = settingsStore.getState()
       viewer.setup(canvas)
-      viewer.loadVrm(selectedVrm)
+      viewer.loadVrm(selectedVrmPath)
 
       // Drag and DropでVRMを差し替え
       canvas.addEventListener('dragover', function (event) {

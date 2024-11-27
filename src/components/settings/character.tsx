@@ -6,7 +6,7 @@ import { TextButton } from '../textButton'
 import homeStore from '@/features/stores/home'
 
 const Character = () => {
-  const { characterName, selectedVrm } = settingsStore()
+  const { characterName, selectedVrmPath } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const { t } = useTranslation()
 
@@ -30,7 +30,7 @@ const Character = () => {
 
     if (response.ok) {
       const { path } = await response.json()
-      settingsStore.setState({ selectedVrm: path })
+      settingsStore.setState({ selectedVrmPath: path })
       const { viewer } = homeStore.getState()
       viewer.loadVrm(path)
 
@@ -65,10 +65,10 @@ const Character = () => {
         </div>
         <select
           className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-          value={selectedVrm}
+          value={selectedVrmPath}
           onChange={(e) => {
             const path = e.target.value
-            settingsStore.setState({ selectedVrm: path })
+            settingsStore.setState({ selectedVrmPath: path })
             const { viewer } = homeStore.getState()
             viewer.loadVrm(path)
           }}
