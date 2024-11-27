@@ -6,7 +6,7 @@ import { TextButton } from '../textButton'
 import homeStore from '@/features/stores/home'
 
 const Character = () => {
-  const { characterName, selectedVrmPath } = settingsStore()
+  const { characterName, selectedVrm } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const { t } = useTranslation()
 
@@ -14,6 +14,9 @@ const Character = () => {
     fetch('/api/get-vrm-list')
       .then((res) => res.json())
       .then((files) => setVrmFiles(files))
+      .catch((error) => {
+        console.error('Error fetching VRM list:', error)
+      })
   }, [])
 
   const handleVrmUpload = async (file: File) => {
@@ -27,14 +30,17 @@ const Character = () => {
 
     if (response.ok) {
       const { path } = await response.json()
-      settingsStore.setState({ selectedVrmPath: path })
+      settingsStore.setState({ selectedVrm: path })
       const { viewer } = homeStore.getState()
       viewer.loadVrm(path)
 
       // リストを更新
-      const listResponse = await fetch('/api/get-vrm-list')
-      const files = await listResponse.json()
-      setVrmFiles(files)
+      fetch('/api/get-vrm-list')
+        .then((res) => res.json())
+        .then((files) => setVrmFiles(files))
+        .catch((error) => {
+          console.error('Error fetching VRM list:', error)
+        })
     }
   }
 
@@ -59,10 +65,10 @@ const Character = () => {
         </div>
         <select
           className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-          value={selectedVrmPath}
+          value={selectedVrm}
           onChange={(e) => {
             const path = e.target.value
-            settingsStore.setState({ selectedVrmPath: path })
+            settingsStore.setState({ selectedVrm: path })
             const { viewer } = homeStore.getState()
             viewer.loadVrm(path)
           }}
@@ -74,7 +80,7 @@ const Character = () => {
           ))}
         </select>
 
-        <div className="my-8">
+        <div className="my-16">
           <TextButton
             onClick={() => {
               const { fileInput } = menuStore.getState()

@@ -2,7 +2,7 @@
 
 ## 概述
 
-此文档规定了 [aituber-kit](https://github.com/tegnike/aituber-kit) 仓库中提供的 [Nikechan VRM Model v1](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v1.vrm), [Nikechan VRM Model v2](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v2.vrm), [Nikechan VRM Model v2 (Outerwear)](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/vrm/nikechan_v2_outerwear.vrm) 的使用协议。
+此文档规定了 [aituber-kit](https://github.com/tegnike/aituber-kit) 仓库中提供的 [Nikechan VRM Model v1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm), [Nikechan VRM Model v2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm), [Nikechan VRM Model v2 (Outerwear)](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm) 的使用协议。
 
 ## 版权
 
@@ -32,6 +32,6 @@
 
 ## VRM 模型制作者信息
 
-- Nikechan VRM Model v1: [琳 様](https://github.com/rin_tyn25)
-- Nikechan VRM Model v2: [たまごん 様](https://github.com/@_TAMA_GON_)
-- Nikechan VRM Model v2 (Outerwear): [たまごん 様](https://github.com/@_TAMA_GON_)
+- Nikechan VRM Model v1: [琳 様](https://x.com/rin_tyn25)
+- Nikechan VRM Model v2: [たまごん 様](https://x.com/_TAMA_GON_)
+- Nikechan VRM Model v2 (Outerwear): [たまごん 様](https://x.com/_TAMA_GON_)
