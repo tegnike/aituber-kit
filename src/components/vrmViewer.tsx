@@ -1,14 +1,15 @@
 import { useCallback } from 'react'
-import { buildUrl } from '@/utils/buildUrl'
 
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 
 export default function VrmViewer() {
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (canvas) {
       const { viewer } = homeStore.getState()
+      const { selectedVrmPath } = settingsStore.getState()
       viewer.setup(canvas)
-      viewer.loadVrm(buildUrl('/AvatarSample_B.vrm'))
+      viewer.loadVrm(selectedVrmPath)
 
       // Drag and DropでVRMを差し替え
       canvas.addEventListener('dragover', function (event) {
