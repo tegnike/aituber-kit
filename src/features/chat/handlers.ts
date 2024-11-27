@@ -69,7 +69,6 @@ export const speakMessageHandler = async (receivedMessage: string) => {
     const sentenceMatch = remainingMessage.match(
       /^(.{1,19}?(?:[。．.!?！？\n]|(?=\[))|.{20,}?(?:[、,。．.!?！？\n]|(?=\[)))/
     )
-    console.log('sentenceMatch', sentenceMatch)
     if (sentenceMatch?.[0]) {
       sentence = sentenceMatch?.[0]
       // 区切った文字の残りでremainingMessageを更新
@@ -97,8 +96,6 @@ export const speakMessageHandler = async (receivedMessage: string) => {
     // em感情と返答を結合（音声再生で使用される）
     let aiText = emotion ? `${emotion} ${sentence}` : sentence
     logText = logText + ' ' + aiText
-
-    console.log('sentence', sentence)
 
     speakCharacter(
       {
