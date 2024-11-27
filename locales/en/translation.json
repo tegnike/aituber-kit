@@ -163,7 +163,8 @@
     "WebSocketConnectionSuccess": "WebSocket connection successful",
     "FunctionExecuting": "Executing {{funcName}}",
     "FunctionExecutionFailed": "Execution of {{funcName}} failed",
-    "FirefoxNotSupported": "This feature is not supported on Firefox"
+    "FirefoxNotSupported": "This feature is not supported on Firefox",
+    "SpeechRecognitionError": "Speech recognition error occurred"
   },
   "UsingOpenAITTS": "Using OpenAI",
   "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",
