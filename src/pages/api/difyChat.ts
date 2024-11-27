@@ -43,8 +43,6 @@ export default async function handler(req: NextRequest) {
       ? cleanUrl(process.env.DIFY_URL)
       : ''
 
-  console.log('difyUrl', difyUrl)
-
   if (!difyUrl) {
     return new Response(
       JSON.stringify({
