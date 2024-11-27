@@ -91,6 +91,7 @@ interface Character {
   showAssistantText: boolean
   showCharacterName: boolean
   systemPrompt: string
+  selectedVrm: string
 }
 
 interface General {
@@ -212,6 +213,7 @@ const settingsStore = create<SettingsState>()(
       showCharacterName:
         process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
       systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
+      selectedVrm: process.env.NEXT_PUBLIC_SELECTED_VRM || '/nikechan_v2.vrm',
 
       // General
       selectLanguage:
@@ -312,6 +314,7 @@ const settingsStore = create<SettingsState>()(
         openaiTTSSpeed: state.openaiTTSSpeed,
         azureTTSKey: state.azureTTSKey,
         azureTTSEndpoint: state.azureTTSEndpoint,
+        selectedVrm: state.selectedVrm,
       }),
     }
   )

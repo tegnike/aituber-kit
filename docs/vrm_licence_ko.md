@@ -2,7 +2,7 @@
 
 ## 개요
 
-이 문서는 [aituber-kit](https://github.com/tegnike/aituber-kit) 저장소에서 제공되는 [VRM 모델](https://github.com/tegnike/aituber-kit/blob/feature/update-instructions/public/AvatarSample_B.vrm)의 이용 약관을 정의합니다.
+이 문서는 [aituber-kit](https://github.com/tegnike/aituber-kit) 리포지토리에서 제공되는 [Nikechan VRM Model v1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm), [Nikechan VRM Model v2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm), [Nikechan VRM Model v2 (Outerwear)](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm)의 이용 약관을 정합니다.
 
 ## 저작권
 
@@ -30,6 +30,8 @@
 
 저장소 소유자는 사전 고지 없이 이 이용 약관을 변경할 권리가 있습니다. 이용자는 정기적으로 규약을 확인하고 변경 사항을 숙지할 책임이 있습니다.
 
-## 연락처
+## VRM 모델 저작자 정보
 
-모델 사용과 관련하여 궁금한 점이 있으면 저장소의 이슈를 통해 문의하시기 바랍니다.
+- Nikechan VRM Model v1: [琳 様](https://x.com/rin_tyn25)
+- Nikechan VRM Model v2: [たまごん 様](https://x.com/_TAMA_GON_)
+- Nikechan VRM Model v2 (Outerwear): [たまごん 様](https://x.com/_TAMA_GON_)
