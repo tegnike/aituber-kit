@@ -1,6 +1,7 @@
 import settingsStore from '@/features/stores/settings'
 import { Message } from '../messages/messages'
 import i18next from 'i18next'
+import toastStore from '@/features/stores/toast'
 
 function handleApiError(errorCode: string): string {
   const languageCode = settingsStore.getState().selectLanguage
@@ -82,12 +83,10 @@ export async function getDifyChatResponseStream(
         } catch (error) {
           console.error(`Error fetching Dify API response:`, error)
 
-          return new ReadableStream({
-            start(controller) {
-              const errorMessage = handleApiError('AIAPIError')
-              controller.enqueue(errorMessage)
-              controller.close()
-            },
+          toastStore.getState().addToast({
+            message: i18next.t('Errors.AIAPIError'),
+            type: 'error',
+            tag: 'dify-api-error',
           })
         } finally {
           controller.close()
@@ -97,11 +96,11 @@ export async function getDifyChatResponseStream(
     })
   } catch (error: any) {
     const errorMessage = handleApiError(error.cause.errorCode)
-    return new ReadableStream({
-      start(controller) {
-        controller.enqueue(errorMessage)
-        controller.close()
-      },
+    toastStore.getState().addToast({
+      message: errorMessage,
+      type: 'error',
+      tag: 'dify-api-error',
     })
+    throw error
   }
 }
