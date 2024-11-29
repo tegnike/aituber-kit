@@ -4,6 +4,7 @@ import settingsStore, {
   multiModalAIServiceKey,
   multiModalAIServices,
 } from '@/features/stores/settings'
+import toastStore from '@/features/stores/toast'
 
 const getAIConfig = () => {
   const ss = settingsStore.getState()
@@ -134,7 +135,11 @@ export async function getVercelAIChatResponseStream(
           )
 
           const errorMessage = handleApiError('AIAPIError')
-          controller.enqueue(errorMessage)
+          toastStore.getState().addToast({
+            message: errorMessage,
+            type: 'error',
+            tag: 'vercel-api-error',
+          })
         } finally {
           controller.close()
           reader.releaseLock()
@@ -143,11 +148,11 @@ export async function getVercelAIChatResponseStream(
     })
   } catch (error: any) {
     const errorMessage = handleApiError(error.cause.errorCode)
-    return new ReadableStream({
-      start(controller) {
-        controller.enqueue(errorMessage)
-        controller.close()
-      },
+    toastStore.getState().addToast({
+      message: errorMessage,
+      type: 'error',
+      tag: 'vercel-api-error',
     })
+    throw error
   }
 }

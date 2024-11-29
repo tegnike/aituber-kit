@@ -67,7 +67,7 @@ export const speakMessageHandler = async (receivedMessage: string) => {
     }
 
     const sentenceMatch = remainingMessage.match(
-      /^(.{1,19}?[。．.!?！？\n]|.{20,}?[、,。．.!?！？\n])/
+      /^(.{1,19}?(?:[。．.!?！？\n]|(?=\[))|.{20,}?(?:[、,。．.!?！？\n]|(?=\[)))/
     )
     if (sentenceMatch?.[0]) {
       sentence = sentenceMatch?.[0]
@@ -213,7 +213,7 @@ export const processAIResponse = async (
         }
 
         const sentenceMatch = receivedMessage.match(
-          /^(.{1,19}?[。．.!?！？\n]|.{20,}?[、,。．.!?！？\n])/
+          /^(.{1,19}?(?:[。．.!?！？\n]|(?=\[))|.{20,}?(?:[、,。．.!?！？\n]|(?=\[)))/
         )
         if (sentenceMatch?.[0]) {
           let sentence = sentenceMatch[0]

@@ -6,6 +6,8 @@ import webSocketStore from '@/features/stores/websocketStore'
 import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
 
+const NO_SPEECH_TIMEOUT = 3000
+
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
 
@@ -79,6 +81,30 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       newRecognition.continuous = true
       newRecognition.interimResults = true
 
+      let noSpeechTimeout: NodeJS.Timeout
+
+      // 音声認識開始時のハンドラを追加
+      newRecognition.onstart = () => {
+        noSpeechTimeout = setTimeout(() => {
+          toastStore.getState().addToast({
+            message: t('Toasts.SpeechRecognitionError'),
+            type: 'error',
+            tag: 'no-speech-detected',
+          })
+          stopListening()
+        }, NO_SPEECH_TIMEOUT)
+      }
+
+      // 音声入力検出時のハンドラを追加
+      newRecognition.onspeechstart = () => {
+        clearTimeout(noSpeechTimeout)
+      }
+
+      // 音声認識終了時のハンドラを追加
+      newRecognition.onend = () => {
+        clearTimeout(noSpeechTimeout)
+      }
+
       newRecognition.onresult = (event) => {
         if (!isListeningRef.current) return
 
@@ -90,8 +116,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       }
 
       newRecognition.onerror = (event) => {
-        console.error('音声認識エラー:', event.error)
-        isListeningRef.current = false
+        stopListening()
       }
 
       setRecognition(newRecognition)
@@ -200,10 +225,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   }, [])
 
   const stopListening = useCallback(async () => {
-    if (recognition && isListeningRef.current) {
+    isListeningRef.current = false
+    setIsListening(false)
+    if (recognition) {
       recognition.stop()
-      isListeningRef.current = false
-      setIsListening(false)
 
       if (realtimeAPIMode) {
         if (mediaRecorder) {
