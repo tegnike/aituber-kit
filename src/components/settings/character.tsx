@@ -63,6 +63,7 @@ const Character = () => {
         <div className="mt-24 mb-16 typography-20 font-bold">
           {t('CharacterModelLabel')}
         </div>
+        <div className="mb-16 typography-16">{t('CharacterModelInfo')}</div>
         <select
           className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
           value={selectedVrmPath}

@@ -103,6 +103,7 @@ export const Introduction = () => {
               label={'https://github.com/tegnike/aituber-kit'}
             />
           </div>
+          <div className="my-16">{t('SourceCodeDescription2')}</div>
         </div>
 
         <div className="my-24">
@@ -137,8 +138,8 @@ export const Introduction = () => {
         {selectLanguage === 'ja' && (
           <div className="my-24">
             <p>
-              You can select the language from the settings. English and
-              Traditional Chinese are available.
+              You can select the language from the settings. Japanese, English,
+              Traditional Chinese and Korean are available.
             </p>
           </div>
         )}
