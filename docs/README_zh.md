@@ -273,6 +273,9 @@ npm run dev
   <a href="https://github.com/konpeita" title="konpeita">
     <img src="https://github.com/konpeita.png" width="40" height="40" alt="konpeita">
   </a>
+  <a href="https://github.com/MojaX2" title="MojaX2">
+    <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
+  </a>
 </p>
 
 以及多位匿名贊助者
