@@ -42,6 +42,7 @@
   "DifyInstruction": "If you are using Dify, the system prompt will not be used. Please set Dify chatbot.",
   "EnterURL": "URL",
   "CharacterModelLabel": "Character Model",
+  "CharacterModelInfo": "The model may take time to load when first displayed.",
   "OpenVRM": "Open VRM",
   "BackgroundImage": "Background Image",
   "ChangeBackgroundImage": "Change Background Image",

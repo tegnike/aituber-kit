@@ -42,6 +42,7 @@
   "DifyInstruction": "Difyを使用している場合、このシステムプロンプトは使用されません。Difyチャットボットに設定してください。",
   "EnterURL": "URLを入力",
   "CharacterModelLabel": "キャラクターモデル",
+  "CharacterModelInfo": "モデルによっては初期表示時の読み込みに時間がかかる可能性があります。",
   "OpenVRM": "VRMを開く",
   "BackgroundImage": "背景画像",
   "ChangeBackgroundImage": "背景画像を変える",
