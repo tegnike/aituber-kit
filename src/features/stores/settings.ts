@@ -214,7 +214,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
       systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
       selectedVrmPath:
-        process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v2.vrm',
+        process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
 
       // General
       selectLanguage:
