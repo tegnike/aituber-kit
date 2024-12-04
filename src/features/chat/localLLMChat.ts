@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { Message } from '../messages/messages'
 
 export async function getLocalLLMChatResponseStream(
@@ -6,41 +5,44 @@ export async function getLocalLLMChatResponseStream(
   localLlmUrl: string,
   model?: string
 ) {
-  const response = await axios.post(
-    localLlmUrl.replace(/\/$/, ''),
-    {
-      model: model,
-      messages: messages,
-      stream: true,
-    },
-    {
-      responseType: 'stream',
-    }
-  )
+  const response = await fetch('/api/local-llm', {
+    method: 'POST',
+    body: JSON.stringify({
+      localLlmUrl,
+      model,
+      messages,
+    }),
+  })
 
-  const stream = response.data
+  const stream = response.body
+  if (!stream) {
+    throw new Error('No stream in response')
+  }
+
+  const reader = stream.getReader()
 
   const res = new ReadableStream({
     async start(controller: ReadableStreamDefaultController) {
       let accumulatedChunks = ''
       try {
-        for await (const chunk of stream) {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          const chunk = new TextDecoder().decode(value)
           accumulatedChunks += chunk
-          // console.log(accumulatedChunks);
+
           try {
-            // 累積されたチャンクを解析
             const trimmedChunks = accumulatedChunks.trimStart()
             const data = JSON.parse(trimmedChunks.slice(6))
 
-            // JSONが正常に解析された場合、必要なデータを抽出
             if (data.choices && data.choices.length > 0) {
               const content = data.choices[0].delta.content
               controller.enqueue(content)
-              accumulatedChunks = '' // JSONが成功したのでチャンクをリセット
+              accumulatedChunks = ''
             }
           } catch (error) {
-            // console.log("accumulatedChunks: `" + accumulatedChunks + "`");
-            // JSONが不完全であるため、さらにチャンクを累積
+            // JSONが不完全な場合は続行
           }
         }
       } catch (error) {
