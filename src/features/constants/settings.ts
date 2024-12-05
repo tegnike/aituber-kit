@@ -35,11 +35,11 @@ export type AIVoice =
   | 'voicevox'
   | 'stylebertvits2'
   | 'aivis_speech'
+  | 'nijivoice'
   | 'gsvitts'
   | 'elevenlabs'
   | 'openai'
   | 'azure'
-
 export type Language = 'en' | 'ja' | 'ko' | 'zh' // ISO 639-1
 
 export const LANGUAGES: Language[] = ['en', 'ja', 'ko', 'zh']
