@@ -828,6 +828,8 @@ const ModelProvider = () => {
                   {t('LocalLLMInfo2')}
                   <br />
                   ex. Ollama: http://localhost:11434/v1/chat/completions
+                  <br />
+                  ex. LM Studio: http://localhost:1234/v1/chat/completions
                 </div>
                 <div className="my-16 typography-20 font-bold">
                   {t('EnterURL')}
