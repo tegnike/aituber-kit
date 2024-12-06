@@ -143,7 +143,12 @@
     "InvalidAIService": "The selected AI service is not valid",
     "MethodNotAllowed": "The request is not appropriate",
     "TTSServiceError": "An error occurred in the {{serviceName}} TTS service: {{message}}",
-    "UnexpectedError": "An unexpected error occurred"
+    "UnexpectedError": "An unexpected error occurred",
+    "LocalLLMError": "Local LLM error",
+    "LocalLLMStreamError": "Local LLM stream error",
+    "LocalLLMConnectionError": "Local LLM server connection error",
+    "LocalLLMNotFound": "Local LLM endpoint not found",
+    "LocalLLMAPIError": "Local LLM API error"
   },
   "MessageReceiver": "Receive instructions from outside",
   "MessageReceiverDescription": "You can use API to instruct AI characters to speak from outside.",

@@ -144,7 +144,12 @@
     "InvalidAIService": "選択しているAIサービスが正しくありません",
     "MethodNotAllowed": "リクエストが適切でありません",
     "TTSServiceError": "{{serviceName}} TTSサービスでエラーが発生しました: {{message}}",
-    "UnexpectedError": "不明なエラーが発生しました"
+    "UnexpectedError": "不明なエラーが発生しました",
+    "LocalLLMError": "ローカルLLMでエラーが発生しました",
+    "LocalLLMStreamError": "ローカルLLMのストリーム処理でエラーが発生しました",
+    "LocalLLMConnectionError": "ローカルLLMサーバーに接続できません",
+    "LocalLLMNotFound": "ローカルLLMのエンドポイントが見つかりません",
+    "LocalLLMAPIError": "ローカルLLM APIでエラーが発生しました"
   },
   "MessageReceiver": "外部からの指示を受け付ける",
   "MessageReceiverDescription": "APIを利用してAIキャラの発言を外部から指示することができます。",
