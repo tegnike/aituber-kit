@@ -145,7 +145,6 @@ export const processAIResponse = async (
   homeStore.setState({ chatProcessing: true })
   let stream
 
-  const ss = settingsStore.getState()
   const hs = homeStore.getState()
   const currentSlideMessages: string[] = []
 
@@ -337,6 +336,7 @@ export const handleSendChatFn =
   }) =>
   async (text: string) => {
     const newMessage = text
+    const timestamp = new Date().toISOString()
 
     if (newMessage === null) return
 
@@ -352,7 +352,7 @@ export const handleSendChatFn =
         // ユーザーの発言を追加して表示
         const updateLog: Message[] = [
           ...hs.chatLog,
-          { role: 'user', content: newMessage },
+          { role: 'user', content: newMessage, timestamp: timestamp },
         ]
         homeStore.setState({
           chatLog: updateLog,
@@ -373,7 +373,7 @@ export const handleSendChatFn =
         // ユーザーの発言を追加して表示
         const updateLog: Message[] = [
           ...hs.chatLog,
-          { role: 'user', content: newMessage },
+          { role: 'user', content: newMessage, timestamp: timestamp },
         ]
         homeStore.setState({
           chatLog: updateLog,
@@ -432,6 +432,7 @@ export const handleSendChatFn =
                 { type: 'image', image: hs.modalImage },
               ]
             : newMessage,
+          timestamp: timestamp,
         },
       ]
       if (hs.modalImage) {
@@ -444,7 +445,10 @@ export const handleSendChatFn =
           role: 'system',
           content: systemPrompt,
         },
-        ...messageSelectors.getProcessedMessages(messageLog),
+        ...messageSelectors.getProcessedMessages(
+          messageLog,
+          ss.includeTimestampInUserMessage
+        ),
       ]
 
       try {

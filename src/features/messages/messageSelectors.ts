@@ -26,19 +26,30 @@ export const messageSelectors = {
     })
   },
 
-  getProcessedMessages: (messages: Message[]): Message[] => {
+  getProcessedMessages: (
+    messages: Message[],
+    includeTimestamp: boolean
+  ): Message[] => {
     return messages
-      .map((message, index) => ({
-        role: ['assistant', 'user', 'system'].includes(message.role)
-          ? message.role
-          : 'assistant',
-        content:
-          index === messages.length - 1
+      .map((message, index) => {
+        const isLastMessage = index === messages.length - 1
+        const messageContent = Array.isArray(message.content)
+          ? message.content[0].text
+          : message.content
+
+        const content = includeTimestamp
+          ? `[${message.timestamp}] ${isLastMessage ? message.content : messageContent}`
+          : isLastMessage
             ? message.content
-            : Array.isArray(message.content)
-              ? message.content[0].text
-              : message.content,
-      }))
+            : messageContent
+
+        return {
+          role: ['assistant', 'user', 'system'].includes(message.role)
+            ? message.role
+            : 'assistant',
+          content,
+        }
+      })
       .slice(-10)
   },
 
