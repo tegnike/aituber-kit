@@ -57,8 +57,8 @@ const Voice = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="my-40">
-      <div className="my-16 typography-20 font-bold">
+    <div className="">
+      <div className="mb-16 typography-20 font-bold">
         {t('SyntheticVoiceEngineChoice')}
       </div>
       <div>{t('VoiceEngineInstruction')}</div>
@@ -81,8 +81,8 @@ const Voice = () => {
           <option value="azure">{t('UsingAzureTTS')}</option> {/* 追加 */}
         </select>
       </div>
-      <div className="my-40">
-        <div className="my-16 typography-20 font-bold">
+      <div className="mt-40">
+        <div className="m-16 typography-20 font-bold">
           {t('VoiceAdjustment')}
         </div>
         {(() => {
@@ -160,7 +160,7 @@ const Voice = () => {
                     渋い
                   </TextButton>
                 </div>
-                <div className="my-24">
+                <div className="mt-24">
                   <div className="select-none">x : {koeiroParam.speakerX}</div>
                   <input
                     type="range"
@@ -231,7 +231,7 @@ const Voice = () => {
                     {t('TestVoice')}
                   </TextButton>
                 </div>
-                <div className="my-24 font-bold">
+                <div className="mt-24 font-bold">
                   <div className="select-none">
                     {t('VoicevoxSpeed')}: {voicevoxSpeed}
                   </div>
@@ -486,7 +486,7 @@ const Voice = () => {
                     {t('UpdateSpeakerList')}
                   </TextButton>
                 </div>
-                <div className="my-24 font-bold">
+                <div className="mt-24 font-bold">
                   <div className="select-none">
                     {t('AivisSpeechSpeed')}: {aivisSpeechSpeed}
                   </div>

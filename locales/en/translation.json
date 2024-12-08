@@ -121,7 +121,6 @@
   "CharacterName": "Character name",
   "ShowAssistantText": "Show answer box",
   "ShowCharacterName": "Show character name in the answer box",
-  "AdvancedSettings": "Advanced Settings",
   "ShowControlPanel": "Show settings button",
   "ShowControlPanelInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) .",
   "SlideMode": "Slide Mode",
@@ -137,7 +136,9 @@
   "PdfConvertSuccess": "Conversion completed",
   "PdfConvertError": "Conversion failed",
   "PdfConvertSubmitError": "Please make sure the PDF file, folder name, and API key are set.",
-  "LocalStorageReset": "Reset settings (page will be reloaded)",
+  "LocalStorageReset": "Reset Settings",
+  "LocalStorageResetInfo": "Environment variables are prioritized if set. The page will be reloaded.",
+  "LocalStorageResetButton": "Reset Settings",
   "Errors": {
     "EmptyAPIKey": "API key is not set",
     "AIInvalidProperty": "AI service settings are incorrect",
