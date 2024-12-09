@@ -12,6 +12,9 @@ const AdvancedSettings = () => {
     (s) => s.changeEnglishToJapanese
   )
   const showControlPanel = settingsStore((s) => s.showControlPanel)
+  const includeTimestampInUserMessage = settingsStore(
+    (s) => s.includeTimestampInUserMessage
+  )
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
 
@@ -113,6 +116,28 @@ const AdvancedSettings = () => {
                       }
                     >
                       {showControlPanel ? t('StatusOn') : t('StatusOff')}
+                    </TextButton>
+                  </div>
+                </div>
+                <div className="my-24">
+                  <div className="my-16 typography-16 font-bold">
+                    {t('IncludeTimestampInUserMessage')}
+                  </div>
+                  <div className="my-16 typography-16 whitespace-pre-line">
+                    {t('IncludeTimestampInUserMessageInfo')}
+                  </div>
+                  <div className="my-8">
+                    <TextButton
+                      onClick={() =>
+                        settingsStore.setState({
+                          includeTimestampInUserMessage:
+                            !includeTimestampInUserMessage,
+                        })
+                      }
+                    >
+                      {includeTimestampInUserMessage
+                        ? t('StatusOn')
+                        : t('StatusOff')}
                     </TextButton>
                   </div>
                 </div>
