@@ -47,6 +47,7 @@ export const speakMessageHandler = async (receivedMessage: string) => {
       addedChatLog.push({
         role: 'assistant',
         content: logText,
+        timestamp: new Date().toISOString(),
       })
       addedChatLog.push({
         role: 'code',
@@ -125,6 +126,7 @@ export const speakMessageHandler = async (receivedMessage: string) => {
   addedChatLog.push({
     role: 'assistant',
     content: logText,
+    timestamp: new Date().toISOString(),
   })
   homeStore.setState({
     slideMessages: currentSlideMessages,
@@ -234,7 +236,11 @@ export const processAIResponse = async (
 
           // 感情と返答を結合（音声再生で使用される）
           let aiText = `${emotion} ${sentence}`
-          aiTextLog.push({ role: 'assistant', content: aiText })
+          aiTextLog.push({
+            role: 'assistant',
+            content: aiText,
+            timestamp: new Date().toISOString(),
+          })
 
           // 文ごとに音声を生成 & 再生、返答を表示
           const currentAssistantMessage = sentences.join(' ')
@@ -275,7 +281,11 @@ export const processAIResponse = async (
       if (done && receivedMessage.length > 0) {
         // 残りのメッセージを処理
         let aiText = `${emotion} ${receivedMessage}`
-        aiTextLog.push({ role: 'assistant', content: aiText })
+        aiTextLog.push({
+          role: 'assistant',
+          content: aiText,
+          timestamp: new Date().toISOString(),
+        })
         sentences.push(receivedMessage)
 
         const currentAssistantMessage = sentences.join(' ')
