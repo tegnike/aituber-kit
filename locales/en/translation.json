@@ -182,5 +182,15 @@
   "OpenAITTSModel": "Model",
   "OpenAITTSSpeed": "Speed",
   "UsingAzureTTS": "Using Azure OpenAI",
-  "AzureTTSInfo": "Using Azure OpenAI. It supports multiple languages."
+  "AzureTTSInfo": "Using Azure OpenAI. It supports multiple languages.",
+  "SendMessage": {
+    "title": "AITuberKit External Adapter",
+    "directSendTitle": "Directly speak to AI character",
+    "directSendDescription": "You can send the message directly to the AI character. If multiple messages are sent, they are processed in order. The voice model is the one selected in the AITuberKit settings.",
+    "aiGenerateTitle": "Generate AI response and then speak",
+    "aiGenerateDescription": "The AI generates a response from the message sent and then speaks it. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt can be selected to use the AITuberKit system prompt or a custom system prompt. If you want to load the past conversation history, include the string [conversation_history] in the system prompt or user message.",
+    "useCurrentSystemPrompt": "AITuberKitのシステムプロンプトを利用する",
+    "userInputTitle": "Send user input",
+    "userInputDescription": "The message sent is processed the same as when input from the AITuberKit input form. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt and conversation history are the values set in AITuberKit."
+  }
 }
