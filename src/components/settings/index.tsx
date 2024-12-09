@@ -95,7 +95,7 @@ const Main = () => {
       <div className="text-text1 max-w-5xl mx-auto px-24 py-64">
         <div className="md:flex mt-16">
           {/* タブナビゲーション */}
-          <ul className="flex-column space-y-4 text-sm font-medium md:w-[25%] md:me-8 mb-16 md:mb-0">
+          <ul className="flex flex-col space-y-4 text-sm font-medium md:w-[25%] md:me-8 mb-16 md:mb-0">
             {tabs.map((tab) => (
               <li key={tab.key}>
                 <button
