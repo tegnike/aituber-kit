@@ -35,8 +35,8 @@ const YouTube = () => {
   }
 
   return (
-    <div className="my-40">
-      <div className="my-16 typography-20 font-bold">{t('YoutubeMode')}</div>
+    <div className="">
+      <div className="mb-16 typography-20 font-bold">{t('YoutubeMode')}</div>
       <div className="my-8">
         {youtubeMode ? (
           <TextButton onClick={() => handleChangeYoutubeMode(false)}>
@@ -48,7 +48,7 @@ const YouTube = () => {
           </TextButton>
         )}
       </div>
-      <div className="my-16">
+      <div className="mt-16">
         {(() => {
           if (youtubeMode) {
             return (
@@ -82,7 +82,7 @@ const YouTube = () => {
                     })
                   }
                 />
-                <div className="my-24">
+                <div className="mt-24">
                   <div className="my-16 typography-20 font-bold">
                     {t('ConversationContinuityMode')}
                   </div>

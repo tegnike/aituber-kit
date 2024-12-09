@@ -1,19 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { GitHubLink } from '../githubLink'
 import { IconButton } from '../iconButton'
-import AdvancedSettings from './advancedSettings'
-import Character from './character'
-import Environment from './environment'
-import LanguageSetting from './language'
-import Log from './log'
-import ModelProvider from './modelProvider'
+import Based from './based'
+import AI from './ai'
 import Voice from './voice'
-import ExternalLinkage from './externalLinkage'
 import YouTube from './youtube'
 import Slide from './slide'
-import MessageReceiverSetting from './messageReceiver'
+import Other from './other'
 
 type Props = {
   onClickClose: () => void
@@ -44,73 +39,85 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   )
 }
 
+// タブの定義
+type TabKey = 'general' | 'ai' | 'youtube' | 'voice' | 'slide' | 'other'
+
 const Main = () => {
   const { t } = useTranslation()
+  const [activeTab, setActiveTab] = useState<TabKey>('general')
+
+  const tabs: { key: TabKey; label: string }[] = [
+    {
+      key: 'general',
+      label: t('Settings'),
+    },
+    {
+      key: 'ai',
+      label: t('AISettings'),
+    },
+    {
+      key: 'voice',
+      label: t('VoiceSettings'),
+    },
+    {
+      key: 'youtube',
+      label: t('YoutubeSettings'),
+    },
+    {
+      key: 'slide',
+      label: t('SlideSettings'),
+    },
+    {
+      key: 'other',
+      label: t('OtherSettings'),
+    },
+  ]
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'general':
+        return <Based />
+      case 'ai':
+        return <AI />
+      case 'voice':
+        return <Voice />
+      case 'youtube':
+        return <YouTube />
+      case 'slide':
+        return <Slide />
+      case 'other':
+        return <Other />
+    }
+  }
 
   return (
     <main className="max-h-full overflow-auto">
-      <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
-        <div className="my-24 typography-32 font-bold">{t('Settings')}</div>
+      <div className="text-text1 max-w-5xl mx-auto px-24 py-64">
+        <div className="md:flex mt-16">
+          {/* タブナビゲーション */}
+          <ul className="flex flex-col space-y-4 text-sm font-medium md:w-[25%] md:me-8 mb-16 md:mb-0">
+            {tabs.map((tab) => (
+              <li key={tab.key}>
+                <button
+                  className={`flex py-8 px-16 rounded-8 w-full typography-16 text-left
+                    ${
+                      activeTab === tab.key
+                        ? 'text-white bg-primary'
+                        : 'bg-gray-50 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  onClick={() => setActiveTab(tab.key)}
+                >
+                  {tab.label}
+                </button>
+              </li>
+            ))}
+          </ul>
 
-        <div className="my-40">
-          {/* 言語設定 */}
-          <LanguageSetting />
-
-          {/* キャラクター設定 */}
-          <Character />
-
-          {/* 背景画像の設定 */}
-          <Environment />
+          {/* タブコンテンツ */}
+          <div className="p-24 bg-surface7-hover text-medium rounded-8 w-full">
+            {renderTabContent()}
+          </div>
         </div>
-
-        <div className="my-24 typography-32 font-bold">{t('AISettings')}</div>
-
-        <div className="my-40">
-          {/* 外部接続モードの設定 */}
-          <ExternalLinkage />
-
-          {/* AI設定 */}
-          <ModelProvider />
-        </div>
-
-        <div className="my-24 typography-32 font-bold">
-          {t('YoutubeSettings')}
-        </div>
-
-        <div className="my-40">
-          {/* YouTube設定 */}
-          <YouTube />
-        </div>
-
-        <div className="my-24 typography-32 font-bold">
-          {t('VoiceSettings')}
-        </div>
-
-        <div className="my-40">
-          {/* 音声エンジンの選択 */}
-          <Voice />
-        </div>
-
-        <div className="my-24 typography-32 font-bold">
-          {t('SlideSettings')}
-        </div>
-
-        <div className="my-40">
-          {/* スライド設定 */}
-          <Slide />
-        </div>
-
-        <div className="my-24 typography-32 font-bold">
-          {t('OtherSettings')}
-        </div>
-
-        <AdvancedSettings />
-
-        {/* MessageReceiver設定を追加 */}
-        <MessageReceiverSetting />
-
-        {/* チャットログの設定 */}
-        <Log />
       </div>
     </main>
   )
