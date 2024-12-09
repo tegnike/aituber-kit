@@ -21,8 +21,8 @@ const ExternalLinkage = () => {
   }, [])
 
   return (
-    <div className="my-40">
-      <div className="my-16 typography-20 font-bold">
+    <div className="mb-40">
+      <div className="mb-16 typography-20 font-bold">
         {t('ExternalLinkageMode')}
       </div>
       <div className="my-8">

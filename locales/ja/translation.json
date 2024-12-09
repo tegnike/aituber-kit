@@ -70,6 +70,8 @@
   "StyleBertVITS2Info": "Style-Bert-VITS2を使用しています。日・英・中のみに対応しています。ローカルAPIを使用する場合は、下記のサイトから環境にあったアプリをダウンロードし起動しておく必要があります。必要な場合はAPIキーも設定してください。",
   "SpeakerSelection": "ボイスタイプ選択",
   "EnglishToJapanese": "英単語を日本語で読み上げる",
+  "IncludeTimestampInUserMessage": "ユーザー発言にタイムスタンプを含める",
+  "IncludeTimestampInUserMessageInfo": "ユーザー発言にタイムスタンプを含めることで、AIが時間を考慮して応答を生成できるようになります。\n以下のような文章をシステムプロンプトに含めてください。\n\n「ユーザー入力が [timestamp] 付きでリクエストされる場合があります。これはリクエスト時点の時刻を表しているので、その時刻を考慮したうえで回答を生成してください。」",
   "GoogleTTSInfo": "Google Cloud Text-to-Speechを使用しています。多言語に対応可能です。",
   "AuthFileInstruction": "認証用のJSONファイルを下記から取得し、リポジトリのルートフォルダに credentials.json という名称で配置してください。",
   "LanguageModelURL": "言語モデルは下記のURLから選択してください。",
@@ -120,7 +122,6 @@
   "CharacterName": "キャラクター名",
   "ShowAssistantText": "回答欄を表示する",
   "ShowCharacterName": "回答欄にキャラクター名を表示する",
-  "AdvancedSettings": "詳細設定",
   "ShowControlPanel": "操作パネルを表示する",
   "ShowControlPanelInfo": "設定画面は Cmd + . (Mac) / Ctrl + . (Windows) で表示することができます。",
   "SlideMode": "スライドモード",
@@ -136,7 +137,9 @@
   "PdfConvertSuccess": "変換が完了しました",
   "PdfConvertError": "変換に失敗しました",
   "PdfConvertSubmitError": "PDFファイル、フォルダ名、APIキーが設定されているか確認をしてください",
-  "LocalStorageReset": "設定をリセットする（ページが再読み込みされます）",
+  "LocalStorageReset": "設定をリセットする",
+  "LocalStorageResetInfo": "環境変数が設定されている場合はその値が優先されます。ページが再読み込みされます。",
+  "LocalStorageResetButton": "設定リセット",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
     "AIInvalidProperty": "AIサービスの設定値が正しくありません",
@@ -158,7 +161,7 @@
   "RealtimeAPIMode": "リアルタイムAPIモード",
   "RealtimeAPIModeContentType": "送信タイプ",
   "RealtimeAPIModeVoice": "ボイスタイプ",
-  "AudioMode": "オーディオモード（Beta）",
+  "AudioMode": "オーディオモード（ベータ版）",
   "InputText": "テキスト",
   "InputAudio": "音声",
   "UpdateRealtimeAPISettings": "リアルタイムAPI設定を更新",
@@ -180,5 +183,15 @@
   "OpenAITTSModel": "モデル",
   "OpenAITTSSpeed": "話速",
   "UsingAzureTTS": "Azure OpenAIを使用する",
-  "AzureTTSInfo": "Azure OpenAIを使用しています。多言語に対応可能です。"
+  "AzureTTSInfo": "Azure OpenAIを使用しています。多言語に対応可能です。",
+  "SendMessage": {
+    "title": "AITuberKit 外部アダプター",
+    "directSendTitle": "AIキャラにそのまま発言させる",
+    "directSendDescription": "送信したメッセージをそのままAIキャラに発言させることができます。複数送信した場合は順番に処理されます。\n音声モデルはAITuberKitの設定で選択したものが使用されます。",
+    "aiGenerateTitle": "AIで回答を生成してから発言させる",
+    "aiGenerateDescription": "送信したメッセージからAIが回答を生成し、その回答をAIキャラに発言させます。複数送信した場合は順番に処理されます。\nAIモデルおよび音声モデルはAITuberKitの設定で選択したものが使用されます。\nシステムプロンプトはAITuberKitのシステムプロンプトを使用するか、カスタムのシステムプロンプトを使用するかを選択できます。\n過去の会話履歴を読み込ませる場合は、システムプロンプト または ユーザーメッセージの任意の位置に [conversation_history] という文字列を含めてください。",
+    "useCurrentSystemPrompt": "AITuberKitのシステムプロンプトを利用する",
+    "userInputTitle": "ユーザー入力を送信する",
+    "userInputDescription": "送信したメッセージはAITuberKitの入力フォームから入力された場合と同じ処理がされます。複数送信した場合は順番に処理されます。\nAIモデルおよび音声モデルはAITuberKitの設定で選択したものが使用されます。\nシステムプロンプトや会話履歴はAITuberKitの値が使用されます。"
+  }
 }

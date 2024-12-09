@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
@@ -17,14 +15,8 @@ export const Form = () => {
   const slideVisible = menuStore((s) => s.slideVisible)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
-
   const [delayedText, setDelayedText] = useState('')
-
-  const { t } = useTranslation()
-  const handleSendChat = handleSendChatFn({
-    NotConnectedToExternalAssistant: t('NotConnectedToExternalAssistant'),
-    APIKeyNotEntered: t('APIKeyNotEntered'),
-  })
+  const handleSendChat = handleSendChatFn()
 
   useEffect(() => {
     // テキストと画像がそろったら、チャットを送信

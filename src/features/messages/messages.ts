@@ -4,6 +4,7 @@ export type Message = {
     | string
     | [{ type: 'text'; text: string }, { type: 'image'; image: string }] // マルチモーダル拡張
   audio?: { id: string }
+  timestamp?: string
 }
 
 export const EMOTIONS = ['neutral', 'happy', 'angry', 'sad', 'relaxed'] as const

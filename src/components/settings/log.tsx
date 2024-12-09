@@ -23,7 +23,7 @@ const Log = () => {
   }
 
   return (
-    <div className="my-40">
+    <div className="mt-40">
       <div className="my-8 grid-cols-2">
         <div className="my-16 typography-20 font-bold">
           {t('ConversationHistory')}

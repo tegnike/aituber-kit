@@ -69,6 +69,8 @@
   "UsingStyleBertVITS2": "Style-Bert-VITS2 사용",
   "StyleBertVITS2Info": "Style-Bert-VITS2를 사용하고 있습니다. 일본어, 영어, 중국어만 지원됩니다. 로컬 API를 사용하는 경우 아래 사이트에서 환경에 맞는 앱을 다운로드하고 실행해야 합니다. 필요한 경우 API 키도 설정해 주세요.",
   "SpeakerSelection": "보이스 타입 선택",
+  "IncludeTimestampInUserMessage": "사용자 발언에 타임스탬프 포함",
+  "IncludeTimestampInUserMessageInfo": "사용자 발언에 타임스탬프를 포함하면 AI가 시간을 고려하여 응답을 생성할 수 있습니다.\n다음과 같은 문장을 시스템 프롬프트에 포함해 주세요.\n\n「사용자 입력이 [timestamp]가 포함된 요청인 경우가 있습니다. 이는 요청 시점의 시각을 나타내므로, 해당 시각을 고려하여 답변을 생성해 주세요.」",
   "GoogleTTSInfo": "Google Cloud Text-to-Speech를 사용합니다. 다국어 지원이 가능합니다.",
   "AuthFileInstruction": "인증용 JSON 파일을 아래에서 얻어 리포지토리 루트 폴더에 credentials.json이라는 이름으로 배치하십시오.",
   "LanguageModelURL": "언어 모델은 아래 URL에서 선택하십시오.",
@@ -119,7 +121,6 @@
   "CharacterName": "캐릭터 이름",
   "ShowAssistantText": "답변란 표시",
   "ShowCharacterName": "답변란에 캐릭터 이름을 표시",
-  "AdvancedSettings": "고급 설정",
   "ShowControlPanel": "설정 버튼 표시",
   "ShowControlPanelInfo": "설정 화면은 Cmd + . (Mac) / Ctrl + . (Windows)를 눌러 표시할 수 있습니다.",
   "SlideMode": "슬라이드 모드",
@@ -135,7 +136,9 @@
   "PdfConvertSuccess": "변환 완료",
   "PdfConvertError": "변환 실패",
   "PdfConvertSubmitError": "PDF 파일, 폴더 이름, API 키가 설정되어 있는지 확인하세요.",
-  "LocalStorageReset": "설정을 재설정합니다 (페이지가 다시 로드됩니다)",
+  "LocalStorageReset": "설정 초기화",
+  "LocalStorageResetInfo": "환경 변수가 설정되어 있는 경우 해당 값이 우선됩니다. 페이지가 새로고침됩니다.",
+  "LocalStorageResetButton": "설정 초기화",
   "Errors": {
     "EmptyAPIKey": "API 키가 설정되지 않았습니다",
     "AIInvalidProperty": "AI 서비스 설정값이 올바르지 않습니다",
@@ -157,7 +160,7 @@
   "RealtimeAPIMode": "리얼타임 API 모드",
   "RealtimeAPIModeContentType": "보내기 타입",
   "RealtimeAPIModeVoice": "음성 타입",
-  "AudioMode": "오디오 모드 (Beta)",
+  "AudioMode": "오디오 모드 (베타 버전)",
   "InputText": "텍스트",
   "InputAudio": "음성",
   "UpdateRealtimeAPISettings": "리얼타임 API 설정 업데이트",
@@ -179,5 +182,15 @@
   "OpenAITTSModel": "모델",
   "OpenAITTSSpeed": "말 속도",
   "UsingAzureTTS": "Azure OpenAI 사용",
-  "AzureTTSInfo": "Azure OpenAI를 사용하고 있습니다. 다국어에 대응할 수 있습니다."
+  "AzureTTSInfo": "Azure OpenAI를 사용하고 있습니다. 다국어에 대응할 수 있습니다.",
+  "SendMessage": {
+    "title": "AITuberKit 외부 어댑터",
+    "directSendTitle": "AI 캐릭터에 직접 말하기",
+    "directSendDescription": "보낸 메시지를 그대로 AI 캐릭터에게 말하게 할 수 있습니다. 여러 메시지를 보낸 경우 순서대로 처리됩니다.\n음성 모델은 AITuberKit의 설정에서 선택한 것이 사용됩니다.",
+    "aiGenerateTitle": "AI가 답변을 생성한 후 말하기",
+    "aiGenerateDescription": "보낸 메시지에서 AI가 답변을 생성하고, 그 답변을 AI 캐릭터에게 말하게 할 수 있습니다. 여러 메시지를 보낸 경우 순서대로 처리됩니다.\nAI 모델과 음성 모델은 AITuberKit의 설정에서 선택한 것이 사용됩니다.\n시스템 프롬프트는 AITuberKit의 시스템 프롬프트를 사용하거나, 커스텀 시스템 프롬프트를 사용하거나 선택할 수 있습니다.\n과거 대화 기록을 불러오려면 시스템 프롬프트 또는 사용자 메시지의 임의의 위치에 [conversation_history]라는 문자열을 포함해 주세요.",
+    "useCurrentSystemPrompt": "AITuberKit의 시스템 프롬프트를 사용하기",
+    "userInputTitle": "사용자 입력 보내기",
+    "userInputDescription": "보낸 메시지는 AITuberKit의 입력 폼에서 입력한 경우와 동일한 처리가 됩니다. 여러 메시지를 보낸 경우 순서대로 처리됩니다.\nAI 모델과 음성 모델은 AITuberKit의 설정에서 선택한 것이 사용됩니다.\n시스템 프롬프트와 대화 기록은 AITuberKit의 값이 사용됩니다."
+  }
 }

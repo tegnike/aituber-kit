@@ -120,7 +120,7 @@ const ModelProvider = () => {
   }, [t])
 
   return externalLinkageMode ? null : (
-    <div className="my-40">
+    <div className="mt-24">
       <div className="my-16 typography-20 font-bold">
         {t('SelectAIService')}
       </div>
@@ -900,7 +900,7 @@ const ModelProvider = () => {
         }
       })()}
 
-      <div className="my-40">
+      <div className="mt-40">
         <div className="my-8">
           <div className="my-16 typography-20 font-bold">
             {t('CharacterSettingsPrompt')}

@@ -69,6 +69,8 @@
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Using Style-Bert-VITS2. It supports only Japanese, English, and Chinese. If using a local API, you need to download and launch the app that suits your environment from the site below. Please also set up an API key if necessary.",
   "SpeakerSelection": "Speaker Selection",
+  "IncludeTimestampInUserMessage": "Include timestamp in user message",
+  "IncludeTimestampInUserMessageInfo": "Including a timestamp in user messages allows AI to generate responses considering time. Please include the following text in the system prompt.\n\n「The user input may be requested with a timestamp. This represents the time at the request, so please generate a response considering that time.」",
   "GoogleTTSInfo": "Using Google Cloud Text-to-Speech. It supports multiple languages.",
   "AuthFileInstruction": "Obtain the authentication JSON file below and place it in the root folder of the repository as 'credentials.json'.",
   "LanguageModelURL": "Select the language model from the URL below.",
@@ -119,7 +121,6 @@
   "CharacterName": "Character name",
   "ShowAssistantText": "Show answer box",
   "ShowCharacterName": "Show character name in the answer box",
-  "AdvancedSettings": "Advanced Settings",
   "ShowControlPanel": "Show settings button",
   "ShowControlPanelInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) .",
   "SlideMode": "Slide Mode",
@@ -135,7 +136,9 @@
   "PdfConvertSuccess": "Conversion completed",
   "PdfConvertError": "Conversion failed",
   "PdfConvertSubmitError": "Please make sure the PDF file, folder name, and API key are set.",
-  "LocalStorageReset": "Reset settings (page will be reloaded)",
+  "LocalStorageReset": "Reset Settings",
+  "LocalStorageResetInfo": "Environment variables are prioritized if set. The page will be reloaded.",
+  "LocalStorageResetButton": "Reset Settings",
   "Errors": {
     "EmptyAPIKey": "API key is not set",
     "AIInvalidProperty": "AI service settings are incorrect",
@@ -179,5 +182,15 @@
   "OpenAITTSModel": "Model",
   "OpenAITTSSpeed": "Speed",
   "UsingAzureTTS": "Using Azure OpenAI",
-  "AzureTTSInfo": "Using Azure OpenAI. It supports multiple languages."
+  "AzureTTSInfo": "Using Azure OpenAI. It supports multiple languages.",
+  "SendMessage": {
+    "title": "AITuberKit External Adapter",
+    "directSendTitle": "Directly speak to AI character",
+    "directSendDescription": "You can send the message directly to the AI character. If multiple messages are sent, they are processed in order. The voice model is the one selected in the AITuberKit settings.",
+    "aiGenerateTitle": "Generate AI response and then speak",
+    "aiGenerateDescription": "The AI generates a response from the message sent and then speaks it. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt can be selected to use the AITuberKit system prompt or a custom system prompt. If you want to load the past conversation history, include the string [conversation_history] in the system prompt or user message.",
+    "useCurrentSystemPrompt": "Use AITuberKit system prompt",
+    "userInputTitle": "Send user input",
+    "userInputDescription": "The message sent is processed the same as when input from the AITuberKit input form. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt and conversation history are the values set in AITuberKit."
+  }
 }
