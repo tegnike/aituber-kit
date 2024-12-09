@@ -11,6 +11,7 @@ export const messageSelectors = {
     })
   },
 
+  // 音声メッセージのみを取得
   getAudioMessages: (messages: Message[]): Message[] => {
     return messages.filter((message) => {
       // userの場合：contentがstring型のメッセージのみを許可
@@ -26,6 +27,7 @@ export const messageSelectors = {
     })
   },
 
+  // メッセージを処理して、テキストメッセージのみを取得
   getProcessedMessages: (
     messages: Message[],
     includeTimestamp: boolean
@@ -97,6 +99,7 @@ export const messageSelectors = {
       .filter((item) => item.content !== '')
   },
 
+  // 画像メッセージをテキストメッセージに変換
   cutImageMessage: (messages: Message[]): Message[] => {
     return messages.map((message: Message) => ({
       ...message,

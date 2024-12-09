@@ -1,12 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-interface Message {
+interface ReceivedMessage {
   timestamp: number
   message: string
+  type: 'direct_send' | 'ai_generate' | 'user_input'
+  systemPrompt?: string
+  useCurrentSystemPrompt?: boolean
 }
 
 interface MessageQueue {
-  messages: Message[]
+  messages: ReceivedMessage[]
   lastAccessed: number
 }
 
@@ -16,6 +19,9 @@ const CLIENT_TIMEOUT = 1000 * 60 * 5 // 5分
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const clientId = req.query.clientId as string
+  const type =
+    (req.query.type as 'direct_send' | 'ai_generate' | 'user_input') ||
+    'direct_send'
 
   if (!clientId) {
     res.status(400).json({ error: 'Client ID is required' })
@@ -23,7 +29,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === 'POST') {
-    const { messages } = req.body
+    const { messages, systemPrompt, useCurrentSystemPrompt } = req.body
 
     if (!Array.isArray(messages) || messages.length === 0) {
       res.status(400).json({ error: 'Messages array is required' })
@@ -44,6 +50,9 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       messagesPerClient[clientId].messages.push({
         timestamp,
         message,
+        type,
+        systemPrompt,
+        useCurrentSystemPrompt,
       })
     })
     messagesPerClient[clientId].lastAccessed = timestamp
@@ -55,7 +64,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       messagesPerClient[clientId] = { messages: [], lastAccessed: Date.now() }
     }
 
-    // クライアントのキューから全てのメッセージを取得
+    // クライアントのキューから全てのメッセージを取��
     const clientQueue = messagesPerClient[clientId]
     const newMessages = clientQueue.messages
 
