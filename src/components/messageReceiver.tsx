@@ -34,13 +34,13 @@ const MessageReceiver = () => {
   const [lastTimestamp, setLastTimestamp] = useState(0)
   const clientId = settingsStore((state) => state.clientId)
 
-  const speakMessage = useCallback((messages: ReceivedMessage[]) => {
+  const speakMessage = useCallback(async (messages: ReceivedMessage[]) => {
     const hs = homeStore.getState()
     const ss = settingsStore.getState()
 
-    messages.forEach(async (message) => {
+    for (const message of messages) {
       if (message.type === 'direct_send') {
-        speakMessageHandler(message.message)
+        await speakMessageHandler(message.message)
       } else if (message.type === 'ai_generate') {
         const conversationHistory = [
           ...hs.chatLog.slice(-10),
@@ -69,11 +69,11 @@ const MessageReceiver = () => {
         ]
         await processAIResponse(hs.chatLog, messages)
       } else if (message.type === 'user_input') {
-        handleSendChatFn()(message.message)
+        await handleSendChatFn()(message.message)
       } else {
         console.error('Invalid message type:', message.type)
       }
-    })
+    }
   }, [])
 
   useEffect(() => {

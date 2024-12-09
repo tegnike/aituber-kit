@@ -451,7 +451,7 @@ const SendMessage = () => {
                 Messages
               </div>
               <div className="space-y-4">
-                {[...Array(aiFieldCount)].map((_, index) => (
+                {[...Array(userInputFieldCount)].map((_, index) => (
                   <div key={index} className="flex gap-4">
                     <textarea
                       value={userInputMessages[index]}
@@ -469,7 +469,7 @@ const SendMessage = () => {
                         resize: 'vertical',
                       }}
                     />
-                    {aiFieldCount > 1 && (
+                    {userInputFieldCount > 1 && (
                       <IconButton
                         iconName="24/Subtract"
                         onClick={() => removeField(index, 'user_input')}
