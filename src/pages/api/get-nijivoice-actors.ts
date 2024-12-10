@@ -13,7 +13,7 @@ export default async function handler(
 
   try {
     const response = await fetch(
-      'https://ai-voice-api-kerb-538219057988.asia-northeast1.run.app/api/platform/v1/voice-actors',
+      'https://api.nijivoice.com/api/platform/v1/voice-actors',
       {
         headers: {
           'x-api-key': nijivoiceApiKey as string,

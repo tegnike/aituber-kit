@@ -19,7 +19,7 @@ export default async function handler(
 
   try {
     const response = await axios.post(
-      `https://ai-voice-api-kerb-538219057988.asia-northeast1.run.app/api/platform/v1/voice-actors/${voiceActorId}/generate-voice`,
+      `https://api.nijivoice.com/api/platform/v1/voice-actors/${voiceActorId}/generate-voice`,
       {
         script,
         speed: speed.toString(),
@@ -34,7 +34,7 @@ export default async function handler(
       }
     )
 
-    const audioUrl = response.data.generatedVoice.url
+    const audioUrl = response.data.generatedVoice.audioFileUrl
 
     const audioResponse = await axios.get(audioUrl, {
       responseType: 'stream',
