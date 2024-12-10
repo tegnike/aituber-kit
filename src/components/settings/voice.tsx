@@ -113,7 +113,7 @@ const Voice = () => {
         </select>
       </div>
       <div className="mt-40">
-        <div className="m-16 typography-20 font-bold">
+        <div className="mb-16 typography-20 font-bold">
           {t('VoiceAdjustment')}
         </div>
         {(() => {
@@ -840,7 +840,7 @@ const Voice = () => {
                     }
                   />
                 </div>
-                <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
+                <div className="mt-16 font-bold">{t('NijiVoiceActorId')}</div>
                 <div className="mt-8">
                   <select
                     value={nijivoiceActorId}
@@ -860,7 +860,7 @@ const Voice = () => {
                   </select>
                 </div>
                 <div className="mt-16 font-bold">
-                  {t('Speed')}: {nijivoiceSpeed}
+                  {t('NijiVoiceSpeed')}: {nijivoiceSpeed}
                 </div>
                 <input
                   type="range"
