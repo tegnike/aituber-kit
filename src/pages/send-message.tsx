@@ -19,7 +19,9 @@ const SendMessage = () => {
   const [userInputMessages, setUserInputMessages] = useState(Array(1).fill(''))
   const [userInputFieldCount, setUserInputFieldCount] = useState(1)
   const [clientId, setClientId] = useState('')
-  const [response, setResponse] = useState('')
+  const [directResponse, setDirectResponse] = useState('')
+  const [aiResponse, setAiResponse] = useState('')
+  const [userInputResponse, setUserInputResponse] = useState('')
   const [copySuccess, setCopySuccess] = useState<string>('')
   const [popupPosition, setPopupPosition] = useState<{
     x: number
@@ -89,29 +91,48 @@ const SendMessage = () => {
       }
 
       const data = await res.json()
-      setResponse(JSON.stringify(data, null, 2))
-      if (type === 'direct_send') {
-        setDirectMessages(Array(1).fill(''))
-        setDirectFieldCount(1)
-      } else if (type === 'ai_generate') {
-        setAiMessages(Array(1).fill(''))
-        setAiFieldCount(1)
-      } else if (type === 'user_input') {
-        setUserInputMessages(Array(1).fill(''))
-        setUserInputFieldCount(1)
+      switch (type) {
+        case 'direct_send':
+          setDirectResponse(JSON.stringify(data, null, 2))
+          setDirectMessages(Array(1).fill(''))
+          setDirectFieldCount(1)
+          break
+        case 'ai_generate':
+          setAiResponse(JSON.stringify(data, null, 2))
+          setAiMessages(Array(1).fill(''))
+          setAiFieldCount(1)
+          break
+        case 'user_input':
+          setUserInputResponse(JSON.stringify(data, null, 2))
+          setUserInputMessages(Array(1).fill(''))
+          setUserInputFieldCount(1)
+          break
       }
     } catch (error) {
       console.error('Error:', error)
-      setResponse(
-        `エラーが発生しました: ${error instanceof Error ? error.message : String(error)}`
-      )
+      const errorMessage = `エラーが発生しました: ${error instanceof Error ? error.message : String(error)}`
+      switch (type) {
+        case 'direct_send':
+          setDirectResponse(errorMessage)
+          break
+        case 'ai_generate':
+          setAiResponse(errorMessage)
+          break
+        case 'user_input':
+          setUserInputResponse(errorMessage)
+          break
+      }
     }
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault()
-      handleSubmit()
+
+      const formType = (e.target as HTMLTextAreaElement).getAttribute(
+        'data-form-type'
+      ) as SendType
+      handleSubmit(undefined, formType)
     }
   }
 
@@ -225,6 +246,7 @@ const SendMessage = () => {
                   <div key={index} className="flex gap-4">
                     <textarea
                       value={directMessages[index]}
+                      data-form-type="direct_send"
                       onChange={(e) => {
                         const newMessages = [...directMessages]
                         newMessages[index] = e.target.value
@@ -270,14 +292,14 @@ const SendMessage = () => {
               </div>
             </div>
           </form>
-          {response && (
+          {directResponse && (
             <div className="mt-16 w-full">
               <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
                 <span>Response</span>
               </div>
               <div className="w-full bg-white rounded-16 p-16">
                 <pre className="bg-gray-100 p-2 rounded overflow-auto max-h-60">
-                  {response}
+                  {directResponse}
                 </pre>
               </div>
             </div>
@@ -356,6 +378,7 @@ const SendMessage = () => {
                   <div key={index} className="flex gap-4">
                     <textarea
                       value={aiMessages[index]}
+                      data-form-type="ai_generate"
                       onChange={(e) => {
                         const newMessages = [...aiMessages]
                         newMessages[index] = e.target.value
@@ -400,14 +423,14 @@ const SendMessage = () => {
               </div>
             </div>
           </form>
-          {response && (
+          {aiResponse && (
             <div className="mt-16 w-full">
               <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
                 <span>Response</span>
               </div>
               <div className="w-full bg-white rounded-16 p-16">
                 <pre className="bg-gray-100 p-2 rounded overflow-auto max-h-60">
-                  {response}
+                  {aiResponse}
                 </pre>
               </div>
             </div>
@@ -456,6 +479,7 @@ const SendMessage = () => {
                   <div key={index} className="flex gap-4">
                     <textarea
                       value={userInputMessages[index]}
+                      data-form-type="user_input"
                       onChange={(e) => {
                         const newMessages = [...userInputMessages]
                         newMessages[index] = e.target.value
@@ -501,14 +525,14 @@ const SendMessage = () => {
               </div>
             </div>
           </form>
-          {response && (
+          {userInputResponse && (
             <div className="mt-16 w-full">
               <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
                 <span>Response</span>
               </div>
               <div className="w-full bg-white rounded-16 p-16">
                 <pre className="bg-gray-100 p-2 rounded overflow-auto max-h-60">
-                  {response}
+                  {userInputResponse}
                 </pre>
               </div>
             </div>
