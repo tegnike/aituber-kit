@@ -15,6 +15,7 @@ import { synthesizeVoiceAzureOpenAIApi } from './synthesizeVoiceAzureOpenAI'
 import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
 import { SpeakQueue } from './speakQueue'
+import { synthesizeVoiceNijivoiceApi } from './synthesizeVoiceNijivoice'
 
 interface EnglishToJapanese {
   [key: string]: string
@@ -120,6 +121,13 @@ const createSpeakCharacter = () => {
             ss.azureTTSEndpoint || ss.azureEndpoint,
             ss.openaiTTSVoice,
             ss.openaiTTSSpeed
+          )
+        } else if (ss.selectVoice == 'nijivoice') {
+          buffer = await synthesizeVoiceNijivoiceApi(
+            talk,
+            ss.nijivoiceApiKey,
+            ss.nijivoiceActorId,
+            ss.nijivoiceSpeed
           )
         }
       } catch (error) {
