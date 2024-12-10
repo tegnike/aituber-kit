@@ -826,6 +826,10 @@ const Voice = () => {
             return (
               <>
                 <div>{t('NijiVoiceInfo')}</div>
+                <Link
+                  url="https://app.nijivoice.com/"
+                  label="https://app.nijivoice.com/"
+                />
                 <div className="mt-16 font-bold">{t('NijiVoiceApiKey')}</div>
                 <div className="mt-8">
                   <input
