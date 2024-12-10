@@ -63,7 +63,8 @@ const Based = () => {
               const jaVoiceSelected =
                 ss.selectVoice === 'voicevox' ||
                 ss.selectVoice === 'koeiromap' ||
-                ss.selectVoice === 'aivis_speech'
+                ss.selectVoice === 'aivis_speech' ||
+                ss.selectVoice === 'nijivoice'
 
               switch (newLanguage) {
                 case 'ja':

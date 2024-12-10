@@ -71,6 +71,9 @@ interface ModelProvider {
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
+  nijivoiceApiKey: string
+  nijivoiceActorId: string
+  nijivoiceSpeed: number
 }
 
 interface Integrations {
@@ -251,6 +254,12 @@ const settingsStore = create<SettingsState>()(
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
+
+      // NijiVoice settings
+      nijivoiceApiKey: '',
+      nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
+      nijivoiceSpeed:
+        parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SPEED || '1.0') || 1.0,
     }),
     {
       name: 'aitube-kit-settings',
@@ -320,6 +329,9 @@ const settingsStore = create<SettingsState>()(
         azureTTSKey: state.azureTTSKey,
         azureTTSEndpoint: state.azureTTSEndpoint,
         selectedVrmPath: state.selectedVrmPath,
+        nijivoiceApiKey: state.nijivoiceApiKey,
+        nijivoiceActorId: state.nijivoiceActorId,
+        nijivoiceSpeed: state.nijivoiceSpeed,
       }),
     }
   )
