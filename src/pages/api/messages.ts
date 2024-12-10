@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
+type MessageType = 'direct_send' | 'ai_generate' | 'user_input'
+
 interface ReceivedMessage {
   timestamp: number
   message: string
-  type: 'direct_send' | 'ai_generate' | 'user_input'
+  type: MessageType
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
 }
@@ -19,9 +21,7 @@ const CLIENT_TIMEOUT = 1000 * 60 * 5 // 5分
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const clientId = req.query.clientId as string
-  const type =
-    (req.query.type as 'direct_send' | 'ai_generate' | 'user_input') ||
-    'direct_send'
+  const type = (req.query.type as MessageType) || 'direct_send'
 
   if (!clientId) {
     res.status(400).json({ error: 'Client ID is required' })
@@ -33,6 +33,14 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 
     if (!Array.isArray(messages) || messages.length === 0) {
       res.status(400).json({ error: 'Messages array is required' })
+      return
+    }
+    if (systemPrompt && typeof systemPrompt !== 'string') {
+      res.status(400).json({ error: 'System prompt is not a string' })
+      return
+    }
+    if (useCurrentSystemPrompt && typeof useCurrentSystemPrompt !== 'boolean') {
+      res.status(400).json({ error: 'useCurrentSystemPrompt is not a boolean' })
       return
     }
 
@@ -64,7 +72,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       messagesPerClient[clientId] = { messages: [], lastAccessed: Date.now() }
     }
 
-    // クライアントのキューから全てのメッセージを取��
+    // クライアントのキューから全てのメッセージを取得
     const clientQueue = messagesPerClient[clientId]
     const newMessages = clientQueue.messages
 

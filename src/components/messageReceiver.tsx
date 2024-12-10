@@ -39,39 +39,44 @@ const MessageReceiver = () => {
     const ss = settingsStore.getState()
 
     for (const message of messages) {
-      if (message.type === 'direct_send') {
-        await speakMessageHandler(message.message)
-      } else if (message.type === 'ai_generate') {
-        const conversationHistory = [
-          ...hs.chatLog.slice(-10),
-          { role: 'user', content: message.message },
-        ]
-          .map((m) => `${m.role}: ${m.content}`)
-          .join('\n')
-        const systemPrompt = message.useCurrentSystemPrompt
-          ? ss.systemPrompt
-          : message.systemPrompt
-        const messages: Message[] = [
-          {
-            role: 'system',
-            content: systemPrompt?.replace(
-              '[conversation_history]',
-              conversationHistory
-            ),
-          },
-          {
-            role: 'user',
-            content: message.message.replace(
-              '[conversation_history]',
-              conversationHistory
-            ),
-          },
-        ]
-        await processAIResponse(hs.chatLog, messages)
-      } else if (message.type === 'user_input') {
-        await handleSendChatFn()(message.message)
-      } else {
-        console.error('Invalid message type:', message.type)
+      switch (message.type) {
+        case 'direct_send':
+          await speakMessageHandler(message.message)
+          break
+        case 'ai_generate': {
+          const conversationHistory = [
+            ...hs.chatLog.slice(-10),
+            { role: 'user', content: message.message },
+          ]
+            .map((m) => `${m.role}: ${m.content}`)
+            .join('\n')
+          const systemPrompt = message.useCurrentSystemPrompt
+            ? ss.systemPrompt
+            : message.systemPrompt
+          const messages: Message[] = [
+            {
+              role: 'system',
+              content: systemPrompt?.replace(
+                '[conversation_history]',
+                conversationHistory
+              ),
+            },
+            {
+              role: 'user',
+              content: message.message.replace(
+                '[conversation_history]',
+                conversationHistory
+              ),
+            },
+          ]
+          await processAIResponse(hs.chatLog, messages)
+          break
+        }
+        case 'user_input':
+          await handleSendChatFn()(message.message)
+          break
+        default:
+          console.error('Invalid message type:', message.type)
       }
     }
   }, [])

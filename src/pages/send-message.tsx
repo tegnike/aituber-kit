@@ -67,6 +67,7 @@ const SendMessage = () => {
     const body: RequestBody = {
       messages: messages.filter((msg) => msg.trim()),
       useCurrentSystemPrompt: useCurrentSystemPrompt,
+      ...(useCurrentSystemPrompt ? {} : { systemPrompt: systemPrompt }),
     }
 
     try {
@@ -301,7 +302,7 @@ const SendMessage = () => {
                   type="button"
                   onClick={(e) =>
                     copyToClipboard(
-                      `curl -X POST -H "Content-Type: application/json" -d '{"SystemPrompt": "You are a helpful assistant.", "useCurrentSystemPrompt": false, "messages": ["今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=ai_generate'`,
+                      `curl -X POST -H "Content-Type: application/json" -d '{"systemPrompt": "You are a helpful assistant.", "useCurrentSystemPrompt": false, "messages": ["今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=ai_generate'`,
                       e
                     )
                   }
@@ -312,7 +313,7 @@ const SendMessage = () => {
               </div>
               <pre className="bg-[#1F2937] text-white rounded-16 w-full p-16 typography-16 font-bold whitespace-pre-wrap break-words">
                 <code>
-                  {`curl -X POST -H "Content-Type: application/json" -d '{"SystemPrompt": "You are a helpful assistant.", "useCurrentSystemPrompt": false, "messages": ["今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=ai_generate'`}
+                  {`curl -X POST -H "Content-Type: application/json" -d '{"systemPrompt": "You are a helpful assistant.", "useCurrentSystemPrompt": false, "messages": ["今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=ai_generate'`}
                 </code>
               </pre>
             </div>
