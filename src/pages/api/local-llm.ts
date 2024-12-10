@@ -11,9 +11,6 @@ export default async function handler(
 
   const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
 
-  console.log('Parsed body:', body)
-  console.log('localLlmUrl:', body.localLlmUrl)
-
   if (!body.localLlmUrl) {
     return res.status(400).json({
       error: 'localLlmUrl is required',
@@ -39,24 +36,30 @@ export default async function handler(
 
     response.data.pipe(res)
   } catch (error) {
-    console.error('Error details:', error)
+    console.error('Error in Local LLM API call:', error)
 
     let errorMessage = 'Error processing request'
+    let errorCode = 'LocalLLMError'
 
     if (error && typeof error === 'object') {
       const err = error as any
-      if (
-        'response' in err &&
-        err.response &&
-        typeof err.response === 'object' &&
-        'data' in err.response
-      ) {
+      if (err.code === 'ECONNREFUSED') {
+        errorMessage = 'Failed to connect to Local LLM server'
+        errorCode = 'LocalLLMConnectionError'
+      } else if (err.response?.status === 404) {
+        errorMessage = 'Local LLM endpoint not found'
+        errorCode = 'LocalLLMNotFound'
+      } else if (err.response?.data) {
         errorMessage = err.response.data
-      } else if ('message' in err && typeof err.message === 'string') {
+        errorCode = 'LocalLLMAPIError'
+      } else if (err.message) {
         errorMessage = err.message
       }
     }
 
-    res.status(500).json({ error: errorMessage })
+    res.status(500).json({
+      error: errorMessage,
+      errorCode: errorCode,
+    })
   }
 }

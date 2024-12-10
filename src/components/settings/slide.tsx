@@ -65,7 +65,7 @@ const Slide = () => {
 
   return (
     <>
-      <div className="my-16 typography-20 font-bold">{t('SlideMode')}</div>
+      <div className="mb-16 typography-20 font-bold">{t('SlideMode')}</div>
       <p className="">{t('SlideModeDescription')}</p>
       <div className="my-8">
         <TextButton
@@ -81,7 +81,7 @@ const Slide = () => {
       </div>
       {slideMode && (
         <>
-          <div className="my-16 typography-20 font-bold">
+          <div className="mt-24 mb-16 typography-20 font-bold">
             {t('SelectedSlideDocs')}
           </div>
           <select

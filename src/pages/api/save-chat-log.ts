@@ -57,6 +57,7 @@ export default async function handler(
     const filePath = path.join(logsDir, fileName)
     fs.writeFileSync(filePath, JSON.stringify(processedMessages, null, 2))
 
+    // TODO: 標準化する
     if (supabase) {
       // 既存のセッションを検索
       const { data: existingSession } = await supabase

@@ -69,6 +69,8 @@
   "UsingStyleBertVITS2": "使用 Style-Bert-VITS2",
   "StyleBertVITS2Info": "使用 Style-Bert-VITS2。僅支援日語、英語和中文。如果使用本地 API，您需要從以下網站下載並啟動適合您環境的應用程式。如有需要，請也設定 API 金鑰。",
   "SpeakerSelection": "選擇語音角色",
+  "IncludeTimestampInUserMessage": "在用戶訊息中包含時間戳記",
+  "IncludeTimestampInUserMessageInfo": "在用戶訊息中包含時間戳記，可以讓 AI 根據時間生成回應。\n請在系統提示中包含以下文字：\n\n「用戶輸入可能會包含 [timestamp] 時間戳記。這代表請求時的時間，請根據該時間生成回應。」",
   "GoogleTTSInfo": "使用 Google Cloud 文字轉語音。支援多種語言。",
   "AuthFileInstruction": "在下方獲取認證 JSON 檔案，並將其放置於儲存庫的根目錄下，命名為 'credentials.json'。",
   "LanguageModelURL": "從下方 URL 選擇語言模型。",
@@ -119,7 +121,6 @@
   "CharacterName": "角色名字",
   "ShowAssistantText": "顯示回答框",
   "ShowCharacterName": "在回答框中顯示角色名稱",
-  "AdvancedSettings": "高階設定",
   "ShowControlPanel": "顯示設定按鈕",
   "ShowControlPanelInfo": "可以透過按 Cmd + . (Mac) / Ctrl + . (Windows) 來顯示設定介面。",
   "SlideMode": "投影片模式",
@@ -135,7 +136,9 @@
   "PdfConvertSuccess": "轉換完成",
   "PdfConvertError": "轉換失敗",
   "PdfConvertSubmitError": "請確保已設定PDF檔案、資料夾名稱和API金鑰。",
-  "LocalStorageReset": "重設設定（頁面會重新載入）",
+  "LocalStorageReset": "設定重置",
+  "LocalStorageResetInfo": "環境變數設定時，優先使用其值。頁面將重新載入。",
+  "LocalStorageResetButton": "設定重置",
   "Errors": {
     "EmptyAPIKey": "API 金鑰未設定",
     "AIInvalidProperty": "AI 服務設定值不正確",
@@ -143,7 +146,12 @@
     "InvalidAIService": "選擇的 AI 服務不正確",
     "MethodNotAllowed": "請求不適當",
     "TTSServiceError": "{{serviceName}} TTS服務發生錯誤：{{message}}",
-    "UnexpectedError": "發生了意外錯誤"
+    "UnexpectedError": "發生了意外錯誤",
+    "LocalLLMError": "Local LLM 發生錯誤",
+    "LocalLLMStreamError": "Local LLM 的串流處理發生錯誤",
+    "LocalLLMConnectionError": "Local LLM 伺服器無法連線",
+    "LocalLLMNotFound": "Local LLM 的端點無法找到",
+    "LocalLLMAPIError": "Local LLM API 發生錯誤"
   },
   "MessageReceiver": "接收外部指示",
   "MessageReceiverDescription": "你可以使用 API 來指示 AI 角色從外部說話。",
@@ -152,7 +160,7 @@
   "RealtimeAPIMode": "實時API模式",
   "RealtimeAPIModeContentType": "送信型別",
   "RealtimeAPIModeVoice": "語音型別",
-  "AudioMode": "音訊模式（Beta）",
+  "AudioMode": "音訊模式（測試版）",
   "InputText": "文字",
   "InputAudio": "音訊",
   "UpdateRealtimeAPISettings": "更新實時API設定",
@@ -174,5 +182,15 @@
   "OpenAITTSModel": "模型",
   "OpenAITTSSpeed": "話速",
   "UsingAzureTTS": "使用 Azure OpenAI",
-  "AzureTTSInfo": "使用 Azure OpenAI。它支援多種語言。"
+  "AzureTTSInfo": "使用 Azure OpenAI。它支援多種語言。",
+  "SendMessage": {
+    "title": "AITuberKit 外部適配器",
+    "directSendTitle": "AI角色直接發言",
+    "directSendDescription": "發送的訊息將直接由AI角色發言。如果發送多個訊息，將按順序處理。\n語音模型將使用AITuberKit的設定中選擇的模型。",
+    "aiGenerateTitle": "AI生成回答後發言",
+    "aiGenerateDescription": "從發送的訊息中由AI生成回答，然後由AI角色發言。如果發送多個訊息，將按順序處理。\nAI模型和語音模型將使用AITuberKit的設定中選擇的模型。\n系統提示可以選擇使用AITuberKit的系統提示或自定義的系統提示。\n如果需要讀取過去的會話記錄，請在系統提示或用戶訊息的任意位置包含 [conversation_history] 字串。",
+    "useCurrentSystemPrompt": "使用AITuberKit的系統提示",
+    "userInputTitle": "用戶輸入發送",
+    "userInputDescription": "發送的訊息將與AITuberKit的輸入框中輸入的訊息相同。如果發送多個訊息，將按順序處理。\nAI模型和語音模型將使用AITuberKit的設定中選擇的模型。\n系統提示和會話記錄將使用AITuberKit的值。"
+  }
 }

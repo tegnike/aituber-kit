@@ -100,6 +100,7 @@ interface Character {
 interface General {
   selectLanguage: Language
   changeEnglishToJapanese: boolean
+  includeTimestampInUserMessage: boolean
   showControlPanel: boolean
   externalLinkageMode: boolean
   realtimeAPIMode: boolean
@@ -224,6 +225,8 @@ const settingsStore = create<SettingsState>()(
         (process.env.NEXT_PUBLIC_SELECT_LANGUAGE as Language) || 'ja',
       changeEnglishToJapanese:
         process.env.NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE === 'true',
+      includeTimestampInUserMessage:
+        process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
       externalLinkageMode:
         process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
@@ -309,6 +312,7 @@ const settingsStore = create<SettingsState>()(
         systemPrompt: state.systemPrompt,
         selectLanguage: state.selectLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
+        includeTimestampInUserMessage: state.includeTimestampInUserMessage,
         externalLinkageMode: state.externalLinkageMode,
         realtimeAPIMode: state.realtimeAPIMode,
         realtimeAPIModeContentType: state.realtimeAPIModeContentType,

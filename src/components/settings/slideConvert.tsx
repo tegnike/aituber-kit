@@ -89,7 +89,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   }
 
   return (
-    <div className="my-24">
+    <div className="mt-24">
       <form onSubmit={handleFormSubmit}>
         <div className="my-16 mb-16 typography-20 font-bold">
           {t('PdfConvertLabel')}
@@ -175,7 +175,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
             </>
           )}
         </select>
-        <div className="my-16">
+        <div className="mt-16">
           <TextButton type="submit" disabled={isLoading}>
             {isLoading ? t('PdfConvertLoading') : t('PdfConvertButton')}
           </TextButton>
