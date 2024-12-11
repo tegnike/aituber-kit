@@ -51,9 +51,9 @@ const ModelProvider = () => {
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
-    openai: 'gpt-4o',
+    openai: 'gpt-4o-2024-11-20',
     anthropic: 'claude-3-5-sonnet-20241022',
-    google: 'gemini-1.5-pro',
+    google: 'gemini-1.5-flash-latest',
     azure: '',
     groq: 'gemma-7b-it',
     cohere: 'command-r-plus',
