@@ -157,6 +157,12 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           )}
           {aiService === 'google' && (
             <>
+              <option value="gemini-1.5-flash-latest">
+                gemini-1.5-flash-latest
+              </option>
+              <option value="gemini-1.5-pro-latest">
+                gemini-1.5-pro-latest
+              </option>
               <option value="gemini-1.5-flash-exp-0827">
                 gemini-1.5-flash-exp-0827
               </option>
@@ -166,11 +172,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
               <option value="gemini-1.5-flash-8b-exp-0827">
                 gemini-1.5-flash-8b-exp-0827
               </option>
-              <option value="gemini-1.5-pro-latest">
-                gemini-1.5-pro-latest
-              </option>
-              <option value="gemini-1.5-flash-latest">
-                gemini-1.5-flash-latest
+              <option value="gemini-2.0-flash-exp">
+                gemini-2.0-flash-exp
               </option>
             </>
           )}
