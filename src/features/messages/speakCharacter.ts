@@ -49,7 +49,6 @@ function preprocessMessage(
 
 const createSpeakCharacter = () => {
   let lastTime = 0
-  let prevFetchPromise: Promise<unknown> = Promise.resolve()
 
   return (talk: Talk, onStart?: () => void, onComplete?: () => void) => {
     const ss = settingsStore.getState()
@@ -66,12 +65,8 @@ const createSpeakCharacter = () => {
 
     let isNeedDecode = true
 
-    const fetchPromise = prevFetchPromise.then(async () => {
-      const now = Date.now()
-      if (now - lastTime < 1000) {
-        await wait(1000 - (now - lastTime))
-      }
-
+    // API呼び出しを即時実行
+    const fetchPromise = (async () => {
       let buffer
       try {
         if (talk.message == '' && talk.buffer) {
@@ -161,13 +156,10 @@ const createSpeakCharacter = () => {
         handleTTSError(error, ss.selectVoice)
         return null
       }
-      lastTime = Date.now()
       return buffer
-    })
+    })()
 
-    prevFetchPromise = fetchPromise
-
-    // キューを使用した処理に変更
+    // 音声バッファの取得後、再生キューに追加
     fetchPromise.then((audioBuffer) => {
       if (!audioBuffer) return
 
