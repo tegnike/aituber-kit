@@ -197,5 +197,6 @@
     "useCurrentSystemPrompt": "AITuberKit의 시스템 프롬프트를 사용하기",
     "userInputTitle": "사용자 입력 보내기",
     "userInputDescription": "보낸 메시지는 AITuberKit의 입력 폼에서 입력한 경우와 동일한 처리가 됩니다. 여러 메시지를 보낸 경우 순서대로 처리됩니다.\nAI 모델과 음성 모델은 AITuberKit의 설정에서 선택한 것이 사용됩니다.\n시스템 프롬프트와 대화 기록은 AITuberKit의 값이 사용됩니다."
-  }
+  },
+  "CannotUseVoice": "리얼타임 API 모드 또는 오디오 모드가 활성화된 경우, 음성 설정은 필요하지 않습니다."
 }

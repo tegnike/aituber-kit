@@ -198,5 +198,6 @@
     "useCurrentSystemPrompt": "AITuberKitのシステムプロンプトを利用する",
     "userInputTitle": "ユーザー入力を送信する",
     "userInputDescription": "送信したメッセージはAITuberKitの入力フォームから入力された場合と同じ処理がされます。複数送信した場合は順番に処理されます。\nAIモデルおよび音声モデルはAITuberKitの設定で選択したものが使用されます。\nシステムプロンプトや会話履歴はAITuberKitの値が使用されます。"
-  }
+  },
+  "CannotUseVoice": "リアルタイムAPIモード または オーディオモードが有効の場合、\n音声設定は不要です。"
 }

@@ -197,5 +197,6 @@
     "useCurrentSystemPrompt": "Use AITuberKit system prompt",
     "userInputTitle": "Send user input",
     "userInputDescription": "The message sent is processed the same as when input from the AITuberKit input form. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt and conversation history are the values set in AITuberKit."
-  }
+  },
+  "CannotUseVoice": "Realtime API mode or Audio mode is enabled, so voice settings are not required."
 }
