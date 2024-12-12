@@ -28,7 +28,10 @@ export const Form = () => {
 
   const hookSendChat = useCallback(
     (text: string) => {
-      homeStore.setState({ triggerShutter: true })
+      // すでにmodalImageが存在する場合は、Webcamのキャプチャーをスキップ
+      if (!homeStore.getState().modalImage) {
+        homeStore.setState({ triggerShutter: true })
+      }
 
       // MENUの中でshowCameraがtrueの場合、画像が取得されるまで待機
       if (webcamStatus || captureStatus) {
