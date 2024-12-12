@@ -75,7 +75,7 @@
   "StyleBertVITS2Info": "Using Style-Bert-VITS2. It supports only Japanese, English, and Chinese. If using a local API, you need to download and launch the app that suits your environment from the site below. Please also set up an API key if necessary.",
   "SpeakerSelection": "Speaker Selection",
   "IncludeTimestampInUserMessage": "Include timestamp in user message",
-  "IncludeTimestampInUserMessageInfo": "Including a timestamp in user messages allows AI to generate responses considering time. Please include the following text in the system prompt.\n\n「The user input may be requested with a timestamp. This represents the time at the request, so please generate a response considering that time.」",
+  "IncludeTimestampInUserMessageInfo": "By including timestamps in user messages, the AI can generate responses while considering the time.\nPlease include the following text in your system prompt:\n\n\"User input may include [timestamp]. This represents the UTC time at the moment of the request, so please generate responses considering this timestamp.\"",
   "GoogleTTSInfo": "Using Google Cloud Text-to-Speech. It supports multiple languages.",
   "AuthFileInstruction": "Obtain the authentication JSON file below and place it in the root folder of the repository as 'credentials.json'.",
   "LanguageModelURL": "Select the language model from the URL below.",
