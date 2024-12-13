@@ -24,6 +24,9 @@ const Voice = () => {
   const koeiromapKey = settingsStore((s) => s.koeiromapKey)
   const elevenlabsApiKey = settingsStore((s) => s.elevenlabsApiKey)
 
+  const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
+  const audioMode = settingsStore((s) => s.audioMode)
+
   const selectVoice = settingsStore((s) => s.selectVoice)
   const koeiroParam = settingsStore((s) => s.koeiroParam)
   const googleTtsType = settingsStore((s) => s.googleTtsType)
@@ -85,6 +88,15 @@ const Voice = () => {
       fetchNijivoiceSpeakers()
     }
   }, [selectVoice, nijivoiceApiKey])
+
+  // 追加: realtimeAPIMode または audioMode が true の場合にメッセージを表示
+  if (realtimeAPIMode || audioMode) {
+    return (
+      <div className="text-center typography-20 whitespace-pre-line">
+        {t('CannotUseVoice')}
+      </div>
+    )
+  }
 
   return (
     <div className="">

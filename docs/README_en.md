@@ -40,6 +40,20 @@ I've written a detailed usage guide in the article below:
 
 [![You are AITuber Developer from Today | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
+## ⚠️ Important Security Notice
+
+This repository is designed for personal use, local development, and commercial use with appropriate security measures. However, please note the following points when deploying to a web environment:
+
+- **API Key Handling**: Since the specification requires API calls to AI services (OpenAI, Anthropic, etc.) and TTS services through a backend server, proper management of API keys is necessary.
+
+### Regarding Production Environment Usage
+
+When using in a production environment, we recommend one of the following approaches:
+
+1. **Backend Server Implementation**: Manage API keys on the server side and avoid direct API access from clients
+2. **Proper User Instructions**: When users use their own API keys, explain the security considerations
+3. **Access Control Implementation**: Implement appropriate authentication and authorization mechanisms as needed
+
 ## Development Environment
 
 This project is developed in the following environment:
@@ -109,6 +123,7 @@ npm run dev
    - ElevenLabs: Various language selection is possible. Please enter the API key.
    - OpenAI: API key is required.
    - Azure OpenAI: API key is required.
+   - Nijivoice: API key is required.
 5. Start conversing with the character from the input form. Microphone input is also possible.
 
 ## AITuber Streaming
@@ -303,82 +318,3 @@ From version v2.0.0, this project adopts a **custom license**.
 
 - [Logo Usage Agreement](./logo_licence_en.md)
 - [VRM Model Usage Agreement](./vrm_licence_en.md)
-
-## Tips for Contributors
-
-### How to Add a New Language
-
-To add a new language to the project, follow these steps:
-
-1. **Add Language File**:
-
-   - Create a new language directory in the `locales` directory and create a `translation.json` file inside it.
-   - Example: `locales/fr/translation.json` (for French)
-
-2. **Add Translations**:
-
-   - Add translations to the `translation.json` file, referring to existing language files.
-
-3. **Update Language Settings**:
-
-   - Open the `src/lib/i18n.js` file and add the new language to the `resources` object.
-
-   ```javascript:src/lib/i18n.js
-   resources: {
-     ...,
-     fr: {  // New language code
-       translation: require("../../locales/fr/translation.json"),
-     },
-   },
-   ```
-
-4. **Add Language Selection Option**:
-
-   - Add a new language option to the appropriate part of the UI (e.g., language selection dropdown in the settings screen) so users can select the language.
-
-   ```typescript:src/components/settings.tsx
-   <select>
-     ...,
-     <option value="FR">French - Français</option>
-   </select>
-   ```
-
-5. **Test**:
-   - Test if the application displays correctly in the new language.
-
-This will add support for the new language to the project.
-
-#### Adding Voice Language Code
-
-- You also need to add support for the voice language code.
-- Add the new language code to the `getVoiceLanguageCode` function in the `Introduction` component.
-
-```typescript:nike-ChatVRM/src/components/introduction.tsx
-const getVoiceLanguageCode = (selectLanguage: string) => {
-  switch (selectLanguage) {
-    case 'JP':
-      return 'ja-JP';
-    case 'EN':
-      return 'en-US';
-    case 'ZH':
-      return 'zh-TW';
-    case 'zh-TW':
-      return 'zh-TW';
-    case 'KO':
-      return 'ko-KR';
-    case 'FR':
-      return 'fr-FR';
-    default:
-      return 'ja-JP';
-  }
-}
-```
-
-#### Adding README
-
-- Add a new language README (`README_fr.md`), logo usage terms (`logo_licence_fr.md`), and VRM model usage terms (`vrm_licence_fr.md`) to the `docs` directory.
-
-```
-
-
-```

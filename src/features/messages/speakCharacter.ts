@@ -25,6 +25,28 @@ const typedEnglishToJapanese = englishToJapanese as EnglishToJapanese
 
 const speakQueue = new SpeakQueue()
 
+function preprocessMessage(
+  message: string,
+  settings: ReturnType<typeof settingsStore.getState>
+): string | null {
+  // 前後の空白を削除
+  let processed = message.trim()
+
+  // 英語から日本語への変換
+  if (settings.changeEnglishToJapanese && settings.selectLanguage === 'ja') {
+    processed = convertEnglishToJapaneseReading(processed)
+  }
+
+  // 絵文字を削除
+  processed = processed.replace(
+    /[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F1E0}-\u{1F1FF}]/gu,
+    ''
+  )
+
+  // 空文字列の場合はnullを返す
+  return processed || null
+}
+
 const createSpeakCharacter = () => {
   let lastTime = 0
   let prevFetchPromise: Promise<unknown> = Promise.resolve()
@@ -33,8 +55,13 @@ const createSpeakCharacter = () => {
     const ss = settingsStore.getState()
     onStart?.()
 
-    if (ss.changeEnglishToJapanese && ss.selectLanguage === 'ja') {
-      talk.message = convertEnglishToJapaneseReading(talk.message)
+    const processedMessage = preprocessMessage(talk.message, ss)
+    if (!processedMessage && !talk.buffer) {
+      return
+    }
+
+    if (processedMessage) {
+      talk.message = processedMessage
     }
 
     let isNeedDecode = true
