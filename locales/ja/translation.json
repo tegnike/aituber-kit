@@ -76,7 +76,7 @@
   "SpeakerSelection": "ボイスタイプ選択",
   "EnglishToJapanese": "英単語を日本語で読み上げる",
   "IncludeTimestampInUserMessage": "ユーザー発言にタイムスタンプを含める",
-  "IncludeTimestampInUserMessageInfo": "ユーザー発言にタイムスタンプを含めることで、AIが時間を考慮して応答を生成できるようになります。\n以下のような文章をシステムプロンプトに含めてください。\n\n「ユーザー入力が [timestamp] 付きでリクエストされる場合があります。これはリクエスト時点の時刻を表しているので、その時刻を考慮したうえで回答を生成してください。」",
+  "IncludeTimestampInUserMessageInfo": "ユーザー発言にタイムスタンプを含めることで、AIが時間を考慮して応答を生成できるようになります。\n以下のような文章をシステムプロンプトに含めてください。\n\n「ユーザー入力が [timestamp] 付きでリクエストされる場合があります。これはリクエスト時点のUTCタイムゾーンの時刻を表しているので、その時刻を考慮したうえで回答を生成してください。」",
   "GoogleTTSInfo": "Google Cloud Text-to-Speechを使用しています。多言語に対応可能です。",
   "AuthFileInstruction": "認証用のJSONファイルを下記から取得し、リポジトリのルートフォルダに credentials.json という名称で配置してください。",
   "LanguageModelURL": "言語モデルは下記のURLから選択してください。",
@@ -198,5 +198,6 @@
     "useCurrentSystemPrompt": "AITuberKitのシステムプロンプトを利用する",
     "userInputTitle": "ユーザー入力を送信する",
     "userInputDescription": "送信したメッセージはAITuberKitの入力フォームから入力された場合と同じ処理がされます。複数送信した場合は順番に処理されます。\nAIモデルおよび音声モデルはAITuberKitの設定で選択したものが使用されます。\nシステムプロンプトや会話履歴はAITuberKitの値が使用されます。"
-  }
+  },
+  "CannotUseVoice": "リアルタイムAPIモード または オーディオモードが有効の場合、\n音声設定は不要です。"
 }

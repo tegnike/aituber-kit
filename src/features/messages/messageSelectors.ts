@@ -34,16 +34,26 @@ export const messageSelectors = {
   ): Message[] => {
     return messages
       .map((message, index) => {
+        // 最後のメッセージだけそのまま利用する（= 最後のメッセージだけマルチモーダルの対象となる）
         const isLastMessage = index === messages.length - 1
-        const messageContent = Array.isArray(message.content)
+        const messageText = Array.isArray(message.content)
           ? message.content[0].text
-          : message.content
+          : message.content || ''
 
-        const content = includeTimestamp
-          ? `[${message.timestamp}] ${isLastMessage ? message.content : messageContent}`
-          : isLastMessage
-            ? message.content
-            : messageContent
+        let content: Message['content']
+        if (includeTimestamp) {
+          content = message.timestamp
+            ? `[${message.timestamp}] ${messageText}`
+            : messageText
+          if (isLastMessage && Array.isArray(message.content)) {
+            content = [
+              { type: 'text', text: content },
+              { type: 'image', image: message.content[1].image },
+            ]
+          }
+        } else {
+          content = isLastMessage ? message.content : messageText
+        }
 
         return {
           role: ['assistant', 'user', 'system'].includes(message.role)

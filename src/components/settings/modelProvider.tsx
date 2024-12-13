@@ -51,9 +51,9 @@ const ModelProvider = () => {
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
   const defaultModels = {
-    openai: 'gpt-4o',
+    openai: 'gpt-4o-2024-11-20',
     anthropic: 'claude-3-5-sonnet-20241022',
-    google: 'gemini-1.5-pro',
+    google: 'gemini-1.5-flash-latest',
     azure: '',
     groq: 'gemma-7b-it',
     cohere: 'command-r-plus',
@@ -269,7 +269,7 @@ const ModelProvider = () => {
                       <option value="input_audio">{t('InputAudio')}</option>
                     </select>
                     <div className="my-16 font-bold">
-                      {t('realtimeAPIModeVoice')}
+                      {t('RealtimeAPIModeVoice')}
                     </div>
                     <select
                       className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
@@ -408,6 +408,12 @@ const ModelProvider = () => {
                     })
                   }
                 >
+                  <option value="gemini-1.5-flash-latest">
+                    gemini-1.5-flash-latest
+                  </option>
+                  <option value="gemini-1.5-pro-latest">
+                    gemini-1.5-pro-latest
+                  </option>
                   <option value="gemini-1.5-flash-exp-0827">
                     gemini-1.5-flash-exp-0827
                   </option>
@@ -417,11 +423,8 @@ const ModelProvider = () => {
                   <option value="gemini-1.5-flash-8b-exp-0827">
                     gemini-1.5-flash-8b-exp-0827
                   </option>
-                  <option value="gemini-1.5-pro-latest">
-                    gemini-1.5-pro-latest
-                  </option>
-                  <option value="gemini-1.5-flash-latest">
-                    gemini-1.5-flash-latest
+                  <option value="gemini-2.0-flash-exp">
+                    gemini-2.0-flash-exp
                   </option>
                 </select>
               </div>

@@ -39,6 +39,20 @@
 
 [![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
+## ⚠️ セキュリティに関する重要な注意事項
+
+このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
+
+- **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
+
+### 本番環境での利用について
+
+本番環境で利用する場合は、以下のいずれかの対応を推奨します：
+
+1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
+2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
+3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
+
 ## 開発環境
 
 このプロジェクトは以下の環境で開発されています：
@@ -84,7 +98,7 @@ npm run dev
 
 ### 使用方法
 
-1. 設定画面で各種LLMのAPIキーを入力します。
+1. 設定画面で選択したLLMのAPIキーを入力します。
    - OpenAI
    - Anthropic
    - Google Gemini
@@ -108,6 +122,7 @@ npm run dev
    - ElevenLabs: 様々な言語の選択が可能です。APIキーの入力が必要です。
    - OpenAI: APIキーの入力が必要です。
    - Azure OpenAI: APIキーの入力が必要です。
+   - にじボイス: APIキーの入力が必要です。
 5. 入力フォームからキャラクターと会話を開始します。マイク入力も可能です。
 
 ## AITuber配信
@@ -302,77 +317,3 @@ npm run dev
 
 - [ロゴの利用規約](./docs/logo_licence.md)
 - [VRMモデルの利用規約](./docs/vrm_licence.md)
-
-## コントリビューター用TIPS
-
-### 新しい言語の追加方法
-
-新しい言語をプロジェクトに追加するには、以下の手順に従ってください。
-
-1. **言語ファイルの追加**:
-
-   - `locales` ディレクトリに新しい言語のディレクトリを作成し、その中に `translation.json` ファイルを作成します。
-   - 例: `locales/fr/translation.json` (フランス語の場合)
-
-2. **翻訳の追加**:
-
-   - `translation.json` ファイルに、既存の言語ファイルを参考にして翻訳を追加します。
-
-3. **言語設定の更新**:
-
-   - `src/lib/i18n.js` ファイルを開き、`resources` オブジェクトに新しい言語を追加します。
-
-   ```javascript:src/lib/i18n.js
-   resources: {
-     ...,
-     fr: {  // 新しい言語コード
-       translation: require("../../locales/fr/translation.json"),
-     },
-   },
-   ```
-
-4. **言語選択オプションの追加**:
-
-   - ユーザーが言語を選択できるように、UIの適切な部分（例えば設定画面の言語選択ドロップダウン）に新しい言語オプションを追加します。
-
-   ```typescript:src/components/settings.tsx
-   <select>
-     ...,
-     <option value="FR">フランス語 - French</option>
-   </select>
-   ```
-
-5. **テスト**:
-   - 新しい言語でアプリケーションが正しく表示されるかテストします。
-
-これで新しい言語のサポートがプロジェクトに追加されます。
-
-#### 音声言語コードの追加
-
-- 音声言語コードの対応も追加する必要があります。
-- `Introduction` コンポーネント内の `getVoiceLanguageCode` 関数に新しい言語コードを追加します。
-
-```typescript:nike-ChatVRM/src/components/introduction.tsx
-const getVoiceLanguageCode = (selectLanguage: string) => {
-  switch (selectLanguage) {
-    case 'JP':
-      return 'ja-JP';
-    case 'EN':
-      return 'en-US';
-    case 'ZH':
-      return 'zh-TW';
-    case 'zh-TW':
-      return 'zh-TW';
-    case 'KO':
-      return 'ko-KR';
-    case 'FR':
-      return 'fr-FR';
-    default:
-      return 'ja-JP';
-  }
-}
-```
-
-#### READMEの追加
-
-- 新しい言語のREADME (`README_fr.md`), ロゴ利用規約 (`logo_licence_fr.md`), VRMモデル利用規約 (`vrm_licence_fr.md`) を `docs` ディレクトリに追加してください。
