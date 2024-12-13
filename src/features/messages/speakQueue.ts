@@ -1,8 +1,8 @@
 import { Talk } from './messages'
 import homeStore from '@/features/stores/home'
 
-type SpeakTaskWithPromise = {
-  audioBufferPromise: Promise<ArrayBuffer | null>
+type SpeakTask = {
+  audioBuffer: ArrayBuffer
   talk: Talk
   isNeedDecode: boolean
   onComplete?: () => void
@@ -10,12 +10,12 @@ type SpeakTaskWithPromise = {
 
 export class SpeakQueue {
   private static readonly QUEUE_CHECK_DELAY = 1500
-  private queue: SpeakTaskWithPromise[] = []
+  private queue: SpeakTask[] = []
   private isProcessing = false
 
-  addTask(task: SpeakTaskWithPromise) {
+  async addTask(task: SpeakTask) {
     this.queue.push(task)
-    this.processQueue()
+    await this.processQueue()
   }
 
   private async processQueue() {
@@ -27,15 +27,9 @@ export class SpeakQueue {
       const task = this.queue.shift()
       if (task) {
         try {
-          const audioBuffer = await task.audioBufferPromise
-          if (audioBuffer) {
-            await hs.viewer.model?.speak(
-              audioBuffer,
-              task.talk,
-              task.isNeedDecode
-            )
-            task.onComplete?.()
-          }
+          const { audioBuffer, talk, isNeedDecode, onComplete } = task
+          await hs.viewer.model?.speak(audioBuffer, talk, isNeedDecode)
+          onComplete?.()
         } catch (error) {
           console.error(
             'An error occurred while processing the speech synthesis task:',
