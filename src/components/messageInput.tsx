@@ -46,6 +46,8 @@ export const MessageInput = ({
     } else {
       if (textareaRef.current) {
         textareaRef.current.value = ''
+        textareaRef.current.style.height = 'auto'
+        setRows(1)
         textareaRef.current.focus()
       }
     }
@@ -78,6 +80,14 @@ export const MessageInput = ({
 
   const handleMicClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClickMicButton(event)
+  }
+
+  const handleSendClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onClickSendButton(event)
+    setRows(1)
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+    }
   }
 
   return (
@@ -130,7 +140,7 @@ export const MessageInput = ({
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
               isProcessing={chatProcessing}
               disabled={chatProcessing || !userMessage || realtimeAPIMode}
-              onClick={onClickSendButton}
+              onClick={handleSendClick}
             />
           </div>
         </div>
