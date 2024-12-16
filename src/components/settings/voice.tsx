@@ -63,6 +63,7 @@ const Voice = () => {
 
   const { t } = useTranslation()
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
+  const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
 
   // にじボイスの話者一覧を取得する関数
   const fetchNijivoiceSpeakers = async () => {
@@ -88,6 +89,30 @@ const Voice = () => {
       fetchNijivoiceSpeakers()
     }
   }, [selectVoice, nijivoiceApiKey])
+
+  // nijivoiceActorIdが変更された時にrecommendedVoiceSpeedを設定する処理を追加
+  useEffect(() => {
+    if (
+      selectVoice === 'nijivoice' &&
+      nijivoiceActorId &&
+      nijivoiceActorId !== prevNijivoiceActorId
+    ) {
+      // 現在選択されているキャラクターを探す
+      const selectedActor = nijivoiceSpeakers.find(
+        (actor) => actor.id === nijivoiceActorId
+      )
+
+      // キャラクターが見つかり、recommendedVoiceSpeedが設定されている場合
+      if (selectedActor?.recommendedVoiceSpeed) {
+        settingsStore.setState({
+          nijivoiceSpeed: selectedActor.recommendedVoiceSpeed,
+        })
+      }
+
+      // 前回の選択を更新
+      setPrevNijivoiceActorId(nijivoiceActorId)
+    }
+  }, [nijivoiceActorId, nijivoiceSpeakers, prevNijivoiceActorId, selectVoice])
 
   // 追加: realtimeAPIMode または audioMode が true の場合にメッセージを表示
   if (realtimeAPIMode || audioMode) {
