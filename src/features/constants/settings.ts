@@ -58,6 +58,10 @@ export type OpenAITTSVoice =
   | 'shimmer'
 export type OpenAITTSModel = 'tts-1' | 'tts-1-hd'
 
+export type RealtimeAPIModeModel =
+  | 'gpt-4o-realtime-preview-2024-10-01'
+  | 'gpt-4o-realtime-preview-2024-12-17'
+  | 'gpt-4o-mini-realtime-preview-2024-12-17'
 export type RealtimeAPIModeContentType = 'input_text' | 'input_audio'
 export type RealtimeAPIModeVoice =
   | 'alloy'
@@ -80,4 +84,9 @@ export type RealtimeAPIModeAzureVoice =
   | 'jupiter'
   | 'marilyn'
   | 'shimmer'
+
+export type AudioModeModel =
+  | 'gpt-4o-audio-preview-2024-10-01'
+  | 'gpt-4o-audio-preview-2024-12-17'
+  | 'gpt-4o-mini-audio-preview-2024-12-17'
 export type AudioModeInputType = 'input_text' | 'input_audio'

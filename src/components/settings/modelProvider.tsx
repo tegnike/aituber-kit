@@ -96,6 +96,9 @@ const ModelProvider = () => {
     })
     if (newMode) {
       settingsStore.setState({ audioMode: false })
+      settingsStore.setState({
+        selectAIModel: 'gpt-4o-realtime-preview-2024-12-17',
+      })
     }
   }, [])
 
@@ -105,6 +108,9 @@ const ModelProvider = () => {
     })
     if (newMode) {
       settingsStore.setState({ realtimeAPIMode: false })
+      settingsStore.setState({
+        selectAIModel: 'gpt-4o-audio-preview-2024-12-17',
+      })
     }
   }, [])
 
@@ -226,6 +232,29 @@ const ModelProvider = () => {
                       <option value="shimmer">shimmer</option>
                       <option value="verse">verse</option>
                     </select>
+                    <div className="my-24">
+                      <div className="my-16 typography-16 font-bold">
+                        {t('SelectModel')}
+                      </div>
+                      <select
+                        className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                        value={selectAIModel}
+                        onChange={(e) => {
+                          const model = e.target.value
+                          settingsStore.setState({ selectAIModel: model })
+                        }}
+                      >
+                        <option value="gpt-4o-realtime-preview-2024-10-01">
+                          gpt-4o-realtime-preview-2024-10-01
+                        </option>
+                        <option value="gpt-4o-realtime-preview-2024-12-17">
+                          gpt-4o-realtime-preview-2024-12-17
+                        </option>
+                        <option value="gpt-4o-mini-realtime-preview-2024-12-17">
+                          gpt-4o-mini-realtime-preview-2024-12-17
+                        </option>
+                      </select>
+                    </div>
                     <div className="my-16">
                       <div className="my-16">
                         {t('UpdateRealtimeAPISettingsInfo')}
@@ -288,6 +317,29 @@ const ModelProvider = () => {
                       <option value="nova">nova</option>
                       <option value="shimmer">shimmer</option>
                     </select>
+                    <div className="my-24">
+                      <div className="my-16 typography-16 font-bold">
+                        {t('SelectModel')}
+                      </div>
+                      <select
+                        className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                        value={selectAIModel}
+                        onChange={(e) => {
+                          const model = e.target.value
+                          settingsStore.setState({ selectAIModel: model })
+                        }}
+                      >
+                        <option value="gpt-4o-audio-preview-2024-10-01">
+                          gpt-4o-audio-preview-2024-10-01
+                        </option>
+                        <option value="gpt-4o-audio-preview-2024-12-17">
+                          gpt-4o-audio-preview-2024-12-17
+                        </option>
+                        <option value="gpt-4o-mini-audio-preview-2024-12-17">
+                          gpt-4o-mini-audio-preview-2024-12-17
+                        </option>
+                      </select>
+                    </div>
                   </>
                 )}
               </div>
