@@ -18,7 +18,7 @@ const Home = () => {
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
 
   return (
-    <div className="min-h-screen bg-cover" style={{ backgroundImage: bgUrl }}>
+    <div className="h-[100svh] bg-cover" style={{ backgroundImage: bgUrl }}>
       <Meta />
       <Introduction />
       <VrmViewer />
