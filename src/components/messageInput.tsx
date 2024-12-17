@@ -46,12 +46,16 @@ export const MessageInput = ({
     } else {
       if (textareaRef.current) {
         textareaRef.current.value = ''
-        const isTouchDevice =
-          'ontouchstart' in window ||
-          navigator.maxTouchPoints > 0 ||
-          // @ts-ignore
-          navigator.msMaxTouchPoints > 0
-        if (!isTouchDevice) {
+        const isTouchDevice = () => {
+          if (typeof window === 'undefined') return false
+          return (
+            'ontouchstart' in window ||
+            navigator.maxTouchPoints > 0 ||
+            // @ts-expect-error: msMaxTouchPoints is IE-specific
+            navigator.msMaxTouchPoints > 0
+          )
+        }
+        if (!isTouchDevice()) {
           textareaRef.current.focus()
         }
       }
