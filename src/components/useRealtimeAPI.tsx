@@ -5,6 +5,7 @@ import settingsStore from '@/features/stores/settings'
 import { SessionConfig, TmpMessage } from './realtimeAPIUtils'
 import webSocketStore from '@/features/stores/websocketStore'
 import { base64ToArrayBuffer } from './realtimeAPIUtils'
+import { RealtimeAPIModeModel } from '@/features/constants/settings'
 import RealtimeAPITools from './realtimeAPITools'
 import RealtimeAPIToolsJson from './realtimeAPITools.json'
 import { AudioBufferManager } from '@/utils/audioBufferManager'
@@ -239,8 +240,9 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
 
     let ws: WebSocket | null = null
     if (ss.selectAIService === 'openai') {
-      const url =
-        'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01'
+      const model: RealtimeAPIModeModel =
+        (ss.selectAIModel as RealtimeAPIModeModel) || 'gpt-4o-realtime-preview'
+      const url = `wss://api.openai.com/v1/realtime?model=${model}`
       ws = new WebSocket(url, [
         'realtime',
         `openai-insecure-api-key.${ss.openaiKey}`,
