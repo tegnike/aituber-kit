@@ -46,7 +46,14 @@ export const MessageInput = ({
     } else {
       if (textareaRef.current) {
         textareaRef.current.value = ''
-        textareaRef.current.focus()
+        const isTouchDevice =
+          'ontouchstart' in window ||
+          navigator.maxTouchPoints > 0 ||
+          // @ts-ignore
+          navigator.msMaxTouchPoints > 0
+        if (!isTouchDevice) {
+          textareaRef.current.focus()
+        }
       }
     }
   }, [chatProcessing])
