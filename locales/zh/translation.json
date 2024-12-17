@@ -169,7 +169,7 @@
   "InputText": "文字",
   "InputAudio": "音訊",
   "UpdateRealtimeAPISettings": "更新實時API設定",
-  "UpdateRealtimeAPISettingsInfo": "當更新 API 金鑰、Azure Endpoint、語音型別或系統提示時，請按更新按鈕以開始新的 WebSocket 會話。",
+  "UpdateRealtimeAPISettingsInfo": "當更新 API 金鑰、Azure Endpoint、語音型別、模型或系統提示時，請按更新按鈕以開始新的 WebSocket 會話。",
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "WebSocket連線發生錯誤",
