@@ -154,7 +154,9 @@ const createSpeakCharacter = () => {
             talk,
             ss.nijivoiceApiKey,
             ss.nijivoiceActorId,
-            ss.nijivoiceSpeed
+            ss.nijivoiceSpeed,
+            ss.nijivoiceEmotionalLevel,
+            ss.nijivoiceSoundDuration
           )
         }
       } catch (error) {

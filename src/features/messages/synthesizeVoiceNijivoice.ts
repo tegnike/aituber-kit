@@ -4,7 +4,9 @@ export async function synthesizeVoiceNijivoiceApi(
   talk: Talk,
   apiKey: string,
   voiceActorId: string,
-  speed: number
+  speed: number,
+  emotionalLevel: number,
+  soundDuration: number
 ) {
   try {
     const res = await fetch('/api/tts-nijivoice', {
@@ -17,6 +19,8 @@ export async function synthesizeVoiceNijivoiceApi(
         speed,
         voiceActorId,
         apiKey,
+        emotionalLevel,
+        soundDuration,
       }),
     })
 

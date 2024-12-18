@@ -60,6 +60,10 @@ const Voice = () => {
   const nijivoiceApiKey = settingsStore((s) => s.nijivoiceApiKey)
   const nijivoiceActorId = settingsStore((s) => s.nijivoiceActorId)
   const nijivoiceSpeed = settingsStore((s) => s.nijivoiceSpeed)
+  const nijivoiceEmotionalLevel = settingsStore(
+    (s) => s.nijivoiceEmotionalLevel
+  )
+  const nijivoiceSoundDuration = settingsStore((s) => s.nijivoiceSoundDuration)
 
   const { t } = useTranslation()
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
@@ -97,7 +101,7 @@ const Voice = () => {
       nijivoiceActorId &&
       nijivoiceActorId !== prevNijivoiceActorId
     ) {
-      // 現在選択されているキャラクターを探す
+      // 現在選択されてい���キャラクターを探す
       const selectedActor = nijivoiceSpeakers.find(
         (actor) => actor.id === nijivoiceActorId
       )
@@ -913,6 +917,38 @@ const Voice = () => {
                   onChange={(e) => {
                     settingsStore.setState({
                       nijivoiceSpeed: Number(e.target.value),
+                    })
+                  }}
+                />
+                <div className="mt-16 font-bold">
+                  {t('NijiVoiceEmotionalLevel')}: {nijivoiceEmotionalLevel}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={1.5}
+                  step={0.1}
+                  value={nijivoiceEmotionalLevel}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      nijivoiceEmotionalLevel: Number(e.target.value),
+                    })
+                  }}
+                />
+                <div className="mt-16 font-bold">
+                  {t('NijiVoiceSoundDuration')}: {nijivoiceSoundDuration}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={1.7}
+                  step={0.1}
+                  value={nijivoiceSoundDuration}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      nijivoiceSoundDuration: Number(e.target.value),
                     })
                   }}
                 />
