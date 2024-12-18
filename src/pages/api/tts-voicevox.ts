@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
-const VOICE_VOX_API_URL =
-  process.env.VOICEVOX_API_URL || 'http://localhost:50021'
-
 type Data = {
   audio?: ArrayBuffer
   error?: string
@@ -13,12 +10,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { text, speaker, speed, pitch, intonation } = req.body
+  const { text, speaker, speed, pitch, intonation, serverUrl } = req.body
+  const apiUrl =
+    serverUrl || process.env.VOICEVOX_API_URL || 'http://localhost:50021'
 
   try {
     // 1. Audio Query の生成
     const queryResponse = await axios.post(
-      `${VOICE_VOX_API_URL}/audio_query?speaker=${speaker}&text=${encodeURIComponent(text)}`,
+      `${apiUrl}/audio_query?speaker=${speaker}&text=${encodeURIComponent(text)}`,
       null,
       {
         headers: {
@@ -35,7 +34,7 @@ export default async function handler(
 
     // 2. 音声合成
     const synthesisResponse = await axios.post(
-      `${VOICE_VOX_API_URL}/synthesis?speaker=${speaker}`,
+      `${apiUrl}/synthesis?speaker=${speaker}`,
       queryData,
       {
         headers: {

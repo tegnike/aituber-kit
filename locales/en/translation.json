@@ -71,6 +71,7 @@
   "NijiVoiceSpeed": "Speech Speed",
   "NijiVoiceEmotionalLevel": "Emotional Level", 
   "NijiVoiceSoundDuration": "Sound Duration",
+  "VoicevoxServerUrl": "VOICEVOX Server URL",
   "UpdateSpeakerList": "Update Speaker List",
   "UsingGoogleTTS": "Google TTS",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",

@@ -91,7 +91,8 @@ const createSpeakCharacter = () => {
             ss.voicevoxSpeaker,
             ss.voicevoxSpeed,
             ss.voicevoxPitch,
-            ss.voicevoxIntonation
+            ss.voicevoxIntonation,
+            ss.voicevoxServerUrl
           )
         } else if (ss.selectVoice == 'google') {
           buffer = await synthesizeVoiceGoogleApi(
@@ -232,7 +233,8 @@ export const testVoiceVox = async () => {
     ss.voicevoxSpeaker,
     ss.voicevoxSpeed,
     ss.voicevoxPitch,
-    ss.voicevoxIntonation
+    ss.voicevoxIntonation,
+    ss.voicevoxServerUrl
   ).catch(() => null)
   if (buffer) {
     const hs = homeStore.getState()

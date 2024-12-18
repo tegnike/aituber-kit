@@ -53,6 +53,7 @@ interface ModelProvider {
   voicevoxSpeed: number
   voicevoxPitch: number
   voicevoxIntonation: number
+  voicevoxServerUrl: string
   aivisSpeechSpeaker: string
   aivisSpeechSpeed: number
   aivisSpeechPitch: number
@@ -159,6 +160,8 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_PITCH || '0.0') || 0.0,
       voicevoxIntonation:
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_INTONATION || '1.0') || 1.0,
+      voicevoxServerUrl:
+        process.env.NEXT_PUBLIC_VOICEVOX_SERVER_URL || 'http://localhost:50021',
       aivisSpeechSpeaker: process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEAKER || '46',
       aivisSpeechSpeed:
         parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEED || '1.0') || 1.0,
@@ -297,6 +300,7 @@ const settingsStore = create<SettingsState>()(
         voicevoxSpeed: state.voicevoxSpeed,
         voicevoxPitch: state.voicevoxPitch,
         voicevoxIntonation: state.voicevoxIntonation,
+        voicevoxServerUrl: state.voicevoxServerUrl,
         aivisSpeechSpeaker: state.aivisSpeechSpeaker,
         aivisSpeechSpeed: state.aivisSpeechSpeed,
         aivisSpeechPitch: state.aivisSpeechPitch,

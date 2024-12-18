@@ -34,6 +34,7 @@ const Voice = () => {
   const voicevoxSpeed = settingsStore((s) => s.voicevoxSpeed)
   const voicevoxPitch = settingsStore((s) => s.voicevoxPitch)
   const voicevoxIntonation = settingsStore((s) => s.voicevoxIntonation)
+  const voicevoxServerUrl = settingsStore((s) => s.voicevoxServerUrl)
   const aivisSpeechSpeaker = settingsStore((s) => s.aivisSpeechSpeaker)
   const aivisSpeechSpeed = settingsStore((s) => s.aivisSpeechSpeed)
   const aivisSpeechPitch = settingsStore((s) => s.aivisSpeechPitch)
@@ -279,6 +280,20 @@ const Voice = () => {
                   <Link
                     url="https://voicevox.hiroshiba.jp/"
                     label="https://voicevox.hiroshiba.jp/"
+                  />
+                </div>
+                <div className="mt-16 font-bold">{t('VoicevoxServerUrl')}</div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="http://localhost:50021"
+                    value={voicevoxServerUrl}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        voicevoxServerUrl: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>

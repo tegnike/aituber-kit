@@ -58,6 +58,7 @@
   "VoicevoxSpeed": "話速",
   "VoicevoxPitch": "音高",
   "VoicevoxIntonation": "抑揚",
+  "VoicevoxServerUrl": "VOICEVOX サーバーURL",
   "UsingAivisSpeech": "AivisSpeechを使用する",
   "AivisSpeechInfo": "AivisSpeechを使用しています。日本語のみに対応しています。ローカルAPIを使用するので下記のサイトから環境にあったアプリをダウンロードし、起動しておく必要があります。",
   "AivisSpeechSpeaker": "話者",

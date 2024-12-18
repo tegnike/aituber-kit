@@ -5,7 +5,8 @@ export async function synthesizeVoiceVoicevoxApi(
   speaker: string,
   speed: number,
   pitch: number,
-  intonation: number
+  intonation: number,
+  serverUrl: string
 ): Promise<ArrayBuffer> {
   try {
     const res = await fetch('/api/tts-voicevox', {
@@ -19,6 +20,7 @@ export async function synthesizeVoiceVoicevoxApi(
         speed,
         pitch,
         intonation,
+        serverUrl,
       }),
     })
 

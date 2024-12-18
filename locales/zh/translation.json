@@ -71,6 +71,7 @@
   "NijiVoiceSpeed": "語速",
   "NijiVoiceEmotionalLevel": "情感程度",
   "NijiVoiceSoundDuration": "音訊長度",
+  "VoicevoxServerUrl": "VOICEVOX 伺服器URL",
   "UpdateSpeakerList": "更新語音角色",
   "UsingGoogleTTS": "使用 Google TTS",
   "UsingStyleBertVITS2": "使用 Style-Bert-VITS2",
