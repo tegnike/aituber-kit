@@ -58,6 +58,7 @@ interface ModelProvider {
   aivisSpeechSpeed: number
   aivisSpeechPitch: number
   aivisSpeechIntonation: number
+  aivisSpeechServerUrl: string
   stylebertvits2ServerUrl: string
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
@@ -160,8 +161,7 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_PITCH || '0.0') || 0.0,
       voicevoxIntonation:
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_INTONATION || '1.0') || 1.0,
-      voicevoxServerUrl:
-        process.env.NEXT_PUBLIC_VOICEVOX_SERVER_URL || 'http://localhost:50021',
+      voicevoxServerUrl: '',
       aivisSpeechSpeaker: process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEAKER || '46',
       aivisSpeechSpeed:
         parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEED || '1.0') || 1.0,
@@ -170,6 +170,7 @@ const settingsStore = create<SettingsState>()(
       aivisSpeechIntonation:
         parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_INTONATION || '1.0') ||
         1.0,
+      aivisSpeechServerUrl: '',
       stylebertvits2ServerUrl: '',
       stylebertvits2ModelId:
         process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
@@ -305,6 +306,7 @@ const settingsStore = create<SettingsState>()(
         aivisSpeechSpeed: state.aivisSpeechSpeed,
         aivisSpeechPitch: state.aivisSpeechPitch,
         aivisSpeechIntonation: state.aivisSpeechIntonation,
+        aivisSpeechServerUrl: state.aivisSpeechServerUrl,
         stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
         stylebertvits2ModelId: state.stylebertvits2ModelId,
         stylebertvits2ApiKey: state.stylebertvits2ApiKey,

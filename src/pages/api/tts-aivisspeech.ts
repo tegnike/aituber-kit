@@ -12,7 +12,7 @@ export default async function handler(
 ) {
   const { text, speaker, speed, pitch, intonation, serverUrl } = req.body
   const apiUrl =
-    serverUrl || process.env.VOICEVOX_SERVER_URL || 'http://localhost:50021'
+    serverUrl || process.env.AIVIS_SPEECH_SERVER_URL || 'http://localhost:10101'
 
   try {
     // 1. Audio Query の生成
@@ -49,7 +49,7 @@ export default async function handler(
     res.setHeader('Content-Type', 'audio/wav')
     synthesisResponse.data.pipe(res)
   } catch (error) {
-    console.error('Error in VOICEVOX TTS:', error)
+    console.error('Error in AivisSpeech TTS:', error)
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }

@@ -65,6 +65,7 @@
   "AivisSpeechSpeed": "話速",
   "AivisSpeechPitch": "音高",
   "AivisSpeechIntonation": "抑揚",
+  "AivisSpeechServerUrl": "AivisSpeech サーバーURL",
   "UsingNijiVoice": "にじボイスを使用する",
   "NijiVoiceInfo": "にじボイス APIを使用しています。日本語のみに対応しています。APIキーを下記のURLから取得してください。",
   "NijiVoiceApiKey": "にじボイス API キー",

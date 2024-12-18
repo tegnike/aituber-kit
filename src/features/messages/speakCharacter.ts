@@ -117,7 +117,8 @@ const createSpeakCharacter = () => {
             ss.aivisSpeechSpeaker,
             ss.aivisSpeechSpeed,
             ss.aivisSpeechPitch,
-            ss.aivisSpeechIntonation
+            ss.aivisSpeechIntonation,
+            ss.aivisSpeechServerUrl
           )
         } else if (ss.selectVoice == 'gsvitts') {
           buffer = await synthesizeVoiceGSVIApi(
@@ -245,7 +246,7 @@ export const testVoiceVox = async () => {
 export const testAivisSpeech = async () => {
   const ss = settingsStore.getState()
   const talk: Talk = {
-    message: 'AIVIS Speechを使用します',
+    message: 'AivisSpeechを使用します',
     emotion: 'neutral',
   }
   const buffer = await synthesizeVoiceAivisSpeechApi(
@@ -253,7 +254,8 @@ export const testAivisSpeech = async () => {
     ss.aivisSpeechSpeaker,
     ss.aivisSpeechSpeed,
     ss.aivisSpeechPitch,
-    ss.aivisSpeechIntonation
+    ss.aivisSpeechIntonation,
+    ss.aivisSpeechServerUrl
   ).catch(() => null)
   if (buffer) {
     const hs = homeStore.getState()

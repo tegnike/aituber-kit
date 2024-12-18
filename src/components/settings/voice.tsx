@@ -39,6 +39,7 @@ const Voice = () => {
   const aivisSpeechSpeed = settingsStore((s) => s.aivisSpeechSpeed)
   const aivisSpeechPitch = settingsStore((s) => s.aivisSpeechPitch)
   const aivisSpeechIntonation = settingsStore((s) => s.aivisSpeechIntonation)
+  const aivisSpeechServerUrl = settingsStore((s) => s.aivisSpeechServerUrl)
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
@@ -524,6 +525,22 @@ const Voice = () => {
                   <Link
                     url="https://aivis-project.com/"
                     label="https://aivis-project.com/"
+                  />
+                </div>
+                <div className="mt-16 font-bold">
+                  {t('AivisSpeechServerUrl')}
+                </div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="http://localhost:10101"
+                    value={aivisSpeechServerUrl}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        aivisSpeechServerUrl: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="mt-16 font-bold">{t('AivisSpeechSpeaker')}</div>
