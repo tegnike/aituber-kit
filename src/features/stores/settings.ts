@@ -53,10 +53,12 @@ interface ModelProvider {
   voicevoxSpeed: number
   voicevoxPitch: number
   voicevoxIntonation: number
+  voicevoxServerUrl: string
   aivisSpeechSpeaker: string
   aivisSpeechSpeed: number
   aivisSpeechPitch: number
   aivisSpeechIntonation: number
+  aivisSpeechServerUrl: string
   stylebertvits2ServerUrl: string
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
@@ -74,6 +76,8 @@ interface ModelProvider {
   nijivoiceApiKey: string
   nijivoiceActorId: string
   nijivoiceSpeed: number
+  nijivoiceEmotionalLevel: number
+  nijivoiceSoundDuration: number
 }
 
 interface Integrations {
@@ -157,6 +161,7 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_PITCH || '0.0') || 0.0,
       voicevoxIntonation:
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_INTONATION || '1.0') || 1.0,
+      voicevoxServerUrl: '',
       aivisSpeechSpeaker: process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEAKER || '46',
       aivisSpeechSpeed:
         parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEED || '1.0') || 1.0,
@@ -165,6 +170,7 @@ const settingsStore = create<SettingsState>()(
       aivisSpeechIntonation:
         parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_INTONATION || '1.0') ||
         1.0,
+      aivisSpeechServerUrl: '',
       stylebertvits2ServerUrl: '',
       stylebertvits2ModelId:
         process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
@@ -260,6 +266,13 @@ const settingsStore = create<SettingsState>()(
       nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
       nijivoiceSpeed:
         parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SPEED || '1.0') || 1.0,
+      nijivoiceEmotionalLevel:
+        parseFloat(
+          process.env.NEXT_PUBLIC_NIJIVOICE_EMOTIONAL_LEVEL || '0.1'
+        ) || 0.1,
+      nijivoiceSoundDuration:
+        parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
+        0.1,
     }),
     {
       name: 'aitube-kit-settings',
@@ -288,13 +301,15 @@ const settingsStore = create<SettingsState>()(
         voicevoxSpeed: state.voicevoxSpeed,
         voicevoxPitch: state.voicevoxPitch,
         voicevoxIntonation: state.voicevoxIntonation,
+        voicevoxServerUrl: state.voicevoxServerUrl,
         aivisSpeechSpeaker: state.aivisSpeechSpeaker,
         aivisSpeechSpeed: state.aivisSpeechSpeed,
         aivisSpeechPitch: state.aivisSpeechPitch,
         aivisSpeechIntonation: state.aivisSpeechIntonation,
+        aivisSpeechServerUrl: state.aivisSpeechServerUrl,
         stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
-        stylebertvits2ApiKey: state.stylebertvits2ApiKey,
         stylebertvits2ModelId: state.stylebertvits2ModelId,
+        stylebertvits2ApiKey: state.stylebertvits2ApiKey,
         stylebertvits2Style: state.stylebertvits2Style,
         stylebertvits2SdpRatio: state.stylebertvits2SdpRatio,
         stylebertvits2Length: state.stylebertvits2Length,
@@ -332,6 +347,8 @@ const settingsStore = create<SettingsState>()(
         nijivoiceApiKey: state.nijivoiceApiKey,
         nijivoiceActorId: state.nijivoiceActorId,
         nijivoiceSpeed: state.nijivoiceSpeed,
+        nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
+        nijivoiceSoundDuration: state.nijivoiceSoundDuration,
       }),
     }
   )

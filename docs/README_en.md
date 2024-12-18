@@ -89,6 +89,12 @@ npm run dev
 
 5. Open the URL [http://localhost:3000](http://localhost:3000)
 
+6. Create the .env file if necessary.
+
+```bash
+cp .env.example .env
+```
+
 ## Conversation with AI Character
 
 - This is a feature to converse with an AI character.
