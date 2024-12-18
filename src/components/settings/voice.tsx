@@ -34,10 +34,12 @@ const Voice = () => {
   const voicevoxSpeed = settingsStore((s) => s.voicevoxSpeed)
   const voicevoxPitch = settingsStore((s) => s.voicevoxPitch)
   const voicevoxIntonation = settingsStore((s) => s.voicevoxIntonation)
+  const voicevoxServerUrl = settingsStore((s) => s.voicevoxServerUrl)
   const aivisSpeechSpeaker = settingsStore((s) => s.aivisSpeechSpeaker)
   const aivisSpeechSpeed = settingsStore((s) => s.aivisSpeechSpeed)
   const aivisSpeechPitch = settingsStore((s) => s.aivisSpeechPitch)
   const aivisSpeechIntonation = settingsStore((s) => s.aivisSpeechIntonation)
+  const aivisSpeechServerUrl = settingsStore((s) => s.aivisSpeechServerUrl)
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
@@ -60,6 +62,10 @@ const Voice = () => {
   const nijivoiceApiKey = settingsStore((s) => s.nijivoiceApiKey)
   const nijivoiceActorId = settingsStore((s) => s.nijivoiceActorId)
   const nijivoiceSpeed = settingsStore((s) => s.nijivoiceSpeed)
+  const nijivoiceEmotionalLevel = settingsStore(
+    (s) => s.nijivoiceEmotionalLevel
+  )
+  const nijivoiceSoundDuration = settingsStore((s) => s.nijivoiceSoundDuration)
 
   const { t } = useTranslation()
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
@@ -97,7 +103,7 @@ const Voice = () => {
       nijivoiceActorId &&
       nijivoiceActorId !== prevNijivoiceActorId
     ) {
-      // 現在選択されているキャラクターを探す
+      // 現在選択されてい���キャラクターを探す
       const selectedActor = nijivoiceSpeakers.find(
         (actor) => actor.id === nijivoiceActorId
       )
@@ -275,6 +281,20 @@ const Voice = () => {
                   <Link
                     url="https://voicevox.hiroshiba.jp/"
                     label="https://voicevox.hiroshiba.jp/"
+                  />
+                </div>
+                <div className="mt-16 font-bold">{t('VoicevoxServerUrl')}</div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="http://localhost:50021"
+                    value={voicevoxServerUrl}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        voicevoxServerUrl: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="mt-16 font-bold">{t('SpeakerSelection')}</div>
@@ -505,6 +525,22 @@ const Voice = () => {
                   <Link
                     url="https://aivis-project.com/"
                     label="https://aivis-project.com/"
+                  />
+                </div>
+                <div className="mt-16 font-bold">
+                  {t('AivisSpeechServerUrl')}
+                </div>
+                <div className="mt-8">
+                  <input
+                    className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    type="text"
+                    placeholder="http://localhost:10101"
+                    value={aivisSpeechServerUrl}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        aivisSpeechServerUrl: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="mt-16 font-bold">{t('AivisSpeechSpeaker')}</div>
@@ -913,6 +949,38 @@ const Voice = () => {
                   onChange={(e) => {
                     settingsStore.setState({
                       nijivoiceSpeed: Number(e.target.value),
+                    })
+                  }}
+                />
+                <div className="mt-16 font-bold">
+                  {t('NijiVoiceEmotionalLevel')}: {nijivoiceEmotionalLevel}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={1.5}
+                  step={0.1}
+                  value={nijivoiceEmotionalLevel}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      nijivoiceEmotionalLevel: Number(e.target.value),
+                    })
+                  }}
+                />
+                <div className="mt-16 font-bold">
+                  {t('NijiVoiceSoundDuration')}: {nijivoiceSoundDuration}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={1.7}
+                  step={0.1}
+                  value={nijivoiceSoundDuration}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      nijivoiceSoundDuration: Number(e.target.value),
                     })
                   }}
                 />
