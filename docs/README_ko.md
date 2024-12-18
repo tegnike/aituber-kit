@@ -89,6 +89,12 @@ npm run dev
 
 5. URL을 엽니다. [http://localhost:3000](http://localhost:3000)
 
+6. 필요에 따라 .env 파일을 만듭니다.
+
+```bash
+cp .env.example .env
+```
+
 ## AI 캐릭터와 대화
 
 - AI 캐릭터와 대화할 수 있는 기능입니다.
