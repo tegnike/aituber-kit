@@ -164,7 +164,6 @@ async function createSlideLine(
     openai: () => createOpenAI({ apiKey }),
     anthropic: () => createAnthropic({ apiKey }),
     google: () => createGoogleGenerativeAI({ apiKey }),
-    azure: () => {},
   }
 
   const aiServiceInstance = aiServiceConfig[aiService as multiModalAIServiceKey]

@@ -15,12 +15,7 @@ import {
   AudioModeInputType,
 } from '../constants/settings'
 
-export const multiModalAIServices = [
-  'openai',
-  'anthropic',
-  'google',
-  'azure',
-] as const
+export const multiModalAIServices = ['openai', 'anthropic', 'google'] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 
 type multiModalAPIKeys = {
