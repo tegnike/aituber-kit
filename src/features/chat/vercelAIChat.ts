@@ -10,10 +10,6 @@ const getAIConfig = () => {
   const ss = settingsStore.getState()
   const aiService = ss.selectAIService as multiModalAIServiceKey
 
-  if (!multiModalAIServices.includes(aiService)) {
-    throw new Error('Invalid AI service')
-  }
-
   const apiKeyName = `${aiService}Key` as const
   const apiKey = ss[apiKeyName]
 
