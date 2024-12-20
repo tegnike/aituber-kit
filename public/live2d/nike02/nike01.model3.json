@@ -1,0 +1,84 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "nike01.moc3",
+		"Textures": [
+			"nike01.8192/texture_00.png"
+		],
+		"Physics": "nike01.physics3.json",
+		"DisplayInfo": "nike01.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "HairpinChange",
+        "File": "HairpinChange.exp3.json"
+      },
+      {
+				"Name": "Smile",
+				"File": "Smile.exp3.json"
+			},
+			{
+				"Name": "Normal",
+				"File": "Normal.exp3.json"
+			},
+			{
+				"Name": "SadLean",
+				"File": "SadLean.exp3.json"
+			},
+			{
+				"Name": "Angry",
+				"File": "Angry.exp3.json"
+			},
+			{
+				"Name": "Sad",
+				"File": "Sad.exp3.json"
+			},
+			{
+				"Name": "SuperSmile",
+				"File": "SuperSmile.exp3.json"
+			},
+			{
+				"Name": "NoSmile",
+				"File": "NoSmile.exp3.json"
+			},
+			{
+				"Name": "Think",
+				"File": "Think.exp3.json"
+			},
+			{
+				"Name": "Happy1",
+				"File": "Happy1.exp3.json"
+			},
+			{
+				"Name": "Happy2",
+				"File": "Happy2.exp3.json"
+			},
+			{
+				"Name": "Focus",
+				"File": "Focus.exp3.json"
+			},
+			{
+				"Name": "Troubled",
+				"File": "Troubled.exp3.json"
+			},
+			{
+				"Name": "Think2",
+				"File": "Think2.exp3.json"
+			}
+		]
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": ["ParamMouthOpenY"]
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"ParamEyeLOpen",
+				"ParamEyeROpen"
+			]
+		}
+	]
+}

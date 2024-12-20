@@ -5,6 +5,7 @@ import { Menu } from '@/components/menu'
 import { Meta } from '@/components/meta'
 import ModalImage from '@/components/modalImage'
 import VrmViewer from '@/components/vrmViewer'
+import Live2DViewer from '@/components/live2DViewer'
 import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import homeStore from '@/features/stores/home'
@@ -21,7 +22,8 @@ const Home = () => {
     <div className="h-[100svh] bg-cover" style={{ backgroundImage: bgUrl }}>
       <Meta />
       <Introduction />
-      <VrmViewer />
+      {/* <VrmViewer /> */}
+      <Live2DViewer />
       <Form />
       <Menu />
       <ModalImage />
