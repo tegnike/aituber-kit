@@ -33,7 +33,10 @@ const Live2DComponent = dynamic(
 export default function Live2DViewer() {
   const [isMounted, setIsMounted] = useState(false)
   const [hasError, setHasError] = useState(false)
-  const [scriptsLoaded, setScriptsLoaded] = useState(false)
+  const [isCubismCoreLoaded, setIsCubismCoreLoaded] = useState(false)
+  const [isLive2dLoaded, setIsLive2dLoaded] = useState(false)
+
+  const isScriptsLoaded = isCubismCoreLoaded && isLive2dLoaded
 
   useEffect(() => {
     console.log('Live2DViewer mounted')
@@ -60,10 +63,17 @@ export default function Live2DViewer() {
         src="/scripts/live2dcubismcore.min.js"
         onLoad={() => {
           console.log('cubismcore loaded')
-          setScriptsLoaded(true)
+          setIsCubismCoreLoaded(true)
         }}
       />
-      {scriptsLoaded && <Live2DComponent />}
+      <Script
+        src="/scripts/live2d.min.js"
+        onLoad={() => {
+          console.log('live2d loaded')
+          setIsLive2dLoaded(true)
+        }}
+      />
+      {isScriptsLoaded && <Live2DComponent />}
     </div>
   )
 }

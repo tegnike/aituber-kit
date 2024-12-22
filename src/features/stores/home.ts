@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware'
 import { Message } from '@/features/messages/messages'
 import { Viewer } from '../vrmViewer/viewer'
 import { messageSelectors } from '../messages/messageSelectors'
+import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -13,6 +14,7 @@ export interface PersistedState {
 
 export interface TransientState {
   viewer: Viewer
+  live2dViewer: any
   assistantMessage: string
   slideMessages: string[]
   chatProcessing: boolean
@@ -39,6 +41,7 @@ const homeStore = create<HomeState>()(
 
       // transient states
       viewer: new Viewer(),
+      live2dViewer: null,
       slideMessages: [],
       chatProcessing: false,
       chatProcessingCount: 0,

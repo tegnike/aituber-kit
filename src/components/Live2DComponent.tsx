@@ -1,6 +1,7 @@
 import { Application, Ticker, DisplayObject } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch/cubism4'
+import homeStore from '@/features/stores/home'
 
 console.log('Live2DComponent module loaded')
 
@@ -44,11 +45,16 @@ const Live2DComponent = () => {
 
   const initLive2D = async (currentApp: Application) => {
     if (!canvasContainerRef.current) return
+    const hs = homeStore.getState()
 
     try {
+      const { Live2DModel } = await import(
+        'pixi-live2d-display-lipsyncpatch/cubism4'
+      )
       const model = await Live2DModel.from(
         '/live2d/nike02/nike01.model3.json',
-        { ticker: Ticker.shared }
+        // '/live2d/hiyori_free_jp/runtime/hiyori_free_t08.model3.json',
+        { ticker: Ticker.shared, autoInteract: false }
       )
 
       currentApp.stage.addChild(model as unknown as DisplayObject)
@@ -63,6 +69,7 @@ const Live2DComponent = () => {
       })
 
       setModel(model)
+      hs.live2dViewer = model
     } catch (error) {
       console.error('Failed to load Live2D model:', error)
     }

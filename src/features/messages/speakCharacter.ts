@@ -239,7 +239,12 @@ export const testVoiceVox = async () => {
   ).catch(() => null)
   if (buffer) {
     const hs = homeStore.getState()
-    await hs.viewer.model?.speak(buffer, talk)
+    console.log(hs.live2dViewer?.constructor?.name)
+    const live2dViewer = hs.live2dViewer
+    live2dViewer.scale.set(0.3)
+
+    live2dViewer.speak('voice_test.wav')
+    live2dViewer.expression('SadLean')
   }
 }
 
