@@ -23,6 +23,8 @@ const Live2DComponent = () => {
   const [model, setModel] = useState<InstanceType<typeof Live2DModel> | null>(
     null
   )
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     initApp()
@@ -48,13 +50,10 @@ const Live2DComponent = () => {
     const hs = homeStore.getState()
 
     try {
-      const { Live2DModel } = await import(
-        'pixi-live2d-display-lipsyncpatch/cubism4'
-      )
       const model = await Live2DModel.from(
         '/live2d/nike02/nike01.model3.json',
         // '/live2d/hiyori_free_jp/runtime/hiyori_free_t08.model3.json',
-        { ticker: Ticker.shared, autoInteract: false }
+        { ticker: Ticker.shared, autoInteract: false } // autoInteractで視線追従させない
       )
 
       currentApp.stage.addChild(model as unknown as DisplayObject)
@@ -70,10 +69,61 @@ const Live2DComponent = () => {
 
       setModel(model)
       hs.live2dViewer = model
+      setModel(model)
     } catch (error) {
       console.error('Failed to load Live2D model:', error)
     }
   }
+
+  useEffect(() => {
+    if (!canvasContainerRef.current || !model) return
+
+    const canvas = canvasContainerRef.current
+
+    const handlePointerDown = (event: PointerEvent) => {
+      model.tap(event.clientX, event.clientY)
+      setIsDragging(true)
+      setDragOffset({
+        x: event.clientX - model.x,
+        y: event.clientY - model.y,
+      })
+    }
+
+    const handlePointerMove = (event: PointerEvent) => {
+      // model.focus(event.clientX, event.clientY)
+      if (isDragging) {
+        model.x = event.clientX - dragOffset.x
+        model.y = event.clientY - dragOffset.y
+      }
+    }
+
+    const handlePointerUp = () => {
+      setIsDragging(false)
+    }
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault()
+      const scaleChange = event.deltaY * -0.001
+      const newScale = model.scale.x + scaleChange
+      if (newScale >= 0.1 && newScale <= 2.0) {
+        model.scale.set(newScale)
+      }
+    }
+
+    // イベントリスナーの登録
+    canvas.addEventListener('pointerdown', handlePointerDown)
+    canvas.addEventListener('pointermove', handlePointerMove)
+    canvas.addEventListener('pointerup', handlePointerUp)
+    canvas.addEventListener('wheel', handleWheel, { passive: false })
+
+    // クリーンアップ関数
+    return () => {
+      canvas.removeEventListener('pointerdown', handlePointerDown)
+      canvas.removeEventListener('pointermove', handlePointerMove)
+      canvas.removeEventListener('pointerup', handlePointerUp)
+      canvas.removeEventListener('wheel', handleWheel)
+    }
+  }, [model, isDragging, dragOffset])
 
   useEffect(() => {
     if (!app || !model) return

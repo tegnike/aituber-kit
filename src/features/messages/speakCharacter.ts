@@ -175,12 +175,20 @@ const createSpeakCharacter = () => {
     fetchPromise.then((audioBuffer) => {
       if (!audioBuffer) return
 
-      speakQueue.addTask({
-        audioBuffer,
-        talk,
-        isNeedDecode,
-        onComplete,
-      })
+      const hs = homeStore.getState()
+      console.log(hs.live2dViewer?.constructor?.name)
+      const live2dViewer = hs.live2dViewer
+      live2dViewer.scale.set(0.3)
+
+      const audioUrl = createAudioUrl(audioBuffer)
+      live2dViewer.speak(audioUrl)
+
+      // speakQueue.addTask({
+      //   audioBuffer,
+      //   talk,
+      //   isNeedDecode,
+      //   onComplete,
+      // })
     })
   }
 }
@@ -221,6 +229,19 @@ function handleTTSError(error: unknown, serviceName: string): void {
   console.error(errorMessage)
 }
 
+// 音声URLを作成・管理する関数
+const createAudioUrl = (buffer: ArrayBuffer): string => {
+  const audioBlob = new Blob([buffer], { type: 'audio/wav' })
+  const audioUrl = URL.createObjectURL(audioBlob)
+
+  // 一定時間後にURLを解放
+  setTimeout(() => {
+    URL.revokeObjectURL(audioUrl)
+  }, 1000)
+
+  return audioUrl
+}
+
 export const speakCharacter = createSpeakCharacter()
 
 export const testVoiceVox = async () => {
@@ -243,7 +264,8 @@ export const testVoiceVox = async () => {
     const live2dViewer = hs.live2dViewer
     live2dViewer.scale.set(0.3)
 
-    live2dViewer.speak('voice_test.wav')
+    const audioUrl = createAudioUrl(buffer)
+    live2dViewer.speak(audioUrl)
     live2dViewer.expression('SadLean')
   }
 }
@@ -264,6 +286,11 @@ export const testAivisSpeech = async () => {
   ).catch(() => null)
   if (buffer) {
     const hs = homeStore.getState()
-    await hs.viewer.model?.speak(buffer, talk)
+    console.log(hs.live2dViewer?.constructor?.name)
+    const live2dViewer = hs.live2dViewer
+    live2dViewer.scale.set(0.3)
+
+    const audioUrl = createAudioUrl(buffer)
+    live2dViewer.speak(audioUrl)
   }
 }
