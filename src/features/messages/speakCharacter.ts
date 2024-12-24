@@ -16,6 +16,7 @@ import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
 import { SpeakQueue } from './speakQueue'
 import { synthesizeVoiceNijivoiceApi } from './synthesizeVoiceNijivoice'
+import { Live2DHandler } from './live2dHandler'
 
 interface EnglishToJapanese {
   [key: string]: string
@@ -175,20 +176,16 @@ const createSpeakCharacter = () => {
     fetchPromise.then((audioBuffer) => {
       if (!audioBuffer) return
 
-      const hs = homeStore.getState()
-      console.log(hs.live2dViewer?.constructor?.name)
-      const live2dViewer = hs.live2dViewer
-      live2dViewer.scale.set(0.3)
-
-      const audioUrl = createAudioUrl(audioBuffer)
-      live2dViewer.speak(audioUrl)
-
-      // speakQueue.addTask({
-      //   audioBuffer,
-      //   talk,
-      //   isNeedDecode,
-      //   onComplete,
-      // })
+      if (ss.modelType === 'live2d') {
+        Live2DHandler.speak(audioBuffer, talk)
+      } else {
+        speakQueue.addTask({
+          audioBuffer,
+          talk,
+          isNeedDecode,
+          onComplete,
+        })
+      }
     })
   }
 }
@@ -229,19 +226,6 @@ function handleTTSError(error: unknown, serviceName: string): void {
   console.error(errorMessage)
 }
 
-// 音声URLを作成・管理する関数
-const createAudioUrl = (buffer: ArrayBuffer): string => {
-  const audioBlob = new Blob([buffer], { type: 'audio/wav' })
-  const audioUrl = URL.createObjectURL(audioBlob)
-
-  // 一定時間後にURLを解放
-  setTimeout(() => {
-    URL.revokeObjectURL(audioUrl)
-  }, 1000)
-
-  return audioUrl
-}
-
 export const speakCharacter = createSpeakCharacter()
 
 export const testVoiceVox = async () => {
@@ -259,14 +243,13 @@ export const testVoiceVox = async () => {
     ss.voicevoxServerUrl
   ).catch(() => null)
   if (buffer) {
-    const hs = homeStore.getState()
-    console.log(hs.live2dViewer?.constructor?.name)
-    const live2dViewer = hs.live2dViewer
-    live2dViewer.scale.set(0.3)
-
-    const audioUrl = createAudioUrl(buffer)
-    live2dViewer.speak(audioUrl)
-    live2dViewer.expression('SadLean')
+    const ss = settingsStore.getState()
+    if (ss.modelType === 'vrm') {
+      const hs = homeStore.getState()
+      await hs.viewer.model?.speak(buffer, talk)
+    } else if (ss.modelType === 'live2d') {
+      Live2DHandler.speak(buffer, talk)
+    }
   }
 }
 
@@ -285,12 +268,12 @@ export const testAivisSpeech = async () => {
     ss.aivisSpeechServerUrl
   ).catch(() => null)
   if (buffer) {
-    const hs = homeStore.getState()
-    console.log(hs.live2dViewer?.constructor?.name)
-    const live2dViewer = hs.live2dViewer
-    live2dViewer.scale.set(0.3)
-
-    const audioUrl = createAudioUrl(buffer)
-    live2dViewer.speak(audioUrl)
+    const ss = settingsStore.getState()
+    if (ss.modelType === 'vrm') {
+      const hs = homeStore.getState()
+      await hs.viewer.model?.speak(buffer, talk)
+    } else if (ss.modelType === 'live2d') {
+      Live2DHandler.speak(buffer, talk)
+    }
   }
 }
