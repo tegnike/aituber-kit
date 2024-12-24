@@ -81,12 +81,15 @@ const Live2DComponent = () => {
     const canvas = canvasContainerRef.current
 
     const handlePointerDown = (event: PointerEvent) => {
-      model.tap(event.clientX, event.clientY)
       setIsDragging(true)
       setDragOffset({
         x: event.clientX - model.x,
         y: event.clientY - model.y,
       })
+
+      if (event.button !== 2) {
+        model.tap(event.clientX, event.clientY)
+      }
     }
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -103,8 +106,11 @@ const Live2DComponent = () => {
 
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault()
-      const scaleChange = event.deltaY * -0.001
+      // スケール変更を緩やかにするため、係数を小さくする
+      const scaleChange = event.deltaY * -0.0002
+      // 現在のスケールに緩やかな変更を適用
       const newScale = model.scale.x + scaleChange
+      // スケールの範囲は0.1から2.0に制限
       if (newScale >= 0.1 && newScale <= 2.0) {
         model.scale.set(newScale)
       }
@@ -147,7 +153,11 @@ const Live2DComponent = () => {
 
   return (
     <div className="border-2 border-red-500">
-      <canvas ref={canvasContainerRef} className="w-full h-full" />
+      <canvas
+        ref={canvasContainerRef}
+        className="w-full h-full"
+        onContextMenu={(e) => e.preventDefault()}
+      />
     </div>
   )
 }
