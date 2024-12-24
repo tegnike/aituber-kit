@@ -10,7 +10,7 @@ import { TextButton } from '../textButton'
 
 const Based = () => {
   const { t } = useTranslation()
-  const { characterName, selectedVrmPath } = settingsStore()
+  const { characterName, selectedVrmPath, modelType } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 
@@ -129,42 +129,80 @@ const Based = () => {
           {t('CharacterModelLabel')}
         </div>
         <div className="mb-16 typography-16">{t('CharacterModelInfo')}</div>
-        <select
-          className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-          value={selectedVrmPath}
-          onChange={(e) => {
-            const path = e.target.value
-            settingsStore.setState({ selectedVrmPath: path })
-            const { viewer } = homeStore.getState()
-            viewer.loadVrm(path)
-          }}
-        >
-          {vrmFiles.map((file) => (
-            <option key={file} value={`/vrm/${file}`}>
-              {file.replace('.vrm', '')}
-            </option>
-          ))}
-        </select>
 
-        <div className="my-16">
-          <TextButton
-            onClick={() => {
-              const { fileInput } = menuStore.getState()
-              if (fileInput) {
-                fileInput.accept = '.vrm'
-                fileInput.onchange = (e) => {
-                  const file = (e.target as HTMLInputElement).files?.[0]
-                  if (file) {
-                    handleVrmUpload(file)
-                  }
-                }
-                fileInput.click()
-              }
-            }}
+        <div className="flex gap-4 mb-8">
+          <button
+            className={`px-16 py-8 rounded-8 mr-8 ${
+              modelType === 'vrm'
+                ? 'bg-primary text-white'
+                : 'bg-surface1 hover:bg-surface1-hover'
+            }`}
+            onClick={() => settingsStore.setState({ modelType: 'vrm' })}
           >
-            {t('OpenVRM')}
-          </TextButton>
+            VRM
+          </button>
+          <button
+            className={`px-16 py-8 rounded-8 ${
+              modelType === 'live2d'
+                ? 'bg-primary text-white'
+                : 'bg-surface1 hover:bg-surface1-hover'
+            }`}
+            onClick={() => settingsStore.setState({ modelType: 'live2d' })}
+          >
+            Live2D
+          </button>
         </div>
+
+        {modelType === 'vrm' ? (
+          <>
+            <select
+              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+              value={selectedVrmPath}
+              onChange={(e) => {
+                const path = e.target.value
+                settingsStore.setState({ selectedVrmPath: path })
+                const { viewer } = homeStore.getState()
+                viewer.loadVrm(path)
+              }}
+            >
+              {vrmFiles.map((file) => (
+                <option key={file} value={`/vrm/${file}`}>
+                  {file.replace('.vrm', '')}
+                </option>
+              ))}
+            </select>
+
+            <div className="my-16">
+              <TextButton
+                onClick={() => {
+                  const { fileInput } = menuStore.getState()
+                  if (fileInput) {
+                    fileInput.accept = '.vrm'
+                    fileInput.onchange = (e) => {
+                      const file = (e.target as HTMLInputElement).files?.[0]
+                      if (file) {
+                        handleVrmUpload(file)
+                      }
+                    }
+                    fileInput.click()
+                  }
+                }}
+              >
+                {t('OpenVRM')}
+              </TextButton>
+            </div>
+          </>
+        ) : (
+          <div className="my-16">
+            <TextButton
+              onClick={() => {
+                const live2dPath = '/live2d/nike02/nike01.model3.json'
+              }}
+            >
+              {t('SelectLive2D')}
+            </TextButton>
+          </div>
+        )}
       </div>
       <div className="mt-24">
         <div className="my-16 typography-20 font-bold">

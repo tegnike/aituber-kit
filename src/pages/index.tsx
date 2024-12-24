@@ -17,13 +17,13 @@ import { YoutubeManager } from '@/components/youtubeManager'
 const Home = () => {
   const bgUrl = homeStore((s) => `url(${buildUrl(s.backgroundImageUrl)})`)
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
+  const modelType = settingsStore((s) => s.modelType)
 
   return (
     <div className="h-[100svh] bg-cover" style={{ backgroundImage: bgUrl }}>
       <Meta />
       <Introduction />
-      {/* <VrmViewer /> */}
-      <Live2DViewer />
+      {modelType === 'vrm' ? <VrmViewer /> : <Live2DViewer />}
       <Form />
       <Menu />
       <ModalImage />

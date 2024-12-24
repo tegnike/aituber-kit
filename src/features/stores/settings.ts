@@ -118,12 +118,17 @@ interface General {
   clientId: string
 }
 
+interface ModelType {
+  modelType: 'vrm' | 'live2d'
+}
+
 export type SettingsState = APIKeys &
   multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &
-  General
+  General &
+  ModelType
 
 const settingsStore = create<SettingsState>()(
   persist(
@@ -273,6 +278,9 @@ const settingsStore = create<SettingsState>()(
       nijivoiceSoundDuration:
         parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
         0.1,
+
+      // Settings
+      modelType: 'vrm',
     }),
     {
       name: 'aitube-kit-settings',
@@ -349,6 +357,7 @@ const settingsStore = create<SettingsState>()(
         nijivoiceSpeed: state.nijivoiceSpeed,
         nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
         nijivoiceSoundDuration: state.nijivoiceSoundDuration,
+        modelType: state.modelType,
       }),
     }
   )

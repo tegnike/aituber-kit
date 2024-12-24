@@ -26,6 +26,10 @@ export interface TransientState {
   triggerShutter: boolean
   webcamStatus: boolean
   captureStatus: boolean
+  isCubismCoreLoaded: boolean
+  setIsCubismCoreLoaded: (loaded: boolean) => void
+  isLive2dLoaded: boolean
+  setIsLive2dLoaded: (loaded: boolean) => void
 }
 
 export type HomeState = PersistedState & TransientState
@@ -61,6 +65,11 @@ const homeStore = create<HomeState>()(
       triggerShutter: false,
       webcamStatus: false,
       captureStatus: false,
+      isCubismCoreLoaded: false,
+      setIsCubismCoreLoaded: (loaded) =>
+        set(() => ({ isCubismCoreLoaded: loaded })),
+      isLive2dLoaded: false,
+      setIsLive2dLoaded: (loaded) => set(() => ({ isLive2dLoaded: loaded })),
     }),
     {
       name: 'aitube-kit-home',

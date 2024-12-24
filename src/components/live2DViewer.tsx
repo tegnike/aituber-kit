@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
+import homeStore from '@/features/stores/home'
 
 const Live2DComponent = dynamic(
   () => {
@@ -33,8 +34,11 @@ const Live2DComponent = dynamic(
 export default function Live2DViewer() {
   const [isMounted, setIsMounted] = useState(false)
   const [hasError, setHasError] = useState(false)
-  const [isCubismCoreLoaded, setIsCubismCoreLoaded] = useState(false)
-  const [isLive2dLoaded, setIsLive2dLoaded] = useState(false)
+
+  const isCubismCoreLoaded = homeStore((s) => s.isCubismCoreLoaded)
+  const setIsCubismCoreLoaded = homeStore((s) => s.setIsCubismCoreLoaded)
+  const isLive2dLoaded = homeStore((s) => s.isLive2dLoaded)
+  const setIsLive2dLoaded = homeStore((s) => s.setIsLive2dLoaded)
 
   const isScriptsLoaded = isCubismCoreLoaded && isLive2dLoaded
 
@@ -65,12 +69,18 @@ export default function Live2DViewer() {
           console.log('cubismcore loaded')
           setIsCubismCoreLoaded(true)
         }}
+        onError={() => {
+          console.error('Failed to load cubism core')
+        }}
       />
       <Script
         src="/scripts/live2d.min.js"
         onLoad={() => {
           console.log('live2d loaded')
           setIsLive2dLoaded(true)
+        }}
+        onError={() => {
+          console.error('Failed to load live2d')
         }}
       />
       {isScriptsLoaded && <Live2DComponent />}
