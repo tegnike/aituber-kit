@@ -10,9 +10,25 @@ export class Live2DHandler {
     const expression = 'SadLean'
     const audioUrl = createAudioUrl(audioBuffer)
 
-    // 音声の再生とエクスプレッションの設定
-    live2dViewer.speak(audioUrl)
-    live2dViewer.expression(expression)
+    // Live2Dモデルの表情を設定
+    if (expression) {
+      live2dViewer.expression(expression)
+    }
+
+    // 音声再生の完了を待つ
+    // live2dViewer.speakでは音声完了を検知できないので、Audioオブジェクトを使用して音声再生完了を検知する
+    // Audioオブジェクトの方も再生すると二重に聞こえるので、mutedをtrueにして再生しないようにする
+    // TODO: もっといい方法があればそれに変更する
+    await new Promise<void>((resolve) => {
+      const audio = new Audio(audioUrl)
+      audio.muted = true
+      audio.onended = () => {
+        resolve()
+        URL.revokeObjectURL(audioUrl)
+      }
+      audio.play()
+      live2dViewer.speak(audioUrl)
+    })
   }
 }
 
@@ -20,11 +36,6 @@ export class Live2DHandler {
 const createAudioUrl = (buffer: ArrayBuffer): string => {
   const audioBlob = new Blob([buffer], { type: 'audio/wav' })
   const audioUrl = URL.createObjectURL(audioBlob)
-
-  // 一定時間後にURLを解放
-  setTimeout(() => {
-    URL.revokeObjectURL(audioUrl)
-  }, 1000)
 
   return audioUrl
 }
