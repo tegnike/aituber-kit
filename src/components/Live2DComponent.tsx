@@ -154,7 +154,7 @@ const Live2DComponent = () => {
   }, [app, model])
 
   return (
-    <div className="border-2 border-red-500">
+    <div className="w-screen h-screen">
       <canvas
         ref={canvasContainerRef}
         className="w-full h-full"

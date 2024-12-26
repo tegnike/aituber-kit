@@ -22,11 +22,7 @@ const Live2DComponent = dynamic(
     ssr: false,
     loading: () => {
       console.log('Live2DComponent is loading...')
-      return (
-        <div className="border-2 border-yellow-500 w-full h-full">
-          Loading...
-        </div>
-      )
+      return null
     },
   }
 )
@@ -54,7 +50,7 @@ export default function Live2DViewer() {
 
   if (hasError) {
     return (
-      <div className="fixed bottom-0 right-0 w-[400px] h-[400px] border-2 border-red-500">
+      <div className="fixed bottom-0 right-0 w-[400px] h-[400px]">
         Failed to load Live2D component
       </div>
     )
@@ -62,7 +58,7 @@ export default function Live2DViewer() {
 
   console.log('Rendering Live2DViewer')
   return (
-    <div className="fixed">
+    <div className="fixed bottom-0 right-0 w-screen h-screen">
       <Script
         src="/scripts/live2dcubismcore.min.js"
         onLoad={() => {
