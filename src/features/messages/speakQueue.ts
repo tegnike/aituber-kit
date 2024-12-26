@@ -62,7 +62,7 @@ export class SpeakQueue {
       const hs = homeStore.getState()
       const ss = settingsStore.getState()
       if (ss.modelType === 'live2d') {
-        await Live2DHandler.resetToNeutral()
+        await Live2DHandler.resetToIdle()
       } else {
         await hs.viewer.model?.playEmotion('neutral')
       }

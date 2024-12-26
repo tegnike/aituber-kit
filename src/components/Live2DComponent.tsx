@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import { Live2DHandler } from '@/features/messages/live2dHandler'
 
 console.log('Live2DComponent module loaded')
 
@@ -53,8 +54,7 @@ const Live2DComponent = () => {
     try {
       const model = await Live2DModel.from(
         '/live2d/nike01/nike01.model3.json',
-        // '/live2d/hiyori_free_jp/runtime/hiyori_free_t08.model3.json',
-        { ticker: Ticker.shared, autoInteract: false } // autoInteractで視線追従させない
+        { ticker: Ticker.shared, autoInteract: false }
       )
 
       currentApp.stage.addChild(model as unknown as DisplayObject)
@@ -68,11 +68,10 @@ const Live2DComponent = () => {
         }
       })
 
-      const idleMotion = ss.idleMotionGroup || 'Idle'
-      model.motion(idleMotion)
-
       hs.live2dViewer = model
       setModel(model)
+
+      await Live2DHandler.resetToIdle()
     } catch (error) {
       console.error('Failed to load Live2D model:', error)
     }

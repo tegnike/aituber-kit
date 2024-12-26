@@ -71,7 +71,7 @@ export class Live2DHandler {
     })
   }
 
-  static async resetToNeutral() {
+  static async resetToIdle() {
     // インターバルを停止
     this.stopIdleMotion()
 
