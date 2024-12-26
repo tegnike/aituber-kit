@@ -56,7 +56,8 @@ const Live2DComponent = () => {
         '/live2d/nike01/nike01.model3.json',
         {
           ticker: Ticker.shared,
-          autoInteract: false,
+          autoHitTest: false,
+          autoFocus: false,
         }
       )
 
