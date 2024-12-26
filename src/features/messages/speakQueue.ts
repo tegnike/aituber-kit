@@ -31,7 +31,7 @@ export class SpeakQueue {
         try {
           const { audioBuffer, talk, isNeedDecode, onComplete } = task
           if (ss.modelType === 'live2d') {
-            await Live2DHandler.speak(audioBuffer, talk)
+            await Live2DHandler.speak(audioBuffer, talk, isNeedDecode)
           } else {
             await hs.viewer.model?.speak(audioBuffer, talk, isNeedDecode)
           }

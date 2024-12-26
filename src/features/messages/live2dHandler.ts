@@ -5,7 +5,11 @@ import settingsStore from '@/features/stores/settings'
 export class Live2DHandler {
   private static idleMotionInterval: NodeJS.Timeout | null = null // インターバルIDを保持
 
-  static async speak(audioBuffer: ArrayBuffer, talk: Talk) {
+  static async speak(
+    audioBuffer: ArrayBuffer,
+    talk: Talk,
+    isNeedDecode: boolean = true
+  ) {
     const hs = homeStore.getState()
     const ss = settingsStore.getState()
     const live2dViewer = hs.live2dViewer
@@ -44,7 +48,42 @@ export class Live2DHandler {
         motion = ss.relaxedMotionGroup
         break
     }
-    const audioUrl = createAudioUrl(audioBuffer)
+
+    // AudioContextの作成
+    const audioContext = new AudioContext()
+    let decodedAudio: AudioBuffer
+
+    if (isNeedDecode) {
+      // 圧縮音声の場合
+      decodedAudio = await audioContext.decodeAudioData(audioBuffer)
+    } else {
+      // PCM16形式の場合
+      const pcmData = new Int16Array(audioBuffer)
+      const floatData = new Float32Array(pcmData.length)
+      for (let i = 0; i < pcmData.length; i++) {
+        floatData[i] =
+          pcmData[i] < 0 ? pcmData[i] / 32768.0 : pcmData[i] / 32767.0
+      }
+      decodedAudio = audioContext.createBuffer(1, floatData.length, 24000) // sampleRateは必要に応じて調整
+      decodedAudio.getChannelData(0).set(floatData)
+    }
+
+    // デコードされた音声データをBlobに変換
+    const offlineContext = new OfflineAudioContext(
+      decodedAudio.numberOfChannels,
+      decodedAudio.length,
+      decodedAudio.sampleRate
+    )
+    const source = offlineContext.createBufferSource()
+    source.buffer = decodedAudio
+    source.connect(offlineContext.destination)
+    source.start()
+
+    const renderedBuffer = await offlineContext.startRendering()
+    const audioBlob = await new Blob([this.audioBufferToWav(renderedBuffer)], {
+      type: 'audio/wav',
+    })
+    const audioUrl = URL.createObjectURL(audioBlob)
 
     // Live2Dモデルの表情を設定
     if (expression) {
@@ -106,12 +145,59 @@ export class Live2DHandler {
       this.idleMotionInterval = null
     }
   }
-}
 
-// 音声URLを作成・管理する関数
-const createAudioUrl = (buffer: ArrayBuffer): string => {
-  const audioBlob = new Blob([buffer], { type: 'audio/wav' })
-  const audioUrl = URL.createObjectURL(audioBlob)
+  // WAVファイルフォーマットに変換するヘルパー関数
+  private static audioBufferToWav(buffer: AudioBuffer): ArrayBuffer {
+    const numOfChan = buffer.numberOfChannels
+    const length = buffer.length * numOfChan * 2
+    const buffer2 = new ArrayBuffer(44 + length)
+    const view = new DataView(buffer2)
+    const channels = []
+    let sample
+    let offset = 0
+    let pos = 0
 
-  return audioUrl
+    // WAVヘッダーの作成
+    setUint32(0x46464952) // "RIFF"
+    setUint32(36 + length) // file length
+    setUint32(0x45564157) // "WAVE"
+    setUint32(0x20746d66) // "fmt "
+    setUint32(16) // section length
+    setUint16(1) // PCM
+    setUint16(numOfChan)
+    setUint32(buffer.sampleRate)
+    setUint32(buffer.sampleRate * 2 * numOfChan) // byte rate
+    setUint16(numOfChan * 2) // block align
+    setUint16(16) // bits per sample
+    setUint32(0x61746164) // "data"
+    setUint32(length)
+
+    // チャンネルデータの取得
+    for (let i = 0; i < buffer.numberOfChannels; i++) {
+      channels.push(buffer.getChannelData(i))
+    }
+
+    // インターリーブ
+    while (pos < buffer.length) {
+      for (let i = 0; i < numOfChan; i++) {
+        sample = Math.max(-1, Math.min(1, channels[i][pos]))
+        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0
+        view.setInt16(44 + offset, sample, true)
+        offset += 2
+      }
+      pos++
+    }
+
+    function setUint16(data: number) {
+      view.setUint16(pos, data, true)
+      pos += 2
+    }
+
+    function setUint32(data: number) {
+      view.setUint32(pos, data, true)
+      pos += 4
+    }
+
+    return buffer2
+  }
 }
