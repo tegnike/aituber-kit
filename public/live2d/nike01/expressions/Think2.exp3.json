@@ -1,0 +1,31 @@
+{
+  "Type": "Live2D Expression",
+  "FadeInTime": 0.75,
+  "Parameters": [
+    {
+      "Id": "ParamHairpinChange",
+      "Value": 1,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamEyeBallY",
+      "Value": 0.288,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamEyeBallX",
+      "Value": -0.712,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamHeMouth",
+      "Value": 0.49,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamMouthForm",
+      "Value": -0.635,
+      "Blend": "Add"
+    }
+  ]
+}

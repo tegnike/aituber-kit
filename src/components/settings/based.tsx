@@ -8,6 +8,71 @@ import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 
+const emotionFields = [
+  { key: 'neutralEmotions', label: 'Neutral Emotions' },
+  { key: 'happyEmotions', label: 'Happy Emotions' },
+  { key: 'sadEmotions', label: 'Sad Emotions' },
+  { key: 'angryEmotions', label: 'Angry Emotions' },
+  { key: 'relaxedEmotions', label: 'Relaxed Emotions' },
+] as const
+
+const motionFields = [
+  { key: 'idleMotionGroup', label: 'Idle Motion Group' },
+  { key: 'neutralMotionGroup', label: 'Neutral Motion Group' },
+  { key: 'happyMotionGroup', label: 'Happy Motion Group' },
+  { key: 'sadMotionGroup', label: 'Sad Motion Group' },
+  { key: 'angryMotionGroup', label: 'Angry Motion Group' },
+  { key: 'relaxedMotionGroup', label: 'Relaxed Motion Group' },
+] as const
+
+const Live2DSettingsForm = () => {
+  const store = settingsStore()
+  const { t } = useTranslation()
+  const handleChange = (key: string, value: string) => {
+    const cleanedArray = value
+      .split(',')
+      .map((item) => item.replace(/\s+/g, ''))
+      .filter((item) => item.length > 0)
+
+    settingsStore.setState({
+      [key]: cleanedArray,
+    })
+  }
+
+  return (
+    <div className="space-y-8">
+      <div className="typography-18 font-bold mb-8">{t('Live2DEmotions')}</div>
+      {emotionFields.map((field) => (
+        <div key={field.key} className="space-y-4">
+          <label className="block typography-16">{field.label}</label>
+          <input
+            className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+            type="text"
+            value={store[field.key].join(',')}
+            onChange={(e) => handleChange(field.key, e.target.value)}
+            placeholder={`${field.label} (comma separated)`}
+          />
+        </div>
+      ))}
+      <div className="typography-18 font-bold mb-8">
+        {t('Live2DMotionGroups')}
+      </div>
+      {motionFields.map((field) => (
+        <div key={field.key} className="space-y-4">
+          <label className="block typography-16">{field.label}</label>
+          <input
+            className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+            type="text"
+            value={store[field.key]}
+            onChange={(e) => handleChange(field.key, e.target.value)}
+            placeholder={`${field.label}`}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 const Based = () => {
   const { t } = useTranslation()
   const { characterName, selectedVrmPath, modelType } = settingsStore()
@@ -193,14 +258,8 @@ const Based = () => {
             </div>
           </>
         ) : (
-          <div className="my-16">
-            <TextButton
-              onClick={() => {
-                const live2dPath = '/live2d/nike02/nike01.model3.json'
-              }}
-            >
-              {t('SelectLive2D')}
-            </TextButton>
+          <div className="space-y-4">
+            <Live2DSettingsForm />
           </div>
         )}
       </div>

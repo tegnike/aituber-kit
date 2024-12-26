@@ -1,7 +1,8 @@
 import { Application, Ticker, DisplayObject } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
-import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch/cubism4'
+import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 
 console.log('Live2DComponent module loaded')
 
@@ -48,10 +49,10 @@ const Live2DComponent = () => {
   const initLive2D = async (currentApp: Application) => {
     if (!canvasContainerRef.current) return
     const hs = homeStore.getState()
-
+    const ss = settingsStore.getState()
     try {
       const model = await Live2DModel.from(
-        '/live2d/nike02/nike01.model3.json',
+        '/live2d/nike01/nike01.model3.json',
         // '/live2d/hiyori_free_jp/runtime/hiyori_free_t08.model3.json',
         { ticker: Ticker.shared, autoInteract: false } // autoInteractで視線追従させない
       )
@@ -61,13 +62,15 @@ const Live2DComponent = () => {
       model.anchor.set(0.5, 0.5)
       setModelPosition(currentApp, model)
 
-      model.on('hit', (hitAreas) => {
+      model.on('hit', (hitAreas: any) => {
         if (hitAreas.includes('Body')) {
           model.motion('Tap@Body')
         }
       })
 
-      setModel(model)
+      const idleMotion = ss.idleMotionGroup || 'Idle'
+      model.motion(idleMotion)
+
       hs.live2dViewer = model
       setModel(model)
     } catch (error) {

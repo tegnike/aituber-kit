@@ -42,7 +42,21 @@ interface APIKeys {
   azureTTSEndpoint: string
 }
 
-interface ModelProvider {
+interface Live2DSettings {
+  neutralEmotions: string[]
+  happyEmotions: string[]
+  sadEmotions: string[]
+  angryEmotions: string[]
+  relaxedEmotions: string[]
+  idleMotionGroup: string
+  neutralMotionGroup: string
+  happyMotionGroup: string
+  sadMotionGroup: string
+  angryMotionGroup: string
+  relaxedMotionGroup: string
+}
+
+interface ModelProvider extends Live2DSettings {
   selectAIService: AIService
   selectAIModel: string
   localLlmUrl: string
@@ -281,6 +295,19 @@ const settingsStore = create<SettingsState>()(
 
       // Settings
       modelType: 'vrm',
+
+      // Live2D settings
+      neutralEmotions: [],
+      happyEmotions: [],
+      sadEmotions: [],
+      angryEmotions: [],
+      relaxedEmotions: [],
+      idleMotionGroup: '',
+      neutralMotionGroup: '',
+      happyMotionGroup: '',
+      sadMotionGroup: '',
+      angryMotionGroup: '',
+      relaxedMotionGroup: '',
     }),
     {
       name: 'aitube-kit-settings',
@@ -358,6 +385,17 @@ const settingsStore = create<SettingsState>()(
         nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
         nijivoiceSoundDuration: state.nijivoiceSoundDuration,
         modelType: state.modelType,
+        neutralEmotions: state.neutralEmotions,
+        happyEmotions: state.happyEmotions,
+        sadEmotions: state.sadEmotions,
+        angryEmotions: state.angryEmotions,
+        relaxedEmotions: state.relaxedEmotions,
+        idleMotionGroup: state.idleMotionGroup,
+        neutralMotionGroup: state.neutralMotionGroup,
+        happyMotionGroup: state.happyMotionGroup,
+        sadMotionGroup: state.sadMotionGroup,
+        angryMotionGroup: state.angryMotionGroup,
+        relaxedMotionGroup: state.relaxedMotionGroup,
       }),
     }
   )

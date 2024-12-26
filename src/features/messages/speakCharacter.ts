@@ -176,16 +176,12 @@ const createSpeakCharacter = () => {
     fetchPromise.then((audioBuffer) => {
       if (!audioBuffer) return
 
-      if (ss.modelType === 'live2d') {
-        Live2DHandler.speak(audioBuffer, talk)
-      } else {
-        speakQueue.addTask({
-          audioBuffer,
-          talk,
-          isNeedDecode,
-          onComplete,
-        })
-      }
+      speakQueue.addTask({
+        audioBuffer,
+        talk,
+        isNeedDecode,
+        onComplete,
+      })
     })
   }
 }
