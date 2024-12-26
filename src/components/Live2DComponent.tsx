@@ -25,12 +25,39 @@ const Live2DComponent = () => {
   const [model, setModel] = useState<InstanceType<typeof Live2DModel> | null>(
     null
   )
+  const modelRef = useRef<InstanceType<typeof Live2DModel> | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+  const selectedLive2DPath = settingsStore((state) => state.selectedLive2DPath)
 
   useEffect(() => {
     initApp()
+    return () => {
+      if (modelRef.current) {
+        modelRef.current.destroy()
+        modelRef.current = null
+      }
+      if (app) {
+        app.destroy(true)
+      }
+    }
   }, [])
+
+  useEffect(() => {
+    if (app && selectedLive2DPath) {
+      // 既存のモデルがある場合は先に削除
+      if (modelRef.current) {
+        app.stage.removeChild(modelRef.current as unknown as DisplayObject)
+        modelRef.current.destroy()
+        modelRef.current = null
+        setModel(null)
+      }
+      // ステージをクリア
+      app.stage.removeChildren()
+      // 新しいモデルを読み込む
+      loadLive2DModel(app, selectedLive2DPath)
+    }
+  }, [app, selectedLive2DPath])
 
   const initApp = () => {
     if (!canvasContainerRef.current) return
@@ -44,36 +71,35 @@ const Live2DComponent = () => {
     })
 
     setApp(app)
-    initLive2D(app)
   }
 
-  const initLive2D = async (currentApp: Application) => {
+  const loadLive2DModel = async (
+    currentApp: Application,
+    modelPath: string
+  ) => {
     if (!canvasContainerRef.current) return
     const hs = homeStore.getState()
 
     try {
-      const model = await Live2DModel.fromSync(
-        '/live2d/nike01/nike01.model3.json',
-        {
-          ticker: Ticker.shared,
-          autoHitTest: false,
-          autoFocus: false,
-        }
-      )
+      const newModel = await Live2DModel.fromSync(modelPath, {
+        ticker: Ticker.shared,
+        autoHitTest: false,
+        autoFocus: false,
+      })
 
       await new Promise((resolve, reject) => {
-        model.once('load', () => resolve(true))
-        model.once('error', (e) => reject(e))
-
+        newModel.once('load', () => resolve(true))
+        newModel.once('error', (e) => reject(e))
         setTimeout(() => reject(new Error('Model load timeout')), 10000)
       })
 
-      currentApp.stage.addChild(model as unknown as DisplayObject)
-      model.anchor.set(0.5, 0.5)
-      setModelPosition(currentApp, model)
+      currentApp.stage.addChild(newModel as unknown as DisplayObject)
+      newModel.anchor.set(0.5, 0.5)
+      setModelPosition(currentApp, newModel)
 
-      setModel(model)
-      hs.live2dViewer = model
+      modelRef.current = newModel
+      setModel(newModel)
+      hs.live2dViewer = newModel
 
       await Live2DHandler.resetToIdle()
     } catch (error) {

@@ -155,8 +155,12 @@ const Live2DSettingsForm = () => {
 
 const Based = () => {
   const { t } = useTranslation()
-  const { characterName, selectedVrmPath, modelType } = settingsStore()
+  const { characterName, selectedVrmPath, selectedLive2DPath, modelType } =
+    settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
+  const [live2dModels, setLive2dModels] = useState<
+    Array<{ path: string; name: string }>
+  >([])
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 
   useEffect(() => {
@@ -165,6 +169,13 @@ const Based = () => {
       .then((files) => setVrmFiles(files))
       .catch((error) => {
         console.error('Error fetching VRM list:', error)
+      })
+
+    fetch('/api/get-live2d-list')
+      .then((res) => res.json())
+      .then((models) => setLive2dModels(models))
+      .catch((error) => {
+        console.error('Error fetching Live2D list:', error)
       })
   }, [])
 
@@ -338,9 +349,25 @@ const Based = () => {
             </div>
           </>
         ) : (
-          <div className="my-16">
-            <Live2DSettingsForm />
-          </div>
+          <>
+            <select
+              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8 mb-16"
+              value={selectedLive2DPath}
+              onChange={(e) => {
+                const path = e.target.value
+                settingsStore.setState({ selectedLive2DPath: path })
+              }}
+            >
+              {live2dModels.map((model) => (
+                <option key={model.path} value={model.path}>
+                  {model.name}
+                </option>
+              ))}
+            </select>
+            <div className="my-16">
+              <Live2DSettingsForm />
+            </div>
+          </>
         )}
       </div>
       <div className="mt-24">

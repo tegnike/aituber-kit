@@ -113,6 +113,7 @@ interface Character {
   showCharacterName: boolean
   systemPrompt: string
   selectedVrmPath: string
+  selectedLive2DPath: string
 }
 
 interface General {
@@ -244,6 +245,9 @@ const settingsStore = create<SettingsState>()(
       systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
       selectedVrmPath:
         process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
+      selectedLive2DPath:
+        process.env.NEXT_PUBLIC_SELECTED_LIVE2D_PATH ||
+        '/live2d/nike01/nike01.model3.json',
 
       // General
       selectLanguage:
@@ -382,6 +386,7 @@ const settingsStore = create<SettingsState>()(
         azureTTSKey: state.azureTTSKey,
         azureTTSEndpoint: state.azureTTSEndpoint,
         selectedVrmPath: state.selectedVrmPath,
+        selectedLive2DPath: state.selectedLive2DPath,
         nijivoiceApiKey: state.nijivoiceApiKey,
         nijivoiceActorId: state.nijivoiceActorId,
         nijivoiceSpeed: state.nijivoiceSpeed,
