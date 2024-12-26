@@ -47,6 +47,7 @@
   "BackgroundImage": "Background Image",
   "ChangeBackgroundImage": "Change Background Image",
   "CharacterSettingsPrompt": "Character Settings (System Prompt)",
+  "CharacterSettingsInfo": "Character settings are set in the system prompt. By specifying emotion tags, you can control the character's expression and motion. Example: [neutral]Good morning![happy]Good luck today!",
   "CharacterSettingsReset": "Reset Character Settings",
   "SyntheticVoiceEngineChoice": "Choose Synthetic Voice Engine",
   "VoiceAdjustment": "Voice Adjustment",
@@ -202,5 +203,23 @@
     "userInputTitle": "Send user input",
     "userInputDescription": "The message sent is processed the same as when input from the AITuberKit input form. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt and conversation history are the values set in AITuberKit."
   },
-  "CannotUseVoice": "Realtime API mode or Audio mode is enabled, so voice settings are not required."
+  "CannotUseVoice": "Realtime API mode or Audio mode is enabled, so voice settings are not required.",
+  "Live2D": {
+    "Info": "You can specify emotions and motions.\nEach emotion is controlled by the prompt. For more details, please refer to \"AI Settings => Character Settings\".",
+    "Emotions": "Emotion Settings",
+    "EmotionInfo": "Emotions can be specified in comma-separated format. If multiple emotions are specified, they are randomly selected.\nThe initial value is for the model provided by AITuberKit. If you are using an original model, please enter the value according to your model.\nAfter conversation completion, the \"Neutral\" emotion is displayed.",
+    "neutralEmotions": "Neutral",
+    "happyEmotions": "Happy",
+    "sadEmotions": "Sad",
+    "angryEmotions": "Angry",
+    "relaxedEmotions": "Relaxed",
+    "MotionGroups": "Motion Group Settings",
+    "MotionGroupsInfo": "Motion groups are randomly selected from the selected group.\nSame as emotion settings, please set it according to your model.\n\"Idle\" is the motion displayed after conversation completion.",
+    "idleMotionGroup": "Idle",
+    "neutralMotionGroup": "Neutral",
+    "happyMotionGroup": "Happy",
+    "sadMotionGroup": "Sad",
+    "angryMotionGroup": "Angry",
+    "relaxedMotionGroup": "Relaxed"
+  }
 }

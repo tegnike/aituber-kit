@@ -960,8 +960,12 @@ const ModelProvider = () => {
           <div className="my-16 typography-20 font-bold">
             {t('CharacterSettingsPrompt')}
           </div>
-          {selectAIService === 'dify' && (
+          {selectAIService === 'dify' ? (
             <div className="my-16">{t('DifyInstruction')}</div>
+          ) : (
+            <div className="my-16 whitespace-pre-line">
+              {t('CharacterSettingsInfo')}
+            </div>
           )}
           <TextButton
             onClick={() =>

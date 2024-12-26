@@ -7,52 +7,36 @@
     "DisplayInfo": "nike01.cdi3.json",
     "Expressions": [
       {
-        "Name": "HairpinChange",
-        "File": "expressions/HairpinChange.exp3.json"
+        "Name": "Neutral",
+        "File": "expressions/Neutral.exp3.json"
       },
       {
-        "Name": "Smile",
-        "File": "expressions/Smile.exp3.json"
+        "Name": "Happy",
+        "File": "expressions/Happy.exp3.json"
       },
       {
-        "Name": "Normal",
-        "File": "expressions/Normal.exp3.json"
-      },
-      {
-        "Name": "SadLean",
-        "File": "expressions/SadLean.exp3.json"
-      },
-      {
-        "Name": "Angry",
-        "File": "expressions/Angry.exp3.json"
+        "Name": "Happy2",
+        "File": "expressions/Happy2.exp3.json"
       },
       {
         "Name": "Sad",
         "File": "expressions/Sad.exp3.json"
       },
       {
-        "Name": "SuperSmile",
-        "File": "expressions/SuperSmile.exp3.json"
-      },
-      {
-        "Name": "NoSmile",
-        "File": "expressions/NoSmile.exp3.json"
-      },
-      {
-        "Name": "Think",
-        "File": "expressions/Think.exp3.json"
-      },
-      {
-        "Name": "Focus",
-        "File": "expressions/Focus.exp3.json"
+        "Name": "Sad2",
+        "File": "expressions/Sad2.exp3.json"
       },
       {
         "Name": "Troubled",
         "File": "expressions/Troubled.exp3.json"
       },
       {
-        "Name": "Think2",
-        "File": "expressions/Think2.exp3.json"
+        "Name": "Angry",
+        "File": "expressions/Angry.exp3.json"
+      },
+      {
+        "Name": "Focus",
+        "File": "expressions/Focus.exp3.json"
       },
       {
         "Name": "Sleep",
@@ -61,6 +45,22 @@
       {
         "Name": "Zitome",
         "File": "expressions/Zitome.exp3.json"
+      },
+      {
+        "Name": "Think",
+        "File": "expressions/Think.exp3.json"
+      },
+      {
+        "Name": "Think2",
+        "File": "expressions/Think2.exp3.json"
+      },
+      {
+        "Name": "NoSmile",
+        "File": "expressions/NoSmile.exp3.json"
+      },
+      {
+        "Name": "HairpinChange",
+        "File": "expressions/HairpinChange.exp3.json"
       }
     ],
     "Motions": {
@@ -84,9 +84,6 @@
         },
         {
           "File": "motions/Motion3.motion3.json"
-        },
-        {
-          "File": "motions/Motion7.motion3.json"
         }
       ],
       "Happy": [
@@ -95,17 +92,11 @@
         },
         {
           "File": "motions/Motion3.motion3.json"
-        },
-        {
-          "File": "motions/Motion7.motion3.json"
         }
       ],
       "Sad": [
         {
           "File": "motions/Motion1.motion3.json"
-        },
-        {
-          "File": "motions/Motion7.motion3.json"
         },
         {
           "File": "motions/Motion9.motion3.json"
@@ -125,9 +116,6 @@
         },
         {
           "File": "motions/Motion3.motion3.json"
-        },
-        {
-          "File": "motions/Motion7.motion3.json"
         }
       ]
     }

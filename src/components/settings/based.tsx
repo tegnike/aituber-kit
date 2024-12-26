@@ -9,30 +9,89 @@ import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 
 const emotionFields = [
-  { key: 'neutralEmotions', label: 'Neutral Emotions' },
-  { key: 'happyEmotions', label: 'Happy Emotions' },
-  { key: 'sadEmotions', label: 'Sad Emotions' },
-  { key: 'angryEmotions', label: 'Angry Emotions' },
-  { key: 'relaxedEmotions', label: 'Relaxed Emotions' },
+  {
+    key: 'neutralEmotions',
+    label: 'Neutral Emotions',
+    defaultValue: ['Neutral'],
+  },
+  {
+    key: 'happyEmotions',
+    label: 'Happy Emotions',
+    defaultValue: ['Happy,Happy2'],
+  },
+  {
+    key: 'sadEmotions',
+    label: 'Sad Emotions',
+    defaultValue: ['Sad,Sad2,Troubled'],
+  },
+  {
+    key: 'angryEmotions',
+    label: 'Angry Emotions',
+    defaultValue: ['Angry,Focus'],
+  },
+  {
+    key: 'relaxedEmotions',
+    label: 'Relaxed Emotions',
+    defaultValue: ['Relaxed'],
+  },
 ] as const
 
 const motionFields = [
-  { key: 'idleMotionGroup', label: 'Idle Motion Group' },
-  { key: 'neutralMotionGroup', label: 'Neutral Motion Group' },
-  { key: 'happyMotionGroup', label: 'Happy Motion Group' },
-  { key: 'sadMotionGroup', label: 'Sad Motion Group' },
-  { key: 'angryMotionGroup', label: 'Angry Motion Group' },
-  { key: 'relaxedMotionGroup', label: 'Relaxed Motion Group' },
+  { key: 'idleMotionGroup', label: 'Idle Motion Group', defaultValue: 'Idle' },
+  {
+    key: 'neutralMotionGroup',
+    label: 'Neutral Motion Group',
+    defaultValue: 'Neutral',
+  },
+  {
+    key: 'happyMotionGroup',
+    label: 'Happy Motion Group',
+    defaultValue: 'Happy',
+  },
+  { key: 'sadMotionGroup', label: 'Sad Motion Group', defaultValue: 'Sad' },
+  {
+    key: 'angryMotionGroup',
+    label: 'Angry Motion Group',
+    defaultValue: 'Angry',
+  },
+  {
+    key: 'relaxedMotionGroup',
+    label: 'Relaxed Motion Group',
+    defaultValue: 'Relaxed',
+  },
 ] as const
 
 const Live2DSettingsForm = () => {
   const store = settingsStore()
   const { t } = useTranslation()
+
+  // コンポーネントマウント時にデフォルト値を設定
+  useEffect(() => {
+    const updates: Record<string, any> = {}
+
+    emotionFields.forEach((field) => {
+      if (!store[field.key] || store[field.key].length === 0) {
+        updates[field.key] = field.defaultValue
+      }
+    })
+
+    motionFields.forEach((field) => {
+      if (!store[field.key] || store[field.key] === '') {
+        updates[field.key] = field.defaultValue
+      }
+    })
+
+    if (Object.keys(updates).length > 0) {
+      settingsStore.setState(updates)
+    }
+  }, [])
+
   const handleChange = (key: string, value: string) => {
+    // 最後のカンマを許容しつつ、空の要素を除外
     const cleanedArray = value
       .split(',')
-      .map((item) => item.replace(/\s+/g, ''))
-      .filter((item) => item.length > 0)
+      .map((item) => item.trim())
+      .filter(Boolean)
 
     settingsStore.setState({
       [key]: cleanedArray,
@@ -40,36 +99,57 @@ const Live2DSettingsForm = () => {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="typography-18 font-bold mb-8">{t('Live2DEmotions')}</div>
-      {emotionFields.map((field) => (
-        <div key={field.key} className="space-y-4">
-          <label className="block typography-16">{field.label}</label>
-          <input
-            className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
-            type="text"
-            value={store[field.key].join(',')}
-            onChange={(e) => handleChange(field.key, e.target.value)}
-            placeholder={`${field.label} (comma separated)`}
-          />
+    <>
+      <div className="space-y-8 mb-16">
+        <div className="typography-16 whitespace-pre-line">
+          {t('Live2D.Info')}
         </div>
-      ))}
-      <div className="typography-18 font-bold mb-8">
-        {t('Live2DMotionGroups')}
       </div>
-      {motionFields.map((field) => (
-        <div key={field.key} className="space-y-4">
-          <label className="block typography-16">{field.label}</label>
-          <input
-            className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
-            type="text"
-            value={store[field.key]}
-            onChange={(e) => handleChange(field.key, e.target.value)}
-            placeholder={`${field.label}`}
-          />
+      <div className="space-y-8 mb-16">
+        <div className="typography-20 font-bold mb-8">
+          {t('Live2D.Emotions')}
         </div>
-      ))}
-    </div>
+        <div className="typography-16 whitespace-pre-line">
+          {t('Live2D.EmotionInfo')}
+        </div>
+        {emotionFields.map((field) => (
+          <div key={field.key} className="space-y-4">
+            <label className="block typography-16 font-bold">
+              {t(`Live2D.${field.key}`)}
+            </label>
+            <input
+              className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+              type="text"
+              value={store[field.key].join(',')}
+              onChange={(e) => handleChange(field.key, e.target.value)}
+              placeholder={`${field.label} (comma separated)`}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="space-y-8">
+        <div className="typography-20 font-bold mb-8">
+          {t('Live2D.MotionGroups')}
+        </div>
+        <div className="typography-16 whitespace-pre-line">
+          {t('Live2D.MotionGroupsInfo')}
+        </div>
+        {motionFields.map((field) => (
+          <div key={field.key} className="space-y-4">
+            <label className="block typography-16 font-bold">
+              {t(`Live2D.${field.key}`)}
+            </label>
+            <input
+              className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+              type="text"
+              value={store[field.key]}
+              onChange={(e) => handleChange(field.key, e.target.value)}
+              placeholder={`${field.label}`}
+            />
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 
@@ -258,7 +338,7 @@ const Based = () => {
             </div>
           </>
         ) : (
-          <div className="space-y-4">
+          <div className="my-16">
             <Live2DSettingsForm />
           </div>
         )}
