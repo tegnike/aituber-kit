@@ -4,5 +4,5 @@
   "rules": {
     "prettier/prettier": "error"
   },
-  "ignorePatterns": ["public/**/*"]
+  "ignorePatterns": ["public/scripts/*"]
 }

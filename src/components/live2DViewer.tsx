@@ -29,14 +29,29 @@ const Live2DComponent = dynamic(
 
 export default function Live2DViewer() {
   const [isMounted, setIsMounted] = useState(false)
-  const [hasError, setHasError] = useState(false)
+  const [scriptLoadRetries, setScriptLoadRetries] = useState({
+    cubismcore: 0,
+    live2d: 0,
+  })
+  const MAX_RETRIES = 3
 
   const isCubismCoreLoaded = homeStore((s) => s.isCubismCoreLoaded)
   const setIsCubismCoreLoaded = homeStore((s) => s.setIsCubismCoreLoaded)
   const isLive2dLoaded = homeStore((s) => s.isLive2dLoaded)
   const setIsLive2dLoaded = homeStore((s) => s.setIsLive2dLoaded)
 
-  const isScriptsLoaded = isCubismCoreLoaded && isLive2dLoaded
+  // スクリプトの再読み込み処理
+  const retryLoadScript = (scriptName: 'cubismcore' | 'live2d') => {
+    if (scriptLoadRetries[scriptName] < MAX_RETRIES) {
+      setScriptLoadRetries((prev) => ({
+        ...prev,
+        [scriptName]: prev[scriptName] + 1,
+      }))
+      // 強制的に再読み込みするためにキーを変更
+      return true
+    }
+    return false
+  }
 
   useEffect(() => {
     console.log('Live2DViewer mounted')
@@ -52,26 +67,41 @@ export default function Live2DViewer() {
   return (
     <div className="fixed bottom-0 right-0 w-screen h-screen">
       <Script
+        key={`cubismcore-${scriptLoadRetries.cubismcore}`}
         src="/scripts/live2dcubismcore.min.js"
+        strategy="afterInteractive"
         onLoad={() => {
           console.log('cubismcore loaded')
           setIsCubismCoreLoaded(true)
         }}
         onError={() => {
           console.error('Failed to load cubism core')
+          if (retryLoadScript('cubismcore')) {
+            console.log('Retrying cubismcore load...')
+          } else {
+            console.error('Max retries reached for cubismcore')
+          }
         }}
       />
-      <Script
-        src="/scripts/live2d.min.js"
-        onLoad={() => {
-          console.log('live2d loaded')
-          setIsLive2dLoaded(true)
-        }}
-        onError={() => {
-          console.error('Failed to load live2d')
-        }}
-      />
-      {isScriptsLoaded && <Live2DComponent />}
+      {isCubismCoreLoaded && (
+        <Script
+          key={`live2d-${scriptLoadRetries.live2d}`}
+          src="/scripts/live2d.min.js"
+          onLoad={() => {
+            console.log('live2d loaded')
+            setIsLive2dLoaded(true)
+          }}
+          onError={() => {
+            console.error('Failed to load live2d')
+            if (retryLoadScript('live2d')) {
+              console.log('Retrying live2d load...')
+            } else {
+              console.error('Max retries reached for live2d')
+            }
+          }}
+        />
+      )}
+      {isCubismCoreLoaded && isLive2dLoaded && <Live2DComponent />}
     </div>
   )
 }

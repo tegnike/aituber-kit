@@ -294,20 +294,23 @@ const settingsStore = create<SettingsState>()(
         0.1,
 
       // Settings
-      modelType: 'vrm',
+      modelType:
+        (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
 
       // Live2D settings
-      neutralEmotions: [],
-      happyEmotions: [],
-      sadEmotions: [],
-      angryEmotions: [],
-      relaxedEmotions: [],
-      idleMotionGroup: '',
-      neutralMotionGroup: '',
-      happyMotionGroup: '',
-      sadMotionGroup: '',
-      angryMotionGroup: '',
-      relaxedMotionGroup: '',
+      neutralEmotions:
+        process.env.NEXT_PUBLIC_NEUTRAL_EMOTIONS?.split(',') || [],
+      happyEmotions: process.env.NEXT_PUBLIC_HAPPY_EMOTIONS?.split(',') || [],
+      sadEmotions: process.env.NEXT_PUBLIC_SAD_EMOTIONS?.split(',') || [],
+      angryEmotions: process.env.NEXT_PUBLIC_ANGRY_EMOTIONS?.split(',') || [],
+      relaxedEmotions:
+        process.env.NEXT_PUBLIC_RELAXED_EMOTIONS?.split(',') || [],
+      idleMotionGroup: process.env.NEXT_PUBLIC_IDLE_MOTION_GROUP || '',
+      neutralMotionGroup: process.env.NEXT_PUBLIC_NEUTRAL_MOTION_GROUP || '',
+      happyMotionGroup: process.env.NEXT_PUBLIC_HAPPY_MOTION_GROUP || '',
+      sadMotionGroup: process.env.NEXT_PUBLIC_SAD_MOTION_GROUP || '',
+      angryMotionGroup: process.env.NEXT_PUBLIC_ANGRY_MOTION_GROUP || '',
+      relaxedMotionGroup: process.env.NEXT_PUBLIC_RELAXED_MOTION_GROUP || '',
     }),
     {
       name: 'aitube-kit-settings',
