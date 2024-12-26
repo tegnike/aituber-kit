@@ -48,14 +48,6 @@ export default function Live2DViewer() {
     return null
   }
 
-  if (hasError) {
-    return (
-      <div className="fixed bottom-0 right-0 w-[400px] h-[400px]">
-        Failed to load Live2D component
-      </div>
-    )
-  }
-
   console.log('Rendering Live2DViewer')
   return (
     <div className="fixed bottom-0 right-0 w-screen h-screen">

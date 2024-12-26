@@ -50,26 +50,29 @@ const Live2DComponent = () => {
   const initLive2D = async (currentApp: Application) => {
     if (!canvasContainerRef.current) return
     const hs = homeStore.getState()
-    const ss = settingsStore.getState()
+
     try {
-      const model = await Live2DModel.from(
+      const model = await Live2DModel.fromSync(
         '/live2d/nike01/nike01.model3.json',
-        { ticker: Ticker.shared, autoInteract: false }
+        {
+          ticker: Ticker.shared,
+          autoInteract: false,
+        }
       )
 
-      currentApp.stage.addChild(model as unknown as DisplayObject)
+      await new Promise((resolve, reject) => {
+        model.once('load', () => resolve(true))
+        model.once('error', (e) => reject(e))
 
+        setTimeout(() => reject(new Error('Model load timeout')), 10000)
+      })
+
+      currentApp.stage.addChild(model as unknown as DisplayObject)
       model.anchor.set(0.5, 0.5)
       setModelPosition(currentApp, model)
 
-      model.on('hit', (hitAreas: any) => {
-        if (hitAreas.includes('Body')) {
-          model.motion('Tap@Body')
-        }
-      })
-
-      hs.live2dViewer = model
       setModel(model)
+      hs.live2dViewer = model
 
       await Live2DHandler.resetToIdle()
     } catch (error) {
@@ -95,7 +98,6 @@ const Live2DComponent = () => {
     }
 
     const handlePointerMove = (event: PointerEvent) => {
-      // model.focus(event.clientX, event.clientY)
       if (isDragging) {
         model.x = event.clientX - dragOffset.x
         model.y = event.clientY - dragOffset.y
