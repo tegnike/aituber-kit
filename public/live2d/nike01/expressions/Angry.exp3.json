@@ -1,0 +1,26 @@
+{
+  "Type": "Live2D Expression",
+  "FadeInTime": 0.75,
+  "Parameters": [
+    {
+      "Id": "ParamHairpinChange",
+      "Value": 1,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamAngerBrows",
+      "Value": 0.5,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamMouthOpenY",
+      "Value": 0,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamHeMouth",
+      "Value": 1,
+      "Blend": "Add"
+    }
+  ]
+}

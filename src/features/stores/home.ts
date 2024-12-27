@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware'
 import { Message } from '@/features/messages/messages'
 import { Viewer } from '../vrmViewer/viewer'
 import { messageSelectors } from '../messages/messageSelectors'
+import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -13,6 +14,7 @@ export interface PersistedState {
 
 export interface TransientState {
   viewer: Viewer
+  live2dViewer: any
   assistantMessage: string
   slideMessages: string[]
   chatProcessing: boolean
@@ -24,6 +26,10 @@ export interface TransientState {
   triggerShutter: boolean
   webcamStatus: boolean
   captureStatus: boolean
+  isCubismCoreLoaded: boolean
+  setIsCubismCoreLoaded: (loaded: boolean) => void
+  isLive2dLoaded: boolean
+  setIsLive2dLoaded: (loaded: boolean) => void
 }
 
 export type HomeState = PersistedState & TransientState
@@ -39,6 +45,7 @@ const homeStore = create<HomeState>()(
 
       // transient states
       viewer: new Viewer(),
+      live2dViewer: null,
       slideMessages: [],
       chatProcessing: false,
       chatProcessingCount: 0,
@@ -58,6 +65,11 @@ const homeStore = create<HomeState>()(
       triggerShutter: false,
       webcamStatus: false,
       captureStatus: false,
+      isCubismCoreLoaded: false,
+      setIsCubismCoreLoaded: (loaded) =>
+        set(() => ({ isCubismCoreLoaded: loaded })),
+      isLive2dLoaded: false,
+      setIsLive2dLoaded: (loaded) => set(() => ({ isLive2dLoaded: loaded })),
     }),
     {
       name: 'aitube-kit-home',

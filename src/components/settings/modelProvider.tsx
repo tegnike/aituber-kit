@@ -55,7 +55,7 @@ const ModelProvider = () => {
     anthropic: 'claude-3-5-sonnet-20241022',
     google: 'gemini-1.5-flash-latest',
     azure: '',
-    groq: 'gemma-7b-it',
+    groq: 'gemma2-9b-it',
     cohere: 'command-r-plus',
     mistralai: 'mistral-large-latest',
     perplexity: 'llama-3-sonar-large-32k-online',
@@ -637,8 +637,10 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="gemma-7b-it">gemma-7b-it</option>
-                  <option value="llama3-70b-8192">llama3-70b-8192</option>
+                  <option value="gemma2-9b-it">gemma2-9b-it</option>
+                  <option value="llama-3.3-70b-versatile">
+                    llama-3.3-70b-versatile
+                  </option>
                   <option value="llama3-8b-8192">llama3-8b-8192</option>
                   <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
                 </select>
@@ -960,8 +962,12 @@ const ModelProvider = () => {
           <div className="my-16 typography-20 font-bold">
             {t('CharacterSettingsPrompt')}
           </div>
-          {selectAIService === 'dify' && (
+          {selectAIService === 'dify' ? (
             <div className="my-16">{t('DifyInstruction')}</div>
+          ) : (
+            <div className="my-16 whitespace-pre-line">
+              {t('CharacterSettingsInfo')}
+            </div>
           )}
           <TextButton
             onClick={() =>

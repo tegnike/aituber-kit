@@ -1,5 +1,7 @@
 import { Talk } from './messages'
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { Live2DHandler } from './live2dHandler'
 
 type SpeakTask = {
   audioBuffer: ArrayBuffer
@@ -22,13 +24,17 @@ export class SpeakQueue {
     if (this.isProcessing) return
     this.isProcessing = true
     const hs = homeStore.getState()
-
+    const ss = settingsStore.getState()
     while (this.queue.length > 0) {
       const task = this.queue.shift()
       if (task) {
         try {
           const { audioBuffer, talk, isNeedDecode, onComplete } = task
-          await hs.viewer.model?.speak(audioBuffer, talk, isNeedDecode)
+          if (ss.modelType === 'live2d') {
+            await Live2DHandler.speak(audioBuffer, talk, isNeedDecode)
+          } else {
+            await hs.viewer.model?.speak(audioBuffer, talk, isNeedDecode)
+          }
           onComplete?.()
         } catch (error) {
           console.error(
@@ -54,8 +60,12 @@ export class SpeakQueue {
 
     if (this.shouldResetToNeutral(initialLength)) {
       const hs = homeStore.getState()
-      console.log('play neutral')
-      await hs.viewer.model?.playEmotion('neutral')
+      const ss = settingsStore.getState()
+      if (ss.modelType === 'live2d') {
+        await Live2DHandler.resetToIdle()
+      } else {
+        await hs.viewer.model?.playEmotion('neutral')
+      }
     }
   }
 
