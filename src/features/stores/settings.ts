@@ -42,7 +42,21 @@ interface APIKeys {
   azureTTSEndpoint: string
 }
 
-interface ModelProvider {
+interface Live2DSettings {
+  neutralEmotions: string[]
+  happyEmotions: string[]
+  sadEmotions: string[]
+  angryEmotions: string[]
+  relaxedEmotions: string[]
+  idleMotionGroup: string
+  neutralMotionGroup: string
+  happyMotionGroup: string
+  sadMotionGroup: string
+  angryMotionGroup: string
+  relaxedMotionGroup: string
+}
+
+interface ModelProvider extends Live2DSettings {
   selectAIService: AIService
   selectAIModel: string
   localLlmUrl: string
@@ -99,6 +113,7 @@ interface Character {
   showCharacterName: boolean
   systemPrompt: string
   selectedVrmPath: string
+  selectedLive2DPath: string
 }
 
 interface General {
@@ -118,12 +133,17 @@ interface General {
   clientId: string
 }
 
+interface ModelType {
+  modelType: 'vrm' | 'live2d'
+}
+
 export type SettingsState = APIKeys &
   multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &
-  General
+  General &
+  ModelType
 
 const settingsStore = create<SettingsState>()(
   persist(
@@ -225,6 +245,9 @@ const settingsStore = create<SettingsState>()(
       systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
       selectedVrmPath:
         process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
+      selectedLive2DPath:
+        process.env.NEXT_PUBLIC_SELECTED_LIVE2D_PATH ||
+        '/live2d/nike01/nike01.model3.json',
 
       // General
       selectLanguage:
@@ -273,6 +296,25 @@ const settingsStore = create<SettingsState>()(
       nijivoiceSoundDuration:
         parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
         0.1,
+
+      // Settings
+      modelType:
+        (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
+
+      // Live2D settings
+      neutralEmotions:
+        process.env.NEXT_PUBLIC_NEUTRAL_EMOTIONS?.split(',') || [],
+      happyEmotions: process.env.NEXT_PUBLIC_HAPPY_EMOTIONS?.split(',') || [],
+      sadEmotions: process.env.NEXT_PUBLIC_SAD_EMOTIONS?.split(',') || [],
+      angryEmotions: process.env.NEXT_PUBLIC_ANGRY_EMOTIONS?.split(',') || [],
+      relaxedEmotions:
+        process.env.NEXT_PUBLIC_RELAXED_EMOTIONS?.split(',') || [],
+      idleMotionGroup: process.env.NEXT_PUBLIC_IDLE_MOTION_GROUP || '',
+      neutralMotionGroup: process.env.NEXT_PUBLIC_NEUTRAL_MOTION_GROUP || '',
+      happyMotionGroup: process.env.NEXT_PUBLIC_HAPPY_MOTION_GROUP || '',
+      sadMotionGroup: process.env.NEXT_PUBLIC_SAD_MOTION_GROUP || '',
+      angryMotionGroup: process.env.NEXT_PUBLIC_ANGRY_MOTION_GROUP || '',
+      relaxedMotionGroup: process.env.NEXT_PUBLIC_RELAXED_MOTION_GROUP || '',
     }),
     {
       name: 'aitube-kit-settings',
@@ -344,11 +386,24 @@ const settingsStore = create<SettingsState>()(
         azureTTSKey: state.azureTTSKey,
         azureTTSEndpoint: state.azureTTSEndpoint,
         selectedVrmPath: state.selectedVrmPath,
+        selectedLive2DPath: state.selectedLive2DPath,
         nijivoiceApiKey: state.nijivoiceApiKey,
         nijivoiceActorId: state.nijivoiceActorId,
         nijivoiceSpeed: state.nijivoiceSpeed,
         nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
         nijivoiceSoundDuration: state.nijivoiceSoundDuration,
+        modelType: state.modelType,
+        neutralEmotions: state.neutralEmotions,
+        happyEmotions: state.happyEmotions,
+        sadEmotions: state.sadEmotions,
+        angryEmotions: state.angryEmotions,
+        relaxedEmotions: state.relaxedEmotions,
+        idleMotionGroup: state.idleMotionGroup,
+        neutralMotionGroup: state.neutralMotionGroup,
+        happyMotionGroup: state.happyMotionGroup,
+        sadMotionGroup: state.sadMotionGroup,
+        angryMotionGroup: state.angryMotionGroup,
+        relaxedMotionGroup: state.relaxedMotionGroup,
       }),
     }
   )

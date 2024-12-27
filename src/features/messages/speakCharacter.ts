@@ -16,6 +16,7 @@ import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
 import { SpeakQueue } from './speakQueue'
 import { synthesizeVoiceNijivoiceApi } from './synthesizeVoiceNijivoice'
+import { Live2DHandler } from './live2dHandler'
 
 interface EnglishToJapanese {
   [key: string]: string
@@ -238,8 +239,13 @@ export const testVoiceVox = async () => {
     ss.voicevoxServerUrl
   ).catch(() => null)
   if (buffer) {
-    const hs = homeStore.getState()
-    await hs.viewer.model?.speak(buffer, talk)
+    const ss = settingsStore.getState()
+    if (ss.modelType === 'vrm') {
+      const hs = homeStore.getState()
+      await hs.viewer.model?.speak(buffer, talk)
+    } else if (ss.modelType === 'live2d') {
+      Live2DHandler.speak(buffer, talk)
+    }
   }
 }
 
@@ -258,7 +264,12 @@ export const testAivisSpeech = async () => {
     ss.aivisSpeechServerUrl
   ).catch(() => null)
   if (buffer) {
-    const hs = homeStore.getState()
-    await hs.viewer.model?.speak(buffer, talk)
+    const ss = settingsStore.getState()
+    if (ss.modelType === 'vrm') {
+      const hs = homeStore.getState()
+      await hs.viewer.model?.speak(buffer, talk)
+    } else if (ss.modelType === 'live2d') {
+      Live2DHandler.speak(buffer, talk)
+    }
   }
 }

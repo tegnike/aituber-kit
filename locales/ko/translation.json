@@ -47,6 +47,7 @@
   "BackgroundImage": "배경 이미지",
   "ChangeBackgroundImage": "배경 이미지 변경",
   "CharacterSettingsPrompt": "캐릭터 설정 (시스템 프롬프트)",
+  "CharacterSettingsInfo": "캐릭터 설정은 시스템 프롬프트에 설정됩니다. 초기 프롬프트를 참고하여 감정 태그를 지정하여 캐릭터의 표정과 모션을 제어할 수 있습니다. 예: [neutral]안녕하세요![happy]오늘도 힘내세요!",
   "CharacterSettingsReset": "캐릭터 설정 재설정",
   "SyntheticVoiceEngineChoice": "합성 음성 엔진 선택",
   "VoiceAdjustment": "목소리 조정",
@@ -202,5 +203,24 @@
     "userInputTitle": "사용자 입력 보내기",
     "userInputDescription": "보낸 메시지는 AITuberKit의 입력 폼에서 입력한 경우와 동일한 처리가 됩니다. 여러 메시지를 보낸 경우 순서대로 처리됩니다.\nAI 모델과 음성 모델은 AITuberKit의 설정에서 선택한 것이 사용됩니다.\n시스템 프롬프트와 대화 기록은 AITuberKit의 값이 사용됩니다."
   },
-  "CannotUseVoice": "리얼타임 API 모드 또는 오디오 모드가 활성화된 경우, 음성 설정은 필요하지 않습니다."
+  "CannotUseVoice": "리얼타임 API 모드 또는 오디오 모드가 활성화된 경우, 음성 설정은 필요하지 않습니다.",
+  "Live2D": {
+    "FileInfo": "사용하고 싶은 Live2D 모델을 public/live2d 폴더에 배치해 주세요. 이 폴더의 루트에 model3.json 파일이 존재해야 합니다.\n선택 목록에 표시되지 않는 경우 화면을 다시 로드하거나 폴더 경로가 올바른지 확인해 주세요.",
+    "Info": "감정과 모션을 지정할 수 있습니다.\n각 감정은 프롬프트로 제어됩니다. 자세한 내용은 \"AI 설정 => 캐릭터 설정\"을 참조하세요.",
+    "Emotions": "감정 설정",
+    "EmotionInfo": "감정은 쉼표로 구분하여 여러 개 지정할 수 있습니다. 여러 감정을 지정한 경우 랜덤으로 선택됩니다.\n초기값은 AITuberKit에서 제공하는 모델에 맞춰 설정되어 있습니다. 원본 모델을 사용하는 경우 자신의 모델에 맞춰 값을 입력해 주세요.\n대화가 완료된 후에는 \"기본\" 감정이 표시됩니다.",
+    "neutralEmotions": "기본",
+    "happyEmotions": "기쁨",
+    "sadEmotions": "슬픔",
+    "angryEmotions": "분노",
+    "relaxedEmotions": "느긋",
+    "MotionGroups": "모션 그룹 설정",
+    "MotionGroupsInfo": "모션 그룹은 선택한 그룹에서 랜덤으로 선택됩니다.\n감정 설정과 마찬가지로 자신의 모델에 맞춰 설정해 주세요.\n\"아이돌 시\"는 대화가 완료된 후에 표시되는 모션입니다.",
+    "idleMotionGroup": "아이돌 시",
+    "neutralMotionGroup": "기본",
+    "happyMotionGroup": "기쁨",
+    "sadMotionGroup": "슬픔",
+    "angryMotionGroup": "분노",
+    "relaxedMotionGroup": "느긋"
+  }
 }

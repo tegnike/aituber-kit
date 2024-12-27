@@ -1,0 +1,31 @@
+{
+  "Type": "Live2D Expression",
+  "FadeInTime": 0.75,
+  "Parameters": [
+    {
+      "Id": "ParamAngleZ",
+      "Value": 14.471,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamTroubleBrows",
+      "Value": 1,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamHeMouth",
+      "Value": 0.929,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamMouthOpenY",
+      "Value": 0.259,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamHairpinChange",
+      "Value": 1,
+      "Blend": "Add"
+    }
+  ]
+}
