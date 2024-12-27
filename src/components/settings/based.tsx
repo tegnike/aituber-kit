@@ -350,8 +350,11 @@ const Based = () => {
           </>
         ) : (
           <>
+            <div className="my-16 whitespace-pre-line">
+              {t('Live2D.FileInfo')}
+            </div>
             <select
-              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8 mb-16"
+              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8 mb-8"
               value={selectedLive2DPath}
               onChange={(e) => {
                 const path = e.target.value

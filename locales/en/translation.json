@@ -205,6 +205,7 @@
   },
   "CannotUseVoice": "Realtime API mode or Audio mode is enabled, so voice settings are not required.",
   "Live2D": {
+    "FileInfo": "Place the Live2D model you want to use in the public/live2d folder. The model3.json file must exist in the root of this folder.\nIf it is not displayed in the selection, please reload the screen or check if the folder path is correct.",
     "Info": "You can specify emotions and motions.\nEach emotion is controlled by the prompt. For more details, please refer to \"AI Settings => Character Settings\".",
     "Emotions": "Emotion Settings",
     "EmotionInfo": "Emotions can be specified in comma-separated format. If multiple emotions are specified, they are randomly selected.\nThe initial value is for the model provided by AITuberKit. If you are using an original model, please enter the value according to your model.\nAfter conversation completion, the \"Neutral\" emotion is displayed.",
