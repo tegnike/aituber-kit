@@ -90,7 +90,7 @@ export class Live2DHandler {
       live2dViewer.expression(expression)
     }
     if (motion) {
-      this.stopIdleMotion()
+      Live2DHandler.stopIdleMotion()
       live2dViewer.motion(motion, undefined, 3)
     }
 
@@ -112,7 +112,7 @@ export class Live2DHandler {
 
   static async resetToIdle() {
     // インターバルを停止
-    this.stopIdleMotion()
+    Live2DHandler.stopIdleMotion()
 
     const hs = homeStore.getState()
     const ss = settingsStore.getState()
@@ -128,7 +128,7 @@ export class Live2DHandler {
     }
 
     // 5秒ごとのアイドルモーション再生を開始
-    this.startIdleMotion(idleMotion, live2dViewer)
+    Live2DHandler.startIdleMotion(idleMotion, live2dViewer)
   }
 
   // アイドルモーションのインターバル開始
