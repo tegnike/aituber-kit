@@ -119,6 +119,9 @@ export class Live2DHandler {
     const live2dViewer = hs.live2dViewer
     if (!live2dViewer) return
 
+    // Live2Dモデル以外の場合は早期リターン
+    if (ss.modelType !== 'live2d') return
+
     const idleMotion = ss.idleMotionGroup || 'Idle'
     live2dViewer.motion(idleMotion)
     const expression =
@@ -133,7 +136,15 @@ export class Live2DHandler {
 
   // アイドルモーションのインターバル開始
   private static startIdleMotion(idleMotion: string, live2dViewer: any) {
+    const ss = settingsStore.getState()
+    if (ss.modelType !== 'live2d') return
+
     this.idleMotionInterval = setInterval(() => {
+      const currentSs = settingsStore.getState()
+      if (currentSs.modelType !== 'live2d') {
+        this.stopIdleMotion()
+        return
+      }
       live2dViewer.motion(idleMotion)
     }, 5000)
   }
