@@ -4,6 +4,7 @@ import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { Live2DHandler } from '@/features/messages/live2dHandler'
+import { debounce } from 'lodash'
 
 console.log('Live2DComponent module loaded')
 
@@ -165,7 +166,7 @@ const Live2DComponent = () => {
   useEffect(() => {
     if (!app || !model) return
 
-    const onResize = () => {
+    const onResize = debounce(() => {
       if (!canvasContainerRef.current) return
 
       app.renderer.resize(
@@ -174,11 +175,13 @@ const Live2DComponent = () => {
       )
 
       setModelPosition(app, model)
-    }
+    }, 250)
+
     window.addEventListener('resize', onResize)
 
     return () => {
       window.removeEventListener('resize', onResize)
+      onResize.cancel() // クリーンアップ時にデバウンスをキャンセル
     }
   }, [app, model])
 
