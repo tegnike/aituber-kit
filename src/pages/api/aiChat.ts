@@ -41,8 +41,15 @@ export default async function handler(req: NextRequest) {
     )
   }
 
-  const { messages, apiKey, aiService, model, azureEndpoint, stream } =
-    await req.json()
+  const {
+    messages,
+    apiKey,
+    aiService,
+    model,
+    azureEndpoint,
+    stream,
+    useSearchGrounding,
+  } = await req.json()
 
   let aiApiKey = apiKey
   if (!aiApiKey) {
@@ -128,10 +135,14 @@ export default async function handler(req: NextRequest) {
   const instance = aiServiceInstance()
   const modifiedMessages: Message[] = modifyMessages(aiService, messages)
 
+  const isUseSearchGrounding = aiService === 'google' && useSearchGrounding
+  const options = isUseSearchGrounding ? { useSearchGrounding: true } : {}
+  console.log('options', options)
+
   try {
     if (stream) {
       const result = await streamText({
-        model: instance(modifiedModel),
+        model: instance(modifiedModel, options),
         messages: modifiedMessages as CoreMessage[],
       })
 

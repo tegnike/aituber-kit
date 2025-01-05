@@ -174,6 +174,7 @@
   "AudioMode": "オーディオモード（ベータ版）",
   "InputText": "テキスト",
   "InputAudio": "音声",
+  "SearchGrounding": "検索機能を利用する",
   "UpdateRealtimeAPISettings": "リアルタイムAPI設定を更新",
   "UpdateRealtimeAPISettingsInfo": "APIキー、Azure Endpoint、ボイスタイプ、モデル、システムプロンプトを更新した際は更新ボタンを押して、新しいWebSocketセッションを開始してください。",
   "AzureEndpoint": "Azure Endpoint",
