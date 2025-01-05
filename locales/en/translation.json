@@ -173,6 +173,7 @@
   "AudioMode": "Audio Mode (Beta)",
   "InputText": "Text",
   "InputAudio": "Audio",
+  "SearchGrounding": "Use Search Grounding",
   "UpdateRealtimeAPISettings": "Update Realtime API Settings",
   "UpdateRealtimeAPISettingsInfo": "When updating the API key, Azure Endpoint, voice type, model, or system prompt, please press the update button to start a new WebSocket session.",
   "AzureEndpoint": "Azure Endpoint",

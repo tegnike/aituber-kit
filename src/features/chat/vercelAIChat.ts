@@ -18,6 +18,7 @@ const getAIConfig = () => {
     selectAIService: aiService,
     selectAIModel: ss.selectAIModel,
     azureEndpoint: ss.azureEndpoint,
+    useSearchGrounding: ss.useSearchGrounding,
   }
 }
 
@@ -28,8 +29,13 @@ function handleApiError(errorCode: string): string {
 }
 
 export async function getVercelAIChatResponse(messages: Message[]) {
-  const { aiApiKey, selectAIService, selectAIModel, azureEndpoint } =
-    getAIConfig()
+  const {
+    aiApiKey,
+    selectAIService,
+    selectAIModel,
+    azureEndpoint,
+    useSearchGrounding,
+  } = getAIConfig()
 
   try {
     const response = await fetch('/api/aiChat', {
@@ -44,6 +50,7 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         model: selectAIModel,
         azureEndpoint: azureEndpoint,
         stream: false,
+        useSearchGrounding: useSearchGrounding,
       }),
     })
 
@@ -67,8 +74,13 @@ export async function getVercelAIChatResponse(messages: Message[]) {
 export async function getVercelAIChatResponseStream(
   messages: Message[]
 ): Promise<ReadableStream<string>> {
-  const { aiApiKey, selectAIService, selectAIModel, azureEndpoint } =
-    getAIConfig()
+  const {
+    aiApiKey,
+    selectAIService,
+    selectAIModel,
+    azureEndpoint,
+    useSearchGrounding,
+  } = getAIConfig()
 
   const response = await fetch('/api/aiChat', {
     method: 'POST',
@@ -82,6 +94,7 @@ export async function getVercelAIChatResponseStream(
       model: selectAIModel,
       azureEndpoint: azureEndpoint,
       stream: true,
+      useSearchGrounding: useSearchGrounding,
     }),
   })
 

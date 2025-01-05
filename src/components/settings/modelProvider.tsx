@@ -38,6 +38,7 @@ const ModelProvider = () => {
   const perplexityKey = settingsStore((s) => s.perplexityKey)
   const fireworksKey = settingsStore((s) => s.fireworksKey)
   const difyKey = settingsStore((s) => s.difyKey)
+  const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -479,6 +480,22 @@ const ModelProvider = () => {
                     gemini-2.0-flash-exp
                   </option>
                 </select>
+              </div>
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('SearchGrounding')}
+                </div>
+                <div className="my-8">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        useSearchGrounding: !useSearchGrounding,
+                      })
+                    }}
+                  >
+                    {useSearchGrounding ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
             </>
           )

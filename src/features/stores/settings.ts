@@ -136,6 +136,7 @@ interface General {
   slideMode: boolean
   messageReceiverEnabled: boolean
   clientId: string
+  useSearchGrounding: boolean
 }
 
 interface ModelType {
@@ -288,6 +289,7 @@ const settingsStore = create<SettingsState>()(
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
       messageReceiverEnabled: false,
       clientId: '',
+      useSearchGrounding: false,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
