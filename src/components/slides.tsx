@@ -25,17 +25,37 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
 
   useEffect(() => {
     const currentMarpitContainer = document.querySelector('.marpit')
-    if (currentMarpitContainer) {
-      const slides = currentMarpitContainer.querySelectorAll(':scope > svg')
-      slides.forEach((slide, i) => {
-        const svgElement = slide as SVGElement
-        if (i === currentSlide) {
-          svgElement.style.display = 'block'
-        } else {
-          svgElement.style.display = 'none'
-        }
-      })
-    }
+    if (!currentMarpitContainer) return
+    const slides = currentMarpitContainer.querySelectorAll(':scope > svg')
+
+    slides.forEach((slide, i) => {
+      if (i === currentSlide) {
+        // 表示するスライド
+        slide.removeAttribute('hidden')
+        slide.setAttribute('style', 'display: block;')
+
+        // 新しく表示されるスライド内の video を再生
+        const videos = slide.querySelectorAll('video') as NodeListOf<HTMLVideoElement>
+        videos.forEach((video) => {
+          //video.muted = true
+          video.play().catch((err) => {
+            console.warn('Video autoplay failed:', err)
+          })
+        })
+      } else {
+        // 非表示にするスライド
+        slide.setAttribute('hidden', '')
+        slide.setAttribute('style', 'display: none;')
+
+        // 非表示になったスライド内の video を停止
+        // TODO: video一時停止するとplay()がエラーで動かないため一度流したら止めないで対応した
+        const videos = slide.querySelectorAll('video') as NodeListOf<HTMLVideoElement>
+        videos.forEach((video) => {
+          //video.pause()
+          //video.currentTime = 0 // 最初に巻き戻したい場合は指定
+        })
+      }
+    })
   }, [currentSlide, marpitContainer])
 
   useEffect(() => {
@@ -60,12 +80,14 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
         const slides = marpitElement.querySelectorAll(':scope > svg')
         setSlideCount(slides.length)
 
-        // 初期状態で最初のスライドを表示
+        // 初期状態で最初のスライド以外は非表示にしておく
         slides.forEach((slide, i) => {
           if (i === 0) {
             slide.removeAttribute('hidden')
+            slide.setAttribute('style', 'display: block;')
           } else {
             slide.setAttribute('hidden', '')
+            slide.setAttribute('style', 'display: none;')
           }
         })
       }
