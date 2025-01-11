@@ -177,13 +177,8 @@ export const processAIResponse = async (
 
       // 返答を一文単位で切り出して処理する
       while (receivedMessage.length > 0) {
-        if (isCodeBlock && !receivedMessage.includes('```')) {
-          codeBlockText += receivedMessage
-          continue
-        }
-
-        if (receivedMessage.includes('```')) {
-          if (isCodeBlock) {
+        if (isCodeBlock) {
+          if (receivedMessage.includes('```')) {
             // コードブロックの終了処理
             const [codeEnd, ...restOfSentence] = receivedMessage.split('```')
             aiTextLog.push({
@@ -191,14 +186,30 @@ export const processAIResponse = async (
               content: codeBlockText + codeEnd,
             })
 
-            receivedMessage = restOfSentence.join('```')
-
+            receivedMessage = restOfSentence.join('```').trimStart()
             codeBlockText = ''
             isCodeBlock = false
+            continue
           } else {
-            // コードブロックの開始処理
+            // コードブロック中だが終了マークがまだない
+            codeBlockText += receivedMessage
+            receivedMessage = ''
+            continue
+          }
+        }
+
+        if (receivedMessage.includes('```')) {
+          // コードブロックの開始処理
+          const [beforeCode, ...rest] = receivedMessage.split('```')
+
+          // コードブロック前のテキストを処理
+          if (beforeCode.trim()) {
+            receivedMessage = beforeCode
+          } else {
             isCodeBlock = true
-            ;[receivedMessage, codeBlockText] = receivedMessage.split('```')
+            codeBlockText = rest.join('```')
+            receivedMessage = ''
+            continue
           }
         }
 
