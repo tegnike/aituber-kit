@@ -46,6 +46,7 @@ interface APIKeys {
   mistralaiKey: string
   perplexityKey: string
   fireworksKey: string
+  deepseekKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -173,6 +174,7 @@ const settingsStore = create<SettingsState>()(
       perplexityKey: '',
       fireworksKey: '',
       difyKey: '',
+      deepseekKey: '',
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',

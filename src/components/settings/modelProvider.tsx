@@ -42,6 +42,7 @@ const ModelProvider = () => {
   const fireworksKey = settingsStore((s) => s.fireworksKey)
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
+  const deepseekKey = settingsStore((s) => s.deepseekKey)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -66,6 +67,7 @@ const ModelProvider = () => {
     fireworks: 'accounts/fireworks/models/firefunction-v2',
     localLlm: '',
     dify: '',
+    deepseek: 'deepseek-chat',
   }
 
   const handleAIServiceChange = useCallback(
@@ -159,6 +161,7 @@ const ModelProvider = () => {
           <option value="fireworks">Fireworks</option>
           <option value="localLlm">{t('LocalLLM')}</option>
           <option value="dify">Dify</option>
+          <option value="deepseek">DeepSeek</option>
         </select>
       </div>
 
@@ -990,6 +993,31 @@ const ModelProvider = () => {
                 />
               </div>
             </>
+          )
+        } else if (selectAIService === 'deepseek') {
+          return (
+            <div className="my-24">
+              <div className="my-16 typography-20 font-bold">
+                {t('DeepSeekAPIKeyLabel')}
+              </div>
+              <div className="my-16">
+                {t('APIKeyInstruction')}
+                <br />
+                <Link
+                  url="https://platform.deepseek.com/api_keys"
+                  label="DeepSeek"
+                />
+              </div>
+              <input
+                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                type="text"
+                placeholder="sk-..."
+                value={deepseekKey}
+                onChange={(e) =>
+                  settingsStore.setState({ deepseekKey: e.target.value })
+                }
+              />
+            </div>
           )
         }
       })()}

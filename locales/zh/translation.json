@@ -223,5 +223,6 @@
     "sadMotionGroup": "悲伤",
     "angryMotionGroup": "愤怒",
     "relaxedMotionGroup": "放松"
-  }
+  },
+  "DeepSeekAPIKeyLabel": "DeepSeek API 金鑰"
 }

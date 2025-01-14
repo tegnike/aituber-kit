@@ -5,6 +5,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
 import { createAzure } from '@ai-sdk/azure'
+import { createDeepSeek } from '@ai-sdk/deepseek'
 import { streamText, generateText, CoreMessage } from 'ai'
 import { NextRequest } from 'next/server'
 
@@ -18,6 +19,7 @@ type AIServiceKey =
   | 'mistralai'
   | 'perplexity'
   | 'fireworks'
+  | 'deepseek'
 type AIServiceConfig = Record<AIServiceKey, () => any>
 
 // Allow streaming responses up to 30 seconds
@@ -116,6 +118,7 @@ export default async function handler(req: NextRequest) {
         baseURL: 'https://api.fireworks.ai/inference/v1',
         apiKey: aiApiKey,
       }),
+    deepseek: () => createDeepSeek({ apiKey: aiApiKey }),
   }
   const aiServiceInstance = aiServiceConfig[aiService as AIServiceKey]
 

@@ -10,6 +10,7 @@ export type AIService =
   | 'perplexity'
   | 'fireworks'
   | 'dify'
+  | 'deepseek'
 
 export interface AIServiceConfig {
   openai: { key: string; model: string }
@@ -27,6 +28,7 @@ export interface AIServiceConfig {
     url: string
     conversationId: string
   }
+  deepseek: { key: string; model: string }
 }
 
 export type AIVoice =

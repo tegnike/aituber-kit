@@ -32,6 +32,7 @@
   "PerplexityAPIKeyLabel": "Perplexity API Key",
   "FireworksAPIKeyLabel": "Fireworks API Key",
   "DifyAPIKeyLabel": "Dify API Key",
+  "DeepSeekAPIKeyLabel": "DeepSeek API Key",
   "APIKeyInstruction": "You can obtain the API key below. Enter the obtained API key into the form.",
   "LocalLLMInfo": "Local LLM server must be running. Setup is as follows.",
   "LocalLLMInfo2": "Please enter the URL of the local LLM server (including port number) and the model name.",
