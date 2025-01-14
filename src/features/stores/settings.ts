@@ -23,6 +23,14 @@ export const multiModalAIServices = [
 ] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 
+export const googleSearchGroundingModels = [
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-pro-latest',
+  'gemini-2.0-flash-exp',
+] as const
+export type googleSearchGroundingModelKey =
+  (typeof googleSearchGroundingModels)[number]
+
 type multiModalAPIKeys = {
   [K in multiModalAIServiceKey as `${K}Key`]: string
 }
@@ -38,6 +46,7 @@ interface APIKeys {
   mistralaiKey: string
   perplexityKey: string
   fireworksKey: string
+  deepseekKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -165,6 +174,7 @@ const settingsStore = create<SettingsState>()(
       perplexityKey: '',
       fireworksKey: '',
       difyKey: '',
+      deepseekKey: '',
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
@@ -338,6 +348,7 @@ const settingsStore = create<SettingsState>()(
         perplexityKey: state.perplexityKey,
         fireworksKey: state.fireworksKey,
         difyKey: state.difyKey,
+        deepseekKey: state.deepseekKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
@@ -388,6 +399,7 @@ const settingsStore = create<SettingsState>()(
         audioModeVoice: state.audioModeVoice,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
+        useSearchGrounding: state.useSearchGrounding,
         openaiTTSKey: state.openaiTTSKey,
         openaiTTSVoice: state.openaiTTSVoice,
         openaiTTSModel: state.openaiTTSModel,

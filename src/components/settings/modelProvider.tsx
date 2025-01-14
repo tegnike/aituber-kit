@@ -6,7 +6,10 @@ import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
-import { multiModalAIServices } from '@/features/stores/settings'
+import {
+  multiModalAIServices,
+  googleSearchGroundingModels,
+} from '@/features/stores/settings'
 import {
   AudioModeInputType,
   OpenAITTSVoice,
@@ -39,6 +42,7 @@ const ModelProvider = () => {
   const fireworksKey = settingsStore((s) => s.fireworksKey)
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
+  const deepseekKey = settingsStore((s) => s.deepseekKey)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -63,6 +67,7 @@ const ModelProvider = () => {
     fireworks: 'accounts/fireworks/models/firefunction-v2',
     localLlm: '',
     dify: '',
+    deepseek: 'deepseek-chat',
   }
 
   const handleAIServiceChange = useCallback(
@@ -86,6 +91,12 @@ const ModelProvider = () => {
 
       if (newService !== 'openai' && newService !== 'azure') {
         settingsStore.setState({ realtimeAPIMode: false })
+      }
+
+      if (newService === 'google') {
+        if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
+          settingsStore.setState({ useSearchGrounding: false })
+        }
       }
     },
     []
@@ -150,6 +161,7 @@ const ModelProvider = () => {
           <option value="fireworks">Fireworks</option>
           <option value="localLlm">{t('LocalLLM')}</option>
           <option value="dify">Dify</option>
+          <option value="deepseek">DeepSeek</option>
         </select>
       </div>
 
@@ -455,11 +467,17 @@ const ModelProvider = () => {
                 <select
                   className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    // Add check for search grounding compatibility
+                    if (!googleSearchGroundingModels.includes(model as any)) {
+                      settingsStore.setState({ useSearchGrounding: false })
+                    }
+                  }}
                 >
                   <option value="gemini-1.5-flash-latest">
                     gemini-1.5-flash-latest
@@ -492,6 +510,11 @@ const ModelProvider = () => {
                         useSearchGrounding: !useSearchGrounding,
                       })
                     }}
+                    disabled={
+                      !googleSearchGroundingModels.includes(
+                        selectAIModel as any
+                      )
+                    }
                   >
                     {useSearchGrounding ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
@@ -970,6 +993,31 @@ const ModelProvider = () => {
                 />
               </div>
             </>
+          )
+        } else if (selectAIService === 'deepseek') {
+          return (
+            <div className="my-24">
+              <div className="my-16 typography-20 font-bold">
+                {t('DeepSeekAPIKeyLabel')}
+              </div>
+              <div className="my-16">
+                {t('APIKeyInstruction')}
+                <br />
+                <Link
+                  url="https://platform.deepseek.com/api_keys"
+                  label="DeepSeek"
+                />
+              </div>
+              <input
+                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                type="text"
+                placeholder="sk-..."
+                value={deepseekKey}
+                onChange={(e) =>
+                  settingsStore.setState({ deepseekKey: e.target.value })
+                }
+              />
+            </div>
           )
         }
       })()}
