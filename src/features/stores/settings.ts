@@ -348,6 +348,7 @@ const settingsStore = create<SettingsState>()(
         perplexityKey: state.perplexityKey,
         fireworksKey: state.fireworksKey,
         difyKey: state.difyKey,
+        deepseekKey: state.deepseekKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
