@@ -205,6 +205,8 @@ export const processAIResponse = async (
           // コードブロック前のテキストを処理
           if (beforeCode.trim()) {
             receivedMessage = beforeCode
+            isCodeBlock = true
+            codeBlockText = rest.join('```')
           } else {
             isCodeBlock = true
             codeBlockText = rest.join('```')
