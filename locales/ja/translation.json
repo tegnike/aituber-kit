@@ -32,6 +32,7 @@
   "PerplexityAPIKeyLabel": "Perplexity API キー",
   "FireworksAPIKeyLabel": "Fireworks API キー",
   "DifyAPIKeyLabel": "Dify API キー",
+  "DeepSeekAPIKeyLabel": "DeepSeek API キー",
   "APIKeyInstruction": "APIキーは下記のリンクから取得できます。取得したAPIキーをフォームに入力してください。",
   "LocalLLMInfo": "ローカルLLM サーバーを起動している必要があります。",
   "LocalLLMInfo2": "ローカルLLMのURL（ポート番号込み）とモデル名を入力してください。",
