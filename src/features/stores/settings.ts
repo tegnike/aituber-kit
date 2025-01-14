@@ -388,6 +388,7 @@ const settingsStore = create<SettingsState>()(
         audioModeVoice: state.audioModeVoice,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
+        useSearchGrounding: state.useSearchGrounding,
         openaiTTSKey: state.openaiTTSKey,
         openaiTTSVoice: state.openaiTTSVoice,
         openaiTTSModel: state.openaiTTSModel,
