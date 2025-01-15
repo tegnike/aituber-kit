@@ -10,3 +10,10 @@
 - src/pages/api/aiChat.ts
 - src/features/chat/aiChatFactory.ts
 - .env.example
+
+## 入力フォームからLLMを介して回答を得るまで
+src/components/form.tsx
+src/features/chat/handlers.ts
+src/features/chat/vercelAIChat.ts
+src/features/chat/aiChatFactory.ts
+src/pages/api/aiChat.ts
