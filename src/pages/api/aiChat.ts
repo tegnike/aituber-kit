@@ -136,8 +136,7 @@ export default async function handler(req: NextRequest) {
   }
 
   const instance = aiServiceInstance()
-  const modifiedMessages: Message[] = modifyMessages(aiService, messages)
-
+  const modifiedMessages: Message[] = modifyMessages(aiService, model, messages)
   const isUseSearchGrounding = aiService === 'google' && useSearchGrounding
   const options = isUseSearchGrounding ? { useSearchGrounding: true } : {}
   console.log('options', options)
@@ -177,8 +176,16 @@ export default async function handler(req: NextRequest) {
   }
 }
 
-function modifyMessages(aiService: string, messages: Message[]): Message[] {
-  if (aiService === 'anthropic' || aiService === 'perplexity') {
+function modifyMessages(
+  aiService: string,
+  model: string,
+  messages: Message[]
+): Message[] {
+  if (
+    aiService === 'anthropic' ||
+    aiService === 'perplexity' ||
+    (aiService === 'deepseek' && model === 'deepseek-reasoner')
+  ) {
     return modifyAnthropicMessages(messages)
   }
   return messages

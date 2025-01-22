@@ -1017,6 +1017,23 @@ const ModelProvider = () => {
                   settingsStore.setState({ deepseekKey: e.target.value })
                 }
               />
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('SelectModel')}
+                </div>
+                <select
+                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                >
+                  <option value="deepseek-chat">deepseek-chat</option>
+                  <option value="deepseek-reasoner">deepseek-reasoner</option>
+                </select>
+              </div>
             </div>
           )
         }
