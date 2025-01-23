@@ -226,5 +226,6 @@
     "angryMotionGroup": "愤怒",
     "relaxedMotionGroup": "放松"
   },
-  "UseVideoAsBackground": "使用共享屏幕或网络摄像头作为背景"
+  "UseVideoAsBackground": "使用共享屏幕或网络摄像头作为背景",
+  "Temperature": "Temperature"
 }

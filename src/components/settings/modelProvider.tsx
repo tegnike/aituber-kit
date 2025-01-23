@@ -44,6 +44,7 @@ const ModelProvider = () => {
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
   const deepseekKey = settingsStore((s) => s.deepseekKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
+  const temperature = settingsStore((s) => s.temperature)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -1060,7 +1061,24 @@ const ModelProvider = () => {
           </div>
         </div>
       )}
-
+      <div className="my-24">
+        <div className="my-16 typography-20 font-bold">
+          {t('Temperature')}: {temperature.toFixed(2)}
+        </div>
+        <input
+          type="range"
+          min={0}
+          max={2}
+          step={0.01}
+          value={temperature}
+          className="mt-8 mb-16 input-range"
+          onChange={(e) =>
+            settingsStore.setState({
+              temperature: parseFloat(e.target.value),
+            })
+          }
+        />
+      </div>
       <div className="mt-40">
         <div className="my-8">
           <div className="my-16 typography-20 font-bold">

@@ -227,5 +227,6 @@
     "angryMotionGroup": "怒り",
     "relaxedMotionGroup": "リラックス"
   },
-  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する"
+  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
+  "Temperature": "Temperature"
 }

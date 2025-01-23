@@ -51,6 +51,7 @@ export default async function handler(req: NextRequest) {
     azureEndpoint,
     stream,
     useSearchGrounding,
+    temperature = 1.0,
   } = await req.json()
 
   let aiApiKey = apiKey
@@ -146,6 +147,7 @@ export default async function handler(req: NextRequest) {
       const result = await streamText({
         model: instance(modifiedModel, options),
         messages: modifiedMessages as CoreMessage[],
+        temperature: temperature,
       })
 
       return result.toDataStreamResponse()
