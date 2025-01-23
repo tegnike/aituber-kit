@@ -14,6 +14,7 @@
   "ConversationContinuityModeInfo": "コメントが無いときにAIが自ら会話を継続しようとするモードです。現在OpenAI, Anthropic Claude, Google Geminiのみ対応しています。",
   "ConversationContinuityModeInfo2": "一度の回答で複数回LLMを呼び出すため、API利用料が増える可能性があります。ご注意ください。",
   "ConversationContinuityModeInfo3": "gpt-4o, gpt-4-turbo, claude-3-opus, claude-3.5-sonnetで比較的安定動作します。",
+  "MaxPastMessages": "過去のメッセージ保持数",
   "StatusOn": "状態：ON",
   "StatusOff": "状態：OFF",
   "Select": "選択してください",
@@ -219,11 +220,14 @@
     "relaxedEmotions": "リラックス",
     "MotionGroups": "モーショングループ設定",
     "MotionGroupsInfo": "モーショングループは選択したグループからランダムに選択されます。\n表情設定と同じく、ご自身のモデルに合わせて設定してください。\n「アイドル時」は会話完了後に表示されるモーションです。",
+    "SelectMotionGroup": "モーショングループを選択",
     "idleMotionGroup": "アイドル時",
     "neutralMotionGroup": "通常",
     "happyMotionGroup": "嬉しい",
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
     "relaxedMotionGroup": "リラックス"
-  }
+  },
+  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
+  "Temperature": "Temperature"
 }

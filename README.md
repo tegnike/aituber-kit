@@ -34,6 +34,10 @@
    <a href="./docs/README_ko.md">韓語</a>
 </h3>
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
 ## 概要
 
 主に以下の2つの機能があります。
@@ -240,6 +244,8 @@ cp .env.example .env
 あなたの支援は、AITuberキットの開発と改善に大きく貢献します。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
 ### 協力者の皆様（ご支援いただいた順）
 

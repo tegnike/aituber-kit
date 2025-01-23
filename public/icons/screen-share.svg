@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>screen_share</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M20,18 C21.1,18 22,17.1 22,16 L22,6 C22,4.9 21.1,4 20,4 L4,4 C2.9,4 2,4.9 2,6 L2,16 C2,17.1 2.89,18 4,18 L1,18 C0.45,18 0,18.45 0,19 C0,19.55 0.45,20 1,20 L23,20 C23.55,20 24,19.55 24,19 C24,18.45 23.55,18 23,18 L20,18 Z M13,14.47 L13,12.28 C10.22,12.28 8.39,13.13 7,15 C7.56,12.33 9.11,9.67 13,9.13 L13,7 L16.61,10.36 C16.82,10.56 16.82,10.89 16.61,11.09 L13,14.47 Z" id="screen-share-icon" fill="#FFFFFF"></path>
+    </g>
+</svg>

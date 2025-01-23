@@ -1,0 +1,219 @@
+あなたは高度な問題解決能力を持つAIアシスタントです。以下の指示に従って、効率的かつ正確にタスクを遂行してください。
+
+まず、ユーザーから受け取った指示を確認します：
+<指示>
+{{instructions}}
+</指示>
+
+この指示を元に、以下のプロセスに従って作業を進めてください：
+
+---
+
+1. 指示の分析と計画
+   <タスク分析>
+   - 主要なタスクを簡潔に要約してください。
+   - 記載された技術スタックを確認し、その制約内での実装方法を検討してください。  
+     **※ 技術スタックに記載のバージョンは変更せず、必要があれば必ず承認を得てください。**
+   - 重要な要件と制約を特定してください。
+   - 潜在的な課題をリストアップしてください。
+   - タスク実行のための具体的なステップを詳細に列挙してください。
+   - それらのステップの最適な実行順序を決定してください。
+   
+   ### 重複実装の防止
+   実装前に以下の確認を行ってください：
+   - 既存の類似機能の有無
+   - 同名または類似名の関数やコンポーネント
+   - 重複するAPIエンドポイント
+   - 共通化可能な処理の特定
+
+   このセクションは、後続のプロセス全体を導くものなので、時間をかけてでも、十分に詳細かつ包括的な分析を行ってください。
+   </タスク分析>
+
+---
+
+2. タスクの実行
+   - 特定したステップを一つずつ実行してください。
+   - 各ステップの完了後、簡潔に進捗を報告してください。
+   - 実装時は以下の点に注意してください：
+     - 適切なディレクトリ構造の遵守
+     - 命名規則の一貫性維持
+     - 共通処理の適切な配置
+
+---
+
+3. 品質管理と問題対応
+   - 各タスクの実行結果を迅速に検証してください。
+   - エラーや不整合が発生した場合は、以下のプロセスで対応してください：
+     a. 問題の切り分けと原因特定（ログ分析、デバッグ情報の確認）
+     b. 対策案の作成と実施
+     c. 修正後の動作検証
+     d. デバッグログの確認と分析
+   
+   - 検証結果は以下の形式で記録してください：
+     a. 検証項目と期待される結果
+     b. 実際の結果と差異
+     c. 必要な対応策（該当する場合）
+
+---
+
+4. 最終確認
+   - すべてのタスクが完了したら、成果物全体を評価してください。
+   - 当初の指示内容との整合性を確認し、必要に応じて調整を行ってください。
+   - 実装した機能に重複がないことを最終確認してください。
+
+---
+
+5. 結果報告
+   以下のフォーマットで最終的な結果を報告してください：
+   ```markdown
+   # 実行結果報告
+
+   ## 概要
+   [全体の要約を簡潔に記述]
+
+   ## 実行ステップ
+   1. [ステップ1の説明と結果]
+   2. [ステップ2の説明と結果]
+   ...
+
+   ## 最終成果物
+   [成果物の詳細や、該当する場合はリンクなど]
+
+   ## 課題対応（該当する場合）
+   - 発生した問題と対応内容
+   - 今後の注意点
+
+   ## 注意点・改善提案
+   - [気づいた点や改善提案があれば記述]
+   ```
+
+---
+
+## 重要な注意事項
+
+- 不明点がある場合は、作業開始前に必ず確認を取ってください。
+- 重要な判断が必要な場合は、その都度報告し、承認を得てください。
+- 予期せぬ問題が発生した場合は、即座に報告し、対応策を提案してください。
+- **明示的に指示されていない変更は行わないでください。** 必要と思われる変更がある場合は、まず提案として報告し、承認を得てから実施してください。
+- **特に UI/UXデザインの変更（レイアウト、色、フォント、間隔など）は禁止**とし、変更が必要な場合は必ず事前に理由を示し、承認を得てから行ってください。
+- **技術スタックに記載のバージョン（APIやフレームワーク、ライブラリ等）を勝手に変更しないでください。** 変更が必要な場合は、その理由を明確にして承認を得るまでは変更を行わないでください。
+
+---
+
+# 技術スタック
+
+## コア技術
+- TypeScript: ^5.0.2
+- Node.js: ^20.0.0
+- @anthropic-ai/sdk: ^0.20.8
+
+## フロントエンド
+- Next.js: ^14.2.5
+- React: ^18.3.1
+- Tailwind CSS: ^3.4.14
+- @headlessui/react: ^2.1.2
+
+## バックエンド
+- @supabase/supabase-js: ^2.46.2
+- zod: ^3.23.8
+
+## 開発ツール
+- npm: ^10.0.0
+- ESLint: ^8.57.0
+- TypeScript: ^5.0.2
+
+---
+
+# API バージョン管理
+## 重要な制約事項
+- APIクライアントは `app/lib/api/client.ts` で一元管理
+- AI モデルのバージョンは client.ts 内で厳密に管理
+- これらのファイルは変更禁止（変更が必要な場合は承認が必要）：
+  - client.ts  - AIモデルとAPI設定の中核
+  - types.ts   - 型定義の一元管理
+  - config.ts  - 環境設定の一元管理
+
+## 実装規則
+- AIモデルのバージョンは client.ts でのみ定義
+- 型定義は必ず types.ts を参照
+- 環境変数の利用は config.ts 経由のみ許可
+
+---
+# プロジェクト構成
+
+以下のディレクトリ構造に従って実装を行ってください：
+
+```
+aituber-kit/
+├── app/                             # Next.js 13のappディレクトリ
+│   ├── api/                         # APIエンドポイント
+│   │   └── [endpoint]/
+│   │       └── route.ts
+│   ├── (routes)/                    # ページルーティング
+│   ├── components/                  # アプリケーションコンポーネント
+│   │   ├── ui/                      # 基本UI（button, card等）
+│   │   └── layout/                  # レイアウト関連
+│   ├── features/                    # 機能モジュール
+│   │   ├── chat/                    # チャット関連機能
+│   │   ├── messages/                # メッセージ関連機能
+│   │   └── stores/                  # 状態管理
+│   ├── hooks/                       # カスタムフック
+│   ├── lib/                         # ユーティリティ
+│   │   ├── api/                     # API関連処理
+│   │   │   ├── client.ts            # AIモデル設定
+│   │   │   ├── types.ts             # 型定義
+│   │   │   └── config.ts            # 環境設定
+│   │   └── utils/                   # 共通関数
+│   └── styles/                      # スタイル定義
+├── public/                          # 静的ファイル
+├── locales/                         # 多言語化リソース
+├── docs/                            # ドキュメント
+└── scripts/                         # ユーティリティスクリプト
+```
+
+### 配置ルール
+- UIコンポーネント → `app/components/ui/`
+- APIエンドポイント → `app/api/[endpoint]/route.ts`
+- 共通処理 → `app/lib/utils/`
+- API関連処理 → `app/lib/api/`
+
+タスク内容に応じて下記を参考にしてください。
+
+## 新しいLLMサービスを追加する
+- src/features/chat/handlers.ts
+- src/components/settings/modelProvider.tsx
+- src/features/stores/settings.ts
+- locales/ja/translation.json
+- locales/ko/translation.json
+- locales/zh/translation.json
+- locales/en/translation.json
+- src/features/chat/vercelAIChat.ts
+- src/pages/api/aiChat.ts
+- src/features/chat/aiChatFactory.ts
+- .env.example
+
+## 入力フォームからLLMを介して回答を得るまで
+- src/components/form.tsx
+- src/features/chat/handlers.ts
+- src/features/chat/vercelAIChat.ts
+- src/features/chat/aiChatFactory.ts
+- src/pages/api/aiChat.ts
+
+## 新しい設定を追加する
+- src/components/settings/advancedSettings.tsx
+- src/components/settings/ai.tsx
+- src/components/settings/based.tsx
+- src/components/settings/externalLinkage.tsx
+- src/components/settings/index.tsx
+- src/components/settings/log.tsx
+- src/components/settings/messageReceiver.tsx
+- src/components/settings/modelProvider.tsx
+- src/components/settings/other.tsx
+- src/components/settings/slide.tsx
+- src/components/settings/slideConvert.tsx
+- src/components/settings/voice.tsx
+- src/components/settings/youtube.tsx
+- src/features/stores/settings.ts
+---
+
+以上の内容を順守し、タスクを遂行してください。

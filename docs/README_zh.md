@@ -34,6 +34,11 @@
    <a href="./README_en.md">【英語】</a>｜
    <a href="./README_ko.md">【韓語】</a>
 </h3>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
 ## 概覽
 
 此存儲庫主要具有以下2個功能：
@@ -236,6 +241,8 @@ cp .env.example .env
 您的支持將極大地促進AITuber套件的開發和改進。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
 ### 我們的支持者（按支持順序排列）
 

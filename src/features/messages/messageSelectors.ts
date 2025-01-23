@@ -1,4 +1,5 @@
 import { Message } from './messages'
+import settingsStore from '@/features/stores/settings'
 
 export const messageSelectors = {
   // テキストまたは画像を含むメッセージのみを取得
@@ -32,6 +33,7 @@ export const messageSelectors = {
     messages: Message[],
     includeTimestamp: boolean
   ): Message[] => {
+    const maxPastMessages = settingsStore.getState().maxPastMessages
     return messages
       .map((message, index) => {
         // 最後のメッセージだけそのまま利用する（= 最後のメッセージだけマルチモーダルの対象となる）
@@ -62,7 +64,7 @@ export const messageSelectors = {
           content,
         }
       })
-      .slice(-10)
+      .slice(-maxPastMessages)
   },
 
   normalizeMessages: (messages: Message[]): Message[] => {

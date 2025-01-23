@@ -35,6 +35,10 @@
    <a href="./README_zh.md">【중국어】</a>
 </h3>
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
 ## 개요
 
 이 저장소에는 주로 다음과 같은 2가지 기능이 있습니다.
@@ -237,6 +241,8 @@ cp .env.example .env
 여러분의 지원은 AITuber 키트의 개발과 개선에 크게 기여합니다.
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
 ### 협력자 여러분 (지원해 주신 순서)
 
