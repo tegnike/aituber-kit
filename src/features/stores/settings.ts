@@ -307,8 +307,10 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
       maxPastMessages:
         parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
-      useVideoAsBackground: false,
-      temperature: 1.0,
+      useVideoAsBackground:
+        process.env.NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND === 'true',
+      temperature:
+        parseFloat(process.env.NEXT_PUBLIC_TEMPERATURE || '1.0') || 1.0,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -432,6 +434,7 @@ const settingsStore = create<SettingsState>()(
         sadMotionGroup: state.sadMotionGroup,
         angryMotionGroup: state.angryMotionGroup,
         relaxedMotionGroup: state.relaxedMotionGroup,
+        maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
         temperature: state.temperature,
       }),

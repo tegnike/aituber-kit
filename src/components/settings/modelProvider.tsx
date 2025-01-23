@@ -1054,7 +1054,11 @@ const ModelProvider = () => {
                 value={maxPastMessages}
                 onChange={(e) => {
                   const value = parseInt(e.target.value)
-                  if (!isNaN(value) && value >= 1 && value <= 100) {
+                  if (
+                    Number.isNaN(value) === false &&
+                    value >= 1 &&
+                    value <= 100
+                  ) {
                     settingsStore.setState({ maxPastMessages: value })
                   }
                 }}
