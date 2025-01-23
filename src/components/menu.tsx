@@ -99,6 +99,8 @@ export const Menu = () => {
         })
         .catch(() => {
           setShowPermissionModal(true)
+          homeStore.setState({ webcamStatus: false })
+          menuStore.setState({ showWebcam: false })
         })
     }
   }, [showWebcam])
@@ -121,12 +123,18 @@ export const Menu = () => {
   const toggleCapture = useCallback(() => {
     menuStore.setState(({ showCapture }) => ({ showCapture: !showCapture }))
     menuStore.setState({ showWebcam: false }) // Captureを表示するときWebcamを非表示にする
-  }, [])
+    if (!showCapture) {
+      homeStore.setState({ webcamStatus: false }) // Ensure webcam status is false when enabling capture
+    }
+  }, [showCapture])
 
   const toggleWebcam = useCallback(() => {
     menuStore.setState(({ showWebcam }) => ({ showWebcam: !showWebcam }))
     menuStore.setState({ showCapture: false }) // Webcamを表示するときCaptureを非表示にする
-  }, [])
+    if (!showWebcam) {
+      homeStore.setState({ captureStatus: false }) // Ensure capture status is false when enabling webcam
+    }
+  }, [showWebcam])
 
   return (
     <>
@@ -169,7 +177,7 @@ export const Menu = () => {
                   <>
                     <div className="order-3">
                       <IconButton
-                        iconName="24/ShareIos"
+                        iconName="screen-share"
                         isProcessing={false}
                         onClick={toggleCapture}
                       />

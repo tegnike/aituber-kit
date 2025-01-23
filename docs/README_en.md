@@ -35,6 +35,10 @@
    <a href="./README_ko.md">【Korean】</a>
 </h3>
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
 ## Overview
 
 This repository has mainly the following 2 features:
@@ -241,6 +245,8 @@ We are seeking sponsors to continue our development efforts.<br>
 Your support will greatly contribute to the development and improvement of the AITuber Kit.
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
 ### Our Supporters (in order of support)
 

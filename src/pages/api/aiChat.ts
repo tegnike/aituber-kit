@@ -51,6 +51,7 @@ export default async function handler(req: NextRequest) {
     azureEndpoint,
     stream,
     useSearchGrounding,
+    temperature = 1.0,
   } = await req.json()
 
   let aiApiKey = apiKey
@@ -136,8 +137,7 @@ export default async function handler(req: NextRequest) {
   }
 
   const instance = aiServiceInstance()
-  const modifiedMessages: Message[] = modifyMessages(aiService, messages)
-
+  const modifiedMessages: Message[] = modifyMessages(aiService, model, messages)
   const isUseSearchGrounding = aiService === 'google' && useSearchGrounding
   const options = isUseSearchGrounding ? { useSearchGrounding: true } : {}
   console.log('options', options)
@@ -147,6 +147,7 @@ export default async function handler(req: NextRequest) {
       const result = await streamText({
         model: instance(modifiedModel, options),
         messages: modifiedMessages as CoreMessage[],
+        temperature: temperature,
       })
 
       return result.toDataStreamResponse()
@@ -177,8 +178,16 @@ export default async function handler(req: NextRequest) {
   }
 }
 
-function modifyMessages(aiService: string, messages: Message[]): Message[] {
-  if (aiService === 'anthropic' || aiService === 'perplexity') {
+function modifyMessages(
+  aiService: string,
+  model: string,
+  messages: Message[]
+): Message[] {
+  if (
+    aiService === 'anthropic' ||
+    aiService === 'perplexity' ||
+    (aiService === 'deepseek' && model === 'deepseek-reasoner')
+  ) {
     return modifyAnthropicMessages(messages)
   }
   return messages

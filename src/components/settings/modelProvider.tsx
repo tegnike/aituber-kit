@@ -43,6 +43,8 @@ const ModelProvider = () => {
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
   const deepseekKey = settingsStore((s) => s.deepseekKey)
+  const maxPastMessages = settingsStore((s) => s.maxPastMessages)
+  const temperature = settingsStore((s) => s.temperature)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -164,7 +166,6 @@ const ModelProvider = () => {
           <option value="deepseek">DeepSeek</option>
         </select>
       </div>
-
       {(() => {
         if (selectAIService === 'openai') {
           return (
@@ -1017,11 +1018,73 @@ const ModelProvider = () => {
                   settingsStore.setState({ deepseekKey: e.target.value })
                 }
               />
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('SelectModel')}
+                </div>
+                <select
+                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                >
+                  <option value="deepseek-chat">deepseek-chat</option>
+                  <option value="deepseek-reasoner">deepseek-reasoner</option>
+                </select>
+              </div>
             </div>
           )
         }
       })()}
-
+      {selectAIService !== 'dify' && (
+        <>
+          <div className="my-24">
+            <div className="my-16 typography-20 font-bold">
+              {t('MaxPastMessages')}
+            </div>
+            <div className="my-8">
+              <input
+                type="number"
+                min="1"
+                max="100"
+                className="px-16 py-8 w-64 bg-surface1 hover:bg-surface1-hover rounded-8"
+                value={maxPastMessages}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value)
+                  if (
+                    Number.isNaN(value) === false &&
+                    value >= 1 &&
+                    value <= 100
+                  ) {
+                    settingsStore.setState({ maxPastMessages: value })
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <div className="my-24">
+            <div className="my-16 typography-20 font-bold">
+              {t('Temperature')}: {temperature.toFixed(2)}
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={2}
+              step={0.01}
+              value={temperature}
+              className="mt-8 mb-16 input-range"
+              onChange={(e) =>
+                settingsStore.setState({
+                  temperature: parseFloat(e.target.value),
+                })
+              }
+            />
+          </div>
+        </>
+      )}
       <div className="mt-40">
         <div className="my-8">
           <div className="my-16 typography-20 font-bold">

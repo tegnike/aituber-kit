@@ -14,6 +14,7 @@
   "ConversationContinuityModeInfo": "When there is no comment, AI tries to continue the conversation. Currently only OpenAI, Anthropic Claude, Google Gemini are supported.",
   "ConversationContinuityModeInfo2": "One answer calls LLM multiple times, so API usage may increase. Please be aware of this.",
   "ConversationContinuityModeInfo3": "gpt-4o, gpt-4-turbo, claude-3-opus, claude-3.5-sonnet work relatively stably.",
+  "MaxPastMessages": "Number of Past Messages to Keep",
   "StatusOn": "Status: ON",
   "StatusOff": "Status: OFF",
   "Select": "Select",
@@ -218,11 +219,14 @@
     "relaxedEmotions": "Relaxed",
     "MotionGroups": "Motion Group Settings",
     "MotionGroupsInfo": "Motion groups are randomly selected from the selected group.\nSame as emotion settings, please set it according to your model.\n\"Idle\" is the motion displayed after conversation completion.",
+    "SelectMotionGroup": "Select Motion Group",
     "idleMotionGroup": "Idle",
     "neutralMotionGroup": "Neutral",
     "happyMotionGroup": "Happy",
     "sadMotionGroup": "Sad",
     "angryMotionGroup": "Angry",
     "relaxedMotionGroup": "Relaxed"
-  }
+  },
+  "UseVideoAsBackground": "Use shared screen or webcam as background",
+  "Temperature": "Temperature"
 }

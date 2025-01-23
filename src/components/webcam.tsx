@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 import { IconButton } from './iconButton'
 
 export const Webcam = () => {
   const triggerShutter = homeStore((s) => s.triggerShutter)
+  const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const [selectedDevice, setSelectedDevice] = useState<string>('')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
   const [showRotateButton, setShowRotateButton] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const backgroundVideoRef = useRef<HTMLVideoElement>(null)
 
   const refreshDevices = useCallback(async () => {
     if (!navigator.mediaDevices) return
@@ -40,6 +43,18 @@ export const Webcam = () => {
     }
   }, [refreshDevices])
 
+  useEffect(() => {
+    if (useVideoAsBackground && videoRef.current?.srcObject) {
+      if (backgroundVideoRef.current) {
+        backgroundVideoRef.current.srcObject = videoRef.current.srcObject
+      }
+    } else if (!useVideoAsBackground) {
+      if (backgroundVideoRef.current) {
+        backgroundVideoRef.current.srcObject = null
+      }
+    }
+  }, [useVideoAsBackground])
+
   const initializeCamera = useCallback(async () => {
     if (!navigator.mediaDevices || !selectedDevice) return
     try {
@@ -50,10 +65,13 @@ export const Webcam = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream
       }
+      if (backgroundVideoRef.current && useVideoAsBackground) {
+        backgroundVideoRef.current.srcObject = stream
+      }
     } catch (e) {
       console.error('Error initializing camera:', e)
     }
-  }, [selectedDevice])
+  }, [selectedDevice, useVideoAsBackground])
 
   useEffect(() => {
     initializeCamera()
@@ -101,36 +119,47 @@ export const Webcam = () => {
   }, [triggerShutter, handleCapture])
 
   return (
-    <div className="absolute row-span-1 flex right-0 max-h-[40vh] z-10">
-      <div className="relative w-full md:max-w-[512px] max-w-[50%] m-16">
+    <>
+      {useVideoAsBackground && (
         <video
-          ref={videoRef}
-          width={512}
-          height={512}
-          id="local-video"
+          ref={backgroundVideoRef}
           autoPlay
           playsInline
           muted
-          className="rounded-8 w-auto object-contain max-h-[100%] ml-auto"
+          className="fixed top-0 left-0 w-full h-full object-cover -z-10"
         />
-        <div className="md:block hidden absolute top-4 right-4">
-          <IconButton
-            iconName="24/Roll"
-            className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
-            isProcessing={false}
-            disabled={!showRotateButton}
-            onClick={handleRotateCamera}
+      )}
+      <div className="absolute row-span-1 flex right-0 max-h-[40vh] z-10">
+        <div className="relative w-full md:max-w-[512px] max-w-[70%] m-16 md:m-16 ml-auto">
+          <video
+            ref={videoRef}
+            width={512}
+            height={512}
+            id="local-video"
+            autoPlay
+            playsInline
+            muted
+            className={`rounded-8 w-auto object-contain max-h-[100%] ml-auto ${
+              useVideoAsBackground ? 'invisible' : ''
+            }`}
           />
-        </div>
-        <div className="block absolute bottom-4 right-4">
-          <IconButton
-            iconName="24/Shutter"
-            className="z-30 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
-            isProcessing={false}
-            onClick={handleCapture}
-          />
+          <div className="md:block absolute top-4 right-4">
+            <IconButton
+              iconName="24/Roll"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
+              isProcessing={false}
+              disabled={!showRotateButton}
+              onClick={handleRotateCamera}
+            />
+            <IconButton
+              iconName="24/Shutter"
+              className="z-30 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
+              isProcessing={false}
+              onClick={handleCapture}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

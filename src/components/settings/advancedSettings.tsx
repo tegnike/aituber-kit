@@ -17,6 +17,7 @@ const AdvancedSettings = () => {
   )
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
+  const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
 
   const { t } = useTranslation()
 
@@ -35,6 +36,22 @@ const AdvancedSettings = () => {
         >
           {t('LocalStorageResetButton')}
         </TextButton>
+      </div>
+      <div className="my-24">
+        <div className="my-16 typography-20 font-bold">
+          {t('UseVideoAsBackground')}
+        </div>
+        <div className="my-8">
+          <TextButton
+            onClick={() =>
+              settingsStore.setState((s) => ({
+                useVideoAsBackground: !s.useVideoAsBackground,
+              }))
+            }
+          >
+            {useVideoAsBackground ? t('StatusOn') : t('StatusOff')}
+          </TextButton>
+        </div>
       </div>
       <div className="my-24">
         <div className="my-16 typography-20 font-bold">

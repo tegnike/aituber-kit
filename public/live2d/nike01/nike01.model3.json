@@ -57,10 +57,6 @@
       {
         "Name": "NoSmile",
         "File": "expressions/NoSmile.exp3.json"
-      },
-      {
-        "Name": "HairpinChange",
-        "File": "expressions/HairpinChange.exp3.json"
       }
     ],
     "Motions": {
