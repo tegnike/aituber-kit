@@ -14,6 +14,7 @@
   "ConversationContinuityModeInfo": "댓글이 없을 때 AI가 스스로 대화를 지속하려고 하는 모드입니다. 현재 OpenAI, Anthropic Claude, Google Gemini만 지원됩니다.",
   "ConversationContinuityModeInfo2": "한 번의 응답에 여러 번 LLM을 호출하기 때문에 API 사용료가 증가할 수 있습니다. 주의하십시오.",
   "ConversationContinuityModeInfo3": "gpt-4o, gpt-4-turbo, claude-3-opus, claude-3.5-sonnet에서 비교적 안정적으로 동작합니다.",
+  "MaxPastMessages": "과거 메시지 보관 수",
   "StatusOn": "상태: ON",
   "StatusOff": "상태: OFF",
   "Select": "선택하세요",

@@ -146,6 +146,7 @@ interface General {
   messageReceiverEnabled: boolean
   clientId: string
   useSearchGrounding: boolean
+  maxPastMessages: number
 }
 
 interface ModelType {
@@ -302,6 +303,8 @@ const settingsStore = create<SettingsState>()(
       clientId: '',
       useSearchGrounding:
         process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
+      maxPastMessages:
+        parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
 
       // NijiVoice settings
       nijivoiceApiKey: '',

@@ -43,6 +43,7 @@ const ModelProvider = () => {
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
   const deepseekKey = settingsStore((s) => s.deepseekKey)
+  const maxPastMessages = settingsStore((s) => s.maxPastMessages)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -164,7 +165,6 @@ const ModelProvider = () => {
           <option value="deepseek">DeepSeek</option>
         </select>
       </div>
-
       {(() => {
         if (selectAIService === 'openai') {
           return (
@@ -1038,6 +1038,28 @@ const ModelProvider = () => {
           )
         }
       })()}
+      {selectAIService !== 'dify' && (
+        <div className="my-24">
+          <div className="my-16 typography-20 font-bold">
+            {t('MaxPastMessages')}
+          </div>
+          <div className="my-8">
+            <input
+              type="number"
+              min="1"
+              max="100"
+              className="px-16 py-8 w-64 bg-surface1 hover:bg-surface1-hover rounded-8"
+              value={maxPastMessages}
+              onChange={(e) => {
+                const value = parseInt(e.target.value)
+                if (!isNaN(value) && value >= 1 && value <= 100) {
+                  settingsStore.setState({ maxPastMessages: value })
+                }
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="mt-40">
         <div className="my-8">
