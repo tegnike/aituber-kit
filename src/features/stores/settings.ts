@@ -147,6 +147,7 @@ interface General {
   clientId: string
   useSearchGrounding: boolean
   maxPastMessages: number
+  useVideoAsBackground: boolean
 }
 
 interface ModelType {
@@ -305,6 +306,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
       maxPastMessages:
         parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
+      useVideoAsBackground: false,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -428,6 +430,7 @@ const settingsStore = create<SettingsState>()(
         sadMotionGroup: state.sadMotionGroup,
         angryMotionGroup: state.angryMotionGroup,
         relaxedMotionGroup: state.relaxedMotionGroup,
+        useVideoAsBackground: state.useVideoAsBackground,
       }),
     }
   )

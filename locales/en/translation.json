@@ -225,5 +225,6 @@
     "sadMotionGroup": "Sad",
     "angryMotionGroup": "Angry",
     "relaxedMotionGroup": "Relaxed"
-  }
+  },
+  "UseVideoAsBackground": "Use shared screen or webcam as background"
 }

@@ -1,8 +1,9 @@
 import { KnownIconType } from '@charcoal-ui/icons'
 import { ButtonHTMLAttributes } from 'react'
+import Image from 'next/image'
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  iconName: keyof KnownIconType
+  iconName: keyof KnownIconType | 'screen-share'
   isProcessing: boolean
   isProcessingIcon?: keyof KnownIconType
   label?: string
@@ -27,6 +28,13 @@ export const IconButton = ({
     >
       {isProcessing ? (
         <pixiv-icon name={isProcessingIcon || '24/Dot'} scale="1"></pixiv-icon>
+      ) : iconName === 'screen-share' ? (
+        <Image
+          src="/icons/screen-share.svg"
+          alt="screen share"
+          width={24}
+          height={24}
+        />
       ) : (
         <pixiv-icon name={iconName} scale="1"></pixiv-icon>
       )}

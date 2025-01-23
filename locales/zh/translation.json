@@ -33,6 +33,7 @@
   "AzureAPIURL": "Azure OpenAI API URL",
   "GroqAPIKeyLabel": "Groq API 金鑰",
   "DifyAPIKeyLabel": "Dify API 金鑰",
+  "DeepSeekAPIKeyLabel": "DeepSeek API 金鑰",
   "APIKeyInstruction": "您可以在下方獲取 API 金鑰。請將獲得的 API 金鑰輸入到表單中。",
   "LocalLLMInfo": "Local LLM 伺服器必須正在執行。",
   "LocalLLMInfo2": "Local LLM 伺服器URL 和 模型名 必須正確填寫。",
@@ -225,5 +226,5 @@
     "angryMotionGroup": "愤怒",
     "relaxedMotionGroup": "放松"
   },
-  "DeepSeekAPIKeyLabel": "DeepSeek API 金鑰"
+  "UseVideoAsBackground": "使用共享屏幕或网络摄像头作为背景"
 }

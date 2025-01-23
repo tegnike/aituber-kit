@@ -226,5 +226,6 @@
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
     "relaxedMotionGroup": "リラックス"
-  }
+  },
+  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する"
 }
