@@ -219,6 +219,7 @@
     "relaxedEmotions": "放松",
     "MotionGroups": "动作组设置",
     "MotionGroupsInfo": "动作组从选定的组中随机选择。\n与表情设置相同，请根据您自己的模型设置。\n“アイドル時”是会话完成后显示的动作。",
+    "SelectMotionGroup": "动作组选择",
     "idleMotionGroup": "空闲",
     "neutralMotionGroup": "通常",
     "happyMotionGroup": "高兴",

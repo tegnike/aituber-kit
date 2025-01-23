@@ -220,6 +220,7 @@
     "relaxedEmotions": "リラックス",
     "MotionGroups": "モーショングループ設定",
     "MotionGroupsInfo": "モーショングループは選択したグループからランダムに選択されます。\n表情設定と同じく、ご自身のモデルに合わせて設定してください。\n「アイドル時」は会話完了後に表示されるモーションです。",
+    "SelectMotionGroup": "モーショングループを選択",
     "idleMotionGroup": "アイドル時",
     "neutralMotionGroup": "通常",
     "happyMotionGroup": "嬉しい",

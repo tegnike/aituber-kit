@@ -61,9 +61,40 @@ const motionFields = [
   },
 ] as const
 
+interface Live2DModel {
+  path: string
+  name: string
+  expressions: string[]
+  motions: string[]
+}
+
+type EmotionFieldKey = (typeof emotionFields)[number]['key']
+
 const Live2DSettingsForm = () => {
   const store = settingsStore()
   const { t } = useTranslation()
+  const [currentModel, setCurrentModel] = useState<Live2DModel | null>(null)
+  const [openDropdown, setOpenDropdown] = useState<EmotionFieldKey | null>(null)
+
+  useEffect(() => {
+    // 現在選択されているLive2Dモデルの情報を取得
+    const fetchCurrentModel = async () => {
+      try {
+        const response = await fetch('/api/get-live2d-list')
+        const models: Live2DModel[] = await response.json()
+        const selected = models.find(
+          (model) => model.path === store.selectedLive2DPath
+        )
+        setCurrentModel(selected || null)
+      } catch (error) {
+        console.error('Error fetching Live2D model info:', error)
+      }
+    }
+
+    if (store.selectedLive2DPath) {
+      fetchCurrentModel()
+    }
+  }, [store.selectedLive2DPath])
 
   // コンポーネントマウント時にデフォルト値を設定
   useEffect(() => {
@@ -86,70 +117,199 @@ const Live2DSettingsForm = () => {
     }
   }, [])
 
-  const handleChange = (key: string, value: string) => {
-    // 最後のカンマを許容しつつ、空の要素を除外
-    const cleanedArray = value
-      .split(',')
-      .map((item) => item.trim())
-      .filter(Boolean)
+  const handleEmotionChange = (
+    key: EmotionFieldKey,
+    expression: string,
+    checked: boolean
+  ) => {
+    const currentValues = store[key]
+    const newValues = checked
+      ? [...currentValues, expression]
+      : currentValues.filter((value) => value !== expression)
 
     settingsStore.setState({
-      [key]: cleanedArray,
+      [key]: newValues,
     })
   }
 
-  return (
-    <>
-      <div className="space-y-8 mb-16">
-        <div className="typography-16 whitespace-pre-line">
-          {t('Live2D.Info')}
-        </div>
+  const handleMotionChange = (key: string, value: string) => {
+    settingsStore.setState({
+      [key]: value,
+    })
+  }
+
+  if (!currentModel) {
+    return (
+      <div className="flex items-center justify-center h-32 text-gray-500">
+        {t('Live2D.LoadingModel')}
       </div>
-      <div className="space-y-8 mb-16">
-        <div className="typography-20 font-bold mb-8">
+    )
+  }
+
+  return (
+    <div className="space-y-32">
+      <div className="mb-24">
+        <div className="mb-16 typography-20 font-bold">
           {t('Live2D.Emotions')}
         </div>
-        <div className="typography-16 whitespace-pre-line">
+        <div className="mb-24 typography-16 text-gray-500 whitespace-pre-line">
           {t('Live2D.EmotionInfo')}
         </div>
-        {emotionFields.map((field) => (
-          <div key={field.key} className="space-y-4">
-            <label className="block typography-16 font-bold">
-              {t(`Live2D.${field.key}`)}
-            </label>
-            <input
-              className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
-              type="text"
-              value={store[field.key].join(',')}
-              onChange={(e) => handleChange(field.key, e.target.value)}
-              placeholder={`${field.label} (comma separated)`}
-            />
-          </div>
-        ))}
+        <div className="space-y-16">
+          {emotionFields.map((field) => (
+            <div key={field.key}>
+              <label className="block mb-8 typography-16 font-bold text-gray-800">
+                {t(`Live2D.${field.key}`)}
+              </label>
+              <div className="relative">
+                <button
+                  type="button"
+                  className="w-full px-16 py-4 py-12 bg-surface1 hover:bg-surface1-hover rounded-8 text-left flex items-center justify-between"
+                  onClick={() =>
+                    setOpenDropdown(
+                      openDropdown === field.key ? null : field.key
+                    )
+                  }
+                >
+                  <div className="flex flex-wrap gap-4">
+                    {store[field.key].length > 0 ? (
+                      store[field.key].map((expression) => (
+                        <span
+                          key={expression}
+                          className="inline-flex items-center px-8 py-4 bg-primary/10 rounded-4 mr-4"
+                        >
+                          {expression}
+                          <button
+                            type="button"
+                            className="ml-4 text-gray-500 hover:text-gray-700"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleEmotionChange(field.key, expression, false)
+                            }}
+                          >
+                            <svg
+                              className="h-8 w-8"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-400">
+                        {t('Live2D.SelectEmotions')}
+                      </span>
+                    )}
+                  </div>
+                  <svg
+                    className={`h-8 w-8 text-gray-400 transition-transform ${
+                      openDropdown === field.key ? 'rotate-180' : ''
+                    }`}
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M2 5l6 6 6-6"
+                    />
+                  </svg>
+                </button>
+                {openDropdown === field.key && (
+                  <div className="absolute z-10 w-full mt-4 max-h-[200px] overflow-y-auto bg-white rounded-8 shadow-lg border-gray-200 divide-y divide-gray-200">
+                    {currentModel.expressions.map((expression) => (
+                      <label
+                        key={expression}
+                        className="flex items-center px-16 py-8 hover:bg-surface1-hover cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          className="w-16 h-16 rounded border-gray-300 text-primary focus:ring-primary mr-8"
+                          checked={store[field.key].includes(expression)}
+                          onChange={(e) =>
+                            handleEmotionChange(
+                              field.key,
+                              expression,
+                              e.target.checked
+                            )
+                          }
+                        />
+                        <span className="typography-16">{expression}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="space-y-8">
-        <div className="typography-20 font-bold mb-8">
+
+      <div>
+        <div className="mb-16 typography-20 font-bold">
           {t('Live2D.MotionGroups')}
         </div>
-        <div className="typography-16 whitespace-pre-line">
+        <div className="mb-24 typography-16 text-gray-500 whitespace-pre-line">
           {t('Live2D.MotionGroupsInfo')}
         </div>
-        {motionFields.map((field) => (
-          <div key={field.key} className="space-y-4">
-            <label className="block typography-16 font-bold">
-              {t(`Live2D.${field.key}`)}
-            </label>
-            <input
-              className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
-              type="text"
-              value={store[field.key]}
-              onChange={(e) => handleChange(field.key, e.target.value)}
-              placeholder={`${field.label}`}
-            />
-          </div>
-        ))}
+        <div className="space-y-16">
+          {motionFields.map((field) => (
+            <div key={field.key}>
+              <label className="block mb-8 typography-16 font-bold text-gray-800">
+                {t(`Live2D.${field.key}`)}
+              </label>
+              <div className="relative">
+                <select
+                  className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8 appearance-none cursor-pointer"
+                  value={store[field.key]}
+                  onChange={(e) =>
+                    handleMotionChange(field.key, e.target.value)
+                  }
+                >
+                  <option value="" className="text-gray-400">
+                    {t('Live2D.SelectMotionGroup')}
+                  </option>
+                  {currentModel.motions.map((motion) => (
+                    <option
+                      key={motion}
+                      value={motion}
+                      className="py-4 px-8 hover:bg-primary hover:text-white"
+                    >
+                      {motion}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-16 flex items-center pointer-events-none">
+                  <svg
+                    className="h-8 w-8 text-gray-400"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M2 5l6 6 6-6"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </>
+    </div>
   )
 }
 

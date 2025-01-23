@@ -219,6 +219,7 @@
     "relaxedEmotions": "느긋",
     "MotionGroups": "모션 그룹 설정",
     "MotionGroupsInfo": "모션 그룹은 선택한 그룹에서 랜덤으로 선택됩니다.\n감정 설정과 마찬가지로 자신의 모델에 맞춰 설정해 주세요.\n\"아이돌 시\"는 대화가 완료된 후에 표시되는 모션입니다.",
+    "SelectMotionGroup": "모션 그룹 선택",
     "idleMotionGroup": "아이돌 시",
     "neutralMotionGroup": "기본",
     "happyMotionGroup": "기쁨",
