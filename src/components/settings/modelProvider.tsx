@@ -1040,45 +1040,47 @@ const ModelProvider = () => {
         }
       })()}
       {selectAIService !== 'dify' && (
-        <div className="my-24">
-          <div className="my-16 typography-20 font-bold">
-            {t('MaxPastMessages')}
+        <>
+          <div className="my-24">
+            <div className="my-16 typography-20 font-bold">
+              {t('MaxPastMessages')}
+            </div>
+            <div className="my-8">
+              <input
+                type="number"
+                min="1"
+                max="100"
+                className="px-16 py-8 w-64 bg-surface1 hover:bg-surface1-hover rounded-8"
+                value={maxPastMessages}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value)
+                  if (!isNaN(value) && value >= 1 && value <= 100) {
+                    settingsStore.setState({ maxPastMessages: value })
+                  }
+                }}
+              />
+            </div>
           </div>
-          <div className="my-8">
+          <div className="my-24">
+            <div className="my-16 typography-20 font-bold">
+              {t('Temperature')}: {temperature.toFixed(2)}
+            </div>
             <input
-              type="number"
-              min="1"
-              max="100"
-              className="px-16 py-8 w-64 bg-surface1 hover:bg-surface1-hover rounded-8"
-              value={maxPastMessages}
-              onChange={(e) => {
-                const value = parseInt(e.target.value)
-                if (!isNaN(value) && value >= 1 && value <= 100) {
-                  settingsStore.setState({ maxPastMessages: value })
-                }
-              }}
+              type="range"
+              min={0}
+              max={2}
+              step={0.01}
+              value={temperature}
+              className="mt-8 mb-16 input-range"
+              onChange={(e) =>
+                settingsStore.setState({
+                  temperature: parseFloat(e.target.value),
+                })
+              }
             />
           </div>
-        </div>
+        </>
       )}
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('Temperature')}: {temperature.toFixed(2)}
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={2}
-          step={0.01}
-          value={temperature}
-          className="mt-8 mb-16 input-range"
-          onChange={(e) =>
-            settingsStore.setState({
-              temperature: parseFloat(e.target.value),
-            })
-          }
-        />
-      </div>
       <div className="mt-40">
         <div className="my-8">
           <div className="my-16 typography-20 font-bold">
