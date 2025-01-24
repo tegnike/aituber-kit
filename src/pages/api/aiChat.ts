@@ -138,7 +138,10 @@ export default async function handler(req: NextRequest) {
 
   const instance = aiServiceInstance()
   const modifiedMessages: Message[] = modifyMessages(aiService, model, messages)
-  const isUseSearchGrounding = aiService === 'google' && useSearchGrounding
+  const isUseSearchGrounding =
+    aiService === 'google' &&
+    useSearchGrounding &&
+    modifiedMessages.every((msg) => typeof msg.content === 'string')
   const options = isUseSearchGrounding ? { useSearchGrounding: true } : {}
   console.log('options', options)
 

@@ -176,6 +176,7 @@
   "InputText": "Text",
   "InputAudio": "Audio",
   "SearchGrounding": "Use Search Grounding",
+  "SearchGroundingDescription": "When using the multi-modal feature, the search function is automatically disabled.",
   "UpdateRealtimeAPISettings": "Update Realtime API Settings",
   "UpdateRealtimeAPISettingsInfo": "When updating the API key, Azure Endpoint, voice type, model, or system prompt, please press the update button to start a new WebSocket session.",
   "AzureEndpoint": "Azure Endpoint",
