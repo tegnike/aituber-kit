@@ -50,3 +50,5 @@ certificates
 
 public/live2d/*
 !public/live2d/nike01
+public/scripts/*
+!public/scripts/.gitkeep
