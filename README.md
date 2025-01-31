@@ -352,4 +352,4 @@ Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントの
 ### その他
 
 - [ロゴの利用規約](./docs/logo_licence.md)
-- [VRMおよびLive2Dモデルの利用規約](./docs/vrm_licence.md)
+- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)

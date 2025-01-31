@@ -349,4 +349,4 @@ Cubism 2.1과 Cubism 4/5를 사용함으로써 모든 버전의 Live2D 모델을
 ### 기타
 
 - [로고 이용 약관](./logo_licence_en.md)
-- [VRM 및 Live2D 모델 이용 약관](./vrm_licence_en.md)
+- [VRM 및 Live2D 모델 이용 약관](./character_model_licence_en.md)

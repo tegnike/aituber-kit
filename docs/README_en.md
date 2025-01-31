@@ -353,4 +353,4 @@ From version v2.0.0, this project adopts a **custom license**.
 ### Others
 
 - [Logo Usage Agreement](./logo_licence_en.md)
-- [VRM and Live2D Model Usage Agreement](./vrm_licence_en.md)
+- [VRM and Live2D Model Usage Agreement](./character_model_licence_en.md)

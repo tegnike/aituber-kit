@@ -353,4 +353,4 @@ Live2D提供了一个名为Cubism的库作为开发SDK，目前存在Cubism 2.1�
 ### 其他
 
 - [标志使用协议](./logo_licence_en.md)
-- [VRM和Live2D模型使用协议](./vrm_licence_en.md)
+- [VRM和Live2D模型使用协议](./character_model_licence_en.md)
