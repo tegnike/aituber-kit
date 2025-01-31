@@ -128,7 +128,7 @@ cp .env.example .env
    - 本地LLM
    - Dify（Chatbot或Agent）
 2. 如有必要，編輯角色的設置提示。
-3. 如有需要，加載VRM文件和背景文件。
+3. 如有需要，加載VRM文件或Live2D文件和背景文件。
 4. 選擇語音合成引擎並根據需要配置語音設置。
    - VOICEVOX：您可以從多個選項中選擇發言者。需要事先運行VOICEVOX應用程序。
    - Koeiromap：您可以細微調整語音。需要API密鑰。
@@ -224,6 +224,28 @@ cp .env.example .env
 - 設置信息和對話歷史可以在設置屏幕中重置。
 - 各種設置項目保存在瀏覽器的本地存儲中。
 - 代碼塊中的元素不會被TTS讀取。
+
+### 关于Live2D规格
+
+Live2D显示使用非官方库 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)。
+
+Live2D提供了一个名为Cubism的库作为开发SDK，目前存在Cubism 2.1、Cubism 3、Cubism 4和Cubism 5。Cubism 4與Cubism 3模型兼容，最新的Cubism 5與Cubism 4兼容。
+
+通过使用Cubism 2.1和Cubism 4/5，我们支持所有版本的Live2D模型。
+
+#### Cubism Core
+
+在使用此功能之前，需要将Cubism Core（Cubism运行时库）文件放置在 `public/scripts` 中。
+
+- 对于Cubism 4/5：需要 `live2dcubismcore.min.js`。可以从[官方网站](https://www.live2d.com/sdk/download/web/)获取。也可以从[这里](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)获取。（注意：不建议在生产环境中使用）
+
+- 对于Cubism 2.1：需要 `live2d.min.js`。自2019年9月4日起，无法从官方网站下载，但可以从以下位置获取：
+  - GitHub：[dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+  - CDN：https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+### 背景图片设置
+
+- 在 `public/bg-c.png` 更改背景圖片。請不要更改名稱。
 
 ## 相關文章
 
@@ -331,4 +353,4 @@ cp .env.example .env
 ### 其他
 
 - [标志使用协议](./logo_licence_en.md)
-- [VRM模型使用协议](./vrm_licence_en.md)
+- [VRM和Live2D模型使用协议](./vrm_licence_en.md)

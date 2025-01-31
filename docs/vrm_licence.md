@@ -1,12 +1,22 @@
-# VRMモデルの利用規約
+# VRMモデルおよびLive2Dモデルの利用規約
 
 ## 概要
 
-この文書は、[aituber-kit](https://github.com/tegnike/aituber-kit) リポジトリで提供されている [ニケちゃんVRMモデルv1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm)、[ニケちゃんVRMモデルv2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm)、[ニケちゃんVRMモデルv2（アウター）](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm)の利用規約を定めます。
+この文書は、[aituber-kit](https://github.com/tegnike/aituber-kit) リポジトリで提供されている以下のモデルの利用規約を定めます：
+
+### VRMモデル
+
+- [ニケちゃんVRMモデルv1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm)
+- [ニケちゃんVRMモデルv2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm)
+- [ニケちゃんVRMモデルv2（アウター）](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm)
+
+### Live2Dモデル
+
+- [ニケちゃんLive2Dモデル](https://github.com/tegnike/aituber-kit/blob/main/public/live2d/nike01)
 
 ## 著作権
 
-このVRMモデルの著作権は、リポジトリの所有者に帰属します。
+これらのVRMモデルおよびLive2Dモデルの著作権は、リポジトリの所有者に帰属します。
 
 ## 許可される利用
 
@@ -24,7 +34,7 @@
 
 ## 免責事項
 
-このVRMモデルは「現状有姿」で提供され、特定の目的への適合性、非侵害性の保証はありません。モデル使用によって生じたいかなる損害に対しても、リポジトリの所有者は一切の責任を負いません。
+これらのVRMモデルおよびLive2Dモデルは「現状有姿」で提供され、特定の目的への適合性、非侵害性の保証はありません。モデル使用によって生じたいかなる損害に対しても、リポジトリの所有者は一切の責任を負いません。
 
 ## 規約の変更
 
@@ -34,8 +44,15 @@
 
 モデルの使用に関して不明点がある場合は、リポジトリのイシューを通じてお問い合わせください。
 
-## VRMモデル制作者情報
+## モデル制作者情報
+
+### VRMモデル
 
 - ニケちゃんVRMモデルv1：[琳 様](https://x.com/rin_tyn25)
 - ニケちゃんVRMモデルv2：[たまごん 様](https://x.com/_TAMA_GON_)
 - ニケちゃんVRMモデルv2（アウター）：[たまごん 様](https://x.com/_TAMA_GON_)
+
+### Live2Dモデル
+
+- イラストレーター：[綾川まとい 様](https://x.com/matoi_e_ma)
+- モデラー：[チッパー 様](https://x.com/Chipper_tyvt)
