@@ -1,0 +1,10 @@
+.VPHero .main .text {
+  font-size: 32px !important;
+  /* デフォルトは40px程度、taglineは24px程度なので、その中間値 */
+  line-height: 1.4;
+}
+
+/* カスタムCSSをここに追加できます */
+:root {
+  /* カスタム変数をここで定義できます */
+}

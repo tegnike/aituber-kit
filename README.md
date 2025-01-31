@@ -127,7 +127,7 @@ cp .env.example .env
    - ローカルLLM
    - Dify（Chatbot or Agent）
 2. 必要に応じてキャラクターの設定プロンプトを編集します。
-3. 必要に応じてキャラクターのVRMファイルおよび背景ファイルをアップロードします。
+3. 必要に応じてキャラクターのVRMファイルまたはLive2Dファイル、および背景ファイルをアップロードします。
 4. 音声合成エンジンを選択し、必要に応じて声の設定を行います。
    - VOICEVOX: 複数の選択肢から話者を選ぶことができます。予めVOICEVOXアプリを起動しておく必要があります。
    - Koeiromap: 細かく音声を調整することが可能です。APIキーの入力が必要です。
@@ -145,13 +145,13 @@ cp .env.example .env
 
 - Youtubeの配信コメントを取得して発言することが可能です。
 - Youtube APIキーが必要です。
-- 「#」から始まるコメントは読まれません。
+- "#"から始まるコメントは読まれません。
 
 ### 使用方法
 
 1. 設定画面でYoutubeモードをONにします。
 2. Youtube APIキーとYoutube Live IDを入力します。
-3. 他の設定は「AIキャラとの対話」と同様に行います。
+3. 他の設定は"AIキャラとの対話"と同様に行います。
 4. Youtubeの配信を開始し、キャラクターがコメントに反応するのを確認します。
 5. 会話継続モードをONにすると、コメントが無いときにAIが自ら発言することができます。
 
@@ -166,13 +166,13 @@ cp .env.example .env
 
 1. サーバーアプリを起動し、`ws://127.0.0.1:8000/ws` エンドポイントを開きます。
 2. 設定画面で外部連携モードをONにします。
-3. 他の設定は「AIキャラとの対話」と同様に行います。
+3. 他の設定は"AIキャラとの対話"と同様に行います。
 4. 入力フォームからリクエストを送信し、サーバーアプリからのリクエストが返却されるのを確認します。
 
 #### 関連
 
 - こちらのサーバーアプリのリポジトリですぐに試すことが可能です。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- 詳しい設定は「[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)」をお読みください。
+- 詳しい設定は"[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)"をお読みください。
 
 ### スライドモード
 
@@ -188,7 +188,7 @@ cp .env.example .env
 
 #### 関連
 
-- 詳しい設定は「[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)」をお読みください。
+- 詳しい設定は"[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)"をお読みください。
 
 ### Realtime APIモード
 
@@ -208,7 +208,25 @@ cp .env.example .env
 
 ## TIPS
 
-### 背景固定方法
+### Live2Dの仕様に際して
+
+Live2D表示のために非公式ライブラリの [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) を使用しています。
+
+Live2Dは開発用SDKとしてCubismというライブラリが提供されており、現在Cubism 2.1、Cubism 3、Cubism 4、そしてCubism 5が存在します。Cubism 4はCubism 3のモデルと互換性があり、最新のCubism 5はCubism 4と互換性があります。
+
+Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントのLive2Dモデルをサポートしています。
+
+#### Cubism Core
+
+この機能を利用する前に、Cubism Core（Cubismランタイムライブラリ）ファイルを `public/scripts` に設置する必要があります。
+
+- Cubism 4/5の場合：`live2dcubismcore.min.js` が必要です。これは[公式サイト](https://www.live2d.com/sdk/download/web/)から入手可能です。また、[こちら](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js) からも入手可能です。（注：本番環境での使用は推奨されません）
+
+- Cubism 2.1の場合：`live2d.min.js` が必要です。2019年9月4日以降、公式サイトからはダウンロードできなくなっていますが、以下から入手可能です：
+  - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+  - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+### 背景画像の設定
 
 - 背景画像は `public/bg-c.png` の画像を変更してください。名称は変更しないでください。
 
@@ -334,4 +352,4 @@ cp .env.example .env
 ### その他
 
 - [ロゴの利用規約](./docs/logo_licence.md)
-- [VRMモデルの利用規約](./docs/vrm_licence.md)
+- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)

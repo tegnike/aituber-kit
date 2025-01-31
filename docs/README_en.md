@@ -128,7 +128,7 @@ cp .env.example .env
    - Local LLM
    - Dify (Chatbot or Agent)
 2. Edit the character's setting prompt if necessary.
-3. Load a VRM file and background file if needed.
+3. Load a VRM file or Live2D file, and background file if needed.
 4. Select a speech synthesis engine and configure voice settings if necessary.
    - VOICEVOX: You can select a speaker from multiple options. The VOICEVOX app needs to be running beforehand.
    - Koeiromap: You can finely adjust the voice. An API key is required.
@@ -209,7 +209,25 @@ cp .env.example .env
 
 ## TIPS
 
-### Background Fixing Method
+### Live2D Specifications
+
+We use the unofficial library [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) for Live2D display.
+
+Live2D provides a library called Cubism as a development SDK, and currently there are Cubism 2.1, Cubism 3, Cubism 4, and Cubism 5. Cubism 4 is compatible with Cubism 3 models, and the latest Cubism 5 is compatible with Cubism 4.
+
+By using Cubism 2.1 and Cubism 4/5, we support all variants of Live2D models.
+
+#### Cubism Core
+
+Before using this feature, you need to place the Cubism Core (Cubism runtime library) files in `public/scripts`.
+
+- For Cubism 4/5: `live2dcubismcore.min.js` is required. This can be obtained from the [official website](https://www.live2d.com/sdk/download/web/). It's also available from [here](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js). (Note: Not recommended for production use)
+
+- For Cubism 2.1: `live2d.min.js` is required. While it's no longer available for download from the official website since September 4, 2019, it can be obtained from:
+  - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+  - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+### Background Image Setting
 
 - Change the background image at `public/bg-c.png`. Do not change the name.
 
@@ -335,4 +353,4 @@ From version v2.0.0, this project adopts a **custom license**.
 ### Others
 
 - [Logo Usage Agreement](./logo_licence_en.md)
-- [VRM Model Usage Agreement](./vrm_licence_en.md)
+- [VRM and Live2D Model Usage Agreement](./character_model_licence_en.md)

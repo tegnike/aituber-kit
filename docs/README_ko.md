@@ -128,7 +128,7 @@ cp .env.example .env
    - 로컬 LLM
    - Dify (Chatbot or Agent)
 2. 필요한 경우 캐릭터의 설정 프롬프트를 편집합니다.
-3. 필요한 경우 캐릭터의 VRM 파일 및 배경 파일을 업로드합니다.
+3. 필요한 경우 캐릭터의 VRM 파일 또는 Live2D 파일, 및 배경 파일을 업로드합니다.
 4. 음성 합성 엔진을 선택하고 필요한 경우 음성 설정을 구성합니다.
    - VOICEVOX: 여러 옵션에서 스피커를 선택할 수 있습니다. 사전에 VOICEVOX 앱을 실행해야 합니다.
    - Koeiromap: 세밀하게 음성을 조정할 수 있습니다. API 키가 필요합니다.
@@ -205,7 +205,25 @@ cp .env.example .env
 
 ## 팁
 
-### 배경 고정 방법
+### Live2D 사양에 대하여
+
+Live2D 표시를 위해 비공식 라이브러리 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)를 사용하고 있습니다.
+
+Live2D는 개발용 SDK로 Cubism이라는 라이브러리를 제공하고 있으며, 현재 Cubism 2.1, Cubism 3, Cubism 4, 그리고 Cubism 5가 존재합니다. Cubism 4는 Cubism 3 모델과 호환성이 있으며, 최신 Cubism 5는 Cubism 4와 호환성이 있습니다.
+
+Cubism 2.1과 Cubism 4/5를 사용함으로써 모든 버전의 Live2D 모델을 지원합니다.
+
+#### Cubism Core
+
+이 기능을 사용하기 전에 Cubism Core(Cubism 런타임 라이브러리) 파일을 `public/scripts`에 설치해야 합니다.
+
+- Cubism 4/5의 경우: `live2dcubismcore.min.js`가 필요합니다. 이는 [공식 사이트](https://www.live2d.com/sdk/download/web/)에서 다운로드할 수 있습니다. 또한, [여기](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)에서도 다운로드할 수 있습니다. (참고: 프로덕션 환경에서의 사용은 권장되지 않습니다)
+
+- Cubism 2.1의 경우: `live2d.min.js`가 필요합니다. 2019년 9월 4일 이후로는 공식 사이트에서 다운로드할 수 없지만, 다음에서 구할 수 있습니다:
+  - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+  - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+### 배경 이미지 설정
 
 - `public/bg-c.png`에서 배경 이미지를 변경합니다. 이름은 변경하지 마십시오.
 
@@ -331,4 +349,4 @@ cp .env.example .env
 ### 기타
 
 - [로고 이용 약관](./logo_licence_en.md)
-- [VRM 모델 이용 약관](./vrm_licence_en.md)
+- [VRM 및 Live2D 모델 이용 약관](./character_model_licence_en.md)
