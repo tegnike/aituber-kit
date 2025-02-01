@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
+import { SYSTEM_PROMPT,PromptType } from '@/features/constants/systemPromptConstants'
 import {
   AIService,
   AIVoice,
@@ -161,7 +161,9 @@ export type SettingsState = APIKeys &
   Integrations &
   Character &
   General &
-  ModelType
+  ModelType & {
+    promptType: PromptType
+  }
 
 const settingsStore = create<SettingsState>()(
   persist(
@@ -343,6 +345,9 @@ const settingsStore = create<SettingsState>()(
       sadMotionGroup: process.env.NEXT_PUBLIC_SAD_MOTION_GROUP || '',
       angryMotionGroup: process.env.NEXT_PUBLIC_ANGRY_MOTION_GROUP || '',
       relaxedMotionGroup: process.env.NEXT_PUBLIC_RELAXED_MOTION_GROUP || '',
+
+      // Prompt Type
+      promptType: PromptType.CHAT_PARTNER,
     }),
     {
       name: 'aitube-kit-settings',
@@ -437,6 +442,7 @@ const settingsStore = create<SettingsState>()(
         maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
         temperature: state.temperature,
+        promptType: state.promptType,
       }),
     }
   )
