@@ -84,7 +84,7 @@
   "IncludeTimestampInUserMessage": "在用戶訊息中包含時間戳記",
   "IncludeTimestampInUserMessageInfo": "在用戶訊息中包含時間戳記，可以讓 AI 在生成回應時考慮時間因素。\n請在系統提示中包含以下文字：\n\n「用戶輸入可能會包含 [timestamp] 時間戳記。這表示請求時的 UTC 時區時間，請在生成回應時將此時間納入考慮。」",
   "GoogleTTSInfo": "使用 Google Cloud 文字轉語音。支援多種語言。",
-  "AuthFileInstruction": "在下方獲取認證 JSON 檔案，並將其放置於儲存庫的根目錄下，命名為 'credentials.json'。",
+  "AuthFileInstruction": "API 金鑰或認証用 JSON 檔案是必要的。從下方取得並在 JSON 檔案的情況下將其放置在儲存庫的根資料夾中，名稱為 credentials.json。",
   "LanguageModelURL": "從下方 URL 選擇語言模型。",
   "LanguageChoice": "語言選擇",
   "StyleBeatVITS2ServerURL": "伺服器 URL",

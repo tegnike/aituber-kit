@@ -84,7 +84,7 @@
   "IncludeTimestampInUserMessage": "사용자 발언에 타임스탬프 포함",
   "IncludeTimestampInUserMessageInfo": "사용자 발언에 타임스탬프를 포함하면 AI가 시간을 고려하여 응답을 생성할 수 있습니다.\n다음과 같은 문장을 시스템 프롬프트에 포함해 주세요.\n\n「사용자 입력에 [timestamp]가 포함되어 요청되는 경우가 있습니다. 이는 요청 시점의 UTC 타임존 시각을 나타내므로, 해당 시각을 고려하여 응답을 생성해 주세요.」",
   "GoogleTTSInfo": "Google Cloud Text-to-Speech를 사용합니다. 다국어 지원이 가능합니다.",
-  "AuthFileInstruction": "인증용 JSON 파일을 아래에서 얻어 리포지토리 루트 폴더에 credentials.json이라는 이름으로 배치하십시오.",
+  "AuthFileInstruction": "API 키 또는 인증 파일이 필요합니다. 아래에서 얻고 JSON 파일의 경우 리포지토리의 루트 폴더에 credentials.json 이름으로 배치하십시오.",
   "LanguageModelURL": "언어 모델은 아래 URL에서 선택하십시오.",
   "LanguageChoice": "언어 선택",
   "StyleBeatVITS2ServerURL": "서버 URL",

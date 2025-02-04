@@ -84,7 +84,7 @@
   "IncludeTimestampInUserMessage": "Include timestamp in user message",
   "IncludeTimestampInUserMessageInfo": "By including timestamps in user messages, the AI can generate responses while considering the time.\nPlease include the following text in your system prompt:\n\n\"User input may include [timestamp]. This represents the UTC time at the moment of the request, so please generate responses considering this timestamp.\"",
   "GoogleTTSInfo": "Using Google Cloud Text-to-Speech. It supports multiple languages.",
-  "AuthFileInstruction": "Obtain the authentication JSON file below and place it in the root folder of the repository as 'credentials.json'.",
+  "AuthFileInstruction": "API key or authentication file is required. Get it from the URL below and place it in the root folder of the repository if it is a JSON file.",
   "LanguageModelURL": "Select the language model from the URL below.",
   "LanguageChoice": "Language Choice",
   "StyleBeatVITS2ServerURL": "Server URL",
