@@ -98,6 +98,8 @@ export const speakMessageHandler = async (receivedMessage: string) => {
     let aiText = emotion ? `${emotion} ${sentence}` : sentence
     logText = logText + ' ' + aiText
 
+    homeStore.setState({ isSpeaking: true })
+
     speakCharacter(
       {
         message: sentence,
@@ -168,6 +170,10 @@ export const processAIResponse = async (
   let isCodeBlock = false
   let codeBlockText = ''
   const sentences = new Array<string>() // AssistantMessage欄で使用
+
+  // AIの回答開始時にisSpeakingをtrueに設定
+  homeStore.setState({ isSpeaking: true })
+
   try {
     while (true) {
       const { done, value } = await reader.read()
@@ -523,6 +529,7 @@ export const handleReceiveTextFromWsFn =
       if (role === 'assistant' && text !== '') {
         let aiText = `[${emotion}] ${text}`
         try {
+          homeStore.setState({ isSpeaking: true })
           // 文ごとに音声を生成 & 再生、返答を表示
           speakCharacter(
             {
@@ -590,6 +597,7 @@ export const handleReceiveTextFromRtFn =
       if (type?.includes('response.audio') && buffer !== undefined) {
         console.log('response.audio:')
         try {
+          homeStore.setState({ isSpeaking: true })
           speakCharacter(
             {
               emotion: 'neutral',

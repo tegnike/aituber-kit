@@ -30,6 +30,7 @@ export interface TransientState {
   setIsCubismCoreLoaded: (loaded: boolean) => void
   isLive2dLoaded: boolean
   setIsLive2dLoaded: (loaded: boolean) => void
+  isSpeaking: boolean
 }
 
 export type HomeState = PersistedState & TransientState
@@ -70,6 +71,7 @@ const homeStore = create<HomeState>()(
         set(() => ({ isCubismCoreLoaded: loaded })),
       isLive2dLoaded: false,
       setIsLive2dLoaded: (loaded) => set(() => ({ isLive2dLoaded: loaded })),
+      isSpeaking: false,
     }),
     {
       name: 'aitube-kit-home',

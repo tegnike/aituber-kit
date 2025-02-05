@@ -14,6 +14,8 @@ type Props = {
   ) => void
   onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClickStopButton: (event: React.MouseEvent<HTMLButtonElement>) => void
+  isSpeaking: boolean
 }
 
 export const MessageInput = ({
@@ -22,6 +24,8 @@ export const MessageInput = ({
   onChangeUserMessage,
   onClickMicButton,
   onClickSendButton,
+  onClickStopButton,
+  isSpeaking,
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
   const slidePlaying = slideStore((s) => s.isPlaying)
@@ -136,13 +140,22 @@ export const MessageInput = ({
               style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}
             ></textarea>
 
-            <IconButton
-              iconName="24/Send"
-              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-              isProcessing={chatProcessing}
-              disabled={chatProcessing || !userMessage || realtimeAPIMode}
-              onClick={onClickSendButton}
-            />
+            {isSpeaking ? (
+              <IconButton
+                iconName="24/Pause"
+                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+                onClick={onClickStopButton}
+                isProcessing={false}
+              />
+            ) : (
+              <IconButton
+                iconName="24/Send"
+                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+                isProcessing={chatProcessing}
+                disabled={chatProcessing || !userMessage || realtimeAPIMode}
+                onClick={onClickSendButton}
+              />
+            )}
           </div>
         </div>
       </div>

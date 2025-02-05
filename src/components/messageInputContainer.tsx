@@ -5,6 +5,9 @@ import { VoiceLanguage } from '@/features/constants/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
+import { SpeakQueue } from '@/features/messages/speakQueue'
+import { Live2DHandler } from '@/features/messages/live2dHandler'
+import homeStore from '@/features/stores/home'
 
 const NO_SPEECH_TIMEOUT = 3000
 
@@ -28,6 +31,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
+  const isSpeaking = homeStore((s) => s.isSpeaking)
 
   const { t } = useTranslation()
 
@@ -328,6 +332,11 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     []
   )
 
+  // 音声停止
+  const handleStopSpeaking = useCallback(() => {
+    homeStore.setState({ isSpeaking: false })
+  }, [])
+
   return (
     <MessageInput
       userMessage={userMessage}
@@ -335,6 +344,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       onChangeUserMessage={handleInputChange}
       onClickMicButton={toggleListening}
       onClickSendButton={handleSendMessage}
+      onClickStopButton={handleStopSpeaking}
+      isSpeaking={isSpeaking}
     />
   )
 }
