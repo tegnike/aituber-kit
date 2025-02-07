@@ -26,7 +26,7 @@ export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 export const googleSearchGroundingModels = [
   'gemini-1.5-flash-latest',
   'gemini-1.5-pro-latest',
-  'gemini-2.0-flash-exp',
+  'gemini-2.0-flash-001',
 ] as const
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]

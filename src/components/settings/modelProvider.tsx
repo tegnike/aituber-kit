@@ -479,23 +479,20 @@ const ModelProvider = () => {
                     }
                   }}
                 >
+                  <option value="gemini-2.0-flash-001">
+                    gemini-2.0-flash-001
+                  </option>
+                  <option value="gemini-2.0-flash-lite-preview-02-05">
+                    gemini-2.0-flash-lite-preview-02-05
+                  </option>
                   <option value="gemini-1.5-flash-latest">
                     gemini-1.5-flash-latest
                   </option>
+                  <option value="gemini-1.5-flash-8b-latest">
+                    gemini-1.5-flash-8b-latest
+                  </option>
                   <option value="gemini-1.5-pro-latest">
                     gemini-1.5-pro-latest
-                  </option>
-                  <option value="gemini-1.5-flash-exp-0827">
-                    gemini-1.5-flash-exp-0827
-                  </option>
-                  <option value="gemini-1.5-pro-exp-0827">
-                    gemini-1.5-pro-exp-0827
-                  </option>
-                  <option value="gemini-1.5-flash-8b-exp-0827">
-                    gemini-1.5-flash-8b-exp-0827
-                  </option>
-                  <option value="gemini-2.0-flash-exp">
-                    gemini-2.0-flash-exp
                   </option>
                 </select>
               </div>
