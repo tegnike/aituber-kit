@@ -350,6 +350,17 @@ From version v2.0.0, this project adopts a **custom license**.
   - A separate commercial license is required for commercial use.
   - For details, please check [About License](./license_en.md).
 
+## Priority Implementation
+
+This project accepts paid priority implementation requests.
+
+- You can prioritize the implementation of features requested by companies or individuals.
+- The implemented features will be part of this OSS project.
+- The fee will be estimated individually depending on the complexity and time required for implementation.
+- This priority implementation is a separate initiative from the commercial license. If you want to use the implemented features commercially, you need to obtain a separate commercial license.
+
+For details, please contact support@aituberkit.com.
+
 ### Others
 
 - [Logo Usage Agreement](./logo_licence_en.md)
