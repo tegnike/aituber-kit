@@ -15,6 +15,9 @@ export const messageSelectors = {
   // 音声メッセージのみを取得
   getAudioMessages: (messages: Message[]): Message[] => {
     return messages.filter((message) => {
+      if (message.role === 'system') {
+        return message.content
+      }
       // userの場合：contentがstring型のメッセージのみを許可
       if (message.role === 'user') {
         return typeof message.content === 'string'
