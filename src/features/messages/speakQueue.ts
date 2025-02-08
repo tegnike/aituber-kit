@@ -14,7 +14,7 @@ export class SpeakQueue {
   private static readonly QUEUE_CHECK_DELAY = 1500
   private queue: SpeakTask[] = []
   private isProcessing = false
-  private currentAudioContext: AudioContext | null = null
+  private currentSessionId: string | null = null
 
   async addTask(task: SpeakTask) {
     this.queue.push(task)
@@ -32,6 +32,7 @@ export class SpeakQueue {
       const currentState = homeStore.getState()
       if (!currentState.isSpeaking) {
         this.clearQueue()
+        homeStore.setState({ isSpeaking: false })
         break
       }
 
@@ -87,6 +88,13 @@ export class SpeakQueue {
 
   clearQueue() {
     this.queue = []
-    homeStore.setState({ isSpeaking: false })
+  }
+
+  checkSessionId(sessionId: string) {
+    if (this.currentSessionId !== sessionId) {
+      this.currentSessionId = sessionId
+      this.clearQueue()
+      homeStore.setState({ isSpeaking: true })
+    }
   }
 }

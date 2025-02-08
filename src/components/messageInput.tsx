@@ -140,22 +140,20 @@ export const MessageInput = ({
               style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}
             ></textarea>
 
-            {isSpeaking ? (
-              <IconButton
-                iconName="24/Pause"
-                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-                onClick={onClickStopButton}
-                isProcessing={false}
-              />
-            ) : (
-              <IconButton
-                iconName="24/Send"
-                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-                isProcessing={chatProcessing}
-                disabled={chatProcessing || !userMessage || realtimeAPIMode}
-                onClick={onClickSendButton}
-              />
-            )}
+            <IconButton
+              iconName="24/Send"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+              isProcessing={chatProcessing}
+              disabled={chatProcessing || !userMessage || realtimeAPIMode}
+              onClick={onClickSendButton}
+            />
+
+            <IconButton
+              iconName="stop"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+              onClick={onClickStopButton}
+              isProcessing={false}
+            />
           </div>
         </div>
       </div>

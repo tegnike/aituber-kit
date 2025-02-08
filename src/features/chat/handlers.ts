@@ -11,11 +11,17 @@ import webSocketStore from '@/features/stores/websocketStore'
 import i18next from 'i18next'
 import toastStore from '@/features/stores/toast'
 
+// セッションIDを生成する関数
+const generateSessionId = () => {
+  return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+}
+
 /**
  * 受け取ったメッセージを処理し、AIの応答を生成して発話させる
  * @param receivedMessage 処理する文字列
  */
 export const speakMessageHandler = async (receivedMessage: string) => {
+  const sessionId = generateSessionId()
   const hs = homeStore.getState()
   const currentSlideMessages: string[] = []
 
@@ -98,9 +104,8 @@ export const speakMessageHandler = async (receivedMessage: string) => {
     let aiText = emotion ? `${emotion} ${sentence}` : sentence
     logText = logText + ' ' + aiText
 
-    homeStore.setState({ isSpeaking: true })
-
     speakCharacter(
+      sessionId,
       {
         message: sentence,
         emotion: emotion.includes('[')
@@ -145,6 +150,7 @@ export const processAIResponse = async (
   currentChatLog: Message[],
   messages: Message[]
 ) => {
+  const sessionId = generateSessionId()
   homeStore.setState({ chatProcessing: true })
   let stream
 
@@ -170,9 +176,6 @@ export const processAIResponse = async (
   let isCodeBlock = false
   let codeBlockText = ''
   const sentences = new Array<string>() // AssistantMessage欄で使用
-
-  // AIの回答開始時にisSpeakingをtrueに設定
-  homeStore.setState({ isSpeaking: true })
 
   try {
     while (true) {
@@ -260,6 +263,7 @@ export const processAIResponse = async (
           const currentAssistantMessage = sentences.join(' ')
 
           speakCharacter(
+            sessionId,
             {
               message: sentence,
               emotion: emotion.includes('[')
@@ -301,6 +305,7 @@ export const processAIResponse = async (
         const currentAssistantMessage = sentences.join(' ')
 
         speakCharacter(
+          sessionId,
           {
             message: receivedMessage,
             emotion: emotion.includes('[')
@@ -350,6 +355,7 @@ export const processAIResponse = async (
  * Youtubeでチャット取得した場合もこの関数を使用する
  */
 export const handleSendChatFn = () => async (text: string) => {
+  const sessionId = generateSessionId()
   const newMessage = text
   const timestamp = new Date().toISOString()
 
@@ -491,6 +497,7 @@ export const handleReceiveTextFromWsFn =
     emotion: EmotionType = 'neutral',
     type?: string
   ) => {
+    const sessionId = generateSessionId()
     if (text === null || role === undefined) return
 
     const ss = settingsStore.getState()
@@ -529,9 +536,9 @@ export const handleReceiveTextFromWsFn =
       if (role === 'assistant' && text !== '') {
         let aiText = `[${emotion}] ${text}`
         try {
-          homeStore.setState({ isSpeaking: true })
           // 文ごとに音声を生成 & 再生、返答を表示
           speakCharacter(
+            sessionId,
             {
               message: text,
               emotion: emotion,
@@ -575,6 +582,7 @@ export const handleReceiveTextFromWsFn =
 export const handleReceiveTextFromRtFn =
   () =>
   async (text?: string, role?: string, type?: string, buffer?: ArrayBuffer) => {
+    const sessionId = generateSessionId()
     if ((!text && !buffer) || role === undefined) return
 
     const ss = settingsStore.getState()
@@ -597,8 +605,8 @@ export const handleReceiveTextFromRtFn =
       if (type?.includes('response.audio') && buffer !== undefined) {
         console.log('response.audio:')
         try {
-          homeStore.setState({ isSpeaking: true })
           speakCharacter(
+            sessionId,
             {
               emotion: 'neutral',
               message: '',
