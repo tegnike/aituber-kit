@@ -5,8 +5,6 @@ import { VoiceLanguage } from '@/features/constants/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
-import { SpeakQueue } from '@/features/messages/speakQueue'
-import { Live2DHandler } from '@/features/messages/live2dHandler'
 import homeStore from '@/features/stores/home'
 
 const NO_SPEECH_TIMEOUT = 3000
