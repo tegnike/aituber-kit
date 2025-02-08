@@ -126,4 +126,30 @@ export const messageSelectors = {
             : message.content[0].text,
     }))
   },
+
+  // APIで保存する際のメッセージ処理
+  sanitizeMessageForStorage: (message: Message): any => {
+    if (message.audio !== undefined) {
+      return {
+        ...message,
+        audio: '[audio data omitted]',
+      }
+    }
+
+    if (message.content && Array.isArray(message.content)) {
+      return {
+        ...message,
+        content: message.content.map((content: any) => {
+          if (content.type === 'image') {
+            return {
+              type: 'image',
+              image: '[image data omitted]',
+            }
+          }
+          return content
+        }),
+      }
+    }
+    return message
+  },
 }
