@@ -1,171 +1,149 @@
-import { useState, useCallback } from "react";
-import { Link } from "./link";
-import { IconButton } from "./iconButton";
+import i18n from 'i18next'
+import { useEffect, useState } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
 
-type Props = {
-  openAiKey: string;
-  koeiroMapKey: string;
-  onChangeAiKey: (openAiKey: string) => void;
-  onChangeKoeiromapKey: (koeiromapKey: string) => void;
-};
-export const Introduction = ({
-  openAiKey,
-  koeiroMapKey,
-  onChangeAiKey,
-  onChangeKoeiromapKey,
-}: Props) => {
-  const [opened, setOpened] = useState(true);
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { IconButton } from './iconButton'
+import { Link } from './link'
+import { isLanguageSupported } from '@/features/constants/settings'
 
-  const handleAiKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeAiKey(event.target.value);
-    },
-    [onChangeAiKey]
-  );
+export const Introduction = () => {
+  const showIntroduction = homeStore((s) => s.showIntroduction)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
 
-  const handleKoeiromapKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeKoeiromapKey(event.target.value);
-    },
-    [onChangeKoeiromapKey]
-  );
+  const [displayIntroduction, setDisplayIntroduction] = useState(false)
+  const [opened, setOpened] = useState(true)
 
-  return opened ? (
+  const { t } = useTranslation()
+
+  useEffect(() => {
+    setDisplayIntroduction(homeStore.getState().showIntroduction)
+  }, [showIntroduction])
+
+  const updateLanguage = () => {
+    console.log('i18n.language', i18n.language)
+
+    let languageCode = i18n.language
+
+    settingsStore.setState({
+      selectLanguage: isLanguageSupported(languageCode) ? languageCode : 'ja',
+    })
+  }
+
+  return displayIntroduction && opened ? (
     <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
       <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
-      <IconButton
+        <IconButton
           iconName="24/Close"
           isProcessing={false}
-          onClick={() => setOpened(false)}
+          onClick={() => {
+            setOpened(false)
+            updateLanguage()
+          }}
           className="absolute top-8 right-8 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
         ></IconButton>
         <div className="my-24">
           <div className="my-8 font-bold typography-20 text-secondary ">
-            このアプリケーションについて
+            {t('AboutThisApplication')}
           </div>
           <div>
-            Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。<br />
-            設定は左上のメニューボタンから変更できます。
-          </div>
-        </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary ">
-            About This Application
-          </div>
-          <div>
-            Enjoy conversations with a 3D character right in your web browser, using microphone or text input and voice synthesis. You can also change the character (VRM), adjust its personality, and modify its voice.<br />
-            Settings can be changed from the menu button in the top left.
+            <Trans i18nKey="AboutThisApplicationDescription2" />
           </div>
         </div>
         <div className="my-24">
           <div className="my-8 font-bold typography-20 text-secondary">
-            技術紹介
+            {t('TechnologyIntroduction')}
           </div>
           <div>
-            3Dモデルの表示や操作には
-            <Link
-              url={"https://github.com/pixiv/three-vrm"}
-              label={"@pixiv/three-vrm"}
+            <Trans
+              i18nKey="TechnologyIntroductionDescription1"
+              components={{ b: <b /> }}
             />
-            、 会話文生成には
             <Link
-              url={
-                "https://openai.com/blog/introducing-chatgpt-and-whisper-apis"
-              }
-              label={"ChatGPT API"}
+              url={'https://github.com/pixiv/ChatVRM'}
+              label={t('TechnologyIntroductionLink1')}
             />
-            、 音声合成には
-            <Link url={"https://koemotion.rinna.co.jp/"} label={"Koemotion"} />
-            の
-            <Link
-              url={
-                "https://developers.rinna.co.jp/product/#product=koeiromap-free"
-              }
-              label={"Koeiromap API"}
-            />
-            を使用しています。 詳細はこちらの
-            <Link
-              url={"https://inside.pixiv.blog/2023/04/28/160000"}
-              label={"技術解説記事"}
-            />
-            をご覧ください。
+            {t('TechnologyIntroductionDescription2')}
           </div>
           <div className="my-16">
-            このデモはGitHubでソースコードを公開しています。自由に変更や改変をお試しください！
-            <br />
-            リポジトリ：
+            {t('TechnologyIntroductionDescription3')}
             <Link
-              url={"https://github.com/tegnike/nike-ChatVRM"}
-              label={"https://github.com/tegnike/nike-ChatVRM"}
+              url={'https://github.com/pixiv/three-vrm'}
+              label={'@pixiv/three-vrm'}
+            />
+            {t('TechnologyIntroductionDescription4')}
+            <Link
+              url={
+                'https://openai.com/blog/introducing-chatgpt-and-whisper-apis'
+              }
+              label={'OpenAI API'}
+            />
+            {t('TechnologyIntroductionDescription5')}
+            <Link
+              url={
+                'https://developers.rinna.co.jp/product/#product=koeiromap-free'
+              }
+              label={'Koemotion'}
+            />
+            {t('TechnologyIntroductionDescription6')}
+            <Link
+              url={'https://note.com/nike_cha_n/n/ne98acb25e00f'}
+              label={t('TechnologyIntroductionLink2')}
+            />
+            {t('TechnologyIntroductionDescription7')}
+          </div>
+          <div className="my-16">
+            {t('SourceCodeDescription1')}
+            <br />
+            {t('RepositoryURL')}
+            <span> </span>
+            <Link
+              url={'https://github.com/tegnike/aituber-kit'}
+              label={'https://github.com/tegnike/aituber-kit'}
             />
           </div>
+          <div className="my-16">{t('SourceCodeDescription2')}</div>
         </div>
 
         <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            利用上の注意
-          </div>
-          <div>
-            差別的または暴力的な発言、特定の人物を貶めるような発言を、意図的に誘導しないでください。また、VRMモデルを使ってキャラクターを差し替える際はモデルの利用条件に従ってください。
-          </div>
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={showIntroduction}
+              onChange={(e) => {
+                homeStore.setState({
+                  showIntroduction: e.target.checked,
+                })
+                updateLanguage()
+              }}
+              className="mr-8"
+            />
+            <span>{t('DontShowIntroductionNextTime')}</span>
+          </label>
         </div>
 
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            Koeiromap APIキー
-          </div>
-          <input
-            type="text"
-            placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            value={koeiroMapKey}
-            onChange={handleKoeiromapKeyChange}
-            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-          ></input>
-          <div>
-            APIキーはrinna Developersから発行してください。
-            <Link
-              url="https://developers.rinna.co.jp/product/#product=koeiromap-free"
-              label="詳細はこちら"
-            />
-          </div>
-        </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            OpenAI APIキー
-          </div>
-          <input
-            type="text"
-            placeholder="sk-..."
-            value={openAiKey}
-            onChange={handleAiKeyChange}
-            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-          ></input>
-          <div>
-            APIキーは
-            <Link
-              url="https://platform.openai.com/account/api-keys"
-              label="OpenAIのサイト"
-            />
-            で取得できます。取得したAPIキーをフォームに入力してください。
-          </div>
-          <div className="my-16">
-            ChatGPT
-            APIはブラウザから直接アクセスしています。また、APIキーや会話内容はピクシブのサーバには保存されません。
-            <br />
-            ※利用しているモデルはChatGPT API (GPT-3.5)です。
-          </div>
-        </div>
         <div className="my-24">
           <button
             onClick={() => {
-              setOpened(false);
+              setOpened(false)
+              updateLanguage()
             }}
             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
           >
-           閉じる（CLOSE）
+            {t('Close')}
           </button>
         </div>
+
+        {selectLanguage === 'ja' && (
+          <div className="my-24">
+            <p>
+              You can select the language from the settings. Japanese, English,
+              Traditional Chinese and Korean are available.
+            </p>
+          </div>
+        )}
       </div>
     </div>
-  ) : null;
-};
+  ) : null
+}

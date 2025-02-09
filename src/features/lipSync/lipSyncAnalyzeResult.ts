@@ -1,3 +1,3 @@
 export interface LipSyncAnalyzeResult {
-  volume: number;
+  volume: number
 }

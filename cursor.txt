@@ -1,0 +1,19 @@
+## 新しいLLMサービスを追加する
+- src/features/chat/handlers.ts
+- src/components/settings/modelProvider.tsx
+- src/features/stores/settings.ts
+- locales/ja/translation.json
+- locales/ko/translation.json
+- locales/zh/translation.json
+- locales/en/translation.json
+- src/features/chat/vercelAIChat.ts
+- src/pages/api/aiChat.ts
+- src/features/chat/aiChatFactory.ts
+- .env.example
+
+## 入力フォームからLLMを介して回答を得るまで
+src/components/form.tsx
+src/features/chat/handlers.ts
+src/features/chat/vercelAIChat.ts
+src/features/chat/aiChatFactory.ts
+src/pages/api/aiChat.ts

@@ -1,0 +1,131 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "nike01.moc3",
+    "Textures": ["nike01.8192/texture_00.png"],
+    "Physics": "nike01.physics3.json",
+    "DisplayInfo": "nike01.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "Neutral",
+        "File": "expressions/Neutral.exp3.json"
+      },
+      {
+        "Name": "Happy",
+        "File": "expressions/Happy.exp3.json"
+      },
+      {
+        "Name": "Happy2",
+        "File": "expressions/Happy2.exp3.json"
+      },
+      {
+        "Name": "Sad",
+        "File": "expressions/Sad.exp3.json"
+      },
+      {
+        "Name": "Sad2",
+        "File": "expressions/Sad2.exp3.json"
+      },
+      {
+        "Name": "Troubled",
+        "File": "expressions/Troubled.exp3.json"
+      },
+      {
+        "Name": "Angry",
+        "File": "expressions/Angry.exp3.json"
+      },
+      {
+        "Name": "Focus",
+        "File": "expressions/Focus.exp3.json"
+      },
+      {
+        "Name": "Sleep",
+        "File": "expressions/Sleep.exp3.json"
+      },
+      {
+        "Name": "Zitome",
+        "File": "expressions/Zitome.exp3.json"
+      },
+      {
+        "Name": "Think",
+        "File": "expressions/Think.exp3.json"
+      },
+      {
+        "Name": "Think2",
+        "File": "expressions/Think2.exp3.json"
+      },
+      {
+        "Name": "NoSmile",
+        "File": "expressions/NoSmile.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Idle": [
+        {
+          "File": "motions/Motion2.motion3.json"
+        },
+        {
+          "File": "motions/Motion4.motion3.json"
+        },
+        {
+          "File": "motions/Motion5.motion3.json"
+        },
+        {
+          "File": "motions/Motion8.motion3.json"
+        }
+      ],
+      "Neutral": [
+        {
+          "File": "motions/Motion1.motion3.json"
+        },
+        {
+          "File": "motions/Motion3.motion3.json"
+        }
+      ],
+      "Happy": [
+        {
+          "File": "motions/Motion1.motion3.json"
+        },
+        {
+          "File": "motions/Motion3.motion3.json"
+        }
+      ],
+      "Sad": [
+        {
+          "File": "motions/Motion1.motion3.json"
+        },
+        {
+          "File": "motions/Motion9.motion3.json"
+        }
+      ],
+      "Angry": [
+        {
+          "File": "motions/Motion7.motion3.json"
+        },
+        {
+          "File": "motions/Motion9.motion3.json"
+        }
+      ],
+      "Relaxed": [
+        {
+          "File": "motions/Motion1.motion3.json"
+        },
+        {
+          "File": "motions/Motion3.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": ["ParamMouthOpenY"]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": ["ParamEyeLOpen", "ParamEyeROpen"]
+    }
+  ]
+}

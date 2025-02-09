@@ -1,52 +1,57 @@
-import * as THREE from "three";
-import { VRM, VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { VRMAnimation } from "../../lib/VRMAnimation/VRMAnimation";
-import { VRMLookAtSmootherLoaderPlugin } from "@/lib/VRMLookAtSmootherLoaderPlugin/VRMLookAtSmootherLoaderPlugin";
-import { LipSync } from "../lipSync/lipSync";
-import { EmoteController } from "../emoteController/emoteController";
-import { Screenplay } from "../messages/messages";
+import * as THREE from 'three'
+import {
+  VRM,
+  VRMExpressionPresetName,
+  VRMLoaderPlugin,
+  VRMUtils,
+} from '@pixiv/three-vrm'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { VRMAnimation } from '../../lib/VRMAnimation/VRMAnimation'
+import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlugin/VRMLookAtSmootherLoaderPlugin'
+import { LipSync } from '../lipSync/lipSync'
+import { EmoteController } from '../emoteController/emoteController'
+import { Talk } from '../messages/messages'
 
 /**
  * 3Dキャラクターを管理するクラス
  */
 export class Model {
-  public vrm?: VRM | null;
-  public mixer?: THREE.AnimationMixer;
-  public emoteController?: EmoteController;
+  public vrm?: VRM | null
+  public mixer?: THREE.AnimationMixer
+  public emoteController?: EmoteController
 
-  private _lookAtTargetParent: THREE.Object3D;
-  private _lipSync?: LipSync;
+  private _lookAtTargetParent: THREE.Object3D
+  private _lipSync?: LipSync
 
   constructor(lookAtTargetParent: THREE.Object3D) {
-    this._lookAtTargetParent = lookAtTargetParent;
-    this._lipSync = new LipSync(new AudioContext());
+    this._lookAtTargetParent = lookAtTargetParent
+    this._lipSync = new LipSync(new AudioContext())
   }
 
   public async loadVRM(url: string): Promise<void> {
-    const loader = new GLTFLoader();
+    const loader = new GLTFLoader()
     loader.register(
       (parser) =>
         new VRMLoaderPlugin(parser, {
           lookAtPlugin: new VRMLookAtSmootherLoaderPlugin(parser),
         })
-    );
+    )
 
-    const gltf = await loader.loadAsync(url);
+    const gltf = await loader.loadAsync(url)
 
-    const vrm = (this.vrm = gltf.userData.vrm);
-    vrm.scene.name = "VRMRoot";
+    const vrm = (this.vrm = gltf.userData.vrm)
+    vrm.scene.name = 'VRMRoot'
 
-    VRMUtils.rotateVRM0(vrm);
-    this.mixer = new THREE.AnimationMixer(vrm.scene);
+    VRMUtils.rotateVRM0(vrm)
+    this.mixer = new THREE.AnimationMixer(vrm.scene)
 
-    this.emoteController = new EmoteController(vrm, this._lookAtTargetParent);
+    this.emoteController = new EmoteController(vrm, this._lookAtTargetParent)
   }
 
   public unLoadVrm() {
     if (this.vrm) {
-      VRMUtils.deepDispose(this.vrm.scene);
-      this.vrm = null;
+      VRMUtils.deepDispose(this.vrm.scene)
+      this.vrm = null
     }
   }
 
@@ -57,47 +62,62 @@ export class Model {
    */
   public async loadAnimation(vrmAnimation: VRMAnimation): Promise<void> {
     if (this.vrm == null || this.mixer == null) {
-      throw new Error("You have to load VRM first");
+      throw new Error('You have to load VRM first')
     }
 
-    this.mixer = new THREE.AnimationMixer(this.vrm.scene); // reset animation mixer, otherwise funny merge
+    this.mixer = new THREE.AnimationMixer(this.vrm.scene) // reset animation mixer, otherwise funny merge
 
-    const clip = vrmAnimation.createAnimationClip(this.vrm);
-    const action = this.mixer.clipAction(clip);
-    action.play();
+    const clip = vrmAnimation.createAnimationClip(this.vrm)
+    const action = this.mixer.clipAction(clip)
+    action.play()
   }
 
   public async loadFbxAnimation(clip: THREE.AnimationClip): Promise<void> {
     if (this.vrm == null || this.mixer == null) {
-      throw new Error("You have to load VRM first");
+      throw new Error('You have to load VRM first')
     }
 
-    this.mixer = new THREE.AnimationMixer(this.vrm.scene); // reset animation mixer, otherwise funny merge
+    this.mixer = new THREE.AnimationMixer(this.vrm.scene) // reset animation mixer, otherwise funny merge
 
-    const action = this.mixer.clipAction(clip);
-    action.play();
+    const action = this.mixer.clipAction(clip)
+    action.play()
   }
 
   /**
    * 音声を再生し、リップシンクを行う
    */
-  public async speak(buffer: ArrayBuffer, screenplay: Screenplay) {
-    this.emoteController?.playEmotion(screenplay.expression);
+  public async speak(
+    buffer: ArrayBuffer,
+    talk: Talk,
+    isNeedDecode: boolean = true
+  ) {
+    this.emoteController?.playEmotion(talk.emotion)
     await new Promise((resolve) => {
-      this._lipSync?.playFromArrayBuffer(buffer, () => {
-        resolve(true);
-      });
-    });
+      this._lipSync?.playFromArrayBuffer(
+        buffer,
+        () => {
+          resolve(true)
+        },
+        isNeedDecode
+      )
+    })
+  }
+
+  /**
+   * 感情表現を再生する
+   */
+  public async playEmotion(preset: VRMExpressionPresetName) {
+    this.emoteController?.playEmotion(preset)
   }
 
   public update(delta: number): void {
     if (this._lipSync) {
-      const { volume } = this._lipSync.update();
-      this.emoteController?.lipSync("aa", volume);
+      const { volume } = this._lipSync.update()
+      this.emoteController?.lipSync('aa', volume)
     }
 
-    this.emoteController?.update(delta);
-    this.mixer?.update(delta);
-    this.vrm?.update(delta);
+    this.emoteController?.update(delta)
+    this.mixer?.update(delta)
+    this.vrm?.update(delta)
   }
 }

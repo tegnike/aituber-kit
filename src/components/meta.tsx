@@ -1,10 +1,10 @@
-import { buildUrl } from "@/utils/buildUrl";
-import Head from "next/head";
+import { buildUrl } from '@/utils/buildUrl'
+import Head from 'next/head'
 export const Meta = () => {
-  const title = "ChatVRM";
+  const title = 'AITuberKit'
   const description =
-    "Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。";
-  const imageUrl = "https://pixiv.github.io/ChatVRM/ogp.png";
+    'Webブラウザだけで誰でも簡単にAIキャラと会話したり、Youtubeで配信したりできます。'
+  const imageUrl = '/ogp.png'
   return (
     <Head>
       <title>{title}</title>
@@ -17,5 +17,5 @@ export const Meta = () => {
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />
     </Head>
-  );
-};
+  )
+}

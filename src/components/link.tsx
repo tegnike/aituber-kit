@@ -8,5 +8,5 @@ export const Link = ({ url, label }: { url: string; label: string }) => {
     >
       {label}
     </a>
-  );
-};
+  )
+}

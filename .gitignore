@@ -25,7 +25,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
+# env files
+.env
 .env*.local
 
 # vercel
@@ -36,3 +37,18 @@ yarn-error.log*
 next-env.d.ts
 
 credentials.json
+
+# asdf
+.tool-versions
+
+certificates
+
+/public/slides/*
+!/public/slides/demo/
+
+/logs/*
+
+public/live2d/*
+!public/live2d/nike01
+public/scripts/*
+!public/scripts/.gitkeep
