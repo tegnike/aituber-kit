@@ -10,6 +10,7 @@ import { messageSelectors } from '../messages/messageSelectors'
 import webSocketStore from '@/features/stores/websocketStore'
 import i18next from 'i18next'
 import toastStore from '@/features/stores/toast'
+import { getSystemPrompt } from '../constants/systemPromptConstants'
 
 /**
  * 受け取ったメッセージを処理し、AIの応答を生成して発話させる
@@ -393,7 +394,12 @@ export const handleSendChatFn = () => async (text: string) => {
       })
     }
   } else {
-    let systemPrompt = ss.systemPrompt
+    // Promptの設定を確認
+    let prompt = ss.promptType
+    let systemPrompt = getSystemPrompt(ss.promptType)
+    console.log(ss.promptType,systemPrompt)
+    
+    //let systemPrompt = ss.systemPrompt
     if (ss.slideMode) {
       if (sls.isPlaying) {
         return
