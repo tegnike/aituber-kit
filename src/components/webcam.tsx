@@ -4,6 +4,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { IconButton } from './iconButton'
 
+
 export const Webcam = () => {
   const triggerShutter = homeStore((s) => s.triggerShutter)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
@@ -55,6 +56,7 @@ export const Webcam = () => {
     }
   }, [useVideoAsBackground])
 
+  // Modify initializeCamera to connect with CAMMICApp
   const initializeCamera = useCallback(async () => {
     if (!navigator.mediaDevices || !selectedDevice) return
     try {
@@ -64,6 +66,10 @@ export const Webcam = () => {
       })
       if (videoRef.current) {
         videoRef.current.srcObject = stream
+        // Connect stream to CAMMICApp if initialized
+        if (cammicRef.current) {
+          cammicRef.current.setVideoStream(stream);
+        }
       }
       if (backgroundVideoRef.current && useVideoAsBackground) {
         backgroundVideoRef.current.srcObject = stream
@@ -160,6 +166,7 @@ export const Webcam = () => {
           </div>
         </div>
       </div>
+      <MessageInputContainer initialTranscript={currentTranscript} />
     </>
   )
 }

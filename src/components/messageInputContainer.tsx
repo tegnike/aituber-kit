@@ -5,6 +5,7 @@ import { VoiceLanguage } from '@/features/constants/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
+import CAMMICApp from './cammic';
 
 const NO_SPEECH_TIMEOUT = 3000
 
@@ -15,8 +16,7 @@ type Props = {
   onChatProcessStart: (text: string) => void
 }
 
-export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
-  const realtimeAPIMode = settingsStore.getState().realtimeAPIMode
+export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const realtimeAPIMode = settingsStore.getState().realtimeAPIMode
   const [userMessage, setUserMessage] = useState('')
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
@@ -28,6 +28,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
+  const cammicRef = useRef<CAMMICApp | null>(null)
+  const [currentTranscript, setCurrentTranscript] = useState('');
 
   const { t } = useTranslation()
 
@@ -70,6 +72,67 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         return 'ja-JP'
     }
   }
+
+  // Add initialization effect for CAMMICApp
+  useEffect(() => {
+    const initializeCammic = async () => {
+      if (!cammicRef.current) {
+        try {
+          let prev_length = currentTranscript.length;
+          cammicRef.current = new CAMMICApp();
+          
+          // Set up transcript callback before starting
+          cammicRef.current.setTranscriptCallback((transcript) => {
+            //console.log('Received transcript:', transcript);
+            // 現在のtranscriptを更新
+            setCurrentTranscript(transcript);
+            // ユーザーメッセージにも送信
+            setUserMessage(transcript);
+            // [暫定] 過去１秒以内のメッセージ量に変化がなくなったら送信処理を実行
+            if (prev_length > 0 && prev_length !== transcript.length) {
+              setTimeout(() => {
+                if (prev_length === transcript.length) {
+                  handleSendMessage();
+                  if (cammicRef.current) {
+                    cammicRef.current.stop();
+                    //1秒後に再開
+                    setTimeout(() => {
+                      cammicRef.current.start();
+                    }, 1000);
+                  }
+                }
+              }, 1000);
+              prev_length = transcript.length;
+            }
+          });
+
+          // Attempt to start with proper error handling
+          await cammicRef.current.start();
+          console.log("CAMMICApp initialized successfully");
+        } catch (error) {
+          if (error instanceof Error) {
+            if (error.message.includes('permission denied')) {
+              console.error("Microphone access was denied by the user");
+              // Potentially show a user-friendly message here
+            } else {
+              console.error("Failed to initialize CAMMICApp:", error.message);
+            }
+          }
+          // Clean up the failed instance
+          cammicRef.current = null;
+        }
+      }
+    };
+
+    initializeCammic();
+    
+    return () => {
+      if (cammicRef.current) {
+        cammicRef.current.stop();
+        cammicRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const SpeechRecognition =
@@ -314,9 +377,15 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
 
   // メッセージ送信
   const handleSendMessage = useCallback(() => {
-    if (userMessage.trim()) {
+    console.log('handleSendMessage/userMessage:', userMessage)
+    console.log('handleSendMessage/cammictranscript:', currentTranscript)
+    
+    //console.log('this:', this)
+    if (userMessage.trim() && typeof onChatProcessStart === 'function') {
       onChatProcessStart(userMessage)
       setUserMessage('')
+    } else {
+      console.error('onChatProcessStart is not a function or message is empty')
     }
   }, [userMessage, onChatProcessStart])
 
@@ -329,13 +398,15 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   )
 
   return (
-    <MessageInput
-      userMessage={userMessage}
+    <div className="flex gap-2 p-2">
+      <MessageInput
+        userMessage={userMessage}
       isMicRecording={isListening} // useState の値を使用
       onChangeUserMessage={handleInputChange}
-      onClickMicButton={toggleListening}
-      onClickSendButton={handleSendMessage}
-    />
+        onClickMicButton={toggleListening}
+        onClickSendButton={handleSendMessage}
+      />
+    </div>
   )
 }
 

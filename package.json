@@ -43,6 +43,7 @@
     "groq-sdk": "^0.3.3",
     "i18next": "^23.6.0",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.475.0",
     "next": "^14.2.5",
     "ollama-ai-provider": "^0.13.0",
     "openai": "^4.68.4",
