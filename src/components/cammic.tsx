@@ -38,8 +38,21 @@ export class CammicApp {
   }
 
   public start(): void {
-    if (this.recognition) {
-      this.recognition.start();
+    if (!this.recognition) {
+      console.error('Speech recognition is not initialized');
+      return;
+    }
+
+    try {
+      // Check if recognition is already running
+      const isStarted = this.isRecognitionActive();
+      if (!isStarted) {
+        this.recognition.start();
+      } else {
+        console.warn('Speech recognition is already running');
+      }
+    } catch (error) {
+      console.error('Failed to start speech recognition:', error);
     }
   }
 
@@ -47,6 +60,11 @@ export class CammicApp {
     if (this.recognition) {
       this.recognition.stop();
     }
+  }
+
+  // Add this new method to check recognition state
+  private isRecognitionActive(): boolean {
+    return this.recognition?.state === 'activated' || this.recognition?.state === 'listening';
   }
 }
 

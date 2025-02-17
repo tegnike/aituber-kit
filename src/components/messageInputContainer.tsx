@@ -76,6 +76,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const
   // Add initialization effect for cammicApp
   useEffect(() => {
     const initializeCammic = async () => {
+      console.log("Initializing cammicApp");
       if (!cammicRef.current) {
         try {
           let prev_length = currentTranscript.length;
@@ -93,16 +94,16 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const
           
           // Set up transcript callback before starting
           cammicRef.current.setTranscriptCallback((transcript: string) => {
-            //console.log("Transcript received:", transcript);
-            setCurrentTranscript(transcript);
             setUserMessage(transcript);
-            //console.log(prev_length, transcript.length)
+            
             if (prev_length > 0 && prev_length !== transcript.length) {
               setTimeout(() => {
                 if (prev_length === transcript.length) {
-                  handleSendMessage();
                   if (cammicRef.current) {
+                    // Use the transcript directly instead of relying on state
+                    handleSendMessage(transcript);
                     cammicRef.current.stop();
+                    
                     setTimeout(() => {
                       if (cammicRef.current) {
                         cammicRef.current.start();
@@ -384,23 +385,31 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const
     }
   }, [startListening, stopListening])
 
+  
   // メッセージ送信
-  const handleSendMessage = useCallback(() => {
-    console.log('handleSendMessage/userMessage:', userMessage)
-    console.log('handleSendMessage/cammictranscript:', currentTranscript)
+  const handleSendMessage = useCallback((transcriptText?: string) => {
+    console.log('handleSendMessage/userMessage:', userMessage);
+    console.log('handleSendMessage/transcriptText:', transcriptText);
     
-    //console.log('this:', this)
-    if (userMessage.trim() && typeof onChatProcessStart === 'function') {
-      onChatProcessStart(userMessage)
-      setUserMessage('')
+    const messageToSend = transcriptText || userMessage.trim();
+    
+    if (messageToSend && typeof onChatProcessStart === 'function') {
+      console.log('Sending message:', messageToSend);
+      onChatProcessStart(messageToSend);
+      setUserMessage('');
     } else {
-      console.error('onChatProcessStart is not a function or message is empty')
+      console.error('Message is empty or onChatProcessStart is not a function', {
+        userMessage,
+        transcriptText,
+        isFunction: typeof onChatProcessStart === 'function'
+      });
     }
   }, [userMessage, onChatProcessStart])
 
   // メッセージ入力
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      console.log('handleInputChange:', e.target.value)
       setUserMessage(e.target.value)
     },
     []
