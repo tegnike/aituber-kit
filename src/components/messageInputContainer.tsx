@@ -5,7 +5,7 @@ import { VoiceLanguage } from '@/features/constants/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
-import CAMMICApp from './cammic';
+import cammicApp from './cammic';
 
 const NO_SPEECH_TIMEOUT = 3000
 
@@ -28,7 +28,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
-  const cammicRef = useRef<CAMMICApp | null>(null)
+  const cammicRef = useRef<InstanceType<typeof cammicApp> | null>(null);
   const [currentTranscript, setCurrentTranscript] = useState('');
 
   const { t } = useTranslation()
@@ -73,49 +73,58 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const
     }
   }
 
-  // Add initialization effect for CAMMICApp
+  // Add initialization effect for cammicApp
   useEffect(() => {
     const initializeCammic = async () => {
       if (!cammicRef.current) {
         try {
           let prev_length = currentTranscript.length;
-          cammicRef.current = new CAMMICApp();
+          // インスタンス作成前にログを追加
+          console.log("Creating new cammicApp instance...");
+          const cammicInstance = new cammicApp();
+          cammicRef.current = cammicInstance;
+          console.log("cammicApp instance created successfully");
+          
+          // 初期化状態をログ出力
+          console.log("cammicApp state:", {
+            isInitialized: !!cammicRef.current,
+            instance: cammicRef.current
+          });
           
           // Set up transcript callback before starting
-          cammicRef.current.setTranscriptCallback((transcript) => {
-            //console.log('Received transcript:', transcript);
-            // 現在のtranscriptを更新
+          cammicRef.current.setTranscriptCallback((transcript: string) => {
+            //console.log("Transcript received:", transcript);
             setCurrentTranscript(transcript);
-            // ユーザーメッセージにも送信
             setUserMessage(transcript);
-            // [暫定] 過去１秒以内のメッセージ量に変化がなくなったら送信処理を実行
+            //console.log(prev_length, transcript.length)
             if (prev_length > 0 && prev_length !== transcript.length) {
               setTimeout(() => {
                 if (prev_length === transcript.length) {
                   handleSendMessage();
                   if (cammicRef.current) {
                     cammicRef.current.stop();
-                    //1秒後に再開
                     setTimeout(() => {
-                      cammicRef.current.start();
+                      if (cammicRef.current) {
+                        cammicRef.current.start();
+                      }
                     }, 1000);
                   }
                 }
               }, 1000);
-              prev_length = transcript.length;
             }
+            prev_length = transcript.length;
           });
 
           // Attempt to start with proper error handling
           await cammicRef.current.start();
-          console.log("CAMMICApp initialized successfully");
+          console.log("cammicApp initialized successfully");
         } catch (error) {
           if (error instanceof Error) {
             if (error.message.includes('permission denied')) {
               console.error("Microphone access was denied by the user");
               // Potentially show a user-friendly message here
             } else {
-              console.error("Failed to initialize CAMMICApp:", error.message);
+              console.error("Failed to initialize cammicApp:", error.message);
             }
           }
           // Clean up the failed instance
