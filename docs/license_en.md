@@ -16,6 +16,7 @@ The project can be used for free if the following conditions are met:
 ### 2. Commercial Use
 
 For commercial purposes, one of the following commercial licenses must be obtained.
+Note that **trial internal use during pre-implementation or evaluation phase** is exempt from license fees.
 
 #### 2.1 Standard License
 
