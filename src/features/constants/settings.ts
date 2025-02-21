@@ -42,9 +42,36 @@ export type AIVoice =
   | 'elevenlabs'
   | 'openai'
   | 'azure'
-export type Language = 'en' | 'ja' | 'ko' | 'zh' // ISO 639-1
+export type Language =
+  | 'en'
+  | 'ja'
+  | 'ko'
+  | 'zh'
+  | 'vi'
+  | 'fr'
+  | 'es'
+  | 'pt'
+  | 'de'
+  | 'ru'
+  | 'it'
+  | 'ar'
+  | 'hi' // ISO 639-1
 
-export const LANGUAGES: Language[] = ['en', 'ja', 'ko', 'zh']
+export const LANGUAGES: Language[] = [
+  'en',
+  'ja',
+  'ko',
+  'zh',
+  'vi',
+  'fr',
+  'es',
+  'pt',
+  'de',
+  'ru',
+  'it',
+  'ar',
+  'hi',
+]
 
 export const isLanguageSupported = (language: string): language is Language =>
   LANGUAGES.includes(language as Language)

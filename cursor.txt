@@ -6,6 +6,15 @@
 - locales/ko/translation.json
 - locales/zh/translation.json
 - locales/en/translation.json
+- locales/vi/translation.json
+- locales/fr/translation.json
+- locales/es/translation.json
+- locales/pt/translation.json
+- locales/de/translation.json
+- locales/ru/translation.json
+- locales/it/translation.json
+- locales/ar/translation.json
+- locales/hi/translation.json
 - src/features/chat/vercelAIChat.ts
 - src/pages/api/aiChat.ts
 - src/features/chat/aiChatFactory.ts

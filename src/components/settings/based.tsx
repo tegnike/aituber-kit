@@ -61,6 +61,87 @@ const Based = () => {
 
                   i18n.changeLanguage('ko')
                   break
+                case 'vi':
+                  settingsStore.setState({ selectLanguage: 'vi' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('vi')
+                  break
+                case 'fr':
+                  settingsStore.setState({ selectLanguage: 'fr' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('fr')
+                  break
+                case 'es':
+                  settingsStore.setState({ selectLanguage: 'es' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('es')
+                  break
+                case 'pt':
+                  settingsStore.setState({ selectLanguage: 'pt' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('pt')
+                  break
+                case 'de':
+                  settingsStore.setState({ selectLanguage: 'de' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('de')
+                  break
+                case 'ru':
+                  settingsStore.setState({ selectLanguage: 'ru' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('ru')
+                  break
+                case 'it':
+                  settingsStore.setState({ selectLanguage: 'it' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('it')
+                  break
+                case 'ar':
+                  settingsStore.setState({ selectLanguage: 'ar' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('ar')
+                  break
+                case 'hi':
+                  settingsStore.setState({ selectLanguage: 'hi' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage('hi')
+                  break
                 default:
                   break
               }
@@ -70,6 +151,15 @@ const Based = () => {
             <option value="en">英語 - English</option>
             <option value="zh">繁體中文 - Traditional Chinese</option>
             <option value="ko">韓語 - Korean</option>
+            <option value="vi">ベトナム語 - Vietnamese</option>
+            <option value="fr">フランス語 - French</option>
+            <option value="es">スペイン語 - Spanish</option>
+            <option value="pt">ポルトガル語 - Portuguese</option>
+            <option value="de">ドイツ語 - German</option>
+            <option value="ru">ロシア語 - Russian</option>
+            <option value="it">イタリア語 - Italian</option>
+            <option value="ar">アラビア語 - Arabic</option>
+            <option value="hi">ヒンディー語 - Hindi</option>
           </select>
         </div>
       </div>
