@@ -338,6 +338,9 @@ Your support will greatly contribute to the development and improvement of the A
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
   </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
+  </a>
 </p>
 
 Plus multiple private sponsors

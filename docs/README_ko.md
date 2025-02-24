@@ -334,6 +334,9 @@ Cubism 2.1과 Cubism 4/5를 사용함으로써 모든 버전의 Live2D 모델을
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
   </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
+  </a>
 </p>
 
 그 외, 다수의 비공개 스폰서

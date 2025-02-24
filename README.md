@@ -337,6 +337,9 @@ Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントの
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
   </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名

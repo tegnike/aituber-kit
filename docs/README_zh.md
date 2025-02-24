@@ -338,6 +338,9 @@ Live2D提供了一个名为Cubism的库作为开发SDK，目前存在Cubism 2.1�
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
   </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
+  </a>
 </p>
 
 以及多位匿名贊助者
