@@ -1,4 +1,5 @@
 import { Message } from './messages'
+import settingsStore from '@/features/stores/settings'
 
 export const messageSelectors = {
   // テキストまたは画像を含むメッセージのみを取得
@@ -14,6 +15,9 @@ export const messageSelectors = {
   // 音声メッセージのみを取得
   getAudioMessages: (messages: Message[]): Message[] => {
     return messages.filter((message) => {
+      if (message.role === 'system') {
+        return message.content
+      }
       // userの場合：contentがstring型のメッセージのみを許可
       if (message.role === 'user') {
         return typeof message.content === 'string'
@@ -32,6 +36,7 @@ export const messageSelectors = {
     messages: Message[],
     includeTimestamp: boolean
   ): Message[] => {
+    const maxPastMessages = settingsStore.getState().maxPastMessages
     return messages
       .map((message, index) => {
         // 最後のメッセージだけそのまま利用する（= 最後のメッセージだけマルチモーダルの対象となる）
@@ -62,7 +67,7 @@ export const messageSelectors = {
           content,
         }
       })
-      .slice(-10)
+      .slice(-maxPastMessages)
   },
 
   normalizeMessages: (messages: Message[]): Message[] => {
@@ -120,5 +125,31 @@ export const messageSelectors = {
             ? message.content
             : message.content[0].text,
     }))
+  },
+
+  // APIで保存する際のメッセージ処理
+  sanitizeMessageForStorage: (message: Message): any => {
+    if (message.audio !== undefined) {
+      return {
+        ...message,
+        audio: '[audio data omitted]',
+      }
+    }
+
+    if (message.content && Array.isArray(message.content)) {
+      return {
+        ...message,
+        content: message.content.map((content: any) => {
+          if (content.type === 'image') {
+            return {
+              type: 'image',
+              image: '[image data omitted]',
+            }
+          }
+          return content
+        }),
+      }
+    }
+    return message
   },
 }

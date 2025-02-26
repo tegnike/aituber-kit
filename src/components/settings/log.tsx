@@ -23,9 +23,9 @@ const Log = () => {
   }
 
   return (
-    <div className="mt-40">
-      <div className="my-8 grid-cols-2">
-        <div className="my-16 typography-20 font-bold">
+    <div className="">
+      <div className="mb-8 grid-cols-2">
+        <div className="mb-16 typography-20 font-bold">
           {t('ConversationHistory')}
         </div>
         <div className="my-8">
@@ -53,7 +53,7 @@ const Log = () => {
                   className="my-8 grid grid-flow-col  grid-cols-[min-content_1fr] gap-x-fixed"
                 >
                   <div className="w-[64px] py-8">
-                    {value.role === 'assistant' ? 'Character' : 'You'}
+                    {value.role === 'user' ? 'You' : 'Character'}
                   </div>
                   {typeof value.content == 'string' ? (
                     <input

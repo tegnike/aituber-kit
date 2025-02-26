@@ -25,6 +25,7 @@ export async function getAIChatResponseStream(
     case 'mistralai':
     case 'perplexity':
     case 'fireworks':
+    case 'deepseek':
       return getVercelAIChatResponseStream(messages)
     case 'localLlm':
       return getLocalLLMChatResponseStream(

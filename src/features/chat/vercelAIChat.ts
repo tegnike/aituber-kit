@@ -2,7 +2,6 @@ import { Message } from '../messages/messages'
 import i18next from 'i18next'
 import settingsStore, {
   multiModalAIServiceKey,
-  multiModalAIServices,
 } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 
@@ -18,6 +17,8 @@ const getAIConfig = () => {
     selectAIService: aiService,
     selectAIModel: ss.selectAIModel,
     azureEndpoint: ss.azureEndpoint,
+    useSearchGrounding: ss.useSearchGrounding,
+    temperature: ss.temperature,
   }
 }
 
@@ -28,8 +29,14 @@ function handleApiError(errorCode: string): string {
 }
 
 export async function getVercelAIChatResponse(messages: Message[]) {
-  const { aiApiKey, selectAIService, selectAIModel, azureEndpoint } =
-    getAIConfig()
+  const {
+    aiApiKey,
+    selectAIService,
+    selectAIModel,
+    azureEndpoint,
+    useSearchGrounding,
+    temperature,
+  } = getAIConfig()
 
   try {
     const response = await fetch('/api/aiChat', {
@@ -44,6 +51,8 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         model: selectAIModel,
         azureEndpoint: azureEndpoint,
         stream: false,
+        useSearchGrounding: useSearchGrounding,
+        temperature: temperature,
       }),
     })
 
@@ -67,8 +76,14 @@ export async function getVercelAIChatResponse(messages: Message[]) {
 export async function getVercelAIChatResponseStream(
   messages: Message[]
 ): Promise<ReadableStream<string>> {
-  const { aiApiKey, selectAIService, selectAIModel, azureEndpoint } =
-    getAIConfig()
+  const {
+    aiApiKey,
+    selectAIService,
+    selectAIModel,
+    azureEndpoint,
+    useSearchGrounding,
+    temperature,
+  } = getAIConfig()
 
   const response = await fetch('/api/aiChat', {
     method: 'POST',
@@ -82,6 +97,8 @@ export async function getVercelAIChatResponseStream(
       model: selectAIModel,
       azureEndpoint: azureEndpoint,
       stream: true,
+      useSearchGrounding: useSearchGrounding,
+      temperature: temperature,
     }),
   })
 

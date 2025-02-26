@@ -5,6 +5,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
 import { createAzure } from '@ai-sdk/azure'
+import { createDeepSeek } from '@ai-sdk/deepseek'
 import { streamText, generateText, CoreMessage } from 'ai'
 import { NextRequest } from 'next/server'
 
@@ -18,6 +19,7 @@ type AIServiceKey =
   | 'mistralai'
   | 'perplexity'
   | 'fireworks'
+  | 'deepseek'
 type AIServiceConfig = Record<AIServiceKey, () => any>
 
 // Allow streaming responses up to 30 seconds
@@ -41,8 +43,16 @@ export default async function handler(req: NextRequest) {
     )
   }
 
-  const { messages, apiKey, aiService, model, azureEndpoint, stream } =
-    await req.json()
+  const {
+    messages,
+    apiKey,
+    aiService,
+    model,
+    azureEndpoint,
+    stream,
+    useSearchGrounding,
+    temperature = 1.0,
+  } = await req.json()
 
   let aiApiKey = apiKey
   if (!aiApiKey) {
@@ -109,6 +119,7 @@ export default async function handler(req: NextRequest) {
         baseURL: 'https://api.fireworks.ai/inference/v1',
         apiKey: aiApiKey,
       }),
+    deepseek: () => createDeepSeek({ apiKey: aiApiKey }),
   }
   const aiServiceInstance = aiServiceConfig[aiService as AIServiceKey]
 
@@ -126,13 +137,20 @@ export default async function handler(req: NextRequest) {
   }
 
   const instance = aiServiceInstance()
-  const modifiedMessages: Message[] = modifyMessages(aiService, messages)
+  const modifiedMessages: Message[] = modifyMessages(aiService, model, messages)
+  const isUseSearchGrounding =
+    aiService === 'google' &&
+    useSearchGrounding &&
+    modifiedMessages.every((msg) => typeof msg.content === 'string')
+  const options = isUseSearchGrounding ? { useSearchGrounding: true } : {}
+  console.log('options', options)
 
   try {
     if (stream) {
       const result = await streamText({
-        model: instance(modifiedModel),
+        model: instance(modifiedModel, options),
         messages: modifiedMessages as CoreMessage[],
+        temperature: temperature,
       })
 
       return result.toDataStreamResponse()
@@ -163,8 +181,16 @@ export default async function handler(req: NextRequest) {
   }
 }
 
-function modifyMessages(aiService: string, messages: Message[]): Message[] {
-  if (aiService === 'anthropic' || aiService === 'perplexity') {
+function modifyMessages(
+  aiService: string,
+  model: string,
+  messages: Message[]
+): Message[] {
+  if (
+    aiService === 'anthropic' ||
+    aiService === 'perplexity' ||
+    (aiService === 'deepseek' && model === 'deepseek-reasoner')
+  ) {
     return modifyAnthropicMessages(messages)
   }
   return messages

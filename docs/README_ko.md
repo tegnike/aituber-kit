@@ -23,11 +23,21 @@
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
+<div align="center">
+   <h3>
+      🌟 <a href="https://aituberkit.com">Demo Site</a> 🌟
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="../README.md">【일본어】</a>｜
    <a href="./README_en.md">【영어】</a>｜
    <a href="./README_zh.md">【중국어】</a>
 </h3>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
 ## 개요
 
@@ -118,7 +128,7 @@ cp .env.example .env
    - 로컬 LLM
    - Dify (Chatbot or Agent)
 2. 필요한 경우 캐릭터의 설정 프롬프트를 편집합니다.
-3. 필요한 경우 캐릭터의 VRM 파일 및 배경 파일을 업로드합니다.
+3. 필요한 경우 캐릭터의 VRM 파일 또는 Live2D 파일, 및 배경 파일을 업로드합니다.
 4. 음성 합성 엔진을 선택하고 필요한 경우 음성 설정을 구성합니다.
    - VOICEVOX: 여러 옵션에서 스피커를 선택할 수 있습니다. 사전에 VOICEVOX 앱을 실행해야 합니다.
    - Koeiromap: 세밀하게 음성을 조정할 수 있습니다. API 키가 필요합니다.
@@ -195,7 +205,31 @@ cp .env.example .env
 
 ## 팁
 
-### 배경 고정 방법
+### Live2D 사양에 대하여
+
+Live2D 표시를 위해 비공식 라이브러리 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)를 사용하고 있습니다.
+
+Live2D는 개발용 SDK로 Cubism이라는 라이브러리를 제공하고 있으며, 현재 Cubism 2.1, Cubism 3, Cubism 4, 그리고 Cubism 5가 존재합니다. Cubism 4는 Cubism 3 모델과 호환성이 있으며, 최신 Cubism 5는 Cubism 4와 호환성이 있습니다.
+
+Cubism 2.1과 Cubism 4/5를 사용함으로써 모든 버전의 Live2D 모델을 지원합니다.
+
+#### Cubism Core
+
+이 기능을 사용하기 전에, 다음 Cubism Core (Cubism 런타임 라이브러리) 파일을 모두 `public/scripts`에 설치해야 합니다:
+
+1. `live2dcubismcore.min.js` (Cubism 4/5)
+
+   - [공식 사이트](https://www.live2d.com/sdk/download/web/)에서 다운로드 가능
+   - 또는 [이곳](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)에서 다운로드 가능 (참고: 프로덕션 환경에서의 사용은 권장되지 않습니다)
+
+2. `live2d.min.js` (Cubism 2.1)
+   - 2019년 9월 4일 이후, 공식 사이트에서는 다운로드할 수 없습니다. 다음에서 다운로드 가능:
+     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+두 파일을 설치하면 모든 버전의 Live2D 모델을 지원할 수 있습니다.
+
+### 배경 이미지 설정
 
 - `public/bg-c.png`에서 배경 이미지를 변경합니다. 이름은 변경하지 마십시오.
 
@@ -231,6 +265,8 @@ cp .env.example .env
 여러분의 지원은 AITuber 키트의 개발과 개선에 크게 기여합니다.
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
 ### 협력자 여러분 (지원해 주신 순서)
 
@@ -316,7 +352,18 @@ cp .env.example .env
   - 상업적 목적으로 사용하는 경우에는 별도의 상업용 라이선스 취득이 필요합니다.
   - 자세한 내용은 [라이선스 관련](./license_en.md)을 확인해 주시기 바랍니다.
 
+## 우선 구현에 대하여
+
+이 프로젝트는 유료로 기능 우선 구현을 받고 있습니다.
+
+- 기업이나 개인의 요청이 있는 기능을 우선적으로 구현할 수 있습니다.
+- 구현된 기능은 이 프로젝트의 일부로 공개됩니다.
+- 요금은 기능의 복잡도와 구현에 필요한 시간에 따라 개별 견적으로 진행됩니다.
+- 이 우선 구현은 상업용 라이선스와는 별개의 작업입니다. 구현된 기능을 상업적으로 사용하려면 별도의 상업용 라이선스를 취득해야 합니다.
+
+자세한 내용은 support@aituberkit.com 으로 문의해 주시기 바랍니다.
+
 ### 기타
 
 - [로고 이용 약관](./logo_licence_en.md)
-- [VRM 모델 이용 약관](./vrm_licence_en.md)
+- [VRM 및 Live2D 모델 이용 약관](./character_model_licence_en.md)

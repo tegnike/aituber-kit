@@ -23,6 +23,14 @@ export const multiModalAIServices = [
 ] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 
+export const googleSearchGroundingModels = [
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-pro-latest',
+  'gemini-2.0-flash-001',
+] as const
+export type googleSearchGroundingModelKey =
+  (typeof googleSearchGroundingModels)[number]
+
 type multiModalAPIKeys = {
   [K in multiModalAIServiceKey as `${K}Key`]: string
 }
@@ -38,6 +46,7 @@ interface APIKeys {
   mistralaiKey: string
   perplexityKey: string
   fireworksKey: string
+  deepseekKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -136,6 +145,10 @@ interface General {
   slideMode: boolean
   messageReceiverEnabled: boolean
   clientId: string
+  useSearchGrounding: boolean
+  maxPastMessages: number
+  useVideoAsBackground: boolean
+  temperature: number
 }
 
 interface ModelType {
@@ -164,6 +177,7 @@ const settingsStore = create<SettingsState>()(
       perplexityKey: '',
       fireworksKey: '',
       difyKey: '',
+      deepseekKey: '',
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
@@ -177,8 +191,7 @@ const settingsStore = create<SettingsState>()(
       selectVoice:
         (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
       koeiroParam: DEFAULT_PARAM,
-      googleTtsType:
-        process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE || 'en-US-Neural2-F',
+      googleTtsType: process.env.NEXT_PUBLIC_GOOGLE_TTS_TYPE || '',
       voicevoxSpeaker: process.env.NEXT_PUBLIC_VOICEVOX_SPEAKER || '46',
       voicevoxSpeed:
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_SPEED || '1.0') || 1.0,
@@ -187,7 +200,8 @@ const settingsStore = create<SettingsState>()(
       voicevoxIntonation:
         parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_INTONATION || '1.0') || 1.0,
       voicevoxServerUrl: '',
-      aivisSpeechSpeaker: process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEAKER || '46',
+      aivisSpeechSpeaker:
+        process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEAKER || '888753760',
       aivisSpeechSpeed:
         parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEED || '1.0') || 1.0,
       aivisSpeechPitch:
@@ -286,8 +300,17 @@ const settingsStore = create<SettingsState>()(
         (process.env.NEXT_PUBLIC_AUDIO_MODE_VOICE as OpenAITTSVoice) ||
         'shimmer',
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
-      messageReceiverEnabled: false,
+      messageReceiverEnabled:
+        process.env.NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED === 'true',
       clientId: '',
+      useSearchGrounding:
+        process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
+      maxPastMessages:
+        parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
+      useVideoAsBackground:
+        process.env.NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND === 'true',
+      temperature:
+        parseFloat(process.env.NEXT_PUBLIC_TEMPERATURE || '1.0') || 1.0,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -334,6 +357,7 @@ const settingsStore = create<SettingsState>()(
         perplexityKey: state.perplexityKey,
         fireworksKey: state.fireworksKey,
         difyKey: state.difyKey,
+        deepseekKey: state.deepseekKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
@@ -384,6 +408,7 @@ const settingsStore = create<SettingsState>()(
         audioModeVoice: state.audioModeVoice,
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
+        useSearchGrounding: state.useSearchGrounding,
         openaiTTSKey: state.openaiTTSKey,
         openaiTTSVoice: state.openaiTTSVoice,
         openaiTTSModel: state.openaiTTSModel,
@@ -409,6 +434,9 @@ const settingsStore = create<SettingsState>()(
         sadMotionGroup: state.sadMotionGroup,
         angryMotionGroup: state.angryMotionGroup,
         relaxedMotionGroup: state.relaxedMotionGroup,
+        maxPastMessages: state.maxPastMessages,
+        useVideoAsBackground: state.useVideoAsBackground,
+        temperature: state.temperature,
       }),
     }
   )

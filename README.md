@@ -22,11 +22,21 @@
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
+<div align="center">
+   <h3>
+      🌟 <a href="https://aituberkit.com">デモサイトへ</a> 🌟
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="./docs/README_en.md">English</a>｜
    <a href="./docs/README_zh.md">中文</a>｜
    <a href="./docs/README_ko.md">韓語</a>
 </h3>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
 ## 概要
 
@@ -117,7 +127,7 @@ cp .env.example .env
    - ローカルLLM
    - Dify（Chatbot or Agent）
 2. 必要に応じてキャラクターの設定プロンプトを編集します。
-3. 必要に応じてキャラクターのVRMファイルおよび背景ファイルをアップロードします。
+3. 必要に応じてキャラクターのVRMファイルまたはLive2Dファイル、および背景ファイルをアップロードします。
 4. 音声合成エンジンを選択し、必要に応じて声の設定を行います。
    - VOICEVOX: 複数の選択肢から話者を選ぶことができます。予めVOICEVOXアプリを起動しておく必要があります。
    - Koeiromap: 細かく音声を調整することが可能です。APIキーの入力が必要です。
@@ -135,13 +145,13 @@ cp .env.example .env
 
 - Youtubeの配信コメントを取得して発言することが可能です。
 - Youtube APIキーが必要です。
-- 「#」から始まるコメントは読まれません。
+- "#"から始まるコメントは読まれません。
 
 ### 使用方法
 
 1. 設定画面でYoutubeモードをONにします。
 2. Youtube APIキーとYoutube Live IDを入力します。
-3. 他の設定は「AIキャラとの対話」と同様に行います。
+3. 他の設定は"AIキャラとの対話"と同様に行います。
 4. Youtubeの配信を開始し、キャラクターがコメントに反応するのを確認します。
 5. 会話継続モードをONにすると、コメントが無いときにAIが自ら発言することができます。
 
@@ -156,13 +166,13 @@ cp .env.example .env
 
 1. サーバーアプリを起動し、`ws://127.0.0.1:8000/ws` エンドポイントを開きます。
 2. 設定画面で外部連携モードをONにします。
-3. 他の設定は「AIキャラとの対話」と同様に行います。
+3. 他の設定は"AIキャラとの対話"と同様に行います。
 4. 入力フォームからリクエストを送信し、サーバーアプリからのリクエストが返却されるのを確認します。
 
 #### 関連
 
 - こちらのサーバーアプリのリポジトリですぐに試すことが可能です。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- 詳しい設定は「[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)」をお読みください。
+- 詳しい設定は"[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)"をお読みください。
 
 ### スライドモード
 
@@ -178,7 +188,7 @@ cp .env.example .env
 
 #### 関連
 
-- 詳しい設定は「[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)」をお読みください。
+- 詳しい設定は"[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)"をお読みください。
 
 ### Realtime APIモード
 
@@ -198,7 +208,31 @@ cp .env.example .env
 
 ## TIPS
 
-### 背景固定方法
+### Live2Dの仕様に際して
+
+Live2D表示のために非公式ライブラリの [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) を使用しています。
+
+Live2Dは開発用SDKとしてCubismというライブラリが提供されており、現在Cubism 2.1、Cubism 3、Cubism 4、そしてCubism 5が存在します。Cubism 4はCubism 3のモデルと互換性があり、最新のCubism 5はCubism 4と互換性があります。
+
+Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントのLive2Dモデルをサポートしています。
+
+#### Cubism Core
+
+この機能を利用する前に、以下のCubism Core（Cubismランタイムライブラリ）ファイルを両方とも `public/scripts` に設置する必要があります：
+
+1. `live2dcubismcore.min.js`（Cubism 4/5用）
+
+   - [公式サイト](https://www.live2d.com/sdk/download/web/)からダウンロード可能
+   - または[こちら](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)から入手可能（注：本番環境での使用は推奨されません）
+
+2. `live2d.min.js`（Cubism 2.1用）
+   - 2019年9月4日以降、公式サイトからはダウンロードできなくなっていますが、以下から入手可能：
+     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+両方のファイルを設置することで、すべてのバージョンのLive2Dモデルをサポートすることができます。
+
+### 背景画像の設定
 
 - 背景画像は `public/bg-c.png` の画像を変更してください。名称は変更しないでください。
 
@@ -234,6 +268,8 @@ cp .env.example .env
 あなたの支援は、AITuberキットの開発と改善に大きく貢献します。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
 ### 協力者の皆様（ご支援いただいた順）
 
@@ -319,7 +355,18 @@ cp .env.example .env
   - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
   - 詳細は、[ライセンスについて](./docs/license.md)をご確認ください。
 
+## 優先実装について
+
+本プロジェクトでは、有償での機能優先実装を受け付けています。
+
+- 企業や個人の方から要望のあった機能を、優先的に実装することが可能です。
+- 実装された機能は、本OSSプロジェクトの一部として公開されます。
+- 料金は機能の複雑さや実装に要する時間に応じて個別見積もりとなります。
+- この優先実装は商用ライセンスとは別の取り組みです。実装された機能を商用利用する場合は、別途商用ライセンスの取得が必要です。
+
+詳細については、support@aituberkit.com までお問い合わせください。
+
 ### その他
 
 - [ロゴの利用規約](./docs/logo_licence.md)
-- [VRMモデルの利用規約](./docs/vrm_licence.md)
+- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)

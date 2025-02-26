@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import menuStore from '@/features/stores/menu'
 
 import { GitHubLink } from '../githubLink'
 import { IconButton } from '../iconButton'
+import Description from './description'
 import Based from './based'
+import Character from './character'
 import AI from './ai'
 import Voice from './voice'
 import YouTube from './youtube'
 import Slide from './slide'
+import Log from './log'
 import Other from './other'
 
 type Props = {
@@ -40,16 +44,36 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
 }
 
 // タブの定義
-type TabKey = 'general' | 'ai' | 'youtube' | 'voice' | 'slide' | 'other'
+type TabKey =
+  | 'description'
+  | 'based'
+  | 'character'
+  | 'ai'
+  | 'voice'
+  | 'youtube'
+  | 'slide'
+  | 'log'
+  | 'other'
 
 const Main = () => {
   const { t } = useTranslation()
-  const [activeTab, setActiveTab] = useState<TabKey>('general')
+  const activeTab = menuStore((state) => state.activeSettingsTab)
+  const setActiveTab = (tab: TabKey) => {
+    menuStore.setState({ activeSettingsTab: tab })
+  }
 
   const tabs: { key: TabKey; label: string }[] = [
     {
-      key: 'general',
-      label: t('Settings'),
+      key: 'description',
+      label: t('Description'),
+    },
+    {
+      key: 'based',
+      label: t('BasedSettings'),
+    },
+    {
+      key: 'character',
+      label: t('CharacterSettings'),
     },
     {
       key: 'ai',
@@ -68,6 +92,10 @@ const Main = () => {
       label: t('SlideSettings'),
     },
     {
+      key: 'log',
+      label: t('LogSettings'),
+    },
+    {
       key: 'other',
       label: t('OtherSettings'),
     },
@@ -75,8 +103,12 @@ const Main = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'general':
+      case 'description':
+        return <Description />
+      case 'based':
         return <Based />
+      case 'character':
+        return <Character />
       case 'ai':
         return <AI />
       case 'voice':
@@ -85,6 +117,8 @@ const Main = () => {
         return <YouTube />
       case 'slide':
         return <Slide />
+      case 'log':
+        return <Log />
       case 'other':
         return <Other />
     }
@@ -126,7 +160,7 @@ const Main = () => {
 const Footer = () => {
   return (
     <footer className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
-      powered by ChatVRM from Pixiv / ver. 2.21.0
+      powered by ChatVRM from Pixiv / ver. 2.26.0
     </footer>
   )
 }

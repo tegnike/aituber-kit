@@ -2,11 +2,13 @@ import { useTranslation } from 'react-i18next'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
-import { multiModalAIServices } from '@/features/stores/settings'
+import {
+  multiModalAIServices,
+  googleSearchGroundingModels,
+} from '@/features/stores/settings'
 import {
   AudioModeInputType,
   OpenAITTSVoice,
@@ -38,6 +40,10 @@ const ModelProvider = () => {
   const perplexityKey = settingsStore((s) => s.perplexityKey)
   const fireworksKey = settingsStore((s) => s.fireworksKey)
   const difyKey = settingsStore((s) => s.difyKey)
+  const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
+  const deepseekKey = settingsStore((s) => s.deepseekKey)
+  const maxPastMessages = settingsStore((s) => s.maxPastMessages)
+  const temperature = settingsStore((s) => s.temperature)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -62,6 +68,7 @@ const ModelProvider = () => {
     fireworks: 'accounts/fireworks/models/firefunction-v2',
     localLlm: '',
     dify: '',
+    deepseek: 'deepseek-chat',
   }
 
   const handleAIServiceChange = useCallback(
@@ -85,6 +92,12 @@ const ModelProvider = () => {
 
       if (newService !== 'openai' && newService !== 'azure') {
         settingsStore.setState({ realtimeAPIMode: false })
+      }
+
+      if (newService === 'google') {
+        if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
+          settingsStore.setState({ useSearchGrounding: false })
+        }
       }
     },
     []
@@ -149,9 +162,9 @@ const ModelProvider = () => {
           <option value="fireworks">Fireworks</option>
           <option value="localLlm">{t('LocalLLM')}</option>
           <option value="dify">Dify</option>
+          <option value="deepseek">DeepSeek</option>
         </select>
       </div>
-
       {(() => {
         if (selectAIService === 'openai') {
           return (
@@ -454,31 +467,56 @@ const ModelProvider = () => {
                 <select
                   className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    // Add check for search grounding compatibility
+                    if (!googleSearchGroundingModels.includes(model as any)) {
+                      settingsStore.setState({ useSearchGrounding: false })
+                    }
+                  }}
                 >
+                  <option value="gemini-2.0-flash-001">
+                    gemini-2.0-flash-001
+                  </option>
+                  <option value="gemini-2.0-flash-lite-preview-02-05">
+                    gemini-2.0-flash-lite-preview-02-05
+                  </option>
                   <option value="gemini-1.5-flash-latest">
                     gemini-1.5-flash-latest
+                  </option>
+                  <option value="gemini-1.5-flash-8b-latest">
+                    gemini-1.5-flash-8b-latest
                   </option>
                   <option value="gemini-1.5-pro-latest">
                     gemini-1.5-pro-latest
                   </option>
-                  <option value="gemini-1.5-flash-exp-0827">
-                    gemini-1.5-flash-exp-0827
-                  </option>
-                  <option value="gemini-1.5-pro-exp-0827">
-                    gemini-1.5-pro-exp-0827
-                  </option>
-                  <option value="gemini-1.5-flash-8b-exp-0827">
-                    gemini-1.5-flash-8b-exp-0827
-                  </option>
-                  <option value="gemini-2.0-flash-exp">
-                    gemini-2.0-flash-exp
-                  </option>
                 </select>
+              </div>
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('SearchGrounding')}
+                </div>
+                <div className="my-16">{t('SearchGroundingDescription')}</div>
+                <div className="my-8">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        useSearchGrounding: !useSearchGrounding,
+                      })
+                    }}
+                    disabled={
+                      !googleSearchGroundingModels.includes(
+                        selectAIModel as any
+                      )
+                    }
+                  >
+                    {useSearchGrounding ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
             </>
           )
@@ -954,37 +992,96 @@ const ModelProvider = () => {
               </div>
             </>
           )
+        } else if (selectAIService === 'deepseek') {
+          return (
+            <div className="my-24">
+              <div className="my-16 typography-20 font-bold">
+                {t('DeepSeekAPIKeyLabel')}
+              </div>
+              <div className="my-16">
+                {t('APIKeyInstruction')}
+                <br />
+                <Link
+                  url="https://platform.deepseek.com/api_keys"
+                  label="DeepSeek"
+                />
+              </div>
+              <input
+                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                type="text"
+                placeholder="sk-..."
+                value={deepseekKey}
+                onChange={(e) =>
+                  settingsStore.setState({ deepseekKey: e.target.value })
+                }
+              />
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('SelectModel')}
+                </div>
+                <select
+                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                >
+                  <option value="deepseek-chat">deepseek-chat</option>
+                  <option value="deepseek-reasoner">deepseek-reasoner</option>
+                </select>
+              </div>
+            </div>
+          )
         }
       })()}
-
-      <div className="mt-40">
-        <div className="my-8">
-          <div className="my-16 typography-20 font-bold">
-            {t('CharacterSettingsPrompt')}
-          </div>
-          {selectAIService === 'dify' ? (
-            <div className="my-16">{t('DifyInstruction')}</div>
-          ) : (
-            <div className="my-16 whitespace-pre-line">
-              {t('CharacterSettingsInfo')}
+      {selectAIService !== 'dify' && (
+        <>
+          <div className="my-24">
+            <div className="my-16 typography-20 font-bold">
+              {t('MaxPastMessages')}
             </div>
-          )}
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({ systemPrompt: SYSTEM_PROMPT })
-            }
-          >
-            {t('CharacterSettingsReset')}
-          </TextButton>
-        </div>
-        <textarea
-          value={systemPrompt}
-          onChange={(e) =>
-            settingsStore.setState({ systemPrompt: e.target.value })
-          }
-          className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
-        ></textarea>
-      </div>
+            <div className="my-8">
+              <input
+                type="number"
+                min="1"
+                max="100"
+                className="px-16 py-8 w-64 bg-surface1 hover:bg-surface1-hover rounded-8"
+                value={maxPastMessages}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value)
+                  if (
+                    Number.isNaN(value) === false &&
+                    value >= 1 &&
+                    value <= 100
+                  ) {
+                    settingsStore.setState({ maxPastMessages: value })
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <div className="my-24">
+            <div className="my-16 typography-20 font-bold">
+              {t('Temperature')}: {temperature.toFixed(2)}
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={2}
+              step={0.01}
+              value={temperature}
+              className="mt-8 mb-16 input-range"
+              onChange={(e) =>
+                settingsStore.setState({
+                  temperature: parseFloat(e.target.value),
+                })
+              }
+            />
+          </div>
+        </>
+      )}
     </div>
   )
 }

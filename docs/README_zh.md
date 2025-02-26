@@ -23,11 +23,22 @@
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
+<div align="center">
+   <h3>
+      🌟 <a href="https://aituberkit.com">Demo Site</a> 🌟
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="../README.md">【日本語】</a>｜
    <a href="./README_en.md">【英語】</a>｜
    <a href="./README_ko.md">【韓語】</a>
 </h3>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
 ## 概覽
 
 此存儲庫主要具有以下2個功能：
@@ -117,7 +128,7 @@ cp .env.example .env
    - 本地LLM
    - Dify（Chatbot或Agent）
 2. 如有必要，編輯角色的設置提示。
-3. 如有需要，加載VRM文件和背景文件。
+3. 如有需要，加載VRM文件或Live2D文件和背景文件。
 4. 選擇語音合成引擎並根據需要配置語音設置。
    - VOICEVOX：您可以從多個選項中選擇發言者。需要事先運行VOICEVOX應用程序。
    - Koeiromap：您可以細微調整語音。需要API密鑰。
@@ -214,6 +225,34 @@ cp .env.example .env
 - 各種設置項目保存在瀏覽器的本地存儲中。
 - 代碼塊中的元素不會被TTS讀取。
 
+### 关于Live2D规格
+
+Live2D显示使用非官方库 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)。
+
+Live2D提供了一个名为Cubism的库作为开发SDK，目前存在Cubism 2.1、Cubism 3、Cubism 4和Cubism 5。Cubism 4與Cubism 3模型兼容，最新的Cubism 5與Cubism 4兼容。
+
+通过使用Cubism 2.1和Cubism 4/5，我们支持所有版本的Live2D模型。
+
+#### Cubism Core
+
+使用此功能之前，需要将以下Cubism Core（Cubismランタイムライブラリ）文件放置在 `public/scripts` 中：
+
+1. `live2dcubismcore.min.js` (Cubism 4/5)
+
+   - [官方网站](https://www.live2d.com/sdk/download/web/)
+   - 或者[这里](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)（注意：不建议在生产环境中使用）
+
+2. `live2d.min.js` (Cubism 2.1)
+   - 自2019年9月4日起，官方网站不再提供下载，但可以从以下位置获取：
+     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+设置这两个文件后，可以支持所有版本的Live2D模型。
+
+### 背景图片设置
+
+- 在 `public/bg-c.png` 更改背景圖片。請不要更改名稱。
+
 ## 相關文章
 
 - [今天成為AITuber開發者 | Nike-chan](https://note.com/nike_cha_n/n/ne98acb25e00f)
@@ -230,6 +269,8 @@ cp .env.example .env
 您的支持將極大地促進AITuber套件的開發和改進。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
 ### 我們的支持者（按支持順序排列）
 
@@ -315,7 +356,18 @@ cp .env.example .env
   - 商业目的的使用需要另外获取商业许可证。
   - 详细信息请查看[关于许可证](./license_en.md)。
 
+## 优先实现
+
+本项目接受有偿的优先实现请求。
+
+- 企业或个人提出的功能请求可以优先实现。
+- 实现的功能将成为本OSS项目的一部分并公开。
+- 费用将根据功能的复杂性和实现所需的时间进行个别估算。
+- 优先实现是与商业许可证不同的工作。如果需要使用实现的功能进行商业利用，则需要另外获取商业许可证。
+
+详细信息请联系support@aituberkit.com。
+
 ### 其他
 
 - [标志使用协议](./logo_licence_en.md)
-- [VRM模型使用协议](./vrm_licence_en.md)
+- [VRM和Live2D模型使用协议](./character_model_licence_en.md)

@@ -15,7 +15,14 @@ import { buildUrl } from '@/utils/buildUrl'
 import { YoutubeManager } from '@/components/youtubeManager'
 
 const Home = () => {
-  const bgUrl = homeStore((s) => `url(${buildUrl(s.backgroundImageUrl)})`)
+  const webcamStatus = homeStore((s) => s.webcamStatus)
+  const captureStatus = homeStore((s) => s.captureStatus)
+  const backgroundImageUrl = homeStore((s) => s.backgroundImageUrl)
+  const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
+  const bgUrl =
+    (webcamStatus || captureStatus) && useVideoAsBackground
+      ? ''
+      : `url(${buildUrl(backgroundImageUrl)})`
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
   const modelType = settingsStore((s) => s.modelType)
 
