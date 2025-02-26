@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install anthropic==0.20.8 requests
+          pip install anthropic==0.47.2 requests
 
       - name: Run translation script
         env:
