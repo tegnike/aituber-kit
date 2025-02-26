@@ -136,6 +136,7 @@ interface General {
   slideMode: boolean
   messageReceiverEnabled: boolean
   clientId: string
+  useSearchGrounding: boolean
 }
 
 interface ModelType {
@@ -286,8 +287,11 @@ const settingsStore = create<SettingsState>()(
         (process.env.NEXT_PUBLIC_AUDIO_MODE_VOICE as OpenAITTSVoice) ||
         'shimmer',
       slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
-      messageReceiverEnabled: false,
+      messageReceiverEnabled:
+        process.env.NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED === 'true',
       clientId: '',
+      useSearchGrounding:
+        process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
 
       // NijiVoice settings
       nijivoiceApiKey: '',
