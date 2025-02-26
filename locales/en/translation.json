@@ -159,6 +159,8 @@
   "LocalStorageReset": "Reset Settings",
   "LocalStorageResetInfo": "Environment variables are prioritized if set. The page will be reloaded.",
   "LocalStorageResetButton": "Reset Settings",
+  "NoSpeechTimeout": "No Speech Timeout",
+  "NoSpeechTimeoutInfo": "Set the time to automatically end input when silence continues during voice input.\nSetting to 0 seconds disables automatic submission by silence detection.",
   "Errors": {
     "EmptyAPIKey": "API key is not set",
     "AIInvalidProperty": "AI service settings are incorrect",
@@ -196,7 +198,8 @@
     "FunctionExecuting": "Executing {{funcName}}",
     "FunctionExecutionFailed": "Execution of {{funcName}} failed",
     "FirefoxNotSupported": "This feature is not supported on Firefox",
-    "SpeechRecognitionError": "Speech recognition error occurred"
+    "SpeechRecognitionError": "Speech recognition error occurred",
+    "NoSpeechDetected": "No speech detected"
   },
   "UsingOpenAITTS": "Using OpenAI",
   "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",

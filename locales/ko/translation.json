@@ -157,8 +157,10 @@
   "PdfConvertError": "변환 실패",
   "PdfConvertSubmitError": "PDF 파일, 폴더 이름, API 키가 설정되어 있는지 확인하세요.",
   "LocalStorageReset": "설정 초기화",
-  "LocalStorageResetInfo": "환경 변수가 설정되어 있는 경우 해당 값이 우선됩니다. 페이지가 새로고침됩니다.",
+  "LocalStorageResetInfo": "환경 변수가 설정되어 있는 경우 해당 값이 우선합니다. 페이지가 다시 로드됩니다.",
   "LocalStorageResetButton": "설정 초기화",
+  "NoSpeechTimeout": "무음 감지 타임아웃",
+  "NoSpeechTimeoutInfo": "음성 입력 중 무음 상태가 지속될 때 자동으로 입력을 종료하는 시간을 설정합니다.\n0초로 설정하면 무음 감지에 의한 자동 제출이 비활성화됩니다.",
   "Errors": {
     "EmptyAPIKey": "API 키가 설정되지 않았습니다",
     "AIInvalidProperty": "AI 서비스 설정값이 올바르지 않습니다",
