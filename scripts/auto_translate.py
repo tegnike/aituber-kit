@@ -2,7 +2,9 @@ import os
 import json
 import requests
 import base64
-from typing import Dict, List, Any, Optional
+import difflib
+import re
+from typing import Dict, List, Any, Optional, Tuple
 
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
@@ -22,6 +24,11 @@ if not OPENAI_API_KEY:
 # PR情報を取得
 PR_NUMBER = os.getenv("PR_NUMBER")
 REPO_FULL_NAME = os.getenv("REPO_FULL_NAME")
+
+# 差分ベース翻訳を使用するかどうか（デフォルトは使用する）
+USE_DIFF_BASED_TRANSLATION = (
+    os.getenv("USE_DIFF_BASED_TRANSLATION", "true").lower() == "true"
+)
 
 # GitHub API用のヘッダーを定義
 headers = {
@@ -447,6 +454,90 @@ def ensure_directory_exists(directory_path):
             raise
 
 
+def get_file_diff(source_file: str, branch: str) -> Tuple[List[str], List[str]]:
+    """ファイルの差分を取得する
+
+    Returns:
+        Tuple[List[str], List[str]]: 追加された行と変更された行のリスト
+    """
+    print(f"ファイル {source_file} の差分を取得しています...")
+
+    # PRの詳細情報を取得
+    url = f"{GITHUB_API_BASE}/repos/{REPO_FULL_NAME}/pulls/{PR_NUMBER}"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    pr_details = response.json()
+
+    # ベースブランチとヘッドブランチを取得
+    base_branch = pr_details["base"]["ref"]
+    head_branch = pr_details["head"]["ref"]
+
+    # ベースブランチのファイル内容を取得
+    base_content = get_file_content(source_file, base_branch)
+    if not base_content:
+        # 新規ファイルの場合は全体を差分として扱う
+        head_content = get_file_content(source_file, head_branch)
+        return head_content.splitlines(), []
+
+    # ヘッドブランチのファイル内容を取得
+    head_content = get_file_content(source_file, head_branch)
+
+    # difflib を使用して差分を取得
+    base_lines = base_content.splitlines()
+    head_lines = head_content.splitlines()
+
+    differ = difflib.Differ()
+    diff = list(differ.compare(base_lines, head_lines))
+
+    # 追加された行と変更された行を抽出
+    added_lines = []
+    changed_lines = []
+
+    for line in diff:
+        if line.startswith("+ "):
+            added_lines.append(line[2:])
+        elif line.startswith("? "):
+            # 変更の詳細情報は無視
+            continue
+        elif line.startswith("- "):
+            # 削除された行は無視
+            continue
+
+    return added_lines, changed_lines
+
+
+def apply_translation_to_existing(
+    existing_content: str, source_diff: List[str], translated_diff: List[str]
+) -> str:
+    """既存の翻訳ファイルに差分の翻訳を適用する
+
+    Args:
+        existing_content: 既存の翻訳ファイルの内容
+        source_diff: 元ファイルの差分
+        translated_diff: 翻訳された差分
+
+    Returns:
+        str: 更新された翻訳ファイルの内容
+    """
+    if not source_diff or not translated_diff:
+        return existing_content
+
+    # 既存の翻訳ファイルの行を取得
+    existing_lines = existing_content.splitlines()
+    result_lines = existing_lines.copy()
+
+    # 差分の数が一致しない場合は安全のため全体を返す
+    if len(source_diff) != len(translated_diff):
+        print("警告: 差分の行数が一致しません。既存の翻訳を維持します。")
+        return existing_content
+
+    # マークダウンの場合、見出しや特定のパターンを手がかりに挿入位置を特定
+    # 簡易的な実装として、最後に追加する
+    result_lines.extend(translated_diff)
+
+    return "\n".join(result_lines)
+
+
 def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
     """マークダウンファイルを翻訳する"""
     updated_state = state.model_copy(deep=True)
@@ -469,34 +560,97 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
 
     llm = get_llm()
 
-    prompt = (
-        f"以下の日本語のマークダウンファイルを{current_target.language}に翻訳してください。\n\n"
-        "翻訳の際は以下のルールに従ってください：\n"
-        "1. マークダウンの構造（見出し、リスト、コードブロックなど）を維持してください。\n"
-        "2. リンクやイメージの参照は変更しないでください。\n"
-        "3. コードブロック内のコードは翻訳しないでください。\n"
-        "4. 技術用語は適切に翻訳してください。\n"
-        "5. 翻訳後のテキストのみを出力してください。説明や注釈は不要です。\n\n"
-        "翻訳対象のマークダウン：\n\n"
-        f"{current_target.source_content}"
-    )
+    # 差分ベースの翻訳を使用する場合
+    if USE_DIFF_BASED_TRANSLATION and current_target.target_content:
+        # 差分を取得
+        added_lines, changed_lines = get_file_diff(
+            current_target.source_file, updated_state.branch
+        )
 
-    messages = [
-        {"role": "system", "content": "あなたは翻訳の専門家です。"},
-        {"role": "user", "content": prompt},
-    ]
+        if not added_lines and not changed_lines:
+            print(f"差分が検出されませんでした: {current_target.source_file}")
+            translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "skipped",
+                }
+            )
+            current_file_index += 1
+            return {
+                "translation_targets": translation_targets,
+                "translation_results": translation_results,
+                "current_file_index": current_file_index,
+            }
 
-    response = llm.invoke(messages)
-    translated_content = response.content
+        # 差分のみを翻訳
+        diff_content = "\n".join(added_lines)
+        print(f"差分ベースの翻訳を実行します。差分行数: {len(added_lines)}")
 
-    # 翻訳結果をファイルに書き込む
-    message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-    result = create_or_update_file(
-        current_target.target_file,
-        translated_content,
-        message,
-        updated_state.branch,
-    )
+        prompt = (
+            f"以下の日本語のマークダウンの一部を{current_target.language}に翻訳してください。\n\n"
+            "翻訳の際は以下のルールに従ってください：\n"
+            "1. マークダウンの構造（見出し、リスト、コードブロックなど）を維持してください。\n"
+            "2. リンクやイメージの参照は変更しないでください。\n"
+            "3. コードブロック内のコードは翻訳しないでください。\n"
+            "4. 技術用語は適切に翻訳してください。\n"
+            "5. 翻訳後のテキストのみを出力してください。説明や注釈は不要です。\n\n"
+            "翻訳対象のマークダウン：\n\n"
+            f"{diff_content}"
+        )
+
+        messages = [
+            {"role": "system", "content": "あなたは翻訳の専門家です。"},
+            {"role": "user", "content": prompt},
+        ]
+
+        response = llm.invoke(messages)
+        translated_diff = response.content.splitlines()
+
+        # 既存の翻訳に差分を適用
+        updated_content = apply_translation_to_existing(
+            current_target.target_content, added_lines, translated_diff
+        )
+
+        # 翻訳結果をファイルに書き込む
+        message = f"Auto-translate: Update {current_target.target_file} with diff from {current_target.source_file}"
+        result = create_or_update_file(
+            current_target.target_file,
+            updated_content,
+            message,
+            updated_state.branch,
+        )
+    else:
+        # 従来の全体翻訳
+        prompt = (
+            f"以下の日本語のマークダウンファイルを{current_target.language}に翻訳してください。\n\n"
+            "翻訳の際は以下のルールに従ってください：\n"
+            "1. マークダウンの構造（見出し、リスト、コードブロックなど）を維持してください。\n"
+            "2. リンクやイメージの参照は変更しないでください。\n"
+            "3. コードブロック内のコードは翻訳しないでください。\n"
+            "4. 技術用語は適切に翻訳してください。\n"
+            "5. 翻訳後のテキストのみを出力してください。説明や注釈は不要です。\n\n"
+            "翻訳対象のマークダウン：\n\n"
+            f"{current_target.source_content}"
+        )
+
+        messages = [
+            {"role": "system", "content": "あなたは翻訳の専門家です。"},
+            {"role": "user", "content": prompt},
+        ]
+
+        response = llm.invoke(messages)
+        translated_content = response.content
+
+        # 翻訳結果をファイルに書き込む
+        message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
+        result = create_or_update_file(
+            current_target.target_file,
+            translated_content,
+            message,
+            updated_state.branch,
+        )
 
     # 結果に基づいてステータスを設定
     status = "updated"
@@ -549,47 +703,176 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
 
     llm = get_llm()
 
-    # JSONをパース
-    source_json = json.loads(current_target.source_content)
+    # 差分ベースの翻訳を使用する場合（JSONの場合は構造が複雑なため、差分の特定と適用が難しい）
+    # JSONの場合は、キーの追加や変更を検出して、それらのみを翻訳する
+    if USE_DIFF_BASED_TRANSLATION and current_target.target_content:
+        try:
+            # 元のJSONと翻訳先のJSONをパース
+            source_json = json.loads(current_target.source_content)
+            target_json = json.loads(current_target.target_content)
 
-    # 翻訳リクエスト用のテキストを作成
-    json_text = json.dumps(source_json, indent=2, ensure_ascii=False)
+            # 差分を特定（新しいキーや変更されたキー）
+            diff_json = {}
+            for key, value in source_json.items():
+                # 新しいキーまたは値が変更されたキー
+                if key not in target_json or json.dumps(value) != json.dumps(
+                    target_json.get(key, "")
+                ):
+                    diff_json[key] = value
 
-    prompt = (
-        f"以下の日本語のJSONファイルを{current_target.language}に翻訳してください。\n\n"
-        "翻訳の際は以下のルールに従ってください：\n"
-        "1. JSONの構造を維持してください。\n"
-        "2. キーは翻訳せず、値のみを翻訳してください。\n"
-        "3. 変数や特殊な記号（{{}}, $t など）は翻訳しないでください。\n"
-        "4. 技術用語は適切に翻訳してください。\n"
-        "5. 翻訳後のJSONのみを出力してください。説明や注釈は不要です。\n\n"
-        "翻訳対象のJSON：\n\n"
-        f"{json_text}"
-    )
+            if not diff_json:
+                print(f"JSONに差分が検出されませんでした: {current_target.source_file}")
+                translation_results.append(
+                    {
+                        "source_file": current_target.source_file,
+                        "target_file": current_target.target_file,
+                        "language": current_target.language,
+                        "status": "skipped",
+                    }
+                )
+                current_file_index += 1
+                return {
+                    "translation_targets": translation_targets,
+                    "translation_results": translation_results,
+                    "current_file_index": current_file_index,
+                }
 
-    messages = [
-        {"role": "system", "content": "あなたは翻訳の専門家です。"},
-        {"role": "user", "content": prompt},
-    ]
+            # 差分のみを翻訳
+            diff_text = json.dumps(diff_json, indent=2, ensure_ascii=False)
+            print(f"JSONの差分ベース翻訳を実行します。差分キー数: {len(diff_json)}")
 
-    response = llm.invoke(messages)
-    translated_text = response.content
+            prompt = (
+                f"以下の日本語のJSONの一部を{current_target.language}に翻訳してください。\n\n"
+                "翻訳の際は以下のルールに従ってください：\n"
+                "1. JSONの構造を維持してください。\n"
+                "2. キーは翻訳せず、値のみを翻訳してください。\n"
+                "3. 変数や特殊な記号（{{}}, $t など）は翻訳しないでください。\n"
+                "4. 技術用語は適切に翻訳してください。\n"
+                "5. 翻訳後のJSONのみを出力してください。説明や注釈は不要です。\n\n"
+                "翻訳対象のJSON：\n\n"
+                f"{diff_text}"
+            )
 
-    # JSON部分を抽出するために { と } で囲まれた部分を探す
-    start = translated_text.find("{")
-    end = translated_text.rfind("}") + 1
-    json_str = translated_text[start:end]
-    # JSONとして解析できるか確認
-    json.loads(json_str)
+            messages = [
+                {"role": "system", "content": "あなたは翻訳の専門家です。"},
+                {"role": "user", "content": prompt},
+            ]
 
-    # 翻訳結果をファイルに書き込む
-    message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-    result = create_or_update_file(
-        current_target.target_file,
-        json_str,
-        message,
-        updated_state.branch,
-    )
+            response = llm.invoke(messages)
+            translated_text = response.content
+
+            # JSON部分を抽出するために { と } で囲まれた部分を探す
+            start = translated_text.find("{")
+            end = translated_text.rfind("}") + 1
+            json_str = translated_text[start:end]
+
+            # 翻訳された差分をパース
+            translated_diff = json.loads(json_str)
+
+            # 既存のJSONに翻訳された差分を適用
+            for key, value in translated_diff.items():
+                target_json[key] = value
+
+            # 更新されたJSONを文字列に変換
+            updated_json = json.dumps(target_json, indent=2, ensure_ascii=False)
+
+            # 翻訳結果をファイルに書き込む
+            message = f"Auto-translate: Update {current_target.target_file} with diff from {current_target.source_file}"
+            result = create_or_update_file(
+                current_target.target_file,
+                updated_json,
+                message,
+                updated_state.branch,
+            )
+        except Exception as e:
+            print(f"JSONの差分翻訳中にエラーが発生しました: {e}")
+            print("全体翻訳にフォールバックします。")
+            # エラーが発生した場合は全体翻訳にフォールバック
+            # 以下は従来の全体翻訳処理
+            # JSONをパース
+            source_json = json.loads(current_target.source_content)
+
+            # 翻訳リクエスト用のテキストを作成
+            json_text = json.dumps(source_json, indent=2, ensure_ascii=False)
+
+            prompt = (
+                f"以下の日本語のJSONファイルを{current_target.language}に翻訳してください。\n\n"
+                "翻訳の際は以下のルールに従ってください：\n"
+                "1. JSONの構造を維持してください。\n"
+                "2. キーは翻訳せず、値のみを翻訳してください。\n"
+                "3. 変数や特殊な記号（{{}}, $t など）は翻訳しないでください。\n"
+                "4. 技術用語は適切に翻訳してください。\n"
+                "5. 翻訳後のJSONのみを出力してください。説明や注釈は不要です。\n\n"
+                "翻訳対象のJSON：\n\n"
+                f"{json_text}"
+            )
+
+            messages = [
+                {"role": "system", "content": "あなたは翻訳の専門家です。"},
+                {"role": "user", "content": prompt},
+            ]
+
+            response = llm.invoke(messages)
+            translated_text = response.content
+
+            # JSON部分を抽出するために { と } で囲まれた部分を探す
+            start = translated_text.find("{")
+            end = translated_text.rfind("}") + 1
+            json_str = translated_text[start:end]
+            # JSONとして解析できるか確認
+            json.loads(json_str)
+
+            # 翻訳結果をファイルに書き込む
+            message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
+            result = create_or_update_file(
+                current_target.target_file,
+                json_str,
+                message,
+                updated_state.branch,
+            )
+    else:
+        # 従来の全体翻訳処理
+        # JSONをパース
+        source_json = json.loads(current_target.source_content)
+
+        # 翻訳リクエスト用のテキストを作成
+        json_text = json.dumps(source_json, indent=2, ensure_ascii=False)
+
+        prompt = (
+            f"以下の日本語のJSONファイルを{current_target.language}に翻訳してください。\n\n"
+            "翻訳の際は以下のルールに従ってください：\n"
+            "1. JSONの構造を維持してください。\n"
+            "2. キーは翻訳せず、値のみを翻訳してください。\n"
+            "3. 変数や特殊な記号（{{}}, $t など）は翻訳しないでください。\n"
+            "4. 技術用語は適切に翻訳してください。\n"
+            "5. 翻訳後のJSONのみを出力してください。説明や注釈は不要です。\n\n"
+            "翻訳対象のJSON：\n\n"
+            f"{json_text}"
+        )
+
+        messages = [
+            {"role": "system", "content": "あなたは翻訳の専門家です。"},
+            {"role": "user", "content": prompt},
+        ]
+
+        response = llm.invoke(messages)
+        translated_text = response.content
+
+        # JSON部分を抽出するために { と } で囲まれた部分を探す
+        start = translated_text.find("{")
+        end = translated_text.rfind("}") + 1
+        json_str = translated_text[start:end]
+        # JSONとして解析できるか確認
+        json.loads(json_str)
+
+        # 翻訳結果をファイルに書き込む
+        message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
+        result = create_or_update_file(
+            current_target.target_file,
+            json_str,
+            message,
+            updated_state.branch,
+        )
 
     # 結果に基づいてステータスを設定
     status = "updated"
@@ -682,7 +965,7 @@ class AutoTranslator:
         """グラフを実行する"""
         app = self.workflow.compile()
         initial_state = TranslationState()
-        final_state = app.invoke(initial_state)
+        final_state = app.invoke(initial_state, {"recursion_limit": 50})
 
         return final_state
 
