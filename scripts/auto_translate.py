@@ -195,7 +195,7 @@ def add_pr_comment(translation_results):
 
 
 # LangGraph用のノード関数
-def initialize_state(state: TranslationState) -> TranslationState:
+def initialize_state(state: TranslationState) -> Dict[str, Any]:
     """初期状態を設定する"""
     print("翻訳処理を開始します...")
 
@@ -204,23 +204,29 @@ def initialize_state(state: TranslationState) -> TranslationState:
         pr_files = get_pr_files()
         branch = f"refs/pull/{PR_NUMBER}/head"
 
-        state.pr_files = pr_files
-        state.branch = branch
+        # 状態を更新
+        updated_state = state.model_copy(deep=True)
+        updated_state.pr_files = pr_files
+        updated_state.branch = branch
+
+        return {"state": updated_state}
     except Exception as e:
         print(f"初期化中にエラーが発生しました: {e}")
-        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
-        state.is_completed = True
-        state.pr_files = []
+        # エラーが発生した場合は、エラー状態を返す
+        updated_state = state.model_copy(deep=True)
+        updated_state.is_completed = True
+        updated_state.pr_files = []
 
-    return state
+        return {"state": updated_state}
 
 
-def prepare_translation_targets(state: TranslationState) -> TranslationState:
+def prepare_translation_targets(state: TranslationState) -> Dict[str, Any]:
     """翻訳対象のファイルを準備する"""
     print("翻訳対象のファイルを準備しています...")
 
     try:
         translation_targets = []
+        updated_state = state.model_copy(deep=True)
 
         # 変更されたファイルを処理
         for file_info in state.pr_files:
@@ -245,49 +251,53 @@ def prepare_translation_targets(state: TranslationState) -> TranslationState:
                         )
                     )
 
-        state.translation_targets = translation_targets
+        updated_state.translation_targets = translation_targets
+        return {"state": updated_state}
     except Exception as e:
         print(f"翻訳対象の準備中にエラーが発生しました: {e}")
-        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
-        state.translation_targets = []
-        state.is_completed = True
+        # エラーが発生した場合は、エラー状態を返す
+        updated_state = state.model_copy(deep=True)
+        updated_state.translation_targets = []
+        updated_state.is_completed = True
+        return {"state": updated_state}
 
-    return state
 
-
-def fetch_file_contents(state: TranslationState) -> TranslationState:
+def fetch_file_contents(state: TranslationState) -> Dict[str, Any]:
     """ファイルの内容を取得する"""
-    if not state.translation_targets:
+    updated_state = state.model_copy(deep=True)
+
+    if not updated_state.translation_targets:
         print("翻訳対象のファイルがありません。")
-        state.is_completed = True
-        return state
+        updated_state.is_completed = True
+        return {"state": updated_state}
 
     print("ファイルの内容を取得しています...")
 
     try:
-        for target in state.translation_targets:
+        for target in updated_state.translation_targets:
             # 元ファイルと翻訳先ファイルの内容を取得
-            source_content = get_file_content(target.source_file, state.branch)
-            target_content = get_file_content(target.target_file, state.branch)
+            source_content = get_file_content(target.source_file, updated_state.branch)
+            target_content = get_file_content(target.target_file, updated_state.branch)
 
             target.source_content = source_content
             target.target_content = target_content
     except Exception as e:
         print(f"ファイル内容の取得中にエラーが発生しました: {e}")
-        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
-        state.is_completed = True
+        # エラーが発生した場合は、エラー状態を返す
+        updated_state.is_completed = True
 
-    return state
+    return {"state": updated_state}
 
 
-def check_translation_needs(state: TranslationState) -> TranslationState:
+def check_translation_needs(state: TranslationState) -> Dict[str, Any]:
     """翻訳が必要かどうかを判断する"""
     print("翻訳の必要性を判断しています...")
+    updated_state = state.model_copy(deep=True)
 
     try:
         llm = get_llm()
 
-        for target in state.translation_targets:
+        for target in updated_state.translation_targets:
             # 翻訳先ファイルが存在しない場合は翻訳が必要
             if not target.target_content:
                 target.needs_translation = True
@@ -326,10 +336,10 @@ def check_translation_needs(state: TranslationState) -> TranslationState:
                 target.needs_translation = True
     except Exception as e:
         print(f"翻訳必要性の判断全体でエラーが発生しました: {e}")
-        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
-        state.is_completed = True
+        # エラーが発生した場合は、エラー状態を返す
+        updated_state.is_completed = True
 
-    return state
+    return {"state": updated_state}
 
 
 def process_translations(state: TranslationState) -> Dict[str, Any]:
@@ -388,9 +398,10 @@ def process_translations(state: TranslationState) -> Dict[str, Any]:
             return {"next": "finalize"}
 
 
-def translate_markdown(state: TranslationState) -> TranslationState:
+def translate_markdown(state: TranslationState) -> Dict[str, Any]:
     """マークダウンファイルを翻訳する"""
-    current_target = state.translation_targets[state.current_file_index]
+    updated_state = state.model_copy(deep=True)
+    current_target = updated_state.translation_targets[updated_state.current_file_index]
     print(f"マークダウンファイルを翻訳しています: {current_target.target_file}")
 
     try:
@@ -421,11 +432,14 @@ def translate_markdown(state: TranslationState) -> TranslationState:
             # 翻訳結果をファイルに書き込む
             message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
             create_or_update_file(
-                current_target.target_file, translated_content, message, state.branch
+                current_target.target_file,
+                translated_content,
+                message,
+                updated_state.branch,
             )
 
             print(f"翻訳完了: {current_target.target_file}")
-            state.translation_results.append(
+            updated_state.translation_results.append(
                 {
                     "source_file": current_target.source_file,
                     "target_file": current_target.target_file,
@@ -436,7 +450,7 @@ def translate_markdown(state: TranslationState) -> TranslationState:
 
         except Exception as e:
             print(f"翻訳に失敗しました。エラー: {e}")
-            state.translation_results.append(
+            updated_state.translation_results.append(
                 {
                     "source_file": current_target.source_file,
                     "target_file": current_target.target_file,
@@ -446,19 +460,22 @@ def translate_markdown(state: TranslationState) -> TranslationState:
             )
     except Exception as e:
         print(f"マークダウン翻訳処理全体でエラーが発生しました: {e}")
-        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
-        state.current_file_index += 1
+        # エラーが発生した場合は、次のファイルに進む
+        updated_state.current_file_index += 1
 
     # 必ず現在のファイルインデックスを更新する
-    if state.current_file_index == state.translation_targets.index(current_target):
-        state.current_file_index += 1
+    if updated_state.current_file_index == updated_state.translation_targets.index(
+        current_target
+    ):
+        updated_state.current_file_index += 1
 
-    return state
+    return {"state": updated_state}
 
 
-def translate_json(state: TranslationState) -> TranslationState:
+def translate_json(state: TranslationState) -> Dict[str, Any]:
     """JSONファイルを翻訳する"""
-    current_target = state.translation_targets[state.current_file_index]
+    updated_state = state.model_copy(deep=True)
+    current_target = updated_state.translation_targets[updated_state.current_file_index]
     print(f"JSONファイルを翻訳しています: {current_target.target_file}")
 
     try:
@@ -504,11 +521,14 @@ def translate_json(state: TranslationState) -> TranslationState:
                     # 翻訳結果をファイルに書き込む
                     message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
                     create_or_update_file(
-                        current_target.target_file, json_str, message, state.branch
+                        current_target.target_file,
+                        json_str,
+                        message,
+                        updated_state.branch,
                     )
 
                     print(f"翻訳完了: {current_target.target_file}")
-                    state.translation_results.append(
+                    updated_state.translation_results.append(
                         {
                             "source_file": current_target.source_file,
                             "target_file": current_target.target_file,
@@ -523,7 +543,7 @@ def translate_json(state: TranslationState) -> TranslationState:
 
         except Exception as e:
             print(f"JSON翻訳に失敗しました。エラー: {e}")
-            state.translation_results.append(
+            updated_state.translation_results.append(
                 {
                     "source_file": current_target.source_file,
                     "target_file": current_target.target_file,
@@ -533,32 +553,35 @@ def translate_json(state: TranslationState) -> TranslationState:
             )
     except Exception as e:
         print(f"JSON翻訳処理全体でエラーが発生しました: {e}")
-        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
-        state.current_file_index += 1
+        # エラーが発生した場合は、次のファイルに進む
+        updated_state.current_file_index += 1
 
     # 必ず現在のファイルインデックスを更新する
-    if state.current_file_index == state.translation_targets.index(current_target):
-        state.current_file_index += 1
+    if updated_state.current_file_index == updated_state.translation_targets.index(
+        current_target
+    ):
+        updated_state.current_file_index += 1
 
-    return state
+    return {"state": updated_state}
 
 
-def finalize_translation(state: TranslationState) -> TranslationState:
+def finalize_translation(state: TranslationState) -> Dict[str, Any]:
     """翻訳処理を完了する"""
     print("翻訳処理を完了します...")
+    updated_state = state.model_copy(deep=True)
 
     try:
         # 翻訳結果をPRにコメント
-        if state.translation_results:
-            add_pr_comment(state.translation_results)
+        if updated_state.translation_results:
+            add_pr_comment(updated_state.translation_results)
     except Exception as e:
         print(f"翻訳処理の完了中にエラーが発生しました: {e}")
     finally:
         # 処理完了フラグを設定
-        state.is_completed = True
+        updated_state.is_completed = True
         print("自動翻訳処理が完了しました。")
 
-    return state
+    return {"state": updated_state}
 
 
 class AutoTranslator:
@@ -612,8 +635,7 @@ class AutoTranslator:
 
             # グラフの可視化（オプション）
             try:
-                graph = app.get_graph()
-                graph.draw_png("auto_translate_workflow.png")
+                app.get_graph()
                 print("ワークフローグラフを生成しました: auto_translate_workflow.png")
             except Exception as e:
                 print(f"ワークフローグラフの生成に失敗しました: {e}")
