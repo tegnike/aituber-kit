@@ -573,23 +573,16 @@ class AutoTranslator:
         app = self.workflow.compile()
         initial_state = TranslationState()
 
+        final_state = app.invoke(initial_state)
+
+        # グラフの可視化（オプション）
         try:
-            final_state = app.invoke(initial_state)
-
-            # グラフの可視化（オプション）
-            try:
-                app.get_graph()
-                print("ワークフローグラフを生成しました: auto_translate_workflow.png")
-            except Exception as e:
-                print(f"ワークフローグラフの生成に失敗しました: {e}")
-
-            return final_state
+            app.get_graph()
+            print("ワークフローグラフを生成しました: auto_translate_workflow.png")
         except Exception as e:
-            print(f"ワークフロー実行中にエラーが発生しました: {e}")
-            # エラーが発生した場合でも、状態を返す
-            initial_state.is_completed = True
-            initial_state.translation_results = []
-            return initial_state
+            print(f"ワークフローグラフの生成に失敗しました: {e}")
+
+        return final_state
 
 
 if __name__ == "__main__":
