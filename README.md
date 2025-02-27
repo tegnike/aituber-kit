@@ -211,26 +211,16 @@ cp .env.example .env
 ### Live2Dの仕様に際して
 
 Live2D表示のために非公式ライブラリの [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) を使用しています。
-
-Live2Dは開発用SDKとしてCubismというライブラリが提供されており、現在Cubism 2.1、Cubism 3、Cubism 4、そしてCubism 5が存在します。Cubism 4はCubism 3のモデルと互換性があり、最新のCubism 5はCubism 4と互換性があります。
-
-Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントのLive2Dモデルをサポートしています。
+Live2Dは開発用SDKとしてCubismというライブラリが提供されており、AITuberKitでは、Cubism 3以降のモデルをサポートしています。
 
 #### Cubism Core
 
-この機能を利用する前に、以下のCubism Core（Cubismランタイムライブラリ）ファイルを両方とも `public/scripts` に設置する必要があります：
+Live2D機能を利用する場合、以下のファイルを `public/scripts` に設置してください：
 
-1. `live2dcubismcore.min.js`（Cubism 4/5用）
+`live2dcubismcore.min.js`（Cubism 4/5用）
 
-   - [公式サイト](https://www.live2d.com/sdk/download/web/)からダウンロード可能
-   - または[こちら](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)から入手可能（注：本番環境での使用は推奨されません）
-
-2. `live2d.min.js`（Cubism 2.1用）
-   - 2019年9月4日以降、公式サイトからはダウンロードできなくなっていますが、以下から入手可能：
-     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
-     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
-
-両方のファイルを設置することで、すべてのバージョンのLive2Dモデルをサポートすることができます。
+- [公式サイト](https://www.live2d.com/sdk/download/web/)からダウンロード可能
+- または[こちら](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)から入手可能（注：本番環境での使用は推奨されません）
 
 ### 背景画像の設定
 
