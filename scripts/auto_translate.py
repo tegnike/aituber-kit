@@ -85,6 +85,7 @@ class FileInfo(BaseModel):
         default=None, description="翻訳された内容"
     )
     needs_translation: bool = Field(default=False, description="翻訳が必要かどうか")
+    is_committed: bool = Field(default=False, description="コミット済みかどうか")
 
 
 class TranslationState(BaseModel):
@@ -107,6 +108,10 @@ class TranslationState(BaseModel):
     )
     is_completed: bool = Field(
         default=False, description="全ての処理が完了したかどうか"
+    )
+    # 元ファイル単位でコミットをまとめるための辞書
+    source_file_translations: Dict[str, List[Dict[str, Any]]] = Field(
+        default_factory=dict, description="元ファイル単位の翻訳結果"
     )
 
 
@@ -182,6 +187,41 @@ def create_or_update_file(file_path, content, message, branch):
             "message": f"ファイルの更新に失敗しました: {e}",
             "path": file_path,
         }
+
+
+def create_or_update_files_batch(files_data, message, branch):
+    """複数のファイルを一度にコミットする
+
+    Args:
+        files_data: List[Dict] - 各ファイルの情報（path, content, sha）のリスト
+        message: str - コミットメッセージ
+        branch: str - ブランチ名
+
+    Returns:
+        Dict - 結果情報
+    """
+    print(f"複数ファイルを一度にコミットします。ファイル数: {len(files_data)}")
+
+    # 各ファイルの結果を格納する辞書
+    results = {}
+
+    # 各ファイルを個別に処理
+    for file_data in files_data:
+        file_path = file_data["path"]
+        content = file_data["content"]
+
+        # 個別のファイルを更新
+        result = create_or_update_file(file_path, content, message, branch)
+        results[file_path] = result
+
+    return {
+        "status": (
+            "success"
+            if all(r.get("status") != "error" for r in results.values())
+            else "partial_success"
+        ),
+        "results": results,
+    }
 
 
 def add_pr_comment(translation_results):
@@ -547,6 +587,7 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
     translation_results = updated_state.translation_results.copy()
     translation_targets = updated_state.translation_targets.copy()
     current_file_index = updated_state.current_file_index
+    source_file_translations = updated_state.source_file_translations.copy()
 
     # ターゲットディレクトリの存在を確認
     target_dir = os.path.dirname(current_target.target_file)
@@ -582,6 +623,7 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
                 "translation_targets": translation_targets,
                 "translation_results": translation_results,
                 "current_file_index": current_file_index,
+                "source_file_translations": source_file_translations,
             }
 
         # 差分のみを翻訳
@@ -613,13 +655,30 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
             current_target.target_content, added_lines, translated_diff
         )
 
-        # 翻訳結果をファイルに書き込む
-        message = f"Auto-translate: Update {current_target.target_file} with diff from {current_target.source_file}"
-        result = create_or_update_file(
-            current_target.target_file,
-            updated_content,
-            message,
-            updated_state.branch,
+        # 翻訳結果を保存（コミットはまだ行わない）
+        current_target.translated_content = updated_content
+        translation_targets[current_file_index] = current_target
+
+        # 元ファイル単位でグループ化
+        if current_target.source_file not in source_file_translations:
+            source_file_translations[current_target.source_file] = []
+
+        source_file_translations[current_target.source_file].append(
+            {
+                "path": current_target.target_file,
+                "content": updated_content,
+                "language": current_target.language,
+            }
+        )
+
+        # 翻訳結果を記録
+        translation_results.append(
+            {
+                "source_file": current_target.source_file,
+                "target_file": current_target.target_file,
+                "language": current_target.language,
+                "status": "translated",  # まだコミットしていないのでtranslatedステータス
+            }
         )
     else:
         # 従来の全体翻訳
@@ -643,33 +702,31 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
         response = llm.invoke(messages)
         translated_content = response.content
 
-        # 翻訳結果をファイルに書き込む
-        message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-        result = create_or_update_file(
-            current_target.target_file,
-            translated_content,
-            message,
-            updated_state.branch,
+        # 翻訳結果を保存（コミットはまだ行わない）
+        current_target.translated_content = translated_content
+        translation_targets[current_file_index] = current_target
+
+        # 元ファイル単位でグループ化
+        if current_target.source_file not in source_file_translations:
+            source_file_translations[current_target.source_file] = []
+
+        source_file_translations[current_target.source_file].append(
+            {
+                "path": current_target.target_file,
+                "content": translated_content,
+                "language": current_target.language,
+            }
         )
 
-    # 結果に基づいてステータスを設定
-    status = "updated"
-    if result.get("status") == "error":
-        print(
-            f"警告: ファイルの更新に失敗しましたが、処理を続行します: {current_target.target_file}"
+        # 翻訳結果を記録
+        translation_results.append(
+            {
+                "source_file": current_target.source_file,
+                "target_file": current_target.target_file,
+                "language": current_target.language,
+                "status": "translated",  # まだコミットしていないのでtranslatedステータス
+            }
         )
-        status = "failed"
-    else:
-        print(f"翻訳完了: {current_target.target_file}")
-
-    translation_results.append(
-        {
-            "source_file": current_target.source_file,
-            "target_file": current_target.target_file,
-            "language": current_target.language,
-            "status": status,
-        }
-    )
 
     # 必ず現在のファイルインデックスを更新する
     current_file_index += 1
@@ -678,6 +735,7 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
         "translation_targets": translation_targets,
         "translation_results": translation_results,
         "current_file_index": current_file_index,
+        "source_file_translations": source_file_translations,
     }
 
 
@@ -690,6 +748,7 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
     translation_results = updated_state.translation_results.copy()
     translation_targets = updated_state.translation_targets.copy()
     current_file_index = updated_state.current_file_index
+    source_file_translations = updated_state.source_file_translations.copy()
 
     # ターゲットディレクトリの存在を確認
     target_dir = os.path.dirname(current_target.target_file)
@@ -735,6 +794,7 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
                     "translation_targets": translation_targets,
                     "translation_results": translation_results,
                     "current_file_index": current_file_index,
+                    "source_file_translations": source_file_translations,
                 }
 
             # 差分のみを翻訳
@@ -776,13 +836,30 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
             # 更新されたJSONを文字列に変換
             updated_json = json.dumps(target_json, indent=2, ensure_ascii=False)
 
-            # 翻訳結果をファイルに書き込む
-            message = f"Auto-translate: Update {current_target.target_file} with diff from {current_target.source_file}"
-            result = create_or_update_file(
-                current_target.target_file,
-                updated_json,
-                message,
-                updated_state.branch,
+            # 翻訳結果を保存（コミットはまだ行わない）
+            current_target.translated_content = updated_json
+            translation_targets[current_file_index] = current_target
+
+            # 元ファイル単位でグループ化
+            if current_target.source_file not in source_file_translations:
+                source_file_translations[current_target.source_file] = []
+
+            source_file_translations[current_target.source_file].append(
+                {
+                    "path": current_target.target_file,
+                    "content": updated_json,
+                    "language": current_target.language,
+                }
+            )
+
+            # 翻訳結果を記録
+            translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "translated",  # まだコミットしていないのでtranslatedステータス
+                }
             )
         except Exception as e:
             print(f"JSONの差分翻訳中にエラーが発生しました: {e}")
@@ -822,13 +899,30 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
             # JSONとして解析できるか確認
             json.loads(json_str)
 
-            # 翻訳結果をファイルに書き込む
-            message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-            result = create_or_update_file(
-                current_target.target_file,
-                json_str,
-                message,
-                updated_state.branch,
+            # 翻訳結果を保存（コミットはまだ行わない）
+            current_target.translated_content = json_str
+            translation_targets[current_file_index] = current_target
+
+            # 元ファイル単位でグループ化
+            if current_target.source_file not in source_file_translations:
+                source_file_translations[current_target.source_file] = []
+
+            source_file_translations[current_target.source_file].append(
+                {
+                    "path": current_target.target_file,
+                    "content": json_str,
+                    "language": current_target.language,
+                }
+            )
+
+            # 翻訳結果を記録
+            translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "translated",  # まだコミットしていないのでtranslatedステータス
+                }
             )
     else:
         # 従来の全体翻訳処理
@@ -865,33 +959,31 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
         # JSONとして解析できるか確認
         json.loads(json_str)
 
-        # 翻訳結果をファイルに書き込む
-        message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-        result = create_or_update_file(
-            current_target.target_file,
-            json_str,
-            message,
-            updated_state.branch,
+        # 翻訳結果を保存（コミットはまだ行わない）
+        current_target.translated_content = json_str
+        translation_targets[current_file_index] = current_target
+
+        # 元ファイル単位でグループ化
+        if current_target.source_file not in source_file_translations:
+            source_file_translations[current_target.source_file] = []
+
+        source_file_translations[current_target.source_file].append(
+            {
+                "path": current_target.target_file,
+                "content": json_str,
+                "language": current_target.language,
+            }
         )
 
-    # 結果に基づいてステータスを設定
-    status = "updated"
-    if result.get("status") == "error":
-        print(
-            f"警告: ファイルの更新に失敗しましたが、処理を続行します: {current_target.target_file}"
+        # 翻訳結果を記録
+        translation_results.append(
+            {
+                "source_file": current_target.source_file,
+                "target_file": current_target.target_file,
+                "language": current_target.language,
+                "status": "translated",  # まだコミットしていないのでtranslatedステータス
+            }
         )
-        status = "failed"
-    else:
-        print(f"翻訳完了: {current_target.target_file}")
-
-    translation_results.append(
-        {
-            "source_file": current_target.source_file,
-            "target_file": current_target.target_file,
-            "language": current_target.language,
-            "status": status,
-        }
-    )
 
     # 必ず現在のファイルインデックスを更新する
     current_file_index += 1
@@ -900,6 +992,7 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
         "translation_targets": translation_targets,
         "translation_results": translation_results,
         "current_file_index": current_file_index,
+        "source_file_translations": source_file_translations,
     }
 
 
@@ -907,16 +1000,53 @@ def finalize_translation_node(state: TranslationState) -> Dict[str, Any]:
     """翻訳処理を完了する"""
     print("翻訳処理を完了します...")
     is_completed = True
+    updated_translation_results = state.translation_results.copy()
+
+    # 元ファイル単位でコミットを実行
+    for source_file, translations in state.source_file_translations.items():
+        if not translations:
+            continue
+
+        # 翻訳対象の言語をカンマ区切りで列挙
+        languages = ", ".join([t["language"] for t in translations])
+
+        # コミットメッセージを作成
+        message = f"Auto-translate: Update translations for {source_file} ({languages})"
+
+        # 複数ファイルを一度にコミットする
+        files_data = [
+            {
+                "path": t["path"],
+                "content": t["content"],
+            }
+            for t in translations
+        ]
+
+        # コミットを実行
+        result = create_or_update_files_batch(files_data, message, state.branch)
+
+        # 結果に基づいてステータスを更新
+        for translation in translations:
+            target_path = translation["path"]
+            file_result = result["results"].get(target_path, {})
+            status = "updated" if file_result.get("status") != "error" else "failed"
+
+            # 翻訳結果リストの対応するエントリを更新
+            for i, res in enumerate(updated_translation_results):
+                if res["target_file"] == target_path:
+                    updated_translation_results[i]["status"] = status
+                    break
 
     # 翻訳結果をPRにコメント
-    if state.translation_results:
-        add_pr_comment(state.translation_results)
+    if updated_translation_results:
+        add_pr_comment(updated_translation_results)
 
     # 処理完了フラグを設定
     print("自動翻訳処理が完了しました。")
 
     return {
         "is_completed": is_completed,
+        "translation_results": updated_translation_results,
     }
 
 
