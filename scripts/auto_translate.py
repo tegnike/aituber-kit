@@ -558,7 +558,7 @@ class AutoTranslator:
         # 条件分岐
         self.workflow.add_conditional_edges(
             "process_translations",
-            lambda x: x["next"],
+            lambda x: x.next,
             {
                 "process_translations": "process_translations",
                 "translate_markdown": "translate_markdown",
