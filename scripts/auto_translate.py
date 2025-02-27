@@ -199,12 +199,18 @@ def initialize_state(state: TranslationState) -> TranslationState:
     """初期状態を設定する"""
     print("翻訳処理を開始します...")
 
-    # PRの情報を取得
-    pr_files = get_pr_files()
-    branch = f"refs/pull/{PR_NUMBER}/head"
+    try:
+        # PRの情報を取得
+        pr_files = get_pr_files()
+        branch = f"refs/pull/{PR_NUMBER}/head"
 
-    state.pr_files = pr_files
-    state.branch = branch
+        state.pr_files = pr_files
+        state.branch = branch
+    except Exception as e:
+        print(f"初期化中にエラーが発生しました: {e}")
+        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
+        state.is_completed = True
+        state.pr_files = []
 
     return state
 
@@ -213,32 +219,38 @@ def prepare_translation_targets(state: TranslationState) -> TranslationState:
     """翻訳対象のファイルを準備する"""
     print("翻訳対象のファイルを準備しています...")
 
-    translation_targets = []
+    try:
+        translation_targets = []
 
-    # 変更されたファイルを処理
-    for file_info in state.pr_files:
-        file_path = file_info["filename"]
+        # 変更されたファイルを処理
+        for file_info in state.pr_files:
+            file_path = file_info["filename"]
 
-        # 翻訳対象のファイルかどうかを確認
-        if file_path in FILE_MAPPINGS:
-            mapping = FILE_MAPPINGS[file_path]
-            file_type = mapping["type"]
+            # 翻訳対象のファイルかどうかを確認
+            if file_path in FILE_MAPPINGS:
+                mapping = FILE_MAPPINGS[file_path]
+                file_type = mapping["type"]
 
-            # 各言語に対して翻訳処理を準備
-            for lang in TARGET_LANGUAGES:
-                target_file = mapping["pattern"].format(lang)
+                # 各言語に対して翻訳処理を準備
+                for lang in TARGET_LANGUAGES:
+                    target_file = mapping["pattern"].format(lang)
 
-                # ファイル情報を作成
-                translation_targets.append(
-                    FileInfo(
-                        source_file=file_path,
-                        target_file=target_file,
-                        language=lang,
-                        file_type=file_type,
+                    # ファイル情報を作成
+                    translation_targets.append(
+                        FileInfo(
+                            source_file=file_path,
+                            target_file=target_file,
+                            language=lang,
+                            file_type=file_type,
+                        )
                     )
-                )
 
-    state.translation_targets = translation_targets
+        state.translation_targets = translation_targets
+    except Exception as e:
+        print(f"翻訳対象の準備中にエラーが発生しました: {e}")
+        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
+        state.translation_targets = []
+        state.is_completed = True
 
     return state
 
@@ -252,13 +264,18 @@ def fetch_file_contents(state: TranslationState) -> TranslationState:
 
     print("ファイルの内容を取得しています...")
 
-    for target in state.translation_targets:
-        # 元ファイルと翻訳先ファイルの内容を取得
-        source_content = get_file_content(target.source_file, state.branch)
-        target_content = get_file_content(target.target_file, state.branch)
+    try:
+        for target in state.translation_targets:
+            # 元ファイルと翻訳先ファイルの内容を取得
+            source_content = get_file_content(target.source_file, state.branch)
+            target_content = get_file_content(target.target_file, state.branch)
 
-        target.source_content = source_content
-        target.target_content = target_content
+            target.source_content = source_content
+            target.target_content = target_content
+    except Exception as e:
+        print(f"ファイル内容の取得中にエラーが発生しました: {e}")
+        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
+        state.is_completed = True
 
     return state
 
@@ -267,45 +284,50 @@ def check_translation_needs(state: TranslationState) -> TranslationState:
     """翻訳が必要かどうかを判断する"""
     print("翻訳の必要性を判断しています...")
 
-    llm = get_llm()
+    try:
+        llm = get_llm()
 
-    for target in state.translation_targets:
-        # 翻訳先ファイルが存在しない場合は翻訳が必要
-        if not target.target_content:
-            target.needs_translation = True
-            continue
+        for target in state.translation_targets:
+            # 翻訳先ファイルが存在しない場合は翻訳が必要
+            if not target.target_content:
+                target.needs_translation = True
+                continue
 
-        # AIに翻訳が必要かどうかを判断してもらう
-        try:
-            prompt = (
-                f"以下の2つのファイルを比較して、翻訳の更新が必要かどうかを判断してください。\n\n"
-                f"ファイルタイプ: {target.file_type}\n"
-                f"元言語: 日本語\n"
-                f"翻訳先言語: {target.language}\n\n"
-                "元ファイルの内容:\n"
-                f"{target.source_content}\n\n"
-                "翻訳先ファイルの内容:\n"
-                f"{target.target_content}\n\n"
-                "以下の基準で判断してください：\n"
-                "1. 元ファイルに新しい内容が追加されているが、翻訳先ファイルには反映されていない場合\n"
-                "2. 元ファイルの内容が変更されているが、翻訳先ファイルには反映されていない場合\n"
-                "3. 翻訳先ファイルの翻訳品質が低い場合\n\n"
-                "「true」または「false」のみで回答してください。翻訳の更新が必要な場合は「true」、不要な場合は「false」と回答してください。"
-            )
+            # AIに翻訳が必要かどうかを判断してもらう
+            try:
+                prompt = (
+                    f"以下の2つのファイルを比較して、翻訳の更新が必要かどうかを判断してください。\n\n"
+                    f"ファイルタイプ: {target.file_type}\n"
+                    f"元言語: 日本語\n"
+                    f"翻訳先言語: {target.language}\n\n"
+                    "元ファイルの内容:\n"
+                    f"{target.source_content}\n\n"
+                    "翻訳先ファイルの内容:\n"
+                    f"{target.target_content}\n\n"
+                    "以下の基準で判断してください：\n"
+                    "1. 元ファイルに新しい内容が追加されているが、翻訳先ファイルには反映されていない場合\n"
+                    "2. 元ファイルの内容が変更されているが、翻訳先ファイルには反映されていない場合\n"
+                    "3. 翻訳先ファイルの翻訳品質が低い場合\n\n"
+                    "「true」または「false」のみで回答してください。翻訳の更新が必要な場合は「true」、不要な場合は「false」と回答してください。"
+                )
 
-            messages = [
-                {"role": "system", "content": "あなたは翻訳の専門家です。"},
-                {"role": "user", "content": prompt},
-            ]
+                messages = [
+                    {"role": "system", "content": "あなたは翻訳の専門家です。"},
+                    {"role": "user", "content": prompt},
+                ]
 
-            response = llm.invoke(messages)
-            result = response.content.strip().lower()
-            target.needs_translation = "true" in result
+                response = llm.invoke(messages)
+                result = response.content.strip().lower()
+                target.needs_translation = "true" in result
 
-        except Exception as e:
-            print(f"翻訳必要性の判断に失敗しました。エラー: {e}")
-            # エラーが発生した場合は安全のため翻訳を実行する
-            target.needs_translation = True
+            except Exception as e:
+                print(f"翻訳必要性の判断に失敗しました。エラー: {e}")
+                # エラーが発生した場合は安全のため翻訳を実行する
+                target.needs_translation = True
+    except Exception as e:
+        print(f"翻訳必要性の判断全体でエラーが発生しました: {e}")
+        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
+        state.is_completed = True
 
     return state
 
@@ -319,41 +341,51 @@ def process_translations(state: TranslationState) -> Dict[str, Any]:
         state.is_completed = True
         return {"next": "finalize"}
 
-    current_target = state.translation_targets[state.current_file_index]
-    print(f"処理中: {current_target.source_file} -> {current_target.target_file}")
+    try:
+        current_target = state.translation_targets[state.current_file_index]
+        print(f"処理中: {current_target.source_file} -> {current_target.target_file}")
 
-    if not current_target.needs_translation:
-        print(f"翻訳は不要です: {current_target.target_file}")
-        state.translation_results.append(
-            {
-                "source_file": current_target.source_file,
-                "target_file": current_target.target_file,
-                "language": current_target.language,
-                "status": "skipped",
-            }
-        )
-        state.current_file_index += 1
-        return {"next": "process_translations"}
+        if not current_target.needs_translation:
+            print(f"翻訳は不要です: {current_target.target_file}")
+            state.translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "skipped",
+                }
+            )
+            state.current_file_index += 1
+            return {"next": "process_translations"}
 
-    print(f"翻訳が必要です: {current_target.target_file}")
+        print(f"翻訳が必要です: {current_target.target_file}")
 
-    # ファイルタイプに応じた翻訳処理を実行
-    if current_target.file_type == "markdown":
-        return {"next": "translate_markdown"}
-    elif current_target.file_type == "json":
-        return {"next": "translate_json"}
-    else:
-        print(f"未対応のファイルタイプ: {current_target.file_type}")
-        state.translation_results.append(
-            {
-                "source_file": current_target.source_file,
-                "target_file": current_target.target_file,
-                "language": current_target.language,
-                "status": "failed",
-            }
-        )
-        state.current_file_index += 1
-        return {"next": "process_translations"}
+        # ファイルタイプに応じた翻訳処理を実行
+        if current_target.file_type == "markdown":
+            return {"next": "translate_markdown"}
+        elif current_target.file_type == "json":
+            return {"next": "translate_json"}
+        else:
+            print(f"未対応のファイルタイプ: {current_target.file_type}")
+            state.translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "failed",
+                }
+            )
+            state.current_file_index += 1
+            return {"next": "process_translations"}
+    except Exception as e:
+        print(f"翻訳処理の実行中にエラーが発生しました: {e}")
+        # エラーが発生した場合は、次のファイルに進むか、完了状態にする
+        if state.current_file_index < len(state.translation_targets):
+            state.current_file_index += 1
+            return {"next": "process_translations"}
+        else:
+            state.is_completed = True
+            return {"next": "finalize"}
 
 
 def translate_markdown(state: TranslationState) -> TranslationState:
@@ -361,58 +393,66 @@ def translate_markdown(state: TranslationState) -> TranslationState:
     current_target = state.translation_targets[state.current_file_index]
     print(f"マークダウンファイルを翻訳しています: {current_target.target_file}")
 
-    llm = get_llm()
-
     try:
-        prompt = (
-            f"以下の日本語のマークダウンファイルを{current_target.language}に翻訳してください。\n\n"
-            "翻訳の際は以下のルールに従ってください：\n"
-            "1. マークダウンの構造（見出し、リスト、コードブロックなど）を維持してください。\n"
-            "2. リンクやイメージの参照は変更しないでください。\n"
-            "3. コードブロック内のコードは翻訳しないでください。\n"
-            "4. 技術用語は適切に翻訳してください。\n"
-            "5. 翻訳後のテキストのみを出力してください。説明や注釈は不要です。\n\n"
-            "翻訳対象のマークダウン：\n\n"
-            f"{current_target.source_content}"
-        )
+        llm = get_llm()
 
-        messages = [
-            {"role": "system", "content": "あなたは翻訳の専門家です。"},
-            {"role": "user", "content": prompt},
-        ]
+        try:
+            prompt = (
+                f"以下の日本語のマークダウンファイルを{current_target.language}に翻訳してください。\n\n"
+                "翻訳の際は以下のルールに従ってください：\n"
+                "1. マークダウンの構造（見出し、リスト、コードブロックなど）を維持してください。\n"
+                "2. リンクやイメージの参照は変更しないでください。\n"
+                "3. コードブロック内のコードは翻訳しないでください。\n"
+                "4. 技術用語は適切に翻訳してください。\n"
+                "5. 翻訳後のテキストのみを出力してください。説明や注釈は不要です。\n\n"
+                "翻訳対象のマークダウン：\n\n"
+                f"{current_target.source_content}"
+            )
 
-        response = llm.invoke(messages)
-        translated_content = response.content
-        current_target.translated_content = translated_content
+            messages = [
+                {"role": "system", "content": "あなたは翻訳の専門家です。"},
+                {"role": "user", "content": prompt},
+            ]
 
-        # 翻訳結果をファイルに書き込む
-        message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-        create_or_update_file(
-            current_target.target_file, translated_content, message, state.branch
-        )
+            response = llm.invoke(messages)
+            translated_content = response.content
+            current_target.translated_content = translated_content
 
-        print(f"翻訳完了: {current_target.target_file}")
-        state.translation_results.append(
-            {
-                "source_file": current_target.source_file,
-                "target_file": current_target.target_file,
-                "language": current_target.language,
-                "status": "updated",
-            }
-        )
+            # 翻訳結果をファイルに書き込む
+            message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
+            create_or_update_file(
+                current_target.target_file, translated_content, message, state.branch
+            )
 
+            print(f"翻訳完了: {current_target.target_file}")
+            state.translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "updated",
+                }
+            )
+
+        except Exception as e:
+            print(f"翻訳に失敗しました。エラー: {e}")
+            state.translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "failed",
+                }
+            )
     except Exception as e:
-        print(f"翻訳に失敗しました。エラー: {e}")
-        state.translation_results.append(
-            {
-                "source_file": current_target.source_file,
-                "target_file": current_target.target_file,
-                "language": current_target.language,
-                "status": "failed",
-            }
-        )
+        print(f"マークダウン翻訳処理全体でエラーが発生しました: {e}")
+        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
+        state.current_file_index += 1
 
-    state.current_file_index += 1
+    # 必ず現在のファイルインデックスを更新する
+    if state.current_file_index == state.translation_targets.index(current_target):
+        state.current_file_index += 1
+
     return state
 
 
@@ -421,77 +461,85 @@ def translate_json(state: TranslationState) -> TranslationState:
     current_target = state.translation_targets[state.current_file_index]
     print(f"JSONファイルを翻訳しています: {current_target.target_file}")
 
-    llm = get_llm()
-
     try:
-        # JSONをパース
-        source_json = json.loads(current_target.source_content)
+        llm = get_llm()
 
-        # 翻訳リクエスト用のテキストを作成
-        json_text = json.dumps(source_json, indent=2, ensure_ascii=False)
+        try:
+            # JSONをパース
+            source_json = json.loads(current_target.source_content)
 
-        prompt = (
-            f"以下の日本語のJSONファイルを{current_target.language}に翻訳してください。\n\n"
-            "翻訳の際は以下のルールに従ってください：\n"
-            "1. JSONの構造を維持してください。\n"
-            "2. キーは翻訳せず、値のみを翻訳してください。\n"
-            "3. 変数や特殊な記号（{{}}, $t など）は翻訳しないでください。\n"
-            "4. 技術用語は適切に翻訳してください。\n"
-            "5. 翻訳後のJSONのみを出力してください。説明や注釈は不要です。\n\n"
-            "翻訳対象のJSON：\n\n"
-            f"{json_text}"
-        )
+            # 翻訳リクエスト用のテキストを作成
+            json_text = json.dumps(source_json, indent=2, ensure_ascii=False)
 
-        messages = [
-            {"role": "system", "content": "あなたは翻訳の専門家です。"},
-            {"role": "user", "content": prompt},
-        ]
+            prompt = (
+                f"以下の日本語のJSONファイルを{current_target.language}に翻訳してください。\n\n"
+                "翻訳の際は以下のルールに従ってください：\n"
+                "1. JSONの構造を維持してください。\n"
+                "2. キーは翻訳せず、値のみを翻訳してください。\n"
+                "3. 変数や特殊な記号（{{}}, $t など）は翻訳しないでください。\n"
+                "4. 技術用語は適切に翻訳してください。\n"
+                "5. 翻訳後のJSONのみを出力してください。説明や注釈は不要です。\n\n"
+                "翻訳対象のJSON：\n\n"
+                f"{json_text}"
+            )
 
-        response = llm.invoke(messages)
-        translated_text = response.content
+            messages = [
+                {"role": "system", "content": "あなたは翻訳の専門家です。"},
+                {"role": "user", "content": prompt},
+            ]
 
-        # JSON部分を抽出するために { と } で囲まれた部分を探す
-        if translated_text:
-            start = translated_text.find("{")
-            end = translated_text.rfind("}") + 1
-            if start != -1 and end != -1:
-                json_str = translated_text[start:end]
-                # JSONとして解析できるか確認
-                json.loads(json_str)
-                current_target.translated_content = json_str
+            response = llm.invoke(messages)
+            translated_text = response.content
 
-                # 翻訳結果をファイルに書き込む
-                message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-                create_or_update_file(
-                    current_target.target_file, json_str, message, state.branch
-                )
+            # JSON部分を抽出するために { と } で囲まれた部分を探す
+            if translated_text:
+                start = translated_text.find("{")
+                end = translated_text.rfind("}") + 1
+                if start != -1 and end != -1:
+                    json_str = translated_text[start:end]
+                    # JSONとして解析できるか確認
+                    json.loads(json_str)
+                    current_target.translated_content = json_str
 
-                print(f"翻訳完了: {current_target.target_file}")
-                state.translation_results.append(
-                    {
-                        "source_file": current_target.source_file,
-                        "target_file": current_target.target_file,
-                        "language": current_target.language,
-                        "status": "updated",
-                    }
-                )
+                    # 翻訳結果をファイルに書き込む
+                    message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
+                    create_or_update_file(
+                        current_target.target_file, json_str, message, state.branch
+                    )
+
+                    print(f"翻訳完了: {current_target.target_file}")
+                    state.translation_results.append(
+                        {
+                            "source_file": current_target.source_file,
+                            "target_file": current_target.target_file,
+                            "language": current_target.language,
+                            "status": "updated",
+                        }
+                    )
+                else:
+                    raise ValueError("翻訳結果からJSONを抽出できませんでした。")
             else:
-                raise ValueError("翻訳結果からJSONを抽出できませんでした。")
-        else:
-            raise ValueError("翻訳結果が空です。")
+                raise ValueError("翻訳結果が空です。")
 
+        except Exception as e:
+            print(f"JSON翻訳に失敗しました。エラー: {e}")
+            state.translation_results.append(
+                {
+                    "source_file": current_target.source_file,
+                    "target_file": current_target.target_file,
+                    "language": current_target.language,
+                    "status": "failed",
+                }
+            )
     except Exception as e:
-        print(f"JSON翻訳に失敗しました。エラー: {e}")
-        state.translation_results.append(
-            {
-                "source_file": current_target.source_file,
-                "target_file": current_target.target_file,
-                "language": current_target.language,
-                "status": "failed",
-            }
-        )
+        print(f"JSON翻訳処理全体でエラーが発生しました: {e}")
+        # エラーが発生しても、少なくとも1つのフィールドを更新する必要がある
+        state.current_file_index += 1
 
-    state.current_file_index += 1
+    # 必ず現在のファイルインデックスを更新する
+    if state.current_file_index == state.translation_targets.index(current_target):
+        state.current_file_index += 1
+
     return state
 
 
@@ -499,11 +547,17 @@ def finalize_translation(state: TranslationState) -> TranslationState:
     """翻訳処理を完了する"""
     print("翻訳処理を完了します...")
 
-    # 翻訳結果をPRにコメント
-    if state.translation_results:
-        add_pr_comment(state.translation_results)
+    try:
+        # 翻訳結果をPRにコメント
+        if state.translation_results:
+            add_pr_comment(state.translation_results)
+    except Exception as e:
+        print(f"翻訳処理の完了中にエラーが発生しました: {e}")
+    finally:
+        # 処理完了フラグを設定
+        state.is_completed = True
+        print("自動翻訳処理が完了しました。")
 
-    print("自動翻訳処理が完了しました。")
     return state
 
 
@@ -552,17 +606,25 @@ class AutoTranslator:
         """グラフを実行する"""
         app = self.workflow.compile()
         initial_state = TranslationState()
-        final_state = app.invoke(initial_state)
 
-        # グラフの可視化（オプション）
         try:
-            graph = app.get_graph()
-            graph.draw_png("auto_translate_workflow.png")
-            print("ワークフローグラフを生成しました: auto_translate_workflow.png")
-        except Exception as e:
-            print(f"ワークフローグラフの生成に失敗しました: {e}")
+            final_state = app.invoke(initial_state)
 
-        return final_state
+            # グラフの可視化（オプション）
+            try:
+                graph = app.get_graph()
+                graph.draw_png("auto_translate_workflow.png")
+                print("ワークフローグラフを生成しました: auto_translate_workflow.png")
+            except Exception as e:
+                print(f"ワークフローグラフの生成に失敗しました: {e}")
+
+            return final_state
+        except Exception as e:
+            print(f"ワークフロー実行中にエラーが発生しました: {e}")
+            # エラーが発生した場合でも、状態を返す
+            initial_state.is_completed = True
+            initial_state.translation_results = []
+            return initial_state
 
 
 if __name__ == "__main__":

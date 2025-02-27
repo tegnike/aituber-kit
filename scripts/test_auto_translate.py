@@ -408,6 +408,103 @@ class TestAutoTranslate(unittest.TestCase):
         self.assertIn("hello", response.content.lower())
         print(f"OpenAI API翻訳結果: {response.content}")
 
+    # エラーハンドリングのテスト
+    @patch("auto_translate.get_pr_files")
+    def test_initialize_state_error_handling(self, mock_get_pr_files):
+        """初期化時のエラーハンドリングテスト"""
+        # get_pr_filesが例外を発生させるようにモック
+        mock_get_pr_files.side_effect = Exception("テスト用エラー")
+
+        # 初期状態を作成
+        state = TranslationState()
+
+        # initialize_stateを実行
+        from auto_translate import initialize_state
+
+        result_state = initialize_state(state)
+
+        # アサーション
+        self.assertTrue(result_state.is_completed)
+        self.assertEqual(result_state.pr_files, [])
+
+    @patch("auto_translate.get_llm")
+    def test_check_translation_needs_error_handling(self, mock_get_llm):
+        """翻訳必要性判断時のエラーハンドリングテスト"""
+        # get_llmが例外を発生させるようにモック
+        mock_get_llm.side_effect = Exception("テスト用エラー")
+
+        # テスト用の状態を作成
+        state = TranslationState()
+        target = FileInfo(
+            source_file="README.md",
+            target_file="docs/README_en.md",
+            language="en",
+            file_type="markdown",
+            source_content="# テスト\nこれはテストです。",
+            target_content="# Test\nThis is a test.",
+        )
+        state.translation_targets = [target]
+
+        # 関数を実行
+        from auto_translate import check_translation_needs
+
+        result_state = check_translation_needs(state)
+
+        # アサーション
+        self.assertTrue(result_state.is_completed)
+
+    @patch("auto_translate.get_llm")
+    def test_translate_markdown_error_handling(self, mock_get_llm):
+        """マークダウン翻訳時のエラーハンドリングテスト"""
+        # get_llmが例外を発生させるようにモック
+        mock_get_llm.side_effect = Exception("テスト用エラー")
+
+        # テスト用の状態を作成
+        state = TranslationState()
+        target = FileInfo(
+            source_file="README.md",
+            target_file="docs/README_en.md",
+            language="en",
+            file_type="markdown",
+            source_content="# テスト\nこれはテストです。",
+            needs_translation=True,
+        )
+        state.translation_targets = [target]
+        state.current_file_index = 0
+
+        # 関数を実行
+        from auto_translate import translate_markdown
+
+        result_state = translate_markdown(state)
+
+        # アサーション
+        self.assertEqual(result_state.current_file_index, 1)
+
+    @patch("auto_translate.add_pr_comment")
+    def test_finalize_translation_error_handling(self, mock_add_pr_comment):
+        """翻訳完了時のエラーハンドリングテスト"""
+        # add_pr_commentが例外を発生させるようにモック
+        mock_add_pr_comment.side_effect = Exception("テスト用エラー")
+
+        # テスト用の状態を作成
+        state = TranslationState()
+        state.translation_results = [
+            {
+                "source_file": "README.md",
+                "target_file": "docs/README_en.md",
+                "language": "en",
+                "status": "updated",
+            }
+        ]
+
+        # 関数を実行
+        from auto_translate import finalize_translation
+
+        result_state = finalize_translation(state)
+
+        # アサーション
+        self.assertTrue(result_state.is_completed)
+
 
 if __name__ == "__main__":
     unittest.main()
