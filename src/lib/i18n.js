@@ -42,6 +42,9 @@ i18n.use(initReactI18next).init({
     hi: {
       translation: require('../../locales/hi/translation.json'),
     },
+    pl: {
+      translation: require('../../locales/pl/translation.json'),
+    },
   },
   lng: 'ja',
   fallbackLng: 'ja',

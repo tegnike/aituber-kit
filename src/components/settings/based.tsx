@@ -142,24 +142,32 @@ const Based = () => {
 
                   i18n.changeLanguage('hi')
                   break
+                case 'pl':
+                  settingsStore.setState({ selectLanguage: 'pl' })
+
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
                 default:
                   break
               }
             }}
           >
-            <option value="ja">日本語 - Japanese</option>
-            <option value="en">英語 - English</option>
-            <option value="zh">繁體中文 - Traditional Chinese</option>
-            <option value="ko">韓語 - Korean</option>
-            <option value="vi">ベトナム語 - Vietnamese</option>
-            <option value="fr">フランス語 - French</option>
-            <option value="es">スペイン語 - Spanish</option>
-            <option value="pt">ポルトガル語 - Portuguese</option>
-            <option value="de">ドイツ語 - German</option>
-            <option value="ru">ロシア語 - Russian</option>
-            <option value="it">イタリア語 - Italian</option>
-            <option value="ar">アラビア語 - Arabic</option>
-            <option value="hi">ヒンディー語 - Hindi</option>
+            <option value="ar">Arabic - アラビア語</option>
+            <option value="de">German - ドイツ語</option>
+            <option value="en">English - 英語</option>
+            <option value="es">Spanish - スペイン語</option>
+            <option value="fr">French - フランス語</option>
+            <option value="hi">Hindi - ヒンディー語</option>
+            <option value="it">Italian - イタリア語</option>
+            <option value="ja">Japanese - 日本語</option>
+            <option value="ko">Korean - 韓語</option>
+            <option value="pl">Polish - ポーランド語</option>
+            <option value="pt">Portuguese - ポルトガル語</option>
+            <option value="ru">Russian - ロシア語</option>
+            <option value="vi">Vietnamese - ベトナム語</option>
+            <option value="zh">Traditional Chinese - 繁體中文</option>
           </select>
         </div>
       </div>
