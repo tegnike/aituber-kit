@@ -29,6 +29,16 @@ headers = {
     "Accept": "application/vnd.github.v3+json",
 }
 
+
+# GitHub APIからPRの詳細情報を取得するための関数
+def get_pr_details():
+    """PRの詳細情報を取得する"""
+    url = f"{GITHUB_API_BASE}/repos/{REPO_FULL_NAME}/pulls/{PR_NUMBER}"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    return response.json()
+
+
 # 翻訳対象の言語リスト
 TARGET_LANGUAGES = ["en", "zh", "ko"]
 
@@ -150,9 +160,21 @@ def create_or_update_file(file_path, content, message, branch):
         data["sha"] = sha
 
     # ファイルを作成または更新
-    response = requests.put(url, headers=headers, json=data)
-    response.raise_for_status()
-    return response.json()
+    try:
+        response = requests.put(url, headers=headers, json=data)
+        response.raise_for_status()
+        print(f"ファイルが正常に更新されました: {file_path}")
+        return response.json()
+    except requests.exceptions.HTTPError as e:
+        print(f"エラー: ファイルの更新に失敗しました: {file_path}")
+        print(f"ステータスコード: {e.response.status_code}")
+        print(f"エラーメッセージ: {e.response.text}")
+        # エラーを発生させずに辞書を返す
+        return {
+            "status": "error",
+            "message": f"ファイルの更新に失敗しました: {e}",
+            "path": file_path,
+        }
 
 
 def add_pr_comment(translation_results):
@@ -205,11 +227,18 @@ def initialize_state_node(state: TranslationState) -> Dict[str, Any]:
 
     # PRの情報を取得
     pr_files = get_pr_files()
-    branch = f"refs/pull/{PR_NUMBER}/head"
+
+    # PRのソースブランチを取得
+    url = f"{GITHUB_API_BASE}/repos/{REPO_FULL_NAME}/pulls/{PR_NUMBER}"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    pr_details = response.json()
+    source_branch = pr_details["head"]["ref"]
+    print(f"PRのソースブランチ: {source_branch}")
 
     return {
         "pr_files": pr_files,
-        "branch": branch,
+        "branch": source_branch,
     }
 
 
@@ -378,6 +407,46 @@ def process_translations_node(state: TranslationState) -> Dict[str, Any]:
         }
 
 
+def ensure_directory_exists(directory_path):
+    """ディレクトリが存在することを確認し、存在しない場合は作成する"""
+    # グローバル変数の状態を取得
+    url = f"{GITHUB_API_BASE}/repos/{REPO_FULL_NAME}/pulls/{PR_NUMBER}"
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    pr_details = response.json()
+    branch = pr_details["head"]["ref"]
+
+    # ディレクトリのルートURLを構築
+    url = f"{GITHUB_API_BASE}/repos/{REPO_FULL_NAME}/contents/{directory_path}"
+
+    try:
+        # ディレクトリの存在を確認
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        # ディレクトリが存在する場合は何もしない
+        return True
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            # ディレクトリが存在しない場合
+            parent_dir = os.path.dirname(directory_path)
+            if parent_dir and parent_dir != "":
+                # 親ディレクトリを再帰的に作成
+                ensure_directory_exists(parent_dir)
+
+            # ディレクトリを作成するために空のファイルを作成
+            placeholder_file = f"{directory_path}/.gitkeep"
+            create_or_update_file(
+                placeholder_file,
+                "",  # 空のコンテンツ
+                f"Auto-create directory: {directory_path}",
+                branch,
+            )
+            print(f"ディレクトリを作成しました: {directory_path}")
+            return True
+        else:
+            raise
+
+
 def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
     """マークダウンファイルを翻訳する"""
     updated_state = state.model_copy(deep=True)
@@ -387,6 +456,16 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
     translation_results = updated_state.translation_results.copy()
     translation_targets = updated_state.translation_targets.copy()
     current_file_index = updated_state.current_file_index
+
+    # ターゲットディレクトリの存在を確認
+    target_dir = os.path.dirname(current_target.target_file)
+    if target_dir:
+        try:
+            ensure_directory_exists(target_dir)
+        except Exception as e:
+            print(
+                f"警告: ディレクトリの作成中にエラーが発生しましたが、処理を続行します: {e}"
+            )
 
     llm = get_llm()
 
@@ -412,20 +491,29 @@ def translate_markdown_node(state: TranslationState) -> Dict[str, Any]:
 
     # 翻訳結果をファイルに書き込む
     message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-    create_or_update_file(
+    result = create_or_update_file(
         current_target.target_file,
         translated_content,
         message,
         updated_state.branch,
     )
 
-    print(f"翻訳完了: {current_target.target_file}")
+    # 結果に基づいてステータスを設定
+    status = "updated"
+    if result.get("status") == "error":
+        print(
+            f"警告: ファイルの更新に失敗しましたが、処理を続行します: {current_target.target_file}"
+        )
+        status = "failed"
+    else:
+        print(f"翻訳完了: {current_target.target_file}")
+
     translation_results.append(
         {
             "source_file": current_target.source_file,
             "target_file": current_target.target_file,
             "language": current_target.language,
-            "status": "updated",
+            "status": status,
         }
     )
 
@@ -448,6 +536,16 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
     translation_results = updated_state.translation_results.copy()
     translation_targets = updated_state.translation_targets.copy()
     current_file_index = updated_state.current_file_index
+
+    # ターゲットディレクトリの存在を確認
+    target_dir = os.path.dirname(current_target.target_file)
+    if target_dir:
+        try:
+            ensure_directory_exists(target_dir)
+        except Exception as e:
+            print(
+                f"警告: ディレクトリの作成中にエラーが発生しましたが、処理を続行します: {e}"
+            )
 
     llm = get_llm()
 
@@ -486,20 +584,29 @@ def translate_json_node(state: TranslationState) -> Dict[str, Any]:
 
     # 翻訳結果をファイルに書き込む
     message = f"Auto-translate: Update {current_target.target_file} from {current_target.source_file}"
-    create_or_update_file(
+    result = create_or_update_file(
         current_target.target_file,
         json_str,
         message,
         updated_state.branch,
     )
 
-    print(f"翻訳完了: {current_target.target_file}")
+    # 結果に基づいてステータスを設定
+    status = "updated"
+    if result.get("status") == "error":
+        print(
+            f"警告: ファイルの更新に失敗しましたが、処理を続行します: {current_target.target_file}"
+        )
+        status = "failed"
+    else:
+        print(f"翻訳完了: {current_target.target_file}")
+
     translation_results.append(
         {
             "source_file": current_target.source_file,
             "target_file": current_target.target_file,
             "language": current_target.language,
-            "status": "updated",
+            "status": status,
         }
     )
 
