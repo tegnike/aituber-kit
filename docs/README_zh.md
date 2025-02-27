@@ -1,8 +1,8 @@
 # AITuberKit
 
-<img style="max-width: 100%;" src="./docs/logo.png">
+<img style="max-width: 100%;" src="./logo.png">
 
-**通知: 本项目自版本 v2.0.0 起采用自定义许可证。若用于商业目的，请查看[使用条款](#使用条款)部分。**
+**通知：从版本v2.0.0开始，本项目采用自定义许可方式。如果您计划将其用于商业目的，请查看[使用协议](#使用协议)部分。**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
@@ -18,103 +18,104 @@
 </p>
 <p align="center">
    <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
+   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/5rHEue52nZ"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
 
 <div align="center">
    <h3>
-      🌟 <a href="https://aituberkit.com">访问演示网站</a> 🌟
+      🌟 <a href="https://aituberkit.com">Demo Site</a> 🌟
    </h3>
 </div>
 
 <h3 align="center">
-   <a href="./docs/README_en.md">English</a>｜
-   <a href="./docs/README_zh.md">中文</a>｜
-   <a href="./docs/README_ko.md">韩语</a>
+   <a href="../README.md">【日本語】</a>｜
+   <a href="./README_en.md">【英語】</a>｜
+   <a href="./README_ko.md">【韓語】</a>
 </h3>
 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
-## 概要
+## 概覽
 
-主要有以下两个功能：
+此存儲庫主要具有以下2個功能：
 
-1. 与AI角色对话
+1. 與AI角色對話
 2. AITuber直播
 
-详细的使用方法请参阅下文的文章。
+我在下面的文章中寫了詳細的使用指南：
 
-[![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+[![今天成為AITuber開發者 | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
 
-## ⚠️ 关于安全的重要注意事项
+## ⚠️ 安全性相關重要注意事項
 
-本仓库不仅适用于个人使用和本地环境开发，也适用于在采取适当安全措施的情况下进行商业使用。但在部署到Web环境时，请注意以下几点：
+本存儲庫不僅考慮個人使用和本地環境開發，還考慮在採取適當安全措施的情況下進行商業使用。但是，在部署到Web環境時，請注意以下幾點：
 
-- **API密钥的处理**: 由于通过后端服务器调用AI服务（如OpenAI, Anthropic等）和TTS服务的API，因此需要妥善管理API密钥。
+- **API密鑰的處理**: 由於系統設計需要通過後端服務器調用AI服務（如OpenAI、Anthropic等）和TTS服務的API，因此需要適當管理API密鑰。
 
-### 关于生产环境的使用
+### 關於生產環境的使用
 
-在生产环境中使用时，建议采取以下措施之一：
+在生產環境中使用時，建議採取以下其中一種方案：
 
-1. **实现后端服务器**: 在服务器端管理API密钥，避免客户端直接访问API
-2. **向用户提供适当的说明**: 如果每个用户使用自己的API密钥，请说明安全注意事项
-3. **实施访问限制**: 根据需要，实施适当的认证和授权机制
+1. **實現後端服務器**: 在服務器端管理API密鑰，避免客戶端直接訪問API
+2. **向用戶提供適當說明**: 當用戶使用自己的API密鑰時，需要說明安全注意事項
+3. **實現訪問限制**: 根據需要實現適當的身份驗證和授權機制
 
-## 开发环境
+## 開發環境
 
-本项目在以下环境中开发：
+此項目在以下環境中開發：
 
 - Node.js: ^20.0.0
 - npm: 10.8.1
 
-## 通用准备步骤
+## 共同準備
 
-1. 将仓库克隆到本地。
+1. 將存儲庫克隆到本地。
 
 ```bash
 git clone https://github.com/tegnike/aituber-kit.git
 ```
 
-2. 打开文件夹。
+2. 打開文件夾。
 
 ```bash
 cd aituber-kit
 ```
 
-3. 安装包。
+3. 安裝包。
 
 ```bash
 npm install
 ```
 
-4. 在开发模式下启动应用程序。
+4. 以開發模式啟動應用程序。
 
 ```bash
 npm run dev
 ```
 
-5. 打开URL。[http://localhost:3000](http://localhost:3000)
+5. 打開URL [http://localhost:3000](http://localhost:3000)
 
-6. 根据需要创建.env文件。
+6. 必要時，創建.env文件。
 
 ```bash
 cp .env.example .env
 ```
 
-## 与AI角色对话
+## 與AI角色對話
 
-- 与AI角色对话的功能。
-- 扩展自此仓库的基础 [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)。
-- 只需拥有各类LLM的API密钥即可轻松开始。
-- 保持最近的对话作为记忆。
-- 多模态，可以识别来自摄像头的图像或上传的图片并生成回答。
+- 這是與AI角色對話的功能。
+- 它是此存儲庫的基礎[pixiv/ChatVRM](https://github.com/pixiv/ChatVRM)的擴展功能。
+- 只要您有各種LLM的API密鑰，就可以輕鬆開始使用。
+- 最近的對話句子作為記憶保留。
+- 它是多模態的，能夠識別來自攝像頭的圖像或上傳的圖像來生成回應。
 
 ### 使用方法
 
-1. 在设置界面输入所选LLM的API密钥。
+1. 在設置屏幕中輸入各種LLM的API密鑰。
    - OpenAI
    - Anthropic
    - Google Gemini
@@ -126,152 +127,152 @@ cp .env.example .env
    - Fireworks
    - 本地LLM
    - Dify（Chatbot或Agent）
-2. 根据需要编辑角色的设置提示。
-3. 根据需要上传角色的VRM文件或Live2D文件，以及背景文件。
-4. 选择语音合成引擎，并根据需要设置声音。
-   - VOICEVOX: 可以从多个选项中选择说话者。需要预先启动VOICEVOX应用。
-   - Koeiromap: 可以细致调整声音。需要输入API密钥。
-   - Google TTS: 可以选择除日语外的其他语言。需要凭证信息。
-   - Style-Bert-VITS2: 需要启动本地API服务器。
-   - AivisSpeech: 需要预先启动AivisSpeech应用。
-   - GSVI TTS: 需要启动本地API服务器。
-   - ElevenLabs: 可以选择多种语言。需要输入API密钥。
-   - OpenAI: 需要输入API密钥。
-   - Azure OpenAI: 需要输入API密钥。
-   - にじボイス: 需要输入API密钥。
-5. 从输入表单开始与角色对话。也可以使用麦克风输入。
+2. 如有必要，編輯角色的設置提示。
+3. 如有需要，加載VRM文件或Live2D文件和背景文件。
+4. 選擇語音合成引擎並根據需要配置語音設置。
+   - VOICEVOX：您可以從多個選項中選擇發言者。需要事先運行VOICEVOX應用程序。
+   - Koeiromap：您可以細微調整語音。需要API密鑰。
+   - Google TTS：還可以選擇日語以外的語言。需要憑證信息。
+   - Style-Bert-VITS2：需要運行本地API服務器。
+   - AivisSpeech: 需要事先運行AivisSpeech應用程序。
+   - GSVI TTS：需要運行本地API服務器。
+   - ElevenLabs：支持多種語言選擇。需要輸入API密鑰。
+   - OpenAI：需要API密鑰。
+   - Azure OpenAI：需要API密鑰。
+   - Nijivoice：需要API密鑰。
+5. 從輸入表單開始與角色對話。也可以使用麥克風輸入。
 
 ## AITuber直播
 
-- 可以获取YouTube的直播评论并进行发言。
-- 需要YouTube API密钥。
-- 以"#"开头的评论不会被读取。
+- 可以檢索YouTube直播評論並讓角色發言。
+- 需要YouTube API密鑰。
+- 以「#」開頭的評論不會被讀取。
 
 ### 使用方法
 
-1. 在设置界面开启YouTube模式。
-2. 输入YouTube API密钥和YouTube Live ID。
-3. 其他设置与“与AI角色对话”相同。
-4. 开始YouTube直播，确认角色对评论的反应。
-5. 开启对话持续模式时，即使没有评论，AI也可以自行发言。
+1. 在設置屏幕中打開YouTube模式。
+2. 輸入您的YouTube API密鑰和YouTube Live ID。
+3. 與"與AI角色對話"相同的方式配置其他設置。
+4. 開始在YouTube上直播並確認角色對評論的反應。
+5. 開啟会話継続模式，在沒有評論時，AI可以自動發言。
 
 ## 其他功能
 
-### 外部联动模式
+### 外部整合模式
 
-- 可以通过WebSocket向服务器应用发送请求并获取响应。
-- 需要另行准备服务器应用。
-
-#### 使用方法
-
-1. 启动服务器应用，打开`ws://127.0.0.1:8000/ws`端点。
-2. 在设置界面开启外部联动模式。
-3. 其他设置与“与AI角色对话”相同。
-4. 从输入表单发送请求，确认服务器应用返回的请求。
-
-#### 相关
-
-- 可以立即尝试此服务器应用的仓库。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- 详细设置请阅读“[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)”。
-
-### 幻灯片模式
-
-- AI角色自动展示幻灯片的模式。
-- 需要预先准备幻灯片和脚本文件。
+- 您可以通過WebSocket向服務器應用程序發送請求並獲得響應。
+- 需要另外準備服務器應用程序。
 
 #### 使用方法
 
-1. 进行到可以与AI角色对话的步骤。
-2. 将幻灯片文件夹和脚本文件放置在指定文件夹中。
-3. 在设置界面开启幻灯片模式。
-4. 按下幻灯片开始按钮开始展示。
+1. 啟動服務器應用程序並打開 `ws://127.0.0.1:8000/ws` 端點。
+2. 在設置屏幕中打開外部整合模式。
+3. 與"與AI角色對話"相同的方式配置其他設置。
+4. 從輸入表單發送請求，並確認從服務器應用程序返回響應。
 
-#### 相关
+#### 相關
 
-- 详细设置请阅读“[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)”。
+- 您可以使用此服務器應用程序存儲庫立即進行嘗試。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
+- 請閱讀"[與美少女一起開發吧！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)"以獲得詳細設置。
 
-### 实时API模式
+### 幻燈片模式
 
-- 使用OpenAI的实时API，以低延迟与角色对话的模式。
-- 可以定义函数执行。
+- 這是AI角色自動展示幻燈片的模式。
+- 您需要提前準備幻燈片和腳本文件。
 
 #### 使用方法
 
-1. 在AI服务中选择OpenAI或Azure OpenAI。
-2. 开启实时API模式。
-3. 使用麦克风进行对话。
+1. 進行到可以與AI角色互動的階段。
+2. 將幻燈片文件夾和腳本文件放在指定的文件夾中。
+3. 在設置屏幕中打開幻燈片模式。
+4. 按下開始幻燈片按鈕開始演示。
 
-#### 函数执行
+### Realtime API模式
 
-- 在src/components/realtimeAPITools.tsx, src/components/realtimeAPITools.json中定义新函数。
-- 请参考现有的get_current_weather函数。
+- 使用OpenAI的Realtime API，可以以低延遲與角色對話。
+- 可以定義函數執行。
 
-## TIPS
+#### 使用方法
 
-### 关于Live2D的使用
+1. 在AI服務中選擇OpenAI或Azure OpenAI。
+2. 打開Realtime API模式。
+3. 使用麥克風進行對話。
 
-为了显示Live2D，使用了非官方库 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)。
+#### 函數執行
 
-Live2D作为开发用SDK提供了Cubism库，目前存在Cubism 2.1、Cubism 3、Cubism 4和Cubism 5。Cubism 4与Cubism 3的模型兼容，最新的Cubism 5与Cubism 4兼容。
+- 在src/components/realtimeAPITools.tsx和src/components/realtimeAPITools.json中定義新函數。
+- 請參考現有的get_current_weather函數。
 
-通过使用Cubism 2.1和Cubism 4/5，可以支持所有变体的Live2D模型。
+## 小貼士
 
-#### Cubism Core
+### 背景固定方法
 
-在使用此功能之前，需要将以下Cubism Core（Cubism运行时库）文件都放置在`public/scripts`中：
+- 在 `public/bg-c.png` 更改背景圖片。請不要更改名稱。
 
-1. `live2dcubismcore.min.js`（用于Cubism 4/5）
+### 設置環境變量
 
-   - 可从[官方网站](https://www.live2d.com/sdk/download/web/)下载
-   - 或从[此处](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)获取（注意：不建议在生产环境中使用）
+- 某些配置值可以從 `.env` 文件內容中參考。
+- 如果在設置屏幕中輸入，則該值優先。
 
-2. `live2d.min.js`（用于Cubism 2.1）
-   - 自2019年9月4日起，无法从官方网站下载，但可从以下获取：
-     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
-     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+### 麥克風輸入方法（2種模式）
 
-通过放置这两个文件，可以支持所有版本的Live2D模型。
-
-### 背景图片设置
-
-- 请更改`public/bg-c.png`的图片。请勿更改名称。
-
-### 环境变量设置
-
-- 部分设置值可以在`.env`文件中指定。
-- 如果在设置界面输入，则优先于环境变量中指定的值。
-
-### 麦克风输入方法（2种）
-
-1. 按住Alt（或option）键进行输入 => 松开后发送
-2. 点击麦克风按钮（按下一次开始输入）=> 再次点击发送
+1. 按住Alt（或option）鍵進行輸入 => 釋放發送
+2. 點擊麥克風按鈕（點擊一次開始錄音）=> 再次點擊發送
 
 ### 其他
 
-- 可以在设置界面重置设置信息和对话历史。
-- 各种设置项作为本地存储保存在浏览器中。
-- 用代码块包围的元素不会被TTS读取。
+- 設置信息和對話歷史可以在設置屏幕中重置。
+- 各種設置項目保存在瀏覽器的本地存儲中。
+- 代碼塊中的元素不會被TTS讀取。
 
-## 相关文章
+### 关于Live2D规格
 
-- [今日からあなたもAITuberデベロッパー｜ニケちゃん](https://note.com/nike_cha_n/n/ne98acb25e00f)
-- [美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
-- [スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)
-- [AITuberKitにマルチモーダル機能を追加したのでAIキャラと宅飲みしてみる](https://note.com/nike_cha_n/n/n6d8e330561e4)
-- [AITuberKit × Dify で超簡単チャットボット構築](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
-- [DifyをXserverでインターネットに公開する](https://note.com/nike_cha_n/n/n23467824b22b)
-- [高度な音声モード こと Realtime API を試してみる](https://note.com/nike_cha_n/n/ne51c16ddadd0)
+Live2D显示使用非官方库 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)。
 
-## 寻求赞助
+Live2D提供了一个名为Cubism的库作为开发SDK，目前存在Cubism 2.1、Cubism 3、Cubism 4和Cubism 5。Cubism 4與Cubism 3模型兼容，最新的Cubism 5與Cubism 4兼容。
 
-为了持续开发，我们正在寻找赞助者。<br>
-您的支持将大大促进AITuber Kit的开发和改进。
+通过使用Cubism 2.1和Cubism 4/5，我们支持所有版本的Live2D模型。
+
+#### Cubism Core
+
+使用此功能之前，需要将以下Cubism Core（Cubismランタイムライブラリ）文件放置在 `public/scripts` 中：
+
+1. `live2dcubismcore.min.js` (Cubism 4/5)
+
+   - [官方网站](https://www.live2d.com/sdk/download/web/)
+   - 或者[这里](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)（注意：不建议在生产环境中使用）
+
+2. `live2d.min.js` (Cubism 2.1)
+   - 自2019年9月4日起，官方网站不再提供下载，但可以从以下位置获取：
+     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
+     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
+
+设置这两个文件后，可以支持所有版本的Live2D模型。
+
+### 背景图片设置
+
+- 在 `public/bg-c.png` 更改背景圖片。請不要更改名稱。
+
+## 相關文章
+
+- [今天成為AITuber開發者 | Nike-chan](https://note.com/nike_cha_n/n/ne98acb25e00f)
+- [與美少女一起開發吧！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
+- [AI時代的幻燈片演示！！！！](https://note.com/nike_cha_n/n/n867081a598f1)
+- [AITuberKit添加了多模態功能，讓我們與AI角色一起在家喝一杯](https://note.com/nike_cha_n/n/n6d8e330561e4)
+- [AITuberKit × Dify 超簡單聊天機器人構建](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
+- [在Xserver上公開Dify](https://note.com/nike_cha_n/n/n23467824b22b)
+- [嘗試高級語音模式 Realtime API](https://note.com/nike_cha_n/n/ne51c16ddadd0)
+
+## 尋求贊助
+
+我們正在尋求贊助者以繼續我們的開發工作。<br>
+您的支持將極大地促進AITuber套件的開發和改進。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
-### 协作者（按支持顺序）
+### 我們的支持者（按支持順序排列）
 
 <p>
   <a href="https://github.com/morioki3" title="morioki3">
@@ -342,34 +343,34 @@ Live2D作为开发用SDK提供了Cubism库，目前存在Cubism 2.1、Cubism 3�
   </a>
 </p>
 
-其他，私人赞助者 多名
+以及多位匿名贊助者
 
-## 使用条款
+## 使用协议
 
 ### 许可证
 
-本项目自版本 v2.0.0 起采用**自定义许可证**。
+从版本v2.0.0开始，本项目采用**自定义许可方式**。
 
-- **免费使用**
+- **无偿使用**
 
-  - 非营利目的的个人使用、教育目的、非营利目的的使用可以免费使用。
+  - 非营利目的的个人使用、教育目的和非营利目的的使用是无偿的。
 
 - **商业许可证**
-  - 商业目的的使用需要单独获取商业许可证。
-  - 详情请查看[关于许可证](./docs/license.md)。
+  - 商业目的的使用需要另外获取商业许可证。
+  - 详细信息请查看[关于许可证](./license_en.md)。
 
 ## 优先实现
 
-本项目接受有偿的功能优先实现。
+本项目接受有偿的优先实现请求。
 
-- 可以优先实现企业或个人提出的功能。
-- 实现的功能将作为本OSS项目的一部分公开。
-- 费用根据功能的复杂性和实现所需时间单独估算。
-- 此优先实现与商业许可证是不同的举措。若要商业使用实现的功能，需要单独获取商业许可证。
+- 企业或个人提出的功能请求可以优先实现。
+- 实现的功能将成为本OSS项目的一部分并公开。
+- 费用将根据功能的复杂性和实现所需的时间进行个别估算。
+- 优先实现是与商业许可证不同的工作。如果需要使用实现的功能进行商业利用，则需要另外获取商业许可证。
 
-详情请联系support@aituberkit.com。
+详细信息请联系support@aituberkit.com。
 
 ### 其他
 
-- [Logo使用条款](./docs/logo_licence.md)
-- [VRM及Live2D模型使用条款](./docs/character_model_licence.md)
+- [标志使用协议](./logo_licence_en.md)
+- [VRM和Live2D模型使用协议](./character_model_licence_en.md)
