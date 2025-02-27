@@ -71,6 +71,9 @@ class FileInfo(BaseModel):
 
 
 class TranslationState(BaseModel):
+    # モデルの設定
+    model_config = {"arbitrary_types_allowed": True}
+
     next: Optional[str] = Field(default=None, description="次に実行するノード名")
     pr_files: List[Dict[str, Any]] = Field(
         default_factory=list, description="PRで変更されたファイルのリスト"
@@ -572,15 +575,7 @@ class AutoTranslator:
         """グラフを実行する"""
         app = self.workflow.compile()
         initial_state = TranslationState()
-
         final_state = app.invoke(initial_state)
-
-        # グラフの可視化（オプション）
-        try:
-            app.get_graph()
-            print("ワークフローグラフを生成しました: auto_translate_workflow.png")
-        except Exception as e:
-            print(f"ワークフローグラフの生成に失敗しました: {e}")
 
         return final_state
 
