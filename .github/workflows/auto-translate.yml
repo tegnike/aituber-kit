@@ -26,12 +26,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install anthropic==0.47.2 requests
+          pip install requests langgraph pydantic langchain-openai
 
       - name: Run translation script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_FULL_NAME: ${{ github.repository }}
         run: python scripts/auto_translate.py
