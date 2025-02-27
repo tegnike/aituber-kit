@@ -38,6 +38,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const speechDetectedRef = useRef<boolean>(false)
   // 初期音声検出用のタイマー
   const initialSpeechCheckTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
 
   const { t } = useTranslation()
 
@@ -97,12 +98,32 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
           return 'ja-JP'
         case 'en':
           return 'en-US'
-        case 'zh':
-          return 'zh-TW'
-        case 'zh-TW':
-          return 'zh-TW'
         case 'ko':
           return 'ko-KR'
+        case 'zh':
+          return 'zh-TW'
+        case 'vi':
+          return 'vi-VN'
+        case 'fr':
+          return 'fr-FR'
+        case 'es':
+          return 'es-ES'
+        case 'pt':
+          return 'pt-PT'
+        case 'de':
+          return 'de-DE'
+        case 'ru':
+          return 'ru-RU'
+        case 'it':
+          return 'it-IT'
+        case 'ar':
+          return 'ar-SA'
+        case 'hi':
+          return 'hi-IN'
+        case 'pl':
+          return 'pl-PL'
+        case 'th':
+          return 'th-TH'
         default:
           return 'ja-JP'
       }
@@ -141,7 +162,9 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       // 音声検出時刻を記録
       lastSpeechTimestamp.current = Date.now()
       speechEndedRef.current = false
-      console.log('🎤 無音検出を開始しました。無音検出タイムアウトの設定値に基づいて自動送信します。')
+      console.log(
+        '🎤 無音検出を開始しました。無音検出タイムアウトの設定値に基づいて自動送信します。'
+      )
 
       // 250ms間隔で無音状態をチェック
       silenceCheckInterval.current = setInterval(() => {
@@ -175,7 +198,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
           )
           console.log(`📝 認識テキスト: "${trimmedTranscript}"`)
 
-          if (trimmedTranscript && settingsStore.getState().noSpeechTimeout > 0) {
+          if (
+            trimmedTranscript &&
+            settingsStore.getState().noSpeechTimeout > 0
+          ) {
             speechEndedRef.current = true
             console.log('✅ 無音検出による自動送信を実行します')
             // 無音検出で自動送信
@@ -334,8 +360,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       window.SpeechRecognition || window.webkitSpeechRecognition
     if (SpeechRecognition) {
       const newRecognition = new SpeechRecognition()
-      const ss = settingsStore.getState()
-      newRecognition.lang = getVoiceLanguageCode(ss.selectLanguage)
+      newRecognition.lang = getVoiceLanguageCode(selectLanguage)
       newRecognition.continuous = true
       newRecognition.interimResults = true
 
