@@ -425,9 +425,12 @@ def process_translations_node(state: TranslationState) -> Dict[str, Any]:
                 "status": "skipped",
             }
         )
+        # current_file_indexを更新
+        current_file_index = state.current_file_index + 1
         return {
             "next": "process_translations",
             "translation_results": translation_results,
+            "current_file_index": current_file_index,
         }
 
     print(f"翻訳が必要です: {current_target.target_file}")
@@ -448,9 +451,12 @@ def process_translations_node(state: TranslationState) -> Dict[str, Any]:
                 "status": "failed",
             }
         )
+        # current_file_indexを更新
+        current_file_index = state.current_file_index + 1
         return {
             "next": "process_translations",
             "translation_results": translation_results,
+            "current_file_index": current_file_index,
         }
 
 
