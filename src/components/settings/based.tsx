@@ -48,10 +48,9 @@ const Based = () => {
             }}
           >
             <option value="ar">Arabic - アラビア語</option>
-            <option value="de">German - ドイツ語</option>
             <option value="en">English - 英語</option>
-            <option value="es">Spanish - スペイン語</option>
             <option value="fr">French - フランス語</option>
+            <option value="de">German - ドイツ語</option>
             <option value="hi">Hindi - ヒンディー語</option>
             <option value="it">Italian - イタリア語</option>
             <option value="ja">Japanese - 日本語</option>
@@ -59,8 +58,10 @@ const Based = () => {
             <option value="pl">Polish - ポーランド語</option>
             <option value="pt">Portuguese - ポルトガル語</option>
             <option value="ru">Russian - ロシア語</option>
-            <option value="vi">Vietnamese - ベトナム語</option>
+            <option value="es">Spanish - スペイン語</option>
+            <option value="th">Thai - タイ語</option>
             <option value="zh">Traditional Chinese - 繁體中文</option>
+            <option value="vi">Vietnamese - ベトナム語</option>
           </select>
         </div>
       </div>

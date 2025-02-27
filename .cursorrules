@@ -196,6 +196,8 @@ aituber-kit/
 - locales/it/translation.json
 - locales/ar/translation.json
 - locales/hi/translation.json
+- locales/pl/translation.json
+- locales/th/translation.json
 - src/features/chat/vercelAIChat.ts
 - src/pages/api/aiChat.ts
 - src/features/chat/aiChatFactory.ts

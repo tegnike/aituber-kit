@@ -60,6 +60,7 @@ export const LANGUAGES = [
   'ar',
   'hi',
   'pl',
+  'th',
 ] as const
 
 export const isLanguageSupported = (language: string): language is Language =>
@@ -80,6 +81,7 @@ export type VoiceLanguage =
   | 'ar-SA'
   | 'hi-IN'
   | 'pl-PL'
+  | 'th-TH'
 
 export type OpenAITTSVoice =
   | 'alloy'

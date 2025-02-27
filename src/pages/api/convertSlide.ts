@@ -349,7 +349,6 @@ function getLanguage(selectLanguage: string | undefined) {
       return 'English'
     case 'zh':
       return 'Chinese'
-      return 'Chinese'
     case 'ko':
       return 'Korean'
     case 'vi':
@@ -372,6 +371,8 @@ function getLanguage(selectLanguage: string | undefined) {
       return 'Hindi'
     case 'pl':
       return 'Polish'
+    case 'th':
+      return 'Thai'
     default:
       return 'Japanese'
   }

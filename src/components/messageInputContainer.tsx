@@ -92,6 +92,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         return 'hi-IN'
       case 'pl':
         return 'pl-PL'
+      case 'th':
+        return 'th-TH'
       default:
         return 'ja-JP'
     }

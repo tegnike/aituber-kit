@@ -85,6 +85,8 @@ function getGoogleTtsType(
       return 'hi-IN-Standard-A'
     case 'pl':
       return 'pl-PL-Standard-A'
+    case 'th':
+      return 'th-TH-Standard-A'
     default:
       return 'en-US-Neural2-F'
   }
