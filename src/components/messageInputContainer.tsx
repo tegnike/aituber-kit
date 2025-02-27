@@ -30,6 +30,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
   const isSpeaking = homeStore((s) => s.isSpeaking)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
 
   const { t } = useTranslation()
 
@@ -67,12 +68,30 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         return 'ja-JP'
       case 'en':
         return 'en-US'
-      case 'zh':
-        return 'zh-TW'
-      case 'zh-TW':
-        return 'zh-TW'
       case 'ko':
         return 'ko-KR'
+      case 'zh':
+        return 'zh-TW'
+      case 'vi':
+        return 'vi-VN'
+      case 'fr':
+        return 'fr-FR'
+      case 'es':
+        return 'es-ES'
+      case 'pt':
+        return 'pt-PT'
+      case 'de':
+        return 'de-DE'
+      case 'ru':
+        return 'ru-RU'
+      case 'it':
+        return 'it-IT'
+      case 'ar':
+        return 'ar-SA'
+      case 'hi':
+        return 'hi-IN'
+      case 'pl':
+        return 'pl-PL'
       default:
         return 'ja-JP'
     }
@@ -83,8 +102,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       window.SpeechRecognition || window.webkitSpeechRecognition
     if (SpeechRecognition) {
       const newRecognition = new SpeechRecognition()
-      const ss = settingsStore.getState()
-      newRecognition.lang = getVoiceLanguageCode(ss.selectLanguage)
+      newRecognition.lang = getVoiceLanguageCode(selectLanguage)
       newRecognition.continuous = true
       newRecognition.interimResults = true
 
@@ -128,7 +146,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
 
       setRecognition(newRecognition)
     }
-  }, [])
+  }, [selectLanguage])
 
   useEffect(() => {
     const AudioContextClass = (window.AudioContext ||

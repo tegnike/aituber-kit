@@ -31,125 +31,18 @@ const Based = () => {
               switch (newLanguage) {
                 case 'ja':
                   settingsStore.setState({ selectLanguage: 'ja' })
-
                   i18n.changeLanguage('ja')
                   break
-                case 'en':
-                  settingsStore.setState({ selectLanguage: 'en' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('en')
-                  break
-                case 'zh':
-                  settingsStore.setState({ selectLanguage: 'zh' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('zh-TW')
-                  break
-                case 'ko':
-                  settingsStore.setState({ selectLanguage: 'ko' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('ko')
-                  break
-                case 'vi':
-                  settingsStore.setState({ selectLanguage: 'vi' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('vi')
-                  break
-                case 'fr':
-                  settingsStore.setState({ selectLanguage: 'fr' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('fr')
-                  break
-                case 'es':
-                  settingsStore.setState({ selectLanguage: 'es' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('es')
-                  break
-                case 'pt':
-                  settingsStore.setState({ selectLanguage: 'pt' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('pt')
-                  break
-                case 'de':
-                  settingsStore.setState({ selectLanguage: 'de' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('de')
-                  break
-                case 'ru':
-                  settingsStore.setState({ selectLanguage: 'ru' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('ru')
-                  break
-                case 'it':
-                  settingsStore.setState({ selectLanguage: 'it' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('it')
-                  break
-                case 'ar':
-                  settingsStore.setState({ selectLanguage: 'ar' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('ar')
-                  break
-                case 'hi':
-                  settingsStore.setState({ selectLanguage: 'hi' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage('hi')
-                  break
-                case 'pl':
-                  settingsStore.setState({ selectLanguage: 'pl' })
-
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
                 default:
+                  // 日本語以外の言語はすべて同じ処理
+                  settingsStore.setState({ selectLanguage: newLanguage })
+
+                  // 日本語専用の音声が選択されている場合は、googleに変更
+                  if (jaVoiceSelected) {
+                    settingsStore.setState({ selectVoice: 'google' })
+                  }
+
+                  i18n.changeLanguage(newLanguage)
                   break
               }
             }}
