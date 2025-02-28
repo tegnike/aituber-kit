@@ -18,6 +18,7 @@ const AdvancedSettings = () => {
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
+  const noSpeechTimeout = settingsStore((s) => s.noSpeechTimeout)
 
   const { t } = useTranslation()
 
@@ -137,6 +138,32 @@ const AdvancedSettings = () => {
           >
             {includeTimestampInUserMessage ? t('StatusOn') : t('StatusOff')}
           </TextButton>
+        </div>
+      </div>
+      <div className="my-24">
+        <div className="my-16 typography-20 font-bold">
+          {t('NoSpeechTimeout')}
+        </div>
+        <div className="my-16 typography-16 whitespace-pre-line">
+          {t('NoSpeechTimeoutInfo')}
+        </div>
+        <div className="mt-24 font-bold">
+          <div className="select-none">
+            {t('NoSpeechTimeout')}: {noSpeechTimeout.toFixed(1)}秒
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="4"
+            step="0.1"
+            value={noSpeechTimeout}
+            onChange={(e) =>
+              settingsStore.setState({
+                noSpeechTimeout: parseFloat(e.target.value),
+              })
+            }
+            className="mt-8 mb-16 input-range"
+          />
         </div>
       </div>
     </div>

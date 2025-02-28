@@ -1,0 +1,19 @@
+# ビルド成果物
+.next/
+build/
+dist/
+out/
+
+# 依存関係
+node_modules/
+
+# キャッシュ
+.mypy_cache/
+.cache/
+
+# スクリプト
+scripts/
+
+# その他
+.git/
+.DS_Store

@@ -1,6 +1,6 @@
 import { Application, Ticker, DisplayObject } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
-import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
+import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch/cubism4'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { Live2DHandler } from '@/features/messages/live2dHandler'

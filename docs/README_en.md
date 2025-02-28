@@ -212,26 +212,21 @@ cp .env.example .env
 ### Live2D Specifications
 
 We use the unofficial library [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) for Live2D display.
+Live2D provides a library called Cubism as a development SDK, and AITuberKit supports models from Cubism 3 onwards.
 
-Live2D provides a library called Cubism as a development SDK, and currently there are Cubism 2.1, Cubism 3, Cubism 4, and Cubism 5. Cubism 4 is compatible with Cubism 3 models, and the latest Cubism 5 is compatible with Cubism 4.
-
-By using Cubism 2.1 and Cubism 4/5, we support all variants of Live2D models.
+Note that this project uses the official SDK with permission from Live2D.
 
 #### Cubism Core
 
-Before using this feature, you need to set the following Cubism Core (Cubism runtime library) files in both `public/scripts`:
+If you want to use the Live2D feature, please place the following file in `public/scripts`:
 
-1. `live2dcubismcore.min.js` (Cubism 4/5)
+`live2dcubismcore.min.js` (for Cubism 4/5)
 
-   - [Official website](https://www.live2d.com/sdk/download/web/)
-   - [Alternative](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js) (Note: Not recommended for production use)
+- Available for download from the [official website](https://www.live2d.com/sdk/download/web/)
+- Or available from [here](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js) (Note: Not recommended for production use)
 
-2. `live2d.min.js` (Cubism 2.1)
-   - Since September 4, 2019, the official website no longer allows downloads, but it is available from:
-     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
-     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
-
-By setting both files, you can support all versions of Live2D models.
+When publishing software that incorporates Live2D's Cubism SDK, you may need to enter into a publishing license agreement with Live2D. For details, please refer to the following page:
+https://www.live2d.com/sdk/license/
 
 ### Background Image Setting
 
@@ -337,6 +332,9 @@ Your support will greatly contribute to the development and improvement of the A
   </a>
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
+  </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
   </a>
 </p>
 

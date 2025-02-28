@@ -162,29 +162,43 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     }
   }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slideCount])
 
+  // スライドの縦のサイズを70%に制限し、アスペクト比を維持
+  const calculateSlideSize = () => {
+    // 縦のサイズの上限を70vhに設定
+    const maxHeight = '70vh'
+    // 横幅をアスペクト比に合わせて計算（16:9）
+    const width = 'calc(70vh * (16 / 9))'
+    // 横幅が大きすぎる場合は80vwを上限とする
+    const maxWidth = '80vw'
+
+    return {
+      width: `min(${width}, ${maxWidth})`,
+      height: `min(calc(${maxWidth} * (9 / 16)), ${maxHeight})`,
+    }
+  }
+
+  const slideSize = calculateSlideSize()
+
   return (
-    <>
+    <div
+      className="flex flex-col items-center justify-center"
+      style={{ height: '100vh', padding: '10px 0' }}
+    >
       <div
-        className="absolute"
         style={{
-          width: '80vw',
-          height: 'calc(80vw * (9 / 16))',
-          top: 'calc((100vh - 80vw * (9 / 16)) / 2)',
-          right: 0,
-          left: 0,
-          margin: 'auto',
+          width: slideSize.width,
+          height: slideSize.height,
+          margin: '0 auto',
+          position: 'relative',
         }}
       >
         <SlideContent marpitContainer={marpitContainer} />
       </div>
       <div
-        className="absolute"
         style={{
-          width: '80vw',
-          top: 'calc((100vh + 80vw * (7 / 16)) / 2)',
-          right: 0,
-          left: 0,
-          margin: 'auto',
+          width: slideSize.width,
+          margin: '10px auto 0',
+          position: 'relative',
           zIndex: 10,
         }}
       >
@@ -197,7 +211,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
           toggleIsPlaying={toggleIsPlaying}
         />
       </div>
-    </>
+    </div>
   )
 }
 export default Slides
