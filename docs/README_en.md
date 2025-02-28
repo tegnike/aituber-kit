@@ -212,7 +212,9 @@ cp .env.example .env
 ### Live2D Specifications
 
 We use the unofficial library [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) for Live2D display.
-Live2D provides a library called Cubism as a development SDK, and AITuberKit supports Cubism 3 and later models.
+Live2D provides a library called Cubism as a development SDK, and AITuberKit supports models from Cubism 3 onwards.
+
+Note that this project uses the official SDK with permission from Live2D.
 
 #### Cubism Core
 
@@ -222,6 +224,9 @@ If you want to use the Live2D feature, please place the following file in `publi
 
 - Available for download from the [official website](https://www.live2d.com/sdk/download/web/)
 - Or available from [here](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js) (Note: Not recommended for production use)
+
+When publishing software that incorporates Live2D's Cubism SDK, you may need to enter into a publishing license agreement with Live2D. For details, please refer to the following page:
+https://www.live2d.com/sdk/license/
 
 ### Background Image Setting
 

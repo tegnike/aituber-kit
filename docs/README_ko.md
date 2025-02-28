@@ -210,6 +210,8 @@ cp .env.example .env
 Live2D 표시를 위해 비공식 라이브러리 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)를 사용하고 있습니다.
 Live2D는 개발용 SDK로 Cubism이라는 라이브러리를 제공하고 있으며, AITuberKit는 Cubism 3 이상의 모델을 지원합니다.
 
+또한, 본 프로젝트는 Live2D사의 허가를 받아 공식 SDK를 사용하고 있습니다.
+
 #### Cubism Core
 
 Live2D 기능을 사용하려면 다음 파일을 `public/scripts`에 설치해야 합니다:
@@ -218,6 +220,9 @@ Live2D 기능을 사용하려면 다음 파일을 `public/scripts`에 설치해�
 
 - [공식 사이트](https://www.live2d.com/sdk/download/web/)에서 다운로드 가능
 - 또는 [이곳](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)에서 다운로드 가능 (참고: 프로덕션 환경에서의 사용은 권장되지 않습니다)
+
+Live2D사의 Cubism SDK를 포함한 소프트웨어를 공개할 때는 Live2D사와의 출판 허가 계약 체결이 필요할 수 있습니다. 자세한 내용은 아래 페이지를 참조하세요.
+https://www.live2d.com/sdk/license/
 
 ### 배경 이미지 설정
 
