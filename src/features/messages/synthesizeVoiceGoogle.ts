@@ -122,6 +122,8 @@ function getVoiceLanguageCode(selectLanguage: Language): VoiceLanguage {
       return 'hi-IN'
     case 'pl':
       return 'pl-PL'
+    case 'th':
+      return 'th-TH'
     default:
       return 'en-US'
   }
