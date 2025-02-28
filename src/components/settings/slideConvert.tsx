@@ -136,10 +136,13 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           {aiService === 'openai' && (
             <>
               <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
-              <option value="gpt-4o-mini">gpt-4o-mini</option>
-              <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
+              <option value="gpt-4o-mini-2024-07-18">
+                gpt-4o-mini-2024-07-18
+              </option>
               <option value="gpt-4o-2024-11-20">gpt-4o-2024-11-20</option>
-              <option value="gpt-4-turbo">gpt-4-turbo</option>
+              <option value="gpt-4.5-preview-2025-02-27">
+                gpt-4.5-preview-2025-02-27
+              </option>
             </>
           )}
           {aiService === 'anthropic' && (
