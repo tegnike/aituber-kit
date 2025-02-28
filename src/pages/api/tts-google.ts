@@ -13,6 +13,7 @@ export default async function handler(
 ) {
   const message = req.body.message
   const ttsType = req.body.ttsType
+  const languageCode = req.body.languageCode || 'ja-JP'
 
   try {
     // Check if GOOGLE_TTS_KEY exists
@@ -27,7 +28,7 @@ export default async function handler(
           },
           body: JSON.stringify({
             input: { text: message },
-            voice: { languageCode: 'ja-JP', name: ttsType },
+            voice: { languageCode: languageCode, name: ttsType },
             audioConfig: { audioEncoding: 'MP3' },
           }),
         }
@@ -45,7 +46,7 @@ export default async function handler(
 
       const request: google.cloud.texttospeech.v1.ISynthesizeSpeechRequest = {
         input: { text: message },
-        voice: { languageCode: 'ja-JP', name: ttsType },
+        voice: { languageCode: languageCode, name: ttsType },
         audioConfig: { audioEncoding: 'MP3' },
       }
 

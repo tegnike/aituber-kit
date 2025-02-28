@@ -16,6 +16,7 @@ The project can be used for free if the following conditions are met:
 ### 2. Commercial Use
 
 For commercial purposes, one of the following commercial licenses must be obtained.
+Note that **trial internal use during pre-implementation or evaluation phase** is exempt from license fees.
 
 #### 2.1 Standard License
 
@@ -56,6 +57,7 @@ For commercial purposes, one of the following commercial licenses must be obtain
 - Licenses apply to the **latest version** at the time of acquisition. Upgrade fees may apply if there is a major update.
 - If commercial use is confirmed after starting use as personal, educational, or non-profit use, **commercial license fees will be charged from the start of commercial use**.
 - **Exhibitions and demonstrations** aimed at increasing the project's recognition are not subject to commercial licenses.
+- If you use the **Live2D feature**, an additional fee of 25% of the basic license fee will be charged. If you don't need the Live2D feature from the beginning, no additional fee will be charged, and if you need it later, you can use it by paying the additional fee at that time if you contact us before you start using it. Also, regarding the use of Live2D, the conditions described in the "Third Party Licenses" section below also apply.
 
 For details and purchase methods of commercial licenses, please contact support@aituberkit.com.
 
@@ -77,3 +79,16 @@ The commercial license applies only to the code included in the **main branch** 
 ## Additional Information
 
 For detailed information about the license, specific usage examples, and frequently asked questions, please refer to the [project FAQ](license-faq.md). If you have any questions, please contact us individually.
+
+## Third Party Licenses
+
+### Live2D Cubism SDK
+
+This application includes the Live2D Cubism SDK, which is a copyrighted work developed by Live2D Inc.
+If you use this application as a primary element of your business\* and the annual sales generated directly or indirectly by this application or content created using this application exceed 20 million yen, you need to enter into a separate publishing license agreement with Live2D Inc. and pay a license fee.
+Also, you need to contact us immediately when your annual sales exceed 20 million yen.
+If you violate this provision, it will be considered as use beyond the permitted scope of this application, which may result in infringement of Live2D Inc.'s intellectual property, and you may be subject to legal claims from the company.
+
+\*Using this application as a primary element of your business... This includes, but is not limited to, conducting VTuber streaming business. It does not include using it for product promotional videos, etc.
+
+Note: This project uses the official SDK with permission from Live2D Inc.

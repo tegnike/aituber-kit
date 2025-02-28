@@ -7,17 +7,19 @@ import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
 import homeStore from '@/features/stores/home'
 
-const NO_SPEECH_TIMEOUT = 3000
-
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
 
+// 音声認識開始後、音声が検出されないまま経過した場合のタイムアウト（5秒）
+const INITIAL_SPEECH_TIMEOUT = 5000
+
+// 無音検出用の状態と変数を追加
 type Props = {
   onChatProcessStart: (text: string) => void
 }
 
 export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
-  const realtimeAPIMode = settingsStore.getState().realtimeAPIMode
+  const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const [userMessage, setUserMessage] = useState('')
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
@@ -30,12 +32,39 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
   const isSpeaking = homeStore((s) => s.isSpeaking)
+  // 音声認識開始時刻を保持する変数を追加
+  const recognitionStartTimeRef = useRef<number>(0)
+  // 音声が検出されたかどうかのフラグ
+  const speechDetectedRef = useRef<boolean>(false)
+  // 初期音声検出用のタイマー
+  const initialSpeechCheckTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
 
   const { t } = useTranslation()
+
+  // 無音検出用の追加変数
+  const lastSpeechTimestamp = useRef<number>(0)
+  const silenceCheckInterval = useRef<NodeJS.Timeout | null>(null)
+  const speechEndedRef = useRef<boolean>(false)
+  const stopListeningRef = useRef<(() => Promise<void>) | null>(null)
+  // 関数をuseRefで保持して依存関係の循環を防ぐ
+  const startSilenceDetectionRef = useRef<
+    ((stopListeningFn: () => Promise<void>) => void) | null
+  >(null)
+  const clearSilenceDetectionRef = useRef<(() => void) | null>(null)
+  const sendAudioBufferRef = useRef<(() => void) | null>(null)
 
   // 音声停止
   const handleStopSpeaking = useCallback(() => {
     homeStore.setState({ isSpeaking: false })
+  }, [])
+
+  // 初期音声検出タイマーをクリアする関数
+  const clearInitialSpeechCheckTimer = useCallback(() => {
+    if (initialSpeechCheckTimerRef.current) {
+      clearTimeout(initialSpeechCheckTimerRef.current)
+      initialSpeechCheckTimerRef.current = null
+    }
   }, [])
 
   const checkMicrophonePermission = async (): Promise<boolean> => {
@@ -61,123 +90,137 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     }
   }
 
-  const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
-    switch (selectLanguage) {
-      case 'ja':
-        return 'ja-JP'
-      case 'en':
-        return 'en-US'
-      case 'zh':
-        return 'zh-TW'
-      case 'zh-TW':
-        return 'zh-TW'
-      case 'ko':
-        return 'ko-KR'
-      default:
-        return 'ja-JP'
+  // getVoiceLanguageCodeをuseCallbackでラップして依存関係を明確にする
+  const getVoiceLanguageCode = useCallback(
+    (selectLanguage: string): VoiceLanguage => {
+      switch (selectLanguage) {
+        case 'ja':
+          return 'ja-JP'
+        case 'en':
+          return 'en-US'
+        case 'ko':
+          return 'ko-KR'
+        case 'zh':
+          return 'zh-TW'
+        case 'vi':
+          return 'vi-VN'
+        case 'fr':
+          return 'fr-FR'
+        case 'es':
+          return 'es-ES'
+        case 'pt':
+          return 'pt-PT'
+        case 'de':
+          return 'de-DE'
+        case 'ru':
+          return 'ru-RU'
+        case 'it':
+          return 'it-IT'
+        case 'ar':
+          return 'ar-SA'
+        case 'hi':
+          return 'hi-IN'
+        case 'pl':
+          return 'pl-PL'
+        case 'th':
+          return 'th-TH'
+        default:
+          return 'ja-JP'
+      }
+    },
+    []
+  )
+
+  // 無音検出をクリーンアップする関数 - 依存がないので先に定義
+  const clearSilenceDetection = useCallback(() => {
+    if (silenceCheckInterval.current) {
+      clearInterval(silenceCheckInterval.current)
+      silenceCheckInterval.current = null
     }
-  }
+  }, [])
 
+  // clearSilenceDetectionをRefに保存
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition
-    if (SpeechRecognition) {
-      const newRecognition = new SpeechRecognition()
-      const ss = settingsStore.getState()
-      newRecognition.lang = getVoiceLanguageCode(ss.selectLanguage)
-      newRecognition.continuous = true
-      newRecognition.interimResults = true
+    clearSilenceDetectionRef.current = clearSilenceDetection
+  }, [clearSilenceDetection])
 
-      let noSpeechTimeout: NodeJS.Timeout
+  // stopListening関数の先行宣言（実際の実装は下部で行う）
+  const stopListening = useCallback(async () => {
+    if (stopListeningRef.current) {
+      await stopListeningRef.current()
+    }
+  }, [])
 
-      // 音声認識開始時のハンドラを追加
-      newRecognition.onstart = () => {
-        noSpeechTimeout = setTimeout(() => {
+  // 無音検出の繰り返しチェックを行う関数
+  const startSilenceDetection = useCallback(
+    (stopListeningFn: () => Promise<void>) => {
+      // 前回のタイマーがあれば解除
+      if (silenceCheckInterval.current) {
+        clearInterval(silenceCheckInterval.current)
+      }
+
+      // 音声検出時刻を記録
+      lastSpeechTimestamp.current = Date.now()
+      speechEndedRef.current = false
+      console.log(
+        '🎤 無音検出を開始しました。無音検出タイムアウトの設定値に基づいて自動送信します。'
+      )
+
+      // 250ms間隔で無音状態をチェック
+      silenceCheckInterval.current = setInterval(() => {
+        // 現在時刻と最終音声検出時刻の差を計算
+        const silenceDuration = Date.now() - lastSpeechTimestamp.current
+
+        // 無音状態が5秒以上続いた場合は、テキストの有無に関わらず音声認識を停止
+        if (silenceDuration >= 5000 && !speechEndedRef.current) {
+          console.log(
+            `⏱️ ${silenceDuration}ms の長時間無音を検出しました。音声認識を停止します。`
+          )
+          speechEndedRef.current = true
+          stopListeningFn()
+
+          // トースト通知を表示
           toastStore.getState().addToast({
-            message: t('Toasts.SpeechRecognitionError'),
-            type: 'error',
-            tag: 'no-speech-detected',
+            message: t('Toasts.NoSpeechDetected'),
+            type: 'info',
+            tag: 'no-speech-detected-long-silence',
           })
-          stopListening()
-        }, NO_SPEECH_TIMEOUT)
-      }
+        }
+        // 無音状態が2秒以上続いたかつテキストがある場合は自動送信
+        else if (
+          settingsStore.getState().noSpeechTimeout > 0 &&
+          silenceDuration >= settingsStore.getState().noSpeechTimeout * 1000 &&
+          !speechEndedRef.current
+        ) {
+          const trimmedTranscript = transcriptRef.current.trim()
+          console.log(
+            `⏱️ ${silenceDuration}ms の無音を検出しました（閾値: ${settingsStore.getState().noSpeechTimeout * 1000}ms）。無音検出タイムアウトが0秒の場合は自動送信は無効です。`
+          )
+          console.log(`📝 認識テキスト: "${trimmedTranscript}"`)
 
-      // 音声入力検出時のハンドラを追加
-      newRecognition.onspeechstart = () => {
-        clearTimeout(noSpeechTimeout)
-      }
-
-      // 音声認識終了時のハンドラを追加
-      newRecognition.onend = () => {
-        clearTimeout(noSpeechTimeout)
-      }
-
-      newRecognition.onresult = (event) => {
-        if (!isListeningRef.current) return
-
-        const transcript = Array.from(event.results)
-          .map((result) => result[0].transcript)
-          .join('')
-        transcriptRef.current = transcript
-        setUserMessage(transcript)
-      }
-
-      newRecognition.onerror = (event) => {
-        stopListening()
-      }
-
-      setRecognition(newRecognition)
-    }
-  }, [])
-
-  useEffect(() => {
-    const AudioContextClass = (window.AudioContext ||
-      (window as any).webkitAudioContext) as AudioContextType
-    const context = new AudioContextClass()
-    setAudioContext(context)
-  }, [])
-
-  const startListening = useCallback(async () => {
-    const hasPermission = await checkMicrophonePermission()
-    if (!hasPermission) return
-
-    if (recognition && !isListeningRef.current && audioContext) {
-      transcriptRef.current = ''
-      setUserMessage('')
-      try {
-        recognition.start()
-      } catch (error) {
-        console.error('Error starting recognition:', error)
-      }
-      isListeningRef.current = true
-      setIsListening(true)
-
-      if (realtimeAPIMode) {
-        audioChunksRef.current = [] // 音声チャンクをリセット
-
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-          const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
-          setMediaRecorder(recorder)
-
-          recorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-              if (!isListeningRef.current) {
-                recognition.stop()
-                recorder.stop()
-                recorder.ondataavailable = null
-                return
-              }
-              audioChunksRef.current.push(event.data)
-              console.log('add audio chunk:', audioChunksRef.current.length)
-            }
+          if (
+            trimmedTranscript &&
+            settingsStore.getState().noSpeechTimeout > 0
+          ) {
+            speechEndedRef.current = true
+            console.log('✅ 無音検出による自動送信を実行します')
+            // 無音検出で自動送信
+            onChatProcessStart(trimmedTranscript)
+            setUserMessage('')
+            stopListeningFn()
           }
+        }
+      }, 250) // 250msごとにチェック
+    },
+    [onChatProcessStart]
+  )
 
-          recorder.start(100) // より小さな間隔でデータを収集
-        })
-      }
-    }
-  }, [recognition, audioContext, realtimeAPIMode])
+  // startSilenceDetectionをRefに保存
+  useEffect(() => {
+    startSilenceDetectionRef.current = startSilenceDetection
+  }, [startSilenceDetection])
 
+  // sendAudioBuffer関数をここに移動
   const sendAudioBuffer = useCallback(() => {
     if (audioBufferRef.current && audioBufferRef.current.length > 0) {
       const base64Chunk = base64EncodeAudio(audioBufferRef.current)
@@ -231,7 +274,21 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     }
   }, [])
 
-  const stopListening = useCallback(async () => {
+  // sendAudioBufferをRefに保存
+  useEffect(() => {
+    sendAudioBufferRef.current = sendAudioBuffer
+  }, [sendAudioBuffer])
+
+  // ここで最終的なstopListening実装を行う
+  const stopListeningImpl = useCallback(async () => {
+    // 無音検出をクリア
+    if (clearSilenceDetectionRef.current) {
+      clearSilenceDetectionRef.current()
+    }
+
+    // 初期音声検出タイマーをクリア
+    clearInitialSpeechCheckTimer()
+
     isListeningRef.current = false
     setIsListening(false)
     if (recognition) {
@@ -262,14 +319,22 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
             }
           })
         }
-        sendAudioBuffer()
+        // sendAudioBufferの代わりにsendAudioBufferRef.currentを使用
+        if (sendAudioBufferRef.current) {
+          sendAudioBufferRef.current()
+        }
       }
 
       const trimmedTranscriptRef = transcriptRef.current.trim()
       if (isKeyboardTriggered.current) {
         const pressDuration = Date.now() - (keyPressStartTime.current || 0)
         // 押してから1秒以上 かつ 文字が存在する場合のみ送信
-        if (pressDuration >= 1000 && trimmedTranscriptRef) {
+        // 無音検出による自動送信が既に行われていない場合のみ送信する
+        if (
+          pressDuration >= 1000 &&
+          trimmedTranscriptRef &&
+          !speechEndedRef.current
+        ) {
           onChatProcessStart(trimmedTranscriptRef)
           setUserMessage('')
         }
@@ -280,10 +345,161 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     recognition,
     realtimeAPIMode,
     mediaRecorder,
-    sendAudioBuffer,
     audioContext,
     onChatProcessStart,
+    clearInitialSpeechCheckTimer,
   ])
+
+  // stopListeningの実装を上書き
+  useEffect(() => {
+    stopListeningRef.current = stopListeningImpl
+  }, [stopListeningImpl])
+
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition
+    if (SpeechRecognition) {
+      const newRecognition = new SpeechRecognition()
+      newRecognition.lang = getVoiceLanguageCode(selectLanguage)
+      newRecognition.continuous = true
+      newRecognition.interimResults = true
+
+      // 音声認識開始時のハンドラを追加
+      newRecognition.onstart = () => {
+        console.log('Speech recognition started')
+        // 音声認識開始時刻を記録
+        recognitionStartTimeRef.current = Date.now()
+        // 音声検出フラグをリセット
+        speechDetectedRef.current = false
+
+        // 5秒後に音声が検出されているかチェックするタイマーを設定
+        initialSpeechCheckTimerRef.current = setTimeout(() => {
+          // 音声が検出されていない場合は音声認識を停止
+          if (!speechDetectedRef.current && isListeningRef.current) {
+            console.log(
+              '⏱️ 5秒間音声が検出されませんでした。音声認識を停止します。'
+            )
+            stopListening()
+
+            // 必要に応じてトースト通知を表示
+            toastStore.getState().addToast({
+              message: t('Toasts.NoSpeechDetected'),
+              type: 'info',
+              tag: 'no-speech-detected',
+            })
+          }
+        }, INITIAL_SPEECH_TIMEOUT)
+
+        // 無音検出を開始
+        if (stopListeningRef.current && startSilenceDetectionRef.current) {
+          startSilenceDetectionRef.current(stopListeningRef.current)
+        }
+      }
+
+      // 音声入力検出時のハンドラを追加
+      newRecognition.onspeechstart = () => {
+        console.log('🗣️ 音声入力を検出しました')
+        // 音声検出フラグを立てる
+        speechDetectedRef.current = true
+        // 音声検出時刻を更新
+        lastSpeechTimestamp.current = Date.now()
+      }
+
+      // 結果が返ってきた時のハンドラ（音声検出中）
+      newRecognition.onresult = (event) => {
+        if (!isListeningRef.current) return
+
+        // 音声を検出したので、タイムスタンプを更新
+        lastSpeechTimestamp.current = Date.now()
+        // 音声検出フラグを立てる（結果が返ってきたということは音声が検出されている）
+        speechDetectedRef.current = true
+
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join('')
+        transcriptRef.current = transcript
+        setUserMessage(transcript)
+      }
+
+      // 音声入力終了時のハンドラ
+      newRecognition.onspeechend = () => {
+        console.log('🛑 音声入力が終了しました。無音検出タイマーが動作中です。')
+        // 音声入力が終わったが、無音検出はそのまま継続する
+        // タイマーが2秒後に処理する
+      }
+
+      // 音声認識終了時のハンドラ
+      newRecognition.onend = () => {
+        console.log('Recognition ended')
+        // 無音検出をクリア
+        if (clearSilenceDetectionRef.current) {
+          clearSilenceDetectionRef.current()
+        }
+        // 初期音声検出タイマーをクリア
+        clearInitialSpeechCheckTimer()
+      }
+
+      newRecognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error)
+        if (clearSilenceDetectionRef.current) {
+          clearSilenceDetectionRef.current()
+        }
+        // 初期音声検出タイマーをクリア
+        clearInitialSpeechCheckTimer()
+        stopListening()
+      }
+
+      setRecognition(newRecognition)
+    }
+  }, [stopListening, getVoiceLanguageCode, clearInitialSpeechCheckTimer])
+
+  useEffect(() => {
+    const AudioContextClass = (window.AudioContext ||
+      (window as any).webkitAudioContext) as AudioContextType
+    const context = new AudioContextClass()
+    setAudioContext(context)
+  }, [])
+
+  const startListening = useCallback(async () => {
+    const hasPermission = await checkMicrophonePermission()
+    if (!hasPermission) return
+
+    if (recognition && !isListeningRef.current && audioContext) {
+      transcriptRef.current = ''
+      setUserMessage('')
+      try {
+        recognition.start()
+      } catch (error) {
+        console.error('Error starting recognition:', error)
+      }
+      isListeningRef.current = true
+      setIsListening(true)
+
+      if (realtimeAPIMode) {
+        audioChunksRef.current = [] // 音声チャンクをリセット
+
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' })
+          setMediaRecorder(recorder)
+
+          recorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              if (!isListeningRef.current) {
+                recognition.stop()
+                recorder.stop()
+                recorder.ondataavailable = null
+                return
+              }
+              audioChunksRef.current.push(event.data)
+              console.log('add audio chunk:', audioChunksRef.current.length)
+            }
+          }
+
+          recorder.start(100) // より小さな間隔でデータを収集
+        })
+      }
+    }
+  }, [recognition, audioContext, realtimeAPIMode])
 
   const toggleListening = useCallback(() => {
     if (isListeningRef.current) {

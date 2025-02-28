@@ -208,26 +208,21 @@ cp .env.example .env
 ### Live2D 사양에 대하여
 
 Live2D 표시를 위해 비공식 라이브러리 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)를 사용하고 있습니다.
+Live2D는 개발용 SDK로 Cubism이라는 라이브러리를 제공하고 있으며, AITuberKit는 Cubism 3 이상의 모델을 지원합니다.
 
-Live2D는 개발용 SDK로 Cubism이라는 라이브러리를 제공하고 있으며, 현재 Cubism 2.1, Cubism 3, Cubism 4, 그리고 Cubism 5가 존재합니다. Cubism 4는 Cubism 3 모델과 호환성이 있으며, 최신 Cubism 5는 Cubism 4와 호환성이 있습니다.
-
-Cubism 2.1과 Cubism 4/5를 사용함으로써 모든 버전의 Live2D 모델을 지원합니다.
+또한, 본 프로젝트는 Live2D사의 허가를 받아 공식 SDK를 사용하고 있습니다.
 
 #### Cubism Core
 
-이 기능을 사용하기 전에, 다음 Cubism Core (Cubism 런타임 라이브러리) 파일을 모두 `public/scripts`에 설치해야 합니다:
+Live2D 기능을 사용하려면 다음 파일을 `public/scripts`에 설치해야 합니다:
 
-1. `live2dcubismcore.min.js` (Cubism 4/5)
+`live2dcubismcore.min.js` (Cubism 4/5용)
 
-   - [공식 사이트](https://www.live2d.com/sdk/download/web/)에서 다운로드 가능
-   - 또는 [이곳](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)에서 다운로드 가능 (참고: 프로덕션 환경에서의 사용은 권장되지 않습니다)
+- [공식 사이트](https://www.live2d.com/sdk/download/web/)에서 다운로드 가능
+- 또는 [이곳](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)에서 다운로드 가능 (참고: 프로덕션 환경에서의 사용은 권장되지 않습니다)
 
-2. `live2d.min.js` (Cubism 2.1)
-   - 2019년 9월 4일 이후, 공식 사이트에서는 다운로드할 수 없습니다. 다음에서 다운로드 가능:
-     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
-     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
-
-두 파일을 설치하면 모든 버전의 Live2D 모델을 지원할 수 있습니다.
+Live2D사의 Cubism SDK를 포함한 소프트웨어를 공개할 때는 Live2D사와의 출판 허가 계약 체결이 필요할 수 있습니다. 자세한 내용은 아래 페이지를 참조하세요.
+https://www.live2d.com/sdk/license/
 
 ### 배경 이미지 설정
 
@@ -333,6 +328,9 @@ Cubism 2.1과 Cubism 4/5를 사용함으로써 모든 버전의 Live2D 모델을
   </a>
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
+  </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
   </a>
 </p>
 

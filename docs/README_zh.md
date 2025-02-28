@@ -205,6 +205,25 @@ cp .env.example .env
 
 ## 小貼士
 
+### 关于Live2D规格
+
+Live2D显示使用非官方库 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)。
+Live2D提供了一个名为Cubism的库作为开发SDK，AITuberKit支持Cubism 3及更高版本的模型。
+
+请注意，本项目已获得Live2D公司的许可使用官方SDK。
+
+#### Cubism Core
+
+如果要使用Live2D功能，请将以下文件放置在 `public/scripts` 中：
+
+`live2dcubismcore.min.js` (适用于Cubism 4/5)
+
+- 可从[官方网站](https://www.live2d.com/sdk/download/web/)下载
+- 或者从[这里](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)获取（注意：不建议在生产环境中使用）
+
+在发布包含Live2D公司Cubism SDK的软件时，可能需要与Live2D公司签订出版许可协议。详情请参阅以下页面：
+https://www.live2d.com/sdk/license/
+
 ### 背景固定方法
 
 - 在 `public/bg-c.png` 更改背景圖片。請不要更改名稱。
@@ -224,34 +243,6 @@ cp .env.example .env
 - 設置信息和對話歷史可以在設置屏幕中重置。
 - 各種設置項目保存在瀏覽器的本地存儲中。
 - 代碼塊中的元素不會被TTS讀取。
-
-### 关于Live2D规格
-
-Live2D显示使用非官方库 [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display)。
-
-Live2D提供了一个名为Cubism的库作为开发SDK，目前存在Cubism 2.1、Cubism 3、Cubism 4和Cubism 5。Cubism 4與Cubism 3模型兼容，最新的Cubism 5與Cubism 4兼容。
-
-通过使用Cubism 2.1和Cubism 4/5，我们支持所有版本的Live2D模型。
-
-#### Cubism Core
-
-使用此功能之前，需要将以下Cubism Core（Cubismランタイムライブラリ）文件放置在 `public/scripts` 中：
-
-1. `live2dcubismcore.min.js` (Cubism 4/5)
-
-   - [官方网站](https://www.live2d.com/sdk/download/web/)
-   - 或者[这里](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)（注意：不建议在生产环境中使用）
-
-2. `live2d.min.js` (Cubism 2.1)
-   - 自2019年9月4日起，官方网站不再提供下载，但可以从以下位置获取：
-     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
-     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
-
-设置这两个文件后，可以支持所有版本的Live2D模型。
-
-### 背景图片设置
-
-- 在 `public/bg-c.png` 更改背景圖片。請不要更改名稱。
 
 ## 相關文章
 
@@ -337,6 +328,9 @@ Live2D提供了一个名为Cubism的库作为开发SDK，目前存在Cubism 2.1�
   </a>
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
+  </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
   </a>
 </p>
 

@@ -160,6 +160,8 @@
   "LocalStorageReset": "設定をリセットする",
   "LocalStorageResetInfo": "環境変数が設定されている場合はその値が優先されます。ページが再読み込みされます。",
   "LocalStorageResetButton": "設定リセット",
+  "NoSpeechTimeout": "無音検出タイムアウト",
+  "NoSpeechTimeoutInfo": "音声入力時に無音状態が続いた場合、自動的に入力を終了するまでの時間を設定します。\n0秒に設定すると、無音検出による自動送信を無効にします。",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
     "AIInvalidProperty": "AIサービスの設定値が正しくありません",
@@ -197,7 +199,8 @@
     "FunctionExecuting": "{{funcName}}を実行しています",
     "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました",
     "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません",
-    "SpeechRecognitionError": "音声認識エラーが発生しました"
+    "SpeechRecognitionError": "音声認識エラーが発生しました",
+    "NoSpeechDetected": "音声が検出されませんでした。"
   },
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",

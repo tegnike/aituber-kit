@@ -149,6 +149,7 @@ interface General {
   maxPastMessages: number
   useVideoAsBackground: boolean
   temperature: number
+  noSpeechTimeout: number
 }
 
 interface ModelType {
@@ -311,6 +312,8 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND === 'true',
       temperature:
         parseFloat(process.env.NEXT_PUBLIC_TEMPERATURE || '1.0') || 1.0,
+      noSpeechTimeout:
+        parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -437,6 +440,7 @@ const settingsStore = create<SettingsState>()(
         maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
         temperature: state.temperature,
+        noSpeechTimeout: state.noSpeechTimeout,
       }),
     }
   )

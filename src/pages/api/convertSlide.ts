@@ -349,10 +349,30 @@ function getLanguage(selectLanguage: string | undefined) {
       return 'English'
     case 'zh':
       return 'Chinese'
-    case 'zh-TW':
-      return 'Chinese'
     case 'ko':
       return 'Korean'
+    case 'vi':
+      return 'Vietnamese'
+    case 'fr':
+      return 'French'
+    case 'es':
+      return 'Spanish'
+    case 'pt':
+      return 'Portuguese'
+    case 'de':
+      return 'German'
+    case 'ru':
+      return 'Russian'
+    case 'it':
+      return 'Italian'
+    case 'ar':
+      return 'Arabic'
+    case 'hi':
+      return 'Hindi'
+    case 'pl':
+      return 'Polish'
+    case 'th':
+      return 'Thai'
     default:
       return 'Japanese'
   }
