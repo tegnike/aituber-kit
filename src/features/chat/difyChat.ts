@@ -13,8 +13,12 @@ export async function getDifyChatResponseStream(
   messages: Message[],
   apiKey: string,
   url: string,
-  conversationId: string
+  conversationId: string,
+  userId: string // 追加
 ): Promise<ReadableStream<string>> {
+  const ss = settingsStore.getState();
+  const userConversationId = ss.difyConversationMap[userId] || '';
+
   const response = await fetch('/api/difyChat', {
     method: 'POST',
     headers: {
@@ -24,10 +28,13 @@ export async function getDifyChatResponseStream(
       query: messages[messages.length - 1].content,
       apiKey,
       url,
-      conversationId,
+      conversationId: userConversationId || "conversationId",
       stream: true,
+//      user: 'aituber-kit', // 追加
+//      user: 'aituber-kit' + userId, // 追加
     }),
   })
+  console.log('difyChat:', messages[messages.length - 1].content, userId, conversationId)
 
   try {
     if (!response.ok) {
@@ -65,6 +72,7 @@ export async function getDifyChatResponseStream(
                 const jsonStr = line.slice(5) // 'data:' プレフィックスを除去
                 try {
                   const data = JSON.parse(jsonStr)
+                  console.log('difyChat data:', data) //debug
                   if (
                     data.event === 'agent_message' ||
                     data.event === 'message'
@@ -72,6 +80,10 @@ export async function getDifyChatResponseStream(
                     controller.enqueue(data.answer)
                     settingsStore.setState({
                       difyConversationId: data.conversation_id,
+                      difyConversationMap: {
+                        ...ss.difyConversationMap,
+                        [userId]: data.conversation_id,
+                      },
                     })
                   }
                 } catch (error) {

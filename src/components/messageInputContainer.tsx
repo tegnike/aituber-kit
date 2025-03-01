@@ -5,7 +5,8 @@ import { VoiceLanguage } from '@/features/constants/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import { useTranslation } from 'react-i18next'
 import toastStore from '@/features/stores/toast'
-import cammicApp from './cammic';
+import cammicApp from './cammic'
+import { CameraMonitor } from './cameraMonitor'
 
 const NO_SPEECH_TIMEOUT = 3000
 
@@ -14,10 +15,15 @@ type AudioContextType = typeof AudioContext
 
 type Props = {
   onChatProcessStart: (text: string) => void
+  initialTranscript?: string
 }
 
-export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const realtimeAPIMode = settingsStore.getState().realtimeAPIMode
-  const [userMessage, setUserMessage] = useState('')
+export const MessageInputContainer = ({ 
+  onChatProcessStart,
+  initialTranscript = ''
+}: Props) => {
+  const realtimeAPIMode = settingsStore.getState().realtimeAPIMode
+  const [userMessage, setUserMessage] = useState(initialTranscript || '')
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
@@ -28,8 +34,11 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const
   const audioChunksRef = useRef<Blob[]>([])
   const isListeningRef = useRef(false)
   const [isListening, setIsListening] = useState(false)
-  const cammicRef = useRef<InstanceType<typeof cammicApp> | null>(null);
-  const [currentTranscript, setCurrentTranscript] = useState('');
+  const cammicRef = useRef<InstanceType<typeof cammicApp> | null>(null)
+  const [currentTranscript, setCurrentTranscript] = useState(initialTranscript || '')
+  // ユーザーID管理用
+  const currentUserIdRef = useRef<string | null>(null)
+  const [enableAutoVoiceStart, setEnableAutoVoiceStart] = useState(true)
 
   const { t } = useTranslation()
 
@@ -415,16 +424,47 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {  const
     []
   )
 
+  // ユーザー検出時のハンドラ
+  const handleUserDetected = useCallback((userId: string, isNewUser: boolean) => {
+    console.log(`ユーザー検出: ${userId}, 新規ユーザー: ${isNewUser}`)
+    currentUserIdRef.current = userId
+    
+    // 新規ユーザーかつ自動音声入力が有効な場合
+    if (isNewUser && enableAutoVoiceStart) {
+      console.log('新規ユーザー検出: 音声入力を自動開始')
+      
+      // 現在音声入力中なら一度停止する
+      if (isListeningRef.current) {
+        stopListening()
+      }
+      
+      // 少し遅延させて音声入力開始
+      setTimeout(() => {
+        startListening()
+      }, 1000)
+    }
+  }, [enableAutoVoiceStart])
+
   return (
-    <div className="flex gap-2 p-2">
-      <MessageInput
-        userMessage={userMessage}
-      isMicRecording={isListening} // useState の値を使用
-      onChangeUserMessage={handleInputChange}
-        onClickMicButton={toggleListening}
-        onClickSendButton={handleSendMessage}
+    <>
+      {/* カメラモニターをコンポーネントとして埋め込む */}
+      <CameraMonitor 
+        onUserDetected={handleUserDetected}
+        pollInterval={3000} // 3秒ごとにチェック
       />
-    </div>
+      
+      <div className="flex gap-2 p-2">
+        <MessageInput
+          userMessage={userMessage}
+          isMicRecording={isListening}
+          onChangeUserMessage={handleInputChange}
+          onClickMicButton={toggleListening}
+          onClickSendButton={handleSendMessage}
+          chatProcessing={false}
+          slidePlaying={false}
+        />
+      </div>
+    </>
   )
 }
 

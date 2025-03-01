@@ -38,7 +38,8 @@ export async function getAIChatResponseStream(
         messages,
         ss.difyKey || '',
         ss.difyUrl || '',
-        ss.difyConversationId
+        ss.difyConversationId,
+        ss.userId
       )
     default:
       throw new Error(`Unsupported AI service: ${ss.selectAIService}`)

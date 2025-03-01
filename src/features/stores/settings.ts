@@ -111,6 +111,7 @@ interface ModelProvider extends Live2DSettings {
 interface Integrations {
   difyUrl: string
   difyConversationId: string
+  difyConversationMap: { [userId: string]: string };
   youtubeMode: boolean
   youtubeLiveId: string
   youtubePlaying: boolean
@@ -155,12 +156,20 @@ interface ModelType {
   modelType: 'vrm' | 'live2d'
 }
 
+interface UserInfo {
+  userId: string
+  difyConversationMap: {
+    [userId: string]: string
+  }
+}
+
 export type SettingsState = APIKeys &
   multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &
   General &
+  UserInfo &
   ModelType & {
     promptType: PromptType
   }
@@ -247,6 +256,8 @@ const settingsStore = create<SettingsState>()(
       // Integrations
       difyUrl: '',
       difyConversationId: '',
+      difyConversationMap: {},
+
       youtubeMode:
         process.env.NEXT_PUBLIC_YOUTUBE_MODE === 'true' ? true : false,
       youtubeLiveId: process.env.NEXT_PUBLIC_YOUTUBE_LIVE_ID || '',
@@ -348,6 +359,9 @@ const settingsStore = create<SettingsState>()(
 
       // Prompt Type
       promptType: PromptType.CHAT_PARTNER,
+
+      // User Info
+      userId: '',
     }),
     {
       name: 'aitube-kit-settings',
@@ -396,6 +410,7 @@ const settingsStore = create<SettingsState>()(
         elevenlabsVoiceId: state.elevenlabsVoiceId,
         difyUrl: state.difyUrl,
         difyConversationId: state.difyConversationId,
+        difyConversationMap: state.difyConversationMap,
         youtubeLiveId: state.youtubeLiveId,
         characterName: state.characterName,
         showAssistantText: state.showAssistantText,
@@ -443,6 +458,7 @@ const settingsStore = create<SettingsState>()(
         useVideoAsBackground: state.useVideoAsBackground,
         temperature: state.temperature,
         promptType: state.promptType,
+        userId: state.userId,
       }),
     }
   )
