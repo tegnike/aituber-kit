@@ -237,8 +237,8 @@
     "happyMotionGroup": "Happy",
     "sadMotionGroup": "Sad",
     "angryMotionGroup": "Angry",
-    "relaxedMotionGroup": "Relaxed"
+    "relaxedMotionGroup": "Test 1"
   },
-  "UseVideoAsBackground": "Use shared screen or webcam as background",
-  "Temperature": "Temperature"
+  "UseVideoAsBackground": "Test 2",
+  "Test": "Test 3"
 }
