@@ -1,19 +1,26 @@
-name: Update Locales
+name: Locale Files Updater
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths-ignore:
-      - 'locales/[!j][!a]*/translation.json'
-      - '!locales/ja/translation.json'
+    branches:
+      - develop
+    paths:
+      - 'locales/ja/translation.json'
+  workflow_dispatch:
 
 jobs:
   update-locales:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # 履歴を全て取得して差分比較に使用
+          ref: ${{ github.event.pull_request.head.ref }} # PRのブランチをチェックアウト
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -23,20 +30,23 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install openai gitpython
+          pip install openai GitPython
 
       - name: Update locale files
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          PR_BASE_REF: ${{ github.base_ref }}
-          PR_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: python scripts/update_locales.py
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: 'chore: update locale files'
-          title: 'Update locale files'
-          body: 'Update locale files based on changes in Japanese translation'
-          branch: locale-update
-          delete-branch: true
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add locales/*/translation.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "update locale files"
+          git push origin ${{ github.event.pull_request.head.ref }}

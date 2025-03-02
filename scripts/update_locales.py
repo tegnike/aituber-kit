@@ -9,11 +9,8 @@ import time
 from pathlib import Path
 from openai import OpenAI
 
-# 環境変数から情報を取得
+# 環境変数からAPIキーを取得
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-PR_BASE_REF = os.getenv("PR_BASE_REF", "develop")  # デフォルトはdevelop
-PR_HEAD_REF = os.getenv("PR_HEAD_REF")
-
 if not OPENAI_API_KEY:
     print("Error: OPENAI_API_KEY environment variable is not set.")
     sys.exit(1)
@@ -51,25 +48,35 @@ repo = git.Repo(repo_root)
 def get_changed_keys():
     """
     日本語のtranslation.jsonファイルの変更を検出し、変更されたキーを返す
-    PRの基準ブランチ（通常はdevelop）と現在の状態を比較
     """
+    # 追加・変更されたキーと削除されたキーを格納する辞書
     added_modified_keys = {}
     deleted_keys = []
 
     try:
-        # PRの基準ブランチの内容を取得
-        try:
-            base_content = repo.git.show(
-                f"origin/{PR_BASE_REF}:{ja_translation_path.replace(repo_root + '/', '')}"
-            )
-        except git.exc.GitCommandError:
-            print(f"Warning: Could not find file in base branch, assuming new file")
-            base_content = "{}"
-        base_json = json.loads(base_content)
-
         # 現在のファイル内容を取得
         with open(ja_translation_path, "r", encoding="utf-8") as f:
             current_json = json.load(f)
+
+        # GitHubのPR環境変数からベースブランチのSHAを取得
+        base_sha = os.getenv("GITHUB_BASE_SHA")
+        if not base_sha:
+            print(
+                "Warning: GITHUB_BASE_SHA not found. Using current branch comparison."
+            )
+            # PRのベース（通常はdevelop）との差分を取得
+            base_sha = repo.git.merge_base("HEAD", "origin/develop")
+
+        try:
+            # ベースブランチの日本語ファイルの内容を取得
+            old_content = repo.git.show(
+                f"{base_sha}:{ja_translation_path.replace(repo_root + '/', '')}"
+            )
+            old_json = json.loads(old_content)
+        except git.exc.GitCommandError:
+            # ファイルが存在しない場合（新規作成時）は空の辞書を使用
+            print("Base version of the file not found. Treating as new file.")
+            old_json = {}
 
         # 階層的に変更を抽出する関数
         def extract_changes(old_dict, new_dict, path=""):
@@ -98,10 +105,11 @@ def get_changed_keys():
                 elif isinstance(old_dict[key], dict) and isinstance(
                     new_dict[key], dict
                 ):
+                    # 両方が辞書の場合は再帰的に処理
                     extract_changes(old_dict[key], new_dict[key], current_path)
 
         # 変更を抽出
-        extract_changes(base_json, current_json)
+        extract_changes(old_json, current_json)
 
         return added_modified_keys, deleted_keys
 
