@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
+import { MessageInputContainer } from './messageInputContainer'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -13,6 +14,7 @@ export const Webcam = () => {
   const [showRotateButton, setShowRotateButton] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
   const backgroundVideoRef = useRef<HTMLVideoElement>(null)
+  const [currentTranscript, setCurrentTranscript] = useState('')
 
   const refreshDevices = useCallback(async () => {
     if (!navigator.mediaDevices) return

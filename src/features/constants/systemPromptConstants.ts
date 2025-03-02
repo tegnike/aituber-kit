@@ -20,8 +20,10 @@ export function getSystemPrompt(type: PromptType): string {
   switch (type) {
     case PromptType.CHAT_PARTNER:
       systemPrompt_CORE = CHAT_PARTNER_PROMPT;
+      break;
     case PromptType.GOOD_LISTENER:
       systemPrompt_CORE = GOOD_LISTENER_PROMPT;
+      break;
     default:
       systemPrompt_CORE = CHAT_PARTNER_PROMPT; // デフォルト値
   }

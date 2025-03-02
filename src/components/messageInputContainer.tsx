@@ -94,17 +94,17 @@ export const MessageInputContainer = ({
           const cammicInstance = new cammicApp();
           cammicRef.current = cammicInstance;
           console.log("cammicApp instance created successfully");
-          
+
           // 初期化状態をログ出力
           console.log("cammicApp state:", {
             isInitialized: !!cammicRef.current,
             instance: cammicRef.current
           });
-          
+
           // Set up transcript callback before starting
           cammicRef.current.setTranscriptCallback((transcript: string) => {
             setUserMessage(transcript);
-            
+
             if (prev_length > 0 && prev_length !== transcript.length) {
               setTimeout(() => {
                 if (prev_length === transcript.length) {
@@ -112,7 +112,7 @@ export const MessageInputContainer = ({
                     // Use the transcript directly instead of relying on state
                     handleSendMessage(transcript);
                     cammicRef.current.stop();
-                    
+
                     setTimeout(() => {
                       if (cammicRef.current) {
                         cammicRef.current.start();
@@ -144,7 +144,7 @@ export const MessageInputContainer = ({
     };
 
     initializeCammic();
-    
+
     return () => {
       if (cammicRef.current) {
         cammicRef.current.stop();
