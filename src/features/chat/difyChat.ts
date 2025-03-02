@@ -14,35 +14,55 @@ export async function getDifyChatResponseStream(
   apiKey: string,
   url: string,
   conversationId: string,
-  userId: string // 追加
+  userId: string
 ): Promise<ReadableStream<string>> {
   const ss = settingsStore.getState();
   const userConversationId = ss.difyConversationMap[userId] || '';
-
+  
+  // 最新のメッセージを取得（ユーザーからの質問）
+  const lastMessage = messages[messages.length - 1].content;
+  
+  // Dify APIリクエストの形式を修正
   const response = await fetch('/api/difyChat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: messages[messages.length - 1].content,
+      query: lastMessage,
       apiKey,
       url,
-      conversationId: userConversationId || "conversationId",
+      // 会話IDをユーザー固有のものに、または新規の場合は空文字列を送信
+      conversationId: userConversationId || "",
       stream: true,
-//      user: 'aituber-kit', // 追加
-//      user: 'aituber-kit' + userId, // 追加
+      user: userId, // ユーザーIDを必ず送信 org : "aituber-kit" + 
+      inputs: {}, // 必要に応じて追加の入力パラメータ
     }),
   })
-  console.log('difyChat:', messages[messages.length - 1].content, userId, conversationId)
+  
+  console.log('difyChat request:', {
+    query: lastMessage,
+    conversationId,
+    userId
+  });
 
   try {
+    // エラーレスポンスの詳細なログ出力
     if (!response.ok) {
-      const responseBody = await response.json()
+      const errorText = await response.text();
+      let errorDetail;
+      try {
+        errorDetail = JSON.parse(errorText);
+      } catch {
+        errorDetail = errorText;
+      }
+      
+      console.error(`Dify API エラー (${response.status}):`, errorDetail);
+      
       throw new Error(
-        `API request to Dify failed with status ${response.status} and body ${responseBody.error}`,
-        { cause: { errorCode: responseBody.errorCode } }
-      )
+        `API request to Dify failed with status ${response.status}`,
+        { cause: { errorCode: 'DifyAPIError', detail: errorDetail } }
+      );
     }
 
     return new ReadableStream({
@@ -72,7 +92,7 @@ export async function getDifyChatResponseStream(
                 const jsonStr = line.slice(5) // 'data:' プレフィックスを除去
                 try {
                   const data = JSON.parse(jsonStr)
-                  console.log('difyChat data:', data) //debug
+                  //console.log('difyChat data:', data) //debug
                   if (
                     data.event === 'agent_message' ||
                     data.event === 'message'
@@ -107,12 +127,15 @@ export async function getDifyChatResponseStream(
       },
     })
   } catch (error: any) {
-    const errorMessage = handleApiError(error.cause.errorCode)
+    console.error('Dify API エラー詳細:', error);
+    const errorMessage = handleApiError(error.cause?.errorCode || 'AIAPIError');
+    
     toastStore.getState().addToast({
       message: errorMessage,
       type: 'error',
       tag: 'dify-api-error',
-    })
-    throw error
+    });
+    
+    throw error;
   }
 }

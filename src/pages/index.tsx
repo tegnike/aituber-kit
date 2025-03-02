@@ -35,7 +35,11 @@ const Home = () => {
   // ユーザー検出ハンドラ
   const handleUserDetected = (userId: string, newUser: boolean) => {
     setCurrentUserId(userId)
-    setIsNewUser(newUser)
+    console.log('ユーザー検出:', userId)
+    if(userId !== "unKnown") {
+      console.log('ユーザーID:', userId)
+      setIsNewUser(newUser)
+    }
     
     // 新規ユーザー検出時の追加処理があればここに記述
     if (newUser) {

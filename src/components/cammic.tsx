@@ -6,6 +6,7 @@ export class CammicApp {
   private onTranscriptCallback: ((transcript: string) => void) | null = null;
   private currentTranscript: string = '';
   private audioStream: MediaStream | null = null;
+  private isRecognizing: boolean = false; // Add a more reliable state tracking variable
 
   constructor() {
     this.initializeSpeechRecognition();
@@ -50,6 +51,12 @@ export class CammicApp {
       // Add onstart handler to confirm initialization
       this.recognition.onstart = () => {
         console.log('Speech recognition started successfully');
+        this.isRecognizing = true;
+      };
+
+      this.recognition.onend = () => {
+        console.log('Speech recognition ended');
+        this.isRecognizing = false;
       };
 
       this.recognition.onresult = (event) => {
@@ -65,10 +72,15 @@ export class CammicApp {
 
       this.recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
-        // Attempt to restart recognition on error
-        if (this.recognition && this.isRecognitionActive()) {
-          this.stop();
-          this.start();
+        this.isRecognizing = false;
+        
+        // Attempt to restart recognition on certain errors, but not on "aborted" or "not-allowed"
+        if (this.recognition && event.error !== 'aborted' && event.error !== 'not-allowed') {
+          setTimeout(() => {
+            if (!this.isRecognizing) {
+              this.start().catch(err => console.error('Failed to restart recognition:', err));
+            }
+          }, 1000);
         }
       };
 
@@ -89,30 +101,43 @@ export class CammicApp {
         await this.initializeSpeechRecognition();
       }
 
-      if (!this.isRecognitionActive()) {
+      if (!this.isRecognizing) {
         this.recognition?.start();
       } else {
-        console.warn('Speech recognition is already running');
+        console.log('Speech recognition is already running');
+        // Don't throw an error here, just log and continue
       }
     } catch (error) {
-      console.error('Failed to start speech recognition:', error);
-      throw error;
+      if (error instanceof DOMException && error.name === 'InvalidStateError') {
+        // This is the error we're trying to fix
+        console.log('Recognition already started. Setting isRecognizing to true');
+        this.isRecognizing = true;
+      } else {
+        console.error('Failed to start speech recognition:', error);
+        throw error;
+      }
     }
   }
 
   public stop(): void {
-    if (this.recognition) {
-      this.recognition.stop();
-    }
-    // オーディオストリームも停止
-    if (this.audioStream) {
-      this.audioStream.getTracks().forEach(track => track.stop());
+    try {
+      if (this.recognition && this.isRecognizing) {
+        this.recognition.stop();
+      }
+      // オーディオストリームも停止
+      if (this.audioStream) {
+        this.audioStream.getTracks().forEach(track => track.stop());
+      }
+    } catch (error) {
+      console.error('Error stopping recognition:', error);
+      // Force state reset even if stop failed
+      this.isRecognizing = false;
     }
   }
 
-  // Add this new method to check recognition state
+  // Improve the recognition state check
   private isRecognitionActive(): boolean {
-    return this.recognition?.state === 'activated' || this.recognition?.state === 'listening';
+    return this.isRecognizing;
   }
 }
 

@@ -1,3 +1,4 @@
+
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -30,6 +31,7 @@ export interface TransientState {
   setIsCubismCoreLoaded: (loaded: boolean) => void
   isLive2dLoaded: boolean
   setIsLive2dLoaded: (loaded: boolean) => void
+  isSpeaking: boolean
 }
 
 export type HomeState = PersistedState & TransientState
@@ -70,6 +72,7 @@ const homeStore = create<HomeState>()(
         set(() => ({ isCubismCoreLoaded: loaded })),
       isLive2dLoaded: false,
       setIsLive2dLoaded: (loaded) => set(() => ({ isLive2dLoaded: loaded })),
+      isSpeaking: false,
     }),
     {
       name: 'aitube-kit-home',
@@ -84,6 +87,11 @@ const homeStore = create<HomeState>()(
 // chatLogの変更を監視して保存
 homeStore.subscribe((state, prevState) => {
   if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
+    // 最新のメッセージを取得し、保存用に処理
+    const lastMessage = state.chatLog[state.chatLog.length - 1]
+    const processedMessage =
+      messageSelectors.sanitizeMessageForStorage(lastMessage)
+
     fetch('/api/save-chat-log', {
       method: 'POST',
       headers: {

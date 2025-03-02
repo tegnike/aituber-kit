@@ -471,6 +471,7 @@ export const handleSendChatFn = () => async (text: string) => {
     ]
 
     try {
+      console.log('processAIResponse:', messages)
       await processAIResponse(messageLog, messages)
     } catch (e) {
       console.error(e)
@@ -624,7 +625,7 @@ export const handleReceiveTextFromRtFn =
  * @param callback ユーザーID変更後に実行するコールバック
  * @returns 変更があったかどうか
  */
-export const updateUserId = (userId: string, callback?: () => void): boolean => {
+export const updateUserId = (userId: string, callback?: (userId: string) => void): boolean => {
   const ss = settingsStore.getState()
   
   if (userId && ss.userId !== userId) {
@@ -633,7 +634,7 @@ export const updateUserId = (userId: string, callback?: () => void): boolean => 
     
     // ユーザーID変更後に任意の処理を実行
     if (callback) {
-      callback()
+      callback(userId)
     }
     
     return true
@@ -671,7 +672,10 @@ export const fetchUserIdFromCamera = async (
     
     if (userId) {
       // ユーザーIDの変更を処理
-      const updated = updateUserId(userId)
+      const updated = updateUserId(userId, () => {
+        // ユーザーID変更時の特別な処理をここに
+        // callback が設定されていればそれも後で実行される
+      })
       
       if (updated) {
         console.log(`カメラAPIからユーザーID「${userId}」を検出しました`)
