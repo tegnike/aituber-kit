@@ -1,7 +1,9 @@
 name: Locale Files Updater
 
 on:
-  push:
+  pull_request:
+    branches:
+      - develop
     paths:
       - 'locales/ja/translation.json'
   workflow_dispatch:
@@ -11,11 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 # 履歴を全て取得して差分比較に使用
+          ref: ${{ github.event.pull_request.head.ref }} # PRのブランチをチェックアウト
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -38,5 +42,9 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add locales/*/translation.json
-          git diff --staged --quiet || git commit -m "update locale files"
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "update locale files"
+          git push origin ${{ github.event.pull_request.head.ref }}
