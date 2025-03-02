@@ -235,11 +235,11 @@
     "SelectMotionGroup": "モーショングループを選択",
     "idleMotionGroup": "アイドル時",
     "neutralMotionGroup": "通常",
-    "happyMotionGroup": "嬉しい",
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
-    "relaxedMotionGroup": "リラックス"
+    "relaxedMotionGroup": "テスト1"
   },
-  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
-  "Temperature": "Temperature"
+  "UseVideoAsBackground": "テスト2",
+  "Temperature": "Temperature",
+  "Test": "テスト3"
 }
