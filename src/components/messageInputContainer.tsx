@@ -451,7 +451,12 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
 
       setRecognition(newRecognition)
     }
-  }, [stopListening, getVoiceLanguageCode, clearInitialSpeechCheckTimer])
+  }, [
+    stopListening,
+    getVoiceLanguageCode,
+    clearInitialSpeechCheckTimer,
+    selectLanguage,
+  ])
 
   useEffect(() => {
     const AudioContextClass = (window.AudioContext ||
