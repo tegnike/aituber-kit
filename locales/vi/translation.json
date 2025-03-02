@@ -231,6 +231,7 @@
     "SelectMotionGroup": "Chọn nhóm chuyển động",
     "idleMotionGroup": "Idle",
     "neutralMotionGroup": "Neutral",
+    "happyMotionGroup": "Happy",
     "sadMotionGroup": "Sad",
     "angryMotionGroup": "Angry",
     "relaxedMotionGroup": "Kiểm tra 1"

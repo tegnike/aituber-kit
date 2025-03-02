@@ -233,6 +233,7 @@
     "SelectMotionGroup": "动作组选择",
     "idleMotionGroup": "空闲",
     "neutralMotionGroup": "通常",
+    "happyMotionGroup": "高兴",
     "sadMotionGroup": "悲伤",
     "angryMotionGroup": "愤怒",
     "relaxedMotionGroup": "测试1"

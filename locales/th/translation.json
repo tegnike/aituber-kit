@@ -232,6 +232,7 @@
     "SelectMotionGroup": "เลือกกลุ่มการเคลื่อนไหว",
     "idleMotionGroup": "ในช่วงว่าง",
     "neutralMotionGroup": "ปกติ",
+    "happyMotionGroup": "มีความสุข",
     "sadMotionGroup": "เศร้า",
     "angryMotionGroup": "โกรธ",
     "relaxedMotionGroup": "ทดสอบ1"

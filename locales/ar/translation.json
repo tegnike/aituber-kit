@@ -231,6 +231,7 @@
     "SelectMotionGroup": "اختيار مجموعة الحركة",
     "idleMotionGroup": "خامل",
     "neutralMotionGroup": "محايد",
+    "happyMotionGroup": "سعيد",
     "sadMotionGroup": "حزين",
     "angryMotionGroup": "غاضب",
     "relaxedMotionGroup": "اختبار1"

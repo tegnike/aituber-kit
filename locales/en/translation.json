@@ -234,6 +234,7 @@
     "SelectMotionGroup": "Select Motion Group",
     "idleMotionGroup": "Idle",
     "neutralMotionGroup": "Neutral",
+    "happyMotionGroup": "Happy",
     "sadMotionGroup": "Sad",
     "angryMotionGroup": "Angry",
     "relaxedMotionGroup": "Test 1"

@@ -231,6 +231,7 @@
     "SelectMotionGroup": "Выбрать группу движений",
     "idleMotionGroup": "Бездействие",
     "neutralMotionGroup": "Нейтральный",
+    "happyMotionGroup": "Счастливый",
     "sadMotionGroup": "Грустный",
     "angryMotionGroup": "Злой",
     "relaxedMotionGroup": "Тест1"

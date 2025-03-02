@@ -231,6 +231,7 @@
     "SelectMotionGroup": "Sélectionner le groupe de mouvement",
     "idleMotionGroup": "Inactif",
     "neutralMotionGroup": "Neutre",
+    "happyMotionGroup": "Heureux",
     "sadMotionGroup": "Triste",
     "angryMotionGroup": "En colère",
     "relaxedMotionGroup": "Test1"
