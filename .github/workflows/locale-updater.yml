@@ -2,10 +2,15 @@ name: Locale Files Updater
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-    paths: ['locales/ja/translation.json']
-    branches: [develop]
-  workflow_dispatch:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - 'locales/ja/translation.json'
+    branches:
+      - develop
+  workflow_dispatch: {}
 
 jobs:
   update-locales:
