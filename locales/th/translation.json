@@ -235,8 +235,8 @@
     "happyMotionGroup": "มีความสุข",
     "sadMotionGroup": "เศร้า",
     "angryMotionGroup": "โกรธ",
-    "relaxedMotionGroup": "ทดสอบ1"
+    "relaxedMotionGroup": "ผ่อนคลาย"
   },
-  "UseVideoAsBackground": "ทดสอบ2",
-  "Test": "ทดสอบ3"
+  "UseVideoAsBackground": "ใช้หน้าจอแชร์หรือเว็บแคมเป็นพื้นหลัง",
+  "Temperature": "Temperature"
 }

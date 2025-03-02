@@ -234,8 +234,8 @@
     "happyMotionGroup": "Glücklich",
     "sadMotionGroup": "Traurig",
     "angryMotionGroup": "Wütend",
-    "relaxedMotionGroup": "Test1"
+    "relaxedMotionGroup": "Entspannt"
   },
-  "UseVideoAsBackground": "Test2",
-  "Test": "Test3"
+  "UseVideoAsBackground": "Geteilten Bildschirm oder Webcam als Hintergrund verwenden",
+  "Temperature": "Temperatur"
 }

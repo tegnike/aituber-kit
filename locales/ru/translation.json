@@ -234,8 +234,8 @@
     "happyMotionGroup": "Счастливый",
     "sadMotionGroup": "Грустный",
     "angryMotionGroup": "Злой",
-    "relaxedMotionGroup": "Тест1"
+    "relaxedMotionGroup": "Расслабленный"
   },
-  "UseVideoAsBackground": "Тест2",
-  "Test": "Тест3"
+  "UseVideoAsBackground": "Использовать общий экран или веб-камеру как фон",
+  "Temperature": "Температура"
 }

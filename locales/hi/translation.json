@@ -234,8 +234,8 @@
     "happyMotionGroup": "खुश",
     "sadMotionGroup": "दुखी",
     "angryMotionGroup": "क्रोधित",
-    "relaxedMotionGroup": "परीक्षण1"
+    "relaxedMotionGroup": "आराम से"
   },
-  "UseVideoAsBackground": "परीक्षण2",
-  "Test": "परीक्षण3"
+  "UseVideoAsBackground": "साझा स्क्रीन या वेबकैम को पृष्ठभूमि के रूप में उपयोग करें",
+  "Temperature": "तापमान"
 }

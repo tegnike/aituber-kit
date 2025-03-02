@@ -234,8 +234,8 @@
     "happyMotionGroup": "سعيد",
     "sadMotionGroup": "حزين",
     "angryMotionGroup": "غاضب",
-    "relaxedMotionGroup": "اختبار1"
+    "relaxedMotionGroup": "مسترخي"
   },
-  "UseVideoAsBackground": "اختبار2",
-  "Test": "اختبار3"
+  "UseVideoAsBackground": "استخدام الشاشة المشتركة أو كاميرا الويب كخلفية",
+  "Temperature": "درجة الحرارة"
 }

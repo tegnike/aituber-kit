@@ -236,8 +236,8 @@
     "happyMotionGroup": "기쁨",
     "sadMotionGroup": "슬픔",
     "angryMotionGroup": "분노",
-    "relaxedMotionGroup": "테스트1"
+    "relaxedMotionGroup": "느긋"
   },
-  "UseVideoAsBackground": "테스트2",
-  "Test": "테스트3"
+  "UseVideoAsBackground": "공유 화면 또는 웹캠을 배경으로 사용",
+  "Temperature": "Temperature"
 }

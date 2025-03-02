@@ -236,8 +236,8 @@
     "happyMotionGroup": "高兴",
     "sadMotionGroup": "悲伤",
     "angryMotionGroup": "愤怒",
-    "relaxedMotionGroup": "测试1"
+    "relaxedMotionGroup": "放松"
   },
-  "UseVideoAsBackground": "测试2",
-  "Test": "测试3"
+  "UseVideoAsBackground": "使用共享屏幕或网络摄像头作为背景",
+  "Temperature": "Temperature"
 }
