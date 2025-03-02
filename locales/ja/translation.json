@@ -238,8 +238,8 @@
     "happyMotionGroup": "嬉しい",
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
-    "relaxedMotionGroup": "テスト1"
+    "relaxedMotionGroup": "リラックス"
   },
-  "UseVideoAsBackground": "テスト2",
-  "Test": "テスト3"
+  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
+  "Temperature": "Temperature"
 }
