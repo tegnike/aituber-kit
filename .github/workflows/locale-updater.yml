@@ -2,6 +2,7 @@ name: Locale Files Updater
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - develop
     paths:
