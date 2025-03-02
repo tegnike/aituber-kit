@@ -9,8 +9,11 @@ import time
 from pathlib import Path
 from openai import OpenAI
 
-# 環境変数からAPIキーを取得
+# 環境変数から情報を取得
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+PR_BASE_REF = os.getenv("PR_BASE_REF", "develop")  # デフォルトはdevelop
+PR_HEAD_REF = os.getenv("PR_HEAD_REF")
+
 if not OPENAI_API_KEY:
     print("Error: OPENAI_API_KEY environment variable is not set.")
     sys.exit(1)
@@ -48,24 +51,21 @@ repo = git.Repo(repo_root)
 def get_changed_keys():
     """
     日本語のtranslation.jsonファイルの変更を検出し、変更されたキーを返す
+    PRの基準ブランチ（通常はdevelop）と現在の状態を比較
     """
-    # 追加・変更されたキーと削除されたキーを格納する辞書
     added_modified_keys = {}
     deleted_keys = []
 
     try:
-        # 最新のコミットから日本語ファイルの変更を取得
-        diffs = repo.git.diff("HEAD~1", "HEAD", "--", ja_translation_path)
-
-        if not diffs:
-            print("No changes detected in Japanese translation file.")
-            return {}, []
-
-        # 変更前のファイル内容を取得
-        old_content = repo.git.show(
-            f"HEAD~1:{ja_translation_path.replace(repo_root + '/', '')}"
-        )
-        old_json = json.loads(old_content)
+        # PRの基準ブランチの内容を取得
+        try:
+            base_content = repo.git.show(
+                f"origin/{PR_BASE_REF}:{ja_translation_path.replace(repo_root + '/', '')}"
+            )
+        except git.exc.GitCommandError:
+            print(f"Warning: Could not find file in base branch, assuming new file")
+            base_content = "{}"
+        base_json = json.loads(base_content)
 
         # 現在のファイル内容を取得
         with open(ja_translation_path, "r", encoding="utf-8") as f:
@@ -98,11 +98,10 @@ def get_changed_keys():
                 elif isinstance(old_dict[key], dict) and isinstance(
                     new_dict[key], dict
                 ):
-                    # 両方が辞書の場合は再帰的に処理
                     extract_changes(old_dict[key], new_dict[key], current_path)
 
         # 変更を抽出
-        extract_changes(old_json, current_json)
+        extract_changes(base_json, current_json)
 
         return added_modified_keys, deleted_keys
 
