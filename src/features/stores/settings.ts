@@ -168,10 +168,16 @@ const settingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
       // API Keys
-      openaiKey: process.env.NEXT_PUBLIC_OPENAI_KEY || '',
+      openaiKey:
+        process.env.NEXT_PUBLIC_OPENAI_API_KEY ||
+        process.env.NEXT_PUBLIC_OPENAI_KEY ||
+        '',
       anthropicKey: '',
       googleKey: '',
-      azureKey: process.env.NEXT_PUBLIC_AZURE_KEY || '',
+      azureKey:
+        process.env.NEXT_PUBLIC_AZURE_API_KEY ||
+        process.env.NEXT_PUBLIC_AZURE_KEY ||
+        '',
       groqKey: '',
       cohereKey: '',
       mistralaiKey: '',

@@ -124,6 +124,10 @@ const ModelProvider = () => {
       settingsStore.setState({
         selectAIModel: 'gpt-4o-audio-preview-2024-12-17',
       })
+    } else {
+      settingsStore.setState({
+        selectAIModel: 'gpt-4o-2024-11-20',
+      })
     }
   }, [])
 
@@ -160,9 +164,9 @@ const ModelProvider = () => {
           <option value="mistralai">Mistral AI</option>
           <option value="perplexity">Perplexity</option>
           <option value="fireworks">Fireworks</option>
+          <option value="deepseek">DeepSeek</option>
           <option value="localLlm">{t('LocalLLM')}</option>
           <option value="dify">Dify</option>
-          <option value="deepseek">DeepSeek</option>
         </select>
       </div>
       {(() => {

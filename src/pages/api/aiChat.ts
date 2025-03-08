@@ -56,7 +56,8 @@ export default async function handler(req: NextRequest) {
 
   let aiApiKey = apiKey
   if (!aiApiKey) {
-    const envKey = `${aiService.toUpperCase()}_KEY` as keyof typeof process.env
+    const envKey =
+      `${aiService.toUpperCase()}_API_KEY` as keyof typeof process.env
     const envApiKey = process.env[envKey]
 
     aiApiKey = envApiKey
