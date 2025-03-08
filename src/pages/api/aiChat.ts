@@ -22,9 +22,6 @@ type AIServiceKey =
   | 'deepseek'
 type AIServiceConfig = Record<AIServiceKey, () => any>
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30
-
 export const config = {
   runtime: 'edge',
 }
@@ -52,6 +49,7 @@ export default async function handler(req: NextRequest) {
     stream,
     useSearchGrounding,
     temperature = 1.0,
+    maxTokens = 4096,
   } = await req.json()
 
   let aiApiKey = apiKey
@@ -152,6 +150,7 @@ export default async function handler(req: NextRequest) {
         model: instance(modifiedModel, options),
         messages: modifiedMessages as CoreMessage[],
         temperature: temperature,
+        maxTokens: maxTokens,
       })
 
       return result.toDataStreamResponse()
@@ -159,6 +158,8 @@ export default async function handler(req: NextRequest) {
       const result = await generateText({
         model: instance(model),
         messages: modifiedMessages as CoreMessage[],
+        temperature: temperature,
+        maxTokens: maxTokens,
       })
 
       return new Response(JSON.stringify({ text: result.text }), {

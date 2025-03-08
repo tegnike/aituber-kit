@@ -25,6 +25,8 @@ export default async function handler(
         model: body.model,
         messages: body.messages,
         stream: true,
+        temperature: body.temperature,
+        max_tokens: body.maxTokens,
       },
       {
         headers: {

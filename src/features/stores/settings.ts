@@ -149,6 +149,7 @@ interface General {
   maxPastMessages: number
   useVideoAsBackground: boolean
   temperature: number
+  maxTokens: number
   noSpeechTimeout: number
 }
 
@@ -318,6 +319,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND === 'true',
       temperature:
         parseFloat(process.env.NEXT_PUBLIC_TEMPERATURE || '1.0') || 1.0,
+      maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
 
@@ -446,6 +448,7 @@ const settingsStore = create<SettingsState>()(
         maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
         temperature: state.temperature,
+        maxTokens: state.maxTokens,
         noSpeechTimeout: state.noSpeechTimeout,
       }),
     }

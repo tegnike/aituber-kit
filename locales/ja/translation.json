@@ -241,5 +241,8 @@
     "relaxedMotionGroup": "リラックス"
   },
   "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
-  "Temperature": "Temperature"
+  "Temperature": "Temperature",
+  "MaxTokens": "最大トークン数",
+  "MaxTokensInfo": "最大トークン数は利用中のAIモデルによって異なります。各モデルの仕様を確認してください。",
+  "CannotUseParameters": "リアルタイムAPIモードまたはオーディオモードが有効の場合、TemperatureとMax Tokensパラメータは指定できません。"
 }
