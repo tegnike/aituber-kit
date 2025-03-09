@@ -569,7 +569,10 @@ const Voice = () => {
                   </TextButton>
                   <TextButton
                     onClick={async () => {
-                      const response = await fetch('/api/update-aivis-speakers')
+                      const response = await fetch(
+                        '/api/update-aivis-speakers?serverUrl=' +
+                          aivisSpeechServerUrl
+                      )
                       if (response.ok) {
                         // 話者リストを再読み込み
                         const updatedSpeakersResponse = await fetch(
