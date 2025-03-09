@@ -45,7 +45,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 - VOICEVOX
 - Koeiromap
-- Google TTS
+- Google Text-to-Speech
 - Style-Bert-VITS2
 - AivisSpeech
 - GSVI TTS

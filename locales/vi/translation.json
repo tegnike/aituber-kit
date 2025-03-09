@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "Thời lượng âm thanh",
   "VoicevoxServerUrl": "URL máy chủ VOICEVOX",
   "UpdateSpeakerList": "Cập nhật danh sách loa",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "Google Text-to-Speech",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Sử dụng Style-Bert-VITS2. Chỉ hỗ trợ tiếng Nhật, tiếng Anh và tiếng Trung. Nếu dùng API địa phương, hãy tải và chạy ứng dụng phù hợp. Nếu cần, vui lòng thiết lập thêm khóa API.",
   "SpeakerSelection": "Lựa chọn loa",

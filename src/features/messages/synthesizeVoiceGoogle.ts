@@ -26,7 +26,7 @@ export async function synthesizeVoiceGoogleApi(
 
     if (!res.ok) {
       throw new Error(
-        `Google TTS APIからの応答が異常です。ステータスコード: ${res.status}`
+        `Google Text-to-Speech APIからの応答が異常です。ステータスコード: ${res.status}`
       )
     }
 
@@ -43,9 +43,11 @@ export async function synthesizeVoiceGoogleApi(
     return arrayBuffer
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Google TTSでエラーが発生しました: ${error.message}`)
+      throw new Error(
+        `Google Text-to-Speechでエラーが発生しました: ${error.message}`
+      )
     } else {
-      throw new Error('Google TTSで不明なエラーが発生しました')
+      throw new Error('Google Text-to-Speechで不明なエラーが発生しました')
     }
   }
 }

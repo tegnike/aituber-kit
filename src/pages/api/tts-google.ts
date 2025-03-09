@@ -59,7 +59,7 @@ export default async function handler(
       res.status(200).json({ audio: audioContent })
     }
   } catch (error) {
-    console.error('Error in Google TTS:', error)
+    console.error('Error in Google Text-to-Speech:', error)
     res.status(500).json({ error: 'Internal Server Error' })
   }
 }

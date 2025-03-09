@@ -63,8 +63,15 @@ export default defineConfig({
             link: '/guide/slide-settings',
           },
           {
-            text: 'その他の設定',
-            link: '/guide/other-settings',
+            text: 'その他',
+            link: '/guide/other/advanced-settings',
+            items: [
+              { text: '高度な設定', link: '/guide/other/advanced-settings' },
+              {
+                text: 'API設定',
+                link: '/guide/other/message-receiver',
+              },
+            ],
           },
           {
             text: '環境変数一覧',

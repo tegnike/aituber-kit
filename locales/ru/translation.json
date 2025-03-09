@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "Длительность звука",
   "VoicevoxServerUrl": "URL сервера VOICEVOX",
   "UpdateSpeakerList": "Обновить список дикторов",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "Google Text-to-Speech",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Использует Style-Bert-VITS2. Поддерживает только японский, английский и китайский языки. Для локального API нужно скачать и запустить подходящее приложение. При необходимости настройте API-ключ.",
   "SpeakerSelection": "Выбор диктора",

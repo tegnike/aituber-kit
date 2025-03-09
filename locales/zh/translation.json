@@ -80,7 +80,7 @@
   "NijiVoiceEmotionalLevel": "情感程度",
   "NijiVoiceSoundDuration": "音訊長度",
   "UpdateSpeakerList": "更新語音角色",
-  "UsingGoogleTTS": "使用 Google TTS",
+  "UsingGoogleTTS": "使用 Google Text-to-Speech",
   "UsingStyleBertVITS2": "使用 Style-Bert-VITS2",
   "StyleBertVITS2Info": "使用 Style-Bert-VITS2。僅支援日語、英語和中文。如果使用本地 API，您需要從以下網站下載並啟動適合您環境的應用程式。如有需要，請也設定 API 金鑰。",
   "SpeakerSelection": "選擇語音角色",

@@ -32,7 +32,7 @@ features:
     details: YouTubeの配信コメントを取得して、AIキャラクターが自動で応答。会話継続モードでコメントがなくても自発的に発言できます。
   - icon: 🎤
     title: 多彩な音声合成
-    details: VOICEVOX、Koeiromap、Google TTS、ElevenLabsなど、様々な音声合成エンジンに対応しています。
+    details: VOICEVOX、Koeiromap、Google Text-to-Speech、ElevenLabsなど、様々な音声合成エンジンに対応しています。
   - icon: 🎭
     title: VRM/Live2Dサポート
     details: 3DモデルのVRMファイルと2DモデルのLive2Dファイルの両方に対応。お好みのキャラクターを使用できます。

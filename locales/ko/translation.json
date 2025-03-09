@@ -80,7 +80,7 @@
   "NijiVoiceEmotionalLevel": "감정 레벨",
   "NijiVoiceSoundDuration": "음성 길이",
   "UpdateSpeakerList": "보이스 타입 업데이트",
-  "UsingGoogleTTS": "Google TTS 사용",
+  "UsingGoogleTTS": "Google Text-to-Speech 사용",
   "UsingStyleBertVITS2": "Style-Bert-VITS2 사용",
   "StyleBertVITS2Info": "Style-Bert-VITS2를 사용하고 있습니다. 일본어, 영어, 중국어만 지원됩니다. 로컬 API를 사용하는 경우 아래 사이트에서 환경에 맞는 앱을 다운로드하고 실행해야 합니다. 필요한 경우 API 키도 설정해 주세요.",
   "SpeakerSelection": "보이스 타입 선택",
