@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "autoprefixer": "^10.4.21",
     "vitepress": "^1.6.3"
   },
   "devDependencies": {
