@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "SDP/DP 混合比",
   "StyleBeatVITS2Length": "語速",
   "ConversationHistory": "聊天記錄",
-  "ConversationHistoryInfo": "最近的{{count}}条对话记录将被保存为记忆。",
+  "ConversationHistoryInfo": "最近的{{count}}条对话记录将被保存。",
   "ConversationHistoryReset": "重設聊天記錄",
   "NotConnectedToExternalAssistant": "未連線外部助理。",
   "APIKeyNotEntered": "尚未輸入 API 金鑰。",

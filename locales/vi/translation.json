@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "Tỷ lệ trộn SDP/DP",
   "StyleBeatVITS2Length": "Tốc độ nói",
   "ConversationHistory": "Lịch sử hội thoại",
-  "ConversationHistoryInfo": "Lịch sử cuộc trò chuyện gần nhất {{count}} sẽ được lưu giữ như một bộ nhớ.",
+  "ConversationHistoryInfo": "Có {{count}} cuộc hội thoại gần đây được lưu giữ như bộ nhớ.",
   "ConversationHistoryReset": "Đặt lại lịch sử hội thoại",
   "NotConnectedToExternalAssistant": "Không kết nối với trợ lý bên ngoài.",
   "APIKeyNotEntered": "Chưa nhập khóa API.",

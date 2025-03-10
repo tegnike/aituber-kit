@@ -98,7 +98,7 @@
   "StyleBeatVITS2SdpRatio": "อัตราส่วนผสม SDP/DP",
   "StyleBeatVITS2Length": "ความเร็วในการพูด",
   "ConversationHistory": "ประวัติการสนทนา",
-  "ConversationHistoryInfo": "บทสนทนาล่าสุด {{count}} รายการจะถูกเก็บเป็นความจำ",
+  "ConversationHistoryInfo": "บทสนทนาล่าสุด {{count}} รายการจะถูกเก็บเป็นความทรงจำ",
   "ConversationHistoryReset": "รีเซ็ตประวัติการสนทนา",
   "NotConnectedToExternalAssistant": "ยังไม่ได้เชื่อมต่อกับผู้ช่วยภายนอก",
   "APIKeyNotEntered": "ไม่ได้กรอกคีย์ API",
