@@ -3,6 +3,7 @@ import json
 import requests
 import base64
 import difflib
+import re
 from typing import Dict, List, Any, Optional, Tuple
 
 from langchain_openai import ChatOpenAI

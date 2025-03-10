@@ -48,6 +48,7 @@ repo = git.Repo(repo_root)
 def get_changed_keys():
     """
     日本語のtranslation.jsonファイルの変更を検出し、変更されたキーを返す
+    synchronizeイベント時は前回のプッシュと現在のプッシュの間の全ての変更を処理する
     """
     # 追加・変更されたキーと削除されたキーを格納する辞書
     added_modified_keys = {}
@@ -60,17 +61,37 @@ def get_changed_keys():
 
         # GitHubのPR環境変数からベースブランチのSHAを取得
         base_sha = os.getenv("GITHUB_BASE_SHA")
-        if not base_sha:
+
+        # GitHub Actionsの環境変数
+        github_event_name = os.getenv("GITHUB_EVENT_NAME")
+        github_event_action = os.getenv("GITHUB_EVENT_ACTION")
+
+        # 前回のプッシュのSHAを取得（PRの前回の状態）
+        before_sha = os.getenv("GITHUB_BEFORE_SHA")
+
+        # 比較対象のSHAを決定
+        comparison_sha = base_sha
+
+        # synchronizeイベントで前回のプッシュのSHAが利用可能な場合
+        if (
+            github_event_name == "pull_request"
+            and github_event_action == "synchronize"
+            and before_sha
+        ):
+            comparison_sha = before_sha
             print(
-                "Warning: GITHUB_BASE_SHA not found. Using current branch comparison."
+                f"Processing changes between previous push ({before_sha}) and current HEAD"
             )
+
+        if not comparison_sha:
+            print("Warning: Comparison SHA not found. Using current branch comparison.")
             # PRのベース（通常はdevelop）との差分を取得
-            base_sha = repo.git.merge_base("HEAD", "origin/develop")
+            comparison_sha = repo.git.merge_base("HEAD", "origin/develop")
 
         try:
-            # ベースブランチの日本語ファイルの内容を取得
+            # 比較対象の日本語ファイルの内容を取得
             old_content = repo.git.show(
-                f"{base_sha}:{ja_translation_path.replace(repo_root + '/', '')}"
+                f"{comparison_sha}:{ja_translation_path.replace(repo_root + '/', '')}"
             )
             old_json = json.loads(old_content)
         except git.exc.GitCommandError:
