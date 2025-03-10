@@ -10,7 +10,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-translation-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      should_update: ${{ steps.check.outputs.should_update }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # 履歴を全て取得して差分比較に使用
+
+      - name: Check if translation file was changed in the latest commit
+        id: check
+        run: |
+          PR_LATEST_COMMIT_SHA=$(git rev-parse HEAD)
+          TRANSLATION_CHANGED=$(git diff-tree --no-commit-id --name-only -r $PR_LATEST_COMMIT_SHA | grep -q "locales/ja/translation.json" && echo "true" || echo "false")
+          echo "should_update=$TRANSLATION_CHANGED" >> $GITHUB_OUTPUT
+          echo "Translation changed in latest commit: $TRANSLATION_CHANGED"
+
   update-locales:
+    needs: check-translation-changes
+    if: needs.check-translation-changes.outputs.should_update == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
