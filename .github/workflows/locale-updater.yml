@@ -25,13 +25,69 @@ jobs:
         with:
           fetch-depth: 0 # 履歴を全て取得して差分比較に使用
 
-      - name: Check if translation file was changed in the latest commit
+      - name: Show debug info
+        run: |
+          echo "GitHub event: ${{ github.event_name }}"
+          echo "GitHub ref: ${{ github.ref }}"
+          echo "GitHub ref_name: ${{ github.ref_name }}"
+          echo "Current branch: $(git branch --show-current)"
+          echo "Current commit: $(git rev-parse HEAD)"
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "Before commit: ${{ github.event.before }}"
+            echo "After commit: ${{ github.event.after }}"
+          fi
+
+      - name: Check if translation file was changed
         id: check
         run: |
-          PR_LATEST_COMMIT_SHA=$(git rev-parse HEAD)
-          TRANSLATION_CHANGED=$(git diff-tree --no-commit-id --name-only -r $PR_LATEST_COMMIT_SHA | grep -q "locales/ja/translation.json" && echo "true" || echo "false")
-          echo "should_update=$TRANSLATION_CHANGED" >> $GITHUB_OUTPUT
-          echo "Translation changed in latest commit: $TRANSLATION_CHANGED"
+          # プルリクエストの場合、最新のコミットをチェック
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "Running in pull_request mode"
+            LATEST_COMMIT_SHA=$(git rev-parse HEAD)
+            echo "Latest commit: $LATEST_COMMIT_SHA"
+            
+            # 変更されたファイルの一覧を取得して表示
+            echo "Files changed in the latest commit:"
+            git diff-tree --no-commit-id --name-only -r $LATEST_COMMIT_SHA
+            
+            # translation.jsonが含まれているかチェック
+            if git diff-tree --no-commit-id --name-only -r $LATEST_COMMIT_SHA | grep "locales/ja/translation.json"; then
+              echo "locales/ja/translation.json was changed in the latest commit"
+              echo "should_update=true" >> $GITHUB_OUTPUT
+            else
+              echo "locales/ja/translation.json was NOT changed in the latest commit"
+              echo "should_update=false" >> $GITHUB_OUTPUT
+            fi
+
+          # プッシュの場合、前回のコミットとの差分全体をチェック
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "Running in push mode"
+            BEFORE_SHA="${{ github.event.before }}"
+            AFTER_SHA="${{ github.event.after }}"
+            echo "Comparing $BEFORE_SHA...$AFTER_SHA"
+            
+            # 変更されたファイルの一覧を取得して表示
+            echo "Files changed between commits:"
+            git diff --name-only $BEFORE_SHA $AFTER_SHA
+            
+            # translation.jsonが含まれているかチェック
+            if git diff --name-only $BEFORE_SHA $AFTER_SHA | grep "locales/ja/translation.json"; then
+              echo "locales/ja/translation.json was changed in pushed commits"
+              echo "should_update=true" >> $GITHUB_OUTPUT
+            else
+              echo "locales/ja/translation.json was NOT changed in pushed commits"
+              echo "should_update=false" >> $GITHUB_OUTPUT
+            fi
+
+          # 手動実行の場合
+          else
+            echo "Running in workflow_dispatch mode"
+            echo "Assuming translation file needs update"
+            echo "should_update=true" >> $GITHUB_OUTPUT
+          fi
+
+          # 結果を表示
+          echo "Should update: $(cat $GITHUB_OUTPUT | grep should_update | cut -d'=' -f2)"
 
   update-locales:
     needs: check-translation-changes
