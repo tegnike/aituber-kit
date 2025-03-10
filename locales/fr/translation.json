@@ -240,5 +240,5 @@
   "Temperature": "Température",
   "MaxTokens": "Nombre maximal de tokens",
   "MaxTokensInfo": "Le nombre maximal de tokens varie en fonction du modèle AI utilisé. Veuillez vérifier les spécifications de chaque modèle.",
-  "CannotUseParameters": "Lorsque le mode API en temps réel ou le mode audio est activé, les paramètres Temperature et Max Tokens ne peuvent pas être spécifiés."
+  "CannotUseParameters": "Si le mode API en temps réel ou le mode audio est activé, les paramètres Temperature et Max Tokens ne peuvent pas être spécifiés."
 }

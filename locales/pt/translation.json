@@ -8,7 +8,7 @@
   "SlideSettings": "■ Configurações de apresentação",
   "LogSettings": "■ Histórico de conversas",
   "OtherSettings": "■ Outros",
-  "ExternalLinkageMode": "Modo de vinculação externa (versão beta)",
+  "ExternalLinkageMode": "Modo de Integração Externa (Versão Beta)",
   "YoutubeMode": "Modo YouTube",
   "YoutubeInfo": "O primeiro caractere do comentário é '#' e será ignorado.",
   "YoutubeAPIKey": "Chave API do YouTube",
@@ -180,7 +180,7 @@
   "RealtimeAPIMode": "Modo API em tempo real",
   "RealtimeAPIModeContentType": "Tipo de transmissão",
   "RealtimeAPIModeVoice": "Tipo de voz",
-  "AudioMode": "Modo de áudio",
+  "AudioMode": "Modo de Áudio",
   "InputText": "Texto",
   "InputAudio": "Áudio",
   "SearchGrounding": "Usar pesquisa contextual",
@@ -238,7 +238,7 @@
   },
   "UseVideoAsBackground": "Usar tela compartilhada ou webcam como fundo",
   "Temperature": "Temperatura",
-  "MaxTokens": "Número máximo de tokens",
+  "MaxTokens": "Número Máximo de Tokens",
   "MaxTokensInfo": "O número máximo de tokens varia de acordo com o modelo de IA em uso. Verifique as especificações de cada modelo.",
   "CannotUseParameters": "Se o modo API em tempo real ou o modo de áudio estiver ativado, os parâmetros Temperature e Max Tokens não podem ser especificados."
 }

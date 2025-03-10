@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "Rapporto mix SDP/DP",
   "StyleBeatVITS2Length": "Velocità parlato",
   "ConversationHistory": "Cronologia conversazione",
-  "ConversationHistoryInfo": "Le ultime {{count}} conversazioni verranno memorizzate come memoria.",
+  "ConversationHistoryInfo": "Le ultime {{count}} conversazioni saranno memorizzate come memoria.",
   "ConversationHistoryReset": "Reimposta cronologia conversazione",
   "NotConnectedToExternalAssistant": "Non connesso all'assistente esterno.",
   "APIKeyNotEntered": "Chiave API non inserita.",
