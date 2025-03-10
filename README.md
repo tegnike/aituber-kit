@@ -42,17 +42,68 @@
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://www.star-history.com/#tegnike/aituber-kit&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
 ## 概要
 
-AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。主に以下の機能があります：
+AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。AIキャラクターとの対話機能とAITuber配信機能を中心に、様々な拡張機能を備えています。
 
-1. **AIキャラとの対話** - AIキャラクターと会話する機能
-2. **AITuber配信** - YouTubeの配信コメントを取得して自動応答する機能
-3. **その他の拡張機能** - 外部連携モード、スライドモード、Realtime APIモードなど
+詳細な使用方法や設定方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
-詳細な機能や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
+## 主な機能
+
+### 1. AIキャラとの対話
+
+- 各種LLMのAPIキーを使って、AIキャラクターと簡単に会話できます
+- マルチモーダル対応で、カメラからの映像やアップロードした画像を認識して回答を生成
+- 直近の会話文を記憶として保持
+
+### 2. AITuber配信
+
+- YouTubeの配信コメントを取得して、AIキャラクターが自動で応答
+- 会話継続モードでコメントがなくても自発的に発言可能
+- "#"から始まるコメントは読まれない機能
+
+### 3. その他の機能
+
+- **外部連携モード**: WebSocketでサーバーアプリと連携し、より高度な機能を実現
+- **スライドモード**: AIキャラクターがスライドを自動で発表するモード
+- **Realtime APIモード**: OpenAIのRealtime APIを使用した低遅延対話と関数実行
+- **オーディオモード**: OpenAIのAudio API機能を活用した自然な音声対話
+
+## 対応モデル・サービス
+
+### キャラクターモデル
+
+- **3Dモデル**: VRMファイル
+- **2Dモデル**: Live2Dファイル（Cubism 3以降）
+
+### 対応LLM
+
+- OpenAI
+- Anthropic
+- Google Gemini
+- Azure OpenAI
+- Groq
+- Cohere
+- Mistral AI
+- Perplexity
+- Fireworks
+- ローカルLLM
+- Dify
+
+### 対応音声合成エンジン
+
+- VOICEVOX
+- Koeiromap
+- Google Text-to-Speech
+- Style-Bert-VITS2
+- AivisSpeech
+- GSVI TTS
+- ElevenLabs
+- OpenAI
+- Azure OpenAI
+- にじボイス
 
 ## ⚠️ セキュリティに関する重要な注意事項
 
@@ -60,7 +111,13 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 - **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
 
-本番環境での利用については、[セキュリティガイド](https://docs.aituberkit.com/guide/introduction#セキュリティに関する注意事項)をご確認ください。
+### 本番環境での利用について
+
+本番環境で利用する場合は、以下のいずれかの対応を推奨します：
+
+1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
+2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
+3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
 
 ## クイックスタート
 
@@ -71,34 +128,39 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 ### インストール手順
 
-1. リポジトリをクローンします
+1. リポジトリをローカルにクローンします。
 
 ```bash
 git clone https://github.com/tegnike/aituber-kit.git
+```
+
+2. フォルダを開きます。
+
+```bash
 cd aituber-kit
 ```
 
-2. パッケージをインストールします
+3. パッケージインストールします。
 
 ```bash
 npm install
 ```
 
-3. 開発サーバーを起動します
+4. 開発モードでアプリケーションを起動します。
 
 ```bash
 npm run dev
 ```
 
-4. ブラウザで [http://localhost:3000](http://localhost:3000) を開きます
+5. URLを開きます。[http://localhost:3000](http://localhost:3000)
 
-5. 必要に応じて環境変数を設定します
+6. 必要に応じて.envファイルを作成します。
 
 ```bash
 cp .env.example .env
 ```
 
-詳細な設定方法や使い方については、[ドキュメントサイト](https://docs.aituberkit.com/)の[クイックスタートガイド](https://docs.aituberkit.com/guide/quickstart)をご覧ください。
+詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
 ## スポンサー募集
 
@@ -188,14 +250,24 @@ cp .env.example .env
 
 本プロジェクトは、バージョン v2.0.0 以降、**カスタムライセンス**を採用しています。
 
-- **無償利用**: 営利目的以外での個人利用、教育目的、非営利目的での使用は無償で利用可能です。
-- **商用ライセンス**: 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
+- **無償利用**
 
-詳細は、[ライセンスページ](https://docs.aituberkit.com/guide/license)をご確認ください。
+  - 営利目的以外での個人利用、教育目的、非営利目的での使用は無償で利用可能です。
+
+- **商用ライセンス**
+  - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
+  - 詳細は、[ライセンスについて](./docs/license.md)をご確認ください。
 
 ## 優先実装について
 
-本プロジェクトでは、有償での機能優先実装を受け付けています。詳細については、support@aituberkit.com までお問い合わせください。
+本プロジェクトでは、有償での機能優先実装を受け付けています。
+
+- 企業や個人の方から要望のあった機能を、優先的に実装することが可能です。
+- 実装された機能は、本OSSプロジェクトの一部として公開されます。
+- 料金は機能の複雑さや実装に要する時間に応じて個別見積もりとなります。
+- この優先実装は商用ライセンスとは別の取り組みです。実装された機能を商用利用する場合は、別途商用ライセンスの取得が必要です。
+
+詳細については、support@aituberkit.com までお問い合わせください。
 
 ### その他
 
