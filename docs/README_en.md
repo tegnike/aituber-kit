@@ -1,8 +1,8 @@
 # AITuberKit
 
-<img style="max-width: 100%;" src="./logo.png">
+<img style="max-width: 100%;" src="../public/ogp.png">
 
-**Notice: From version v2.0.0, this project adopts a custom license. If you plan to use it for commercial purposes, please check the [Usage Agreement](#usage-agreement) section.**
+**Notice: This project has adopted a custom license from version v2.0.0 onwards. If you are using it for commercial purposes, please check the [Terms of Use](#terms-of-use) section.**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
@@ -18,7 +18,6 @@
 </p>
 <p align="center">
    <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
-   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
    <a href="https://discord.gg/5rHEue52nZ"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
    <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
 </p>
@@ -29,51 +28,94 @@
    </h3>
 </div>
 
+<div align="center">
+   <h3>
+      📚 <a href="https://docs.aituberkit.com/en/">Documentation Site</a> 📚
+   </h3>
+</div>
+
 <h3 align="center">
-   <a href="../README.md">【Japanese】</a>｜
-   <a href="./README_zh.md">【Chinese】</a>｜
-   <a href="./README_ko.md">【Korean】</a>
+   <a href="../README.md">日本語</a>｜
+   <a href="./README_zh.md">中文</a>｜
+   <a href="./README_ko.md">한국어</a>
 </h3>
+
+## Overview
+
+AITuberKit is an open-source toolkit that allows anyone to easily build a web application for chatting with AI characters. It features various extensions centered around interaction with AI characters and AITuber streaming functionality.
+
+For detailed usage and configuration instructions, please visit the [Documentation Site](https://docs.aituberkit.com/en/).
 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
-## Overview
+## Main Features
 
-This repository has mainly the following 2 features:
+### 1. Interaction with AI Characters
 
-1. Conversation with AI character
-2. AITuber streaming
+- Easy conversation with AI characters using API keys for various LLMs
+- Multimodal support for recognizing camera footage and uploaded images to generate responses
+- Retention of recent conversations as memory
 
-I've written a detailed usage guide in the article below:
+### 2. AITuber Streaming
 
-[![You are AITuber Developer from Today | Nike-chan](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+- Retrieves YouTube stream comments for automatic responses from AI characters
+- Conversation continuation mode allows spontaneous speech even without comments
+- Feature to ignore comments starting with "#"
 
-## ⚠️ Important Security Notice
+### 3. Other Features
 
-This repository is designed for personal use, local development, and commercial use with appropriate security measures. However, please note the following points when deploying to a web environment:
+- **External Integration Mode**: Connect with server applications via WebSocket for advanced functionality
+- **Slide Mode**: Mode where AI characters automatically present slides
+- **Realtime API**: Low-latency dialogue and function execution using OpenAI's Realtime API
+- **Audio Mode**: Natural voice dialogue utilizing OpenAI's Audio API features
+- **Message Reception Function**: Accept instructions from external sources through a dedicated API to make AI characters speak
 
-- **API Key Handling**: Since the specification requires API calls to AI services (OpenAI, Anthropic, etc.) and TTS services through a backend server, proper management of API keys is necessary.
+## Supported Models & Services
 
-### Regarding Production Environment Usage
+### Character Models
 
-When using in a production environment, we recommend one of the following approaches:
+- **3D Models**: VRM files
+- **2D Models**: Live2D files (Cubism 3 and later)
 
-1. **Backend Server Implementation**: Manage API keys on the server side and avoid direct API access from clients
-2. **Proper User Instructions**: When users use their own API keys, explain the security considerations
-3. **Access Control Implementation**: Implement appropriate authentication and authorization mechanisms as needed
+### Supported LLMs
 
-## Development Environment
+- OpenAI
+- Anthropic
+- Google Gemini
+- Azure OpenAI
+- Groq
+- Cohere
+- Mistral AI
+- Perplexity
+- Fireworks
+- Local LLM
+- Dify
 
-This project is developed in the following environment:
+### Supported Voice Synthesis Engines
+
+- VOICEVOX
+- Koeiromap
+- Google Text-to-Speech
+- Style-Bert-VITS2
+- AivisSpeech
+- GSVI TTS
+- ElevenLabs
+- OpenAI
+- Azure OpenAI
+- Niji Voice
+
+## Quick Start
+
+### Development Environment
 
 - Node.js: ^20.0.0
-- npm: 10.8.1
+- npm: ^10.0.0
 
-## Common Preparations
+### Installation Steps
 
-1. Clone the repository to your local machine.
+1. Clone the repository locally.
 
 ```bash
 git clone https://github.com/tegnike/aituber-kit.git
@@ -97,177 +139,40 @@ npm install
 npm run dev
 ```
 
-5. Open the URL [http://localhost:3000](http://localhost:3000)
+5. Open the URL: [http://localhost:3000](http://localhost:3000)
 
-6. Create the .env file if necessary.
+6. Create a .env file as needed.
 
 ```bash
 cp .env.example .env
 ```
 
-## Conversation with AI Character
+For detailed configuration and usage instructions, please visit the [Documentation Site](https://docs.aituberkit.com/en/).
 
-- This is a feature to converse with an AI character.
-- It is an extended feature of [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM), which is the basis of this repository.
-- It can be easily started as long as you have an API key for various LLMs.
-- The recent conversation sentences are retained as memory.
-- It is multimodal, capable of recognizing images from the camera or uploaded images to generate responses.
+## ⚠️ Important Security Notice
 
-### Usage
+This repository is intended for personal use and development in local environments, as well as commercial use with appropriate security measures. However, please note the following when deploying to a web environment:
 
-1. Enter your API key for various LLMs in the settings screen.
-   - OpenAI
-   - Anthropic
-   - Google Gemini
-   - Azure OpenAI
-   - Groq
-   - Cohere
-   - Mistral AI
-   - Perplexity
-   - Fireworks
-   - Local LLM
-   - Dify (Chatbot or Agent)
-2. Edit the character's setting prompt if necessary.
-3. Load a VRM file or Live2D file, and background file if needed.
-4. Select a speech synthesis engine and configure voice settings if necessary.
-   - VOICEVOX: You can select a speaker from multiple options. The VOICEVOX app needs to be running beforehand.
-   - Koeiromap: You can finely adjust the voice. An API key is required.
-   - Google Text-to-Speech: Languages other than Japanese can also be selected. Credential information is required.
-   - Style-Bert-VITS2: A local API server needs to be running.
-   - AivisSpeech: The AivisSpeech app needs to be running beforehand.
-   - GSVI TTS: A local API server needs to be running.
-   - ElevenLabs: Various language selection is possible. Please enter the API key.
-   - OpenAI: API key is required.
-   - Azure OpenAI: API key is required.
-   - Nijivoice: API key is required.
-5. Start conversing with the character from the input form. Microphone input is also possible.
+- **API Key Handling**: The system is designed to call AI services (OpenAI, Anthropic, etc.) and TTS services via a backend server, so proper management of API keys is necessary.
 
-## AITuber Streaming
+### For Production Use
 
-- It is possible to retrieve YouTube streaming comments and have the character speak.
-- A YouTube API key is required.
-- Comments starting with '#' are not read.
+When using in a production environment, we recommend one of the following approaches:
 
-### Usage
+1. **Backend Server Implementation**: Manage API keys on the server side to avoid direct API access from clients
+2. **Appropriate Explanation to Users**: If users are using their own API keys, explain security considerations to them
+3. **Access Restriction Implementation**: Implement appropriate authentication and authorization mechanisms as needed
 
-1. Turn on YouTube mode in the settings screen.
-2. Enter your YouTube API key and YouTube Live ID.
-3. Configure other settings the same way as "Conversation with AI Character".
-4. Start streaming on YouTube and confirm that the character reacts to comments.
-5. Turn on the conversation continuity mode to be able to speak even if there are no comments.
+## Sponsorship
 
-## Other Features
-
-### External Linkage Mode
-
-- You can send requests to the server app via WebSocket and get responses.
-- A separate server app needs to be prepared.
-
-#### Usage
-
-1. Start the server app and open the `ws://127.0.0.1:8000/ws` endpoint.
-2. Turn on External Linkage Mode in the settings screen.
-3. Configure other settings the same way as "Conversation with AI Character".
-4. Send requests from the input form and confirm that responses are returned from the server app.
-
-#### Related
-
-- You can try it immediately with this server app repository. [tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- For detailed settings, please read "[Let's develop with a beautiful girl!! [Open Interpreter]](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)".
-
-### Slide Mode
-
-- This is a mode where the AI character automatically presents slides.
-- You need to prepare slides and script files in advance.
-
-#### Usage
-
-1. Proceed to the point where you can interact with the AI character.
-2. Place the slide folder and script file in the designated folder.
-3. Turn on Slide Mode in the settings screen.
-4. Press the Start Slide button to begin the presentation.
-
-#### Related
-
-- For detailed settings, please read "[AI Does Slide Presentations Now!!!!](https://note.com/nike_cha_n/n/n867081a598f1)".
-
-### Realtime API Mode
-
-- This is a mode where you can interact with the character with low latency using OpenAI's Realtime API.
-- Function execution can be defined.
-
-#### Usage
-
-1. Select OpenAI or Azure OpenAI as the AI service.
-2. Turn on Realtime API mode.
-3. Use the microphone to talk to the character.
-
-#### Function Execution
-
-- Define new functions in src/components/realtimeAPITools.tsx and src/components/realtimeAPITools.json.
-- Refer to the existing get_current_weather function as an example.
-
-## TIPS
-
-### Live2D Specifications
-
-We use the unofficial library [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) for Live2D display.
-Live2D provides a library called Cubism as a development SDK, and AITuberKit supports models from Cubism 3 onwards.
-
-Note that this project uses the official SDK with permission from Live2D.
-
-#### Cubism Core
-
-If you want to use the Live2D feature, please place the following file in `public/scripts`:
-
-`live2dcubismcore.min.js` (for Cubism 4/5)
-
-- Available for download from the [official website](https://www.live2d.com/sdk/download/web/)
-- Or available from [here](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js) (Note: Not recommended for production use)
-
-When publishing software that incorporates Live2D's Cubism SDK, you may need to enter into a publishing license agreement with Live2D. For details, please refer to the following page:
-https://www.live2d.com/sdk/license/
-
-### Background Image Setting
-
-- Change the background image at `public/bg-c.png`. Do not change the name.
-
-### Setting Environment Variables
-
-- Some configuration values can be referenced from the `.env` file contents.
-- If entered in the settings screen, that value takes precedence.
-
-### Microphone Input Methods (2 Patterns)
-
-1. Hold Alt (or option) key to record => Release to send
-2. Click microphone button (click once to start recording) => Click again to send
-
-### Other
-
-- Settings and conversation history can be reset in the settings screen.
-- Various settings are stored in the browser's local storage.
-- Elements enclosed in code blocks are not read by TTS.
-
-## Related Articles
-
-- [You are AITuber Developer from Today | Nike-chan](https://note.com/nike_cha_n/n/ne98acb25e00f)
-- [Let's develop with a beautiful girl!! [Open Interpreter]](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
-- [AI Does Slide Presentations Now!!!!](https://note.com/nike_cha_n/n/n867081a598f1)
-- [Added Multimodal Features to AITuberKit, So Let's Have a Drink at Home with AI Character](https://note.com/nike_cha_n/n/n6d8e330561e4)
-- [AITuberKit × Dify for Super Easy Chatbot Building](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
-- [Publishing Dify on the Internet with Xserver](https://note.com/nike_cha_n/n/n23467824b22b)
-- [Try the Advanced Voice Mode Called Realtime API](https://note.com/nike_cha_n/n/ne51c16ddadd0)
-
-## Seeking Sponsors
-
-We are seeking sponsors to continue our development efforts.<br>
-Your support will greatly contribute to the development and improvement of the AITuber Kit.
+We are seeking sponsors to continue development.<br>
+Your support greatly contributes to the development and improvement of AITuberKit.
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
-### Our Supporters (in order of support)
+### Contributors (in order of support)
 
 <p>
   <a href="https://github.com/morioki3" title="morioki3">
@@ -340,32 +245,32 @@ Your support will greatly contribute to the development and improvement of the A
 
 Plus multiple private sponsors
 
-## Usage Agreement
+## Terms of Use
 
 ### License
 
-From version v2.0.0, this project adopts a **custom license**.
+This project has adopted a **custom license** from version v2.0.0 onwards.
 
-- **Non-Commercial Use**
+- **Free Use**
 
-  - Non-Commercial Use is available for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
+  - Free for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
 
 - **Commercial License**
   - A separate commercial license is required for commercial use.
-  - For details, please check [About License](./license_en.md).
-
-## Priority Implementation
-
-This project accepts paid priority implementation requests.
-
-- You can prioritize the implementation of features requested by companies or individuals.
-- The implemented features will be part of this OSS project.
-- The fee will be estimated individually depending on the complexity and time required for implementation.
-- This priority implementation is a separate initiative from the commercial license. If you want to use the implemented features commercially, you need to obtain a separate commercial license.
-
-For details, please contact support@aituberkit.com.
+  - For details, please check [About the License](./license_en.md).
 
 ### Others
 
-- [Logo Usage Agreement](./logo_licence_en.md)
-- [VRM and Live2D Model Usage Agreement](./character_model_licence_en.md)
+- [Logo Usage Terms](./logo_licence_en.md)
+- [VRM and Live2D Model Usage Terms](./character_model_licence_en.md)
+
+## Priority Implementation
+
+This project accepts paid priority implementation of features.
+
+- Features requested by companies or individuals can be implemented with priority.
+- Implemented features will be published as part of this OSS project.
+- Fees are individually quoted based on the complexity of the feature and the time required for implementation.
+- This priority implementation is separate from the commercial license. If you want to use the implemented features for commercial purposes, you need to obtain a commercial license separately.
+
+For details, please contact support@aituberkit.com.
