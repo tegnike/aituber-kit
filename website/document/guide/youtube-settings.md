@@ -56,7 +56,7 @@ YouTube Live IDはチャンネルIDではなく、特定のライブ配信のID�
 
 YouTubeモードを有効にすると、画面左上にYouTubeモードのボタンが表示されます。
 
-![YouTubeモード](../../public/images/youtube_s045n.png)
+![YouTubeモード](/images/youtube_s045n.png)
 
 このボタンをクリックすることで、コメント取得のオン/オフを切り替えることができます。
 

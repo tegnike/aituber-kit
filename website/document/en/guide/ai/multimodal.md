@@ -56,7 +56,7 @@ To utilize multimodal features, follow these steps:
 Multimodal features may incur higher API usage fees compared to text-only conversations.
 :::
 
-![Multimodal AI Image](../../public/images/ai_k3nfi.png)
+![Multimodal AI Image](/images/ai_k3nfi.png)
 
 ### Explanation of Multimodal-Related Features
 

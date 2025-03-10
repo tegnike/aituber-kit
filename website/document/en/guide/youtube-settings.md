@@ -56,7 +56,7 @@ The YouTube Live ID is the ID of a specific live stream, not a channel ID.
 
 When YouTube mode is enabled, a YouTube mode button appears in the upper left corner of the screen.
 
-![YouTube Mode](../../public/images/youtube_s045n.png)
+![YouTube Mode](/images/youtube_s045n.png)
 
 You can toggle comment retrieval on/off by clicking this button.
 

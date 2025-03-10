@@ -33,7 +33,7 @@ NEXT_PUBLIC_SLIDE_MODE=false
 2. 从"使用的幻灯片"下拉菜单中选择您想使用的幻灯片集（如何添加新幻灯片将在后面解释）
 3. 点击主窗口右上角的幻灯片按钮开始显示幻灯片
 
-![幻灯片模式](../../public/images/slide_ndu53.png)
+![幻灯片模式](/images/slide_ndu53.png)
 
 ### 关于幻灯片显示
 

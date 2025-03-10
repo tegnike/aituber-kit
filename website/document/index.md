@@ -27,21 +27,27 @@ features:
   - icon: 🤖
     title: AIキャラとの対話
     details: 各種LLMのAPIキーを使って、AIキャラクターと簡単に会話できます。マルチモーダル対応で、画像認識も可能です。
+    link: /guide/ai/common
   - icon: 📺
     title: AITuber配信
     details: YouTubeの配信コメントを取得して、AIキャラクターが自動で応答。会話継続モードでコメントがなくても自発的に発言できます。
+    link: /guide/youtube-settings
   - icon: 🎤
     title: 多彩な音声合成
     details: VOICEVOX、Koeiromap、Google Text-to-Speech、ElevenLabsなど、様々な音声合成エンジンに対応しています。
+    link: /guide/voice-settings
   - icon: 🎭
     title: VRM/Live2Dサポート
     details: 3DモデルのVRMファイルと2DモデルのLive2Dファイルの両方に対応。お好みのキャラクターを使用できます。
+    link: /guide/character/common
   - icon: 🔄
     title: 外部連携モード
     details: WebSocketでサーバーアプリと連携し、より高度な機能を実現できます。
+    link: /guide/ai/external-linkage
   - icon: 📊
     title: スライドモード
     details: AIキャラクターがスライドを自動で発表するモードを搭載。プレゼンテーションも任せられます。
+    link: /guide/slide-settings
 ---
 
 <div class="custom-block warning">
@@ -49,7 +55,7 @@ features:
 </div>
 
 <div class="custom-block info">
-  <p><strong>お知らせ</strong>: 本プロジェクトはバージョン v2.0.0 以降、カスタムライセンスを採用しています。商用目的でご利用の場合は、<a href="/guide/license">利用規約</a>セクションをご確認ください。</p>
+  <p><strong>お知らせ</strong>: 本プロジェクトはバージョン v2.0.0 以降、カスタムライセンスを採用しています。商用目的でご利用の場合は、<a href="/guide/license">ライセンス</a>セクションをご確認ください。</p>
 </div>
 
 ## コミュニティに参加する

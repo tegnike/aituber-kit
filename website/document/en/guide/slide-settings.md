@@ -33,7 +33,7 @@ When slide mode is enabled, some features are automatically disabled.
 2. Select the slide set you want to use from the "Slide to Use" dropdown menu (how to add new slides will be explained later)
 3. Click the slide button in the upper right corner of the main window to start the slide display
 
-![Slide Mode](../../public/images/slide_ndu53.png)
+![Slide Mode](/images/slide_ndu53.png)
 
 ### About Slide Display
 

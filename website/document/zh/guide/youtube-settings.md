@@ -56,7 +56,7 @@ YouTube直播ID是特定直播的ID，而不是频道ID。
 
 启用YouTube模式后，屏幕左上角会显示YouTube模式按钮。
 
-![YouTube模式](../../public/images/youtube_s045n.png)
+![YouTube模式](/images/youtube_s045n.png)
 
 您可以通过点击此按钮切换评论获取的开/关状态。
 

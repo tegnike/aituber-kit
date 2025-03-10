@@ -56,7 +56,7 @@ AITuberKit支持以下兼容多模态的AI服务和模型：
 与仅文本对话相比，多模态功能可能会产生更高的API使用费用。
 :::
 
-![多模态AI图像](../../public/images/ai_k3nfi.png)
+![多模态AI图像](/images/ai_k3nfi.png)
 
 ### 多模态相关功能说明
 
