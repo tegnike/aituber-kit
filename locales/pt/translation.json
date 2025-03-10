@@ -240,5 +240,6 @@
   "Temperature": "Temperatura",
   "MaxTokens": "Número máximo de tokens",
   "MaxTokensInfo": "O número máximo de tokens varia de acordo com o modelo de IA em uso. Verifique as especificações de cada modelo.",
-  "CannotUseParameters": "Se o modo API em tempo real ou o modo de áudio estiver ativado, os parâmetros Temperature e Max Tokens não podem ser especificados."
+  "CannotUseParameters": "Se o modo API em tempo real ou o modo de áudio estiver ativado, os parâmetros Temperature e Max Tokens não podem ser especificados.",
+  "DocumentationDescription": "Para detalhes sobre como usar o AITuberKit e tutoriais, consulte o URL abaixo."
 }

@@ -240,5 +240,6 @@
   "Temperature": "तापमान",
   "MaxTokens": "अधिकतम टोकन संख्या",
   "MaxTokensInfo": "अधिकतम टोकन संख्या उपयोग में AI मॉडल के अनुसार भिन्न होती है। प्रत्येक मॉडल की विशिष्टताओं की जांच करें।",
-  "CannotUseParameters": "यदि रीयल-टाइम API मोड या ऑडियो मोड सक्रिय है, तो Temperature और Max Tokens पैरामीटर निर्दिष्ट नहीं किए जा सकते।"
+  "CannotUseParameters": "यदि रीयल-टाइम API मोड या ऑडियो मोड सक्रिय है, तो Temperature और Max Tokens पैरामीटर निर्दिष्ट नहीं किए जा सकते।",
+  "DocumentationDescription": "AITuberKit के विस्तृत उपयोग और ट्यूटोरियल नीचे दिए गए URL से देखें।"
 }

@@ -240,5 +240,6 @@
   "Temperature": "درجة الحرارة",
   "MaxTokens": "أقصى عدد من الرموز",
   "MaxTokensInfo": "يختلف أقصى عدد من الرموز حسب نموذج الذكاء الاصطناعي المستخدم. يرجى التحقق من مواصفات كل نموذج.",
-  "CannotUseParameters": "إذا كان وضع API في الوقت الحقيقي أو وضع الصوت مفعلًا، فلا يمكن تحديد معلمات Temperature و Max Tokens."
+  "CannotUseParameters": "إذا كان وضع API في الوقت الحقيقي أو وضع الصوت مفعلًا، فلا يمكن تحديد معلمات Temperature و Max Tokens.",
+  "DocumentationDescription": "يمكنك الاطلاع على كيفية استخدام AITuberKit والدروس التعليمية التفصيلية من خلال الرابط أدناه."
 }

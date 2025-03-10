@@ -242,5 +242,6 @@
   "Temperature": "Temperature",
   "MaxTokens": "最大令牌数",
   "MaxTokensInfo": "最大令牌数因所使用的AI模型而异。请查看各模型的规格。",
-  "CannotUseParameters": "在实时API模式或音频模式启用时，无法指定Temperature和Max Tokens参数。"
+  "CannotUseParameters": "在实时API模式或音频模式启用时，无法指定Temperature和Max Tokens参数。",
+  "DocumentationDescription": "请通过以下URL查看AITuberKit的详细使用方法和教程。"
 }
