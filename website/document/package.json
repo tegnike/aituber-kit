@@ -13,5 +13,8 @@
   "description": "",
   "dependencies": {
     "vitepress": "^1.6.3"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.0.12"
   }
 }
