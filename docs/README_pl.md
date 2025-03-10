@@ -2,7 +2,7 @@
 
 <img style="max-width: 100%;" src="../public/ogp.png">
 
-**공지사항: 본 프로젝트는 버전 v2.0.0부터 커스텀 라이선스를 채택하고 있습니다. 상업적 목적으로 사용하시는 경우 [이용약관](#이용약관) 섹션을 확인해 주시기 바랍니다.**
+**Ogłoszenie: Od wersji v2.0.0 projekt ten przyjął niestandardową licencję. W przypadku użytku komercyjnego prosimy o zapoznanie się z sekcją [Warunki użytkowania](#warunki-użytkowania).**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
@@ -24,13 +24,13 @@
 
 <div align="center">
    <h3>
-      🌟 <a href="https://aituberkit.com">데모 사이트</a> 🌟
+      🌟 <a href="https://aituberkit.com">Przejdź do strony demo</a> 🌟
    </h3>
 </div>
 
 <div align="center">
    <h3>
-      📚 <a href="https://docs.aituberkit.com/en/">문서 사이트</a> 📚
+      📚 <a href="https://docs.aituberkit.com/en/">Przejdź do dokumentacji</a> 📚
    </h3>
 </div>
 
@@ -38,49 +38,49 @@
    <a href="../README.md">日本語</a>｜
    <a href="./README_en.md">English</a>｜
    <a href="./README_zh.md">中文</a>｜
-   <a href="./README_pl.md">Polski</a>
+   <a href="./README_ko.md">한국어</a>
 </h3>
 
-## 개요
+## Przegląd
 
-AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플리케이션을 구축할 수 있는 오픈소스 툴킷입니다. AI 캐릭터와의 대화 기능과 AITuber 방송 기능을 중심으로 다양한 확장 기능을 제공합니다.
+AITuberKit to zestaw narzędzi open source, który pozwala każdemu łatwo stworzyć aplikację internetową do czatowania z postaciami AI. Oferuje różne funkcje rozszerzające, koncentrując się na interakcji z postaciami AI i funkcjach streamingu AITuber.
 
-자세한 사용 방법과 설정 방법은 [문서 사이트](https://docs.aituberkit.com/en/)를 참조해 주시기 바랍니다.
+Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumentacji](https://docs.aituberkit.com/en/).
 
-## Star History
+## Historia gwiazdek
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
-## 주요 기능
+## Główne funkcje
 
-### 1. AI 캐릭터와의 대화
+### 1. Interakcja z postaciami AI
 
-- 각종 LLM의 API 키를 사용하여 AI 캐릭터와 쉽게 대화 가능
-- 멀티모달 지원으로 카메라 영상이나 업로드한 이미지를 인식하여 답변 생성
-- 최근 대화 내용을 기억으로 유지
+- Łatwa rozmowa z postaciami AI przy użyciu kluczy API różnych LLM
+- Obsługa multimodalna z rozpoznawaniem obrazów z kamery i przesłanych zdjęć
+- Zachowywanie ostatnich rozmów w pamięci
 
-### 2. AITuber 방송
+### 2. Streaming AITuber
 
-- YouTube 방송 댓글을 가져와 AI 캐릭터가 자동으로 응답
-- 대화 지속 모드로 댓글이 없어도 자발적으로 발언 가능
-- "#"으로 시작하는 댓글은 읽지 않는 기능
+- Automatyczne odpowiedzi postaci AI na komentarze ze streamów YouTube
+- Tryb ciągłej rozmowy umożliwiający spontaniczne wypowiedzi nawet bez komentarzy
+- Funkcja pomijania komentarzy rozpoczynających się od "#"
 
-### 3. 기타 기능
+### 3. Inne funkcje
 
-- **외부 연동 모드**: WebSocket으로 서버 앱과 연동하여 더 고도한 기능 구현
-- **슬라이드 모드**: AI 캐릭터가 슬라이드를 자동으로 발표하는 모드
-- **Realtime API**: OpenAI의 Realtime API를 사용한 저지연 대화와 함수 실행
-- **오디오 모드**: OpenAI의 Audio API 기능을 활용한 자연스러운 음성 대화
-- **메시지 수신 기능**: 전용 API를 통해 외부에서 지시를 받아 AI 캐릭터가 발언하도록 하는 것이 가능
+- **Tryb integracji zewnętrznej**: Zaawansowane funkcje poprzez połączenie WebSocket z aplikacją serwerową
+- **Tryb prezentacji**: Tryb automatycznej prezentacji slajdów przez postać AI
+- **API czasu rzeczywistego**: Rozmowy i wykonywanie funkcji z niskim opóźnieniem przy użyciu OpenAI Realtime API
+- **Tryb audio**: Naturalna konwersacja głosowa wykorzystująca OpenAI Audio API
+- **Funkcja odbierania wiadomości**: Możliwość wydawania poleceń postaci AI poprzez dedykowane API
 
-## 지원 모델 및 서비스
+## Obsługiwane modele i usługi
 
-### 캐릭터 모델
+### Modele postaci
 
-- **3D 모델**: VRM 파일
-- **2D 모델**: Live2D 파일(Cubism 3 이상)
+- **Modele 3D**: Pliki VRM
+- **Modele 2D**: Pliki Live2D (Cubism 3 i nowsze)
 
-### 지원 LLM
+### Obsługiwane LLM
 
 - OpenAI
 - Anthropic
@@ -91,10 +91,10 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - Mistral AI
 - Perplexity
 - Fireworks
-- 로컬 LLM
+- Lokalne LLM
 - Dify
 
-### 지원 음성 합성 엔진
+### Obsługiwane silniki syntezy mowy
 
 - VOICEVOX
 - Koeiromap
@@ -105,75 +105,75 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - ElevenLabs
 - OpenAI
 - Azure OpenAI
-- 니지보이스
+- Nijivoice
 
-## 퀵 스타트
+## Szybki start
 
-### 개발 환경
+### Środowisko programistyczne
 
 - Node.js: ^20.0.0
 - npm: ^10.0.0
 
-### 설치 순서
+### Instrukcje instalacji
 
-1. 리포지토리를 로컬에 클론합니다.
+1. Sklonuj repozytorium lokalnie.
 
 ```bash
 git clone https://github.com/tegnike/aituber-kit.git
 ```
 
-2. 폴더를 엽니다.
+2. Otwórz folder.
 
 ```bash
 cd aituber-kit
 ```
 
-3. 패키지를 설치합니다.
+3. Zainstaluj pakiety.
 
 ```bash
 npm install
 ```
 
-4. 개발 모드로 애플리케이션을 실행합니다.
+4. Uruchom aplikację w trybie deweloperskim.
 
 ```bash
 npm run dev
 ```
 
-5. URL을 엽니다. [http://localhost:3000](http://localhost:3000)
+5. Otwórz URL: [http://localhost:3000](http://localhost:3000)
 
-6. 필요에 따라 .env 파일을 생성합니다.
+6. W razie potrzeby utwórz plik .env.
 
 ```bash
 cp .env.example .env
 ```
 
-자세한 설정 방법과 사용 방법은 [문서 사이트](https://docs.aituberkit.com/en/)를 참조해 주시기 바랍니다.
+Szczegółowe instrukcje konfiguracji i użytkowania można znaleźć w [dokumentacji](https://docs.aituberkit.com/en/).
 
-## ⚠️ 보안에 관한 중요 주의사항
+## ⚠️ Ważne uwagi dotyczące bezpieczeństwa
 
-이 리포지토리는 개인 사용과 로컬 환경에서의 개발은 물론, 적절한 보안 대책을 마련한 상업적 사용도 고려하고 있습니다. 단, 웹 환경에 배포할 때는 다음 사항에 주의해 주시기 바랍니다:
+To repozytorium jest przeznaczone zarówno do użytku osobistego i rozwoju w środowisku lokalnym, jak i do użytku komercyjnego z odpowiednimi środkami bezpieczeństwa. Jednak podczas wdrażania w środowisku internetowym należy zwrócić uwagę na następujące punkty:
 
-- **API 키 취급**: 백엔드 서버를 통해 AI 서비스(OpenAI, Anthropic 등)와 TTS 서비스의 API를 호출하는 사양이므로, API 키의 적절한 관리가 필요합니다.
+- **Obsługa kluczy API**: Ponieważ system jest zaprojektowany do wywoływania API usług AI (OpenAI, Anthropic itp.) i usług TTS poprzez serwer backendowy, wymagane jest odpowiednie zarządzanie kluczami API.
 
-### 프로덕션 환경에서의 사용에 대하여
+### Użycie w środowisku produkcyjnym
 
-프로덕션 환경에서 사용할 경우 다음 중 하나의 대응을 권장합니다:
+W przypadku użycia w środowisku produkcyjnym zalecane jest jedno z następujących podejść:
 
-1. **백엔드 서버 구현**: API 키 관리를 서버 사이드에서 수행하여 클라이언트로부터의 직접적인 API 액세스를 피함
-2. **사용자에 대한 적절한 설명**: 각 사용자가 자신의 API 키를 사용하는 경우 보안상의 주의점에 대해 설명
-3. **액세스 제한 구현**: 필요에 따라 적절한 인증・인가 메커니즘을 구현
+1. **Implementacja serwera backendowego**: Zarządzanie kluczami API po stronie serwera i unikanie bezpośredniego dostępu do API z klienta
+2. **Odpowiednie instrukcje dla użytkowników**: W przypadku gdy użytkownicy używają własnych kluczy API, wyjaśnienie kwestii bezpieczeństwa
+3. **Implementacja kontroli dostępu**: W razie potrzeby wdrożenie odpowiednich mechanizmów uwierzytelniania i autoryzacji
 
-## 스폰서 모집
+## Poszukiwani sponsorzy
 
-개발을 지속하기 위해 스폰서를 모집하고 있습니다.<br>
-여러분의 지원은 AITuberKit의 개발과 개선에 크게 기여합니다.
+Poszukujemy sponsorów, aby kontynuować rozwój.<br>
+Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
-### 협력자 여러분(지원해 주신 순서)
+### Współpracownicy (w kolejności wsparcia)
 
 <p>
   <a href="https://github.com/morioki3" title="morioki3">
@@ -244,34 +244,34 @@ cp .env.example .env
   </a>
 </p>
 
-기타 프라이빗 스폰서 다수
+Plus kilku prywatnych sponsorów
 
-## 이용약관
+## Warunki użytkowania
 
-### 라이선스
+### Licencja
 
-본 프로젝트는 버전 v2.0.0부터 **커스텀 라이선스**를 채택하고 있습니다.
+Od wersji v2.0.0 projekt ten przyjął **niestandardową licencję**.
 
-- **무상 이용**
+- **Bezpłatne użytkowanie**
 
-  - 영리 목적 이외의 개인 사용, 교육 목적, 비영리 목적의 사용은 무상으로 이용 가능합니다.
+  - Dozwolone jest bezpłatne użytkowanie do celów osobistych (niekomercyjnych), edukacyjnych i non-profit.
 
-- **상업용 라이선스**
-  - 상업적 목적의 사용에 관해서는 별도의 상업용 라이선스 취득이 필요합니다.
-  - 자세한 내용은 [라이선스에 대하여](./license_en.md)를 확인해 주시기 바랍니다.
+- **Licencja komercyjna**
+  - Do użytku komercyjnego wymagane jest uzyskanie oddzielnej licencji komercyjnej.
+  - Szczegóły można znaleźć w [informacjach o licencji](./license_en.md).
 
-### 기타
+### Inne
 
-- [로고 이용약관](./logo_licence_ko.md)
-- [VRM 및 Live2D 모델 이용약관](./character_model_licence_ko.md)
+- [Warunki użytkowania logo](./logo_licence_pl.md)
+- [Warunki użytkowania modeli VRM i Live2D](./character_model_licence_pl.md)
 
-## 우선 구현에 대하여
+## Priorytetowa implementacja
 
-본 프로젝트에서는 유상으로 기능 우선 구현을 받고 있습니다.
+W tym projekcie oferujemy płatną priorytetową implementację funkcji.
 
-- 기업이나 개인으로부터 요청받은 기능을 우선적으로 구현할 수 있습니다.
-- 구현된 기능은 본 OSS 프로젝트의 일부로 공개됩니다.
-- 요금은 기능의 복잡도와 구현에 소요되는 시간에 따라 개별 견적이 됩니다.
-- 이 우선 구현은 상업용 라이선스와는 별개의 시도입니다. 구현된 기능을 상업적으로 사용하는 경우에는 별도로 상업용 라이선스 취득이 필요합니다.
+- Możliwa jest priorytetowa implementacja funkcji na życzenie firm lub osób prywatnych.
+- Zaimplementowane funkcje będą publicznie dostępne jako część tego projektu open source.
+- Opłaty są wyceniane indywidualnie w zależności od złożoności funkcji i czasu potrzebnego na implementację.
+- Ta priorytetowa implementacja jest oddzielna od licencji komercyjnej. Do komercyjnego wykorzystania zaimplementowanych funkcji nadal wymagane jest uzyskanie oddzielnej licencji komercyjnej.
 
-자세한 내용은 support@aituberkit.com으로 문의해 주시기 바랍니다.
+Aby uzyskać więcej informacji, prosimy o kontakt pod adresem support@aituberkit.com.
