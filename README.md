@@ -1,6 +1,6 @@
 # AITuberKit
 
-<img style="max-width: 100%;" src="./docs/logo.png">
+<img style="max-width: 100%;" src="./public/ogp.png">
 
 **お知らせ: 本プロジェクトはバージョン v2.0.0 以降、カスタムライセンスを採用しています。商用目的でご利用の場合は、[利用規約](#利用規約) セクションをご確認ください。**
 
@@ -28,6 +28,12 @@
    </h3>
 </div>
 
+<div align="center">
+   <h3>
+      📚 <a href="https://docs.aituberkit.com/">ドキュメントサイトへ</a> 📚
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="./docs/README_en.md">English</a>｜
    <a href="./docs/README_zh.md">中文</a>｜
@@ -36,18 +42,17 @@
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://www.star-history.com/#tegnike/aituber-kit&Date)
 
 ## 概要
 
-主に以下の2つの機能があります。
+AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。主に以下の機能があります：
 
-1. AIキャラとの対話
-2. AITuber配信
+1. **AIキャラとの対話** - AIキャラクターと会話する機能
+2. **AITuber配信** - YouTubeの配信コメントを取得して自動応答する機能
+3. **その他の拡張機能** - 外部連携モード、スライドモード、Realtime APIモードなど
 
-下記の記事に詳細な使用方法を記載しました。
-
-[![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+詳細な機能や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
 ## ⚠️ セキュリティに関する重要な注意事項
 
@@ -55,207 +60,45 @@
 
 - **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
 
-### 本番環境での利用について
+本番環境での利用については、[セキュリティガイド](https://docs.aituberkit.com/guide/introduction#セキュリティに関する注意事項)をご確認ください。
 
-本番環境で利用する場合は、以下のいずれかの対応を推奨します：
+## クイックスタート
 
-1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
-2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
-3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
-
-## 開発環境
-
-このプロジェクトは以下の環境で開発されています：
+### 開発環境
 
 - Node.js: ^20.0.0
-- npm: 10.8.1
+- npm: ^10.0.0
 
-## 共通事前準備
+### インストール手順
 
-1. リポジトリをローカルにクローンします。
+1. リポジトリをクローンします
 
 ```bash
 git clone https://github.com/tegnike/aituber-kit.git
-```
-
-2. フォルダを開きます。
-
-```bash
 cd aituber-kit
 ```
 
-3. パッケージインストールします。
+2. パッケージをインストールします
 
 ```bash
 npm install
 ```
 
-4. 開発モードでアプリケーションを起動します。
+3. 開発サーバーを起動します
 
 ```bash
 npm run dev
 ```
 
-5. URLを開きます。[http://localhost:3000](http://localhost:3000)
+4. ブラウザで [http://localhost:3000](http://localhost:3000) を開きます
 
-6. 必要に応じて.envファイルを作成します。
+5. 必要に応じて環境変数を設定します
 
 ```bash
 cp .env.example .env
 ```
 
-## AIキャラとの対話
-
-- AIキャラと会話する機能です。
-- このリポジトリの元になっている [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM) を拡張した機能です。
-- 各種LLMのAPIキーさえあれば簡単に始めることが可能です。
-- 直近の会話文を記憶として保持します。
-- マルチモーダルで、カメラからの映像やアップロードした画像を認識して回答を生成することが可能です。
-
-### 使用方法
-
-1. 設定画面で選択したLLMのAPIキーを入力します。
-   - OpenAI
-   - Anthropic
-   - Google Gemini
-   - Azure OpenAI
-   - Groq
-   - Cohere
-   - Mistral AI
-   - Perplexity
-   - Fireworks
-   - ローカルLLM
-   - Dify（Chatbot or Agent）
-2. 必要に応じてキャラクターの設定プロンプトを編集します。
-3. 必要に応じてキャラクターのVRMファイルまたはLive2Dファイル、および背景ファイルをアップロードします。
-4. 音声合成エンジンを選択し、必要に応じて声の設定を行います。
-   - VOICEVOX: 複数の選択肢から話者を選ぶことができます。予めVOICEVOXアプリを起動しておく必要があります。
-   - Koeiromap: 細かく音声を調整することが可能です。APIキーの入力が必要です。
-   - Google Text-to-Speech: 日本語以外の言語も選択可能です。credential情報が必要です。
-   - Style-Bert-VITS2: ローカルAPIサーバーを起動しておく必要があります。
-   - AivisSpeech: 予めAivisSpeechアプリを起動しておく必要があります。
-   - GSVI TTS: ローカルAPIサーバーを起動しておく必要があります。
-   - ElevenLabs: 様々な言語の選択が可能です。APIキーの入力が必要です。
-   - OpenAI: APIキーの入力が必要です。
-   - Azure OpenAI: APIキーの入力が必要です。
-   - にじボイス: APIキーの入力が必要です。
-5. 入力フォームからキャラクターと会話を開始します。マイク入力も可能です。
-
-## AITuber配信
-
-- Youtubeの配信コメントを取得して発言することが可能です。
-- Youtube APIキーが必要です。
-- "#"から始まるコメントは読まれません。
-
-### 使用方法
-
-1. 設定画面でYoutubeモードをONにします。
-2. Youtube APIキーとYoutube Live IDを入力します。
-3. 他の設定は"AIキャラとの対話"と同様に行います。
-4. Youtubeの配信を開始し、キャラクターがコメントに反応するのを確認します。
-5. 会話継続モードをONにすると、コメントが無いときにAIが自ら発言することができます。
-
-## その他の機能
-
-### 外部連携モード
-
-- WebSocketでサーバーアプリにリクエストを送信して、レスポンスを取得することができます。
-- 別途サーバーアプリを用意する必要があります。
-
-#### 使用方法
-
-1. サーバーアプリを起動し、`ws://127.0.0.1:8000/ws` エンドポイントを開きます。
-2. 設定画面で外部連携モードをONにします。
-3. 他の設定は"AIキャラとの対話"と同様に行います。
-4. 入力フォームからリクエストを送信し、サーバーアプリからのリクエストが返却されるのを確認します。
-
-#### 関連
-
-- こちらのサーバーアプリのリポジトリですぐに試すことが可能です。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- 詳しい設定は"[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)"をお読みください。
-
-### スライドモード
-
-- スライドをAIキャラが自動で発表するモードです。
-- 予めスライドと台本ファイルを用意しておく必要があります。
-
-#### 使用方法
-
-1. AIキャラと対話できるところまで進めておきます。
-2. スライドフォルダと台本ファイルを指定のフォルダに配置します。
-3. 設定画面でスライドモードをONにします。
-4. スライド開始ボタンを押して発表を開始します。
-
-#### 関連
-
-- 詳しい設定は"[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)"をお読みください。
-
-### Realtime APIモード
-
-- OpenAIのRealtime APIを使用して、低遅延でキャラと対話できるモードです。
-- 関数実行を定義することができます。
-
-#### 使用方法
-
-1. AIサービスでOpenAIまたはAzure OpenAIを選択します。
-2. Realtime APIモードをONにします。
-3. マイクを使用して話しかけます。
-
-#### 関数実行
-
-- src/components/realtimeAPITools.tsx, src/components/realtimeAPITools.json に新しい関数を定義します。
-- 既存の get_current_weather 関数を参考にしてください。
-
-## TIPS
-
-### Live2Dの仕様に際して
-
-Live2D表示のために非公式ライブラリの [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) を使用しています。
-Live2Dは開発用SDKとしてCubismというライブラリが提供されており、AITuberKitでは、Cubism 3以降のモデルをサポートしています。
-
-なお、本プロジェクトでは、Live2D社の許可を得て、公式SDKを使用しています。
-
-#### Cubism Core
-
-Live2D機能を利用する場合、以下のファイルを `public/scripts` に設置してください：
-
-`live2dcubismcore.min.js`（Cubism 4/5用）
-
-- [公式サイト](https://www.live2d.com/sdk/download/web/)からダウンロード可能
-- または[こちら](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)から入手可能（注：本番環境での使用は推奨されません）
-
-Live2D社のCubism SDKを組み込んだソフトウェアを公開する際にはLive2D社との出版許諾契約の締結が必要になる可能性があります。詳しくは下記ページをご参照ください。
-https://www.live2d.com/sdk/license/
-
-### 背景画像の設定
-
-- 背景画像は `public/bg-c.png` の画像を変更してください。名称は変更しないでください。
-
-### 環境変数の設定
-
-- 一部の設定値は `.env` ファイルの内容を参照することができます。
-- 設定画面で入力した場合は、環境変数で指定された値よりも優先されます。
-
-### マイク入力方法（2パターン）
-
-1. Alt (or option) キーを押している間入力受付 => 離したら送信
-2. マイクボタンをクリック（一度押したら入力受付）=> もう一度クリックで送信
-
-### その他
-
-- 設定情報・会話履歴は設定画面でリセットすることができます。
-- 各種設定項目はブラウザにローカルストレージとして保存されます。
-- コードブロックで囲まれた要素はTTSで読まれません。
-
-## 関連記事
-
-- [今日からあなたもAITuberデベロッパー｜ニケちゃん](https://note.com/nike_cha_n/n/ne98acb25e00f)
-- [美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
-- [スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)
-- [AITuberKitにマルチモーダル機能を追加したのでAIキャラと宅飲みしてみる](https://note.com/nike_cha_n/n/n6d8e330561e4)
-- [AITuberKit × Dify で超簡単チャットボット構築](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
-- [DifyをXserverでインターネットに公開する](https://note.com/nike_cha_n/n/n23467824b22b)
-- [高度な音声モード こと Realtime API を試してみる](https://note.com/nike_cha_n/n/ne51c16ddadd0)
+詳細な設定方法や使い方については、[ドキュメントサイト](https://docs.aituberkit.com/)の[クイックスタートガイド](https://docs.aituberkit.com/guide/quickstart)をご覧ください。
 
 ## スポンサー募集
 
@@ -345,24 +188,14 @@ https://www.live2d.com/sdk/license/
 
 本プロジェクトは、バージョン v2.0.0 以降、**カスタムライセンス**を採用しています。
 
-- **無償利用**
+- **無償利用**: 営利目的以外での個人利用、教育目的、非営利目的での使用は無償で利用可能です。
+- **商用ライセンス**: 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
 
-  - 営利目的以外での個人利用、教育目的、非営利目的での使用は無償で利用可能です。
-
-- **商用ライセンス**
-  - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
-  - 詳細は、[ライセンスについて](./docs/license.md)をご確認ください。
+詳細は、[ライセンスページ](https://docs.aituberkit.com/guide/license)をご確認ください。
 
 ## 優先実装について
 
-本プロジェクトでは、有償での機能優先実装を受け付けています。
-
-- 企業や個人の方から要望のあった機能を、優先的に実装することが可能です。
-- 実装された機能は、本OSSプロジェクトの一部として公開されます。
-- 料金は機能の複雑さや実装に要する時間に応じて個別見積もりとなります。
-- この優先実装は商用ライセンスとは別の取り組みです。実装された機能を商用利用する場合は、別途商用ライセンスの取得が必要です。
-
-詳細については、support@aituberkit.com までお問い合わせください。
+本プロジェクトでは、有償での機能優先実装を受け付けています。詳細については、support@aituberkit.com までお問い合わせください。
 
 ### その他
 
