@@ -19,6 +19,7 @@ const getAIConfig = () => {
     azureEndpoint: ss.azureEndpoint,
     useSearchGrounding: ss.useSearchGrounding,
     temperature: ss.temperature,
+    maxTokens: ss.maxTokens,
   }
 }
 
@@ -36,6 +37,7 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     azureEndpoint,
     useSearchGrounding,
     temperature,
+    maxTokens,
   } = getAIConfig()
 
   try {
@@ -53,6 +55,7 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         stream: false,
         useSearchGrounding: useSearchGrounding,
         temperature: temperature,
+        maxTokens: maxTokens,
       }),
     })
 
@@ -83,6 +86,7 @@ export async function getVercelAIChatResponseStream(
     azureEndpoint,
     useSearchGrounding,
     temperature,
+    maxTokens,
   } = getAIConfig()
 
   const response = await fetch('/api/aiChat', {
@@ -99,6 +103,7 @@ export async function getVercelAIChatResponseStream(
       stream: true,
       useSearchGrounding: useSearchGrounding,
       temperature: temperature,
+      maxTokens: maxTokens,
     }),
   })
 

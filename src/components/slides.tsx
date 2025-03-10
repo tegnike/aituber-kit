@@ -182,7 +182,12 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   return (
     <div
       className="flex flex-col items-center justify-center"
-      style={{ height: '100vh', padding: '10px 0' }}
+      style={{
+        height: '100vh',
+        padding: '10px 0',
+        position: 'absolute',
+        width: '100%',
+      }}
     >
       <div
         style={{

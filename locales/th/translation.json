@@ -8,7 +8,7 @@
   "SlideSettings": "■ การตั้งค่าสไลด์",
   "LogSettings": "■ ประวัติการสนทนา",
   "OtherSettings": "■ อื่น ๆ",
-  "ExternalLinkageMode": "โหมดเชื่อมต่อภายนอก (WebSocket)",
+  "ExternalLinkageMode": "โหมดการเชื่อมต่อภายนอก (รุ่นเบต้า)",
   "YoutubeMode": "โหมด YouTube",
   "YoutubeInfo": "ความคิดเห็นที่ขึ้นต้นด้วยเครื่องหมาย \"#\" จะถูกละเว้น",
   "YoutubeAPIKey": "คีย์ API ของ YouTube",
@@ -80,7 +80,7 @@
   "NijiVoiceEmotionalLevel": "ระดับอารมณ์",
   "NijiVoiceSoundDuration": "ความยาวของเสียง",
   "UpdateSpeakerList": "อัปเดตรายการผู้พูด",
-  "UsingGoogleTTS": "ใช้ Google TTS",
+  "UsingGoogleTTS": "ใช้ Google Text-to-Speech",
   "UsingStyleBertVITS2": "ใช้ Style-Bert-VITS2",
   "StyleBertVITS2Info": "ใช้ Style-Bert-VITS2 รองรับเฉพาะภาษาญี่ปุ่น, อังกฤษ และจีน หากใช้ API ภายในเครื่อง คุณจำเป็นต้องดาวน์โหลดและเปิดใช้งานแอปที่เหมาะกับสภาพแวดล้อมของคุณจากเว็บไซต์ด้านล่าง และหากจำเป็นให้ตั้งค่าคีย์ API ด้วย",
   "SpeakerSelection": "เลือกประเภทเสียง",
@@ -98,7 +98,7 @@
   "StyleBeatVITS2SdpRatio": "อัตราส่วนผสม SDP/DP",
   "StyleBeatVITS2Length": "ความเร็วในการพูด",
   "ConversationHistory": "ประวัติการสนทนา",
-  "ConversationHistoryInfo": "ข้อความสนทนาล่าสุด 10 ข้อความจะถูกเก็บไว้เป็นความทรงจำ",
+  "ConversationHistoryInfo": "บทสนทนาล่าสุด {{count}} รายการจะถูกเก็บเป็นความทรงจำ",
   "ConversationHistoryReset": "รีเซ็ตประวัติการสนทนา",
   "NotConnectedToExternalAssistant": "ยังไม่ได้เชื่อมต่อกับผู้ช่วยภายนอก",
   "APIKeyNotEntered": "ไม่ได้กรอกคีย์ API",
@@ -181,7 +181,7 @@
   "RealtimeAPIMode": "โหมด API แบบเรียลไทม์",
   "RealtimeAPIModeContentType": "ประเภทการส่ง",
   "RealtimeAPIModeVoice": "ประเภทเสียง",
-  "AudioMode": "โหมดเสียง (เบต้า)",
+  "AudioMode": "โหมดเสียง",
   "InputText": "ข้อความ",
   "InputAudio": "เสียง",
   "SearchGrounding": "ใช้ฟังก์ชันค้นหา",
@@ -238,5 +238,9 @@
     "relaxedMotionGroup": "ผ่อนคลาย"
   },
   "UseVideoAsBackground": "ใช้หน้าจอแชร์หรือเว็บแคมเป็นพื้นหลัง",
-  "Temperature": "Temperature"
+  "Temperature": "Temperature",
+  "MaxTokens": "จำนวนโทเค็นสูงสุด",
+  "MaxTokensInfo": "จำนวนโทเค็นสูงสุดจะแตกต่างกันไปตามโมเดล AI ที่ใช้งานอยู่ โปรดตรวจสอบข้อกำหนดของแต่ละโมเดล",
+  "CannotUseParameters": "หากโหมด API แบบเรียลไทม์หรือโหมดเสียงเปิดใช้งานอยู่ จะไม่สามารถกำหนดพารามิเตอร์ Temperature และ Max Tokens ได้",
+  "DocumentationDescription": "คุณสามารถดูวิธีการใช้งานและบทแนะนำที่ละเอียดของ AITuberKit ได้ที่ URL ด้านล่างนี้"
 }

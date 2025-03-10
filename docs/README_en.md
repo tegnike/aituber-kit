@@ -132,7 +132,7 @@ cp .env.example .env
 4. Select a speech synthesis engine and configure voice settings if necessary.
    - VOICEVOX: You can select a speaker from multiple options. The VOICEVOX app needs to be running beforehand.
    - Koeiromap: You can finely adjust the voice. An API key is required.
-   - Google TTS: Languages other than Japanese can also be selected. Credential information is required.
+   - Google Text-to-Speech: Languages other than Japanese can also be selected. Credential information is required.
    - Style-Bert-VITS2: A local API server needs to be running.
    - AivisSpeech: The AivisSpeech app needs to be running beforehand.
    - GSVI TTS: A local API server needs to be running.

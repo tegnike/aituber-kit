@@ -8,7 +8,7 @@
   "SlideSettings": "■ Slide Settings",
   "LogSettings": "■ Conversation History",
   "OtherSettings": "■ Other",
-  "ExternalLinkageMode": "External Linkage Mode (WebSocket)",
+  "ExternalLinkageMode": "External Linkage Mode (Beta)",
   "YoutubeMode": "YouTube Mode",
   "YoutubeInfo": "The first character of the comment is '#', it is ignored.",
   "YoutubeAPIKey": "YouTube API Key",
@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "Sound Duration",
   "VoicevoxServerUrl": "VOICEVOX Server URL",
   "UpdateSpeakerList": "Update Speaker List",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "Use Google Text-to-Speech",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Using Style-Bert-VITS2. It supports only Japanese, English, and Chinese. If using a local API, you need to download and launch the app that suits your environment from the site below. Please also set up an API key if necessary.",
   "SpeakerSelection": "Speaker Selection",
@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "SDP/DP Mixing Ratio",
   "StyleBeatVITS2Length": "Speech Rate",
   "ConversationHistory": "Conversation History",
-  "ConversationHistoryInfo": "The latest 10 conversation texts are stored as memories.",
+  "ConversationHistoryInfo": "The last {{count}} conversation texts will be retained as memory.",
   "ConversationHistoryReset": "Reset Conversation History",
   "NotConnectedToExternalAssistant": "Not connected to an external assistant.",
   "APIKeyNotEntered": "API key is not entered.",
@@ -182,7 +182,7 @@
   "RealtimeAPIMode": "Realtime API Mode",
   "RealtimeAPIModeContentType": "Send Type",
   "RealtimeAPIModeVoice": "Voice Type",
-  "AudioMode": "Audio Mode (Beta)",
+  "AudioMode": "Audio Mode",
   "InputText": "Text",
   "InputAudio": "Audio",
   "SearchGrounding": "Use Search Grounding",
@@ -240,5 +240,9 @@
     "relaxedMotionGroup": "Relaxed"
   },
   "UseVideoAsBackground": "Use shared screen or webcam as background",
-  "Temperature": "Temperature"
+  "Temperature": "Temperature",
+  "MaxTokens": "Maximum Token Count",
+  "MaxTokensInfo": "The maximum token count varies depending on the AI model in use. Please check the specifications of each model.",
+  "CannotUseParameters": "If real-time API mode or audio mode is enabled, the Temperature and Max Tokens parameters cannot be specified.",
+  "DocumentationDescription": "For detailed usage and tutorials of AITuberKit, please visit the URL below."
 }
