@@ -8,7 +8,7 @@
   "SlideSettings": "■ Настройки презентации",
   "LogSettings": "■ История разговоров",
   "OtherSettings": "■ Прочее",
-  "ExternalLinkageMode": "Режим внешнего подключения (WebSocket)",
+  "ExternalLinkageMode": "Режим внешней интеграции (бета-версия)",
   "YoutubeMode": "Режим YouTube",
   "YoutubeInfo": "Первый символ комментария '#' будет проигнорирован.",
   "YoutubeAPIKey": "API-ключ YouTube",
@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "Длительность звука",
   "VoicevoxServerUrl": "URL сервера VOICEVOX",
   "UpdateSpeakerList": "Обновить список дикторов",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "Использовать Google Text-to-Speech",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Использует Style-Bert-VITS2. Поддерживает только японский, английский и китайский языки. Для локального API нужно скачать и запустить подходящее приложение. При необходимости настройте API-ключ.",
   "SpeakerSelection": "Выбор диктора",
@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "Коэффициент смешивания SDP/DP",
   "StyleBeatVITS2Length": "Скорость речи",
   "ConversationHistory": "История разговоров",
-  "ConversationHistoryInfo": "10 последних разделов разговора сохраняются как память.",
+  "ConversationHistoryInfo": "Последние {{count}} разговоров будут сохранены в памяти.",
   "ConversationHistoryReset": "Сбросить историю разговоров",
   "NotConnectedToExternalAssistant": "Не подключено к внешнему ассистенту.",
   "APIKeyNotEntered": "API-ключ не введен.",
@@ -180,7 +180,7 @@
   "RealtimeAPIMode": "Режим API реального времени",
   "RealtimeAPIModeContentType": "Тип передачи",
   "RealtimeAPIModeVoice": "Тип голоса",
-  "AudioMode": "Аудио режим (Бета)",
+  "AudioMode": "Аудиорежим",
   "InputText": "Текст",
   "InputAudio": "Аудио",
   "SearchGrounding": "Использовать контекстный поиск",
@@ -237,5 +237,9 @@
     "relaxedMotionGroup": "Расслабленный"
   },
   "UseVideoAsBackground": "Использовать общий экран или веб-камеру как фон",
-  "Temperature": "Температура"
+  "Temperature": "Температура",
+  "MaxTokens": "Максимальное количество токенов",
+  "MaxTokensInfo": "Максимальное количество токенов зависит от используемой модели ИИ. Пожалуйста, проверьте спецификации каждой модели.",
+  "CannotUseParameters": "Если активирован режим реального времени API или аудиорежим, параметры Temperature и Max Tokens не могут быть указаны.",
+  "DocumentationDescription": "Подробные инструкции и учебные пособия по AITuberKit можно найти по следующему URL."
 }

@@ -9,6 +9,9 @@ import { TextButton } from '../textButton'
 const Based = () => {
   const { t } = useTranslation()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
+  const showAssistantText = settingsStore((s) => s.showAssistantText)
+  const showCharacterName = settingsStore((s) => s.showCharacterName)
+  const showControlPanel = settingsStore((s) => s.showControlPanel)
 
   return (
     <>
@@ -77,6 +80,61 @@ const Based = () => {
             }}
           >
             {t('ChangeBackgroundImage')}
+          </TextButton>
+        </div>
+      </div>
+
+      {/* アシスタントテキスト表示設定 */}
+      <div className="my-24">
+        <div className="my-16 typography-20 font-bold">
+          {t('ShowAssistantText')}
+        </div>
+        <div className="my-8">
+          <TextButton
+            onClick={() =>
+              settingsStore.setState((s) => ({
+                showAssistantText: !s.showAssistantText,
+              }))
+            }
+          >
+            {showAssistantText ? t('StatusOn') : t('StatusOff')}
+          </TextButton>
+        </div>
+      </div>
+
+      {/* キャラクター名表示設定 */}
+      <div className="my-24">
+        <div className="my-16 typography-20 font-bold">
+          {t('ShowCharacterName')}
+        </div>
+        <div className="my-8">
+          <TextButton
+            onClick={() =>
+              settingsStore.setState((s) => ({
+                showCharacterName: !s.showCharacterName,
+              }))
+            }
+          >
+            {showCharacterName ? t('StatusOn') : t('StatusOff')}
+          </TextButton>
+        </div>
+      </div>
+
+      {/* コントロールパネル表示設定 */}
+      <div className="my-24">
+        <div className="my-16 typography-20 font-bold">
+          {t('ShowControlPanel')}
+        </div>
+        <div className="my-16 typography-16">{t('ShowControlPanelInfo')}</div>
+        <div className="my-8">
+          <TextButton
+            onClick={() =>
+              settingsStore.setState({
+                showControlPanel: !showControlPanel,
+              })
+            }
+          >
+            {showControlPanel ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>
       </div>

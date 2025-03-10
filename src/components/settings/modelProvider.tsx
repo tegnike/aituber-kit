@@ -44,6 +44,7 @@ const ModelProvider = () => {
   const deepseekKey = settingsStore((s) => s.deepseekKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
+  const maxTokens = settingsStore((s) => s.maxTokens)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -124,6 +125,10 @@ const ModelProvider = () => {
       settingsStore.setState({
         selectAIModel: 'gpt-4o-audio-preview-2024-12-17',
       })
+    } else {
+      settingsStore.setState({
+        selectAIModel: 'gpt-4o-2024-11-20',
+      })
     }
   }, [])
 
@@ -160,9 +165,9 @@ const ModelProvider = () => {
           <option value="mistralai">Mistral AI</option>
           <option value="perplexity">Perplexity</option>
           <option value="fireworks">Fireworks</option>
+          <option value="deepseek">DeepSeek</option>
           <option value="localLlm">{t('LocalLLM')}</option>
           <option value="dify">Dify</option>
-          <option value="deepseek">DeepSeek</option>
         </select>
       </div>
       {(() => {
@@ -1071,24 +1076,55 @@ const ModelProvider = () => {
               />
             </div>
           </div>
-          <div className="my-24">
-            <div className="my-16 typography-20 font-bold">
-              {t('Temperature')}: {temperature.toFixed(2)}
+          {!realtimeAPIMode && !audioMode && (
+            <>
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('Temperature')}: {temperature.toFixed(2)}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={2}
+                  step={0.01}
+                  value={temperature}
+                  className="mt-8 mb-16 input-range"
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      temperature: parseFloat(e.target.value),
+                    })
+                  }
+                />
+              </div>
+              <div className="my-24">
+                <div className="my-16 typography-20 font-bold">
+                  {t('MaxTokens')}
+                </div>
+                <div className="my-8 text-sm text-gray-400">
+                  {t('MaxTokensInfo')}
+                </div>
+                <div className="my-8">
+                  <input
+                    type="number"
+                    min="1"
+                    className="px-16 py-8 w-140 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    value={maxTokens}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value)
+                      if (Number.isNaN(value) === false && value >= 1) {
+                        settingsStore.setState({ maxTokens: value })
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+          {(realtimeAPIMode || audioMode) && (
+            <div className="my-24 p-16 bg-surface1 rounded-8 text-sm text-gray-400">
+              {t('CannotUseParameters')}
             </div>
-            <input
-              type="range"
-              min={0}
-              max={2}
-              step={0.01}
-              value={temperature}
-              className="mt-8 mb-16 input-range"
-              onChange={(e) =>
-                settingsStore.setState({
-                  temperature: parseFloat(e.target.value),
-                })
-              }
-            />
-          </div>
+          )}
         </>
       )}
     </div>

@@ -16,7 +16,7 @@ This document specifies the terms of use for the following models provided in th
 
 ## Copyright
 
-The copyright of these VRM and Live2D models belongs to the owner of the repository.
+The copyright of these VRM and Live2D models belongs to the creators of each model.
 
 ## Permitted Use
 

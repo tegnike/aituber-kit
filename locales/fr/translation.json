@@ -8,7 +8,7 @@
   "SlideSettings": "■ Paramètres de diapositive",
   "LogSettings": "■ Historique des conversations",
   "OtherSettings": "■ Autre",
-  "ExternalLinkageMode": "Mode de liaison externe (WebSocket)",
+  "ExternalLinkageMode": "Mode de liaison externe (version bêta)",
   "YoutubeMode": "Mode YouTube",
   "YoutubeInfo": "Le premier caractère du commentaire est '#' et sera ignoré.",
   "YoutubeAPIKey": "Clé API YouTube",
@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "Durée du son",
   "VoicevoxServerUrl": "URL du serveur VOICEVOX",
   "UpdateSpeakerList": "Mettre à jour la liste des locuteurs",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "Utiliser Google Text-to-Speech",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Utilisation de Style-Bert-VITS2. Ne prend en charge que le japonais, l'anglais et le chinois. Si vous utilisez une API locale, vous devez télécharger et lancer l'application qui convient à votre environnement depuis le site ci-dessous. Veuillez également configurer une clé API si nécessaire.",
   "SpeakerSelection": "Sélection du locuteur",
@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "Ratio de mixage SDP/DP",
   "StyleBeatVITS2Length": "Débit de parole",
   "ConversationHistory": "Historique des conversations",
-  "ConversationHistoryInfo": "Les 10 derniers textes de conversation sont stockés comme mémoires.",
+  "ConversationHistoryInfo": "Les {{count}} dernières conversations seront conservées en mémoire.",
   "ConversationHistoryReset": "Réinitialiser l'historique des conversations",
   "NotConnectedToExternalAssistant": "Non connecté à un assistant externe.",
   "APIKeyNotEntered": "La clé API n'est pas saisie.",
@@ -180,7 +180,7 @@
   "RealtimeAPIMode": "Mode API en temps réel",
   "RealtimeAPIModeContentType": "Type d'envoi",
   "RealtimeAPIModeVoice": "Type de voix",
-  "AudioMode": "Mode audio (Beta)",
+  "AudioMode": "Mode audio",
   "InputText": "Texte",
   "InputAudio": "Audio",
   "SearchGrounding": "Utiliser la recherche contextuelle",
@@ -237,5 +237,9 @@
     "relaxedMotionGroup": "Détendu"
   },
   "UseVideoAsBackground": "Utiliser l'écran partagé ou la webcam comme arrière-plan",
-  "Temperature": "Température"
+  "Temperature": "Température",
+  "MaxTokens": "Nombre maximal de tokens",
+  "MaxTokensInfo": "Le nombre maximal de tokens varie en fonction du modèle AI utilisé. Veuillez vérifier les spécifications de chaque modèle.",
+  "CannotUseParameters": "Si le mode API en temps réel ou le mode audio est activé, les paramètres Temperature et Max Tokens ne peuvent pas être spécifiés.",
+  "DocumentationDescription": "Vous pouvez consulter des instructions détaillées et des tutoriels sur AITuberKit à l'URL ci-dessous."
 }

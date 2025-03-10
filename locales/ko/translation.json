@@ -8,7 +8,7 @@
   "SlideSettings": "■ 슬라이드 설정",
   "LogSettings": "■ 대화 기록",
   "OtherSettings": "■ 기타",
-  "ExternalLinkageMode": "외부 연동 모드 (WebSocket)",
+  "ExternalLinkageMode": "외부 연계 모드(베타 버전)",
   "YoutubeMode": "YouTube 모드",
   "YoutubeInfo": "처음에 '#'이 있는 댓글은 무시됩니다.",
   "YoutubeAPIKey": "YouTube API 키",
@@ -80,7 +80,7 @@
   "NijiVoiceEmotionalLevel": "감정 레벨",
   "NijiVoiceSoundDuration": "음성 길이",
   "UpdateSpeakerList": "보이스 타입 업데이트",
-  "UsingGoogleTTS": "Google TTS 사용",
+  "UsingGoogleTTS": "Google 텍스트 음성 변환 사용",
   "UsingStyleBertVITS2": "Style-Bert-VITS2 사용",
   "StyleBertVITS2Info": "Style-Bert-VITS2를 사용하고 있습니다. 일본어, 영어, 중국어만 지원됩니다. 로컬 API를 사용하는 경우 아래 사이트에서 환경에 맞는 앱을 다운로드하고 실행해야 합니다. 필요한 경우 API 키도 설정해 주세요.",
   "SpeakerSelection": "보이스 타입 선택",
@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "SDP/DP 혼합 비율",
   "StyleBeatVITS2Length": "말 속도",
   "ConversationHistory": "대화 기록",
-  "ConversationHistoryInfo": "최근 10개의 대화 문장이 기억으로 유지됩니다.",
+  "ConversationHistoryInfo": "최근 {{count}}개의 대화 내용이 기억으로 유지됩니다.",
   "ConversationHistoryReset": "대화 기록 재설정",
   "NotConnectedToExternalAssistant": "외부 어시스턴트와 연결되지 않았습니다.",
   "APIKeyNotEntered": "API 키가 입력되지 않았습니다.",
@@ -182,7 +182,7 @@
   "RealtimeAPIMode": "리얼타임 API 모드",
   "RealtimeAPIModeContentType": "보내기 타입",
   "RealtimeAPIModeVoice": "음성 타입",
-  "AudioMode": "오디오 모드 (베타 버전)",
+  "AudioMode": "오디오 모드",
   "InputText": "텍스트",
   "InputAudio": "음성",
   "SearchGrounding": "검색 기능을 사용하기",
@@ -239,5 +239,9 @@
     "relaxedMotionGroup": "느긋"
   },
   "UseVideoAsBackground": "공유 화면 또는 웹캠을 배경으로 사용",
-  "Temperature": "Temperature"
+  "Temperature": "Temperature",
+  "MaxTokens": "최대 토큰 수",
+  "MaxTokensInfo": "최대 토큰 수는 사용 중인 AI 모델에 따라 다릅니다. 각 모델의 사양을 확인하세요.",
+  "CannotUseParameters": "실시간 API 모드 또는 오디오 모드가 활성화된 경우, Temperature와 Max Tokens 매개변수를 지정할 수 없습니다.",
+  "DocumentationDescription": "AITuberKit의 자세한 사용법 및 튜토리얼은 아래 URL에서 확인하세요."
 }

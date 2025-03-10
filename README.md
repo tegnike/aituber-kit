@@ -131,7 +131,7 @@ cp .env.example .env
 4. 音声合成エンジンを選択し、必要に応じて声の設定を行います。
    - VOICEVOX: 複数の選択肢から話者を選ぶことができます。予めVOICEVOXアプリを起動しておく必要があります。
    - Koeiromap: 細かく音声を調整することが可能です。APIキーの入力が必要です。
-   - Google TTS: 日本語以外の言語も選択可能です。credential情報が必要です。
+   - Google Text-to-Speech: 日本語以外の言語も選択可能です。credential情報が必要です。
    - Style-Bert-VITS2: ローカルAPIサーバーを起動しておく必要があります。
    - AivisSpeech: 予めAivisSpeechアプリを起動しておく必要があります。
    - GSVI TTS: ローカルAPIサーバーを起動しておく必要があります。

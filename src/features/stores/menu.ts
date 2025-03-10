@@ -24,7 +24,7 @@ const menuStore = create<MenuState>((set, get) => ({
   showCapture: false,
   fileInput: null,
   bgFileInput: null,
-  slideVisible: true,
+  slideVisible: false,
   activeSettingsTab: 'description',
 }))
 

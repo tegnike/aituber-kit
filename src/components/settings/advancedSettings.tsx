@@ -11,12 +11,9 @@ const AdvancedSettings = () => {
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
   )
-  const showControlPanel = settingsStore((s) => s.showControlPanel)
   const includeTimestampInUserMessage = settingsStore(
     (s) => s.includeTimestampInUserMessage
   )
-  const showAssistantText = settingsStore((s) => s.showAssistantText)
-  const showCharacterName = settingsStore((s) => s.showCharacterName)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const noSpeechTimeout = settingsStore((s) => s.noSpeechTimeout)
 
@@ -54,38 +51,6 @@ const AdvancedSettings = () => {
           </TextButton>
         </div>
       </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowAssistantText')}
-        </div>
-        <div className="my-8">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState((s) => ({
-                showAssistantText: !s.showAssistantText,
-              }))
-            }
-          >
-            {showAssistantText ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
-        </div>
-      </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowCharacterName')}
-        </div>
-        <div className="my-8">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState((s) => ({
-                showCharacterName: !s.showCharacterName,
-              }))
-            }
-          >
-            {showCharacterName ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
-        </div>
-      </div>
       {selectLanguage === 'ja' && (
         <div className="my-24">
           <div className="my-16 typography-20 font-bold">
@@ -104,23 +69,6 @@ const AdvancedSettings = () => {
           </div>
         </div>
       )}
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowControlPanel')}
-        </div>
-        <div className="my-16 typography-16">{t('ShowControlPanelInfo')}</div>
-        <div className="my-8">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({
-                showControlPanel: !showControlPanel,
-              })
-            }
-          >
-            {showControlPanel ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
-        </div>
-      </div>
       <div className="my-24">
         <div className="my-16 typography-20 font-bold">
           {t('IncludeTimestampInUserMessage')}

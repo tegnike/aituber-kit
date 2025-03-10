@@ -14,9 +14,6 @@ const Slide = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
 
   const slideMode = settingsStore((s) => s.slideMode)
-  const conversationContinuityMode = settingsStore(
-    (s) => s.conversationContinuityMode
-  )
 
   const selectedSlideDocs = slideStore((s) => s.selectedSlideDocs)
   const [slideFolders, setSlideFolders] = useState<string[]>([])
@@ -47,13 +44,13 @@ const Slide = () => {
     const newSlideMode = !slideMode
     settingsStore.setState({
       slideMode: newSlideMode,
-      // スライドモードがオンになったら、会話継続モードをオフにする
-      conversationContinuityMode: newSlideMode
-        ? false
-        : conversationContinuityMode,
     })
-    if (!newSlideMode) {
-      menuStore.setState({ slideVisible: false })
+    menuStore.setState({ slideVisible: newSlideMode })
+    if (newSlideMode) {
+      settingsStore.setState({
+        youtubeMode: false,
+        conversationContinuityMode: false,
+      })
     }
   }
 

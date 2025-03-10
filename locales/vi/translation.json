@@ -8,7 +8,7 @@
   "SlideSettings": "■ Cài đặt Slide",
   "LogSettings": "■ Lịch sử hội thoại",
   "OtherSettings": "■ Khác",
-  "ExternalLinkageMode": "Chế độ liên kết ngoài (WebSocket)",
+  "ExternalLinkageMode": "Chế độ liên kết bên ngoài (phiên bản beta)",
   "YoutubeMode": "Chế độ YouTube",
   "YoutubeInfo": "Ký tự đầu tiên của bình luận là '#' và sẽ bị bỏ qua.",
   "YoutubeAPIKey": "Khóa API YouTube",
@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "Thời lượng âm thanh",
   "VoicevoxServerUrl": "URL máy chủ VOICEVOX",
   "UpdateSpeakerList": "Cập nhật danh sách loa",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "Sử dụng Google Text-to-Speech",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Sử dụng Style-Bert-VITS2. Chỉ hỗ trợ tiếng Nhật, tiếng Anh và tiếng Trung. Nếu dùng API địa phương, hãy tải và chạy ứng dụng phù hợp. Nếu cần, vui lòng thiết lập thêm khóa API.",
   "SpeakerSelection": "Lựa chọn loa",
@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "Tỷ lệ trộn SDP/DP",
   "StyleBeatVITS2Length": "Tốc độ nói",
   "ConversationHistory": "Lịch sử hội thoại",
-  "ConversationHistoryInfo": "10 đoạn hội thoại mới nhất được lưu làm ký ức.",
+  "ConversationHistoryInfo": "Có {{count}} cuộc hội thoại gần đây được lưu giữ như bộ nhớ.",
   "ConversationHistoryReset": "Đặt lại lịch sử hội thoại",
   "NotConnectedToExternalAssistant": "Không kết nối với trợ lý bên ngoài.",
   "APIKeyNotEntered": "Chưa nhập khóa API.",
@@ -180,7 +180,7 @@
   "RealtimeAPIMode": "Chế độ API thời gian thực",
   "RealtimeAPIModeContentType": "Loại gửi",
   "RealtimeAPIModeVoice": "Loại giọng nói",
-  "AudioMode": "Chế độ Audio (Beta)",
+  "AudioMode": "Chế độ âm thanh",
   "InputText": "Văn bản",
   "InputAudio": "Âm thanh",
   "SearchGrounding": "Sử dụng tìm kiếm",
@@ -237,5 +237,9 @@
     "relaxedMotionGroup": "Relaxed"
   },
   "UseVideoAsBackground": "Sử dụng chia sẻ màn hình hoặc webcam làm hình nền",
-  "Temperature": "Nhiệt độ"
+  "Temperature": "Nhiệt độ",
+  "MaxTokens": "Số lượng token tối đa",
+  "MaxTokensInfo": "Số lượng token tối đa khác nhau tùy thuộc vào mô hình AI đang sử dụng. Vui lòng kiểm tra thông số kỹ thuật của từng mô hình.",
+  "CannotUseParameters": "Nếu chế độ API thời gian thực hoặc chế độ âm thanh được kích hoạt, các tham số Temperature và Max Tokens không thể được chỉ định.",
+  "DocumentationDescription": "Vui lòng xem hướng dẫn chi tiết và tutorial của AITuberKit tại URL dưới đây."
 }

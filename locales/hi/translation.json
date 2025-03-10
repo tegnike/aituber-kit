@@ -8,7 +8,7 @@
   "SlideSettings": "■ स्लाइड सेटिंग्स",
   "LogSettings": "■ वार्तालाप इतिहास",
   "OtherSettings": "■ अन्य सेटिंग्स",
-  "ExternalLinkageMode": "बाहरी लिंकेज मोड (WebSocket)",
+  "ExternalLinkageMode": "बाहरी लिंक मोड (बीटा संस्करण)",
   "YoutubeMode": "यूट्यूब मोड",
   "YoutubeInfo": "टिप्पणी का पहला अक्षर '#' है, तो इसे नज़रअंदाज़ किया जाता है।",
   "YoutubeAPIKey": "यूट्यूब API कुंजी",
@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "ध्वनि अवधि",
   "VoicevoxServerUrl": "VOICEVOX सर्वर URL",
   "UpdateSpeakerList": "स्पीकर सूची अपडेट करें",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "Google टेक्स्ट-से-स्पीच का उपयोग करें",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "Style-Bert-VITS2 का उपयोग करें। केवल जापानी, अंग्रेजी और चीनी भाषाओं का समर्थन करता है। यदि आप स्थानीय API का उपयोग कर रहे हैं, तो आपको नीचे दी गई साइट से अपने वातावरण के लिए उपयुक्त एप्लिकेशन डाउनलोड और चलाने की आवश्यकता है। यदि आवश्यक हो तो कृपया API कुंजी भी सेट करें।",
   "SpeakerSelection": "स्पीकर चयन",
@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "SDP/DP मिश्रण अनुपात",
   "StyleBeatVITS2Length": "बोलने की दर",
   "ConversationHistory": "वार्तालाप इतिहास",
-  "ConversationHistoryInfo": "पिछले 10 वार्तालाप पाठ स्मृतियों के रूप में संग्रहीत किए जाते हैं।",
+  "ConversationHistoryInfo": "हाल की {{count}} बातचीत को स्मृति के रूप में रखा जाएगा।",
   "ConversationHistoryReset": "वार्तालाप इतिहास रीसेट करें",
   "NotConnectedToExternalAssistant": "बाहरी सहायक से कनेक्ट नहीं है।",
   "APIKeyNotEntered": "API कुंजी दर्ज नहीं की गई है।",
@@ -180,7 +180,7 @@
   "RealtimeAPIMode": "रीयलटाइम API मोड",
   "RealtimeAPIModeContentType": "प्रेषण प्रकार",
   "RealtimeAPIModeVoice": "आवाज़ प्रकार",
-  "AudioMode": "ऑडियो मोड (प्रयोगात्मक)",
+  "AudioMode": "ऑडियो मोड",
   "InputText": "टेक्स्ट",
   "InputAudio": "ऑडियो",
   "SearchGrounding": "सर्च ग्राउंडिंग का उपयोग करें",
@@ -237,5 +237,9 @@
     "relaxedMotionGroup": "आराम से"
   },
   "UseVideoAsBackground": "साझा स्क्रीन या वेबकैम को पृष्ठभूमि के रूप में उपयोग करें",
-  "Temperature": "तापमान"
+  "Temperature": "तापमान",
+  "MaxTokens": "अधिकतम टोकन संख्या",
+  "MaxTokensInfo": "अधिकतम टोकन संख्या उपयोग में AI मॉडल के अनुसार भिन्न होती है। प्रत्येक मॉडल की विशिष्टताओं की जांच करें।",
+  "CannotUseParameters": "यदि रीयल-टाइम API मोड या ऑडियो मोड सक्रिय है, तो Temperature और Max Tokens पैरामीटर निर्दिष्ट नहीं किए जा सकते।",
+  "DocumentationDescription": "AITuberKit के विस्तृत उपयोग और ट्यूटोरियल नीचे दिए गए URL से देखें।"
 }

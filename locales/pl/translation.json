@@ -8,7 +8,7 @@
   "SlideSettings": "■ Ustawienia slajdów",
   "LogSettings": "■ Historia rozmów",
   "OtherSettings": "■ Inne",
-  "ExternalLinkageMode": "Tryb zewnętrznej integracji (WebSocket)",
+  "ExternalLinkageMode": "Tryb integracji zewnętrznej (wersja beta)",
   "YoutubeMode": "Tryb YouTube",
   "YoutubeInfo": "Komentarze zaczynające się od „#” są ignorowane.",
   "YoutubeAPIKey": "Klucz API YouTube",
@@ -80,7 +80,7 @@
   "NijiVoiceEmotionalLevel": "Poziom emocji",
   "NijiVoiceSoundDuration": "Długość dźwięku",
   "UpdateSpeakerList": "Aktualizuj listę mówców",
-  "UsingGoogleTTS": "Użyj Google TTS",
+  "UsingGoogleTTS": "Użyj Google Text-to-Speech",
   "UsingStyleBertVITS2": "Użyj Style-Bert-VITS2",
   "StyleBertVITS2Info": "Używa Style-Bert-VITS2. Obsługuje tylko japoński, angielski i chiński. Jeśli korzystasz z lokalnego API, musisz pobrać i uruchomić aplikację odpowiednią dla Twojego środowiska ze strony poniżej. W razie potrzeby ustaw także klucz API.",
   "SpeakerSelection": "Wybór typu głosu",
@@ -98,7 +98,7 @@
   "StyleBeatVITS2SdpRatio": "Stosunek SDP/DP",
   "StyleBeatVITS2Length": "Prędkość mówienia",
   "ConversationHistory": "Historia rozmów",
-  "ConversationHistoryInfo": "Ostatnie 10 wiadomości z rozmowy jest zapamiętywanych.",
+  "ConversationHistoryInfo": "Ostatnie {{count}} rozmów będą przechowywane jako pamięć.",
   "ConversationHistoryReset": "Resetuj historię rozmów",
   "NotConnectedToExternalAssistant": "Nie połączono z zewnętrznym asystentem.",
   "APIKeyNotEntered": "Klucz API nie został wprowadzony.",
@@ -181,7 +181,7 @@
   "RealtimeAPIMode": "Tryb API w czasie rzeczywistym",
   "RealtimeAPIModeContentType": "Typ wysyłki",
   "RealtimeAPIModeVoice": "Typ głosu",
-  "AudioMode": "Tryb audio (beta)",
+  "AudioMode": "Tryb audio",
   "InputText": "Tekst",
   "InputAudio": "Audio",
   "SearchGrounding": "Użyj funkcji wyszukiwania",
@@ -238,5 +238,9 @@
     "relaxedMotionGroup": "Zrelaksowany"
   },
   "UseVideoAsBackground": "Użyj ekranu udostępniania lub kamery internetowej jako tła",
-  "Temperature": "Temperatura"
+  "Temperature": "Temperatura",
+  "MaxTokens": "Maksymalna liczba tokenów",
+  "MaxTokensInfo": "Maksymalna liczba tokenów różni się w zależności od używanego modelu AI. Sprawdź specyfikacje każdego modelu.",
+  "CannotUseParameters": "W przypadku włączonego trybu API w czasie rzeczywistym lub trybu audio, parametry Temperature i Max Tokens nie mogą być określone.",
+  "DocumentationDescription": "Szczegółowe instrukcje i samouczki dotyczące AITuberKit można znaleźć pod poniższym adresem URL."
 }

@@ -132,7 +132,7 @@ cp .env.example .env
 4. 음성 합성 엔진을 선택하고 필요한 경우 음성 설정을 구성합니다.
    - VOICEVOX: 여러 옵션에서 스피커를 선택할 수 있습니다. 사전에 VOICEVOX 앱을 실행해야 합니다.
    - Koeiromap: 세밀하게 음성을 조정할 수 있습니다. API 키가 필요합니다.
-   - Google TTS: 일본어 외의 언어도 선택 가능합니다. credential 정보가 필요합니다.
+   - Google Text-to-Speech: 일본어 외의 언어도 선택 가능합니다. credential 정보가 필요합니다.
    - Style-Bert-VITS2: 로컬 API 서버를 실행해야 합니다.
    - AivisSpeech: 사전에 AivisSpeech 앱을 실행해야 합니다.
    - GSVI TTS: 로컬 API 서버를 실행해야 합니다.

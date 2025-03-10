@@ -8,7 +8,7 @@
   "SlideSettings": "■ إعدادات العرض التقديمي",
   "LogSettings": "■ سجل المحادثات",
   "OtherSettings": "■ إعدادات أخرى",
-  "ExternalLinkageMode": "وضع الربط الخارجي (WebSocket)",
+  "ExternalLinkageMode": "وضع الربط الخارجي (نسخة تجريبية)",
   "YoutubeMode": "وضع يوتيوب",
   "YoutubeInfo": "إذا كان الحرف الأول من التعليق هو '#'، يتم تجاهله.",
   "YoutubeAPIKey": "مفتاح API يوتيوب",
@@ -80,7 +80,7 @@
   "NijiVoiceSoundDuration": "مدة الصوت",
   "VoicevoxServerUrl": "عنوان خادم VOICEVOX",
   "UpdateSpeakerList": "تحديث قائمة المتحدثين",
-  "UsingGoogleTTS": "Google TTS",
+  "UsingGoogleTTS": "استخدام Google Text-to-Speech",
   "UsingStyleBertVITS2": "Style-Bert-VITS2",
   "StyleBertVITS2Info": "استخدام Style-Bert-VITS2. يدعم اللغة اليابانية والإنجليزية والصينية فقط. إذا كنت تستخدم API محلي، تحتاج إلى تنزيل وتشغيل التطبيق المناسب لبيئتك من الموقع أدناه. يرجى أيضاً إعداد مفتاح API إذا لزم الأمر.",
   "SpeakerSelection": "اختيار المتحدث",
@@ -97,7 +97,7 @@
   "StyleBeatVITS2SdpRatio": "نسبة خلط SDP/DP",
   "StyleBeatVITS2Length": "معدل الكلام",
   "ConversationHistory": "سجل المحادثات",
-  "ConversationHistoryInfo": "يتم تخزين آخر 10 نصوص محادثة كذكريات.",
+  "ConversationHistoryInfo": "سيتم الاحتفاظ بأحدث {{count}} محادثات كذاكرة.",
   "ConversationHistoryReset": "إعادة تعيين سجل المحادثات",
   "NotConnectedToExternalAssistant": "غير متصل بمساعد خارجي.",
   "APIKeyNotEntered": "لم يتم إدخال مفتاح API.",
@@ -180,7 +180,7 @@
   "RealtimeAPIMode": "وضع API في الوقت الفعلي",
   "RealtimeAPIModeContentType": "نوع الإرسال",
   "RealtimeAPIModeVoice": "نوع الصوت",
-  "AudioMode": "وضع الصوت (تجريبي)",
+  "AudioMode": "وضع الصوت",
   "InputText": "النص",
   "InputAudio": "الصوت",
   "SearchGrounding": "استخدام البحث الأرضي",
@@ -237,5 +237,9 @@
     "relaxedMotionGroup": "مسترخي"
   },
   "UseVideoAsBackground": "استخدام الشاشة المشتركة أو كاميرا الويب كخلفية",
-  "Temperature": "درجة الحرارة"
+  "Temperature": "درجة الحرارة",
+  "MaxTokens": "أقصى عدد من الرموز",
+  "MaxTokensInfo": "يختلف أقصى عدد من الرموز حسب نموذج الذكاء الاصطناعي المستخدم. يرجى التحقق من مواصفات كل نموذج.",
+  "CannotUseParameters": "إذا كان وضع API في الوقت الحقيقي أو وضع الصوت مفعلًا، فلا يمكن تحديد معلمات Temperature و Max Tokens.",
+  "DocumentationDescription": "يمكنك الاطلاع على كيفية استخدام AITuberKit والدروس التعليمية التفصيلية من خلال الرابط أدناه."
 }
