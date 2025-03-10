@@ -40,21 +40,21 @@
    <a href="./docs/README_ko.md">韓語</a>
 </h3>
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
-
 ## 概要
 
 AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。AIキャラクターとの対話機能とAITuber配信機能を中心に、様々な拡張機能を備えています。
 
 詳細な使用方法や設定方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
 ## 主な機能
 
 ### 1. AIキャラとの対話
 
-- 各種LLMのAPIキーを使って、AIキャラクターと簡単に会話できます
+- 各種LLMのAPIキーを使って、AIキャラクターと簡単に会話可能
 - マルチモーダル対応で、カメラからの映像やアップロードした画像を認識して回答を生成
 - 直近の会話文を記憶として保持
 
@@ -68,8 +68,9 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 - **外部連携モード**: WebSocketでサーバーアプリと連携し、より高度な機能を実現
 - **スライドモード**: AIキャラクターがスライドを自動で発表するモード
-- **Realtime APIモード**: OpenAIのRealtime APIを使用した低遅延対話と関数実行
+- **Realtime API**: OpenAIのRealtime APIを使用した低遅延対話と関数実行
 - **オーディオモード**: OpenAIのAudio API機能を活用した自然な音声対話
+- **メッセージ受信機能**: 専用APIを通じて外部から指示を受け付け、AIキャラクターに発言させることが可能
 
 ## 対応モデル・サービス
 
@@ -104,20 +105,6 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - OpenAI
 - Azure OpenAI
 - にじボイス
-
-## ⚠️ セキュリティに関する重要な注意事項
-
-このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
-
-- **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
-
-### 本番環境での利用について
-
-本番環境で利用する場合は、以下のいずれかの対応を推奨します：
-
-1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
-2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
-3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
 
 ## クイックスタート
 
@@ -162,10 +149,24 @@ cp .env.example .env
 
 詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
+## ⚠️ セキュリティに関する重要な注意事項
+
+このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
+
+- **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
+
+### 本番環境での利用について
+
+本番環境で利用する場合は、以下のいずれかの対応を推奨します：
+
+1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
+2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
+3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
+
 ## スポンサー募集
 
 開発を継続するためにスポンサーの方を募集しています。<br>
-あなたの支援は、AITuberキットの開発と改善に大きく貢献します。
+あなたの支援は、AITuberKitの開発と改善に大きく貢献します。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
 
@@ -258,6 +259,11 @@ cp .env.example .env
   - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
   - 詳細は、[ライセンスについて](./docs/license.md)をご確認ください。
 
+### その他
+
+- [ロゴの利用規約](./docs/logo_licence.md)
+- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)
+
 ## 優先実装について
 
 本プロジェクトでは、有償での機能優先実装を受け付けています。
@@ -268,8 +274,3 @@ cp .env.example .env
 - この優先実装は商用ライセンスとは別の取り組みです。実装された機能を商用利用する場合は、別途商用ライセンスの取得が必要です。
 
 詳細については、support@aituberkit.com までお問い合わせください。
-
-### その他
-
-- [ロゴの利用規約](./docs/logo_licence.md)
-- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)
