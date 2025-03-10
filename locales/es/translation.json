@@ -8,7 +8,7 @@
   "SlideSettings": "■ Configuración de diapositivas",
   "LogSettings": "■ Historial de conversaciones",
   "OtherSettings": "■ Otros",
-  "ExternalLinkageMode": "Modo de enlace externo (versión beta)",
+  "ExternalLinkageMode": "Modo de vinculación externa (versión beta)",
   "YoutubeMode": "Modo YouTube",
   "YoutubeInfo": "El primer carácter del comentario es '#' y será ignorado.",
   "YoutubeAPIKey": "Clave API de YouTube",
@@ -240,5 +240,5 @@
   "Temperature": "Temperatura",
   "MaxTokens": "Número máximo de tokens",
   "MaxTokensInfo": "El número máximo de tokens varía según el modelo de IA que esté utilizando. Consulte las especificaciones de cada modelo.",
-  "CannotUseParameters": "Si el modo API en tiempo real o el modo de audio están habilitados, no se pueden especificar los parámetros de Temperature y Max Tokens."
+  "CannotUseParameters": "Si el modo API en tiempo real o el modo de audio están habilitados, no se pueden especificar los parámetros Temperature y Max Tokens."
 }
