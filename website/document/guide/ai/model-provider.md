@@ -138,7 +138,7 @@ APIキーは[Cohereダッシュボード](https://dashboard.cohere.com/api-keys)
 
 ```bash
 # Mistral AI API キー
-MISTRAL_API_KEY=...
+MISTRALAI_API_KEY=...
 ```
 
 **対応モデル**:

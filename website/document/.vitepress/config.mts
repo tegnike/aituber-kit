@@ -63,6 +63,10 @@ export default defineConfig({
             link: '/guide/slide-settings',
           },
           {
+            text: '会話履歴',
+            link: '/guide/conversation-history',
+          },
+          {
             text: 'その他',
             link: '/guide/other/advanced-settings',
             items: [

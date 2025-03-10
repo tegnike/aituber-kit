@@ -1,5 +1,7 @@
 # 基本設定
 
+## 概要
+
 AITuberKitの基本設定について説明します。環境変数による設定方法については[環境変数一覧](/guide/environment-variables)をご覧ください。
 
 ## 言語設定
@@ -50,3 +52,42 @@ NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/bg-c.png
 また、永続化する場合は、設定したい画像を`public/bg-c.png`という名称で保存してください。
 
 環境変数でファイル名を指定することも可能です。
+
+## 回答欄を表示する
+
+会話履歴が表示されていないときに、AIの回答テキストを画面上に表示するかどうかを設定できます。
+
+**環境変数**:
+
+```bash
+# 回答欄の表示設定（true/false）
+NEXT_PUBLIC_SHOW_ASSISTANT_TEXT=true
+```
+
+![回答欄を表示する](/images/basic_3efh5.png)
+
+## 回答欄にキャラクター名を表示する
+
+回答欄にキャラクター名を表示するかどうかを設定できます。
+
+**環境変数**:
+
+```bash
+# キャラクター名表示設定（true/false）
+NEXT_PUBLIC_SHOW_CHARACTER_NAME=true
+```
+
+## 操作パネル表示
+
+画面右上に操作パネルを表示するかどうかを設定できます。
+
+:::tip ヒント
+設定画面は Mac では `Cmd + .`、Windows では `Ctrl + .` のショートカットでも表示できます。
+:::
+
+**環境変数**:
+
+```bash
+# 操作パネル表示設定（true/false）
+NEXT_PUBLIC_SHOW_CONTROL_PANEL=true
+```

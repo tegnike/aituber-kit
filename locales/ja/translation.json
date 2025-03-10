@@ -98,7 +98,7 @@
   "StyleBeatVITS2SdpRatio": "SDP/DP混合比",
   "StyleBeatVITS2Length": "話速",
   "ConversationHistory": "会話履歴",
-  "ConversationHistoryInfo": "直近の10会話文が記憶として保持されます。",
+  "ConversationHistoryInfo": "直近の{{count}}会話文が記憶として保持されます。",
   "ConversationHistoryReset": "会話履歴リセット",
   "NotConnectedToExternalAssistant": "外部アシスタントと接続されていません。",
   "APIKeyNotEntered": "APIキーが入力されていません。",
