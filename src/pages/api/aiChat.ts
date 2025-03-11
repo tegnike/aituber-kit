@@ -54,11 +54,12 @@ export default async function handler(req: NextRequest) {
 
   let aiApiKey = apiKey
   if (!aiApiKey) {
-    const envKey =
-      `${aiService.toUpperCase()}_API_KEY` as keyof typeof process.env
-    const envApiKey = process.env[envKey]
-
-    aiApiKey = envApiKey
+    // 環境変数から[サービス名]_KEY または [サービス名]_API_KEY の形式でAPIキーを取得
+    const servicePrefix = aiService.toUpperCase()
+    aiApiKey =
+      process.env[`${servicePrefix}_KEY`] ||
+      process.env[`${servicePrefix}_API_KEY`] ||
+      ''
   }
 
   if (!aiApiKey) {
