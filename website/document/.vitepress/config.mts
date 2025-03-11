@@ -6,6 +6,17 @@ export default defineConfig({
   description:
     'A web application for chatting with AI characters that anyone can easily set up and deploy.',
 
+  head: [
+    [
+      'script',
+      {
+        defer: 'true',
+        src: 'https://static.cloudflareinsights.com/beacon.min.js',
+        'data-cf-beacon': '{"token": "856b36a915ed49478bd12c3fb8a5fbe4"}',
+      },
+    ],
+  ],
+
   // デッドリンクチェックを無効化
   ignoreDeadLinks: ['http://localhost:3000'],
 
