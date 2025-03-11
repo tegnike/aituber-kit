@@ -242,6 +242,12 @@ Your support greatly contributes to the development and improvement of AITuberKi
   <a href="https://github.com/micchi99" title="micchi99">
     <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
   </a>
+  <a href="https://github.com/nekomeowww" title="nekomeowww">
+    <img src="https://github.com/nekomeowww.png" width="40" height="40" alt="nekomeowww">
+  </a>
+  <a href="https://github.com/yfuku" title="yfuku">
+    <img src="https://github.com/yfuku.png" width="40" height="40" alt="yfuku">
+  </a>
 </p>
 
 Plus multiple private sponsors
