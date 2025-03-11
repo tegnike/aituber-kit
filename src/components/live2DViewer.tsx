@@ -83,25 +83,7 @@ export default function Live2DViewer() {
           }
         }}
       />
-      {isCubismCoreLoaded && (
-        <Script
-          key={`live2d-${scriptLoadRetries.live2d}`}
-          src="/scripts/live2d.min.js"
-          onLoad={() => {
-            console.log('live2d loaded')
-            setIsLive2dLoaded(true)
-          }}
-          onError={() => {
-            console.error('Failed to load live2d')
-            if (retryLoadScript('live2d')) {
-              console.log('Retrying live2d load...')
-            } else {
-              console.error('Max retries reached for live2d')
-            }
-          }}
-        />
-      )}
-      {isCubismCoreLoaded && isLive2dLoaded && <Live2DComponent />}
+      {isCubismCoreLoaded && <Live2DComponent />}
     </div>
   )
 }

@@ -8,7 +8,7 @@ import {
   AudioBufferManager,
 } from '@/utils/audioBufferManager'
 import { messageSelectors } from '../messages/messageSelectors'
-import { ChatCompletionMessageParam } from 'openai/resources'
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 import { AudioModeModel } from '../constants/settings'
 
 export async function getOpenAIAudioChatResponseStream(
