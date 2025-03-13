@@ -248,6 +248,9 @@ Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
   <a href="https://github.com/yfuku" title="yfuku">
     <img src="https://github.com/yfuku.png" width="40" height="40" alt="yfuku">
   </a>
+  <a href="https://x.com/8484ff_42" title="8484ff_42">
+    <img src="https://pbs.twimg.com/profile_images/1869378029786656768/m_K1Cjqx_normal.jpg" width="40" height="40" alt="8484ff_42">
+  </a>
 </p>
 
 Plus kilku prywatnych sponsorów
