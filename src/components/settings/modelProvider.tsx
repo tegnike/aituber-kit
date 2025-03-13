@@ -5,6 +5,8 @@ import slideStore from '@/features/stores/slide'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
+import Image from 'next/image'
+import { Listbox } from '@headlessui/react'
 import {
   multiModalAIServices,
   googleSearchGroundingModels,
@@ -18,6 +20,40 @@ import {
 } from '@/features/constants/settings'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
+
+// AIサービスロゴのパスを定義
+const aiServiceLogos = {
+  openai: '/images/ai-logos/openai.svg',
+  anthropic: '/images/ai-logos/anthropic.svg',
+  google: '/images/ai-logos/google.svg',
+  azure: '/images/ai-logos/azure.svg',
+  groq: '/images/ai-logos/groq.svg',
+  cohere: '/images/ai-logos/cohere.svg',
+  mistralai: '/images/ai-logos/mistralai.svg',
+  perplexity: '/images/ai-logos/perplexity.svg',
+  fireworks: '/images/ai-logos/fireworks.svg',
+  deepseek: '/images/ai-logos/deepseek.svg',
+  localLlm: '/images/ai-logos/local.svg',
+  dify: '/images/ai-logos/dify.svg',
+}
+
+// ロゴを表示するコンポーネント
+const ServiceLogo = ({ service }: { service: keyof typeof aiServiceLogos }) => {
+  return (
+    <div
+      className="inline-flex items-center justify-center mr-8"
+      style={{ width: '32px', height: '32px' }}
+    >
+      <Image
+        src={aiServiceLogos[service]}
+        alt={`${service} logo`}
+        width={24}
+        height={24}
+        style={{ objectFit: 'contain' }}
+      />
+    </div>
+  )
+}
 
 const ModelProvider = () => {
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
@@ -54,6 +90,22 @@ const ModelProvider = () => {
   const difyUrl = settingsStore((s) => s.difyUrl)
 
   const { t } = useTranslation()
+
+  // AIサービスの選択肢を定義
+  const aiServiceOptions = [
+    { value: 'openai', label: 'OpenAI' },
+    { value: 'anthropic', label: 'Anthropic' },
+    { value: 'google', label: 'Google Gemini' },
+    { value: 'azure', label: 'Azure OpenAI' },
+    { value: 'groq', label: 'Groq' },
+    { value: 'cohere', label: 'Cohere' },
+    { value: 'mistralai', label: 'Mistral AI' },
+    { value: 'perplexity', label: 'Perplexity' },
+    { value: 'fireworks', label: 'Fireworks' },
+    { value: 'deepseek', label: 'DeepSeek' },
+    { value: 'localLlm', label: t('LocalLLM') },
+    { value: 'dify', label: 'Dify' },
+  ]
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
   // ローカルLLMが選択された場合、AIモデルを空文字に設定
@@ -143,32 +195,58 @@ const ModelProvider = () => {
     }
   }, [t])
 
+  // 現在選択されているAIサービスのオプションを取得
+  const selectedServiceOption = aiServiceOptions.find(
+    (option) => option.value === selectAIService
+  )
+
   return externalLinkageMode ? null : (
     <div className="mt-24">
       <div className="my-16 typography-20 font-bold">
         {t('SelectAIService')}
       </div>
       <div className="my-8">
-        <select
-          className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+        <Listbox
           value={selectAIService}
-          onChange={(e) =>
-            handleAIServiceChange(e.target.value as keyof typeof defaultModels)
+          onChange={(value) =>
+            handleAIServiceChange(value as keyof typeof defaultModels)
           }
         >
-          <option value="openai">OpenAI</option>
-          <option value="anthropic">Anthropic</option>
-          <option value="google">Google Gemini</option>
-          <option value="azure">Azure OpenAI</option>
-          <option value="groq">Groq</option>
-          <option value="cohere">Cohere</option>
-          <option value="mistralai">Mistral AI</option>
-          <option value="perplexity">Perplexity</option>
-          <option value="fireworks">Fireworks</option>
-          <option value="deepseek">DeepSeek</option>
-          <option value="localLlm">{t('LocalLLM')}</option>
-          <option value="dify">Dify</option>
-        </select>
+          <div className="relative inline-block min-w-[240px]">
+            <Listbox.Button className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8 flex items-center cursor-pointer">
+              <ServiceLogo
+                service={selectAIService as keyof typeof aiServiceLogos}
+              />
+              <span>{selectedServiceOption?.label}</span>
+            </Listbox.Button>
+            <Listbox.Options className="absolute z-10 top-[-170px] w-auto min-w-full overflow-auto rounded-8 bg-surface1 py-4 shadow-lg focus:outline-none">
+              {aiServiceOptions.map((option) => (
+                <Listbox.Option
+                  key={option.value}
+                  value={option.value}
+                  className={({ active }) =>
+                    `relative cursor-pointer select-none py-8 px-16 whitespace-nowrap ${
+                      active ? 'bg-surface1-hover' : ''
+                    }`
+                  }
+                >
+                  {({ selected }) => (
+                    <div className="flex items-center">
+                      <ServiceLogo
+                        service={option.value as keyof typeof aiServiceLogos}
+                      />
+                      <span
+                        className={selected ? 'font-medium' : 'font-normal'}
+                      >
+                        {option.label}
+                      </span>
+                    </div>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </div>
+        </Listbox>
       </div>
       {(() => {
         if (selectAIService === 'openai') {
@@ -565,10 +643,12 @@ const ModelProvider = () => {
                 </div>
                 <div className="my-16">
                   Chat API ex.
-                  https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION
+                  https://RESOURCE_NAME.openai.azure.com/openai/deployments/
+                  DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION
                   <br />
                   Realtime API ex.
-                  wss://RESOURCE_NAME.openai.azure.com/openai/realtime?api-version=API_VERSION&deployment=DEPLOYMENT_NAME
+                  wss://RESOURCE_NAME.openai.azure.com/openai/realtime?
+                  api-version=API_VERSION&deployment=DEPLOYMENT_NAME
                 </div>
                 <input
                   className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
