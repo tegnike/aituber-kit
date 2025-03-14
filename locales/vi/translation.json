@@ -171,7 +171,8 @@
     "LocalLLMStreamError": "Lỗi stream LLM địa phương",
     "LocalLLMConnectionError": "Lỗi kết nối máy chủ LLM địa phương",
     "LocalLLMNotFound": "Không tìm thấy endpoint LLM địa phương",
-    "LocalLLMAPIError": "Lỗi API LLM địa phương"
+    "LocalLLMAPIError": "Lỗi API LLM địa phương",
+    "EmptyLocalLLMURL": "URL LLM cục bộ chưa được thiết lập"
   },
   "MessageReceiver": "Nhận lệnh từ bên ngoài",
   "MessageReceiverDescription": "Bạn có thể dùng API chỉ đạo nhân vật AI nói từ bên ngoài.",

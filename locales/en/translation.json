@@ -173,7 +173,8 @@
     "LocalLLMStreamError": "Local LLM stream error",
     "LocalLLMConnectionError": "Local LLM server connection error",
     "LocalLLMNotFound": "Local LLM endpoint not found",
-    "LocalLLMAPIError": "Local LLM API error"
+    "LocalLLMAPIError": "Local LLM API error",
+    "EmptyLocalLLMURL": "The local LLM URL is not set"
   },
   "MessageReceiver": "Receive instructions from outside",
   "MessageReceiverDescription": "You can use API to instruct AI characters to speak from outside.",

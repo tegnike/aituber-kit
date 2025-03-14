@@ -173,7 +173,8 @@
     "LocalLLMStreamError": "Local LLM 的串流處理發生錯誤",
     "LocalLLMConnectionError": "Local LLM 伺服器無法連線",
     "LocalLLMNotFound": "Local LLM 的端點無法找到",
-    "LocalLLMAPIError": "Local LLM API 發生錯誤"
+    "LocalLLMAPIError": "Local LLM API 發生錯誤",
+    "EmptyLocalLLMURL": "本地LLM的URL未设置"
   },
   "MessageReceiver": "接收外部指示",
   "MessageReceiverDescription": "你可以使用 API 來指示 AI 角色從外部說話。",

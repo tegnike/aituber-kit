@@ -171,7 +171,8 @@
     "LocalLLMStreamError": "خطأ في تدفق LLM المحلي",
     "LocalLLMConnectionError": "خطأ في الاتصال بخادم LLM المحلي",
     "LocalLLMNotFound": "لم يتم العثور على نقطة نهاية LLM المحلي",
-    "LocalLLMAPIError": "خطأ في API LLM المحلي"
+    "LocalLLMAPIError": "خطأ في API LLM المحلي",
+    "EmptyLocalLLMURL": "لم يتم تعيين عنوان URL لـ LLM المحلي"
   },
   "MessageReceiver": "تلقي التعليمات من الخارج",
   "MessageReceiverDescription": "يمكنك استخدام API لتوجيه شخصيات الذكاء الاصطناعي للتحدث من الخارج.",
