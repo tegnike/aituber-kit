@@ -49,6 +49,7 @@
     "pdfjs-dist": "^4.5.136",
     "pixi-live2d-display-lipsyncpatch": "^0.5.0-ls-7",
     "pixi.js": "^7.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^13.3.1",

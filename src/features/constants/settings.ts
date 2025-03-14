@@ -120,10 +120,11 @@ export type VoiceLanguage =
 export type OpenAITTSVoice =
   | 'alloy'
   | 'echo'
-  | 'fable'
-  | 'onyx'
-  | 'nova'
-  | 'shimmer'
+  | 'ash'
+  | 'ballad'
+  | 'coral'
+  | 'sage'
+  | 'verse'
 export type OpenAITTSModel = 'tts-1' | 'tts-1-hd'
 
 export type RealtimeAPIModeModel =
