@@ -33,13 +33,13 @@ export const IconButton = ({
         ></pixiv-icon>
       ) : iconName === 'screen-share' ? (
         <Image
-          src="/icons/screen-share.svg"
+          src="/images/icons/screen-share.svg"
           alt="screen share"
           width={24}
           height={24}
         />
       ) : iconName === 'stop' ? (
-        <Image src="/icons/stop.svg" alt="stop" width={24} height={24} />
+        <Image src="/images/icons/stop.svg" alt="stop" width={24} height={24} />
       ) : (
         <pixiv-icon name={String(iconName)} scale="1"></pixiv-icon>
       )}

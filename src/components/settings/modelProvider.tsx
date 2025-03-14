@@ -33,7 +33,8 @@ const aiServiceLogos = {
   perplexity: '/images/ai-logos/perplexity.svg',
   fireworks: '/images/ai-logos/fireworks.svg',
   deepseek: '/images/ai-logos/deepseek.svg',
-  localLlm: '/images/ai-logos/local.svg',
+  lmstudio: '/images/ai-logos/lmstudio.svg',
+  ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',
 }
 
@@ -85,7 +86,6 @@ const ModelProvider = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const localLlmUrl = settingsStore((s) => s.localLlmUrl)
-  const systemPrompt = settingsStore((s) => s.systemPrompt)
 
   const difyUrl = settingsStore((s) => s.difyUrl)
 
@@ -103,7 +103,8 @@ const ModelProvider = () => {
     { value: 'perplexity', label: 'Perplexity' },
     { value: 'fireworks', label: 'Fireworks' },
     { value: 'deepseek', label: 'DeepSeek' },
-    { value: 'localLlm', label: t('LocalLLM') },
+    { value: 'lmstudio', label: 'LM Studio' },
+    { value: 'ollama', label: 'Ollama' },
     { value: 'dify', label: 'Dify' },
   ]
 
@@ -119,9 +120,10 @@ const ModelProvider = () => {
     mistralai: 'mistral-large-latest',
     perplexity: 'llama-3-sonar-large-32k-online',
     fireworks: 'accounts/fireworks/models/firefunction-v2',
-    localLlm: '',
-    dify: '',
     deepseek: 'deepseek-chat',
+    lmstudio: '',
+    ollama: '',
+    dify: '',
   }
 
   const handleAIServiceChange = useCallback(
@@ -1000,28 +1002,29 @@ const ModelProvider = () => {
               </div>
             </>
           )
-        } else if (selectAIService === 'localLlm') {
+        } else if (
+          selectAIService === 'lmstudio' ||
+          selectAIService === 'ollama'
+        ) {
           return (
             <>
               <div className="my-24">
-                <div className="my-16">
-                  {t('LocalLLMInfo')}
-                  <br />
-                  ex. Ollama:{' '}
-                  <Link
-                    url="https://note.com/schroneko/n/n8b1a5bbc740b"
-                    label="https://note.com/schroneko/n/n8b1a5bbc740b"
-                  />
+                <div className="my-16">{t('LocalLLMInfo')}</div>
+                <div className="my-16 typography-20 font-bold">
+                  {t('EnterURL')}
                 </div>
                 <div className="my-16">
                   {t('LocalLLMInfo2')}
                   <br />
-                  ex. Ollama: http://localhost:11434/v1/chat/completions
-                  <br />
-                  ex. LM Studio: http://localhost:1234/v1/chat/completions
-                </div>
-                <div className="my-16 typography-20 font-bold">
-                  {t('EnterURL')}
+                  {selectAIService === 'ollama' && (
+                    <>
+                      ex. http://localhost:11434/api
+                      <br />
+                    </>
+                  )}
+                  {selectAIService === 'lmstudio' && (
+                    <>ex. http://localhost:1234/v1</>
+                  )}
                 </div>
                 <input
                   className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"

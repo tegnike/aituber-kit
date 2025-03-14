@@ -6,21 +6,19 @@ import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
 import { createAzure } from '@ai-sdk/azure'
 import { createDeepSeek } from '@ai-sdk/deepseek'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
+import { createOllama } from 'ollama-ai-provider'
 import { streamText, generateText, CoreMessage } from 'ai'
 import { NextRequest } from 'next/server'
+import {
+  VercelAIService,
+  VercelCloudAIService,
+  VercelLocalAIService,
+  isVercelCloudAIService,
+  isVercelLocalAIService,
+} from '@/features/constants/settings'
 
-type AIServiceKey =
-  | 'openai'
-  | 'anthropic'
-  | 'google'
-  | 'azure'
-  | 'groq'
-  | 'cohere'
-  | 'mistralai'
-  | 'perplexity'
-  | 'fireworks'
-  | 'deepseek'
-type AIServiceConfig = Record<AIServiceKey, () => any>
+type AIServiceConfig = Record<VercelAIService, () => any>
 
 export const config = {
   runtime: 'edge',
@@ -45,6 +43,7 @@ export default async function handler(req: NextRequest) {
     apiKey,
     aiService,
     model,
+    localLlmUrl,
     azureEndpoint,
     stream,
     useSearchGrounding,
@@ -53,23 +52,39 @@ export default async function handler(req: NextRequest) {
   } = await req.json()
 
   let aiApiKey = apiKey
-  if (!aiApiKey) {
-    // 環境変数から[サービス名]_KEY または [サービス名]_API_KEY の形式でAPIキーを取得
-    const servicePrefix = aiService.toUpperCase()
-    aiApiKey =
-      process.env[`${servicePrefix}_KEY`] ||
-      process.env[`${servicePrefix}_API_KEY`] ||
-      ''
+  if (isVercelCloudAIService(aiService)) {
+    if (!aiApiKey) {
+      // 環境変数から[サービス名]_KEY または [サービス名]_API_KEY の形式でAPIキーを取得
+      const servicePrefix = aiService.toUpperCase()
+      aiApiKey =
+        process.env[`${servicePrefix}_KEY`] ||
+        process.env[`${servicePrefix}_API_KEY`] ||
+        ''
+    }
+    if (!aiApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
   }
 
-  if (!aiApiKey) {
-    return new Response(
-      JSON.stringify({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+  if (isVercelLocalAIService(aiService)) {
+    if (!localLlmUrl) {
+      return new Response(
+        JSON.stringify({
+          error: 'Empty Local LLM URL',
+          errorCode: 'EmptyLocalLLMURL',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
   }
 
   let modifiedAzureEndpoint = (
@@ -83,7 +98,7 @@ export default async function handler(req: NextRequest) {
     )?.[1] || ''
   let modifiedModel = aiService === 'azure' ? modifiedAzureDeployment : model
 
-  if (!aiService || !modifiedModel) {
+  if (isVercelCloudAIService(aiService) && !modifiedModel) {
     return new Response(
       JSON.stringify({
         error: 'Invalid AI service or model',
@@ -120,8 +135,11 @@ export default async function handler(req: NextRequest) {
         apiKey: aiApiKey,
       }),
     deepseek: () => createDeepSeek({ apiKey: aiApiKey }),
+    lmstudio: () =>
+      createOpenAICompatible({ name: 'lmstudio', baseURL: localLlmUrl }),
+    ollama: () => createOllama({ baseURL: localLlmUrl }),
   }
-  const aiServiceInstance = aiServiceConfig[aiService as AIServiceKey]
+  const aiServiceInstance = aiServiceConfig[aiService as VercelAIService]
 
   if (!aiServiceInstance) {
     return new Response(

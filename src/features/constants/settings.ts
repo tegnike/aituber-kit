@@ -1,22 +1,56 @@
-export type AIService =
+export type VercelCloudAIService =
   | 'openai'
   | 'anthropic'
   | 'google'
-  | 'localLlm'
   | 'azure'
   | 'groq'
   | 'cohere'
   | 'mistralai'
   | 'perplexity'
   | 'fireworks'
-  | 'dify'
   | 'deepseek'
+
+export type VercelLocalAIService = 'lmstudio' | 'ollama'
+
+export type VercelAIService = VercelCloudAIService | VercelLocalAIService
+
+// VercelCloudAIServiceかどうかを判定する型ガード関数
+export const isVercelCloudAIService = (
+  service: string
+): service is VercelCloudAIService => {
+  const cloudServices: VercelCloudAIService[] = [
+    'openai',
+    'anthropic',
+    'google',
+    'azure',
+    'groq',
+    'cohere',
+    'mistralai',
+    'perplexity',
+    'fireworks',
+    'deepseek',
+  ]
+  return cloudServices.includes(service as VercelCloudAIService)
+}
+
+// VercelLocalAIServiceかどうかを判定する型ガード関数
+export const isVercelLocalAIService = (
+  service: string
+): service is VercelLocalAIService => {
+  const localServices: VercelLocalAIService[] = ['lmstudio', 'ollama']
+  return localServices.includes(service as VercelLocalAIService)
+}
+
+export type DifyService = 'dify'
+
+export type AIService = VercelAIService | DifyService
 
 export interface AIServiceConfig {
   openai: { key: string; model: string }
   anthropic: { key: string; model: string }
   google: { key: string; model: string }
-  localLlm: { url: string; model: string }
+  lmstudio: { url: string; model: string }
+  ollama: { url: string; model: string }
   azure: { key: string; model: string }
   groq: { key: string; model: string }
   cohere: { key: string; model: string }

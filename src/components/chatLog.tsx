@@ -71,7 +71,7 @@ const Chat = ({
   message: string
   characterName: string
 }) => {
-  const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'g')
+  const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'gi')
   const processedMessage = message.replace(emotionPattern, '')
 
   const roleColor =
