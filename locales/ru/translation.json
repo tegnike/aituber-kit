@@ -171,7 +171,8 @@
     "LocalLLMStreamError": "Ошибка потока локального LLM",
     "LocalLLMConnectionError": "Ошибка подключения к локальному LLM-серверу",
     "LocalLLMNotFound": "Конечная точка локального LLM не найдена",
-    "LocalLLMAPIError": "Ошибка API локального LLM"
+    "LocalLLMAPIError": "Ошибка API локального LLM",
+    "EmptyLocalLLMURL": "URL локального LLM не установлен"
   },
   "MessageReceiver": "Получение инструкций извне",
   "MessageReceiverDescription": "Вы можете использовать API для того, чтобы ИИ-персонажи говорили извне.",

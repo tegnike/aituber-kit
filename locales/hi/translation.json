@@ -171,7 +171,8 @@
     "LocalLLMStreamError": "स्थानीय LLM स्ट्रीम त्रुटि",
     "LocalLLMConnectionError": "स्थानीय LLM सर्वर से कनेक्शन त्रुटि",
     "LocalLLMNotFound": "स्थानीय LLM एंडपॉइंट नहीं मिला",
-    "LocalLLMAPIError": "स्थानीय LLM API त्रुटि"
+    "LocalLLMAPIError": "स्थानीय LLM API त्रुटि",
+    "EmptyLocalLLMURL": "स्थानीय LLM का URL सेट नहीं किया गया है"
   },
   "MessageReceiver": "बाहर से निर्देश प्राप्त करना",
   "MessageReceiverDescription": "आप बाहर से AI कैरेक्टर को बोलने के लिए निर्देशित करने के लिए API का उपयोग कर सकते हैं।",

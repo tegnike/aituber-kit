@@ -172,7 +172,8 @@
     "LocalLLMStreamError": "Wystąpił błąd podczas przetwarzania strumienia lokalnego LLM",
     "LocalLLMConnectionError": "Nie można połączyć się z serwerem lokalnego LLM",
     "LocalLLMNotFound": "Nie znaleziono punktu końcowego lokalnego LLM",
-    "LocalLLMAPIError": "Wystąpił błąd w API lokalnego LLM"
+    "LocalLLMAPIError": "Wystąpił błąd w API lokalnego LLM",
+    "EmptyLocalLLMURL": "URL lokalnego LLM nie jest ustawiony"
   },
   "MessageReceiver": "Przyjmowanie poleceń z zewnątrz",
   "MessageReceiverDescription": "Za pomocą API można sterować wypowiedziami postaci AI z zewnątrz.",

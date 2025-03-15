@@ -171,7 +171,8 @@
     "LocalLLMStreamError": "Error de stream de LLM local",
     "LocalLLMConnectionError": "Error de conexión al servidor LLM local",
     "LocalLLMNotFound": "Endpoint de LLM local no encontrado",
-    "LocalLLMAPIError": "Error de API de LLM local"
+    "LocalLLMAPIError": "Error de API de LLM local",
+    "EmptyLocalLLMURL": "No se ha configurado la URL del LLM local"
   },
   "MessageReceiver": "Recibir instrucciones desde el exterior",
   "MessageReceiverDescription": "Puede usar la API para hacer que los personajes de IA hablen desde el exterior.",

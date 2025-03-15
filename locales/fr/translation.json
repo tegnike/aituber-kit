@@ -171,7 +171,8 @@
     "LocalLLMStreamError": "Erreur de flux LLM local",
     "LocalLLMConnectionError": "Erreur de connexion au serveur LLM local",
     "LocalLLMNotFound": "Point de terminaison LLM local non trouvé",
-    "LocalLLMAPIError": "Erreur API LLM locale"
+    "LocalLLMAPIError": "Erreur API LLM locale",
+    "EmptyLocalLLMURL": "L'URL du LLM local n'est pas configuré"
   },
   "MessageReceiver": "Recevoir des instructions de l'extérieur",
   "MessageReceiverDescription": "Vous pouvez utiliser l'API pour faire parler les personnages IA depuis l'extérieur.",

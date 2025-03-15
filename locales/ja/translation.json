@@ -166,6 +166,7 @@
   "NoSpeechTimeoutInfo": "音声入力時に無音状態が続いた場合、自動的に入力を終了するまでの時間を設定します。\n0秒に設定すると、無音検出による自動送信を無効にします。",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
+    "EmptyLocalLLMURL": "ローカルLLMのURLが設定されていません",
     "AIInvalidProperty": "AIサービスの設定値が正しくありません",
     "AIAPIError": "AI API実行時にエラーが発生しました",
     "InvalidAIService": "選択しているAIサービスが正しくありません",

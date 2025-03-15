@@ -146,24 +146,22 @@ const Live2DSettingsForm = () => {
   }
 
   return (
-    <div className="space-y-32">
-      <div className="mb-24">
-        <div className="mb-16 typography-20 font-bold">
-          {t('Live2D.Emotions')}
-        </div>
-        <div className="mb-24 typography-16 text-gray-500 whitespace-pre-line">
+    <div className="space-y-8">
+      <div className="mb-6">
+        <div className="mb-4 text-xl font-bold">{t('Live2D.Emotions')}</div>
+        <div className="mb-6 text-base whitespace-pre-line">
           {t('Live2D.EmotionInfo')}
         </div>
-        <div className="space-y-16">
+        <div className="space-y-4 text-sm">
           {emotionFields.map((field) => (
             <div key={field.key}>
-              <label className="block mb-8 typography-16 font-bold text-gray-800">
+              <label className="block mb-2 text-base font-bold">
                 {t(`Live2D.${field.key}`)}
               </label>
               <div className="relative">
                 <button
                   type="button"
-                  className="w-full px-16 py-4 py-12 bg-surface1 hover:bg-surface1-hover rounded-8 text-left flex items-center justify-between"
+                  className="w-full px-2 py-2 bg-white hover:bg-white-hover rounded-lg text-left flex items-center justify-between"
                   onClick={() =>
                     setOpenDropdown(
                       openDropdown === field.key ? null : field.key
@@ -175,7 +173,7 @@ const Live2DSettingsForm = () => {
                       store[field.key].map((expression) => (
                         <span
                           key={expression}
-                          className="inline-flex items-center px-8 py-4 bg-primary/10 rounded-4 mr-4"
+                          className="inline-flex items-center px-2 py-1 bg-primary/10 rounded-lg mr-1"
                         >
                           {expression}
                           <button
@@ -187,7 +185,7 @@ const Live2DSettingsForm = () => {
                             }}
                           >
                             <svg
-                              className="h-8 w-8"
+                              className="h-4 w-4"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -203,13 +201,11 @@ const Live2DSettingsForm = () => {
                         </span>
                       ))
                     ) : (
-                      <span className="text-gray-400">
-                        {t('Live2D.SelectEmotions')}
-                      </span>
+                      <span className="">{t('Live2D.SelectEmotions')}</span>
                     )}
                   </div>
                   <svg
-                    className={`h-8 w-8 text-gray-400 transition-transform ${
+                    className={`h-4 w-4  transition-transform ${
                       openDropdown === field.key ? 'rotate-180' : ''
                     }`}
                     viewBox="0 0 16 16"
@@ -225,15 +221,15 @@ const Live2DSettingsForm = () => {
                   </svg>
                 </button>
                 {openDropdown === field.key && (
-                  <div className="absolute z-10 w-full mt-4 max-h-[200px] overflow-y-auto bg-white rounded-8 shadow-lg border-gray-200 divide-y divide-gray-200">
+                  <div className="absolute z-10 w-full mt-4 max-h-[200px] overflow-y-auto bg-white rounded-lg shadow-lg border-gray-200 divide-y divide-gray-200">
                     {currentModel.expressions.map((expression) => (
                       <label
                         key={expression}
-                        className="flex items-center px-16 py-8 hover:bg-surface1-hover cursor-pointer"
+                        className="flex items-center px-4 py-2 hover:bg-white-hover cursor-pointer"
                       >
                         <input
                           type="checkbox"
-                          className="w-16 h-16 rounded border-gray-300 text-primary focus:ring-primary mr-8"
+                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary mr-2"
                           checked={store[field.key].includes(expression)}
                           onChange={(e) =>
                             handleEmotionChange(
@@ -243,7 +239,7 @@ const Live2DSettingsForm = () => {
                             )
                           }
                         />
-                        <span className="typography-16">{expression}</span>
+                        <span className="text-base">{expression}</span>
                       </label>
                     ))}
                   </div>
@@ -254,28 +250,26 @@ const Live2DSettingsForm = () => {
         </div>
       </div>
 
-      <div>
-        <div className="mb-16 typography-20 font-bold">
-          {t('Live2D.MotionGroups')}
-        </div>
-        <div className="mb-24 typography-16 text-gray-500 whitespace-pre-line">
+      <div className="">
+        <div className="mb-4 text-xl font-bold">{t('Live2D.MotionGroups')}</div>
+        <div className="mb-6 text-base text-gray-500 whitespace-pre-line">
           {t('Live2D.MotionGroupsInfo')}
         </div>
-        <div className="space-y-16">
+        <div className="space-y-4">
           {motionFields.map((field) => (
             <div key={field.key}>
-              <label className="block mb-8 typography-16 font-bold text-gray-800">
+              <label className="block mb-2 text-base font-bold">
                 {t(`Live2D.${field.key}`)}
               </label>
               <div className="relative">
                 <select
-                  className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8 appearance-none cursor-pointer"
+                  className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg appearance-none cursor-pointer"
                   value={store[field.key]}
                   onChange={(e) =>
                     handleMotionChange(field.key, e.target.value)
                   }
                 >
-                  <option value="" className="text-gray-400">
+                  <option value="" className="">
                     {t('Live2D.SelectMotionGroup')}
                   </option>
                   {currentModel.motions.map((motion) => (
@@ -290,7 +284,7 @@ const Live2DSettingsForm = () => {
                 </select>
                 <div className="absolute inset-y-0 right-16 flex items-center pointer-events-none">
                   <svg
-                    className="h-8 w-8 text-gray-400"
+                    className="h-4 w-4 "
                     viewBox="0 0 16 16"
                     fill="none"
                     stroke="currentColor"
@@ -367,11 +361,9 @@ const Character = () => {
   return (
     <>
       <div className="">
-        <div className="mb-16 typography-20 font-bold">
-          {t('CharacterName')}
-        </div>
+        <div className="mb-4 text-xl font-bold">{t('CharacterName')}</div>
         <input
-          className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
           type="text"
           placeholder={t('CharacterName')}
           value={characterName}
@@ -380,27 +372,27 @@ const Character = () => {
           }
         />
 
-        <div className="mt-24 mb-16 typography-20 font-bold">
+        <div className="mt-6 mb-4 text-xl font-bold">
           {t('CharacterModelLabel')}
         </div>
-        <div className="mb-16 typography-16">{t('CharacterModelInfo')}</div>
+        <div className="mb-4 text-base">{t('CharacterModelInfo')}</div>
 
-        <div className="flex gap-4 mb-8">
+        <div className="flex mb-2">
           <button
-            className={`px-16 py-8 rounded-8 mr-8 ${
+            className={`px-4 py-2 rounded-lg mr-2 ${
               modelType === 'vrm'
                 ? 'bg-primary text-white'
-                : 'bg-surface1 hover:bg-surface1-hover'
+                : 'bg-white hover:bg-white-hover'
             }`}
             onClick={() => settingsStore.setState({ modelType: 'vrm' })}
           >
             VRM
           </button>
           <button
-            className={`px-16 py-8 rounded-8 ${
+            className={`px-4 py-2 rounded-lg ${
               modelType === 'live2d'
                 ? 'bg-primary text-white'
-                : 'bg-surface1 hover:bg-surface1-hover'
+                : 'bg-white hover:bg-white-hover'
             }`}
             onClick={() => settingsStore.setState({ modelType: 'live2d' })}
           >
@@ -411,7 +403,7 @@ const Character = () => {
         {modelType === 'vrm' ? (
           <>
             <select
-              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={selectedVrmPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -427,7 +419,7 @@ const Character = () => {
               ))}
             </select>
 
-            <div className="my-16">
+            <div className="my-4">
               <TextButton
                 onClick={() => {
                   const { fileInput } = menuStore.getState()
@@ -449,11 +441,11 @@ const Character = () => {
           </>
         ) : (
           <>
-            <div className="my-16 whitespace-pre-line">
+            <div className="my-4 whitespace-pre-line">
               {t('Live2D.FileInfo')}
             </div>
             <select
-              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8 mb-8"
+              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
               value={selectedLive2DPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -466,20 +458,20 @@ const Character = () => {
                 </option>
               ))}
             </select>
-            <div className="my-16">
+            <div className="my-4">
               <Live2DSettingsForm />
             </div>
           </>
         )}
 
-        <div className="my-24 mb-8">
-          <div className="my-16 typography-20 font-bold">
+        <div className="my-6 mb-2">
+          <div className="my-4 text-xl font-bold">
             {t('CharacterSettingsPrompt')}
           </div>
           {selectAIService === 'dify' ? (
-            <div className="my-16">{t('DifyInstruction')}</div>
+            <div className="my-4">{t('DifyInstruction')}</div>
           ) : (
-            <div className="my-16 whitespace-pre-line">
+            <div className="my-4 whitespace-pre-line">
               {t('CharacterSettingsInfo')}
             </div>
           )}
@@ -496,7 +488,7 @@ const Character = () => {
           onChange={(e) =>
             settingsStore.setState({ systemPrompt: e.target.value })
           }
-          className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
+          className="px-4 py-2 bg-white hover:bg-white-hover h-40 rounded-lg w-full"
         ></textarea>
       </div>
     </>

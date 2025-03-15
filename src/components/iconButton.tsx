@@ -21,7 +21,7 @@ export const IconButton = ({
   return (
     <button
       {...rest}
-      className={`bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled rounded-16 text-sm p-8 text-center inline-flex items-center mr-2
+      className={`bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled rounded-2xl text-sm p-2 text-center inline-flex items-center
         ${iconColor || 'text-white'}
         ${rest.className}
       `}
@@ -33,17 +33,17 @@ export const IconButton = ({
         ></pixiv-icon>
       ) : iconName === 'screen-share' ? (
         <Image
-          src="/icons/screen-share.svg"
+          src="/images/icons/screen-share.svg"
           alt="screen share"
           width={24}
           height={24}
         />
       ) : iconName === 'stop' ? (
-        <Image src="/icons/stop.svg" alt="stop" width={24} height={24} />
+        <Image src="/images/icons/stop.svg" alt="stop" width={24} height={24} />
       ) : (
         <pixiv-icon name={String(iconName)} scale="1"></pixiv-icon>
       )}
-      {label && <div className="mx-4 font-bold">{label}</div>}
+      {label && <div className="mx-2 font-bold">{label}</div>}
     </button>
   )
 }

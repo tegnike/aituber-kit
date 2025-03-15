@@ -130,7 +130,7 @@ export const Webcam = () => {
         />
       )}
       <div className="absolute row-span-1 flex right-0 max-h-[40vh] z-10">
-        <div className="relative w-full md:max-w-[512px] max-w-[70%] m-16 md:m-16 ml-auto">
+        <div className="relative w-full md:max-w-[512px] max-w-[70%] m-4 md:m-4 ml-auto">
           <video
             ref={videoRef}
             width={512}
@@ -139,21 +139,21 @@ export const Webcam = () => {
             autoPlay
             playsInline
             muted
-            className={`rounded-8 w-auto object-contain max-h-[100%] ml-auto ${
+            className={`rounded-lg w-auto object-contain max-h-[100%] ml-auto ${
               useVideoAsBackground ? 'invisible' : ''
             }`}
           />
-          <div className="md:block absolute top-4 right-4">
+          <div className="md:block absolute top-2 right-2">
             <IconButton
               iconName="24/Roll"
-              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-2"
               isProcessing={false}
               disabled={!showRotateButton}
               onClick={handleRotateCamera}
             />
             <IconButton
               iconName="24/Shutter"
-              className="z-30 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
+              className="z-30 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-2"
               isProcessing={false}
               onClick={handleCapture}
             />

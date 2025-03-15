@@ -171,7 +171,8 @@
     "LocalLLMStreamError": "Lokaler LLM-Stream-Fehler",
     "LocalLLMConnectionError": "Verbindungsfehler zum lokalen LLM-Server",
     "LocalLLMNotFound": "Lokaler LLM-Endpunkt nicht gefunden",
-    "LocalLLMAPIError": "Lokaler LLM-API-Fehler"
+    "LocalLLMAPIError": "Lokaler LLM-API-Fehler",
+    "EmptyLocalLLMURL": "Die URL des lokalen LLM ist nicht festgelegt"
   },
   "MessageReceiver": "Anweisungen von außen empfangen",
   "MessageReceiverDescription": "Sie können die API verwenden, um KI-Charaktere von außen sprechen zu lassen.",

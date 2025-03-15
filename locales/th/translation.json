@@ -172,7 +172,8 @@
     "LocalLLMStreamError": "เกิดข้อผิดพลาดในการประมวลผลสตรีมของ LLM ภายในเครื่อง",
     "LocalLLMConnectionError": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ LLM ภายในเครื่อง",
     "LocalLLMNotFound": "ไม่พบปลายทางของ LLM ภายในเครื่อง",
-    "LocalLLMAPIError": "เกิดข้อผิดพลาดใน API ของ LLM ภายในเครื่อง"
+    "LocalLLMAPIError": "เกิดข้อผิดพลาดใน API ของ LLM ภายในเครื่อง",
+    "EmptyLocalLLMURL": "ไม่มีการตั้งค่า URL ของ LLM ท้องถิ่น"
   },
   "MessageReceiver": "รับคำสั่งจากภายนอก",
   "MessageReceiverDescription": "สามารถสั่งให้ตัวละคร AI พูดจากภายนอกผ่าน API ได้",

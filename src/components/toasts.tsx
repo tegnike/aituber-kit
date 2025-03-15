@@ -13,7 +13,7 @@ export const Toasts: React.FC = () => {
   }, [])
 
   return (
-    <div className="absolute top-4 right-4 z-15 font-bold m-24 w-[calc(100%-48px)] md:w-[350px]">
+    <div className="absolute top-4 right-4 z-15 font-bold m-6 w-[calc(100%-48px)] md:w-[350px]">
       {toasts.map((toast) => (
         <Toast
           key={toast.id}

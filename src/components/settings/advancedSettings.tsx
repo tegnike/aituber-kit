@@ -20,12 +20,10 @@ const AdvancedSettings = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="mb-40">
-      <div className="mb-24 grid-cols-2">
-        <div className="mb-16 typography-20 font-bold">
-          {t('LocalStorageReset')}
-        </div>
-        <div className="my-16 typography-16">{t('LocalStorageResetInfo')}</div>
+    <div className="mb-10">
+      <div className="mb-6 grid-cols-2">
+        <div className="mb-4 text-xl font-bold">{t('LocalStorageReset')}</div>
+        <div className="my-4 text-base">{t('LocalStorageResetInfo')}</div>
         <TextButton
           onClick={() => {
             settingsStore.persist.clearStorage()
@@ -35,11 +33,11 @@ const AdvancedSettings = () => {
           {t('LocalStorageResetButton')}
         </TextButton>
       </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">
           {t('UseVideoAsBackground')}
         </div>
-        <div className="my-8">
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState((s) => ({
@@ -52,11 +50,9 @@ const AdvancedSettings = () => {
         </div>
       </div>
       {selectLanguage === 'ja' && (
-        <div className="my-24">
-          <div className="my-16 typography-20 font-bold">
-            {t('EnglishToJapanese')}
-          </div>
-          <div className="my-8">
+        <div className="my-6">
+          <div className="my-4 text-xl font-bold">{t('EnglishToJapanese')}</div>
+          <div className="my-2">
             <TextButton
               onClick={() =>
                 settingsStore.setState((prevState) => ({
@@ -69,14 +65,14 @@ const AdvancedSettings = () => {
           </div>
         </div>
       )}
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">
           {t('IncludeTimestampInUserMessage')}
         </div>
-        <div className="my-16 typography-16 whitespace-pre-line">
+        <div className="my-4 text-base whitespace-pre-line">
           {t('IncludeTimestampInUserMessageInfo')}
         </div>
-        <div className="my-8">
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState({
@@ -88,14 +84,12 @@ const AdvancedSettings = () => {
           </TextButton>
         </div>
       </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('NoSpeechTimeout')}
-        </div>
-        <div className="my-16 typography-16 whitespace-pre-line">
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
+        <div className="my-4 text-base whitespace-pre-line">
           {t('NoSpeechTimeoutInfo')}
         </div>
-        <div className="mt-24 font-bold">
+        <div className="mt-6 font-bold">
           <div className="select-none">
             {t('NoSpeechTimeout')}: {noSpeechTimeout.toFixed(1)}秒
           </div>
@@ -110,7 +104,7 @@ const AdvancedSettings = () => {
                 noSpeechTimeout: parseFloat(e.target.value),
               })
             }
-            className="mt-8 mb-16 input-range"
+            className="mt-2 mb-4 input-range"
           />
         </div>
       </div>

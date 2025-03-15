@@ -62,9 +62,9 @@ const Slide = () => {
 
   return (
     <>
-      <div className="mb-16 typography-20 font-bold">{t('SlideMode')}</div>
+      <div className="mb-4 text-xl font-bold">{t('SlideMode')}</div>
       <p className="">{t('SlideModeDescription')}</p>
-      <div className="my-8">
+      <div className="my-2">
         <TextButton
           onClick={toggleSlideMode}
           disabled={
@@ -78,12 +78,12 @@ const Slide = () => {
       </div>
       {slideMode && (
         <>
-          <div className="mt-24 mb-16 typography-20 font-bold">
+          <div className="mt-6 mb-4 text-xl font-bold">
             {t('SelectedSlideDocs')}
           </div>
           <select
             id="folder-select"
-            className="px-16 py-16 bg-surface1 hover:bg-surface1-hover rounded-8 w-full md:w-1/2"
+            className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
             value={selectedSlideDocs}
             onChange={handleFolderChange}
             key={updateKey}
