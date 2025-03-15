@@ -130,6 +130,13 @@ interface Character {
   selectedLive2DPath: string
 }
 
+// Preset question type
+export interface PresetQuestion {
+  id: string
+  text: string
+  order: number
+}
+
 interface General {
   selectLanguage: Language
   changeEnglishToJapanese: boolean
@@ -151,6 +158,8 @@ interface General {
   temperature: number
   maxTokens: number
   noSpeechTimeout: number
+  presetQuestions: PresetQuestion[]
+  showPresetQuestions: boolean
 }
 
 interface ModelType {
@@ -322,6 +331,8 @@ const settingsStore = create<SettingsState>()(
       maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
+      presetQuestions: [],
+      showPresetQuestions: true,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -450,6 +461,8 @@ const settingsStore = create<SettingsState>()(
         temperature: state.temperature,
         maxTokens: state.maxTokens,
         noSpeechTimeout: state.noSpeechTimeout,
+        presetQuestions: state.presetQuestions,
+        showPresetQuestions: state.showPresetQuestions,
       }),
     }
   )

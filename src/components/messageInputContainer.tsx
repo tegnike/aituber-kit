@@ -559,6 +559,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     []
   )
 
+  const handleSetPresetQuestion = useCallback((text: string) => {
+    setUserMessage(text)
+  }, [])
+
   return (
     <MessageInput
       userMessage={userMessage}

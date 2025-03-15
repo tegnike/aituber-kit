@@ -12,8 +12,6 @@ import { streamText, generateText, CoreMessage } from 'ai'
 import { NextRequest } from 'next/server'
 import {
   VercelAIService,
-  VercelCloudAIService,
-  VercelLocalAIService,
   isVercelCloudAIService,
   isVercelLocalAIService,
 } from '@/features/constants/settings'
