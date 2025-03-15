@@ -242,5 +242,9 @@
   "MaxTokens": "Số lượng token tối đa",
   "MaxTokensInfo": "Số lượng token tối đa khác nhau tùy thuộc vào mô hình AI đang sử dụng. Vui lòng kiểm tra thông số kỹ thuật của từng mô hình.",
   "CannotUseParameters": "Nếu chế độ API thời gian thực hoặc chế độ âm thanh được kích hoạt, các tham số Temperature và Max Tokens không thể được chỉ định.",
-  "DocumentationDescription": "Vui lòng xem hướng dẫn chi tiết và tutorial của AITuberKit tại URL dưới đây."
+  "DocumentationDescription": "Vui lòng xem hướng dẫn chi tiết và tutorial của AITuberKit tại URL dưới đây.",
+  "PresetQuestions": "Cài đặt trước câu hỏi",
+  "PresetQuestionsInfo": "Bạn có thể tạo và đăng ký nhiều mẫu câu hỏi trước. Các câu hỏi đã đăng ký sẽ được hiển thị dưới dạng nút trên giao diện người dùng và khi nhấp vào sẽ được đặt vào ô nhập chat.",
+  "EnterPresetQuestion": "Vui lòng nhập câu hỏi",
+  "DragToReorder": "Kéo để thay đổi thứ tự"
 }

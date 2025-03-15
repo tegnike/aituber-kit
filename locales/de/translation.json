@@ -242,5 +242,9 @@
   "MaxTokens": "Maximale Tokenanzahl",
   "MaxTokensInfo": "Die maximale Tokenanzahl variiert je nach verwendetem KI-Modell. Bitte überprüfen Sie die Spezifikationen jedes Modells.",
   "CannotUseParameters": "Wenn der Echtzeit-API-Modus oder der Audiomodus aktiviert ist, können die Parameter Temperature und Max Tokens nicht angegeben werden.",
-  "DocumentationDescription": "Detaillierte Anleitungen und Tutorials zur Verwendung von AITuberKit finden Sie unter der folgenden URL."
+  "DocumentationDescription": "Detaillierte Anleitungen und Tutorials zur Verwendung von AITuberKit finden Sie unter der folgenden URL.",
+  "PresetQuestions": "Voreingestellte Fragen",
+  "PresetQuestionsInfo": "Sie können mehrere Fragenmuster im Voraus erstellen und registrieren. Die registrierten Fragen werden in Form von Schaltflächen in der Benutzeroberfläche angezeigt und werden beim Klicken im Chat-Eingabefeld gesetzt.",
+  "EnterPresetQuestion": "Bitte Frage eingeben",
+  "DragToReorder": "Ziehen, um die Reihenfolge zu ändern"
 }

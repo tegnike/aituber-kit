@@ -245,5 +245,9 @@
   "MaxTokens": "Maximum Token Count",
   "MaxTokensInfo": "The maximum token count varies depending on the AI model in use. Please check the specifications of each model.",
   "CannotUseParameters": "If real-time API mode or audio mode is enabled, the Temperature and Max Tokens parameters cannot be specified.",
-  "DocumentationDescription": "For detailed usage and tutorials of AITuberKit, please visit the URL below."
+  "DocumentationDescription": "For detailed usage and tutorials of AITuberKit, please visit the URL below.",
+  "PresetQuestions": "Preset Questions",
+  "PresetQuestionsInfo": "You can create and register multiple question patterns in advance. The registered questions will be displayed as buttons on the user UI, and clicking them will set them in the chat input field.",
+  "EnterPresetQuestion": "Please enter a question",
+  "DragToReorder": "Drag to reorder"
 }

@@ -242,5 +242,9 @@
   "MaxTokens": "Numero massimo di token",
   "MaxTokensInfo": "Il numero massimo di token varia a seconda del modello AI in uso. Controlla le specifiche di ciascun modello.",
   "CannotUseParameters": "Se la modalità API in tempo reale o la modalità audio è attivata, i parametri Temperature e Max Tokens non possono essere specificati.",
-  "DocumentationDescription": "Puoi trovare dettagli su come utilizzare AITuberKit e tutorial al seguente URL."
+  "DocumentationDescription": "Puoi trovare dettagli su come utilizzare AITuberKit e tutorial al seguente URL.",
+  "PresetQuestions": "Impostazione delle domande",
+  "PresetQuestionsInfo": "È possibile creare e registrare in anticipo più modelli di domande. Le domande registrate vengono visualizzate in formato pulsante nell'interfaccia utente e, quando vengono cliccate, vengono impostate nel campo di input della chat.",
+  "EnterPresetQuestion": "Inserisci una domanda",
+  "DragToReorder": "Trascina per riordinare"
 }

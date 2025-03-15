@@ -242,5 +242,9 @@
   "MaxTokens": "Nombre maximal de tokens",
   "MaxTokensInfo": "Le nombre maximal de tokens varie en fonction du modèle AI utilisé. Veuillez vérifier les spécifications de chaque modèle.",
   "CannotUseParameters": "Si le mode API en temps réel ou le mode audio est activé, les paramètres Temperature et Max Tokens ne peuvent pas être spécifiés.",
-  "DocumentationDescription": "Vous pouvez consulter des instructions détaillées et des tutoriels sur AITuberKit à l'URL ci-dessous."
+  "DocumentationDescription": "Vous pouvez consulter des instructions détaillées et des tutoriels sur AITuberKit à l'URL ci-dessous.",
+  "PresetQuestions": "Préconfiguration des questions",
+  "PresetQuestionsInfo": "Vous pouvez créer et enregistrer plusieurs modèles de questions à l'avance. Les questions enregistrées s'affichent sous forme de boutons dans l'interface utilisateur, et en cliquant dessus, elles sont ajoutées au champ de saisie de chat.",
+  "EnterPresetQuestion": "Veuillez entrer une question",
+  "DragToReorder": "Faites glisser pour réorganiser"
 }
