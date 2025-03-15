@@ -42,7 +42,7 @@ const aiServiceLogos = {
 const ServiceLogo = ({ service }: { service: keyof typeof aiServiceLogos }) => {
   return (
     <div
-      className="inline-flex items-center justify-center mr-8"
+      className="inline-flex items-center justify-center mr-2"
       style={{ width: '32px', height: '32px' }}
     >
       <Image
@@ -203,11 +203,9 @@ const ModelProvider = () => {
   )
 
   return externalLinkageMode ? null : (
-    <div className="mt-24">
-      <div className="my-16 typography-20 font-bold">
-        {t('SelectAIService')}
-      </div>
-      <div className="my-8">
+    <div className="mt-6">
+      <div className="my-4 text-xl font-bold">{t('SelectAIService')}</div>
+      <div className="my-2">
         <Listbox
           value={selectAIService}
           onChange={(value) =>
@@ -215,20 +213,20 @@ const ModelProvider = () => {
           }
         >
           <div className="relative inline-block min-w-[240px]">
-            <Listbox.Button className="w-full px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8 flex items-center cursor-pointer">
+            <Listbox.Button className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg flex items-center cursor-pointer">
               <ServiceLogo
                 service={selectAIService as keyof typeof aiServiceLogos}
               />
               <span>{selectedServiceOption?.label}</span>
             </Listbox.Button>
-            <Listbox.Options className="absolute z-10 top-[-170px] w-auto min-w-full overflow-auto rounded-8 bg-surface1 py-4 shadow-lg focus:outline-none">
+            <Listbox.Options className="absolute z-10 top-[-170px] w-auto min-w-full overflow-auto rounded-lg bg-white py-2 shadow-lg focus:outline-none">
               {aiServiceOptions.map((option) => (
                 <Listbox.Option
                   key={option.value}
                   value={option.value}
                   className={({ active }) =>
-                    `relative cursor-pointer select-none py-8 px-16 whitespace-nowrap ${
-                      active ? 'bg-surface1-hover' : ''
+                    `relative cursor-pointer select-none py-2 px-4 whitespace-nowrap ${
+                      active ? 'bg-white-hover' : ''
                     }`
                   }
                 >
@@ -254,11 +252,11 @@ const ModelProvider = () => {
         if (selectAIService === 'openai') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('OpenAIAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -267,7 +265,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="sk-..."
                   value={openaiKey}
@@ -276,11 +274,11 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('RealtimeAPIMode')}
                 </div>
-                <div className="my-8">
+                <div className="my-2">
                   <TextButton
                     onClick={() => {
                       handleRealtimeAPIModeChange(!realtimeAPIMode)
@@ -290,11 +288,9 @@ const ModelProvider = () => {
                   </TextButton>
                 </div>
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('AudioMode')}
-                </div>
-                <div className="my-8">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('AudioMode')}</div>
+                <div className="my-2">
                   <TextButton
                     onClick={() => {
                       handleAudioModeChange(!audioMode)
@@ -306,11 +302,11 @@ const ModelProvider = () => {
               </div>
               {realtimeAPIMode && (
                 <>
-                  <div className="my-16 font-bold">
+                  <div className="my-4 font-bold">
                     {t('RealtimeAPIModeContentType')}
                   </div>
                   <select
-                    className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                     value={realtimeAPIModeContentType}
                     onChange={(e) => {
                       const model = e.target.value
@@ -323,11 +319,11 @@ const ModelProvider = () => {
                     <option value="input_text">{t('InputText')}</option>
                     <option value="input_audio">{t('InputAudio')}</option>
                   </select>
-                  <div className="my-16 font-bold">
+                  <div className="my-4 font-bold">
                     {t('RealtimeAPIModeVoice')}
                   </div>
                   <select
-                    className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                     value={realtimeAPIModeVoice}
                     onChange={(e) => {
                       const model = e.target.value
@@ -345,12 +341,12 @@ const ModelProvider = () => {
                     <option value="shimmer">shimmer</option>
                     <option value="verse">verse</option>
                   </select>
-                  <div className="my-24">
-                    <div className="my-16 typography-16 font-bold">
+                  <div className="my-6">
+                    <div className="my-4 text-base font-bold">
                       {t('SelectModel')}
                     </div>
                     <select
-                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       value={selectAIModel}
                       onChange={(e) => {
                         const model = e.target.value
@@ -368,8 +364,8 @@ const ModelProvider = () => {
                       </option>
                     </select>
                   </div>
-                  <div className="my-16">
-                    <div className="my-16">
+                  <div className="my-4">
+                    <div className="my-4">
                       {t('UpdateRealtimeAPISettingsInfo')}
                     </div>
                     <TextButton onClick={handleUpdate}>
@@ -380,11 +376,11 @@ const ModelProvider = () => {
               )}
               {audioMode && (
                 <>
-                  <div className="my-16 font-bold">
+                  <div className="my-4 font-bold">
                     {t('RealtimeAPIModeContentType')}
                   </div>
                   <select
-                    className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                     value={audioModeInputType}
                     onChange={(e) => {
                       const model = e.target.value
@@ -396,11 +392,11 @@ const ModelProvider = () => {
                     <option value="input_text">{t('InputText')}</option>
                     <option value="input_audio">{t('InputAudio')}</option>
                   </select>
-                  <div className="my-16 font-bold">
+                  <div className="my-4 font-bold">
                     {t('RealtimeAPIModeVoice')}
                   </div>
                   <select
-                    className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                     value={audioModeVoice}
                     onChange={(e) => {
                       const model = e.target.value
@@ -416,12 +412,12 @@ const ModelProvider = () => {
                     <option value="nova">nova</option>
                     <option value="shimmer">shimmer</option>
                   </select>
-                  <div className="my-24">
-                    <div className="my-16 typography-16 font-bold">
+                  <div className="my-6">
+                    <div className="my-4 text-base font-bold">
                       {t('SelectModel')}
                     </div>
                     <select
-                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       value={selectAIModel}
                       onChange={(e) => {
                         const model = e.target.value
@@ -442,12 +438,12 @@ const ModelProvider = () => {
                 </>
               )}
               {!realtimeAPIMode && !audioMode && (
-                <div className="my-24">
-                  <div className="my-16 typography-20 font-bold">
+                <div className="my-6">
+                  <div className="my-4 text-xl font-bold">
                     {t('SelectModel')}
                   </div>
                   <select
-                    className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                     value={selectAIModel}
                     onChange={(e) => {
                       const model = e.target.value
@@ -484,17 +480,17 @@ const ModelProvider = () => {
         } else if (selectAIService === 'anthropic') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('AnthropicAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link url="https://console.anthropic.com" label="Anthropic" />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={anthropicKey}
@@ -503,12 +499,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) =>
                     settingsStore.setState({
@@ -535,11 +529,11 @@ const ModelProvider = () => {
         } else if (selectAIService === 'google') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('GoogleAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -548,7 +542,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={googleKey}
@@ -557,12 +551,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) => {
                     const model = e.target.value
@@ -590,12 +582,12 @@ const ModelProvider = () => {
                   </option>
                 </select>
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('SearchGrounding')}
                 </div>
-                <div className="my-16">{t('SearchGroundingDescription')}</div>
-                <div className="my-8">
+                <div className="my-4">{t('SearchGroundingDescription')}</div>
+                <div className="my-2">
                   <TextButton
                     onClick={() => {
                       settingsStore.setState({
@@ -617,11 +609,11 @@ const ModelProvider = () => {
         } else if (selectAIService === 'azure') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('AzureAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -630,7 +622,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={azureKey}
@@ -639,11 +631,11 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('AzureEndpoint')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   Chat API ex.
                   https://RESOURCE_NAME.openai.azure.com/openai/deployments/
                   DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION
@@ -653,7 +645,7 @@ const ModelProvider = () => {
                   api-version=API_VERSION&deployment=DEPLOYMENT_NAME
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={azureEndpoint}
@@ -662,11 +654,11 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('RealtimeAPIMode')}
                 </div>
-                <div className="my-8">
+                <div className="my-2">
                   <TextButton
                     onClick={() => {
                       handleRealtimeAPIModeChange(!realtimeAPIMode)
@@ -677,11 +669,11 @@ const ModelProvider = () => {
                 </div>
                 {realtimeAPIMode && (
                   <>
-                    <div className="my-16 font-bold">
+                    <div className="my-4 font-bold">
                       {t('RealtimeAPIModeContentType')}
                     </div>
                     <select
-                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       value={realtimeAPIModeContentType}
                       onChange={(e) => {
                         const model = e.target.value
@@ -694,11 +686,11 @@ const ModelProvider = () => {
                       <option value="input_text">{t('InputText')}</option>
                       <option value="input_audio">{t('InputAudio')}</option>
                     </select>
-                    <div className="my-16 font-bold">
+                    <div className="my-4 font-bold">
                       {t('RealtimeAPIModeVoice')}
                     </div>
                     <select
-                      className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                      className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       value={realtimeAPIModeVoice}
                       onChange={(e) => {
                         const model = e.target.value
@@ -720,8 +712,8 @@ const ModelProvider = () => {
                       <option value="marilyn">marilyn</option>
                       <option value="shimmer">shimmer</option>
                     </select>
-                    <div className="my-16">
-                      <div className="my-16">
+                    <div className="my-4">
+                      <div className="my-4">
                         {t('UpdateRealtimeAPISettingsInfo')}
                       </div>
                       <TextButton onClick={handleUpdate}>
@@ -736,11 +728,11 @@ const ModelProvider = () => {
         } else if (selectAIService === 'groq') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('GroqAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -749,7 +741,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={groqKey}
@@ -758,12 +750,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) =>
                     settingsStore.setState({
@@ -784,11 +774,11 @@ const ModelProvider = () => {
         } else if (selectAIService === 'cohere') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('CohereAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -797,7 +787,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={cohereKey}
@@ -806,12 +796,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) =>
                     settingsStore.setState({
@@ -837,11 +825,11 @@ const ModelProvider = () => {
         } else if (selectAIService === 'mistralai') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('MistralAIAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -850,7 +838,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={mistralaiKey}
@@ -859,12 +847,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) =>
                     settingsStore.setState({
@@ -885,11 +871,11 @@ const ModelProvider = () => {
         } else if (selectAIService === 'perplexity') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('PerplexityAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -898,7 +884,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={perplexityKey}
@@ -907,12 +893,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) =>
                     settingsStore.setState({
@@ -942,11 +926,11 @@ const ModelProvider = () => {
         } else if (selectAIService === 'fireworks') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('FireworksAPIKeyLabel')}
                 </div>
-                <div className="my-16">
+                <div className="my-4">
                   {t('APIKeyInstruction')}
                   <br />
                   <Link
@@ -955,7 +939,7 @@ const ModelProvider = () => {
                   />
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={fireworksKey}
@@ -964,12 +948,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) =>
                     settingsStore.setState({
@@ -1008,12 +990,10 @@ const ModelProvider = () => {
         ) {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16">{t('LocalLLMInfo')}</div>
-                <div className="my-16 typography-20 font-bold">
-                  {t('EnterURL')}
-                </div>
-                <div className="my-16">
+              <div className="my-6">
+                <div className="my-4">{t('LocalLLMInfo')}</div>
+                <div className="my-4 text-xl font-bold">{t('EnterURL')}</div>
+                <div className="my-4">
                   {t('LocalLLMInfo2')}
                   <br />
                   {selectAIService === 'ollama' && (
@@ -1027,7 +1007,7 @@ const ModelProvider = () => {
                   )}
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={localLlmUrl}
@@ -1036,12 +1016,10 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={selectAIModel}
@@ -1057,13 +1035,13 @@ const ModelProvider = () => {
         } else if (selectAIService === 'dify') {
           return (
             <>
-              <div className="my-24">
-                <div className="my-16">{t('DifyInfo')}</div>
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4">{t('DifyInfo')}</div>
+                <div className="my-4 text-xl font-bold">
                   {t('DifyAPIKeyLabel')}
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={difyKey}
@@ -1072,13 +1050,11 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('EnterURL')}
-                </div>
-                <div className="my-16">{t('DifyInfo3')}</div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('EnterURL')}</div>
+                <div className="my-4">{t('DifyInfo3')}</div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={difyUrl}
@@ -1091,11 +1067,11 @@ const ModelProvider = () => {
           )
         } else if (selectAIService === 'deepseek') {
           return (
-            <div className="my-24">
-              <div className="my-16 typography-20 font-bold">
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">
                 {t('DeepSeekAPIKeyLabel')}
               </div>
-              <div className="my-16">
+              <div className="my-4">
                 {t('APIKeyInstruction')}
                 <br />
                 <Link
@@ -1104,7 +1080,7 @@ const ModelProvider = () => {
                 />
               </div>
               <input
-                className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                 type="text"
                 placeholder="sk-..."
                 value={deepseekKey}
@@ -1112,12 +1088,10 @@ const ModelProvider = () => {
                   settingsStore.setState({ deepseekKey: e.target.value })
                 }
               />
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('SelectModel')}
-                </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
                 <select
-                  className="px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
                   onChange={(e) =>
                     settingsStore.setState({
@@ -1135,16 +1109,14 @@ const ModelProvider = () => {
       })()}
       {selectAIService !== 'dify' && (
         <>
-          <div className="my-24">
-            <div className="my-16 typography-20 font-bold">
-              {t('MaxPastMessages')}
-            </div>
-            <div className="my-8">
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">{t('MaxPastMessages')}</div>
+            <div className="my-2">
               <input
                 type="number"
                 min="1"
                 max="100"
-                className="px-16 py-8 w-64 bg-surface1 hover:bg-surface1-hover rounded-8"
+                className="px-4 py-2 w-16 bg-white hover:bg-white-hover rounded-lg"
                 value={maxPastMessages}
                 onChange={(e) => {
                   const value = parseInt(e.target.value)
@@ -1161,8 +1133,8 @@ const ModelProvider = () => {
           </div>
           {!realtimeAPIMode && !audioMode && (
             <>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
                   {t('Temperature')}: {temperature.toFixed(2)}
                 </div>
                 <input
@@ -1171,7 +1143,7 @@ const ModelProvider = () => {
                   max={2}
                   step={0.01}
                   value={temperature}
-                  className="mt-8 mb-16 input-range"
+                  className="mt-2 mb-4 input-range"
                   onChange={(e) =>
                     settingsStore.setState({
                       temperature: parseFloat(e.target.value),
@@ -1179,18 +1151,14 @@ const ModelProvider = () => {
                   }
                 />
               </div>
-              <div className="my-24">
-                <div className="my-16 typography-20 font-bold">
-                  {t('MaxTokens')}
-                </div>
-                <div className="my-8 text-sm text-gray-400">
-                  {t('MaxTokensInfo')}
-                </div>
-                <div className="my-8">
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('MaxTokens')}</div>
+                <div className="my-2 text-sm ">{t('MaxTokensInfo')}</div>
+                <div className="my-2">
                   <input
                     type="number"
                     min="1"
-                    className="px-16 py-8 w-140 bg-surface1 hover:bg-surface1-hover rounded-8"
+                    className="px-4 py-2 w-140 bg-white hover:bg-white-hover rounded-lg"
                     value={maxTokens}
                     onChange={(e) => {
                       const value = parseInt(e.target.value)
@@ -1204,7 +1172,7 @@ const ModelProvider = () => {
             </>
           )}
           {(realtimeAPIMode || audioMode) && (
-            <div className="my-24 p-16 bg-surface1 rounded-8 text-sm text-gray-400">
+            <div className="my-6 p-4 bg-white rounded-lg text-sm ">
               {t('CannotUseParameters')}
             </div>
           )}

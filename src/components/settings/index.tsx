@@ -32,7 +32,7 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   return (
     <>
       <GitHubLink />
-      <div className="absolute m-24">
+      <div className="absolute m-6">
         <IconButton
           iconName="24/Close"
           isProcessing={false}
@@ -126,19 +126,14 @@ const Main = () => {
 
   return (
     <main className="max-h-full overflow-auto">
-      <div className="text-text1 max-w-5xl mx-auto px-24 py-64">
-        <div className="md:flex mt-16">
+      <div className="text-text1 max-w-5xl mx-auto px-6 py-16">
+        <div className="md:flex mt-4">
           {/* タブナビゲーション */}
-          <ul className="flex flex-col space-y-4 text-sm font-medium md:w-[25%] md:me-8 mb-16 md:mb-0">
+          <ul className="flex flex-col space-y-1 text-sm font-medium md:w-[25%] md:me-8 mb-4 md:mb-0">
             {tabs.map((tab) => (
               <li key={tab.key}>
                 <button
-                  className={`flex py-8 px-16 rounded-8 w-full typography-16 text-left
-                    ${
-                      activeTab === tab.key
-                        ? 'text-white bg-primary'
-                        : 'bg-gray-50 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
+                  className={`flex py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
                   onClick={() => setActiveTab(tab.key)}
                 >
                   {tab.label}
@@ -148,7 +143,7 @@ const Main = () => {
           </ul>
 
           {/* タブコンテンツ */}
-          <div className="p-24 bg-surface7-hover text-medium rounded-8 w-full">
+          <div className="p-6 bg-gray-400 bg-opacity-20 text-medium rounded-lg w-full">
             {renderTabContent()}
           </div>
         </div>

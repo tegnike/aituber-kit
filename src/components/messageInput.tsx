@@ -99,13 +99,13 @@ export const MessageInput = ({
     <div className="absolute bottom-0 z-20 w-screen">
       {showPermissionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-surface1 p-24 rounded-16 max-w-md">
-            <h3 className="typography-20 font-bold mb-16">
+          <div className="bg-white p-6 rounded-2xl max-w-md">
+            <h3 className="text-xl font-bold mb-4">
               {t('MicrophonePermission')}
             </h3>
-            <p className="mb-16">{t('MicrophonePermissionMessage')}</p>
+            <p className="mb-4">{t('MicrophonePermissionMessage')}</p>
             <button
-              className="bg-secondary hover:bg-secondary-hover px-16 py-8 rounded-8"
+              className="bg-secondary hover:bg-secondary-hover px-4 py-2 rounded-lg"
               onClick={() => setShowPermissionModal(false)}
             >
               {t('Close')}
@@ -113,8 +113,8 @@ export const MessageInput = ({
           </div>
         </div>
       )}
-      <div className="bg-base text-black">
-        <div className="mx-auto max-w-4xl p-16">
+      <div className="bg-base-light text-black">
+        <div className="mx-auto max-w-4xl p-4">
           <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
             <IconButton
               iconName="24/Microphone"
@@ -134,7 +134,7 @@ export const MessageInput = ({
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
               disabled={chatProcessing || slidePlaying || realtimeAPIMode}
-              className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 disabled:bg-surface1-disabled disabled:text-primary-disabled rounded-16 w-full px-16 text-text-primary typography-16 font-bold disabled"
+              className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-white-disabled disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
               value={userMessage}
               rows={rows}
               style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}

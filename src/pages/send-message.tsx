@@ -178,18 +178,18 @@ const SendMessage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center text-black min-h-screen bg-background2">
-      <h1 className="text-text-primary typography-32 font-bold my-24">
+    <div className="flex flex-col items-center text-black min-h-screen">
+      <h1 className="text-text-primary text-3xl font-bold my-6">
         {t('SendMessage.title')}
       </h1>
-      <div className="w-full max-w-4xl p-24">
-        <div className="mb-24 typography-16 bg-base rounded-16 p-16">
-          <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
+      <div className="w-full max-w-4xl p-6">
+        <div className="mb-6 text-base bg-base-light rounded-2xl p-4">
+          <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
             <span>Client ID</span>
             <button
               type="button"
               onClick={(e) => copyToClipboard(clientId, e)}
-              className="px-8 py-2 text-sm bg-surface1 hover:bg-surface1-hover rounded-8"
+              className="px-2 py-1 text-sm bg-white hover:bg-white-hover rounded-lg"
             >
               Copy
             </button>
@@ -198,25 +198,25 @@ const SendMessage = () => {
             type="text"
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold"
+            className="bg-white hover:bg-white-hover focus:bg-white rounded-2xl w-full px-4 text-text-primary text-base font-bold"
             style={{ padding: '8px 16px' }}
             disabled={!!settingsStore.getState().clientId}
           />
         </div>
 
-        <div className="mb-24 bg-base rounded-16 p-16">
-          <h2 className="text-text-primary typography-20 font-bold mb-24 mt-8">
+        <div className="mb-6 bg-base-light rounded-2xl p-4">
+          <h2 className="text-text-primary text-xl font-bold mb-6 mt-2">
             {t('SendMessage.directSendTitle')}
           </h2>
-          <p className="typography-16 mb-16 whitespace-pre-line">
+          <p className="text-base mb-4 whitespace-pre-line">
             {t('SendMessage.directSendDescription')}
           </p>
           <form
             onSubmit={(e) => handleSubmit(e, 'direct_send')}
             className="grid grid-flow-row gap-[8px]"
           >
-            <div className="my-8 typography-16">
-              <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
+            <div className="my-2 text-base">
+              <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
                 <span>Curl Sample</span>
                 <button
                   type="button"
@@ -226,19 +226,19 @@ const SendMessage = () => {
                       e
                     )
                   }
-                  className="px-8 py-2 text-sm bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-2 py-1 text-sm bg-white hover:bg-white-hover rounded-lg"
                 >
                   Copy
                 </button>
               </div>
-              <pre className="bg-[#1F2937] text-white rounded-16 w-full p-16 typography-16 font-bold whitespace-pre-wrap break-words">
+              <pre className="bg-[#1F2937] text-white rounded-2xl w-full p-4 text-base font-bold whitespace-pre-wrap break-words">
                 <code>
                   {`curl -X POST -H "Content-Type: application/json" -d '{"messages": ["こんにちは、今日もいい天気ですね。", "今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=direct_send'`}
                 </code>
               </pre>
             </div>
-            <div className="mt-8">
-              <div className="text-text-primary typography-16 font-bold mb-8">
+            <div className="mt-2">
+              <div className="text-text-primary text-base font-bold mb-2">
                 Messages
               </div>
               <div className="space-y-4">
@@ -253,7 +253,7 @@ const SendMessage = () => {
                         setDirectMessages(newMessages)
                       }}
                       onKeyDown={(e) => handleKeyDown(e)}
-                      className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold"
+                      className="bg-white hover:bg-white-hover focus:bg-white rounded-2xl w-full px-4 text-text-primary text-base font-bold"
                       rows={2}
                       style={{
                         lineHeight: '1.5',
@@ -265,14 +265,14 @@ const SendMessage = () => {
                       <IconButton
                         iconName="24/Subtract"
                         onClick={() => removeField(index, 'direct_send')}
-                        className="min-w-[40px] w-[40px] h-[40px] shrink-0 ml-8"
+                        className="min-w-[40px] w-[40px] h-[40px] shrink-0 ml-2"
                         isProcessing={false}
                       />
                     )}
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between mt-8">
+              <div className="flex justify-between mt-2">
                 <IconButton
                   iconName="24/Add"
                   onClick={() => addNewField('direct_send')}
@@ -293,11 +293,11 @@ const SendMessage = () => {
             </div>
           </form>
           {directResponse && (
-            <div className="mt-16 w-full">
-              <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
+            <div className="mt-4 w-full">
+              <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
                 <span>Response</span>
               </div>
-              <div className="w-full bg-white rounded-16 p-16">
+              <div className="w-full bg-white rounded-2xl p-4">
                 <pre className="bg-gray-100 p-2 rounded overflow-auto max-h-60">
                   {directResponse}
                 </pre>
@@ -306,19 +306,19 @@ const SendMessage = () => {
           )}
         </div>
 
-        <div className="mb-24 bg-base rounded-16 p-16">
-          <h2 className="text-text-primary typography-20 font-bold mb-24 mt-8">
+        <div className="mb-6 bg-base-light rounded-2xl p-4">
+          <h2 className="text-text-primary text-xl font-bold mb-6 mt-2">
             {t('SendMessage.aiGenerateTitle')}
           </h2>
-          <p className="typography-16 mb-16 whitespace-pre-line">
+          <p className="text-base mb-4 whitespace-pre-line">
             {t('SendMessage.aiGenerateDescription')}
           </p>
           <form
             onSubmit={(e) => handleSubmit(e, 'ai_generate')}
             className="grid grid-flow-row gap-[8px]"
           >
-            <div className="my-8 typography-16">
-              <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
+            <div className="my-2 text-base">
+              <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
                 <span>Curl Sample</span>
                 <button
                   type="button"
@@ -328,25 +328,25 @@ const SendMessage = () => {
                       e
                     )
                   }
-                  className="px-8 py-2 text-sm bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-2 py-1 text-sm bg-white hover:bg-white-hover rounded-lg"
                 >
                   Copy
                 </button>
               </div>
-              <pre className="bg-[#1F2937] text-white rounded-16 w-full p-16 typography-16 font-bold whitespace-pre-wrap break-words">
+              <pre className="bg-[#1F2937] text-white rounded-2xl w-full p-4 text-base font-bold whitespace-pre-wrap break-words">
                 <code>
                   {`curl -X POST -H "Content-Type: application/json" -d '{"systemPrompt": "You are a helpful assistant.", "useCurrentSystemPrompt": false, "messages": ["今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=ai_generate'`}
                 </code>
               </pre>
             </div>
-            <div className="my-8 typography-16">
-              <div className="text-text-primary font-bold mb-8">
+            <div className="my-2 text-base">
+              <div className="text-text-primary font-bold mb-2">
                 System Prompt
               </div>
               <textarea
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
-                className={`bg-surface1 ${useCurrentSystemPrompt ? 'bg-surface1-hover' : 'hover:bg-surface1-hover'} focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold`}
+                className={`bg-white ${useCurrentSystemPrompt ? 'bg-white-hover' : 'hover:bg-white-hover'} focus:bg-white rounded-2xl w-full px-4 text-text-primary text-base font-bold`}
                 rows={2}
                 style={{
                   lineHeight: '1.5',
@@ -362,15 +362,15 @@ const SendMessage = () => {
                   onChange={() =>
                     setUseCurrentSystemPrompt(!useCurrentSystemPrompt)
                   }
-                  className="mr-4"
+                  className="mr-1"
                 />
-                <label className="text-text-primary typography-16 font-bold">
+                <label className="text-text-primary text-base font-bold">
                   {t('SendMessage.useCurrentSystemPrompt')}
                 </label>
               </div>
             </div>
-            <div className="mt-8">
-              <div className="text-text-primary typography-16 font-bold mb-8">
+            <div className="mt-2">
+              <div className="text-text-primary text-base font-bold mb-2">
                 Messages
               </div>
               <div className="space-y-4">
@@ -385,7 +385,7 @@ const SendMessage = () => {
                         setAiMessages(newMessages)
                       }}
                       onKeyDown={(e) => handleKeyDown(e)}
-                      className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold"
+                      className="bg-white hover:bg-white-hover focus:bg-white rounded-2xl w-full px-4 text-text-primary text-base font-bold"
                       rows={2}
                       style={{
                         lineHeight: '1.5',
@@ -397,14 +397,14 @@ const SendMessage = () => {
                       <IconButton
                         iconName="24/Subtract"
                         onClick={() => removeField(index, 'ai_generate')}
-                        className="min-w-[40px] w-[40px] h-[40px] shrink-0 ml-8"
+                        className="min-w-[40px] w-[40px] h-[40px] shrink-0 ml-2"
                         isProcessing={false}
                       />
                     )}
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between mt-8">
+              <div className="flex justify-between mt-2">
                 <IconButton
                   iconName="24/Add"
                   onClick={() => addNewField('ai_generate')}
@@ -424,11 +424,11 @@ const SendMessage = () => {
             </div>
           </form>
           {aiResponse && (
-            <div className="mt-16 w-full">
-              <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
+            <div className="mt-4 w-full">
+              <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
                 <span>Response</span>
               </div>
-              <div className="w-full bg-white rounded-16 p-16">
+              <div className="w-full bg-white rounded-2xl p-4">
                 <pre className="bg-gray-100 p-2 rounded overflow-auto max-h-60">
                   {aiResponse}
                 </pre>
@@ -437,19 +437,19 @@ const SendMessage = () => {
           )}
         </div>
 
-        <div className="mb-24 bg-base rounded-16 p-16">
-          <h2 className="text-text-primary typography-20 font-bold mb-24 mt-8">
+        <div className="mb-6 bg-base-light rounded-2xl p-4">
+          <h2 className="text-text-primary text-xl font-bold mb-6 mt-2">
             {t('SendMessage.userInputTitle')}
           </h2>
-          <p className="typography-16 mb-16 whitespace-pre-line">
+          <p className="text-base mb-4 whitespace-pre-line">
             {t('SendMessage.userInputDescription')}
           </p>
           <form
             onSubmit={(e) => handleSubmit(e, 'user_input')}
             className="grid grid-flow-row gap-[8px]"
           >
-            <div className="my-8 typography-16">
-              <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
+            <div className="my-2 text-base">
+              <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
                 <span>Curl Sample</span>
                 <button
                   type="button"
@@ -459,19 +459,19 @@ const SendMessage = () => {
                       e
                     )
                   }
-                  className="px-8 py-2 text-sm bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="px-2 py-1 text-sm bg-white hover:bg-white-hover rounded-lg"
                 >
                   Copy
                 </button>
               </div>
-              <pre className="bg-[#1F2937] text-white rounded-16 w-full p-16 typography-16 font-bold whitespace-pre-wrap break-words">
+              <pre className="bg-[#1F2937] text-white rounded-2xl w-full p-4 text-base font-bold whitespace-pre-wrap break-words">
                 <code>
                   {`curl -X POST -H "Content-Type: application/json" -d '{"messages": ["こんにちは、今日もいい天気ですね。", "今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=user_input'`}
                 </code>
               </pre>
             </div>
-            <div className="mt-8">
-              <div className="text-text-primary typography-16 font-bold mb-8">
+            <div className="mt-2">
+              <div className="text-text-primary text-base font-bold mb-2">
                 Messages
               </div>
               <div className="space-y-4">
@@ -486,7 +486,7 @@ const SendMessage = () => {
                         setUserInputMessages(newMessages)
                       }}
                       onKeyDown={(e) => handleKeyDown(e)}
-                      className="bg-surface1 hover:bg-surface1-hover focus:bg-surface1 rounded-16 w-full px-16 text-text-primary typography-16 font-bold"
+                      className="bg-white hover:bg-white-hover focus:bg-white rounded-2xl w-full px-4 text-text-primary text-base font-bold"
                       rows={2}
                       style={{
                         lineHeight: '1.5',
@@ -498,14 +498,14 @@ const SendMessage = () => {
                       <IconButton
                         iconName="24/Subtract"
                         onClick={() => removeField(index, 'user_input')}
-                        className="min-w-[40px] w-[40px] h-[40px] shrink-0 ml-8"
+                        className="min-w-[40px] w-[40px] h-[40px] shrink-0 ml-2"
                         isProcessing={false}
                       />
                     )}
                   </div>
                 ))}
               </div>
-              <div className="flex justify-between mt-8">
+              <div className="flex justify-between mt-2">
                 <IconButton
                   iconName="24/Add"
                   onClick={() => addNewField('user_input')}
@@ -526,11 +526,11 @@ const SendMessage = () => {
             </div>
           </form>
           {userInputResponse && (
-            <div className="mt-16 w-full">
-              <div className="text-text-primary font-bold mb-8 flex justify-between items-center">
+            <div className="mt-4 w-full">
+              <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
                 <span>Response</span>
               </div>
-              <div className="w-full bg-white rounded-16 p-16">
+              <div className="w-full bg-white rounded-2xl p-4">
                 <pre className="bg-gray-100 p-2 rounded overflow-auto max-h-60">
                   {userInputResponse}
                 </pre>
@@ -541,7 +541,7 @@ const SendMessage = () => {
       </div>
       {copySuccess && popupPosition && (
         <div
-          className="fixed bg-green-500 text-black px-4 py-2 rounded z-50"
+          className="fixed text-black px-1 py-0.5 rounded z-50"
           style={{
             left: `${popupPosition.x + 8}px`,
             top: `${popupPosition.y}px`,

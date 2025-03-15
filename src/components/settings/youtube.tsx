@@ -36,8 +36,8 @@ const YouTube = () => {
 
   return (
     <div className="">
-      <div className="mb-16 typography-20 font-bold">{t('YoutubeMode')}</div>
-      <div className="my-8">
+      <div className="mb-4 text-xl font-bold">{t('YoutubeMode')}</div>
+      <div className="my-2">
         {youtubeMode ? (
           <TextButton onClick={() => handleChangeYoutubeMode(false)}>
             {t('StatusOn')}
@@ -48,17 +48,17 @@ const YouTube = () => {
           </TextButton>
         )}
       </div>
-      <div className="mt-16">
+      <div className="mt-4">
         {(() => {
           if (youtubeMode) {
             return (
               <>
                 <div className="">{t('YoutubeInfo')}</div>
-                <div className="my-16 typography-20 font-bold">
+                <div className="my-4 text-xl font-bold">
                   {t('YoutubeAPIKey')}
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={youtubeApiKey}
@@ -68,11 +68,11 @@ const YouTube = () => {
                     })
                   }
                 />
-                <div className="my-16 typography-20 font-bold">
+                <div className="my-4 text-xl font-bold">
                   {t('YoutubeLiveID')}
                 </div>
                 <input
-                  className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   type="text"
                   placeholder="..."
                   value={youtubeLiveId}
@@ -82,17 +82,17 @@ const YouTube = () => {
                     })
                   }
                 />
-                <div className="mt-24">
-                  <div className="my-16 typography-20 font-bold">
+                <div className="mt-6">
+                  <div className="my-4 text-xl font-bold">
                     {t('ConversationContinuityMode')}
                   </div>
-                  <div className="my-8">
+                  <div className="my-2">
                     {t('ConversationContinuityModeInfo')}
                   </div>
-                  <div className="my-8">
+                  <div className="my-2">
                     {t('ConversationContinuityModeInfo2')}
                   </div>
-                  <div className="mb-16">
+                  <div className="mb-4">
                     {t('ConversationContinuityModeInfo3')}
                   </div>
                   <TextButton

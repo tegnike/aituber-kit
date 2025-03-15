@@ -15,18 +15,18 @@ const ModalImage = () => {
         top: '40vh',
       }}
     >
-      <div className="relative w-full md:max-w-[512px] max-w-[50%] m-16">
+      <div className="relative w-full md:max-w-[512px] max-w-[50%] m-4">
         <Image
           src={modalImage}
           width={512}
           height={512}
           alt="Modal Image"
-          className="rounded-8 w-auto object-contain max-h-[100%] ml-auto"
+          className="rounded-lg w-auto object-contain max-h-[100%] ml-auto"
         />
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-2 right-2">
           <IconButton
             iconName="24/Trash"
-            className="hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-8"
+            className="hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-2"
             isProcessing={false}
             onClick={() => homeStore.setState({ modalImage: '' })}
           />

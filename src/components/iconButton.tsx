@@ -21,7 +21,7 @@ export const IconButton = ({
   return (
     <button
       {...rest}
-      className={`bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled rounded-16 text-sm p-8 text-center inline-flex items-center mr-2
+      className={`bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled rounded-2xl text-sm p-2 text-center inline-flex items-center
         ${iconColor || 'text-white'}
         ${rest.className}
       `}
@@ -43,7 +43,7 @@ export const IconButton = ({
       ) : (
         <pixiv-icon name={String(iconName)} scale="1"></pixiv-icon>
       )}
-      {label && <div className="mx-4 font-bold">{label}</div>}
+      {label && <div className="mx-2 font-bold">{label}</div>}
     </button>
   )
 }
