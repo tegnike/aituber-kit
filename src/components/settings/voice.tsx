@@ -18,7 +18,7 @@ import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
 import speakers from '../speakers.json'
-import speakers_aivis from '../speakers_aivis.json'
+// import speakers_aivis from '../speakers_aivis.json'
 
 const Voice = () => {
   const koeiromapKey = settingsStore((s) => s.koeiromapKey)
@@ -70,6 +70,7 @@ const Voice = () => {
   const { t } = useTranslation()
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
   const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
+  const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
 
   // にじボイスの話者一覧を取得する関数
   const fetchNijivoiceSpeakers = async () => {
@@ -89,12 +90,30 @@ const Voice = () => {
     }
   }
 
+  // AIVISの話者一覧を取得する関数
+  const fetchAivisSpeakers = async () => {
+    try {
+      const response = await fetch('/speakers_aivis.json')
+      const data = await response.json()
+      setSpeakers_aivis(data)
+    } catch (error) {
+      console.error('Failed to fetch AIVIS speakers:', error)
+    }
+  }
+
   // コンポーネントマウント時またはにじボイス選択時に話者一覧を取得
   useEffect(() => {
     if (selectVoice === 'nijivoice') {
       fetchNijivoiceSpeakers()
     }
   }, [selectVoice, nijivoiceApiKey])
+
+  // コンポーネントマウント時またはAIVIS選択時に話者一覧を取得
+  useEffect(() => {
+    if (selectVoice === 'aivis_speech') {
+      fetchAivisSpeakers()
+    }
+  }, [selectVoice])
 
   // nijivoiceActorIdが変更された時にrecommendedVoiceSpeedを設定する処理を追加
   useEffect(() => {
@@ -103,7 +122,7 @@ const Voice = () => {
       nijivoiceActorId &&
       nijivoiceActorId !== prevNijivoiceActorId
     ) {
-      // 現在選択されてい���キャラクターを探す
+      // 現在選択されていキャラクターを探す
       const selectedActor = nijivoiceSpeakers.find(
         (actor) => actor.id === nijivoiceActorId
       )
@@ -577,11 +596,7 @@ const Voice = () => {
                         const updatedSpeakers =
                           await updatedSpeakersResponse.json()
                         // speakers_aivisを更新
-                        speakers_aivis.splice(
-                          0,
-                          speakers_aivis.length,
-                          ...updatedSpeakers
-                        )
+                        setSpeakers_aivis(updatedSpeakers)
                       }
                     }}
                     className="ml-4"
