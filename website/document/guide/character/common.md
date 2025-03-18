@@ -15,6 +15,13 @@ NEXT_PUBLIC_MODEL_TYPE=vrm
 
 # システムプロンプト
 NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情"
+
+# キャラクタープリセット
+NEXT_PUBLIC_CHARACTER_PRESET1="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET2="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET3="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET4="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET5="あなたはニケという名前のAIアシスタントです。"
 ```
 
 ## キャラクター名の設定
@@ -35,6 +42,10 @@ NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタン
 キャラクターの性格や応答スタイルを定義するシステムプロンプトを設定します。このプロンプトはAIの応答生成時に使用され、キャラクターの個性を決定する重要な要素です。
 
 キャラクター名は必ずここに含めるようにしてください。
+
+### キャラクタープリセット
+
+キャラクタープロンプトを複数保存します。直接クリックして呼び出す他、Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)でショートカットが可能です。Shiftキーを押しながらプリセットを選ぶと、現在のキャラクタープロンプトがプリセットに保存されます。
 
 ### 感情タグの使用
 

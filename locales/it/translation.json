@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Prompt personaggio",
   "CharacterSettingsInfo": "Questo valore viene impostato come prompt di sistema.\nFai riferimento al prompt iniziale e specifica i tag delle emozioni per controllare le espressioni e i movimenti del personaggio. Esempio: [neutral]Buongiorno![happy]Anche oggi sarà una giornata impegnativa!",
   "CharacterSettingsReset": "Reimposta impostazioni personaggio",
+  "characterpresetInfo": "Selezionando una preimpostazione si cambia la richiesta di caratteri.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) per le scorciatoie.\nSe si seleziona una preimpostazione tenendo premuto il tasto Shift, la richiesta di caratteri corrente viene salvata nella preimpostazione.",
+  "Characterpreset1": "Preset 1",
+  "Characterpreset2": "Preset 2",
+  "Characterpreset3": "Preset 3",
+  "Characterpreset4": "Preset 4",
+  "Characterpreset5": "Preset 5",
   "SyntheticVoiceEngineChoice": "Scegli motore sintesi vocale",
   "VoiceAdjustment": "Regolazione voce",
   "VoiceEngineInstruction": "Seleziona il motore di sintesi vocale che desideri utilizzare.",
@@ -196,7 +202,8 @@
     "FunctionExecuting": "Esecuzione {{funcName}}",
     "FunctionExecutionFailed": "Esecuzione {{funcName}} fallita",
     "FirefoxNotSupported": "Questa funzione non è supportata in Firefox",
-    "SpeechRecognitionError": "Si è verificato un errore di riconoscimento vocale"
+    "SpeechRecognitionError": "Si è verificato un errore di riconoscimento vocale",
+    "PresetSwitching": "Passato a {{presetName}}."
   },
   "UsingOpenAITTS": "Usando OpenAI",
   "OpenAITTSInfo": "Usando OpenAI. Supporta più lingue. Se selezioni OpenAI come servizio IA, non devi configurare la chiave API sotto.",

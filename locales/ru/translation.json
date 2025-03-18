@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Промпт персонажа",
   "CharacterSettingsInfo": "Это значение устанавливается как системный промпт.\nОбратитесь к исходному промпту и укажите теги эмоций для управления выражениями и движениями персонажа. Пример: [neutral]Доброе утро![happy]Сегодня тоже будет насыщенный день!",
   "CharacterSettingsReset": "Сбросить настройки персонажа",
+  "characterpresetInfo": "Выбор предустановки изменяет подсказку символа.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) для быстрого доступа.\nПри выборе предустановки с нажатой клавишей Shift текущая подсказка сохраняется в предустановке.",
+  "Characterpreset1": "Предустановка 1",
+  "Characterpreset2": "Предустановка 2",
+  "Characterpreset3": "Предустановка 3",
+  "Characterpreset4": "Предустановка 4",
+  "Characterpreset5": "Предустановка 5",
   "SyntheticVoiceEngineChoice": "Выбор движка синтеза речи",
   "VoiceAdjustment": "Настройка голоса",
   "VoiceEngineInstruction": "Выберите движок синтеза речи, который хотите использовать.",
@@ -196,7 +202,8 @@
     "FunctionExecuting": "Выполнение {{funcName}}",
     "FunctionExecutionFailed": "Ошибка выполнения {{funcName}}",
     "FirefoxNotSupported": "Эта функция не поддерживается в Firefox",
-    "SpeechRecognitionError": "Произошла ошибка распознавания речи"
+    "SpeechRecognitionError": "Произошла ошибка распознавания речи",
+    "PresetSwitching": "Переключились на {{presetName}}."
   },
   "UsingOpenAITTS": "Использование OpenAI",
   "OpenAITTSInfo": "Использует OpenAI. Поддерживает несколько языков. Если вы выбрали OpenAI как ИИ-сервис, не нужно настраивать API-ключ ниже.",

@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Charakter-Prompt",
   "CharacterSettingsInfo": "Dieser Wert wird als Systemprompt festgelegt.\nBeziehen Sie sich auf den ursprünglichen Prompt und geben Sie Emotions-Tags an, um die Ausdrücke und Bewegungen des Charakters zu steuern. Beispiel: [neutral]Guten Morgen![happy]Auch heute wird ein geschäftiger Tag!",
   "CharacterSettingsReset": "Charaktereinstellungen zurücksetzen",
+  "characterpresetInfo": "Durch Auswahl einer Voreinstellung wird die Zeichenaufforderung geändert.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) für Tastaturkürzel.\nWenn Sie eine Voreinstellung auswählen, während Sie die Umschalttaste gedrückt halten, wird die aktuelle Zeichenaufforderung in der Voreinstellung gespeichert.",
+  "Characterpreset1": " Voreinstellung 1",
+  "Characterpreset2": "Voreinstellung 2",
+  "Characterpreset3": "Voreinstellung 3",
+  "Characterpreset4": "Voreinstellung 4",
+  "Characterpreset5": "Voreinstellung 5",
   "SyntheticVoiceEngineChoice": "Sprachsynthese-Engine auswählen",
   "VoiceAdjustment": "Sprachanpassung",
   "VoiceEngineInstruction": "Wählen Sie die Sprachsynthese-Engine aus, die Sie verwenden möchten.",
@@ -196,7 +202,8 @@
     "FunctionExecuting": "Führe {{funcName}} aus",
     "FunctionExecutionFailed": "Ausführung von {{funcName}} fehlgeschlagen",
     "FirefoxNotSupported": "Diese Funktion wird in Firefox nicht unterstützt",
-    "SpeechRecognitionError": "Ein Spracherkennungsfehler ist aufgetreten"
+    "SpeechRecognitionError": "Ein Spracherkennungsfehler ist aufgetreten",
+    "PresetSwitching": "Umgestellt auf {{presetName}}."
   },
   "UsingOpenAITTS": "OpenAI verwenden",
   "OpenAITTSInfo": "OpenAI verwenden. Unterstützt mehrere Sprachen. Wenn Sie OpenAI als KI-Dienst auswählen, müssen Sie den API-Schlüssel unten nicht konfigurieren.",

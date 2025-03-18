@@ -15,6 +15,13 @@ NEXT_PUBLIC_MODEL_TYPE=vrm
 
 # System prompt
 NEXT_PUBLIC_SYSTEM_PROMPT="You are an AI assistant named Nike. Please speak in a friendly and cheerful manner. Use the following emotion tags to change your expression and tone of voice as appropriate: [neutral] - normal expression, [happy] - happy expression, [sad] - sad expression, [angry] - angry expression, [relaxed] - relaxed expression"
+
+# character preset
+NEXT_PUBLIC_CHARACTER_PRESET1="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET2="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET3="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET4="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET5="You are an AI assistant named Nike."
 ```
 
 ## Setting the Character Name
@@ -35,6 +42,10 @@ You can select "VRM" or "Live2D" as the character's model type. The setting item
 Set the system prompt that defines the character's personality and response style. This prompt is used when generating AI responses and is an important element that determines the character's individuality.
 
 Be sure to include the character name here.
+
+### character preset
+
+Save multiple character prompts. In addition to direct click recall, shortcuts are available by pressing Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows). holding down the Shift key and selecting a preset will save the current character prompt to the preset.
 
 ### Using Emotion Tags
 

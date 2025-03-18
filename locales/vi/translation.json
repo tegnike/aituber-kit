@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Prompt nhân vật",
   "CharacterSettingsInfo": "Giá trị này được sử dụng làm prompt hệ thống.\nTham khảo prompt ban đầu và chỉ định các tag cảm xúc để điều khiển biểu cảm và chuyển động của nhân vật. Ví dụ: [neutral]Chào buổi sáng![happy]Hôm nay cũng là một ngày bận rộn!",
   "CharacterSettingsReset": "Đặt lại cài đặt nhân vật",
+  "characterpresetInfo": "Chọn cài đặt trước sẽ thay đổi lời nhắc ký tự.\nPhím tắt có thể được sử dụng với Cmd + Shift + 1 ~ 5 (Mac) / Ctrl + Shift + 1 ~ 5 (Windows).\nBằng cách giữ phím Shift trong khi chọn cài đặt trước, lời nhắc ký tự hiện tại sẽ được lưu vào cài đặt trước.",
+  "Characterpreset1": "Đặt trước 1",
+  "Characterpreset2": "Đặt trước 2",
+  "Characterpreset3": "Đặt trước 3",
+  "Characterpreset4": "Đặt trước 4",
+  "Characterpreset5": "Đặt trước 5",
   "SyntheticVoiceEngineChoice": "Chọn engine giọng nói tổng hợp",
   "VoiceAdjustment": "Điều chỉnh giọng nói",
   "VoiceEngineInstruction": "Chọn engine giọng nói tổng hợp bạn muốn sử dụng.",
@@ -196,7 +202,8 @@
     "FunctionExecuting": "Đang thực hiện {{funcName}}",
     "FunctionExecutionFailed": "Thực hiện {{funcName}} thất bại",
     "FirefoxNotSupported": "Tính năng không được hỗ trợ trên Firefox",
-    "SpeechRecognitionError": "Lỗi nhận dạng giọng nói"
+    "SpeechRecognitionError": "Lỗi nhận dạng giọng nói",
+    "PresetSwitching": "Đã chuyển sang {{presetName}}."
   },
   "UsingOpenAITTS": "Sử dụng OpenAI",
   "OpenAITTSInfo": "Sử dụng OpenAI. Hỗ trợ nhiều ngôn ngữ. Nếu chọn OpenAI, không cần nhập khóa API bên dưới.",

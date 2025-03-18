@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Character Prompt",
   "CharacterSettingsInfo": "This value is set as the system prompt.\nPlease refer to the initial prompt and specify the emotion tags to control the character's expressions and motions. Example: [neutral]Good morning![happy]Today is also a hard day!",
   "CharacterSettingsReset": "Reset Character Settings",
+  "characterpresetInfo": "Selecting a preset changes the character prompt.\nShortcuts are available by pressing Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows).\nHolding down the Shift key and selecting a preset will save the current character prompt to the preset.",
+  "Characterpreset1": "Preset 1",
+  "Characterpreset2": "Preset 2",
+  "Characterpreset3": "Preset 3",
+  "Characterpreset4": "Preset 4",
+  "Characterpreset5": "Preset 5",
   "SyntheticVoiceEngineChoice": "Choose Synthetic Voice Engine",
   "VoiceAdjustment": "Voice Adjustment",
   "VoiceEngineInstruction": "Select the synthetic voice engine you want to use.",
@@ -199,7 +205,8 @@
     "FunctionExecutionFailed": "Execution of {{funcName}} failed",
     "FirefoxNotSupported": "This feature is not supported on Firefox",
     "SpeechRecognitionError": "Speech recognition error occurred",
-    "NoSpeechDetected": "No speech detected"
+    "NoSpeechDetected": "No speech detected",
+    "PresetSwitching": "Switched to {{presetName}}."
   },
   "UsingOpenAITTS": "Using OpenAI",
   "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",

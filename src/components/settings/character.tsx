@@ -322,6 +322,35 @@ const Character = () => {
   >([])
   const selectAIService = settingsStore((s) => s.selectAIService)
   const systemPrompt = settingsStore((s) => s.systemPrompt)
+  const characterPresets = [
+    { key: "characterPreset1", value: settingsStore((s) => s.characterPreset1) },
+    { key: "characterPreset2", value: settingsStore((s) => s.characterPreset2) },
+    { key: "characterPreset3", value: settingsStore((s) => s.characterPreset3) },
+    { key: "characterPreset4", value: settingsStore((s) => s.characterPreset4) },
+    { key: "characterPreset5", value: settingsStore((s) => s.characterPreset5) },
+  ];
+  const [tooltipText, setTooltipText] = useState("");
+
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; visible: boolean }>({
+    x: 0,
+    y: 0,
+    visible: false
+  });
+
+  // ツールチップの縦のサイズの上限を20vhに設定
+  const tooltipMaxHeight = '20vh'
+
+  // ツールチップの表示位置を調整するための定数
+  const tooltipOffsetX = 15;
+  const tooltipOffsetY = 10;
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setTooltip({ x: e.clientX + tooltipOffsetX, y: e.clientY + tooltipOffsetY, visible: true });
+  };
+
+  const handleMouseLeave = () => {
+    setTooltip((prev) => ({ ...prev, visible: false }));
+  };
 
   useEffect(() => {
     fetch('/api/get-vrm-list')
@@ -490,6 +519,50 @@ const Character = () => {
           >
             {t('CharacterSettingsReset')}
           </TextButton>
+        </div>
+        <div className="my-16 whitespace-pre-line">
+          {t('characterpresetInfo')}
+        </div>
+        <div className="my-24 mb-8 flex flex-wrap gap-4">
+          {characterPresets.map(({ key, value }, index) => (
+            <div key={key} className="relative">
+              <TextButton
+                onClick={(e) => {
+                  if (e.shiftKey) {
+                    settingsStore.setState({ [key]: systemPrompt });
+                    setTooltipText(systemPrompt);
+                  } else {
+                    settingsStore.setState({ systemPrompt: value });
+                    setTooltipText(value);
+                  }
+                }}
+                onMouseMove={(e) => {
+                  handleMouseMove(e);
+                  setTooltipText(value);
+                }}
+                onMouseLeave={() => {
+                  handleMouseLeave();
+                  setTooltipText("");
+                }}
+                className="mr-8 px-4 py-2 text-white rounded-md hover:bg-blue-600 transition"
+              >
+                {t(`Characterpreset${index + 1}`)}
+              </TextButton>
+
+              {tooltip.visible && (
+                <div
+                  className="fixed bg-black opacity-75 text-white text-xs px-2 py-1 rounded-md shadow-md pointer-events-none whitespace-pre-line max-w-xl overflow-hidden text-ellipsis"
+                  style={{
+                    left: `${tooltip.x}px`,
+                    top: `${tooltip.y}px`,
+                    maxHeight: `${tooltipMaxHeight}`,
+                  }}
+                >
+                  {tooltipText}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
         <textarea
           value={systemPrompt}
