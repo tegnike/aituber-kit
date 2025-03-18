@@ -30,7 +30,7 @@ export const ChatLog = () => {
 
   return (
     <div className="absolute w-col-span-7 max-w-full h-[100svh] pb-16 z-10">
-      <div className="max-h-full px-4 pt-104 pb-16 overflow-y-auto scroll-hidden">
+      <div className="max-h-full px-4 pt-24 pb-16 overflow-y-auto scroll-hidden">
         {messages.map((msg, i) => {
           return (
             <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
