@@ -36,6 +36,7 @@ export const MessageInput = ({
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
+  const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
 
   const { t } = useTranslation()
 
@@ -117,13 +118,28 @@ export const MessageInput = ({
       )}
       <div className="bg-base-light text-black">
         <div className="mx-auto max-w-4xl p-4">
-          {/* 無音タイムアウト残り時間のプログレスバー */}
-          {silenceTimeoutRemaining !== null && isMicRecording && (
+          {/* プログレスバー - 設定に基づいて表示/非表示 */}
+          {isMicRecording && showSilenceProgressBar && (
             <div className="w-full h-2 bg-gray-200 rounded-full mb-2 overflow-hidden">
               <div
                 className="h-full bg-secondary transition-all duration-200 ease-linear"
                 style={{
-                  width: `${100 - (silenceTimeoutRemaining / (settingsStore.getState().noSpeechTimeout * 1000)) * 100}%`,
+                  // プログレスバーの幅計算 - 最初と最後の0.3秒は表示しない
+                  width:
+                    silenceTimeoutRemaining !== null
+                      ? `${Math.min(
+                          100,
+                          Math.max(
+                            0,
+                            ((settingsStore.getState().noSpeechTimeout * 1000 -
+                              silenceTimeoutRemaining -
+                              300) /
+                              (settingsStore.getState().noSpeechTimeout * 1000 -
+                                600)) *
+                              100
+                          )
+                        )}%`
+                      : '0%',
                 }}
               ></div>
             </div>

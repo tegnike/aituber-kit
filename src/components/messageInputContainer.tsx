@@ -229,7 +229,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
         }
         // 残り時間を更新（音声が検出された後、かつテキストがある場合のみ）
         else if (
-          settingsStore.getState().noSpeechTimeout > 0 &&
+          settingsStore.getState().noSpeechTimeout > 1 &&
           !speechEndedRef.current &&
           speechDetectedRef.current &&
           transcriptRef.current.trim() !== ''

@@ -158,6 +158,7 @@ interface General {
   temperature: number
   maxTokens: number
   noSpeechTimeout: number
+  showSilenceProgressBar: boolean
   presetQuestions: PresetQuestion[]
   showPresetQuestions: boolean
 }
@@ -331,6 +332,7 @@ const settingsStore = create<SettingsState>()(
       maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
+      showSilenceProgressBar: true,
       presetQuestions: [],
       showPresetQuestions: true,
 
@@ -461,6 +463,7 @@ const settingsStore = create<SettingsState>()(
         temperature: state.temperature,
         maxTokens: state.maxTokens,
         noSpeechTimeout: state.noSpeechTimeout,
+        showSilenceProgressBar: state.showSilenceProgressBar,
         presetQuestions: state.presetQuestions,
         showPresetQuestions: state.showPresetQuestions,
       }),

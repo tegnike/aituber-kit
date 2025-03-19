@@ -16,6 +16,7 @@ const AdvancedSettings = () => {
   )
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const noSpeechTimeout = settingsStore((s) => s.noSpeechTimeout)
+  const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
 
   const { t } = useTranslation()
 
@@ -106,6 +107,18 @@ const AdvancedSettings = () => {
             }
             className="mt-2 mb-4 input-range"
           />
+        </div>
+        <div className="mt-2">
+          <div className="font-bold mb-2">{t('ShowSilenceProgressBar')}</div>
+          <TextButton
+            onClick={() =>
+              settingsStore.setState({
+                showSilenceProgressBar: !showSilenceProgressBar,
+              })
+            }
+          >
+            {showSilenceProgressBar ? t('StatusOn') : t('StatusOff')}
+          </TextButton>
         </div>
       </div>
     </div>

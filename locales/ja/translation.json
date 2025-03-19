@@ -251,5 +251,6 @@
   "PresetQuestions": "質問の事前設定",
   "PresetQuestionsInfo": "複数の質問パターンを事前に作成・登録できます。登録された質問はユーザーUI上にボタン形式で表示され、クリックするとチャット入力欄にセットされます。",
   "EnterPresetQuestion": "質問を入力してください",
-  "DragToReorder": "ドラッグして順番を変更"
+  "DragToReorder": "ドラッグして順番を変更",
+  "ShowSilenceProgressBar": "無音検出タイムアウトのプログレスバーを表示する"
 }
