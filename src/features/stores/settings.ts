@@ -270,11 +270,16 @@ const settingsStore = create<SettingsState>()(
 
       // Character
       characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
-      characterPreset1: process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
-      characterPreset2: process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
-      characterPreset3: process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
-      characterPreset4: process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
-      characterPreset5: process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
+      characterPreset1:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
+      characterPreset2:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
+      characterPreset3:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
+      characterPreset4:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
+      characterPreset5:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
       showAssistantText:
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
       showCharacterName:
@@ -415,10 +420,10 @@ const settingsStore = create<SettingsState>()(
         youtubeLiveId: state.youtubeLiveId,
         characterName: state.characterName,
         characterPreset1: state.characterPreset1,
-        characterPreset2: state.characterPreset2, 
-        characterPreset3: state.characterPreset3, 
-        characterPreset4: state.characterPreset4, 
-        characterPreset5: state.characterPreset5, 
+        characterPreset2: state.characterPreset2,
+        characterPreset3: state.characterPreset3,
+        characterPreset4: state.characterPreset4,
+        characterPreset5: state.characterPreset5,
         showAssistantText: state.showAssistantText,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
