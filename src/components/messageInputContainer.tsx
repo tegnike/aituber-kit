@@ -39,6 +39,10 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   // 初期音声検出用のタイマー
   const initialSpeechCheckTimerRef = useRef<NodeJS.Timeout | null>(null)
   const selectLanguage = settingsStore((s) => s.selectLanguage)
+  // 無音タイムアウト残り時間のステート
+  const [silenceTimeoutRemaining, setSilenceTimeoutRemaining] = useState<
+    number | null
+  >(null)
 
   const { t } = useTranslation()
 
@@ -137,6 +141,8 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       clearInterval(silenceCheckInterval.current)
       silenceCheckInterval.current = null
     }
+    // 残り時間表示をリセット
+    setSilenceTimeoutRemaining(null)
   }, [])
 
   // clearSilenceDetectionをRefに保存
@@ -162,14 +168,23 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       // 音声検出時刻を記録
       lastSpeechTimestamp.current = Date.now()
       speechEndedRef.current = false
+      // 初期状態では残り時間表示をnullに設定（プログレスバーを非表示に）
+      setSilenceTimeoutRemaining(null)
       console.log(
         '🎤 無音検出を開始しました。無音検出タイムアウトの設定値に基づいて自動送信します。'
       )
 
-      // 250ms間隔で無音状態をチェック
+      // 100ms間隔で無音状態をチェック（250msから変更）
       silenceCheckInterval.current = setInterval(() => {
         // 現在時刻と最終音声検出時刻の差を計算
         const silenceDuration = Date.now() - lastSpeechTimestamp.current
+        const noSpeechTimeoutMs =
+          settingsStore.getState().noSpeechTimeout * 1000
+
+        // 常に無音時間をログ表示（新規追加）
+        console.log(
+          `🔊 無音経過時間: ${silenceDuration}ms / 閾値: ${noSpeechTimeoutMs}ms（${(silenceDuration / 1000).toFixed(1)}秒 / ${(noSpeechTimeoutMs / 1000).toFixed(1)}秒）`
+        )
 
         // 無音状態が5秒以上続いた場合は、テキストの有無に関わらず音声認識を停止
         if (silenceDuration >= 5000 && !speechEndedRef.current) {
@@ -177,6 +192,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
             `⏱️ ${silenceDuration}ms の長時間無音を検出しました。音声認識を停止します。`
           )
           speechEndedRef.current = true
+          setSilenceTimeoutRemaining(null)
           stopListeningFn()
 
           // トースト通知を表示
@@ -186,15 +202,15 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
             tag: 'no-speech-detected-long-silence',
           })
         }
-        // 無音状態が2秒以上続いたかつテキストがある場合は自動送信
+        // 無音状態が設定値以上続いたかつテキストがある場合は自動送信
         else if (
           settingsStore.getState().noSpeechTimeout > 0 &&
-          silenceDuration >= settingsStore.getState().noSpeechTimeout * 1000 &&
+          silenceDuration >= noSpeechTimeoutMs &&
           !speechEndedRef.current
         ) {
           const trimmedTranscript = transcriptRef.current.trim()
           console.log(
-            `⏱️ ${silenceDuration}ms の無音を検出しました（閾値: ${settingsStore.getState().noSpeechTimeout * 1000}ms）。無音検出タイムアウトが0秒の場合は自動送信は無効です。`
+            `⏱️ ${silenceDuration}ms の無音を検出しました（閾値: ${noSpeechTimeoutMs}ms）。無音検出タイムアウトが0秒の場合は自動送信は無効です。`
           )
           console.log(`📝 認識テキスト: "${trimmedTranscript}"`)
 
@@ -203,6 +219,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
             settingsStore.getState().noSpeechTimeout > 0
           ) {
             speechEndedRef.current = true
+            setSilenceTimeoutRemaining(null)
             console.log('✅ 無音検出による自動送信を実行します')
             // 無音検出で自動送信
             onChatProcessStart(trimmedTranscript)
@@ -210,7 +227,17 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
             stopListeningFn()
           }
         }
-      }, 250) // 250msごとにチェック
+        // 残り時間を更新（音声が検出された後、かつテキストがある場合のみ）
+        else if (
+          settingsStore.getState().noSpeechTimeout > 0 &&
+          !speechEndedRef.current &&
+          speechDetectedRef.current &&
+          transcriptRef.current.trim() !== ''
+        ) {
+          const remainingTime = Math.max(0, noSpeechTimeoutMs - silenceDuration)
+          setSilenceTimeoutRemaining(remainingTime)
+        }
+      }, 100) // 100msごとにチェック（250msから変更）
     },
     [onChatProcessStart]
   )
@@ -398,34 +425,55 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
 
       // 音声入力検出時のハンドラを追加
       newRecognition.onspeechstart = () => {
-        console.log('🗣️ 音声入力を検出しました')
+        console.log('🗣️ 音声入力を検出しました（onspeechstart）')
         // 音声検出フラグを立てる
         speechDetectedRef.current = true
         // 音声検出時刻を更新
         lastSpeechTimestamp.current = Date.now()
       }
 
+      // 音量レベルを追跡するための変数を追加
+      let significantSpeechDetected = false
+      let lastTranscriptLength = 0
+
       // 結果が返ってきた時のハンドラ（音声検出中）
       newRecognition.onresult = (event) => {
         if (!isListeningRef.current) return
 
-        // 音声を検出したので、タイムスタンプを更新
-        lastSpeechTimestamp.current = Date.now()
-        // 音声検出フラグを立てる（結果が返ってきたということは音声が検出されている）
-        speechDetectedRef.current = true
-
         const transcript = Array.from(event.results)
           .map((result) => result[0].transcript)
           .join('')
+
+        // トランスクリプトが変化した場合のみ意味のある音声とみなす
+        const isSignificantChange =
+          transcript.trim().length > lastTranscriptLength
+        lastTranscriptLength = transcript.trim().length
+
+        // 実際に認識可能な音声が検出された場合のみタイムスタンプを更新
+        if (isSignificantChange) {
+          console.log('📢 有意な音声を検出しました（トランスクリプト変更あり）')
+          significantSpeechDetected = true
+          // 意味のある音声を検出したので、タイムスタンプを更新
+          lastSpeechTimestamp.current = Date.now()
+          // 音声検出フラグを立てる
+          speechDetectedRef.current = true
+        } else {
+          console.log(
+            '🔇 バックグラウンドノイズを無視します（トランスクリプト変更なし）'
+          )
+        }
+
         transcriptRef.current = transcript
         setUserMessage(transcript)
       }
 
       // 音声入力終了時のハンドラ
       newRecognition.onspeechend = () => {
-        console.log('🛑 音声入力が終了しました。無音検出タイマーが動作中です。')
+        console.log(
+          '🛑 音声入力が終了しました（onspeechend）。無音検出タイマーが動作中です。'
+        )
         // 音声入力が終わったが、無音検出はそのまま継続する
-        // タイマーが2秒後に処理する
+        // タイマーが自動的に処理する
       }
 
       // 音声認識終了時のハンドラ
@@ -572,6 +620,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
       onClickSendButton={handleSendMessage}
       onClickStopButton={handleStopSpeaking}
       isSpeaking={isSpeaking}
+      silenceTimeoutRemaining={silenceTimeoutRemaining}
     />
   )
 }

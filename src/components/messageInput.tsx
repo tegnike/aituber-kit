@@ -16,6 +16,7 @@ type Props = {
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void
   onClickStopButton: (event: React.MouseEvent<HTMLButtonElement>) => void
   isSpeaking: boolean
+  silenceTimeoutRemaining: number | null
 }
 
 export const MessageInput = ({
@@ -26,6 +27,7 @@ export const MessageInput = ({
   onClickSendButton,
   onClickStopButton,
   isSpeaking,
+  silenceTimeoutRemaining,
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
   const slidePlaying = slideStore((s) => s.isPlaying)
@@ -115,6 +117,17 @@ export const MessageInput = ({
       )}
       <div className="bg-base-light text-black">
         <div className="mx-auto max-w-4xl p-4">
+          {/* 無音タイムアウト残り時間のプログレスバー */}
+          {silenceTimeoutRemaining !== null && isMicRecording && (
+            <div className="w-full h-2 bg-gray-200 rounded-full mb-2 overflow-hidden">
+              <div
+                className="h-full bg-secondary transition-all duration-200 ease-linear"
+                style={{
+                  width: `${100 - (silenceTimeoutRemaining / (settingsStore.getState().noSpeechTimeout * 1000)) * 100}%`,
+                }}
+              ></div>
+            </div>
+          )}
           <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
             <IconButton
               iconName="24/Microphone"
