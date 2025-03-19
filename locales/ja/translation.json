@@ -54,7 +54,6 @@
   "CharacterSettingsPrompt": "キャラクタープロンプト",
   "CharacterSettingsInfo": "この値はシステムプロンプトとして設定されます。\n初期プロンプトを参考に、感情タグを指定することでキャラクターの表情やモーションを制御できます。例: [neutral]おはようございます！[happy]今日もお疲れ様です！",
   "CharacterSettingsReset": "キャラクター設定リセット",
-  "characterpresetInfo": "プリセットを選択すると、キャラクタープロンプトが変更されます。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)でショートカットが可能です。\nShiftキーを押しながらプリセットを選ぶと、現在のキャラクタープロンプトがプリセットに保存されます。",
   "Characterpreset1": "プリセット1",
   "Characterpreset2": "プリセット2",
   "Characterpreset3": "プリセット3",
@@ -209,7 +208,8 @@
     "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません",
     "SpeechRecognitionError": "音声認識エラーが発生しました",
     "NoSpeechDetected": "音声が検出されませんでした。",
-    "PresetSwitching": "{{presetName}}に切り替わりました。"    
+    "PresetSwitching": "{{presetName}}に切り替わりました。",
+    "PresetSaved": "{{presetName}}に保存しました。"
   },
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
@@ -253,5 +253,7 @@
   "Temperature": "Temperature",
   "MaxTokens": "最大トークン数",
   "MaxTokensInfo": "最大トークン数は利用中のAIモデルによって異なります。各モデルの仕様を確認してください。",
-  "CannotUseParameters": "リアルタイムAPIモードまたはオーディオモードが有効の場合、TemperatureとMax Tokensパラメータは指定できません。"
+  "CannotUseParameters": "リアルタイムAPIモードまたはオーディオモードが有効の場合、TemperatureとMax Tokensパラメータは指定できません。",
+  "Load": "呼出",
+  "Save": "保存"
 }

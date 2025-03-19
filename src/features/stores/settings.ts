@@ -128,6 +128,12 @@ interface Character {
   characterPreset3: string
   characterPreset4: string
   characterPreset5: string
+  customPresetName1: string
+  customPresetName2: string
+  customPresetName3: string
+  customPresetName4: string
+  customPresetName5: string
+  selectedPresetIndex: number
   showAssistantText: boolean
   showCharacterName: boolean
   systemPrompt: string
@@ -280,6 +286,12 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
       characterPreset5:
         process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
+      customPresetName1: 'プリセット1',
+      customPresetName2: 'プリセット2',
+      customPresetName3: 'プリセット3',
+      customPresetName4: 'プリセット4',
+      customPresetName5: 'プリセット5',
+      selectedPresetIndex: 0,
       showAssistantText:
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
       showCharacterName:
@@ -424,6 +436,12 @@ const settingsStore = create<SettingsState>()(
         characterPreset3: state.characterPreset3,
         characterPreset4: state.characterPreset4,
         characterPreset5: state.characterPreset5,
+        customPresetName1: state.customPresetName1,
+        customPresetName2: state.customPresetName2,
+        customPresetName3: state.customPresetName3,
+        customPresetName4: state.customPresetName4,
+        customPresetName5: state.customPresetName5,
+        selectedPresetIndex: state.selectedPresetIndex,
         showAssistantText: state.showAssistantText,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,

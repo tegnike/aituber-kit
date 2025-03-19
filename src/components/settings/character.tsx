@@ -3,9 +3,32 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, { SettingsState } from '@/features/stores/settings'
+import toastStore from '@/features/stores/toast'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { TextButton } from '../textButton'
+
+// Character型の定義
+type Character = Pick<
+  SettingsState,
+  | 'characterName'
+  | 'characterPreset1'
+  | 'characterPreset2'
+  | 'characterPreset3'
+  | 'characterPreset4'
+  | 'characterPreset5'
+  | 'customPresetName1'
+  | 'customPresetName2'
+  | 'customPresetName3'
+  | 'customPresetName4'
+  | 'customPresetName5'
+  | 'selectedPresetIndex'
+  | 'showAssistantText'
+  | 'showCharacterName'
+  | 'systemPrompt'
+  | 'selectedVrmPath'
+  | 'selectedLive2DPath'
+>
 
 const emotionFields = [
   {
@@ -546,54 +569,87 @@ const Character = () => {
         <div className="my-16 whitespace-pre-line">
           {t('characterpresetInfo')}
         </div>
-        <div className="my-24 mb-8 flex flex-wrap gap-4">
-          {characterPresets.map(({ key, value }, index) => (
-            <div key={key} className="relative">
-              <TextButton
-                onClick={(e) => {
-                  if (e.shiftKey) {
-                    settingsStore.setState({ [key]: systemPrompt })
-                    setTooltipText(systemPrompt)
-                  } else {
-                    settingsStore.setState({ systemPrompt: value })
-                    setTooltipText(value)
-                  }
-                }}
-                onMouseMove={(e) => {
-                  handleMouseMove(e)
-                  setTooltipText(value)
-                }}
-                onMouseLeave={() => {
-                  handleMouseLeave()
-                  setTooltipText('')
-                }}
-                className="mr-8 px-4 py-2 text-white rounded-md hover:bg-blue-600 transition"
-              >
-                {t(`Characterpreset${index + 1}`)}
-              </TextButton>
+        <div className="my-24 mb-8">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {characterPresets.map(({ key, value }, index) => {
+              const customNameKey =
+                `customPresetName${index + 1}` as keyof Character
+              const customName = settingsStore(
+                (s) => s[customNameKey] as string
+              )
+              const selectedIndex = settingsStore((s) => s.selectedPresetIndex)
+              const isSelected = selectedIndex === index
 
-              {tooltip.visible && (
-                <div
-                  className="fixed bg-black opacity-75 text-white text-xs px-2 py-1 rounded-md shadow-md pointer-events-none whitespace-pre-line max-w-xl overflow-hidden text-ellipsis"
-                  style={{
-                    left: `${tooltip.x}px`,
-                    top: `${tooltip.y}px`,
-                    maxHeight: `${tooltipMaxHeight}`,
+              return (
+                <button
+                  key={key}
+                  onClick={() => {
+                    // プリセット選択時に内容を表示し、systemPromptも更新
+                    settingsStore.setState({
+                      selectedPresetIndex: index,
+                      systemPrompt: value,
+                    })
+
+                    toastStore.getState().addToast({
+                      message: t('Toasts.PresetSwitching', {
+                        presetName: customName,
+                      }),
+                      type: 'info',
+                      tag: `character-preset-switching-${index + 1}`,
+                    })
                   }}
+                  className={`px-4 py-2 rounded-md text-sm ${
+                    isSelected
+                      ? 'bg-primary text-white'
+                      : 'bg-surface1 hover:bg-surface1-hover text-gray-800'
+                  }`}
                 >
-                  {tooltipText}
+                  {customName}
+                </button>
+              )
+            })}
+          </div>
+
+          {characterPresets.map(({ key, value }, index) => {
+            const customNameKey =
+              `customPresetName${index + 1}` as keyof Character
+            const customName = settingsStore((s) => s[customNameKey] as string)
+            const selectedIndex = settingsStore((s) => s.selectedPresetIndex)
+            const isSelected = selectedIndex === index
+
+            if (!isSelected) return null
+
+            return (
+              <div key={key} className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={customName}
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        [customNameKey]: e.target.value,
+                      })
+                    }}
+                    className="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm w-full"
+                    placeholder={t(`Characterpreset${index + 1}`)}
+                  />
                 </div>
-              )}
-            </div>
-          ))}
+                <textarea
+                  value={systemPrompt}
+                  onChange={(e) => {
+                    const newValue = e.target.value
+                    // システムプロンプトとプリセットの内容を同時に更新
+                    settingsStore.setState({
+                      systemPrompt: newValue,
+                      [key]: newValue,
+                    })
+                  }}
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-md w-full h-64 text-sm"
+                />
+              </div>
+            )
+          })}
         </div>
-        <textarea
-          value={systemPrompt}
-          onChange={(e) =>
-            settingsStore.setState({ systemPrompt: e.target.value })
-          }
-          className="px-16 py-8 bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
-        ></textarea>
       </div>
     </>
   )
