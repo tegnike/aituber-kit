@@ -248,5 +248,6 @@
   "PresetQuestions": "질문 사전 설정",
   "PresetQuestionsInfo": "여러 질문 패턴을 미리 작성하고 등록할 수 있습니다. 등록된 질문은 사용자 UI에 버튼 형식으로 표시되며, 클릭하면 채팅 입력란에 설정됩니다.",
   "EnterPresetQuestion": "질문을 입력하세요",
-  "DragToReorder": "드래그하여 순서를 변경"
+  "DragToReorder": "드래그하여 순서를 변경",
+  "ShowSilenceProgressBar": "무음 감지 타임아웃 진행률 표시줄을 표시합니다"
 }

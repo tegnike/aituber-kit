@@ -249,5 +249,6 @@
   "PresetQuestions": "Preset Questions",
   "PresetQuestionsInfo": "You can create and register multiple question patterns in advance. The registered questions will be displayed as buttons on the user UI, and clicking them will set them in the chat input field.",
   "EnterPresetQuestion": "Please enter a question",
-  "DragToReorder": "Drag to reorder"
+  "DragToReorder": "Drag to reorder",
+  "ShowSilenceProgressBar": "Display progress bar for silence detection timeout"
 }

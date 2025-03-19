@@ -247,5 +247,6 @@
   "PresetQuestions": "Wstępne ustawienia pytań",
   "PresetQuestionsInfo": "Możesz wcześniej stworzyć i zarejestrować wiele wzorców pytań. Zarejestrowane pytania będą wyświetlane w formie przycisków na interfejsie użytkownika, a po kliknięciu zostaną ustawione w polu wprowadzania czatu.",
   "EnterPresetQuestion": "Proszę wpisać pytanie",
-  "DragToReorder": "Przeciągnij, aby zmienić kolejność"
+  "DragToReorder": "Przeciągnij, aby zmienić kolejność",
+  "ShowSilenceProgressBar": "Wyświetl pasek postępu wykrywania ciszy"
 }

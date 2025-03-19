@@ -246,5 +246,6 @@
   "PresetQuestions": "Voreingestellte Fragen",
   "PresetQuestionsInfo": "Sie können mehrere Fragenmuster im Voraus erstellen und registrieren. Die registrierten Fragen werden in Form von Schaltflächen in der Benutzeroberfläche angezeigt und werden beim Klicken im Chat-Eingabefeld gesetzt.",
   "EnterPresetQuestion": "Bitte Frage eingeben",
-  "DragToReorder": "Ziehen, um die Reihenfolge zu ändern"
+  "DragToReorder": "Ziehen, um die Reihenfolge zu ändern",
+  "ShowSilenceProgressBar": "Fortschrittsanzeige für die Stummerkennung anzeigen"
 }

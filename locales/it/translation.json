@@ -246,5 +246,6 @@
   "PresetQuestions": "Impostazione delle domande",
   "PresetQuestionsInfo": "È possibile creare e registrare in anticipo più modelli di domande. Le domande registrate vengono visualizzate in formato pulsante nell'interfaccia utente e, quando vengono cliccate, vengono impostate nel campo di input della chat.",
   "EnterPresetQuestion": "Inserisci una domanda",
-  "DragToReorder": "Trascina per riordinare"
+  "DragToReorder": "Trascina per riordinare",
+  "ShowSilenceProgressBar": "Mostra la barra di avanzamento del timeout di rilevamento del silenzio"
 }

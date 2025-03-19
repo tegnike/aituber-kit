@@ -248,5 +248,6 @@
   "PresetQuestions": "预设问题",
   "PresetQuestionsInfo": "可以事先创建和注册多个问题模式。注册的问题将以按钮形式显示在用户界面上，点击后将设置到聊天输入框中。",
   "EnterPresetQuestion": "请输入问题",
-  "DragToReorder": "拖动以重新排序"
+  "DragToReorder": "拖动以重新排序",
+  "ShowSilenceProgressBar": "显示无声检测超时的进度条"
 }

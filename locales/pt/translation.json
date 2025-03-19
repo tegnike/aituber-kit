@@ -246,5 +246,6 @@
   "PresetQuestions": "Configuração prévia de perguntas",
   "PresetQuestionsInfo": "Você pode criar e registrar vários padrões de perguntas com antecedência. As perguntas registradas serão exibidas em formato de botão na interface do usuário e, ao clicar, serão definidas no campo de entrada do chat.",
   "EnterPresetQuestion": "Por favor, insira a pergunta",
-  "DragToReorder": "Arraste para reordenar"
+  "DragToReorder": "Arraste para reordenar",
+  "ShowSilenceProgressBar": "Mostrar barra de progresso do tempo limite de detecção de silêncio"
 }

@@ -246,5 +246,6 @@
   "PresetQuestions": "Cài đặt trước câu hỏi",
   "PresetQuestionsInfo": "Bạn có thể tạo và đăng ký nhiều mẫu câu hỏi trước. Các câu hỏi đã đăng ký sẽ được hiển thị dưới dạng nút trên giao diện người dùng và khi nhấp vào sẽ được đặt vào ô nhập chat.",
   "EnterPresetQuestion": "Vui lòng nhập câu hỏi",
-  "DragToReorder": "Kéo để thay đổi thứ tự"
+  "DragToReorder": "Kéo để thay đổi thứ tự",
+  "ShowSilenceProgressBar": "Hiển thị thanh tiến trình phát hiện im lặng"
 }
