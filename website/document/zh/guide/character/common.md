@@ -16,6 +16,13 @@ NEXT_PUBLIC_MODEL_TYPE=vrm
 # 系统提示
 NEXT_PUBLIC_SYSTEM_PROMPT="你是一个名叫Nike的AI助手。请以友好、开朗的性格说话。适当使用以下情感标签来改变表情和语调：[neutral] - 正常表情，[happy] - 高兴表情，[sad] - 悲伤表情，[angry] - 愤怒表情，[relaxed] - 放松表情"
 
+# 字元預設名
+NEXT_PUBLIC_CUSTOM_PRESET_NAME1="Preset 1"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME2="Preset 2"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME3="Preset 3"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME4="Preset 4"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME5="Preset 5"
+
 # 字元預設
 NEXT_PUBLIC_CHARACTER_PRESET1="您是一位名叫 Nique 的 AI 助理。"
 NEXT_PUBLIC_CHARACTER_PRESET2="您是一位名叫 Nique 的 AI 助理。"
@@ -45,7 +52,7 @@ NEXT_PUBLIC_CHARACTER_PRESET5="您是一位名叫 Nique 的 AI 助理。"
 
 ### 字元預設
 
-儲存多個字元提示。除了直接點選召回外，還可透過 Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) 使用捷徑；按住 Shift 鍵並選擇預設，即可將目前的字元提示儲存在預設中。
+儲存多個字元提示。除了直接點選召回外，還可透過 Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) 使用捷徑。
 
 ### 使用情感标签
 
