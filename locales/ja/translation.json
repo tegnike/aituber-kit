@@ -54,7 +54,6 @@
   "CharacterSettingsPrompt": "キャラクタープロンプト",
   "CharacterSettingsInfo": "この値はシステムプロンプトとして設定されます。\n初期プロンプトを参考に、感情タグを指定することでキャラクターの表情やモーションを制御できます。例: [neutral]おはようございます！[happy]今日もお疲れ様です！",
   "CharacterSettingsReset": "キャラクター設定リセット",
-  "characterpresetInfo": "プリセットを選択すると、キャラクタープロンプトが変更されます。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)でショートカットが可能です。\nShiftキーを押しながらプリセットを選ぶと、現在のキャラクタープロンプトがプリセットに保存されます。",
   "Characterpreset1": "プリセット1",
   "Characterpreset2": "プリセット2",
   "Characterpreset3": "プリセット3",
