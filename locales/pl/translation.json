@@ -249,5 +249,6 @@
   "MaxTokens": "Maksymalna liczba tokenów",
   "MaxTokensInfo": "Maksymalna liczba tokenów różni się w zależności od używanego modelu AI. Sprawdź specyfikacje każdego modelu.",
   "CannotUseParameters": "W przypadku włączonego trybu API w czasie rzeczywistym lub trybu audio, parametry Temperature i Max Tokens nie mogą być określone.",
-  "DocumentationDescription": "Szczegółowe instrukcje i samouczki dotyczące AITuberKit można znaleźć pod poniższym adresem URL."
+  "DocumentationDescription": "Szczegółowe instrukcje i samouczki dotyczące AITuberKit można znaleźć pod poniższym adresem URL.",
+  "CharacterpresetInfo": "Wybierając preset, zmieniasz prompt postaci.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) umożliwia skróty."
 }

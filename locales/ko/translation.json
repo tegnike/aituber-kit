@@ -250,5 +250,6 @@
   "MaxTokens": "최대 토큰 수",
   "MaxTokensInfo": "최대 토큰 수는 사용 중인 AI 모델에 따라 다릅니다. 각 모델의 사양을 확인하세요.",
   "CannotUseParameters": "실시간 API 모드 또는 오디오 모드가 활성화된 경우, Temperature와 Max Tokens 매개변수를 지정할 수 없습니다.",
-  "DocumentationDescription": "AITuberKit의 자세한 사용법 및 튜토리얼은 아래 URL에서 확인하세요."
+  "DocumentationDescription": "AITuberKit의 자세한 사용법 및 튜토리얼은 아래 URL에서 확인하세요.",
+  "CharacterpresetInfo": "프리셋을 선택하면 캐릭터 프롬프트가 변경됩니다.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)로 단축키를 사용할 수 있습니다."
 }

@@ -55,11 +55,11 @@
   "CharacterSettingsInfo": "Giá trị này được sử dụng làm prompt hệ thống.\nTham khảo prompt ban đầu và chỉ định các tag cảm xúc để điều khiển biểu cảm và chuyển động của nhân vật. Ví dụ: [neutral]Chào buổi sáng![happy]Hôm nay cũng là một ngày bận rộn!",
   "CharacterSettingsReset": "Đặt lại cài đặt nhân vật",
   "characterpresetInfo": "Chọn cài đặt trước sẽ thay đổi lời nhắc ký tự.\nPhím tắt có thể được sử dụng với Cmd + Shift + 1 ~ 5 (Mac) / Ctrl + Shift + 1 ~ 5 (Windows).\nBằng cách giữ phím Shift trong khi chọn cài đặt trước, lời nhắc ký tự hiện tại sẽ được lưu vào cài đặt trước.",
-  "Characterpreset1": "Cài đặt trước 1",
-  "Characterpreset2": "Cài đặt trước 2",
-  "Characterpreset3": "Cài đặt trước 3",
-  "Characterpreset4": "Cài đặt trước 4",
-  "Characterpreset5": "Cài đặt trước 5",
+  "Characterpreset1": "Preset 1",
+  "Characterpreset2": "Preset 2",
+  "Characterpreset3": "Preset 3",
+  "Characterpreset4": "Preset 4",
+  "Characterpreset5": "Preset 5",
   "SyntheticVoiceEngineChoice": "Chọn engine giọng nói tổng hợp",
   "VoiceAdjustment": "Điều chỉnh giọng nói",
   "VoiceEngineInstruction": "Chọn engine giọng nói tổng hợp bạn muốn sử dụng.",
@@ -248,5 +248,6 @@
   "MaxTokens": "Số lượng token tối đa",
   "MaxTokensInfo": "Số lượng token tối đa khác nhau tùy thuộc vào mô hình AI đang sử dụng. Vui lòng kiểm tra thông số kỹ thuật của từng mô hình.",
   "CannotUseParameters": "Nếu chế độ API thời gian thực hoặc chế độ âm thanh được kích hoạt, các tham số Temperature và Max Tokens không thể được chỉ định.",
-  "DocumentationDescription": "Vui lòng xem hướng dẫn chi tiết và tutorial của AITuberKit tại URL dưới đây."
+  "DocumentationDescription": "Vui lòng xem hướng dẫn chi tiết và tutorial của AITuberKit tại URL dưới đây.",
+  "CharacterpresetInfo": "Khi bạn chọn một preset, prompt nhân vật sẽ được thay đổi.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) có thể sử dụng phím tắt."
 }

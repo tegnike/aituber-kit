@@ -248,5 +248,6 @@
   "MaxTokens": "Nombre maximal de tokens",
   "MaxTokensInfo": "Le nombre maximal de tokens varie en fonction du modèle AI utilisé. Veuillez vérifier les spécifications de chaque modèle.",
   "CannotUseParameters": "Si le mode API en temps réel ou le mode audio est activé, les paramètres Temperature et Max Tokens ne peuvent pas être spécifiés.",
-  "DocumentationDescription": "Vous pouvez consulter des instructions détaillées et des tutoriels sur AITuberKit à l'URL ci-dessous."
+  "DocumentationDescription": "Vous pouvez consulter des instructions détaillées et des tutoriels sur AITuberKit à l'URL ci-dessous.",
+  "CharacterpresetInfo": "En sélectionnant un préréglage, l'invite de personnage sera modifiée.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) pour les raccourcis."
 }

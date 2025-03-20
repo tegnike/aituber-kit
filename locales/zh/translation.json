@@ -250,5 +250,6 @@
   "MaxTokens": "最大令牌数",
   "MaxTokensInfo": "最大令牌数因所使用的AI模型而异。请查看各模型的规格。",
   "CannotUseParameters": "在实时API模式或音频模式启用时，无法指定Temperature和Max Tokens参数。",
-  "DocumentationDescription": "请通过以下URL查看AITuberKit的详细使用方法和教程。"
+  "DocumentationDescription": "请通过以下URL查看AITuberKit的详细使用方法和教程。",
+  "CharacterpresetInfo": "选择预设后，角色提示将会更改。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)可以使用快捷键。"
 }
