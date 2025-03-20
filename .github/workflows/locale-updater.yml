@@ -1,7 +1,7 @@
 name: Locale Files Updater
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
     branches:
       - develop
@@ -20,7 +20,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 # 履歴を全て取得して差分比較に使用
-          ref: ${{ github.event.pull_request.head.ref }} # PRのブランチをチェックアウト
+          ref: ${{ github.head_ref || github.event.pull_request.head.ref }} # より堅牢なブランチ参照方法
+          repository: ${{ github.event.pull_request.head.repo.full_name }} # フォークリポジトリを明示的に指定
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -52,4 +53,10 @@ jobs:
             exit 0
           fi
           git commit -m "update locale files"
-          git push origin ${{ github.event.pull_request.head.ref }}
+
+          # PRの場合はPRのブランチに、それ以外は現在のブランチにプッシュ
+          if [ -n "${{ github.head_ref }}" ]; then
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
