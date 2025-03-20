@@ -63,6 +63,20 @@ const CharacterPresetMenu = () => {
     setIsOpen(false)
   }
 
+  // キーボードイベントハンドラを追加
+  const handleKeyDown = (
+    e: React.KeyboardEvent,
+    key: string,
+    value: string,
+    customName: string,
+    index: number
+  ) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handlePresetClick(key, value, customName, index)
+    }
+  }
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {/* メインボタン */}
@@ -70,6 +84,8 @@ const CharacterPresetMenu = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center"
         aria-label={t('CharacterSettingsPrompt')}
+        aria-expanded={isOpen}
+        aria-controls="preset-menu"
       >
         {isOpen ? (
           // 上向き矢印（メニューオープン時）
@@ -108,7 +124,11 @@ const CharacterPresetMenu = () => {
 
       {/* プリセットメニュー */}
       {isOpen && (
-        <div className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg p-2 w-48">
+        <div
+          className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg p-2 w-48"
+          id="preset-menu"
+          role="menu"
+        >
           <div className="text-sm font-bold mb-2 text-center text-gray-700">
             {t('CharacterSettingsPrompt')}
           </div>
@@ -119,6 +139,12 @@ const CharacterPresetMenu = () => {
               <button
                 key={key}
                 onClick={() => handlePresetClick(key, value, customName, index)}
+                onKeyDown={(e) =>
+                  handleKeyDown(e, key, value, customName, index)
+                }
+                role="menuitem"
+                tabIndex={0}
+                aria-current={isSelected ? 'true' : 'false'}
                 className={`w-full text-left px-4 py-2 rounded-md mb-1 text-sm ${
                   isSelected
                     ? 'bg-primary text-white'

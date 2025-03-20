@@ -12,6 +12,9 @@ import { TextButton } from '../textButton'
 type Character = Pick<
   SettingsState,
   | 'characterName'
+  | 'showAssistantText'
+  | 'showCharacterName'
+  | 'systemPrompt'
   | 'characterPreset1'
   | 'characterPreset2'
   | 'characterPreset3'
@@ -23,9 +26,6 @@ type Character = Pick<
   | 'customPresetName4'
   | 'customPresetName5'
   | 'selectedPresetIndex'
-  | 'showAssistantText'
-  | 'showCharacterName'
-  | 'systemPrompt'
   | 'selectedVrmPath'
   | 'selectedLive2DPath'
 >
@@ -567,10 +567,10 @@ const Character = () => {
           </TextButton>
         </div>
         <div className="my-16 whitespace-pre-line">
-          {t('characterpresetInfo')}
+          {t('CharacterpresetInfo')}
         </div>
         <div className="my-24 mb-8">
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-4" role="tablist">
             {characterPresets.map(({ key, value }, index) => {
               const customNameKey =
                 `customPresetName${index + 1}` as keyof Character
@@ -597,6 +597,26 @@ const Character = () => {
                       type: 'info',
                       tag: `character-preset-switching-${index + 1}`,
                     })
+                  }}
+                  role="tab"
+                  aria-selected={isSelected}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      settingsStore.setState({
+                        selectedPresetIndex: index,
+                        systemPrompt: value,
+                      })
+
+                      toastStore.getState().addToast({
+                        message: t('Toasts.PresetSwitching', {
+                          presetName: customName,
+                        }),
+                        type: 'info',
+                        tag: `character-preset-switching-${index + 1}`,
+                      })
+                    }
                   }}
                   className={`px-4 py-2 rounded-md text-sm ${
                     isSelected
@@ -630,6 +650,9 @@ const Character = () => {
                         [customNameKey]: e.target.value,
                       })
                     }}
+                    aria-label={t('PresetNameLabel', {
+                      defaultValue: 'Preset Name',
+                    })}
                     className="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm w-full"
                     placeholder={t(`Characterpreset${index + 1}`)}
                   />
@@ -644,6 +667,9 @@ const Character = () => {
                       [key]: newValue,
                     })
                   }}
+                  aria-label={t('SystemPromptLabel', {
+                    defaultValue: 'System Prompt',
+                  })}
                   className="px-3 py-2 bg-white border border-gray-300 rounded-md w-full h-64 text-sm"
                 />
               </div>

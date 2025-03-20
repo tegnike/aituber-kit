@@ -286,11 +286,11 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
       characterPreset5:
         process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
-      customPresetName1: 'プリセット1',
-      customPresetName2: 'プリセット2',
-      customPresetName3: 'プリセット3',
-      customPresetName4: 'プリセット4',
-      customPresetName5: 'プリセット5',
+      customPresetName1: 'Preset 1',
+      customPresetName2: 'Preset 2',
+      customPresetName3: 'Preset 3',
+      customPresetName4: 'Preset 4',
+      customPresetName5: 'Preset 5',
       selectedPresetIndex: 0,
       showAssistantText:
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
