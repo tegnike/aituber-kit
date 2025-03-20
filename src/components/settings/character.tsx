@@ -191,7 +191,7 @@ const Live2DSettingsForm = () => {
                     )
                   }
                 >
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-1">
                     {store[field.key].length > 0 ? (
                       store[field.key].map((expression) => (
                         <span
@@ -544,9 +544,9 @@ const Character = () => {
             {t('CharacterSettingsPrompt')}
           </div>
           {selectAIService === 'dify' ? (
-            <div className="my-16">{t('DifyInstruction')}</div>
+            <div className="my-4">{t('DifyInstruction')}</div>
           ) : (
-            <div className="my-16 whitespace-pre-line">
+            <div className="my-4 whitespace-pre-line">
               {t('CharacterSettingsInfo')}
             </div>
           )}
@@ -558,10 +558,10 @@ const Character = () => {
             {t('CharacterSettingsReset')}
           </TextButton>
         </div>
-        <div className="my-16 whitespace-pre-line">
+        <div className="my-4 whitespace-pre-line">
           {t('CharacterpresetInfo')}
         </div>
-        <div className="my-24 mb-8">
+        <div className="my-6 mb-2">
           <div className="flex flex-wrap gap-2 mb-4" role="tablist">
             {characterPresets.map(({ key, value }, index) => {
               const customNameKey =
