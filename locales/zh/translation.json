@@ -252,10 +252,10 @@
   "MaxTokensInfo": "最大令牌数因所使用的AI模型而异。请查看各模型的规格。",
   "CannotUseParameters": "在实时API模式或音频模式启用时，无法指定Temperature和Max Tokens参数。",
   "DocumentationDescription": "请通过以下URL查看AITuberKit的详细使用方法和教程。",
-  "PresetQuestions": "预设问题",
-  "PresetQuestionsInfo": "可以事先创建和注册多个问题模式。注册的问题将以按钮形式显示在用户界面上，点击后将设置到聊天输入框中。",
+  "PresetQuestions": "问题的预设",
+  "PresetQuestionsInfo": "可以预先创建和注册多个问题模式。注册的问题将以按钮形式显示在用户界面上，点击后将设置到聊天输入框中。",
   "EnterPresetQuestion": "请输入问题",
-  "DragToReorder": "拖动以重新排序",
-  "ShowSilenceProgressBar": "显示无声检测超时的进度条",
+  "DragToReorder": "拖动以更改顺序",
+  "ShowSilenceProgressBar": "显示静音检测超时的进度条",
   "CharacterpresetInfo": "选择预设后，角色提示将会更改。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)可以使用快捷键。"
 }

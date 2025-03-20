@@ -251,9 +251,9 @@
   "CannotUseParameters": "Wenn der Echtzeit-API-Modus oder der Audiomodus aktiviert ist, können die Parameter Temperature und Max Tokens nicht angegeben werden.",
   "DocumentationDescription": "Detaillierte Anleitungen und Tutorials zur Verwendung von AITuberKit finden Sie unter der folgenden URL.",
   "PresetQuestions": "Voreingestellte Fragen",
-  "PresetQuestionsInfo": "Sie können mehrere Fragenmuster im Voraus erstellen und registrieren. Die registrierten Fragen werden in Form von Schaltflächen in der Benutzeroberfläche angezeigt und werden beim Klicken im Chat-Eingabefeld gesetzt.",
+  "PresetQuestionsInfo": "Mehrere Fragenmuster können im Voraus erstellt und registriert werden. Die registrierten Fragen werden in Form von Schaltflächen in der Benutzeroberfläche angezeigt und beim Klicken im Chat-Eingabefeld gesetzt.",
   "EnterPresetQuestion": "Bitte Frage eingeben",
   "DragToReorder": "Ziehen, um die Reihenfolge zu ändern",
-  "ShowSilenceProgressBar": "Fortschrittsanzeige für die Stummerkennung anzeigen",
+  "ShowSilenceProgressBar": "Fortschrittsanzeige für die Stilleerkennung anzeigen",
   "CharacterpresetInfo": "Wenn Sie ein Preset auswählen, ändert sich der Charakter-Prompt.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ermöglicht Shortcuts."
 }

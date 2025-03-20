@@ -257,6 +257,6 @@
   "PresetQuestionsInfo": "You can create and register multiple question patterns in advance. The registered questions will be displayed as buttons on the user UI, and clicking them will set them in the chat input field.",
   "EnterPresetQuestion": "Please enter a question",
   "DragToReorder": "Drag to reorder",
-  "ShowSilenceProgressBar": "Display progress bar for silence detection timeout",
+  "ShowSilenceProgressBar": "Show progress bar for silence detection timeout",
   "CharacterpresetInfo": "Selecting a preset will change the character prompt.\nYou can use shortcuts with Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)."
 }

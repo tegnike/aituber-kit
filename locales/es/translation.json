@@ -250,10 +250,10 @@
   "MaxTokensInfo": "El número máximo de tokens varía según el modelo de IA que esté utilizando. Consulte las especificaciones de cada modelo.",
   "CannotUseParameters": "Si el modo API en tiempo real o el modo de audio están habilitados, no se pueden especificar los parámetros Temperature y Max Tokens.",
   "DocumentationDescription": "Puede ver detalles sobre cómo usar AITuberKit y tutoriales en la siguiente URL.",
-  "PresetQuestions": "Configuración previa de preguntas",
+  "PresetQuestions": "Preguntas preestablecidas",
   "PresetQuestionsInfo": "Puedes crear y registrar múltiples patrones de preguntas de antemano. Las preguntas registradas se mostrarán en forma de botones en la interfaz de usuario del usuario, y al hacer clic se establecerán en el campo de entrada del chat.",
-  "EnterPresetQuestion": "Por favor, ingresa una pregunta",
-  "DragToReorder": "Arrastra para reordenar",
-  "ShowSilenceProgressBar": "Mostrar barra de progreso de tiempo de espera de detección de silencio",
+  "EnterPresetQuestion": "Por favor, introduce una pregunta",
+  "DragToReorder": "Arrastra para cambiar el orden",
+  "ShowSilenceProgressBar": "Mostrar la barra de progreso del tiempo de espera de detección de silencio",
   "CharacterpresetInfo": "Al seleccionar un preset, se cambiará el prompt del personaje.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) para atajos."
 }

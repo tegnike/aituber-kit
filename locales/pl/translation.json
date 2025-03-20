@@ -251,7 +251,7 @@
   "MaxTokensInfo": "Maksymalna liczba tokenów różni się w zależności od używanego modelu AI. Sprawdź specyfikacje każdego modelu.",
   "CannotUseParameters": "W przypadku włączonego trybu API w czasie rzeczywistym lub trybu audio, parametry Temperature i Max Tokens nie mogą być określone.",
   "DocumentationDescription": "Szczegółowe instrukcje i samouczki dotyczące AITuberKit można znaleźć pod poniższym adresem URL.",
-  "PresetQuestions": "Wstępne ustawienia pytań",
+  "PresetQuestions": "Wstępnie ustawione pytania",
   "PresetQuestionsInfo": "Możesz wcześniej stworzyć i zarejestrować wiele wzorców pytań. Zarejestrowane pytania będą wyświetlane w formie przycisków na interfejsie użytkownika, a po kliknięciu zostaną ustawione w polu wprowadzania czatu.",
   "EnterPresetQuestion": "Proszę wpisać pytanie",
   "DragToReorder": "Przeciągnij, aby zmienić kolejność",
