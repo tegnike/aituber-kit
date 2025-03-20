@@ -56,6 +56,11 @@ const emotionFields = [
     label: 'Relaxed Emotions',
     defaultValue: ['Relaxed'],
   },
+  {
+    key: 'surprisedEmotions',
+    label: 'Surprised Emotions',
+    defaultValue: ['Surprised'],
+  },
 ] as const
 
 const motionFields = [
@@ -80,6 +85,11 @@ const motionFields = [
     key: 'relaxedMotionGroup',
     label: 'Relaxed Motion Group',
     defaultValue: 'Relaxed',
+  },
+  {
+    key: 'surprisedMotionGroup',
+    label: 'Surprised Motion Group',
+    defaultValue: 'Surprised',
   },
 ] as const
 

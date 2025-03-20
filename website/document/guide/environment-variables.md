@@ -46,7 +46,7 @@ NEXT_PUBLIC_CHARACTER_NAME=ニケちゃん
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
 # システムプロンプト
-NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情"
+NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情、[surprised] - 驚きの表情"
 ```
 
 ### VRM設定
@@ -68,6 +68,7 @@ NEXT_PUBLIC_HAPPY_EMOTIONS=Happy,Happy2
 NEXT_PUBLIC_SAD_EMOTIONS=Sad,Sad2,Troubled
 NEXT_PUBLIC_ANGRY_EMOTIONS=Angry,Focus
 NEXT_PUBLIC_RELAXED_EMOTIONS=Relaxed
+NEXT_PUBLIC_SURPRISED_EMOTIONS=Surprised
 
 # モーショングループ設定
 NEXT_PUBLIC_IDLE_MOTION_GROUP=Idle
@@ -76,6 +77,7 @@ NEXT_PUBLIC_HAPPY_MOTION_GROUP=Happy
 NEXT_PUBLIC_SAD_MOTION_GROUP=Sad
 NEXT_PUBLIC_ANGRY_MOTION_GROUP=Angry
 NEXT_PUBLIC_RELAXED_MOTION_GROUP=Relaxed
+NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 ```
 
 ## AI設定

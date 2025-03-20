@@ -240,6 +240,7 @@
     "sadEmotions": "悲しい",
     "angryEmotions": "怒り",
     "relaxedEmotions": "リラックス",
+    "surprisedEmotions": "驚き",
     "MotionGroups": "モーショングループ設定",
     "MotionGroupsInfo": "モーショングループは選択したグループからランダムに選択されます。\n表情設定と同じく、ご自身のモデルに合わせて設定してください。\n「アイドル時」は会話完了後に表示されるモーションです。",
     "SelectMotionGroup": "モーショングループを選択",
@@ -248,7 +249,8 @@
     "happyMotionGroup": "嬉しい",
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
-    "relaxedMotionGroup": "リラックス"
+    "relaxedMotionGroup": "リラックス",
+    "surprisedMotionGroup": "驚き"
   },
   "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
   "Temperature": "Temperature",

@@ -62,12 +62,14 @@ interface Live2DSettings {
   sadEmotions: string[]
   angryEmotions: string[]
   relaxedEmotions: string[]
+  surprisedEmotions: string[]
   idleMotionGroup: string
   neutralMotionGroup: string
   happyMotionGroup: string
   sadMotionGroup: string
   angryMotionGroup: string
   relaxedMotionGroup: string
+  surprisedMotionGroup: string
 }
 
 interface ModelProvider extends Live2DSettings {
@@ -393,12 +395,16 @@ const settingsStore = create<SettingsState>()(
       angryEmotions: process.env.NEXT_PUBLIC_ANGRY_EMOTIONS?.split(',') || [],
       relaxedEmotions:
         process.env.NEXT_PUBLIC_RELAXED_EMOTIONS?.split(',') || [],
+      surprisedEmotions:
+        process.env.NEXT_PUBLIC_SURPRISED_EMOTIONS?.split(',') || [],
       idleMotionGroup: process.env.NEXT_PUBLIC_IDLE_MOTION_GROUP || '',
       neutralMotionGroup: process.env.NEXT_PUBLIC_NEUTRAL_MOTION_GROUP || '',
       happyMotionGroup: process.env.NEXT_PUBLIC_HAPPY_MOTION_GROUP || '',
       sadMotionGroup: process.env.NEXT_PUBLIC_SAD_MOTION_GROUP || '',
       angryMotionGroup: process.env.NEXT_PUBLIC_ANGRY_MOTION_GROUP || '',
       relaxedMotionGroup: process.env.NEXT_PUBLIC_RELAXED_MOTION_GROUP || '',
+      surprisedMotionGroup:
+        process.env.NEXT_PUBLIC_SURPRISED_MOTION_GROUP || '',
     }),
     {
       name: 'aitube-kit-settings',
@@ -495,12 +501,14 @@ const settingsStore = create<SettingsState>()(
         sadEmotions: state.sadEmotions,
         angryEmotions: state.angryEmotions,
         relaxedEmotions: state.relaxedEmotions,
+        surprisedEmotions: state.surprisedEmotions,
         idleMotionGroup: state.idleMotionGroup,
         neutralMotionGroup: state.neutralMotionGroup,
         happyMotionGroup: state.happyMotionGroup,
         sadMotionGroup: state.sadMotionGroup,
         angryMotionGroup: state.angryMotionGroup,
         relaxedMotionGroup: state.relaxedMotionGroup,
+        surprisedMotionGroup: state.surprisedMotionGroup,
         maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
         temperature: state.temperature,
