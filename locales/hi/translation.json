@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "कैरेक्टर प्रॉम्प्ट",
   "CharacterSettingsInfo": "यह मान सिस्टम प्रॉम्प्ट के रूप में सेट किया जाता है।\nकृपया कैरेक्टर के भावों और गतियों को नियंत्रित करने के लिए भावना टैग निर्दिष्ट करने के लिए प्रारंभिक प्रॉम्प्ट का संदर्भ लें। उदाहरण: [neutral]सुप्रभात![happy]आज भी एक कठिन दिन है!",
   "CharacterSettingsReset": "कैरेक्टर सेटिंग्स रीसेट करें",
+  "characterpresetInfo": "प्रीसेट का चयन करने पर, चरित्र प्रॉम्प्ट बदल जाएगा।\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) का उपयोग करके शॉर्टकट बनाया जा सकता है।\nShift कुंजी को दबाए रखते हुए प्रीसेट का चयन करने पर, वर्तमान चरित्र प्रॉम्प्ट प्रीसेट में सहेजा जाएगा।",
+  "Characterpreset1": "प्रीसेट1",
+  "Characterpreset2": "प्रीसेट2",
+  "Characterpreset3": "प्रीसेट3",
+  "Characterpreset4": "प्रीसेट4",
+  "Characterpreset5": "प्रीसेट5",
   "SyntheticVoiceEngineChoice": "सिंथेटिक वॉइस इंजन चुनें",
   "VoiceAdjustment": "आवाज़ समायोजन",
   "VoiceEngineInstruction": "उपयोग करने के लिए सिंथेटिक वॉइस इंजन चुनें।",
@@ -197,7 +203,8 @@
     "FunctionExecuting": "{{funcName}} निष्पादित हो रहा है",
     "FunctionExecutionFailed": "{{funcName}} का निष्पादन विफल हुआ",
     "FirefoxNotSupported": "यह सुविधा Firefox पर समर्थित नहीं है",
-    "SpeechRecognitionError": "स्पीच पहचान त्रुटि हुई"
+    "SpeechRecognitionError": "स्पीच पहचान त्रुटि हुई",
+    "PresetSwitching": "{{presetName}} में स्विच किया गया।"
   },
   "UsingOpenAITTS": "OpenAI का उपयोग",
   "OpenAITTSInfo": "OpenAI का उपयोग करें। यह कई भाषाओं का समर्थन करता है। यदि आप AI सेवा के रूप में OpenAI का चयन करते हैं, तो आपको नीचे API कुंजी सेट करने की आवश्यकता नहीं है।",
@@ -247,5 +254,6 @@
   "PresetQuestionsInfo": "आप कई प्रश्न पैटर्न को पूर्व में बना और पंजीकृत कर सकते हैं। पंजीकृत प्रश्न उपयोगकर्ता UI पर बटन के रूप में प्रदर्शित होते हैं, और क्लिक करने पर चैट इनपुट क्षेत्र में सेट हो जाते हैं।",
   "EnterPresetQuestion": "कृपया प्रश्न दर्ज करें",
   "DragToReorder": "क्रम बदलने के लिए खींचें",
-  "ShowSilenceProgressBar": "मौन पहचान टाइमआउट प्रगति बार दिखाएँ"
+  "ShowSilenceProgressBar": "मौन पहचान टाइमआउट प्रगति बार दिखाएँ",
+  "CharacterpresetInfo": "यदि आप प्रीसेट का चयन करते हैं, तो चरित्र प्रॉम्प्ट बदल जाएगा।\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) के माध्यम से शॉर्टकट संभव है।"
 }

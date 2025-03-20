@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Invite de personnage",
   "CharacterSettingsInfo": "Cette valeur est définie comme l'invite système.\nVeuillez vous référer à l'invite initiale et spécifier les balises d'émotion pour contrôler les expressions et les mouvements du personnage. Exemple : [neutral]Bonjour![happy]Aujourd'hui est aussi une journée difficile!",
   "CharacterSettingsReset": "Réinitialiser les paramètres du personnage",
+  "characterpresetInfo": "La sélection d'un préréglage modifie l'invite de caractères.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) pour les raccourcis.\nLa sélection d'un préréglage tout en maintenant la touche Shift enfoncée permet d'enregistrer l'invite de caractères actuelle dans le préréglage.",
+  "Characterpreset1": "Préréglage 1",
+  "Characterpreset2": "Préréglage 2",
+  "Characterpreset3": "Préréglage 3",
+  "Characterpreset4": "Préréglage 4",
+  "Characterpreset5": "Préréglage 5",
   "SyntheticVoiceEngineChoice": "Choisir le moteur de synthèse vocale",
   "VoiceAdjustment": "Ajustement de la voix",
   "VoiceEngineInstruction": "Sélectionnez le moteur de synthèse vocale que vous souhaitez utiliser.",
@@ -197,7 +203,8 @@
     "FunctionExecuting": "Exécution de {{funcName}}",
     "FunctionExecutionFailed": "L'exécution de {{funcName}} a échoué",
     "FirefoxNotSupported": "Cette fonctionnalité n'est pas prise en charge sur Firefox",
-    "SpeechRecognitionError": "Une erreur de reconnaissance vocale s'est produite"
+    "SpeechRecognitionError": "Une erreur de reconnaissance vocale s'est produite",
+    "PresetSwitching": "Vous avez basculé sur {{presetName}}."
   },
   "UsingOpenAITTS": "Utilisation d'OpenAI",
   "OpenAITTSInfo": "Utilisation d'OpenAI. Prend en charge plusieurs langues. Si vous sélectionnez OpenAI comme service IA, vous n'avez pas besoin de définir la clé API ci-dessous.",
@@ -247,5 +254,6 @@
   "PresetQuestionsInfo": "Vous pouvez créer et enregistrer plusieurs modèles de questions à l'avance. Les questions enregistrées s'affichent sous forme de boutons dans l'interface utilisateur, et en cliquant dessus, elles sont ajoutées au champ de saisie de chat.",
   "EnterPresetQuestion": "Veuillez entrer une question",
   "DragToReorder": "Faites glisser pour réorganiser",
-  "ShowSilenceProgressBar": "Afficher la barre de progression du délai d'attente de détection de silence"
+  "ShowSilenceProgressBar": "Afficher la barre de progression du délai d'attente de détection de silence",
+  "CharacterpresetInfo": "En sélectionnant un préréglage, l'invite de personnage sera modifiée.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) pour les raccourcis."
 }

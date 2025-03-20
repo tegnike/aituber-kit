@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "캐릭터 프롬프트",
   "CharacterSettingsInfo": "이 값은 시스템 프롬프트로 설정됩니다.\n초기 프롬프트를 참고하여 감정 태그를 지정하여 캐릭터의 표정과 모션을 제어할 수 있습니다. 예: [neutral]좋은 아침이에요![happy]오늘도 힘든 하루예요!",
   "CharacterSettingsReset": "캐릭터 설정 재설정",
+  "characterpresetInfo": "프리셋을 선택하면 캐릭터 프롬프트가 변경됩니다.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)로 단축키가 가능합니다.\nShift 키를 누른 상태에서 프리셋을 선택하면 현재 캐릭터 프롬프트가 프리셋에 저장됩니다.",
+  "Characterpreset1": "프리셋1",
+  "Characterpreset2": "프리셋2",
+  "Characterpreset3": "프리셋3",
+  "Characterpreset4": "프리셋4",
+  "Characterpreset5": "프리셋5",
   "SyntheticVoiceEngineChoice": "합성 음성 엔진 선택",
   "VoiceAdjustment": "목소리 조정",
   "VoiceEngineInstruction": "사용할 합성 음성 엔진을 선택하십시오.",
@@ -199,7 +205,8 @@
     "FunctionExecuting": "{{funcName}}을(를) 실행하고 있습니다",
     "FunctionExecutionFailed": "{{funcName}}의 실행에 실패했습니다",
     "FirefoxNotSupported": "Firefox에서는 이 기능을 지원하지 않습니다",
-    "SpeechRecognitionError": "음성 인식 오류가 발생했습니다"
+    "SpeechRecognitionError": "음성 인식 오류가 발생했습니다",
+    "PresetSwitching": "{{presetName}}로 전환되었습니다."
   },
   "UsingOpenAITTS": "OpenAI 사용",
   "OpenAITTSInfo": "OpenAI를 사용하고 있습니다. 다국어에 대응할 수 있습니다. AI 서비스로 OpenAI를 선택한 경우 아래 API 키를 설정할 필요는 없습니다.",
@@ -249,5 +256,6 @@
   "PresetQuestionsInfo": "여러 질문 패턴을 미리 작성하고 등록할 수 있습니다. 등록된 질문은 사용자 UI에 버튼 형식으로 표시되며, 클릭하면 채팅 입력란에 설정됩니다.",
   "EnterPresetQuestion": "질문을 입력하세요",
   "DragToReorder": "드래그하여 순서를 변경",
-  "ShowSilenceProgressBar": "무음 감지 타임아웃 진행률 표시줄을 표시합니다"
+  "ShowSilenceProgressBar": "무음 감지 타임아웃 진행률 표시줄을 표시합니다",
+  "CharacterpresetInfo": "프리셋을 선택하면 캐릭터 프롬프트가 변경됩니다.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)로 단축키를 사용할 수 있습니다."
 }

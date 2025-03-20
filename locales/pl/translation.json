@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Prompt postaci",
   "CharacterSettingsInfo": "Ta wartość jest ustawiana jako systemowy prompt.\nBazując na początkowym promptcie, możesz określić tagi emocji, aby kontrolować wyraz twarzy i ruchy postaci. Przykład: [neutral] Dzień dobry! [happy] Miłego dnia!",
   "CharacterSettingsReset": "Resetuj ustawienia postaci",
+  "characterpresetInfo": "Wybranie ustawienia wstępnego powoduje zmianę podpowiedzi znaków.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) dla skrótów.\nWybranie ustawienia wstępnego przy jednoczesnym przytrzymaniu klawisza Shift powoduje zapisanie bieżącego znaku zachęty w ustawieniu wstępnym.",
+  "Characterpreset1": "Preset 1",
+  "Characterpreset2": "Preset 2",
+  "Characterpreset3": "Preset 3",
+  "Characterpreset4": "Preset 4",
+  "Characterpreset5": "Preset 5",
   "SyntheticVoiceEngineChoice": "Wybór silnika syntezatora mowy",
   "VoiceAdjustment": "Dostosowanie głosu",
   "VoiceEngineInstruction": "Wybierz silnik syntezatora mowy, którego chcesz używać.",
@@ -198,7 +204,8 @@
     "FunctionExecuting": "Wykonywanie {{funcName}}.",
     "FunctionExecutionFailed": "Wykonanie {{funcName}} nie powiodło się.",
     "FirefoxNotSupported": "Ta funkcja nie jest obsługiwana w Firefoxie",
-    "SpeechRecognitionError": "Wystąpił błąd rozpoznawania mowy"
+    "SpeechRecognitionError": "Wystąpił błąd rozpoznawania mowy",
+    "PresetSwitching": "Przełączono na {{presetName}}."
   },
   "UsingOpenAITTS": "Użyj OpenAI",
   "OpenAITTSInfo": "Używa OpenAI. Obsługuje wiele języków. Jeśli wybrano OpenAI jako usługę AI, nie ma potrzeby ustawiania klucza API poniżej.",
@@ -248,5 +255,6 @@
   "PresetQuestionsInfo": "Możesz wcześniej stworzyć i zarejestrować wiele wzorców pytań. Zarejestrowane pytania będą wyświetlane w formie przycisków na interfejsie użytkownika, a po kliknięciu zostaną ustawione w polu wprowadzania czatu.",
   "EnterPresetQuestion": "Proszę wpisać pytanie",
   "DragToReorder": "Przeciągnij, aby zmienić kolejność",
-  "ShowSilenceProgressBar": "Wyświetl pasek postępu wykrywania ciszy"
+  "ShowSilenceProgressBar": "Wyświetl pasek postępu wykrywania ciszy",
+  "CharacterpresetInfo": "Wybierając preset, zmieniasz prompt postaci.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) umożliwia skróty."
 }

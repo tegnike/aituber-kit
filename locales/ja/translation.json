@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "キャラクタープロンプト",
   "CharacterSettingsInfo": "この値はシステムプロンプトとして設定されます。\n初期プロンプトを参考に、感情タグを指定することでキャラクターの表情やモーションを制御できます。例: [neutral]おはようございます！[happy]今日もお疲れ様です！",
   "CharacterSettingsReset": "キャラクター設定リセット",
+  "CharacterpresetInfo": "プリセットを選択すると、キャラクタープロンプトが変更されます。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)でショートカットが可能です。",
+  "Characterpreset1": "プリセット1",
+  "Characterpreset2": "プリセット2",
+  "Characterpreset3": "プリセット3",
+  "Characterpreset4": "プリセット4",
+  "Characterpreset5": "プリセット5",
   "SyntheticVoiceEngineChoice": "合成音声エンジンの選択",
   "VoiceAdjustment": "声の調整",
   "VoiceEngineInstruction": "使用する合成音声エンジンを選択してください。",
@@ -203,7 +209,8 @@
     "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました",
     "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません",
     "SpeechRecognitionError": "音声認識エラーが発生しました",
-    "NoSpeechDetected": "音声が検出されませんでした。"
+    "NoSpeechDetected": "音声が検出されませんでした。",
+    "PresetSwitching": "{{presetName}}に切り替わりました。"
   },
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",

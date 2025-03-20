@@ -3,9 +3,32 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, { SettingsState } from '@/features/stores/settings'
+import toastStore from '@/features/stores/toast'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { TextButton } from '../textButton'
+
+// Character型の定義
+type Character = Pick<
+  SettingsState,
+  | 'characterName'
+  | 'showAssistantText'
+  | 'showCharacterName'
+  | 'systemPrompt'
+  | 'characterPreset1'
+  | 'characterPreset2'
+  | 'characterPreset3'
+  | 'characterPreset4'
+  | 'characterPreset5'
+  | 'customPresetName1'
+  | 'customPresetName2'
+  | 'customPresetName3'
+  | 'customPresetName4'
+  | 'customPresetName5'
+  | 'selectedPresetIndex'
+  | 'selectedVrmPath'
+  | 'selectedLive2DPath'
+>
 
 const emotionFields = [
   {
@@ -316,6 +339,58 @@ const Character = () => {
   >([])
   const selectAIService = settingsStore((s) => s.selectAIService)
   const systemPrompt = settingsStore((s) => s.systemPrompt)
+  const characterPresets = [
+    {
+      key: 'characterPreset1',
+      value: settingsStore((s) => s.characterPreset1),
+    },
+    {
+      key: 'characterPreset2',
+      value: settingsStore((s) => s.characterPreset2),
+    },
+    {
+      key: 'characterPreset3',
+      value: settingsStore((s) => s.characterPreset3),
+    },
+    {
+      key: 'characterPreset4',
+      value: settingsStore((s) => s.characterPreset4),
+    },
+    {
+      key: 'characterPreset5',
+      value: settingsStore((s) => s.characterPreset5),
+    },
+  ]
+  const [tooltipText, setTooltipText] = useState('')
+
+  const [tooltip, setTooltip] = useState<{
+    x: number
+    y: number
+    visible: boolean
+  }>({
+    x: 0,
+    y: 0,
+    visible: false,
+  })
+
+  // ツールチップの縦のサイズの上限を20vhに設定
+  const tooltipMaxHeight = '20vh'
+
+  // ツールチップの表示位置を調整するための定数
+  const tooltipOffsetX = 15
+  const tooltipOffsetY = 10
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setTooltip({
+      x: e.clientX + tooltipOffsetX,
+      y: e.clientY + tooltipOffsetY,
+      visible: true,
+    })
+  }
+
+  const handleMouseLeave = () => {
+    setTooltip((prev) => ({ ...prev, visible: false }))
+  }
 
   useEffect(() => {
     fetch('/api/get-vrm-list')
@@ -469,9 +544,9 @@ const Character = () => {
             {t('CharacterSettingsPrompt')}
           </div>
           {selectAIService === 'dify' ? (
-            <div className="my-4">{t('DifyInstruction')}</div>
+            <div className="my-16">{t('DifyInstruction')}</div>
           ) : (
-            <div className="my-4 whitespace-pre-line">
+            <div className="my-16 whitespace-pre-line">
               {t('CharacterSettingsInfo')}
             </div>
           )}
@@ -483,13 +558,116 @@ const Character = () => {
             {t('CharacterSettingsReset')}
           </TextButton>
         </div>
-        <textarea
-          value={systemPrompt}
-          onChange={(e) =>
-            settingsStore.setState({ systemPrompt: e.target.value })
-          }
-          className="px-4 py-2 bg-white hover:bg-white-hover h-40 rounded-lg w-full"
-        ></textarea>
+        <div className="my-16 whitespace-pre-line">
+          {t('CharacterpresetInfo')}
+        </div>
+        <div className="my-24 mb-8">
+          <div className="flex flex-wrap gap-2 mb-4" role="tablist">
+            {characterPresets.map(({ key, value }, index) => {
+              const customNameKey =
+                `customPresetName${index + 1}` as keyof Character
+              const customName = settingsStore(
+                (s) => s[customNameKey] as string
+              )
+              const selectedIndex = settingsStore((s) => s.selectedPresetIndex)
+              const isSelected = selectedIndex === index
+
+              return (
+                <button
+                  key={key}
+                  onClick={() => {
+                    // プリセット選択時に内容を表示し、systemPromptも更新
+                    settingsStore.setState({
+                      selectedPresetIndex: index,
+                      systemPrompt: value,
+                    })
+
+                    toastStore.getState().addToast({
+                      message: t('Toasts.PresetSwitching', {
+                        presetName: customName,
+                      }),
+                      type: 'info',
+                      tag: `character-preset-switching-${index + 1}`,
+                    })
+                  }}
+                  role="tab"
+                  aria-selected={isSelected}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      settingsStore.setState({
+                        selectedPresetIndex: index,
+                        systemPrompt: value,
+                      })
+
+                      toastStore.getState().addToast({
+                        message: t('Toasts.PresetSwitching', {
+                          presetName: customName,
+                        }),
+                        type: 'info',
+                        tag: `character-preset-switching-${index + 1}`,
+                      })
+                    }
+                  }}
+                  className={`px-4 py-2 rounded-md text-sm ${
+                    isSelected
+                      ? 'bg-primary text-white'
+                      : 'bg-surface1 hover:bg-surface1-hover text-gray-800'
+                  }`}
+                >
+                  {customName}
+                </button>
+              )
+            })}
+          </div>
+
+          {characterPresets.map(({ key, value }, index) => {
+            const customNameKey =
+              `customPresetName${index + 1}` as keyof Character
+            const customName = settingsStore((s) => s[customNameKey] as string)
+            const selectedIndex = settingsStore((s) => s.selectedPresetIndex)
+            const isSelected = selectedIndex === index
+
+            if (!isSelected) return null
+
+            return (
+              <div key={key} className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={customName}
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        [customNameKey]: e.target.value,
+                      })
+                    }}
+                    aria-label={t('PresetNameLabel', {
+                      defaultValue: 'Preset Name',
+                    })}
+                    className="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm w-full"
+                    placeholder={t(`Characterpreset${index + 1}`)}
+                  />
+                </div>
+                <textarea
+                  value={systemPrompt}
+                  onChange={(e) => {
+                    const newValue = e.target.value
+                    // システムプロンプトとプリセットの内容を同時に更新
+                    settingsStore.setState({
+                      systemPrompt: newValue,
+                      [key]: newValue,
+                    })
+                  }}
+                  aria-label={t('SystemPromptLabel', {
+                    defaultValue: 'System Prompt',
+                  })}
+                  className="px-3 py-2 bg-white border border-gray-300 rounded-md w-full h-64 text-sm"
+                />
+              </div>
+            )
+          })}
+        </div>
       </div>
     </>
   )

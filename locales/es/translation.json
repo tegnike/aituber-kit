@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Prompt de personaje",
   "CharacterSettingsInfo": "Este valor se establece como el prompt del sistema.\nPor favor, consulte el prompt inicial y especifique las etiquetas de emoción para controlar las expresiones y movimientos del personaje. Ejemplo: [neutral]¡Buenos días![happy]¡Hoy también es un día difícil!",
   "CharacterSettingsReset": "Restablecer configuración del personaje",
+  "characterpresetInfo": "Al seleccionar un preajuste, cambia la indicación de caracteres.\nCmd + Mayús + 1~5 (Mac) / Ctrl + Mayús + 1~5 (Windows) para los atajos.\nSi se selecciona un preajuste mientras se mantiene pulsada la tecla Mayús, se guarda el carácter actual en el preajuste.",
+  "Characterpreset1": "Preset 1",
+  "Characterpreset2": "Preset 2",
+  "Characterpreset3": "Preset 3",
+  "Characterpreset4": "Preset 4",
+  "Characterpreset5": "Preset 5",
   "SyntheticVoiceEngineChoice": "Elegir motor de síntesis de voz",
   "VoiceAdjustment": "Ajuste de voz",
   "VoiceEngineInstruction": "Seleccione el motor de síntesis de voz que desea usar.",
@@ -197,7 +203,8 @@
     "FunctionExecuting": "Ejecutando {{funcName}}",
     "FunctionExecutionFailed": "La ejecución de {{funcName}} falló",
     "FirefoxNotSupported": "Esta función no está soportada en Firefox",
-    "SpeechRecognitionError": "Ocurrió un error de reconocimiento de voz"
+    "SpeechRecognitionError": "Ocurrió un error de reconocimiento de voz",
+    "PresetSwitching": "Se ha cambiado a {{presetName}}."
   },
   "UsingOpenAITTS": "Usando OpenAI",
   "OpenAITTSInfo": "Usando OpenAI. Admite múltiples idiomas. Si selecciona OpenAI como servicio de IA, no necesita configurar la clave API abajo.",
@@ -247,5 +254,6 @@
   "PresetQuestionsInfo": "Puedes crear y registrar múltiples patrones de preguntas de antemano. Las preguntas registradas se mostrarán en forma de botones en la interfaz de usuario del usuario, y al hacer clic se establecerán en el campo de entrada del chat.",
   "EnterPresetQuestion": "Por favor, ingresa una pregunta",
   "DragToReorder": "Arrastra para reordenar",
-  "ShowSilenceProgressBar": "Mostrar barra de progreso de tiempo de espera de detección de silencio"
+  "ShowSilenceProgressBar": "Mostrar barra de progreso de tiempo de espera de detección de silencio",
+  "CharacterpresetInfo": "Al seleccionar un preset, se cambiará el prompt del personaje.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) para atajos."
 }

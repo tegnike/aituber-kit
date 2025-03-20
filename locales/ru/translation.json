@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Промпт персонажа",
   "CharacterSettingsInfo": "Это значение устанавливается как системный промпт.\nОбратитесь к исходному промпту и укажите теги эмоций для управления выражениями и движениями персонажа. Пример: [neutral]Доброе утро![happy]Сегодня тоже будет насыщенный день!",
   "CharacterSettingsReset": "Сбросить настройки персонажа",
+  "characterpresetInfo": "Выбор предустановки изменяет подсказку символа.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) для быстрого доступа.\nПри выборе предустановки с нажатой клавишей Shift текущая подсказка сохраняется в предустановке.",
+  "Characterpreset1": "Пресет 1",
+  "Characterpreset2": "Пресет 2",
+  "Characterpreset3": "Пресет 3",
+  "Characterpreset4": "Пресет 4",
+  "Characterpreset5": "Пресет 5",
   "SyntheticVoiceEngineChoice": "Выбор движка синтеза речи",
   "VoiceAdjustment": "Настройка голоса",
   "VoiceEngineInstruction": "Выберите движок синтеза речи, который хотите использовать.",
@@ -197,7 +203,8 @@
     "FunctionExecuting": "Выполнение {{funcName}}",
     "FunctionExecutionFailed": "Ошибка выполнения {{funcName}}",
     "FirefoxNotSupported": "Эта функция не поддерживается в Firefox",
-    "SpeechRecognitionError": "Произошла ошибка распознавания речи"
+    "SpeechRecognitionError": "Произошла ошибка распознавания речи",
+    "PresetSwitching": "Переключено на {{presetName}}."
   },
   "UsingOpenAITTS": "Использование OpenAI",
   "OpenAITTSInfo": "Использует OpenAI. Поддерживает несколько языков. Если вы выбрали OpenAI как ИИ-сервис, не нужно настраивать API-ключ ниже.",
@@ -247,5 +254,6 @@
   "PresetQuestionsInfo": "Вы можете заранее создать и зарегистрировать несколько шаблонов вопросов. Зарегистрированные вопросы будут отображаться в виде кнопок на пользовательском интерфейсе и при нажатии будут установлены в поле ввода чата.",
   "EnterPresetQuestion": "Пожалуйста, введите вопрос",
   "DragToReorder": "Перетащите, чтобы изменить порядок",
-  "ShowSilenceProgressBar": "Показать индикатор прогресса таймаута обнаружения тишины"
+  "ShowSilenceProgressBar": "Показать индикатор прогресса таймаута обнаружения тишины",
+  "CharacterpresetInfo": "При выборе пресета изменится подсказка персонажа.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) для быстрого доступа."
 }

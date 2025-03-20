@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "角色提示",
   "CharacterSettingsInfo": "此值設置為系統提示。\n請參考初始提示，並指定感情標籤，以控制角色的表情和動作。\n例: [neutral]早上好！[happy]今天也要加油喔！",
   "CharacterSettingsReset": "重設角色設定",
+  "characterpresetInfo": "選擇預設會變更字元提示。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) 為捷徑。\n按住 Shift 鍵的同時選擇預設，可將目前的字元提示儲存在預設中。",
+  "Characterpreset1": "预设1",
+  "Characterpreset2": "预设2",
+  "Characterpreset3": "预设3",
+  "Characterpreset4": "预设4",
+  "Characterpreset5": "预设5",
   "SyntheticVoiceEngineChoice": "選擇合成語音引擎",
   "VoiceAdjustment": "語音調整",
   "VoiceEngineInstruction": "選擇您要使用的合成音聲引擎。",
@@ -199,7 +205,8 @@
     "FunctionExecuting": "正在執行{{funcName}}",
     "FunctionExecutionFailed": "{{funcName}}執行失敗",
     "FirefoxNotSupported": "Firefox不支援此功能",
-    "SpeechRecognitionError": "語音認識發生錯誤"
+    "SpeechRecognitionError": "語音認識發生錯誤",
+    "PresetSwitching": "已切换到{{presetName}}。"
   },
   "UsingOpenAITTS": "使用 OpenAI",
   "OpenAITTSInfo": "使用 OpenAI。它支援多種語言。如果您選擇 OpenAI 作為 AI 服務，則不需要設定下面的 API 金鑰。",
@@ -249,5 +256,6 @@
   "PresetQuestionsInfo": "可以事先创建和注册多个问题模式。注册的问题将以按钮形式显示在用户界面上，点击后将设置到聊天输入框中。",
   "EnterPresetQuestion": "请输入问题",
   "DragToReorder": "拖动以重新排序",
-  "ShowSilenceProgressBar": "显示无声检测超时的进度条"
+  "ShowSilenceProgressBar": "显示无声检测超时的进度条",
+  "CharacterpresetInfo": "选择预设后，角色提示将会更改。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)可以使用快捷键。"
 }

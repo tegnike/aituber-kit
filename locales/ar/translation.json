@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "نص الشخصية",
   "CharacterSettingsInfo": "يتم تعيين هذه القيمة كنص تمهيدي للنظام.\nيرجى الرجوع إلى النص التمهيدي الأولي وتحديد علامات المشاعر للتحكم في تعبيرات وحركات الشخصية. مثال: [neutral]صباح الخير![happy]اليوم أيضاً يوم صعب!",
   "CharacterSettingsReset": "إعادة تعيين إعدادات الشخصية",
+  "characterpresetInfo": " يؤدي تحديد إعداد مسبق إلى تغيير موجه الأحرف.\nCmd + Shift + 1~5 (ماك) / Ctrl + Shift + 1~5 (ويندوز) للاختصارات.\n يؤدي تحديد إعداد مسبق أثناء الضغط باستمرار على مفتاح Shift إلى حفظ مطالبة الحرف الحالي في الإعداد المسبق.",
+  "Characterpreset1": "الإعداد المسبق 1",
+  "Characterpreset2": "الإعداد المسبق 2",
+  "Characterpreset3": "الإعداد المسبق 3",
+  "Characterpreset4": "الإعداد المسبق 4",
+  "Characterpreset5": "الإعداد المسبق 5",
   "SyntheticVoiceEngineChoice": "اختيار محرك الصوت الاصطناعي",
   "VoiceAdjustment": "ضبط الصوت",
   "VoiceEngineInstruction": "اختر محرك الصوت الاصطناعي الذي تريد استخدامه.",
@@ -197,7 +203,8 @@
     "FunctionExecuting": "جاري تنفيذ {{funcName}}",
     "FunctionExecutionFailed": "فشل تنفيذ {{funcName}}",
     "FirefoxNotSupported": "هذه الميزة غير مدعومة على Firefox",
-    "SpeechRecognitionError": "حدث خطأ في التعرف على الكلام"
+    "SpeechRecognitionError": "حدث خطأ في التعرف على الكلام",
+    "PresetSwitching": "تم التبديل إلى {{presetName}}."
   },
   "UsingOpenAITTS": "استخدام OpenAI",
   "OpenAITTSInfo": "استخدام OpenAI. يدعم لغات متعددة. إذا اخترت OpenAI كخدمة ذكاء اصطناعي، فلا تحتاج إلى تعيين مفتاح API أدناه.",
@@ -247,5 +254,6 @@
   "PresetQuestionsInfo": "يمكنك إنشاء وتسجيل أنماط متعددة من الأسئلة مسبقًا. ستظهر الأسئلة المسجلة على واجهة المستخدم الخاصة بالمستخدم في شكل أزرار، وعند النقر عليها، سيتم تعيينها في حقل إدخال الدردشة.",
   "EnterPresetQuestion": "يرجى إدخال السؤال",
   "DragToReorder": "اسحب لتغيير الترتيب",
-  "ShowSilenceProgressBar": "عرض شريط تقدم مهلة اكتشاف الصمت"
+  "ShowSilenceProgressBar": "عرض شريط تقدم مهلة اكتشاف الصمت",
+  "CharacterpresetInfo": "عند اختيار الإعداد المسبق، سيتم تغيير موجه الشخصية.\nيمكن استخدام الاختصارات Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)."
 }

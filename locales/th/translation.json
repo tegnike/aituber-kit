@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "ข้อความ prompt ของตัวละคร",
   "CharacterSettingsInfo": "ค่านี้จะถูกตั้งเป็น prompt ระบบ\nโดยอ้างอิงจาก prompt เริ่มต้น คุณสามารถระบุแท็กอารมณ์เพื่อควบคุมการแสดงออกและการเคลื่อนไหวของตัวละครได้ ตัวอย่าง: [neutral] สวัสดีตอนเช้า! [happy] สวัสดีวันใหม่!",
   "CharacterSettingsReset": "รีเซ็ตการตั้งค่าตัวละคร",
+  "characterpresetInfo": "การเลือกค่าที่ตั้งไว้ล่วงหน้าจะเปลี่ยนพรอมต์อักขระ\nสามารถใช้ทางลัดกับ Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)\nเมื่อกดปุ่ม Shift ค้างไว้ขณะเลือกค่าที่ตั้งไว้ล่วงหน้า ข้อความแจ้งอักขระปัจจุบันจะถูกบันทึกลงในค่าที่ตั้งไว้ล่วงหน้า",
+  "Characterpreset1": "พรีเซ็ต1",
+  "Characterpreset2": "พรีเซ็ต2",
+  "Characterpreset3": "พรีเซ็ต3",
+  "Characterpreset4": "พรีเซ็ต4",
+  "Characterpreset5": "พรีเซ็ต5",
   "SyntheticVoiceEngineChoice": "เลือกเครื่องยนต์สังเคราะห์เสียง",
   "VoiceAdjustment": "ปรับแต่งเสียง",
   "VoiceEngineInstruction": "กรุณาเลือกเครื่องยนต์สังเคราะห์เสียงที่ต้องการใช้",
@@ -198,7 +204,8 @@
     "FunctionExecuting": "กำลังดำเนินการ {{funcName}}",
     "FunctionExecutionFailed": "การดำเนินการ {{funcName}} ล้มเหลว",
     "FirefoxNotSupported": "ฟังก์ชันนี้ไม่รองรับใน Firefox",
-    "SpeechRecognitionError": "เกิดข้อผิดพลาดในการรู้จำเสียง"
+    "SpeechRecognitionError": "เกิดข้อผิดพลาดในการรู้จำเสียง",
+    "PresetSwitching": "เปลี่ยนเป็น {{presetName}} แล้ว."
   },
   "UsingOpenAITTS": "ใช้ OpenAI",
   "OpenAITTSInfo": "ใช้ OpenAI รองรับหลายภาษา หากเลือก OpenAI ในบริการ AI ไม่จำเป็นต้องตั้งค่าคีย์ API ด้านล่าง",
@@ -248,5 +255,6 @@
   "PresetQuestionsInfo": "คุณสามารถสร้างและลงทะเบียนรูปแบบคำถามหลายรูปแบบล่วงหน้าได้ คำถามที่ลงทะเบียนจะแสดงในรูปแบบปุ่มบน UI ของผู้ใช้ และเมื่อคลิกจะถูกตั้งค่าในช่องป้อนข้อความแชท",
   "EnterPresetQuestion": "กรุณาใส่คำถาม",
   "DragToReorder": "ลากเพื่อเปลี่ยนลำดับ",
-  "ShowSilenceProgressBar": "แสดงแถบความก้าวหน้าของการตรวจจับเสียงเงียบ"
+  "ShowSilenceProgressBar": "แสดงแถบความก้าวหน้าของการตรวจจับเสียงเงียบ",
+  "CharacterpresetInfo": "เมื่อเลือกพรีเซ็ต ตัวกระตุ้นตัวละครจะถูกเปลี่ยนแปลง\nสามารถใช้ทางลัด Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ได้。"
 }

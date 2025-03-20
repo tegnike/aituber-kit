@@ -123,6 +123,17 @@ interface Integrations {
 
 interface Character {
   characterName: string
+  characterPreset1: string
+  characterPreset2: string
+  characterPreset3: string
+  characterPreset4: string
+  characterPreset5: string
+  customPresetName1: string
+  customPresetName2: string
+  customPresetName3: string
+  customPresetName4: string
+  customPresetName5: string
+  selectedPresetIndex: number
   showAssistantText: boolean
   showCharacterName: boolean
   systemPrompt: string
@@ -275,6 +286,27 @@ const settingsStore = create<SettingsState>()(
 
       // Character
       characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
+      characterPreset1:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
+      characterPreset2:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
+      characterPreset3:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
+      characterPreset4:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
+      characterPreset5:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
+      customPresetName1:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME1 || 'Preset 1',
+      customPresetName2:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME2 || 'Preset 2',
+      customPresetName3:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME3 || 'Preset 3',
+      customPresetName4:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME4 || 'Preset 4',
+      customPresetName5:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME5 || 'Preset 5',
+      selectedPresetIndex: 0,
       showAssistantText:
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
       showCharacterName:
@@ -417,6 +449,17 @@ const settingsStore = create<SettingsState>()(
         difyConversationId: state.difyConversationId,
         youtubeLiveId: state.youtubeLiveId,
         characterName: state.characterName,
+        characterPreset1: state.characterPreset1,
+        characterPreset2: state.characterPreset2,
+        characterPreset3: state.characterPreset3,
+        characterPreset4: state.characterPreset4,
+        characterPreset5: state.characterPreset5,
+        customPresetName1: state.customPresetName1,
+        customPresetName2: state.customPresetName2,
+        customPresetName3: state.customPresetName3,
+        customPresetName4: state.customPresetName4,
+        customPresetName5: state.customPresetName5,
+        selectedPresetIndex: state.selectedPresetIndex,
         showAssistantText: state.showAssistantText,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,

@@ -54,6 +54,12 @@
   "CharacterSettingsPrompt": "Prompt do personagem",
   "CharacterSettingsInfo": "Este valor é definido como prompt do sistema.\nConsulte o prompt inicial e especifique tags de emoção para controlar expressões e movimentos do personagem. Exemplo: [neutral]Bom dia![happy]Hoje também será um dia ocupado!",
   "CharacterSettingsReset": "Redefinir configurações do personagem",
+  "characterpresetInfo": "A seleção de uma predefinição altera o prompt de caracteres.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) para atalhos.\nSelecionar uma predefinição mantendo premida a tecla Shift guarda o prompt de caracteres atual na predefinição.",
+  "Characterpreset1": "Preset 1",
+  "Characterpreset2": "Preset 2",
+  "Characterpreset3": "Preset 3",
+  "Characterpreset4": "Preset 4",
+  "Characterpreset5": "Preset 5",
   "SyntheticVoiceEngineChoice": "Escolher motor de síntese de voz",
   "VoiceAdjustment": "Ajuste de voz",
   "VoiceEngineInstruction": "Selecione o motor de síntese de voz que deseja usar.",
@@ -197,7 +203,8 @@
     "FunctionExecuting": "Executando {{funcName}}",
     "FunctionExecutionFailed": "Falha na execução de {{funcName}}",
     "FirefoxNotSupported": "Esta função não é suportada no Firefox",
-    "SpeechRecognitionError": "Ocorreu um erro de reconhecimento de fala"
+    "SpeechRecognitionError": "Ocorreu um erro de reconhecimento de fala",
+    "PresetSwitching": "Mudou para {{presetName}}."
   },
   "UsingOpenAITTS": "Usando OpenAI",
   "OpenAITTSInfo": "Usando OpenAI. Suporta múltiplos idiomas. Se você selecionar OpenAI como serviço de IA, não precisa configurar a chave API abaixo.",
@@ -247,5 +254,6 @@
   "PresetQuestionsInfo": "Você pode criar e registrar vários padrões de perguntas com antecedência. As perguntas registradas serão exibidas em formato de botão na interface do usuário e, ao clicar, serão definidas no campo de entrada do chat.",
   "EnterPresetQuestion": "Por favor, insira a pergunta",
   "DragToReorder": "Arraste para reordenar",
-  "ShowSilenceProgressBar": "Mostrar barra de progresso do tempo limite de detecção de silêncio"
+  "ShowSilenceProgressBar": "Mostrar barra de progresso do tempo limite de detecção de silêncio",
+  "CharacterpresetInfo": "Ao selecionar um preset, o prompt do personagem será alterado.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) para atalhos."
 }
