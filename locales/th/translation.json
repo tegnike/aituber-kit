@@ -204,7 +204,7 @@
     "FunctionExecutionFailed": "การดำเนินการ {{funcName}} ล้มเหลว",
     "FirefoxNotSupported": "ฟังก์ชันนี้ไม่รองรับใน Firefox",
     "SpeechRecognitionError": "เกิดข้อผิดพลาดในการรู้จำเสียง",
-    "PresetSwitching": "เปลี่ยนเป็น {{presetName}} แล้ว"
+    "PresetSwitching": "เปลี่ยนเป็น {{presetName}} แล้ว."
   },
   "UsingOpenAITTS": "ใช้ OpenAI",
   "OpenAITTSInfo": "ใช้ OpenAI รองรับหลายภาษา หากเลือก OpenAI ในบริการ AI ไม่จำเป็นต้องตั้งค่าคีย์ API ด้านล่าง",
@@ -250,5 +250,5 @@
   "MaxTokensInfo": "จำนวนโทเค็นสูงสุดจะแตกต่างกันไปตามโมเดล AI ที่ใช้งานอยู่ โปรดตรวจสอบข้อกำหนดของแต่ละโมเดล",
   "CannotUseParameters": "หากโหมด API แบบเรียลไทม์หรือโหมดเสียงเปิดใช้งานอยู่ จะไม่สามารถกำหนดพารามิเตอร์ Temperature และ Max Tokens ได้",
   "DocumentationDescription": "คุณสามารถดูวิธีการใช้งานและบทแนะนำที่ละเอียดของ AITuberKit ได้ที่ URL ด้านล่างนี้",
-  "CharacterpresetInfo": "เมื่อเลือกพรีเซ็ต ตัวกระตุ้นตัวละครจะถูกเปลี่ยนแปลง\nสามารถใช้ทางลัด Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ได้"
+  "CharacterpresetInfo": "เมื่อเลือกพรีเซ็ต ตัวกระตุ้นตัวละครจะถูกเปลี่ยนแปลง\nสามารถใช้ทางลัด Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ได้。"
 }

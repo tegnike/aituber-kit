@@ -203,7 +203,7 @@
     "FunctionExecutionFailed": "Esecuzione {{funcName}} fallita",
     "FirefoxNotSupported": "Questa funzione non è supportata in Firefox",
     "SpeechRecognitionError": "Si è verificato un errore di riconoscimento vocale",
-    "PresetSwitching": "È stato cambiato in {{presetName}}."
+    "PresetSwitching": "È stato cambiato a {{presetName}}."
   },
   "UsingOpenAITTS": "Usando OpenAI",
   "OpenAITTSInfo": "Usando OpenAI. Supporta più lingue. Se selezioni OpenAI come servizio IA, non devi configurare la chiave API sotto.",
@@ -249,5 +249,5 @@
   "MaxTokensInfo": "Il numero massimo di token varia a seconda del modello AI in uso. Controlla le specifiche di ciascun modello.",
   "CannotUseParameters": "Se la modalità API in tempo reale o la modalità audio è attivata, i parametri Temperature e Max Tokens non possono essere specificati.",
   "DocumentationDescription": "Puoi trovare dettagli su come utilizzare AITuberKit e tutorial al seguente URL.",
-  "CharacterpresetInfo": "Se selezioni un preset, il prompt del personaggio verrà modificato.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) per utilizzare le scorciatoie."
+  "CharacterpresetInfo": "Selezionando un preset, il prompt del personaggio verrà modificato.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) per utilizzare le scorciatoie."
 }

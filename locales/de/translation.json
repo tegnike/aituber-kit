@@ -249,5 +249,5 @@
   "MaxTokensInfo": "Die maximale Tokenanzahl variiert je nach verwendetem KI-Modell. Bitte überprüfen Sie die Spezifikationen jedes Modells.",
   "CannotUseParameters": "Wenn der Echtzeit-API-Modus oder der Audiomodus aktiviert ist, können die Parameter Temperature und Max Tokens nicht angegeben werden.",
   "DocumentationDescription": "Detaillierte Anleitungen und Tutorials zur Verwendung von AITuberKit finden Sie unter der folgenden URL.",
-  "CharacterpresetInfo": "Wenn Sie ein Preset auswählen, wird der Charakterprompt geändert.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ermöglicht Shortcuts."
+  "CharacterpresetInfo": "Wenn Sie ein Preset auswählen, ändert sich der Charakter-Prompt.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ermöglicht Shortcuts."
 }
