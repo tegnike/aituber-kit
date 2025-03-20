@@ -203,7 +203,7 @@
     "FunctionExecutionFailed": "Esecuzione {{funcName}} fallita",
     "FirefoxNotSupported": "Questa funzione non è supportata in Firefox",
     "SpeechRecognitionError": "Si è verificato un errore di riconoscimento vocale",
-    "PresetSwitching": "Passato a {{presetName}}."
+    "PresetSwitching": "È stato cambiato in {{presetName}}."
   },
   "UsingOpenAITTS": "Usando OpenAI",
   "OpenAITTSInfo": "Usando OpenAI. Supporta più lingue. Se selezioni OpenAI come servizio IA, non devi configurare la chiave API sotto.",
