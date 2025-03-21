@@ -141,7 +141,7 @@ OpenAI提供的支持多种语言的语音合成服务。
 ### 语音参数调整
 
 - **语音类型**：从alloy、echo、fable、onyx、nova、shimmer中选择
-- **模型**：从tts-1（标准）或tts-1-hd（高质量）中选择
+- **模型**：从tts-1（标准）或tts-1-hd（高质量）或gpt-4o-mini-tts中选择
 - **速度**：可在0.25至4.0范围内调整
 
 ## Azure OpenAPI TTS

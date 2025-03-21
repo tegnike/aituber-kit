@@ -119,13 +119,16 @@ export type VoiceLanguage =
 
 export type OpenAITTSVoice =
   | 'alloy'
-  | 'echo'
   | 'ash'
   | 'ballad'
   | 'coral'
+  | 'echo'
+  | 'fable'
+  | 'onyx'
+  | 'nova'
   | 'sage'
-  | 'verse'
-export type OpenAITTSModel = 'tts-1' | 'tts-1-hd'
+  | 'shimmer'
+export type OpenAITTSModel = 'tts-1' | 'tts-1-hd' | 'gpt-4o-mini-tts'
 
 export type RealtimeAPIModeModel =
   | 'gpt-4o-realtime-preview-2024-10-01'

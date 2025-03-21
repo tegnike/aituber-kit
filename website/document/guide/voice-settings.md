@@ -233,7 +233,7 @@ OpenAI APIを使用するためのAPIキーを設定します。
 ### 音声パラメータ調整
 
 - **ボイスタイプ**：alloy、echo、fable、onyx、nova、shimmerから選択可能
-- **モデル**：tts-1（標準）またはtts-1-hd（高品質）から選択可能
+- **モデル**：tts-1（標準）またはtts-1-hd（高品質）またはgpt-4o-mini-ttsから選択可能
 - **話速**：0.25〜4.0の範囲で調整可能
 
 ## Azure OpenAPI TTS

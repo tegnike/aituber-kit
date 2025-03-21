@@ -141,7 +141,7 @@ Set the API key to use the OpenAI API.
 ### Voice Parameter Adjustment
 
 - **Voice Type**: Select from alloy, echo, fable, onyx, nova, shimmer
-- **Model**: Select from tts-1 (standard) or tts-1-hd (high quality)
+- **Model**: Select from tts-1 (standard) or tts-1-hd (high quality) or gpt-4o-mini-tts
 - **Speed**: Adjustable in the range of 0.25 to 4.0
 
 ## Azure OpenAPI TTS

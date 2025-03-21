@@ -9,7 +9,7 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { message, voice, model, speed, apiKey } = req.body
+  const { message, voice, model, speed, apiKey, emotion } = req.body
   const openaiTTSKey = apiKey || process.env.OPENAI_TTS_KEY
 
   if (!message || !voice || !model || !openaiTTSKey) {
@@ -18,13 +18,24 @@ export default async function handler(
 
   try {
     const openai = new OpenAI({ apiKey: openaiTTSKey })
-
-    const mp3 = await openai.audio.speech.create({
+    const options: {
+      model: any
+      voice: any
+      speed: any
+      input: any
+      instructions?: any
+    } = {
       model: model,
       voice: voice,
-      input: message,
       speed: speed,
-    })
+      input: message,
+    }
+
+    if (model.includes('gpt-4o')) {
+      options.instructions = `Please speak "${message}" with rich emotional expression.`
+    }
+
+    const mp3 = await openai.audio.speech.create(options)
 
     const buffer = Buffer.from(await mp3.arrayBuffer())
 

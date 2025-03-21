@@ -799,10 +799,14 @@ const Voice = () => {
                     className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="alloy">alloy</option>
+                    <option value="ash">ash</option>
+                    <option value="ballad">ballad</option>
+                    <option value="coral">coral</option>
                     <option value="echo">echo</option>
                     <option value="fable">fable</option>
                     <option value="onyx">onyx</option>
                     <option value="nova">nova</option>
+                    <option value="sage">sage</option>
                     <option value="shimmer">shimmer</option>
                   </select>
                 </div>
@@ -819,6 +823,7 @@ const Voice = () => {
                   >
                     <option value="tts-1">tts-1</option>
                     <option value="tts-1-hd">tts-1-hd</option>
+                    <option value="gpt-4o-mini-tts">gpt-4o-mini-tts</option>
                   </select>
                 </div>
                 <div className="mt-4 font-bold">
