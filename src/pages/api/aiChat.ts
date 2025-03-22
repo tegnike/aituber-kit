@@ -110,7 +110,7 @@ export default async function handler(req: NextRequest) {
   }
 
   const aiServiceConfig: AIServiceConfig = {
-    openai: () => createOpenAI({ apiKey: aiApiKey }),
+    openai: () => createOpenAI({ apiKey: aiApiKey }).responses,
     anthropic: () => createAnthropic({ apiKey: aiApiKey }),
     google: () => createGoogleGenerativeAI({ apiKey: aiApiKey }),
     azure: () =>
