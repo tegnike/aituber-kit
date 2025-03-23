@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import menuStore from '@/features/stores/menu'
+import Image from 'next/image'
 
 import { GitHubLink } from '../githubLink'
 import { IconButton } from '../iconButton'
@@ -54,6 +55,19 @@ type TabKey =
   | 'slide'
   | 'log'
   | 'other'
+
+// アイコンのパスマッピング
+const tabIconMapping: Record<TabKey, string> = {
+  description: '/images/setting-icons/description.svg',
+  based: '/images/setting-icons/basic-settings.svg',
+  character: '/images/setting-icons/character-settings.svg',
+  ai: '/images/setting-icons/ai-settings.svg',
+  voice: '/images/setting-icons/voice-settings.svg',
+  youtube: '/images/setting-icons/youtube-settings.svg',
+  slide: '/images/setting-icons/slide-settings.svg',
+  log: '/images/setting-icons/conversation-history.svg',
+  other: '/images/setting-icons/other-settings.svg',
+}
 
 const Main = () => {
   const { t } = useTranslation()
@@ -129,13 +143,18 @@ const Main = () => {
       <div className="text-text1 max-w-5xl mx-auto px-6 py-16">
         <div className="md:flex mt-4">
           {/* タブナビゲーション */}
-          <ul className="flex flex-col space-y-1 text-sm font-medium md:w-[25%] md:me-8 mb-4 md:mb-0">
+          <ul className="flex flex-col space-y-1 text-sm font-medium md:w-[25%] md:me-4 mb-4 md:mb-0">
             {tabs.map((tab) => (
               <li key={tab.key}>
                 <button
-                  className={`flex py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
+                  className={`flex items-center py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
                   onClick={() => setActiveTab(tab.key)}
                 >
+                  <img
+                    src={tabIconMapping[tab.key]}
+                    alt={`${tab.label} icon`}
+                    className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
+                  />
                   {tab.label}
                 </button>
               </li>

@@ -199,9 +199,9 @@ NEXT_PUBLIC_AUDIO_MODE_VOICE=alloy
 NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE=true
 ```
 
-## 音声設定
+## 合成音声設定
 
-詳細については[音声設定](/guide/voice-settings)をご覧ください。
+詳細については[合成音声設定](/guide/voice-settings)をご覧ください。
 
 ```bash
 # 使用する音声合成エンジン

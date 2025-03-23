@@ -131,7 +131,7 @@ export default defineConfig({
               ],
             },
             {
-              text: '音声設定',
+              text: '合成音声設定',
               link: '/guide/voice-settings',
             },
             {
