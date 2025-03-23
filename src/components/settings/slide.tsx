@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import settingsStore, {
   multiModalAIServices,
   multiModalAIServiceKey,
@@ -62,6 +63,16 @@ const Slide = () => {
 
   return (
     <>
+      <div className="flex items-center mb-6">
+        <Image
+          src="/images/setting-icons/slide-settings.svg"
+          alt="Slide Settings"
+          width={24}
+          height={24}
+          className="mr-2"
+        />
+        <h2 className="text-2xl font-bold">{t('SlideSettings')}</h2>
+      </div>
       <div className="mb-4 text-xl font-bold">{t('SlideMode')}</div>
       <p className="">{t('SlideModeDescription')}</p>
       <div className="my-2">

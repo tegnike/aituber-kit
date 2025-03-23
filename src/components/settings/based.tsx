@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import i18n from 'i18next'
+import Image from 'next/image'
 
 import { Language } from '@/features/constants/settings'
 import menuStore from '@/features/stores/menu'
@@ -16,6 +17,16 @@ const Based = () => {
   return (
     <>
       <div className="mb-6">
+        <div className="flex items-center mb-6">
+          <Image
+            src="/images/setting-icons/basic-settings.svg"
+            alt="Basic Settings"
+            width={24}
+            height={24}
+            className="mr-2"
+          />
+          <h2 className="text-2xl font-bold">{t('BasedSettings')}</h2>
+        </div>
         <div className="mb-4 text-xl font-bold">{t('Language')}</div>
         <div className="my-2">
           <select

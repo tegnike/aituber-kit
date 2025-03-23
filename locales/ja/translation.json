@@ -257,5 +257,6 @@
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
     "relaxedMotionGroup": "リラックス"
-  }
+  },
+  "SpeechInputSettings": "音声入力設定"
 }

@@ -10,6 +10,7 @@ type SettingsTabKey =
   | 'slide'
   | 'log'
   | 'other'
+  | 'speechInput'
 interface MenuState {
   showWebcam: boolean
   showCapture: boolean

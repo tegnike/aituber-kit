@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 import {
   PRESET_A,
@@ -149,7 +150,17 @@ const Voice = () => {
   }
 
   return (
-    <div className="">
+    <div>
+      <div className="flex items-center mb-6">
+        <Image
+          src="/images/setting-icons/voice-settings.svg"
+          alt="Voice Settings"
+          width={24}
+          height={24}
+          className="mr-2"
+        />
+        <h2 className="text-2xl font-bold">{t('VoiceSettings')}</h2>
+      </div>
       <div className="mb-4 text-xl font-bold">
         {t('SyntheticVoiceEngineChoice')}
       </div>

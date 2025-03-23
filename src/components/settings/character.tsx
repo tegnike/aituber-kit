@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Image from 'next/image'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
@@ -445,6 +446,16 @@ const Character = () => {
 
   return (
     <>
+      <div className="flex items-center mb-6">
+        <Image
+          src="/images/setting-icons/character-settings.svg"
+          alt="Character Settings"
+          width={24}
+          height={24}
+          className="mr-2"
+        />
+        <h2 className="text-2xl font-bold">{t('CharacterSettings')}</h2>
+      </div>
       <div className="">
         <div className="mb-4 text-xl font-bold">{t('CharacterName')}</div>
         <input

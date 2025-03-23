@@ -26,7 +26,16 @@ const Log = () => {
   return (
     <div className="">
       <div className="mb-2 grid-cols-2">
-        <div className="mb-4 text-xl font-bold">{t('ConversationHistory')}</div>
+        <div className="flex items-center mb-4">
+          <Image
+            src="/images/setting-icons/conversation-history.svg"
+            alt="Conversation History"
+            width={24}
+            height={24}
+            className="mr-2"
+          />
+          <h2 className="text-2xl font-bold">{t('ConversationHistory')}</h2>
+        </div>
         <div className="my-2">
           {selectAIService !== 'dify'
             ? t('ConversationHistoryInfo', { count: maxPastMessages })
