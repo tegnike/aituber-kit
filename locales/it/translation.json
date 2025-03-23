@@ -1,13 +1,13 @@
 {
-  "Description": "■ Informazioni sull'applicazione",
-  "BasedSettings": "■ Impostazioni di base",
-  "AISettings": "■ Impostazioni IA",
-  "CharacterSettings": "■ Impostazioni personaggio",
-  "YoutubeSettings": "■ Impostazioni YouTube",
-  "VoiceSettings": "■ Impostazioni voce",
-  "SlideSettings": "■ Impostazioni presentazione",
-  "LogSettings": "■ Cronologia conversazioni",
-  "OtherSettings": "■ Altro",
+  "Description": "Informazioni sull'app",
+  "BasedSettings": "Impostazioni di base",
+  "AISettings": "Impostazioni AI",
+  "CharacterSettings": "Impostazioni del personaggio",
+  "YoutubeSettings": "Impostazioni di YouTube",
+  "VoiceSettings": "Impostazioni della voce sintetica",
+  "SlideSettings": "Impostazioni della diapositiva",
+  "LogSettings": "Cronologia delle conversazioni",
+  "OtherSettings": "Altro",
   "ExternalLinkageMode": "Modalità di collegamento esterno (versione beta)",
   "YoutubeMode": "Modalità YouTube",
   "YoutubeInfo": "Il primo carattere del commento è '#' e verrà ignorato.",
@@ -178,7 +178,7 @@
     "LocalLLMConnectionError": "Errore connessione al server LLM locale",
     "LocalLLMNotFound": "Endpoint LLM locale non trovato",
     "LocalLLMAPIError": "Errore API LLM locale",
-    "EmptyLocalLLMURL": "L'URL del LLM locale non è stato impostato"
+    "EmptyLocalLLMURL": "L'URL del LLM locale non è impostato"
   },
   "MessageReceiver": "Ricevi istruzioni dall'esterno",
   "MessageReceiverDescription": "Puoi usare l'API per far parlare i personaggi IA dall'esterno.",
@@ -204,7 +204,8 @@
     "FunctionExecutionFailed": "Esecuzione {{funcName}} fallita",
     "FirefoxNotSupported": "Questa funzione non è supportata in Firefox",
     "SpeechRecognitionError": "Si è verificato un errore di riconoscimento vocale",
-    "PresetSwitching": "È stato cambiato a {{presetName}}."
+    "PresetSwitching": "È stato cambiato a {{presetName}}.",
+    "WhisperError": "Si è verificato un errore nel riconoscimento vocale con Whisper"
   },
   "UsingOpenAITTS": "Usando OpenAI",
   "OpenAITTSInfo": "Usando OpenAI. Supporta più lingue. Se selezioni OpenAI come servizio IA, non devi configurare la chiave API sotto.",
@@ -223,7 +224,7 @@
     "userInputTitle": "Invia input utente",
     "userInputDescription": "Il messaggio inviato viene elaborato come quando viene inserito dal modulo di input di AITuberKit. Se vengono inviati più messaggi, vengono elaborati in ordine. Il modello IA e il modello vocale sono quelli selezionati nelle impostazioni di AITuberKit. Il prompt di sistema e la cronologia conversazioni sono i valori configurati in AITuberKit."
   },
-  "CannotUseVoice": "La modalità API in tempo reale o la modalità audio è attiva, quindi non sono richieste impostazioni vocali.",
+  "CannotUseVoice": "Se la modalità API in tempo reale o la modalità audio è attivata,\nle impostazioni della voce sintetica non sono necessarie.",
   "Live2D": {
     "FileInfo": "Posiziona il modello Live2D che vuoi usare nella cartella public/live2d. Il file model3.json deve esistere nella root di questa cartella.\nSe non viene visualizzato nella selezione, ricarica la schermata o verifica che il percorso della cartella sia corretto.",
     "Info": "Puoi specificare emozioni e movimenti.\nOgni emozione è controllata dal prompt. Per maggiori dettagli, consulta \"Impostazioni IA => Impostazioni personaggio\".",
@@ -242,7 +243,9 @@
     "happyMotionGroup": "Felice",
     "sadMotionGroup": "Triste",
     "angryMotionGroup": "Arrabbiato",
-    "relaxedMotionGroup": "Rilassato"
+    "relaxedMotionGroup": "Rilassato",
+    "surprisedEmotions": "Sorpresa",
+    "surprisedMotionGroup": "Sorpresa"
   },
   "UseVideoAsBackground": "Usa schermo condiviso o webcam come sfondo",
   "Temperature": "Temperatura",
@@ -251,9 +254,17 @@
   "CannotUseParameters": "Se la modalità API in tempo reale o la modalità audio è attivata, i parametri Temperature e Max Tokens non possono essere specificati.",
   "DocumentationDescription": "Puoi trovare dettagli su come utilizzare AITuberKit e tutorial al seguente URL.",
   "PresetQuestions": "Domande preimpostate",
-  "PresetQuestionsInfo": "È possibile creare e registrare in anticipo più modelli di domande. Le domande registrate verranno visualizzate in formato pulsante nell'interfaccia utente e, facendo clic, verranno impostate nel campo di input della chat.",
+  "PresetQuestionsInfo": "Puoi creare e registrare in anticipo più modelli di domande. Le domande registrate verranno visualizzate come pulsanti nell'interfaccia utente e, cliccandole, verranno impostate nel campo di input della chat.",
   "EnterPresetQuestion": "Inserisci una domanda",
   "DragToReorder": "Trascina per riordinare",
-  "ShowSilenceProgressBar": "Mostra la barra di avanzamento del timeout di rilevamento del silenzio",
-  "CharacterpresetInfo": "Selezionando un preset, il prompt del personaggio verrà modificato.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) per utilizzare le scorciatoie."
+  "ShowSilenceProgressBar": "Mostra la barra di avanzamento del rilevamento del silenzio",
+  "CharacterpresetInfo": "Selezionando un preset, il prompt del personaggio verrà modificato.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) per utilizzare le scorciatoie.",
+  "SpeechInputSettings": "Impostazioni di input vocale",
+  "SpeechRecognitionMode": "Modalità di riconoscimento vocale",
+  "SpeechRecognitionModeInfo": "Puoi scegliere la modalità di riconoscimento vocale.\n\"Standard del browser\" utilizza il riconoscimento vocale integrato nel browser.\n\"Whisper\" utilizza l'API Whisper di OpenAI. È possibile un riconoscimento più avanzato, ma è necessaria una chiave API di OpenAI.",
+  "BrowserSpeechRecognition": "Utilizza il riconoscimento vocale standard del browser",
+  "WhisperSpeechRecognition": "Utilizza il riconoscimento vocale Whisper",
+  "WhisperAPIKeyInfo": "In modalità Whisper è necessaria una chiave API di OpenAI. Si prega di impostare la chiave API di OpenAI nelle impostazioni AI.",
+  "WhisperTranscriptionModel": "Modello di trascrizione Whisper",
+  "WhisperTranscriptionModelInfo": "Puoi scegliere il modello da utilizzare per il riconoscimento vocale. Modelli più performanti possono riconoscere con maggiore precisione, ma i costi API potrebbero aumentare."
 }

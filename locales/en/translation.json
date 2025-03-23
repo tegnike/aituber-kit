@@ -1,13 +1,13 @@
 {
-  "Description": "■ About App",
-  "BasedSettings": "■ Basic Settings",
-  "AISettings": "■ AI Settings",
-  "CharacterSettings": "■ Character Settings",
-  "YoutubeSettings": "■ YouTube Settings",
-  "VoiceSettings": "■ Voice Settings",
-  "SlideSettings": "■ Slide Settings",
-  "LogSettings": "■ Conversation History",
-  "OtherSettings": "■ Other",
+  "Description": "About the App",
+  "BasedSettings": "Basic Settings",
+  "AISettings": "AI Settings",
+  "CharacterSettings": "Character Settings",
+  "YoutubeSettings": "YouTube Settings",
+  "VoiceSettings": "Speech Synthesis Settings",
+  "SlideSettings": "Slide Settings",
+  "LogSettings": "Conversation History",
+  "OtherSettings": "Others",
   "ExternalLinkageMode": "External Linkage Mode (Beta)",
   "YoutubeMode": "YouTube Mode",
   "YoutubeInfo": "The first character of the comment is '#', it is ignored.",
@@ -180,7 +180,7 @@
     "LocalLLMConnectionError": "Local LLM server connection error",
     "LocalLLMNotFound": "Local LLM endpoint not found",
     "LocalLLMAPIError": "Local LLM API error",
-    "EmptyLocalLLMURL": "The local LLM URL is not set"
+    "EmptyLocalLLMURL": "The URL for the local LLM is not set"
   },
   "MessageReceiver": "Receive instructions from outside",
   "MessageReceiverDescription": "You can use API to instruct AI characters to speak from outside.",
@@ -207,7 +207,8 @@
     "FirefoxNotSupported": "This feature is not supported on Firefox",
     "SpeechRecognitionError": "Speech recognition error occurred",
     "NoSpeechDetected": "No speech detected",
-    "PresetSwitching": "Switched to {{presetName}}."
+    "PresetSwitching": "Switched to {{presetName}}.",
+    "WhisperError": "An error occurred during speech recognition with Whisper"
   },
   "UsingOpenAITTS": "Using OpenAI",
   "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",
@@ -226,7 +227,7 @@
     "userInputTitle": "Send user input",
     "userInputDescription": "The message sent is processed the same as when input from the AITuberKit input form. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt and conversation history are the values set in AITuberKit."
   },
-  "CannotUseVoice": "Realtime API mode or Audio mode is enabled, so voice settings are not required.",
+  "CannotUseVoice": "If Real-time API mode or Audio mode is enabled,\nSpeech Synthesis Settings are not needed.",
   "Live2D": {
     "FileInfo": "Place the Live2D model you want to use in the public/live2d folder. The model3.json file must exist in the root of this folder.\nIf it is not displayed in the selection, please reload the screen or check if the folder path is correct.",
     "Info": "You can specify emotions and motions.\nEach emotion is controlled by the prompt. For more details, please refer to \"AI Settings => Character Settings\".",
@@ -245,7 +246,9 @@
     "happyMotionGroup": "Happy",
     "sadMotionGroup": "Sad",
     "angryMotionGroup": "Angry",
-    "relaxedMotionGroup": "Relaxed"
+    "relaxedMotionGroup": "Relaxed",
+    "surprisedEmotions": "Surprise",
+    "surprisedMotionGroup": "Surprise"
   },
   "UseVideoAsBackground": "Use shared screen or webcam as background",
   "Temperature": "Temperature",
@@ -254,9 +257,17 @@
   "CannotUseParameters": "If real-time API mode or audio mode is enabled, the Temperature and Max Tokens parameters cannot be specified.",
   "DocumentationDescription": "For detailed usage and tutorials of AITuberKit, please visit the URL below.",
   "PresetQuestions": "Preset Questions",
-  "PresetQuestionsInfo": "You can create and register multiple question patterns in advance. The registered questions will be displayed as buttons on the user UI, and clicking them will set them in the chat input field.",
+  "PresetQuestionsInfo": "You can create and register multiple question patterns in advance. Registered questions will be displayed as buttons on the user UI, and clicking them will set them in the chat input field.",
   "EnterPresetQuestion": "Please enter a question",
   "DragToReorder": "Drag to reorder",
-  "ShowSilenceProgressBar": "Show progress bar for silence detection timeout",
-  "CharacterpresetInfo": "Selecting a preset will change the character prompt.\nYou can use shortcuts with Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)."
+  "ShowSilenceProgressBar": "Show Silence Detection Progress Bar",
+  "CharacterpresetInfo": "Selecting a preset will change the character prompt.\nYou can use shortcuts with Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows).",
+  "SpeechInputSettings": "Speech Input Settings",
+  "SpeechRecognitionMode": "Speech Recognition Mode",
+  "SpeechRecognitionModeInfo": "You can select the speech recognition mode.\n\"Browser Standard\" uses the built-in speech recognition of the browser.\n\"Whisper\" uses OpenAI's Whisper API. It allows for more advanced recognition, but an OpenAI API key is required.",
+  "BrowserSpeechRecognition": "Use Browser Standard Speech Recognition",
+  "WhisperSpeechRecognition": "Use Whisper Speech Recognition",
+  "WhisperAPIKeyInfo": "An OpenAI API key is required for Whisper mode. Please set the OpenAI API key in the AI settings.",
+  "WhisperTranscriptionModel": "Whisper Transcription Model",
+  "WhisperTranscriptionModelInfo": "You can select the model to be used for speech recognition. The higher performance models can achieve higher accuracy, but the API costs may be higher."
 }

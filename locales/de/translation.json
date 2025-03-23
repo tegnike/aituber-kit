@@ -1,13 +1,13 @@
 {
-  "Description": "■ Über die Anwendung",
-  "BasedSettings": "■ Grundeinstellungen",
-  "AISettings": "■ KI-Einstellungen",
-  "CharacterSettings": "■ Charaktereinstellungen",
-  "YoutubeSettings": "■ YouTube-Einstellungen",
-  "VoiceSettings": "■ Spracheinstellungen",
-  "SlideSettings": "■ Präsentationseinstellungen",
-  "LogSettings": "■ Gesprächsverlauf",
-  "OtherSettings": "■ Sonstiges",
+  "Description": "Über die App",
+  "BasedSettings": "Grundeinstellungen",
+  "AISettings": "KI-Einstellungen",
+  "CharacterSettings": "Charaktereinstellungen",
+  "YoutubeSettings": "YouTube-Einstellungen",
+  "VoiceSettings": "Einstellungen für synthetische Sprache",
+  "SlideSettings": "Slide-Einstellungen",
+  "LogSettings": "Gesprächsverlauf",
+  "OtherSettings": "Sonstiges",
   "ExternalLinkageMode": "Externer Verknüpfungsmodus (Beta-Version)",
   "YoutubeMode": "YouTube-Modus",
   "YoutubeInfo": "Das erste Zeichen des Kommentars ist '#' und wird ignoriert.",
@@ -204,7 +204,8 @@
     "FunctionExecutionFailed": "Ausführung von {{funcName}} fehlgeschlagen",
     "FirefoxNotSupported": "Diese Funktion wird in Firefox nicht unterstützt",
     "SpeechRecognitionError": "Ein Spracherkennungsfehler ist aufgetreten",
-    "PresetSwitching": "Wechsel zu {{presetName}}."
+    "PresetSwitching": "Wechsel zu {{presetName}}.",
+    "WhisperError": "Bei der Spracherkennung mit Whisper ist ein Fehler aufgetreten"
   },
   "UsingOpenAITTS": "OpenAI verwenden",
   "OpenAITTSInfo": "OpenAI verwenden. Unterstützt mehrere Sprachen. Wenn Sie OpenAI als KI-Dienst auswählen, müssen Sie den API-Schlüssel unten nicht konfigurieren.",
@@ -223,7 +224,7 @@
     "userInputTitle": "Benutzereingabe senden",
     "userInputDescription": "Die gesendete Nachricht wird wie bei der Eingabe über das AITuberKit-Eingabeformular verarbeitet. Wenn mehrere Nachrichten gesendet werden, werden sie der Reihe nach verarbeitet. Das KI-Modell und das Sprachmodell sind die in den AITuberKit-Einstellungen ausgewählten. Der Systemprompt und der Gesprächsverlauf sind die in AITuberKit konfigurierten Werte."
   },
-  "CannotUseVoice": "Der Echtzeit-API-Modus oder Audio-Modus ist aktiv, daher sind keine Spracheinstellungen erforderlich.",
+  "CannotUseVoice": "Wenn der Echtzeit-API-Modus oder der Audiomodus aktiviert ist,\n sind die Einstellungen für synthetische Sprache nicht erforderlich.",
   "Live2D": {
     "FileInfo": "Platzieren Sie das Live2D-Modell, das Sie verwenden möchten, im Ordner public/live2d. Die Datei model3.json muss im Stammverzeichnis dieses Ordners existieren.\nWenn es nicht in der Auswahl angezeigt wird, laden Sie den Bildschirm neu oder überprüfen Sie, ob der Ordnerpfad korrekt ist.",
     "Info": "Sie können Emotionen und Bewegungen angeben.\nJede Emotion wird durch den Prompt gesteuert. Weitere Details finden Sie unter \"KI-Einstellungen => Charaktereinstellungen\".",
@@ -242,7 +243,9 @@
     "happyMotionGroup": "Glücklich",
     "sadMotionGroup": "Traurig",
     "angryMotionGroup": "Wütend",
-    "relaxedMotionGroup": "Entspannt"
+    "relaxedMotionGroup": "Entspannt",
+    "surprisedEmotions": "Überraschung",
+    "surprisedMotionGroup": "Überraschung"
   },
   "UseVideoAsBackground": "Geteilten Bildschirm oder Webcam als Hintergrund verwenden",
   "Temperature": "Temperatur",
@@ -251,9 +254,17 @@
   "CannotUseParameters": "Wenn der Echtzeit-API-Modus oder der Audiomodus aktiviert ist, können die Parameter Temperature und Max Tokens nicht angegeben werden.",
   "DocumentationDescription": "Detaillierte Anleitungen und Tutorials zur Verwendung von AITuberKit finden Sie unter der folgenden URL.",
   "PresetQuestions": "Voreingestellte Fragen",
-  "PresetQuestionsInfo": "Mehrere Fragenmuster können im Voraus erstellt und registriert werden. Die registrierten Fragen werden in Form von Schaltflächen in der Benutzeroberfläche angezeigt und beim Klicken im Chat-Eingabefeld gesetzt.",
+  "PresetQuestionsInfo": "Sie können mehrere Fragenmuster im Voraus erstellen und registrieren. Die registrierten Fragen werden in Form von Schaltflächen in der Benutzeroberfläche angezeigt und beim Klicken in das Chat-Eingabefeld gesetzt.",
   "EnterPresetQuestion": "Bitte Frage eingeben",
   "DragToReorder": "Ziehen, um die Reihenfolge zu ändern",
-  "ShowSilenceProgressBar": "Fortschrittsanzeige für die Stilleerkennung anzeigen",
-  "CharacterpresetInfo": "Wenn Sie ein Preset auswählen, ändert sich der Charakter-Prompt.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ermöglicht Shortcuts."
+  "ShowSilenceProgressBar": "Fortschrittsanzeige für Stille anzeigen",
+  "CharacterpresetInfo": "Wenn Sie ein Preset auswählen, ändert sich der Charakter-Prompt.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ermöglicht Shortcuts.",
+  "SpeechInputSettings": "Sprachinput-Einstellungen",
+  "SpeechRecognitionMode": "Spracherkennungsmodus",
+  "SpeechRecognitionModeInfo": "Sie können den Spracherkennungsmodus auswählen.\n„Browser Standard“ verwendet die im Browser integrierte Spracherkennung.\n„Whisper“ verwendet die Whisper-API von OpenAI. Es ermöglicht eine fortschrittlichere Erkennung, erfordert jedoch einen OpenAI-API-Schlüssel.",
+  "BrowserSpeechRecognition": "Browser Standard Spracherkennung verwenden",
+  "WhisperSpeechRecognition": "Whisper Spracherkennung verwenden",
+  "WhisperAPIKeyInfo": "Im Whisper-Modus ist ein OpenAI-API-Schlüssel erforderlich. Bitte geben Sie den OpenAI-API-Schlüssel in den KI-Einstellungen ein.",
+  "WhisperTranscriptionModel": "Whisper Transkriptionsmodell",
+  "WhisperTranscriptionModelInfo": "Sie können das Modell auswählen, das für die Spracherkennung verwendet werden soll. Je leistungsfähiger das Modell, desto präziser ist die Erkennung, aber die API-Kosten können höher sein."
 }

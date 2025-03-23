@@ -1,13 +1,13 @@
 {
-  "Description": "■ 앱에 대해",
-  "BasedSettings": "■ 기본 설정",
-  "AISettings": "■ AI 설정",
-  "CharacterSettings": "■ 캐릭터 설정",
-  "YoutubeSettings": "■ YouTube 설정",
-  "VoiceSettings": "■ 음성 설정",
-  "SlideSettings": "■ 슬라이드 설정",
-  "LogSettings": "■ 대화 기록",
-  "OtherSettings": "■ 기타",
+  "Description": "앱에 대하여",
+  "BasedSettings": "기본 설정",
+  "AISettings": "AI 설정",
+  "CharacterSettings": "캐릭터 설정",
+  "YoutubeSettings": "YouTube 설정",
+  "VoiceSettings": "합성 음성 설정",
+  "SlideSettings": "슬라이드 설정",
+  "LogSettings": "대화 기록",
+  "OtherSettings": "기타",
   "ExternalLinkageMode": "외부 연계 모드(베타 버전)",
   "YoutubeMode": "YouTube 모드",
   "YoutubeInfo": "처음에 '#'이 있는 댓글은 무시됩니다.",
@@ -180,7 +180,7 @@
     "LocalLLMConnectionError": "로컬 LLM 서버에 연결할 수 없습니다",
     "LocalLLMNotFound": "로컬 LLM의 엔드포인트를 찾을 수 없습니다",
     "LocalLLMAPIError": "로컬 LLM API에서 오류가 발생했습니다",
-    "EmptyLocalLLMURL": "로컬 LLM URL이 설정되어 있지 않습니다"
+    "EmptyLocalLLMURL": "로컬 LLM의 URL이 설정되어 있지 않습니다"
   },
   "MessageReceiver": "외부에서 지시를 받는다",
   "MessageReceiverDescription": "API를 사용하여 AI 캐릭터의 말을 외부에서 지시할 수 있습니다.",
@@ -206,7 +206,8 @@
     "FunctionExecutionFailed": "{{funcName}}의 실행에 실패했습니다",
     "FirefoxNotSupported": "Firefox에서는 이 기능을 지원하지 않습니다",
     "SpeechRecognitionError": "음성 인식 오류가 발생했습니다",
-    "PresetSwitching": "{{presetName}}로 전환되었습니다."
+    "PresetSwitching": "{{presetName}}로 전환되었습니다.",
+    "WhisperError": "Whisper에 의한 음성 인식에서 오류가 발생했습니다"
   },
   "UsingOpenAITTS": "OpenAI 사용",
   "OpenAITTSInfo": "OpenAI를 사용하고 있습니다. 다국어에 대응할 수 있습니다. AI 서비스로 OpenAI를 선택한 경우 아래 API 키를 설정할 필요는 없습니다.",
@@ -225,7 +226,7 @@
     "userInputTitle": "사용자 입력 보내기",
     "userInputDescription": "보낸 메시지는 AITuberKit의 입력 폼에서 입력한 경우와 동일한 처리가 됩니다. 여러 메시지를 보낸 경우 순서대로 처리됩니다.\nAI 모델과 음성 모델은 AITuberKit의 설정에서 선택한 것이 사용됩니다.\n시스템 프롬프트와 대화 기록은 AITuberKit의 값이 사용됩니다."
   },
-  "CannotUseVoice": "리얼타임 API 모드 또는 오디오 모드가 활성화된 경우, 음성 설정은 필요하지 않습니다.",
+  "CannotUseVoice": "실시간 API 모드 또는 오디오 모드가 활성화된 경우,\n합성 음성 설정은 필요하지 않습니다.",
   "Live2D": {
     "FileInfo": "사용하고 싶은 Live2D 모델을 public/live2d 폴더에 배치해 주세요. 이 폴더의 루트에 model3.json 파일이 존재해야 합니다.\n선택 목록에 표시되지 않는 경우 화면을 다시 로드하거나 폴더 경로가 올바른지 확인해 주세요.",
     "Info": "감정과 모션을 지정할 수 있습니다.\n각 감정은 프롬프트로 제어됩니다. 자세한 내용은 \"AI 설정 => 캐릭터 설정\"을 참조하세요.",
@@ -244,7 +245,9 @@
     "happyMotionGroup": "기쁨",
     "sadMotionGroup": "슬픔",
     "angryMotionGroup": "분노",
-    "relaxedMotionGroup": "느긋"
+    "relaxedMotionGroup": "느긋",
+    "surprisedEmotions": "놀람",
+    "surprisedMotionGroup": "놀람"
   },
   "UseVideoAsBackground": "공유 화면 또는 웹캠을 배경으로 사용",
   "Temperature": "Temperature",
@@ -253,9 +256,17 @@
   "CannotUseParameters": "실시간 API 모드 또는 오디오 모드가 활성화된 경우, Temperature와 Max Tokens 매개변수를 지정할 수 없습니다.",
   "DocumentationDescription": "AITuberKit의 자세한 사용법 및 튜토리얼은 아래 URL에서 확인하세요.",
   "PresetQuestions": "질문의 사전 설정",
-  "PresetQuestionsInfo": "여러 질문 패턴을 미리 작성하고 등록할 수 있습니다. 등록된 질문은 사용자 UI에 버튼 형식으로 표시되며, 클릭하면 채팅 입력란에 설정됩니다.",
-  "EnterPresetQuestion": "질문을 입력하세요",
-  "DragToReorder": "드래그하여 순서를 변경",
-  "ShowSilenceProgressBar": "무음 감지 타임아웃의 진행 표시줄을 표시합니다",
-  "CharacterpresetInfo": "프리셋을 선택하면 캐릭터 프롬프트가 변경됩니다.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)로 단축키를 사용할 수 있습니다."
+  "PresetQuestionsInfo": "여러 질문 패턴을 미리 작성 및 등록할 수 있습니다. 등록된 질문은 사용자 UI에 버튼 형식으로 표시되며, 클릭하면 채팅 입력란에 세트됩니다.",
+  "EnterPresetQuestion": "질문을 입력해 주세요",
+  "DragToReorder": "드래그하여 순서 변경",
+  "ShowSilenceProgressBar": "무음 감지 진행 바 표시",
+  "CharacterpresetInfo": "프리셋을 선택하면 캐릭터 프롬프트가 변경됩니다.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)로 단축키를 사용할 수 있습니다.",
+  "SpeechInputSettings": "음성 입력 설정",
+  "SpeechRecognitionMode": "음성 인식 모드",
+  "SpeechRecognitionModeInfo": "음성 인식 모드를 선택할 수 있습니다.\n「브라우저 표준」은 브라우저 내장 음성 인식을 사용합니다.\n「Whisper」는 OpenAI의 Whisper API를 사용합니다. 더 고급 인식이 가능하지만, OpenAI API 키가 필요합니다.",
+  "BrowserSpeechRecognition": "브라우저 표준 음성 인식 사용",
+  "WhisperSpeechRecognition": "Whisper 음성 인식 사용",
+  "WhisperAPIKeyInfo": "Whisper 모드에서는 OpenAI API 키가 필요합니다. AI 설정에서 OpenAI의 API 키를 설정해 주세요.",
+  "WhisperTranscriptionModel": "Whisper 전사 모델",
+  "WhisperTranscriptionModelInfo": "음성 인식에 사용할 모델을 선택할 수 있습니다. 성능이 높은 모델일수록 높은 정확도로 인식 가능하지만, API 비용이 높아질 수 있습니다."
 }

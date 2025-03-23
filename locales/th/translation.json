@@ -1,13 +1,13 @@
 {
-  "Description": "■ เกี่ยวกับแอปพลิเคชัน",
-  "BasedSettings": "■ การตั้งค่าพื้นฐาน",
-  "AISettings": "■ การตั้งค่า AI",
-  "CharacterSettings": "■ การตั้งค่าตัวละคร",
-  "YoutubeSettings": "■ การตั้งค่า YouTube",
-  "VoiceSettings": "■ การตั้งค่าเสียง",
-  "SlideSettings": "■ การตั้งค่าสไลด์",
-  "LogSettings": "■ ประวัติการสนทนา",
-  "OtherSettings": "■ อื่น ๆ",
+  "Description": "เกี่ยวกับแอป",
+  "BasedSettings": "การตั้งค่าพื้นฐาน",
+  "AISettings": "การตั้งค่า AI",
+  "CharacterSettings": "การตั้งค่าตัวละคร",
+  "YoutubeSettings": "การตั้งค่า YouTube",
+  "VoiceSettings": "การตั้งค่าการสังเคราะห์เสียง",
+  "SlideSettings": "การตั้งค่าการนำเสนอ",
+  "LogSettings": "ประวัติการสนทนา",
+  "OtherSettings": "อื่นๆ",
   "ExternalLinkageMode": "โหมดการเชื่อมต่อภายนอก (รุ่นเบต้า)",
   "YoutubeMode": "โหมด YouTube",
   "YoutubeInfo": "ความคิดเห็นที่ขึ้นต้นด้วยเครื่องหมาย \"#\" จะถูกละเว้น",
@@ -179,7 +179,7 @@
     "LocalLLMConnectionError": "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ LLM ภายในเครื่อง",
     "LocalLLMNotFound": "ไม่พบปลายทางของ LLM ภายในเครื่อง",
     "LocalLLMAPIError": "เกิดข้อผิดพลาดใน API ของ LLM ภายในเครื่อง",
-    "EmptyLocalLLMURL": "ไม่มีการตั้งค่า URL ของ LLM ท้องถิ่น"
+    "EmptyLocalLLMURL": "ยังไม่ได้ตั้งค่า URL ของ LLM ท้องถิ่น"
   },
   "MessageReceiver": "รับคำสั่งจากภายนอก",
   "MessageReceiverDescription": "สามารถสั่งให้ตัวละคร AI พูดจากภายนอกผ่าน API ได้",
@@ -205,7 +205,8 @@
     "FunctionExecutionFailed": "การดำเนินการ {{funcName}} ล้มเหลว",
     "FirefoxNotSupported": "ฟังก์ชันนี้ไม่รองรับใน Firefox",
     "SpeechRecognitionError": "เกิดข้อผิดพลาดในการรู้จำเสียง",
-    "PresetSwitching": "เปลี่ยนเป็น {{presetName}} แล้ว."
+    "PresetSwitching": "เปลี่ยนเป็น {{presetName}} แล้ว.",
+    "WhisperError": "เกิดข้อผิดพลาดในการรู้จำเสียงด้วย Whisper"
   },
   "UsingOpenAITTS": "ใช้ OpenAI",
   "OpenAITTSInfo": "ใช้ OpenAI รองรับหลายภาษา หากเลือก OpenAI ในบริการ AI ไม่จำเป็นต้องตั้งค่าคีย์ API ด้านล่าง",
@@ -224,7 +225,7 @@
     "userInputTitle": "ส่งข้อความของผู้ใช้",
     "userInputDescription": "ข้อความที่ส่งจะถูกประมวลผลเหมือนกับการป้อนข้อมูลผ่านฟอร์มของ AITuberKit หากส่งหลายข้อความจะดำเนินการตามลำดับ\nใช้โมเดล AI และโมเดลเสียงที่เลือกในตั้งค่า AITuberKit\nใช้ prompt ระบบและประวัติการสนทนาตามการตั้งค่าใน AITuberKit"
   },
-  "CannotUseVoice": "หากเปิดใช้งานโหมด API แบบเรียลไทม์หรือโหมดเสียง\nการตั้งค่าเสียงจะไม่จำเป็น",
+  "CannotUseVoice": "หากเปิดใช้งานโหมด API แบบเรียลไทม์ หรือโหมดเสียง，\nการตั้งค่าการสังเคราะห์เสียงจะไม่จำเป็น。",
   "Live2D": {
     "FileInfo": "โปรดวางโฟลเดอร์โมเดล Live2D ที่ต้องการใช้งานไว้ใน public/live2d โฟลเดอร์นี้ต้องมีไฟล์ model3.json อยู่\nหากไม่แสดงในตัวเลือก กรุณารีเฟรชหน้าหรือยืนยันว่าเส้นทางโฟลเดอร์ถูกต้อง",
     "Info": "คุณสามารถกำหนดอารมณ์และการเคลื่อนไหวได้\nอารมณ์แต่ละแบบถูกควบคุมผ่าน prompt ดูรายละเอียดใน “การตั้งค่า AI => การตั้งค่าตัวละคร”",
@@ -243,7 +244,9 @@
     "happyMotionGroup": "มีความสุข",
     "sadMotionGroup": "เศร้า",
     "angryMotionGroup": "โกรธ",
-    "relaxedMotionGroup": "ผ่อนคลาย"
+    "relaxedMotionGroup": "ผ่อนคลาย",
+    "surprisedEmotions": "ตกใจ",
+    "surprisedMotionGroup": "ตกใจ"
   },
   "UseVideoAsBackground": "ใช้หน้าจอแชร์หรือเว็บแคมเป็นพื้นหลัง",
   "Temperature": "Temperature",
@@ -252,9 +255,17 @@
   "CannotUseParameters": "หากโหมด API แบบเรียลไทม์หรือโหมดเสียงเปิดใช้งานอยู่ จะไม่สามารถกำหนดพารามิเตอร์ Temperature และ Max Tokens ได้",
   "DocumentationDescription": "คุณสามารถดูวิธีการใช้งานและบทแนะนำที่ละเอียดของ AITuberKit ได้ที่ URL ด้านล่างนี้",
   "PresetQuestions": "การตั้งค่าคำถามล่วงหน้า",
-  "PresetQuestionsInfo": "สามารถสร้างและลงทะเบียนรูปแบบคำถามหลายรูปแบบล่วงหน้าได้ คำถามที่ลงทะเบียนจะแสดงในรูปแบบปุ่มบน UI ของผู้ใช้ และเมื่อคลิกจะถูกตั้งค่าในช่องป้อนข้อความแชท",
-  "EnterPresetQuestion": "กรุณาใส่คำถาม",
+  "PresetQuestionsInfo": "คุณสามารถสร้างและลงทะเบียนรูปแบบคำถามหลายรูปแบบล่วงหน้า คำถามที่ลงทะเบียนจะแสดงในรูปแบบปุ่มบน UI ของผู้ใช้ และเมื่อคลิกจะถูกตั้งค่าในช่องป้อนข้อความแชท。",
+  "EnterPresetQuestion": "กรุณากรอกคำถาม",
   "DragToReorder": "ลากเพื่อเปลี่ยนลำดับ",
-  "ShowSilenceProgressBar": "แสดงแถบความก้าวหน้าของการตรวจจับเสียงเงียบ",
-  "CharacterpresetInfo": "เมื่อเลือกพรีเซ็ต ตัวกระตุ้นตัวละครจะถูกเปลี่ยนแปลง\nสามารถใช้ทางลัด Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ได้。"
+  "ShowSilenceProgressBar": "แสดงแถบความก้าวหน้าการตรวจจับเสียงเงียบ",
+  "CharacterpresetInfo": "เมื่อเลือกพรีเซ็ต ตัวกระตุ้นตัวละครจะถูกเปลี่ยนแปลง\nสามารถใช้ทางลัด Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) ได้。",
+  "SpeechInputSettings": "การตั้งค่าการป้อนเสียง",
+  "SpeechRecognitionMode": "โหมดการรู้จำเสียง",
+  "SpeechRecognitionModeInfo": "คุณสามารถเลือกโหมดการรู้จำเสียงได้。\n「มาตรฐานเบราว์เซอร์」ใช้การรู้จำเสียงที่ติดตั้งในเบราว์เซอร์。\n「Whisper」ใช้ Whisper API ของ OpenAI ซึ่งสามารถรู้จำได้อย่างแม่นยำมากขึ้น แต่ต้องใช้ OpenAI API Key。",
+  "BrowserSpeechRecognition": "ใช้การรู้จำเสียงมาตรฐานเบราว์เซอร์",
+  "WhisperSpeechRecognition": "ใช้การรู้จำเสียง Whisper",
+  "WhisperAPIKeyInfo": "ในโหมด Whisper ต้องใช้ OpenAI API Key กรุณาตั้งค่า OpenAI API Key ในการตั้งค่า AI。",
+  "WhisperTranscriptionModel": "โมเดลการถอดเสียง Whisper",
+  "WhisperTranscriptionModelInfo": "คุณสามารถเลือกโมเดลที่ใช้ในการรู้จำเสียง โมเดลที่มีประสิทธิภาพสูงกว่าจะมีความแม่นยำสูงกว่า แต่ค่าใช้จ่าย API อาจสูงขึ้น。"
 }

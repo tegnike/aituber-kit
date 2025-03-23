@@ -1,13 +1,13 @@
 {
-  "Description": "■ À propos de l'application",
-  "BasedSettings": "■ Paramètres de base",
-  "AISettings": "■ Paramètres AI",
-  "CharacterSettings": "■ Paramètres de personnage",
-  "YoutubeSettings": "■ Paramètres YouTube",
-  "VoiceSettings": "■ Paramètres de voix",
-  "SlideSettings": "■ Paramètres de diapositive",
-  "LogSettings": "■ Historique des conversations",
-  "OtherSettings": "■ Autre",
+  "Description": "À propos de l'application",
+  "BasedSettings": "Paramètres de base",
+  "AISettings": "Paramètres de l'IA",
+  "CharacterSettings": "Paramètres du personnage",
+  "YoutubeSettings": "Paramètres YouTube",
+  "VoiceSettings": "Paramètres de la voix synthétique",
+  "SlideSettings": "Paramètres de diapositive",
+  "LogSettings": "Historique des conversations",
+  "OtherSettings": "Autres",
   "ExternalLinkageMode": "Mode de liaison externe (version bêta)",
   "YoutubeMode": "Mode YouTube",
   "YoutubeInfo": "Le premier caractère du commentaire est '#' et sera ignoré.",
@@ -178,7 +178,7 @@
     "LocalLLMConnectionError": "Erreur de connexion au serveur LLM local",
     "LocalLLMNotFound": "Point de terminaison LLM local non trouvé",
     "LocalLLMAPIError": "Erreur API LLM locale",
-    "EmptyLocalLLMURL": "L'URL du LLM local n'est pas configuré"
+    "EmptyLocalLLMURL": "L'URL du LLM local n'est pas configurée"
   },
   "MessageReceiver": "Recevoir des instructions de l'extérieur",
   "MessageReceiverDescription": "Vous pouvez utiliser l'API pour faire parler les personnages IA depuis l'extérieur.",
@@ -204,7 +204,8 @@
     "FunctionExecutionFailed": "L'exécution de {{funcName}} a échoué",
     "FirefoxNotSupported": "Cette fonctionnalité n'est pas prise en charge sur Firefox",
     "SpeechRecognitionError": "Une erreur de reconnaissance vocale s'est produite",
-    "PresetSwitching": "Vous avez basculé sur {{presetName}}."
+    "PresetSwitching": "Vous avez basculé sur {{presetName}}.",
+    "WhisperError": "Une erreur s'est produite lors de la reconnaissance vocale avec Whisper"
   },
   "UsingOpenAITTS": "Utilisation d'OpenAI",
   "OpenAITTSInfo": "Utilisation d'OpenAI. Prend en charge plusieurs langues. Si vous sélectionnez OpenAI comme service IA, vous n'avez pas besoin de définir la clé API ci-dessous.",
@@ -223,7 +224,7 @@
     "userInputTitle": "Envoyer une entrée utilisateur",
     "userInputDescription": "Le message envoyé est traité de la même manière que lorsqu'il est saisi depuis le formulaire d'entrée AITuberKit. Si plusieurs messages sont envoyés, ils sont traités dans l'ordre. Le modèle IA et le modèle de voix sont ceux sélectionnés dans les paramètres AITuberKit. L'invite système et l'historique des conversations sont les valeurs définies dans AITuberKit."
   },
-  "CannotUseVoice": "Le mode API en temps réel ou le mode audio est activé, donc les paramètres de voix ne sont pas nécessaires.",
+  "CannotUseVoice": "En mode API en temps réel ou en mode audio,\nles paramètres de voix synthétique ne sont pas nécessaires.",
   "Live2D": {
     "FileInfo": "Placez le modèle Live2D que vous souhaitez utiliser dans le dossier public/live2d. Le fichier model3.json doit exister à la racine de ce dossier.\nS'il n'est pas affiché dans la sélection, veuillez recharger l'écran ou vérifier si le chemin du dossier est correct.",
     "Info": "Vous pouvez spécifier les émotions et les mouvements.\nChaque émotion est contrôlée par l'invite. Pour plus de détails, veuillez consulter \"Paramètres IA => Paramètres de personnage\".",
@@ -242,7 +243,9 @@
     "happyMotionGroup": "Heureux",
     "sadMotionGroup": "Triste",
     "angryMotionGroup": "En colère",
-    "relaxedMotionGroup": "Détendu"
+    "relaxedMotionGroup": "Détendu",
+    "surprisedEmotions": "Surprise",
+    "surprisedMotionGroup": "Surprise"
   },
   "UseVideoAsBackground": "Utiliser l'écran partagé ou la webcam comme arrière-plan",
   "Temperature": "Température",
@@ -254,6 +257,14 @@
   "PresetQuestionsInfo": "Vous pouvez créer et enregistrer plusieurs modèles de questions à l'avance. Les questions enregistrées s'affichent sous forme de boutons dans l'interface utilisateur, et en cliquant dessus, elles sont ajoutées au champ de saisie de chat.",
   "EnterPresetQuestion": "Veuillez entrer une question",
   "DragToReorder": "Faites glisser pour réorganiser",
-  "ShowSilenceProgressBar": "Afficher la barre de progression du délai d'attente de détection de silence",
-  "CharacterpresetInfo": "En sélectionnant un préréglage, l'invite de personnage sera modifiée.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) pour les raccourcis."
+  "ShowSilenceProgressBar": "Afficher la barre de progression de détection de silence",
+  "CharacterpresetInfo": "En sélectionnant un préréglage, l'invite de personnage sera modifiée.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) pour les raccourcis.",
+  "SpeechInputSettings": "Paramètres d'entrée vocale",
+  "SpeechRecognitionMode": "Mode de reconnaissance vocale",
+  "SpeechRecognitionModeInfo": "Vous pouvez choisir le mode de reconnaissance vocale.\n« Standard du navigateur » utilise la reconnaissance vocale intégrée du navigateur.\n« Whisper » utilise l'API Whisper d'OpenAI. Cela permet une reconnaissance plus avancée, mais nécessite une clé API OpenAI.",
+  "BrowserSpeechRecognition": "Utiliser la reconnaissance vocale standard du navigateur",
+  "WhisperSpeechRecognition": "Utiliser la reconnaissance vocale Whisper",
+  "WhisperAPIKeyInfo": "Le mode Whisper nécessite une clé API OpenAI. Veuillez configurer la clé API d'OpenAI dans les paramètres de l'IA.",
+  "WhisperTranscriptionModel": "Modèle de transcription Whisper",
+  "WhisperTranscriptionModelInfo": "Vous pouvez choisir le modèle à utiliser pour la reconnaissance vocale. Plus le modèle est performant, plus la reconnaissance est précise, mais les coûts API peuvent être plus élevés."
 }

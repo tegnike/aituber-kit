@@ -1,13 +1,13 @@
 {
-  "Description": "■ Acerca de la aplicación",
-  "BasedSettings": "■ Configuración básica",
-  "AISettings": "■ Configuración de IA",
-  "CharacterSettings": "■ Configuración de personaje",
-  "YoutubeSettings": "■ Configuración de YouTube",
-  "VoiceSettings": "■ Configuración de voz",
-  "SlideSettings": "■ Configuración de diapositivas",
-  "LogSettings": "■ Historial de conversaciones",
-  "OtherSettings": "■ Otros",
+  "Description": "Acerca de la aplicación",
+  "BasedSettings": "Configuración básica",
+  "AISettings": "Configuración de IA",
+  "CharacterSettings": "Configuración de personajes",
+  "YoutubeSettings": "Configuración de YouTube",
+  "VoiceSettings": "Configuración de voz sintética",
+  "SlideSettings": "Configuración de diapositivas",
+  "LogSettings": "Historial de conversaciones",
+  "OtherSettings": "Otros",
   "ExternalLinkageMode": "Modo de vinculación externa (versión beta)",
   "YoutubeMode": "Modo YouTube",
   "YoutubeInfo": "El primer carácter del comentario es '#' y será ignorado.",
@@ -204,7 +204,8 @@
     "FunctionExecutionFailed": "La ejecución de {{funcName}} falló",
     "FirefoxNotSupported": "Esta función no está soportada en Firefox",
     "SpeechRecognitionError": "Ocurrió un error de reconocimiento de voz",
-    "PresetSwitching": "Se ha cambiado a {{presetName}}."
+    "PresetSwitching": "Se ha cambiado a {{presetName}}.",
+    "WhisperError": "Se produjo un error en el reconocimiento de voz con Whisper"
   },
   "UsingOpenAITTS": "Usando OpenAI",
   "OpenAITTSInfo": "Usando OpenAI. Admite múltiples idiomas. Si selecciona OpenAI como servicio de IA, no necesita configurar la clave API abajo.",
@@ -223,7 +224,7 @@
     "userInputTitle": "Enviar entrada de usuario",
     "userInputDescription": "El mensaje enviado se procesa igual que cuando se ingresa desde el formulario de entrada de AITuberKit. Si se envían múltiples mensajes, se procesan en orden. El modelo de IA y el modelo de voz son los seleccionados en la configuración de AITuberKit. El prompt del sistema y el historial de conversación son los valores configurados en AITuberKit."
   },
-  "CannotUseVoice": "El modo API en tiempo real o el modo audio está activado, por lo que no se requiere configuración de voz.",
+  "CannotUseVoice": "Si el modo API en tiempo real o el modo de audio están habilitados,\nno se necesita configuración de voz sintética.",
   "Live2D": {
     "FileInfo": "Coloque el modelo Live2D que desea usar en la carpeta public/live2d. El archivo model3.json debe existir en la raíz de esta carpeta.\nSi no se muestra en la selección, por favor recargue la pantalla o verifique si la ruta de la carpeta es correcta.",
     "Info": "Puede especificar emociones y movimientos.\nCada emoción es controlada por el prompt. Para más detalles, consulte \"Configuración de IA => Configuración de personaje\".",
@@ -242,7 +243,9 @@
     "happyMotionGroup": "Feliz",
     "sadMotionGroup": "Triste",
     "angryMotionGroup": "Enojado",
-    "relaxedMotionGroup": "Relajado"
+    "relaxedMotionGroup": "Relajado",
+    "surprisedEmotions": "Sorpresa",
+    "surprisedMotionGroup": "Sorpresa"
   },
   "UseVideoAsBackground": "Usar pantalla compartida o webcam como fondo",
   "Temperature": "Temperatura",
@@ -250,10 +253,18 @@
   "MaxTokensInfo": "El número máximo de tokens varía según el modelo de IA que esté utilizando. Consulte las especificaciones de cada modelo.",
   "CannotUseParameters": "Si el modo API en tiempo real o el modo de audio están habilitados, no se pueden especificar los parámetros Temperature y Max Tokens.",
   "DocumentationDescription": "Puede ver detalles sobre cómo usar AITuberKit y tutoriales en la siguiente URL.",
-  "PresetQuestions": "Preguntas preestablecidas",
-  "PresetQuestionsInfo": "Puedes crear y registrar múltiples patrones de preguntas de antemano. Las preguntas registradas se mostrarán en forma de botones en la interfaz de usuario del usuario, y al hacer clic se establecerán en el campo de entrada del chat.",
-  "EnterPresetQuestion": "Por favor, introduce una pregunta",
+  "PresetQuestions": "Preguntas predefinidas",
+  "PresetQuestionsInfo": "Puedes crear y registrar múltiples patrones de preguntas de antemano. Las preguntas registradas se mostrarán en forma de botones en la interfaz de usuario del usuario, y al hacer clic se establecerán en el campo de entrada de chat.",
+  "EnterPresetQuestion": "Por favor, ingresa una pregunta",
   "DragToReorder": "Arrastra para cambiar el orden",
-  "ShowSilenceProgressBar": "Mostrar la barra de progreso del tiempo de espera de detección de silencio",
-  "CharacterpresetInfo": "Al seleccionar un preset, se cambiará el prompt del personaje.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) para atajos."
+  "ShowSilenceProgressBar": "Mostrar barra de progreso de detección de silencio",
+  "CharacterpresetInfo": "Al seleccionar un preset, se cambiará el prompt del personaje.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) para atajos.",
+  "SpeechInputSettings": "Configuración de entrada de voz",
+  "SpeechRecognitionMode": "Modo de reconocimiento de voz",
+  "SpeechRecognitionModeInfo": "Puedes seleccionar el modo de reconocimiento de voz.\n\"Estándar del navegador\" utiliza el reconocimiento de voz integrado en el navegador.\n\"Whisper\" utiliza la API Whisper de OpenAI. Permite un reconocimiento más avanzado, pero se necesita una clave API de OpenAI.",
+  "BrowserSpeechRecognition": "Usar reconocimiento de voz estándar del navegador",
+  "WhisperSpeechRecognition": "Usar reconocimiento de voz Whisper",
+  "WhisperAPIKeyInfo": "El modo Whisper requiere una clave API de OpenAI. Por favor, configura la clave API de OpenAI en la configuración de IA.",
+  "WhisperTranscriptionModel": "Modelo de transcripción Whisper",
+  "WhisperTranscriptionModelInfo": "Puedes seleccionar el modelo que se utilizará para el reconocimiento de voz. Cuanto más avanzado sea el modelo, mayor precisión de reconocimiento tendrá, pero los costos de la API pueden ser más altos."
 }

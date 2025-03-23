@@ -1,13 +1,13 @@
 {
-  "Description": "■ Về ứng dụng",
-  "BasedSettings": "■ Cài đặt cơ bản",
-  "AISettings": "■ Cài đặt AI",
-  "CharacterSettings": "■ Cài đặt nhân vật",
-  "YoutubeSettings": "■ Cài đặt YouTube",
-  "VoiceSettings": "■ Cài đặt giọng nói",
-  "SlideSettings": "■ Cài đặt Slide",
-  "LogSettings": "■ Lịch sử hội thoại",
-  "OtherSettings": "■ Khác",
+  "Description": "Về ứng dụng",
+  "BasedSettings": "Cài đặt cơ bản",
+  "AISettings": "Cài đặt AI",
+  "CharacterSettings": "Cài đặt nhân vật",
+  "YoutubeSettings": "Cài đặt YouTube",
+  "VoiceSettings": "Cài đặt giọng nói tổng hợp",
+  "SlideSettings": "Cài đặt trình chiếu",
+  "LogSettings": "Lịch sử cuộc trò chuyện",
+  "OtherSettings": "Khác",
   "ExternalLinkageMode": "Chế độ liên kết bên ngoài (phiên bản beta)",
   "YoutubeMode": "Chế độ YouTube",
   "YoutubeInfo": "Ký tự đầu tiên của bình luận là '#' và sẽ bị bỏ qua.",
@@ -204,7 +204,8 @@
     "FunctionExecutionFailed": "Thực hiện {{funcName}} thất bại",
     "FirefoxNotSupported": "Tính năng không được hỗ trợ trên Firefox",
     "SpeechRecognitionError": "Lỗi nhận dạng giọng nói",
-    "PresetSwitching": "Đã chuyển sang {{presetName}}."
+    "PresetSwitching": "Đã chuyển sang {{presetName}}.",
+    "WhisperError": "Đã xảy ra lỗi trong nhận diện giọng nói bằng Whisper"
   },
   "UsingOpenAITTS": "Sử dụng OpenAI",
   "OpenAITTSInfo": "Sử dụng OpenAI. Hỗ trợ nhiều ngôn ngữ. Nếu chọn OpenAI, không cần nhập khóa API bên dưới.",
@@ -223,7 +224,7 @@
     "userInputTitle": "Gửi tin người dùng",
     "userInputDescription": "Tin nhắn được gửi sẽ được xử lý giống như khi nhập từ biểu mẫu trên AITuberKit. Nếu gửi nhiều tin, chúng sẽ được xử lý theo thứ tự. Mô hình AI và giọng nói được xác định trong cài đặt AITuberKit."
   },
-  "CannotUseVoice": "Chế độ API thời gian thực hoặc Audio đã bật, không cần cài đặt giọng nói.",
+  "CannotUseVoice": "Nếu chế độ API thời gian thực hoặc chế độ âm thanh được kích hoạt,\nCài đặt giọng nói tổng hợp là không cần thiết.",
   "Live2D": {
     "FileInfo": "Đặt mô hình Live2D mong muốn vào thư mục public/live2d. File model3.json phải có trong gốc thư mục này. Nếu không hiển thị, hãy tải lại trang hoặc kiểm tra lại đường dẫn.",
     "Info": "Bạn có thể chỉ định cảm xúc và chuyển động. Mỗi cảm xúc được kiểm soát bởi prompt. Tham khảo \"Cài đặt nhân vật\" trong Cài đặt AI.",
@@ -242,7 +243,9 @@
     "happyMotionGroup": "Happy",
     "sadMotionGroup": "Sad",
     "angryMotionGroup": "Angry",
-    "relaxedMotionGroup": "Relaxed"
+    "relaxedMotionGroup": "Relaxed",
+    "surprisedEmotions": "Ngạc nhiên",
+    "surprisedMotionGroup": "Ngạc nhiên"
   },
   "UseVideoAsBackground": "Sử dụng chia sẻ màn hình hoặc webcam làm hình nền",
   "Temperature": "Nhiệt độ",
@@ -254,6 +257,14 @@
   "PresetQuestionsInfo": "Bạn có thể tạo và đăng ký nhiều mẫu câu hỏi trước. Các câu hỏi đã đăng ký sẽ được hiển thị dưới dạng nút trên giao diện người dùng, và khi nhấp vào sẽ được đặt vào ô nhập chat.",
   "EnterPresetQuestion": "Vui lòng nhập câu hỏi",
   "DragToReorder": "Kéo để thay đổi thứ tự",
-  "ShowSilenceProgressBar": "Hiển thị thanh tiến trình thời gian chờ phát hiện im lặng",
-  "CharacterpresetInfo": "Khi bạn chọn một preset, prompt nhân vật sẽ được thay đổi.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) có thể sử dụng phím tắt."
+  "ShowSilenceProgressBar": "Hiển thị thanh tiến trình phát hiện im lặng",
+  "CharacterpresetInfo": "Khi bạn chọn một preset, prompt nhân vật sẽ được thay đổi.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) có thể sử dụng phím tắt.",
+  "SpeechInputSettings": "Cài đặt đầu vào giọng nói",
+  "SpeechRecognitionMode": "Chế độ nhận diện giọng nói",
+  "SpeechRecognitionModeInfo": "Bạn có thể chọn chế độ nhận diện giọng nói.\n\"Chuẩn trình duyệt\" sử dụng nhận diện giọng nói tích hợp trong trình duyệt.\n\"Whisper\" sử dụng API Whisper của OpenAI. Có khả năng nhận diện cao hơn, nhưng cần khóa API OpenAI.",
+  "BrowserSpeechRecognition": "Sử dụng nhận diện giọng nói chuẩn trình duyệt",
+  "WhisperSpeechRecognition": "Sử dụng nhận diện giọng nói Whisper",
+  "WhisperAPIKeyInfo": "Chế độ Whisper yêu cầu khóa API OpenAI. Vui lòng thiết lập khóa API OpenAI trong cài đặt AI.",
+  "WhisperTranscriptionModel": "Mô hình phiên âm Whisper",
+  "WhisperTranscriptionModelInfo": "Bạn có thể chọn mô hình sử dụng cho nhận diện giọng nói. Mô hình có hiệu suất cao hơn có khả năng nhận diện chính xác hơn, nhưng có thể tốn kém hơn về chi phí API."
 }
