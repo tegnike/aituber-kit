@@ -13,6 +13,7 @@ import {
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
   AudioModeInputType,
+  SpeechRecognitionMode,
 } from '../constants/settings'
 
 export const multiModalAIServices = [
@@ -174,6 +175,7 @@ interface General {
   showSilenceProgressBar: boolean
   presetQuestions: PresetQuestion[]
   showPresetQuestions: boolean
+  speechRecognitionMode: SpeechRecognitionMode
 }
 
 interface ModelType {
@@ -369,6 +371,7 @@ const settingsStore = create<SettingsState>()(
       showSilenceProgressBar: true,
       presetQuestions: [],
       showPresetQuestions: true,
+      speechRecognitionMode: 'browser' as SpeechRecognitionMode,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -517,6 +520,7 @@ const settingsStore = create<SettingsState>()(
         showSilenceProgressBar: state.showSilenceProgressBar,
         presetQuestions: state.presetQuestions,
         showPresetQuestions: state.showPresetQuestions,
+        speechRecognitionMode: state.speechRecognitionMode,
       }),
     }
   )

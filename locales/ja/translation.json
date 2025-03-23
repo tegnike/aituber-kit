@@ -170,6 +170,12 @@
   "LocalStorageResetButton": "設定リセット",
   "NoSpeechTimeout": "無音検出タイムアウト",
   "NoSpeechTimeoutInfo": "音声入力時に無音状態が続いた場合、自動的に入力を終了するまでの時間を設定します。\n0秒に設定すると、無音検出による自動送信を無効にします。",
+  "ShowSilenceProgressBar": "無音検出プログレスバーを表示",
+  "SpeechRecognitionMode": "音声認識モード",
+  "SpeechRecognitionModeInfo": "音声認識モードを選択できます。\n「ブラウザ標準」はブラウザ内蔵の音声認識を使用します。\n「Whisper」はOpenAIのWhisper APIを使用します。より高度な認識が可能ですが、OpenAI APIキーが必要です。",
+  "BrowserSpeechRecognition": "ブラウザ標準の音声認識を使用",
+  "WhisperSpeechRecognition": "Whisper音声認識を使用",
+  "WhisperAPIKeyInfo": "WhisperモードではOpenAI APIキーが必要です。AI設定でOpenAIのAPIキーを設定してください。",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
     "EmptyLocalLLMURL": "ローカルLLMのURLが設定されていません",
@@ -210,7 +216,8 @@
     "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません",
     "SpeechRecognitionError": "音声認識エラーが発生しました",
     "NoSpeechDetected": "音声が検出されませんでした。",
-    "PresetSwitching": "{{presetName}}に切り替わりました。"
+    "PresetSwitching": "{{presetName}}に切り替わりました。",
+    "WhisperError": "Whisperによる音声認識でエラーが発生しました"
   },
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
@@ -249,17 +256,6 @@
     "happyMotionGroup": "嬉しい",
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
-    "relaxedMotionGroup": "リラックス",
-    "surprisedMotionGroup": "驚き"
-  },
-  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
-  "Temperature": "Temperature",
-  "MaxTokens": "最大トークン数",
-  "MaxTokensInfo": "最大トークン数は利用中のAIモデルによって異なります。各モデルの仕様を確認してください。",
-  "CannotUseParameters": "リアルタイムAPIモードまたはオーディオモードが有効の場合、TemperatureとMax Tokensパラメータは指定できません。",
-  "PresetQuestions": "質問の事前設定",
-  "PresetQuestionsInfo": "複数の質問パターンを事前に作成・登録できます。登録された質問はユーザーUI上にボタン形式で表示され、クリックするとチャット入力欄にセットされます。",
-  "EnterPresetQuestion": "質問を入力してください",
-  "DragToReorder": "ドラッグして順番を変更",
-  "ShowSilenceProgressBar": "無音検出タイムアウトのプログレスバーを表示する"
+    "relaxedMotionGroup": "リラックス"
+  }
 }

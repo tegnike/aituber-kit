@@ -17,6 +17,7 @@ const AdvancedSettings = () => {
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const noSpeechTimeout = settingsStore((s) => s.noSpeechTimeout)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
+  const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
 
   const { t } = useTranslation()
 
@@ -120,6 +121,34 @@ const AdvancedSettings = () => {
             {showSilenceProgressBar ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>
+      </div>
+
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">
+          {t('SpeechRecognitionMode')}
+        </div>
+        <div className="my-4 text-base whitespace-pre-line">
+          {t('SpeechRecognitionModeInfo')}
+        </div>
+        <div className="mt-2">
+          <TextButton
+            onClick={() =>
+              settingsStore.setState({
+                speechRecognitionMode:
+                  speechRecognitionMode === 'browser' ? 'whisper' : 'browser',
+              })
+            }
+          >
+            {speechRecognitionMode === 'browser'
+              ? t('BrowserSpeechRecognition')
+              : t('WhisperSpeechRecognition')}
+          </TextButton>
+        </div>
+        {speechRecognitionMode === 'whisper' && (
+          <div className="mt-4 text-sm text-gray-600">
+            {t('WhisperAPIKeyInfo')}
+          </div>
+        )}
       </div>
     </div>
   )
