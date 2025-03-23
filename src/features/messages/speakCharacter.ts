@@ -146,7 +146,7 @@ const createSpeakCharacter = () => {
         } else if (ss.selectVoice == 'openai') {
           buffer = await synthesizeVoiceOpenAIApi(
             talk,
-            ss.openaiTTSKey || ss.openaiKey,
+            ss.openaiKey,
             ss.openaiTTSVoice,
             ss.openaiTTSModel,
             ss.openaiTTSSpeed

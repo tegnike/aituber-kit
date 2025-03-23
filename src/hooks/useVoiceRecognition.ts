@@ -141,8 +141,18 @@ export const useVoiceRecognition = ({
         formData.append('language', selectLanguage)
       }
 
+      // OpenAI APIキーを追加
+      const openaiKey = settingsStore.getState().openaiKey
+      if (openaiKey) {
+        formData.append('openaiKey', openaiKey)
+      }
+
+      // Whisperモデルを追加
+      const whisperModel = settingsStore.getState().whisperTranscriptionModel
+      formData.append('model', whisperModel)
+
       console.log(
-        `Sending audio to Whisper API - size: ${audioBlob.size} bytes, type: ${mimeType}, filename: ${fileName}`
+        `Sending audio to Whisper API - size: ${audioBlob.size} bytes, type: ${mimeType}, filename: ${fileName}, model: ${whisperModel}`
       )
 
       // APIリクエストを送信

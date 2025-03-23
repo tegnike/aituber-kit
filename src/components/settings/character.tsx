@@ -634,7 +634,7 @@ const Character = () => {
                   className={`px-4 py-2 rounded-md text-sm ${
                     isSelected
                       ? 'bg-primary text-white'
-                      : 'bg-surface1 hover:bg-surface1-hover text-gray-800'
+                      : 'bg-surface1 hover:bg-surface1-hover text-gray-800 bg-white'
                   }`}
                 >
                   {customName}

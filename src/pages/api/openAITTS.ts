@@ -10,14 +10,15 @@ export default async function handler(
   }
 
   const { message, voice, model, speed, apiKey, emotion } = req.body
-  const openaiTTSKey = apiKey || process.env.OPENAI_TTS_KEY
+  const openaiKey =
+    apiKey || process.env.OPENAI_KEY || process.env.OPENAI_API_KEY
 
-  if (!message || !voice || !model || !openaiTTSKey) {
+  if (!message || !voice || !model || !openaiKey) {
     return res.status(400).json({ error: 'Missing required parameters' })
   }
 
   try {
-    const openai = new OpenAI({ apiKey: openaiTTSKey })
+    const openai = new OpenAI({ apiKey: openaiKey })
     const options: {
       model: any
       voice: any

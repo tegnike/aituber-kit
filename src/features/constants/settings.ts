@@ -164,3 +164,8 @@ export type AudioModeModel =
 export type AudioModeInputType = 'input_text' | 'input_audio'
 
 export type SpeechRecognitionMode = 'browser' | 'whisper'
+
+export type WhisperTranscriptionModel =
+  | 'whisper-1'
+  | 'gpt-4o-transcribe'
+  | 'gpt-4o-mini-transcribe'

@@ -5,12 +5,12 @@ type SettingsTabKey =
   | 'based'
   | 'character'
   | 'ai'
-  | 'youtube'
   | 'voice'
+  | 'speechInput'
+  | 'youtube'
   | 'slide'
   | 'log'
   | 'other'
-  | 'speechInput'
 interface MenuState {
   showWebcam: boolean
   showCapture: boolean

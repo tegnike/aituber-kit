@@ -5,6 +5,7 @@
   "CharacterSettings": "キャラクター設定",
   "YoutubeSettings": "YouTube設定",
   "VoiceSettings": "合成音声設定",
+  "SpeechInputSettings": "音声入力設定",
   "SlideSettings": "スライド設定",
   "LogSettings": "会話履歴",
   "OtherSettings": "その他",
@@ -176,6 +177,8 @@
   "BrowserSpeechRecognition": "ブラウザ標準の音声認識を使用",
   "WhisperSpeechRecognition": "Whisper音声認識を使用",
   "WhisperAPIKeyInfo": "WhisperモードではOpenAI APIキーが必要です。AI設定でOpenAIのAPIキーを設定してください。",
+  "WhisperTranscriptionModel": "Whisper文字起こしモデル",
+  "WhisperTranscriptionModelInfo": "音声認識に使用するモデルを選択できます。より高性能なモデルほど高精度で認識可能ですが、APIコストが高くなる場合があります。",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
     "EmptyLocalLLMURL": "ローカルLLMのURLが設定されていません",
@@ -256,7 +259,16 @@
     "happyMotionGroup": "嬉しい",
     "sadMotionGroup": "悲しい",
     "angryMotionGroup": "怒り",
-    "relaxedMotionGroup": "リラックス"
+    "relaxedMotionGroup": "リラックス",
+    "surprisedMotionGroup": "驚き"
   },
-  "SpeechInputSettings": "音声入力設定"
+  "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
+  "Temperature": "Temperature",
+  "MaxTokens": "最大トークン数",
+  "MaxTokensInfo": "最大トークン数は利用中のAIモデルによって異なります。各モデルの仕様を確認してください。",
+  "CannotUseParameters": "リアルタイムAPIモードまたはオーディオモードが有効の場合、TemperatureとMax Tokensパラメータは指定できません。",
+  "PresetQuestions": "質問の事前設定",
+  "PresetQuestionsInfo": "複数の質問パターンを事前に作成・登録できます。登録された質問はユーザーUI上にボタン形式で表示され、クリックするとチャット入力欄にセットされます。",
+  "EnterPresetQuestion": "質問を入力してください",
+  "DragToReorder": "ドラッグして順番を変更"
 }

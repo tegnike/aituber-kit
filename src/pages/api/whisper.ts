@@ -37,15 +37,21 @@ export default async function handler(
     // マルチパートデータをパース
     const parts = parseMultipartData(buffer, boundary)
 
-    // audio fileとlanguageを探す
+    // audio file、language、openaiKey、modelを探す
     let audioFilePart = null
     let language = undefined
+    let openaiKey = undefined
+    let model = 'whisper-1'
 
     for (const part of parts) {
       if (part.name === 'file' && part.filename) {
         audioFilePart = part
       } else if (part.name === 'language' && part.data) {
         language = part.data.toString('utf-8')
+      } else if (part.name === 'openaiKey' && part.data) {
+        openaiKey = part.data.toString('utf-8')
+      } else if (part.name === 'model' && part.data) {
+        model = part.data.toString('utf-8')
       }
     }
 
@@ -60,7 +66,9 @@ export default async function handler(
     })
 
     // OpenAI APIの設定
+    // クライアントから送信されたキーを優先し、なければ環境変数を使用
     const apiKey =
+      openaiKey ||
       process.env.OPENAI_API_KEY ||
       process.env.NEXT_PUBLIC_OPENAI_API_KEY ||
       process.env.NEXT_PUBLIC_OPENAI_KEY
@@ -87,10 +95,10 @@ export default async function handler(
     )
 
     // Whisper APIに送信
-    console.log('Sending audio data to Whisper API')
+    console.log(`Sending audio data to Whisper API using model: ${model}`)
     const response = await openai.audio.transcriptions.create({
       file: audioFile,
-      model: 'gpt-4o-mini-transcribe',
+      model: model,
       language: language || undefined,
       response_format: 'json',
     })

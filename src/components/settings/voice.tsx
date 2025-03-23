@@ -54,7 +54,7 @@ const Voice = () => {
   const gsviTtsBatchSize = settingsStore((s) => s.gsviTtsBatchSize)
   const gsviTtsSpeechRate = settingsStore((s) => s.gsviTtsSpeechRate)
   const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId)
-  const openaiTTSKey = settingsStore((s) => s.openaiTTSKey)
+  const openaiAPIKey = settingsStore((s) => s.openaiKey)
   const openaiTTSVoice = settingsStore((s) => s.openaiTTSVoice)
   const openaiTTSModel = settingsStore((s) => s.openaiTTSModel)
   const openaiTTSSpeed = settingsStore((s) => s.openaiTTSSpeed)
@@ -790,10 +790,10 @@ const Voice = () => {
                     className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
-                    value={openaiTTSKey}
+                    value={openaiAPIKey}
                     onChange={(e) =>
                       settingsStore.setState({
-                        openaiTTSKey: e.target.value,
+                        openaiKey: e.target.value,
                       })
                     }
                   />

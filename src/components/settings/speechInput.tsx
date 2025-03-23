@@ -2,12 +2,36 @@ import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import Image from 'next/image'
+import { useEffect } from 'react'
+import { WhisperTranscriptionModel } from '@/features/constants/settings'
+import { Link } from '../link'
+
 const SpeechInput = () => {
   const noSpeechTimeout = settingsStore((s) => s.noSpeechTimeout)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
   const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
+  const whisperTranscriptionModel = settingsStore(
+    (s) => s.whisperTranscriptionModel
+  )
+  const openaiKey = settingsStore((s) => s.openaiKey)
 
   const { t } = useTranslation()
+
+  // whisperモードの場合、自動的にnoSpeechTimeoutを0に、showSilenceProgressBarをfalseに設定
+  useEffect(() => {
+    if (speechRecognitionMode === 'whisper') {
+      settingsStore.setState({
+        noSpeechTimeout: 0,
+        showSilenceProgressBar: false,
+      })
+    }
+  }, [speechRecognitionMode])
+
+  const whisperModels: { value: WhisperTranscriptionModel; label: string }[] = [
+    { value: 'whisper-1', label: 'whisper-1' },
+    { value: 'gpt-4o-transcribe', label: 'gpt-4o-transcribe' },
+    { value: 'gpt-4o-mini-transcribe', label: 'gpt-4o-mini-transcribe' },
+  ]
 
   return (
     <div className="mb-10">
@@ -43,47 +67,102 @@ const SpeechInput = () => {
           </TextButton>
         </div>
         {speechRecognitionMode === 'whisper' && (
-          <div className="mt-4 text-sm text-gray-600">
-            {t('WhisperAPIKeyInfo')}
-          </div>
+          <>
+            <div className="mt-4 text-sm text-gray-600">
+              {t('WhisperAPIKeyInfo')}
+            </div>
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">
+                {t('OpenAIAPIKeyLabel')}
+              </div>
+              <div className="my-4">
+                {t('APIKeyInstruction')}
+                <br />
+                <Link
+                  url="https://platform.openai.com/account/api-keys"
+                  label="OpenAI"
+                />
+              </div>
+              <input
+                className="text-ellipsis px-4 py-2 w-full md:w-1/2 bg-white hover:bg-white-hover rounded-lg"
+                type="text"
+                placeholder="sk-..."
+                value={openaiKey}
+                onChange={(e) =>
+                  settingsStore.setState({ openaiKey: e.target.value })
+                }
+              />
+            </div>
+            <div className="mt-6">
+              <div className="mb-4 text-xl font-bold">
+                {t('WhisperTranscriptionModel')}
+              </div>
+              <div className="mb-4 text-base whitespace-pre-line">
+                {t('WhisperTranscriptionModelInfo')}
+              </div>
+              <select
+                id="whisper-model-select"
+                className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
+                value={whisperTranscriptionModel}
+                onChange={(e) =>
+                  settingsStore.setState({
+                    whisperTranscriptionModel: e.target
+                      .value as WhisperTranscriptionModel,
+                  })
+                }
+              >
+                {whisperModels.map((model) => (
+                  <option key={model.value} value={model.value}>
+                    {model.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
         )}
       </div>
-      <div className="my-6">
-        <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
-        <div className="my-4 text-base whitespace-pre-line">
-          {t('NoSpeechTimeoutInfo')}
-        </div>
-        <div className="mt-6 font-bold">
-          <div className="select-none">
-            {t('NoSpeechTimeout')}: {noSpeechTimeout.toFixed(1)}秒
+      {speechRecognitionMode === 'browser' && (
+        <>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
+            <div className="my-4 text-base whitespace-pre-line">
+              {t('NoSpeechTimeoutInfo')}
+            </div>
+            <div className="mt-6 font-bold">
+              <div className="select-none">
+                {t('NoSpeechTimeout')}: {noSpeechTimeout.toFixed(1)}秒
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="4"
+                step="0.1"
+                value={noSpeechTimeout}
+                onChange={(e) =>
+                  settingsStore.setState({
+                    noSpeechTimeout: parseFloat(e.target.value),
+                  })
+                }
+                className="mt-2 mb-4 input-range"
+              />
+            </div>
+            <div className="mt-2">
+              <div className="font-bold mb-2">
+                {t('ShowSilenceProgressBar')}
+              </div>
+              <TextButton
+                onClick={() =>
+                  settingsStore.setState({
+                    showSilenceProgressBar: !showSilenceProgressBar,
+                  })
+                }
+              >
+                {showSilenceProgressBar ? t('StatusOn') : t('StatusOff')}
+              </TextButton>
+            </div>
           </div>
-          <input
-            type="range"
-            min="0"
-            max="4"
-            step="0.1"
-            value={noSpeechTimeout}
-            onChange={(e) =>
-              settingsStore.setState({
-                noSpeechTimeout: parseFloat(e.target.value),
-              })
-            }
-            className="mt-2 mb-4 input-range"
-          />
-        </div>
-        <div className="mt-2">
-          <div className="font-bold mb-2">{t('ShowSilenceProgressBar')}</div>
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({
-                showSilenceProgressBar: !showSilenceProgressBar,
-              })
-            }
-          >
-            {showSilenceProgressBar ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   )
 }

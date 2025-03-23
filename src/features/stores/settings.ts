@@ -14,6 +14,7 @@ import {
   RealtimeAPIModeAzureVoice,
   AudioModeInputType,
   SpeechRecognitionMode,
+  WhisperTranscriptionModel,
 } from '../constants/settings'
 
 export const multiModalAIServices = [
@@ -52,7 +53,6 @@ interface APIKeys {
   youtubeApiKey: string
   elevenlabsApiKey: string
   azureEndpoint: string
-  openaiTTSKey: string
   azureTTSKey: string
   azureTTSEndpoint: string
 }
@@ -176,6 +176,7 @@ interface General {
   presetQuestions: PresetQuestion[]
   showPresetQuestions: boolean
   speechRecognitionMode: SpeechRecognitionMode
+  whisperTranscriptionModel: WhisperTranscriptionModel
 }
 
 interface ModelType {
@@ -264,7 +265,6 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') ||
         1.0,
       elevenlabsVoiceId: '',
-      openaiTTSKey: '',
       openaiTTSVoice:
         (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) ||
         'shimmer',
@@ -372,6 +372,7 @@ const settingsStore = create<SettingsState>()(
       presetQuestions: [],
       showPresetQuestions: true,
       speechRecognitionMode: 'browser' as SpeechRecognitionMode,
+      whisperTranscriptionModel: 'whisper-1' as WhisperTranscriptionModel,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -485,7 +486,6 @@ const settingsStore = create<SettingsState>()(
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
         useSearchGrounding: state.useSearchGrounding,
-        openaiTTSKey: state.openaiTTSKey,
         openaiTTSVoice: state.openaiTTSVoice,
         openaiTTSModel: state.openaiTTSModel,
         openaiTTSSpeed: state.openaiTTSSpeed,
@@ -521,6 +521,7 @@ const settingsStore = create<SettingsState>()(
         presetQuestions: state.presetQuestions,
         showPresetQuestions: state.showPresetQuestions,
         speechRecognitionMode: state.speechRecognitionMode,
+        whisperTranscriptionModel: state.whisperTranscriptionModel,
       }),
     }
   )
