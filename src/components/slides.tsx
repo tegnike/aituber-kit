@@ -4,11 +4,13 @@ import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
-import OBSWebSocket from 'obs-websocket-js'
+import * as OBSWebSocketModule from 'obs-websocket-js'
+
+const OBSWebSocket = OBSWebSocketModule.default || OBSWebSocketModule;
 
 // OBS接続用の設定
 const obsConfig = {
-  address: '172.27.223.104:4455', // OBS WebSocketのデフォルトアドレス
+  url: 'ws://localhost:4455',
   password: 'testtest', // 必要に応じてパスワードを設定
 }
 
@@ -31,66 +33,85 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   const [slideCount, setSlideCount] = useState(0)
   
   // OBS接続関連の状態を追加
-  const [obs] = useState<OBSWebSocket>(new OBSWebSocket())
-  const [obsConnected, setObsConnected] = useState(false)
-  const [isRecording, setIsRecording] = useState(false)
+  const [obs, setObs] = useState<any>(null);
+  const [obsConnected, setObsConnected] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
 
+  // コンポーネントマウント時にOBSインスタンスを作成
+  useEffect(() => {
+    const obsInstance = new OBSWebSocket();
+    setObs(obsInstance);
+  }, []);
+  
   // OBSに接続する関数
   const connectToOBS = useCallback(async () => {
+    if (!obs) {
+      console.error('OBSWebSocketインスタンスが作成されていません');
+      return;
+    }
+    
     try {
-      await obs.connect(obsConfig.address, obsConfig.password)
-      console.log('OBS Studio に接続しました')
-      setObsConnected(true)
+      console.log('OBS Studioに接続を試みています...');
+      await obs.connect(obsConfig.url, obsConfig.password);
+      console.log('OBS Studio に接続しました');
+      setObsConnected(true);      
     } catch (error) {
-      console.error('OBS Studioへの接続に失敗しました:', error)
-      setObsConnected(false)
+      console.error('OBS Studioへの接続に失敗しました:', error);
+      setObsConnected(false);
     }
   }, [obs])
 
   // 録画を開始する関数
   const startRecording = useCallback(async () => {
-    if (!obsConnected) return
+    if (!obs || !obsConnected) return;
     
     try {
       // 録画中でない場合のみ録画開始
-      const { outputActive } = await obs.call('GetRecordStatus')
+      const { outputActive } = await obs.call('GetRecordStatus');
       if (!outputActive) {
-        await obs.call('StartRecord')
-        setIsRecording(true)
-        console.log('録画を開始しました')
+        await obs.call('StartRecord');
+        setIsRecording(true);
+        console.log('録画を開始しました');
       }
     } catch (error) {
-      console.error('録画開始に失敗しました:', error)
+      console.error('録画開始に失敗しました:', error);
     }
-  }, [obs, obsConnected])
+  }, [obs, obsConnected]);
 
   // 録画を停止する関数
   const stopRecording = useCallback(async () => {
-    if (!obsConnected || !isRecording) return
+    if (!obs || !obsConnected || !isRecording) return;
     
     try {
-      await obs.call('StopRecord')
-      setIsRecording(false)
-      console.log('録画を停止しました')
+      await obs.call('StopRecord');
+      setIsRecording(false);
+      console.log('録画を停止しました');
     } catch (error) {
-      console.error('録画停止に失敗しました:', error)
+      console.error('録画停止に失敗しました:', error);
     }
-  }, [obs, obsConnected, isRecording])
+  }, [obs, obsConnected, isRecording]);
 
   // コンポーネントマウント時にOBSに接続
   useEffect(() => {
-    connectToOBS()
+    // obsインスタンスが作成されたら接続を試みる
+    if (obs) {
+      connectToOBS();
+    }
     
     // コンポーネントアンマウント時に接続を切断
     return () => {
-      if (obsConnected) {
+      if (obs && obsConnected) {
         // 録画中なら停止
         if (isRecording) {
-          stopRecording()
+          stopRecording();
         }
         // 接続を切断
-        obs.disconnect()
-        console.log('OBS Studioとの接続を切断しました')
+        try {
+          obs.disconnect();
+          console.log('OBS Studioとの接続を切断しました');
+        } catch (error) {
+          console.error('OBS Studioとの接続切断に失敗しました:', error);
+        }
       }
     }
   }, [connectToOBS, obs, obsConnected, isRecording, stopRecording])
