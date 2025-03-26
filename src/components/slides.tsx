@@ -29,8 +29,12 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   const isPlaying = slideStore((state) => state.isPlaying)
   const currentSlide = slideStore((state) => state.currentSlide)
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
+  const isAutoplay = slideStore((state) => state.isAutoplay)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
   const [slideCount, setSlideCount] = useState(0)
+  
+  // スライドの準備状態を追跡
+  const [slidesReady, setSlidesReady] = useState(false)
   
   // 動画の再生状態を追跡
   const [videoPlaying, setVideoPlaying] = useState(false)
@@ -183,7 +187,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     );
   }, []);
 
-  // スライドの音声を読み上げる関数を先に定義
+  // スライドの音声を読み上げる関数
   const readSlide = useCallback(
     (slideIndex: number) => {
       const getCurrentLines = () => {
@@ -202,7 +206,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       }
 
       const currentLines = getCurrentLines()
-      console.log(currentLines)
+      console.log(`スライド${slideIndex}を読み上げ: ${currentLines}`)
       speakMessageHandler(currentLines)
     },
     [selectedSlideDocs]
@@ -270,158 +274,191 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     })
   }, [currentSlide, marpitContainer, checkAllVideosEnded])
 
+  // スライドの読み込み処理
   useEffect(() => {
     const convertMarkdown = async () => {
-      const response = await fetch('/api/convertMarkdown', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ slideName: selectedSlideDocs }),
-      })
-      const data = await response.json()
+      // 読み込み開始時は準備完了フラグをリセット
+      setSlidesReady(false);
+      
+      console.log(`スライド「${selectedSlideDocs}」の読み込みを開始します...`);
+      
+      try {
+        const response = await fetch('/api/convertMarkdown', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ slideName: selectedSlideDocs }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`スライドの変換に失敗しました: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
 
-      // HTMLをパースしてmarpit要素を取得
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(data.html, 'text/html')
-      const marpitElement = doc.querySelector('.marpit')
-      setMarpitContainer(marpitElement)
+        // HTMLをパースしてmarpit要素を取得
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data.html, 'text/html');
+        const marpitElement = doc.querySelector('.marpit');
+        
+        if (!marpitElement) {
+          throw new Error('スライドのHTMLが正しく生成されませんでした');
+        }
+        
+        setMarpitContainer(marpitElement);
 
-      // スライド数を設定
-      if (marpitElement) {
-        const slides = marpitElement.querySelectorAll(':scope > svg')
-        setSlideCount(slides.length)
+        // スライド数を設定
+        const slides = marpitElement.querySelectorAll(':scope > svg');
+        setSlideCount(slides.length);
+        console.log(`スライド数: ${slides.length}枚`);
 
         // 初期状態で最初のスライド以外は非表示にしておく
         slides.forEach((slide, i) => {
           if (i === 0) {
-            slide.removeAttribute('hidden')
-            slide.setAttribute('style', 'display: block;')
+            slide.removeAttribute('hidden');
+            slide.setAttribute('style', 'display: block;');
           } else {
-            slide.setAttribute('hidden', '')
-            slide.setAttribute('style', 'display: none;')
+            slide.setAttribute('hidden', '');
+            slide.setAttribute('style', 'display: none;');
           }
-        })
+        });
+
+        // CSSを動的に適用
+        const styleElement = document.createElement('style');
+        styleElement.textContent = data.css;
+        document.head.appendChild(styleElement);
+
+        // スライドの準備が完了したことを通知
+        console.log(`スライド「${selectedSlideDocs}」の読み込みが完了しました`);
+        setSlidesReady(true);
         
-        // スライドのロードが完了したタイミングで、自動再生モードの場合は処理を開始
-        const isAutoplayMode = slideStore.getState().isAutoplay;
-        if (isAutoplayMode && !slideStore.getState().isPlaying) {
-          console.log(`スライド「${selectedSlideDocs}」のロードが完了しました。自動再生を開始します。`);
-          
-          // 現在のスライドを明示的に0に設定
-          slideStore.setState({ currentSlide: 0 });
-          
-          // 十分な遅延を入れてから再生開始
-          // これにより0ページ目が確実に表示された状態で音声が始まる
-          setTimeout(() => {
-            console.log(`スライド${0}の音声を読み上げ開始します`);
-            // 最初のスライドの音声を読み上げ
-            readSlide(0);
-            // 再生状態を設定
-            slideStore.setState({ isPlaying: true });
-          }, 2000);
-        }
+        return () => {
+          document.head.removeChild(styleElement);
+        };
+      } catch (error) {
+        console.error('スライドの読み込み中にエラーが発生しました:', error);
+        setSlidesReady(false);
       }
+    };
 
-      // CSSを動的に適用
-      const styleElement = document.createElement('style')
-      styleElement.textContent = data.css
-      document.head.appendChild(styleElement)
+    convertMarkdown();
+  }, [selectedSlideDocs]);
 
-      return () => {
-        document.head.removeChild(styleElement)
-      }
-    }
-
-    console.log(`スライド「${selectedSlideDocs}」の読み込みを開始します...`);
-    convertMarkdown()
-  }, [selectedSlideDocs])
-
+  // カスタムCSSの適用
   useEffect(() => {
     // カスタムCSSを適用
     const customStyle = `
       div.marpit > svg > foreignObject > section {
         padding: 2em;
       }
-    `
-    const styleElement = document.createElement('style')
-    styleElement.textContent = customStyle
-    document.head.appendChild(styleElement)
+    `;
+    const styleElement = document.createElement('style');
+    styleElement.textContent = customStyle;
+    document.head.appendChild(styleElement);
 
     // コンポーネントのアンマウント時にスタイルを削除
     return () => {
-      document.head.removeChild(styleElement)
-    }
-  }, [])
+      document.head.removeChild(styleElement);
+    };
+  }, []);
 
+  // スライドが準備完了したときに、自動再生モードであれば再生を開始
+  useEffect(() => {
+    if (slidesReady && isAutoplay && !isPlaying) {
+      console.log('スライドの準備が完了し、自動再生モードが有効なため、再生を開始します');
+      
+      // 現在のスライドを明示的に0に設定
+      slideStore.setState({ currentSlide: 0 });
+      
+      // 少し遅延を入れてから再生開始（スライドが確実に表示されてから）
+      setTimeout(() => {
+        // 再生開始
+        console.log('スライド0の音声を読み上げ、再生を開始します');
+        readSlide(0);
+        slideStore.setState({ isPlaying: true });
+      }, 1000);
+    }
+  }, [slidesReady, isAutoplay, isPlaying, readSlide]);
+
+  // 次のスライドに進む関数
   const nextSlide = useCallback(() => {
     slideStore.setState((state) => {
-      const newSlide = Math.min(state.currentSlide + 1, slideCount - 1)
+      const newSlide = Math.min(state.currentSlide + 1, slideCount - 1);
+      
+      // 再生中の場合は音声を読み上げる
       if (isPlaying) {
-        readSlide(newSlide)
+        readSlide(newSlide);
       }
-      return { currentSlide: newSlide }
-    })
-  }, [isPlaying, readSlide, slideCount])
+      
+      return { currentSlide: newSlide };
+    });
+  }, [isPlaying, readSlide, slideCount]);
+
+  // 前のスライドに戻る関数
+  const prevSlide = useCallback(() => {
+    slideStore.setState((state) => ({
+      currentSlide: Math.max(state.currentSlide - 1, 0),
+    }));
+  }, []);
+
+  // 再生/停止を切り替える関数
+  const toggleIsPlaying = useCallback(() => {
+    const newIsPlaying = !isPlaying;
+    
+    // 状態を更新
+    slideStore.setState({ isPlaying: newIsPlaying });
+    
+    // 再生開始時には現在のスライドの音声を読み上げる
+    if (newIsPlaying) {
+      console.log(`手動再生: スライド${currentSlide}の音声を読み上げます`);
+      readSlide(currentSlide);
+    }
+  }, [isPlaying, currentSlide, readSlide]);
 
   // isPlayingの変更を監視して録画を制御
   useEffect(() => {
     if (isPlaying && obsConnected && !isRecording) {
       // スライドショー開始時に録画開始
-      startRecording()
+      startRecording();
     } else if (!isPlaying && obsConnected && isRecording) {
       // スライドショー終了時に録画停止
-      stopRecording()
+      stopRecording();
     }
-  }, [isPlaying, obsConnected, isRecording, startRecording, stopRecording])
+  }, [isPlaying, obsConnected, isRecording, startRecording, stopRecording]);
 
-  // 最後のスライドに到達時の処理（既存のコード）を拡張
+  // 最後のスライドに到達時の処理
   useEffect(() => {
-    // 最後のスライドに達した場合、isPlayingをfalseに設定
-    if (currentSlide === slideCount - 1 && chatProcessingCount === 0) {
-      slideStore.setState({ isPlaying: false })
+    // 最後のスライドに達し、かつ音声が終了した場合にisPlayingをfalseに設定
+    if (currentSlide === slideCount - 1 && chatProcessingCount === 0 && !videoPlaying) {
+      slideStore.setState({ isPlaying: false });
+      
       // 録画中なら停止
       if (obsConnected && isRecording) {
-        stopRecording()
+        stopRecording();
       }
     }
-  }, [currentSlide, slideCount, chatProcessingCount, obsConnected, isRecording, stopRecording])
+  }, [currentSlide, slideCount, chatProcessingCount, videoPlaying, obsConnected, isRecording, stopRecording]);
 
-  const prevSlide = useCallback(() => {
-    slideStore.setState((state) => ({
-      currentSlide: Math.max(state.currentSlide - 1, 0),
-    }))
-  }, [])
-
-  const toggleIsPlaying = () => {
-    const newIsPlaying = !isPlaying
-    slideStore.setState({
-      isPlaying: newIsPlaying,
-    })
-    if (newIsPlaying) {
-      readSlide(currentSlide)
-    }
-  }
-
-  // 音声ナレーションが終了し、動画も終了した場合に次のスライドへ進む
+  // 音声ナレーションと動画が終了したら次のスライドへ進む
   useEffect(() => {
-    if (isPlaying && currentSlide < slideCount - 1) {
-      if (chatProcessingCount === 0 && !videoPlaying) {
-        console.log('音声ナレーションと動画の両方が終了したため、次のスライドへ進みます');
-        nextSlide();
-      } else {
-        if (chatProcessingCount > 0) {
-          console.log('音声ナレーション再生中...');
+    // 再生中で、最後のスライドではなく、音声と動画の両方が終了した場合
+    if (isPlaying && currentSlide < slideCount - 1 && chatProcessingCount === 0 && !videoPlaying) {
+      // すぐに次に進むのではなく、少し間を取る
+      const timerId = setTimeout(() => {
+        // 状態をダブルチェック（タイマー実行までに状態が変わっている可能性がある）
+        if (slideStore.getState().isPlaying && 
+            currentSlide < slideCount - 1 && 
+            homeStore.getState().chatProcessingCount === 0 && 
+            !videoPlaying) {
+          console.log('音声ナレーションと動画の両方が終了したため、次のスライドへ進みます');
+          nextSlide();
         }
-        if (videoPlaying) {
-          console.log('動画再生中...');
-        }
-      }
+      }, 500);
+      
+      return () => clearTimeout(timerId);
     }
-  }, [chatProcessingCount, videoPlaying, isPlaying, nextSlide, currentSlide, slideCount]);
-
-  // 自動再生モードかどうかを取得
-  const isAutoplay = slideStore((state) => state.isAutoplay);
+  }, [chatProcessingCount, videoPlaying, isPlaying, currentSlide, slideCount, nextSlide]);
 
   return (
     <>
