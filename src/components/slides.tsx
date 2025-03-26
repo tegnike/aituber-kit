@@ -43,6 +43,23 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     setObs(obsInstance);
   }, []);
   
+  // OBS録画状態を確認する関数
+  const checkRecordingStatus = useCallback(async () => {
+    if (!obs || !obsConnected) return;
+    
+    try {
+      // OBSの録画状態を取得
+      const { outputActive } = await obs.call('GetRecordStatus');
+      // 現在の状態と異なる場合のみ更新（無駄なレンダリングを避ける）
+      if (outputActive !== isRecording) {
+        console.log(`録画状態を更新: ${outputActive ? '録画中' : '録画停止'}`);
+        setIsRecording(outputActive);
+      }
+    } catch (error) {
+      console.error('録画状態の取得に失敗しました:', error);
+    }
+  }, [obs, obsConnected, isRecording]);
+  
   // OBSに接続する関数
   const connectToOBS = useCallback(async () => {
     if (!obs) {
@@ -54,42 +71,75 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       console.log('OBS Studioに接続を試みています...');
       await obs.connect(obsConfig.url, obsConfig.password);
       console.log('OBS Studio に接続しました');
-      setObsConnected(true);      
+      setObsConnected(true);
+      
+      // 接続後すぐに録画状態を確認
+      await checkRecordingStatus();
+      
+      // OBSからのイベント通知を設定
+      obs.on('RecordStateChanged', ({ outputActive }) => {
+        console.log(`OBSの録画状態が変更されました: ${outputActive ? '録画中' : '録画停止'}`);
+        setIsRecording(outputActive);
+      });
     } catch (error) {
       console.error('OBS Studioへの接続に失敗しました:', error);
       setObsConnected(false);
     }
-  }, [obs])
+  }, [obs, checkRecordingStatus]);
 
   // 録画を開始する関数
   const startRecording = useCallback(async () => {
     if (!obs || !obsConnected) return;
     
     try {
+      // 録画状態を最新に更新
+      await checkRecordingStatus();
+      
       // 録画中でない場合のみ録画開始
-      const { outputActive } = await obs.call('GetRecordStatus');
-      if (!outputActive) {
+      if (!isRecording) {
         await obs.call('StartRecord');
         setIsRecording(true);
         console.log('録画を開始しました');
+      } else {
+        console.log('既に録画中です');
       }
     } catch (error) {
       console.error('録画開始に失敗しました:', error);
     }
-  }, [obs, obsConnected]);
+  }, [obs, obsConnected, isRecording, checkRecordingStatus]);
 
   // 録画を停止する関数
   const stopRecording = useCallback(async () => {
-    if (!obs || !obsConnected || !isRecording) return;
+    if (!obs || !obsConnected) return;
     
     try {
-      await obs.call('StopRecord');
-      setIsRecording(false);
-      console.log('録画を停止しました');
+      // 録画状態を最新に更新
+      await checkRecordingStatus();
+      
+      // 録画中の場合のみ録画停止
+      if (isRecording) {
+        await obs.call('StopRecord');
+        setIsRecording(false);
+        console.log('録画を停止しました');
+      } else {
+        console.log('録画が停止されていません');
+      }
     } catch (error) {
       console.error('録画停止に失敗しました:', error);
     }
-  }, [obs, obsConnected, isRecording]);
+  }, [obs, obsConnected, isRecording, checkRecordingStatus]);
+  
+  // 定期的に録画状態を確認
+  useEffect(() => {
+    if (!obsConnected) return;
+    
+    // 5秒ごとに録画状態を確認
+    const interval = setInterval(() => {
+      checkRecordingStatus();
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [obsConnected, checkRecordingStatus]);
 
   // コンポーネントマウント時にOBSに接続
   useEffect(() => {
@@ -114,7 +164,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
         }
       }
     }
-  }, [connectToOBS, obs, obsConnected, isRecording, stopRecording])
+  }, [connectToOBS, obs, obsConnected, isRecording, stopRecording]);
 
   useEffect(() => {
     const currentMarpitContainer = document.querySelector('.marpit')

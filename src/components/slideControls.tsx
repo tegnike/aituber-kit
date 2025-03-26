@@ -51,12 +51,14 @@ const SlideControls: React.FC<SlideControlsProps> = ({
       {obsConnected !== undefined && (
         <div className="ml-4 flex items-center">
           <span className={`w-3 h-3 rounded-full mr-1 ${obsConnected ? 'bg-green-500' : 'bg-red-500'}`}></span>
-          <span className="text-xs">OBS {obsConnected ? '接続中' : '未接続'}</span>
+          <span className="text-xs font-medium">OBS {obsConnected ? '接続中' : '未接続'}</span>
           
           {obsConnected && isRecording !== undefined && (
             <div className="ml-2 flex items-center">
               <span className={`w-3 h-3 rounded-full mr-1 ${isRecording ? 'bg-red-500 animate-pulse' : 'bg-gray-400'}`}></span>
-              <span className="text-xs">{isRecording ? '録画中' : '録画停止'}</span>
+              <span className={`text-xs font-medium ${isRecording ? 'text-red-600' : ''}`}>
+                {isRecording ? '🔴 録画中' : '⚪ 録画停止'}
+              </span>
             </div>
           )}
         </div>
