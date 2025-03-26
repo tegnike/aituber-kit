@@ -28,6 +28,7 @@ export const Menu = () => {
   const showCapture = menuStore((s) => s.showCapture)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
+  const isAutoplay = slideStore((s) => s.isAutoplay)
 
   const [showSettings, setShowSettings] = useState(false)
   const [showChatLog, setShowChatLog] = useState(false)
@@ -138,132 +139,138 @@ export const Menu = () => {
 
   return (
     <>
-      <div className="absolute z-15 m-24">
-        <div
-          className="grid md:grid-flow-col gap-[8px] mb-40"
-          style={{ width: 'max-content' }}
-        >
-          {showControlPanel && (
-            <>
-              <div className="md:order-1 order-2">
-                <IconButton
-                  iconName="24/Settings"
-                  isProcessing={false}
-                  onClick={() => setShowSettings(true)}
-                ></IconButton>
-              </div>
-              <div className="md:order-2 order-1">
-                {showChatLog ? (
+      {!isAutoplay && (
+        <div className="absolute z-15 m-24">
+          <div
+            className="grid md:grid-flow-col gap-[8px] mb-40"
+            style={{ width: 'max-content' }}
+          >
+            {showControlPanel && (
+              <>
+                <div className="md:order-1 order-2">
                   <IconButton
-                    iconName="24/CommentOutline"
-                    label={t('ChatLog')}
+                    iconName="24/Settings"
                     isProcessing={false}
-                    onClick={() => setShowChatLog(false)}
-                  />
-                ) : (
-                  <IconButton
-                    iconName="24/CommentFill"
-                    label={t('ChatLog')}
-                    isProcessing={false}
-                    disabled={false}
-                    onClick={() => setShowChatLog(true)}
-                  />
-                )}
-              </div>
-              {!youtubeMode &&
-                multiModalAIServices.includes(
-                  selectAIService as multiModalAIServiceKey
-                ) && (
-                  <>
-                    <div className="order-3">
-                      <IconButton
-                        iconName="screen-share"
-                        isProcessing={false}
-                        onClick={toggleCapture}
-                      />
-                    </div>
-                    <div className="order-4">
-                      <IconButton
-                        iconName="24/Camera"
-                        isProcessing={false}
-                        onClick={toggleWebcam}
-                      />
-                    </div>
-                    <div className="order-4">
-                      <IconButton
-                        iconName="24/AddImage"
-                        isProcessing={false}
-                        onClick={() => imageFileInputRef.current?.click()}
-                      />
-                      <input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        ref={imageFileInputRef}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0]
-                          if (file) {
-                            const reader = new FileReader()
-                            reader.onload = (e) => {
-                              const imageUrl = e.target?.result as string
-                              homeStore.setState({ modalImage: imageUrl })
+                    onClick={() => setShowSettings(true)}
+                  ></IconButton>
+                </div>
+                <div className="md:order-2 order-1">
+                  {showChatLog ? (
+                    <IconButton
+                      iconName="24/CommentOutline"
+                      label={t('ChatLog')}
+                      isProcessing={false}
+                      onClick={() => setShowChatLog(false)}
+                    />
+                  ) : (
+                    <IconButton
+                      iconName="24/CommentFill"
+                      label={t('ChatLog')}
+                      isProcessing={false}
+                      disabled={false}
+                      onClick={() => setShowChatLog(true)}
+                    />
+                  )}
+                </div>
+                {!youtubeMode &&
+                  multiModalAIServices.includes(
+                    selectAIService as multiModalAIServiceKey
+                  ) && (
+                    <>
+                      <div className="order-3">
+                        <IconButton
+                          iconName="screen-share"
+                          isProcessing={false}
+                          onClick={toggleCapture}
+                        />
+                      </div>
+                      <div className="order-4">
+                        <IconButton
+                          iconName="24/Camera"
+                          isProcessing={false}
+                          onClick={toggleWebcam}
+                        />
+                      </div>
+                      <div className="order-4">
+                        <IconButton
+                          iconName="24/AddImage"
+                          isProcessing={false}
+                          onClick={() => imageFileInputRef.current?.click()}
+                        />
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          ref={imageFileInputRef}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              const reader = new FileReader()
+                              reader.onload = (e) => {
+                                const imageUrl = e.target?.result as string
+                                homeStore.setState({ modalImage: imageUrl })
+                              }
+                              reader.readAsDataURL(file)
                             }
-                            reader.readAsDataURL(file)
-                          }
-                        }}
-                      />
-                    </div>
-                  </>
+                          }}
+                        />
+                      </div>
+                    </>
+                  )}
+                {youtubeMode && (
+                  <div className="order-5">
+                    <IconButton
+                      iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
+                      isProcessing={false}
+                      onClick={() =>
+                        settingsStore.setState({
+                          youtubePlaying: !youtubePlaying,
+                        })
+                      }
+                    />
+                  </div>
                 )}
-              {youtubeMode && (
-                <div className="order-5">
-                  <IconButton
-                    iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
-                    isProcessing={false}
-                    onClick={() =>
-                      settingsStore.setState({
-                        youtubePlaying: !youtubePlaying,
-                      })
-                    }
-                  />
-                </div>
-              )}
-              {slideMode && (
-                <div className="order-5">
-                  <IconButton
-                    iconName="24/FrameEffect"
-                    isProcessing={false}
-                    onClick={() =>
-                      menuStore.setState({ slideVisible: !slideVisible })
-                    }
-                    disabled={slidePlaying}
-                  />
-                </div>
-              )}
-            </>
-          )}
+                {slideMode && (
+                  <div className="order-5">
+                    <IconButton
+                      iconName="24/FrameEffect"
+                      isProcessing={false}
+                      onClick={() =>
+                        menuStore.setState({ slideVisible: !slideVisible })
+                      }
+                      disabled={slidePlaying}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
       <div className="relative">
         {slideMode && slideVisible && <Slides markdown={markdownContent} />}
       </div>
-      {showChatLog && <ChatLog />}
-      {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
-      {!showChatLog &&
-        assistantMessage &&
-        (!slideMode || !slideVisible) &&
-        showAssistantText && <AssistantText message={assistantMessage} />}
-      {showWebcam && navigator.mediaDevices && <Webcam />}
-      {showCapture && <Capture />}
-      {showPermissionModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <p>カメラの使用を許可してください。</p>
-            <button onClick={() => setShowPermissionModal(false)}>
-              閉じる
-            </button>
-          </div>
-        </div>
+      {!isAutoplay && (
+        <>
+          {showChatLog && <ChatLog />}
+          {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
+          {!showChatLog &&
+            assistantMessage &&
+            (!slideMode || !slideVisible) &&
+            showAssistantText && <AssistantText message={assistantMessage} />}
+          {showWebcam && navigator.mediaDevices && <Webcam />}
+          {showCapture && <Capture />}
+          {showPermissionModal && (
+            <div className="modal">
+              <div className="modal-content">
+                <p>カメラの使用を許可してください。</p>
+                <button onClick={() => setShowPermissionModal(false)}>
+                  閉じる
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
       <input
         type="file"

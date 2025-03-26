@@ -77,9 +77,9 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       await checkRecordingStatus();
       
       // OBSからのイベント通知を設定
-      obs.on('RecordStateChanged', ({ outputActive }) => {
-        console.log(`OBSの録画状態が変更されました: ${outputActive ? '録画中' : '録画停止'}`);
-        setIsRecording(outputActive);
+      obs.on('RecordStateChanged', (event: { outputActive: boolean }) => {
+        console.log(`OBSの録画状態が変更されました: ${event.outputActive ? '録画中' : '録画停止'}`);
+        setIsRecording(event.outputActive);
       });
     } catch (error) {
       console.error('OBS Studioへの接続に失敗しました:', error);
@@ -343,6 +343,9 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     }
   }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slideCount])
 
+  // 自動再生モードかどうかを取得
+  const isAutoplay = slideStore((state) => state.isAutoplay);
+
   return (
     <>
       <div
@@ -358,28 +361,31 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       >
         <SlideContent marpitContainer={marpitContainer} />
       </div>
-      <div
-        className="absolute"
-        style={{
-          width: '80vw',
-          top: 'calc((100vh + 80vw * (7 / 16)) / 2)',
-          right: 0,
-          left: 0,
-          margin: 'auto',
-          zIndex: 10,
-        }}
-      >
-        <SlideControls
-          currentSlide={currentSlide}
-          slideCount={slideCount}
-          isPlaying={isPlaying}
-          prevSlide={prevSlide}
-          nextSlide={nextSlide}
-          toggleIsPlaying={toggleIsPlaying}
-          obsConnected={obsConnected}
-          isRecording={isRecording}
-        />
-      </div>
+      {/* 自動再生モードでない場合のみコントロールを表示 */}
+      {!isAutoplay && (
+        <div
+          className="absolute"
+          style={{
+            width: '80vw',
+            top: 'calc((100vh + 80vw * (7 / 16)) / 2)',
+            right: 0,
+            left: 0,
+            margin: 'auto',
+            zIndex: 10,
+          }}
+        >
+          <SlideControls
+            currentSlide={currentSlide}
+            slideCount={slideCount}
+            isPlaying={isPlaying}
+            prevSlide={prevSlide}
+            nextSlide={nextSlide}
+            toggleIsPlaying={toggleIsPlaying}
+            obsConnected={obsConnected}
+            isRecording={isRecording}
+          />
+        </div>
+      )}
     </>
   )
 }

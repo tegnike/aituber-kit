@@ -69,10 +69,16 @@ export default function App({ Component, pageProps }: AppProps) {
         // イントロダクションを非表示にする
         homeStore.setState({ showIntroduction: false })
         
+        // 自動再生モードを設定
+        slideStore.setState({ isAutoplay: true })
+        
         // 少し遅延を入れてスライドの準備ができてから再生開始
         setTimeout(() => {
           slideStore.setState({ isPlaying: true })
         }, 2000)
+      } else {
+        // 自動再生ではない場合、明示的にフラグをオフに
+        slideStore.setState({ isAutoplay: false })
       }
     }
   }, [router.isReady, router.query])
