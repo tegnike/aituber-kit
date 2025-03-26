@@ -55,6 +55,10 @@ interface APIKeys {
   azureEndpoint: string
   azureTTSKey: string
   azureTTSEndpoint: string
+  customApiUrl: string
+  customApiHeaders: string
+  customApiBody: string
+  customApiStream: boolean
 }
 
 interface Live2DSettings {
@@ -274,6 +278,10 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_OPENAI_TTS_SPEED || '1.0') || 1.0,
       azureTTSKey: '',
       azureTTSEndpoint: '',
+      customApiUrl: '',
+      customApiHeaders: '{}',
+      customApiBody: '{}',
+      customApiStream: true,
 
       // Integrations
       difyUrl: '',
@@ -522,6 +530,10 @@ const settingsStore = create<SettingsState>()(
         showPresetQuestions: state.showPresetQuestions,
         speechRecognitionMode: state.speechRecognitionMode,
         whisperTranscriptionModel: state.whisperTranscriptionModel,
+        customApiUrl: state.customApiUrl,
+        customApiHeaders: state.customApiHeaders,
+        customApiBody: state.customApiBody,
+        customApiStream: state.customApiStream,
       }),
     }
   )

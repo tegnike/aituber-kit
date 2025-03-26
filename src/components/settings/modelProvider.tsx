@@ -36,6 +36,7 @@ const aiServiceLogos = {
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',
+  api: '/images/ai-logos/api.svg',
 }
 
 // ロゴを表示するコンポーネント
@@ -89,6 +90,11 @@ const ModelProvider = () => {
 
   const difyUrl = settingsStore((s) => s.difyUrl)
 
+  const customApiUrl = settingsStore((s) => s.customApiUrl)
+  const customApiHeaders = settingsStore((s) => s.customApiHeaders)
+  const customApiBody = settingsStore((s) => s.customApiBody)
+  const customApiStream = settingsStore((s) => s.customApiStream)
+
   const { t } = useTranslation()
 
   // AIサービスの選択肢を定義
@@ -106,6 +112,7 @@ const ModelProvider = () => {
     { value: 'lmstudio', label: 'LM Studio' },
     { value: 'ollama', label: 'Ollama' },
     { value: 'dify', label: 'Dify' },
+    { value: 'api', label: 'Custom API' },
   ]
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
@@ -124,6 +131,7 @@ const ModelProvider = () => {
     lmstudio: '',
     ollama: '',
     dify: '',
+    api: '',
   }
 
   const handleAIServiceChange = useCallback(
@@ -1105,6 +1113,76 @@ const ModelProvider = () => {
               </div>
             </div>
           )
+        } else if (selectAIService === 'api') {
+          return (
+            <>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('CustomAPIEndpoint')}
+                </div>
+                <div className="my-4">{t('CustomAPIEndpointInfo')}</div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="text"
+                  placeholder="https://example.com/api/chat"
+                  value={customApiUrl}
+                  onChange={(e) =>
+                    settingsStore.setState({ customApiUrl: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('CustomAPIStream')}
+                </div>
+                <div className=" text-sm">{t('CustomAPIStreamForced')}</div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      // 常にONになるように設定
+                      settingsStore.setState({
+                        customApiStream: true,
+                      })
+                    }}
+                    disabled={true}
+                  >
+                    {t('StatusOn')}
+                  </TextButton>
+                </div>
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('CustomAPIHeaders')}
+                </div>
+                <div className="my-4">{t('CustomAPIHeadersInfo')}</div>
+                <textarea
+                  className="text-ellipsis px-4 py-2 w-full h-32 bg-white hover:bg-white-hover rounded-lg"
+                  placeholder={`{\n  "Authorization": "Bearer YOUR_TOKEN",\n  "Content-Type": "application/json"\n}`}
+                  value={customApiHeaders}
+                  onChange={(e) =>
+                    settingsStore.setState({ customApiHeaders: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('CustomAPIBody')}
+                </div>
+                <div className="my-4">{t('CustomAPIBodyInfo')}</div>
+                <textarea
+                  className="text-ellipsis px-4 py-2 w-full h-32 bg-white hover:bg-white-hover rounded-lg"
+                  placeholder={`{\n  "model": "your-model",\n  "temperature": 0.7,\n  "max_tokens": 2000\n}`}
+                  value={customApiBody}
+                  onChange={(e) =>
+                    settingsStore.setState({ customApiBody: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-sm">{t('CustomAPIDescription')}</div>
+              </div>
+            </>
+          )
         }
       })()}
       {selectAIService !== 'dify' && (
@@ -1131,7 +1209,7 @@ const ModelProvider = () => {
               />
             </div>
           </div>
-          {!realtimeAPIMode && !audioMode && (
+          {!realtimeAPIMode && !audioMode && selectAIService !== 'api' && (
             <>
               <div className="my-6">
                 <div className="my-4 text-xl font-bold">

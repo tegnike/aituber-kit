@@ -4,13 +4,21 @@ import settingsStore, {
   multiModalAIServiceKey,
 } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
+import {
+  isVercelLocalAIService,
+  AIService,
+} from '@/features/constants/settings'
 
 const getAIConfig = () => {
   const ss = settingsStore.getState()
-  const aiService = ss.selectAIService as multiModalAIServiceKey
+  // AIServiceとして扱う（より広い型）
+  const aiService = ss.selectAIService as AIService
 
-  const apiKeyName = `${aiService}Key` as const
-  const apiKey = ss[apiKeyName]
+  // APIキー名は条件分岐で取得
+  const apiKey =
+    typeof aiService === 'string' && aiService !== 'dify' && aiService !== 'api'
+      ? (ss[`${aiService}Key` as keyof typeof ss] as string)
+      : ''
 
   return {
     aiApiKey: apiKey,
@@ -21,6 +29,10 @@ const getAIConfig = () => {
     useSearchGrounding: ss.useSearchGrounding,
     temperature: ss.temperature,
     maxTokens: ss.maxTokens,
+    customApiUrl: ss.customApiUrl,
+    customApiHeaders: ss.customApiHeaders,
+    customApiBody: ss.customApiBody,
+    customApiStream: ss.customApiStream,
   }
 }
 
@@ -28,6 +40,15 @@ function handleApiError(errorCode: string): string {
   const languageCode = settingsStore.getState().selectLanguage
   i18next.changeLanguage(languageCode)
   return i18next.t(`Errors.${errorCode || 'AIAPIError'}`)
+}
+
+// APIエンドポイントを決定する関数
+function getApiEndpoint(aiService: string): string {
+  // isVercelLocalAIServiceを使用してapiサービスかどうかを判定
+  if (isVercelLocalAIService(aiService) && aiService === 'api') {
+    return '/api/ai/custom'
+  }
+  return '/api/ai/vercel'
 }
 
 export async function getVercelAIChatResponse(messages: Message[]) {
@@ -40,26 +61,51 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     useSearchGrounding,
     temperature,
     maxTokens,
+    customApiUrl,
+    customApiHeaders,
+    customApiBody,
   } = getAIConfig()
 
+  // APIエンドポイントを決定
+  const apiEndpoint = getApiEndpoint(selectAIService)
+
   try {
-    const response = await fetch('/api/aiChat', {
+    // 共通リクエストデータ
+    const requestData: any = {
+      messages,
+      stream: false,
+    }
+
+    // サービスタイプに応じてリクエストデータを追加
+    if (selectAIService === 'api') {
+      // カスタムAPI用データ
+      Object.assign(requestData, {
+        customApiUrl,
+        customApiHeaders,
+        customApiBody,
+        temperature,
+        maxTokens,
+      })
+    } else {
+      // Vercel AI SDK用データ
+      Object.assign(requestData, {
+        apiKey: aiApiKey,
+        aiService: selectAIService,
+        model: selectAIModel,
+        localLlmUrl,
+        azureEndpoint,
+        useSearchGrounding,
+        temperature,
+        maxTokens,
+      })
+    }
+
+    const response = await fetch(apiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        messages,
-        apiKey: aiApiKey,
-        aiService: selectAIService,
-        model: selectAIModel,
-        azureEndpoint: azureEndpoint,
-        localLlmUrl: localLlmUrl,
-        stream: false,
-        useSearchGrounding: useSearchGrounding,
-        temperature: temperature,
-        maxTokens: maxTokens,
-      }),
+      body: JSON.stringify(requestData),
     })
 
     if (!response.ok) {
@@ -91,25 +137,50 @@ export async function getVercelAIChatResponseStream(
     useSearchGrounding,
     temperature,
     maxTokens,
+    customApiUrl,
+    customApiHeaders,
+    customApiBody,
   } = getAIConfig()
 
-  const response = await fetch('/api/aiChat', {
+  // APIエンドポイントを決定
+  const apiEndpoint = getApiEndpoint(selectAIService)
+
+  // 共通リクエストデータ
+  const requestData: any = {
+    messages,
+    stream: true,
+  }
+
+  // サービスタイプに応じてリクエストデータを追加
+  if (selectAIService === 'api') {
+    // カスタムAPI用データ
+    Object.assign(requestData, {
+      customApiUrl,
+      customApiHeaders,
+      customApiBody,
+      temperature,
+      maxTokens,
+    })
+  } else {
+    // Vercel AI SDK用データ
+    Object.assign(requestData, {
+      apiKey: aiApiKey,
+      aiService: selectAIService,
+      model: selectAIModel,
+      localLlmUrl,
+      azureEndpoint,
+      useSearchGrounding,
+      temperature,
+      maxTokens,
+    })
+  }
+
+  const response = await fetch(apiEndpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      messages,
-      apiKey: aiApiKey,
-      aiService: selectAIService,
-      model: selectAIModel,
-      localLlmUrl: localLlmUrl,
-      azureEndpoint: azureEndpoint,
-      stream: true,
-      useSearchGrounding: useSearchGrounding,
-      temperature: temperature,
-      maxTokens: maxTokens,
-    }),
+    body: JSON.stringify(requestData),
   })
 
   try {
@@ -148,6 +219,31 @@ export async function getVercelAIChatResponseStream(
                 const content = line.substring(2).trim()
                 const decodedContent = JSON.parse(content)
                 controller.enqueue(decodedContent)
+              } else if (line.startsWith('data:')) {
+                // OpenAI API形式のストリームデータに対応
+                const content = line.substring(5).trim() // 'data:' プレフィックスを除去
+                if (content === '[DONE]') continue // 終了マーカーは無視
+
+                try {
+                  const data = JSON.parse(content)
+                  const text = data.choices?.[0]?.delta?.content
+                  if (text) {
+                    controller.enqueue(text)
+                  }
+                } catch (error) {
+                  console.error('Error parsing JSON:', error)
+                }
+              } else if (line.trim() !== '') {
+                // Ollamaなど、JSONLフォーマットのストリーミングデータに対応
+                try {
+                  const data = JSON.parse(line)
+                  // Ollama形式: {"message":{"role":"assistant","content":"テキスト"}}
+                  if (data.message?.content) {
+                    controller.enqueue(data.message.content)
+                  }
+                } catch (error) {
+                  console.error('Error parsing JSONL:', error, line)
+                }
               }
             }
           }

@@ -192,7 +192,9 @@
     "LocalLLMStreamError": "ローカルLLMのストリーム処理でエラーが発生しました",
     "LocalLLMConnectionError": "ローカルLLMサーバーに接続できません",
     "LocalLLMNotFound": "ローカルLLMのエンドポイントが見つかりません",
-    "LocalLLMAPIError": "ローカルLLM APIでエラーが発生しました"
+    "LocalLLMAPIError": "ローカルLLM APIでエラーが発生しました",
+    "CustomAPIError": "カスタムAPIでエラーが発生しました",
+    "InvalidJSON": "JSON形式が正しくありません"
   },
   "MessageReceiver": "外部からの指示を受け付ける",
   "MessageReceiverDescription": "APIを利用してAIキャラの発言を外部から指示することができます。",
@@ -270,5 +272,14 @@
   "PresetQuestions": "質問の事前設定",
   "PresetQuestionsInfo": "複数の質問パターンを事前に作成・登録できます。登録された質問はユーザーUI上にボタン形式で表示され、クリックするとチャット入力欄にセットされます。",
   "EnterPresetQuestion": "質問を入力してください",
-  "DragToReorder": "ドラッグして順番を変更"
+  "DragToReorder": "ドラッグして順番を変更",
+  "CustomAPIEndpoint": "カスタムAPIエンドポイント",
+  "CustomAPIEndpointInfo": "POSTリクエストを送信するAPIエンドポイントのURLを入力してください。",
+  "CustomAPIStream": "ストリーミングモード",
+  "CustomAPIStreamForced": "現在、ストリーミングモードは常に有効になっています。",
+  "CustomAPIHeaders": "カスタムヘッダー",
+  "CustomAPIHeadersInfo": "APIリクエストに含めるヘッダー情報をJSON形式で入力してください。",
+  "CustomAPIBody": "カスタムボディ",
+  "CustomAPIBodyInfo": "APIリクエストに含めるボディ情報をJSON形式で入力してください。messagesは自動的に含まれます。",
+  "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。"
 }

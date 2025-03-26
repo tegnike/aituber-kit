@@ -27,6 +27,7 @@ export async function getAIChatResponseStream(
     case 'deepseek':
     case 'lmstudio':
     case 'ollama':
+    case 'api':
       return getVercelAIChatResponseStream(messages)
     case 'dify':
       return getDifyChatResponseStream(
