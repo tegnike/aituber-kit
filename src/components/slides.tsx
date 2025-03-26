@@ -183,6 +183,31 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     );
   }, []);
 
+  // スライドの音声を読み上げる関数を先に定義
+  const readSlide = useCallback(
+    (slideIndex: number) => {
+      const getCurrentLines = () => {
+        try {
+          const scripts = require(
+            `../../public/slides/${selectedSlideDocs}/scripts.json`
+          )
+          const currentScript = scripts.find(
+            (script: { page: number }) => script.page === slideIndex
+          )
+          return currentScript ? currentScript.line : ''
+        } catch (error) {
+          console.error(`スライド「${selectedSlideDocs}」のスクリプト読み込みに失敗しました:`, error);
+          return '';
+        }
+      }
+
+      const currentLines = getCurrentLines()
+      console.log(currentLines)
+      speakMessageHandler(currentLines)
+    },
+    [selectedSlideDocs]
+  )
+
   // 現在表示しているスライドの動画要素を追跡
   useEffect(() => {
     const currentMarpitContainer = document.querySelector('.marpit')
@@ -277,6 +302,25 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
             slide.setAttribute('style', 'display: none;')
           }
         })
+        
+        // スライドのロードが完了したタイミングで、自動再生モードの場合は処理を開始
+        const isAutoplayMode = slideStore.getState().isAutoplay;
+        if (isAutoplayMode && !slideStore.getState().isPlaying) {
+          console.log(`スライド「${selectedSlideDocs}」のロードが完了しました。自動再生を開始します。`);
+          
+          // 現在のスライドを明示的に0に設定
+          slideStore.setState({ currentSlide: 0 });
+          
+          // 十分な遅延を入れてから再生開始
+          // これにより0ページ目が確実に表示された状態で音声が始まる
+          setTimeout(() => {
+            console.log(`スライド${0}の音声を読み上げ開始します`);
+            // 最初のスライドの音声を読み上げ
+            readSlide(0);
+            // 再生状態を設定
+            slideStore.setState({ isPlaying: true });
+          }, 2000);
+        }
       }
 
       // CSSを動的に適用
@@ -289,6 +333,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       }
     }
 
+    console.log(`スライド「${selectedSlideDocs}」の読み込みを開始します...`);
     convertMarkdown()
   }, [selectedSlideDocs])
 
@@ -308,25 +353,6 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       document.head.removeChild(styleElement)
     }
   }, [])
-
-  const readSlide = useCallback(
-    (slideIndex: number) => {
-      const getCurrentLines = () => {
-        const scripts = require(
-          `../../public/slides/${selectedSlideDocs}/scripts.json`
-        )
-        const currentScript = scripts.find(
-          (script: { page: number }) => script.page === slideIndex
-        )
-        return currentScript ? currentScript.line : ''
-      }
-
-      const currentLines = getCurrentLines()
-      console.log(currentLines)
-      speakMessageHandler(currentLines)
-    },
-    [selectedSlideDocs]
-  )
 
   const nextSlide = useCallback(() => {
     slideStore.setState((state) => {

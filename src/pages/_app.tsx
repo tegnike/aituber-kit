@@ -56,7 +56,14 @@ export default function App({ Component, pageProps }: AppProps) {
       // スライドモードを有効化
       settingsStore.setState({ slideMode: true })
       
-      // スライドを選択
+      // 強制的に初期状態にリセット
+      slideStore.setState({ 
+        isPlaying: false,
+        currentSlide: 0,
+        isAutoplay: false
+      });
+      
+      // スライドを選択（この時点ではまだロード中）
       slideStore.setState({ selectedSlideDocs: slide })
       
       // スライドを表示
@@ -64,7 +71,7 @@ export default function App({ Component, pageProps }: AppProps) {
       
       // 自動再生が指定された場合
       if (autoplay === 'true') {
-        console.log('スライドの自動再生を開始します')
+        console.log('スライドの自動再生モードを設定します')
         
         // イントロダクションを非表示にする
         homeStore.setState({ showIntroduction: false })
@@ -72,10 +79,8 @@ export default function App({ Component, pageProps }: AppProps) {
         // 自動再生モードを設定
         slideStore.setState({ isAutoplay: true })
         
-        // 少し遅延を入れてスライドの準備ができてから再生開始
-        setTimeout(() => {
-          slideStore.setState({ isPlaying: true })
-        }, 2000)
+        // 再生自体はslides.tsxのマークダウン変換完了後のタイミングで行う
+        // そのため、ここではisPlayingの設定は行わない
       } else {
         // 自動再生ではない場合、明示的にフラグをオフに
         slideStore.setState({ isAutoplay: false })
