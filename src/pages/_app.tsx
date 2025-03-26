@@ -65,6 +65,10 @@ export default function App({ Component, pageProps }: AppProps) {
       // 自動再生が指定された場合
       if (autoplay === 'true') {
         console.log('スライドの自動再生を開始します')
+        
+        // イントロダクションを非表示にする
+        homeStore.setState({ showIntroduction: false })
+        
         // 少し遅延を入れてスライドの準備ができてから再生開始
         setTimeout(() => {
           slideStore.setState({ isPlaying: true })
