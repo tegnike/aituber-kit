@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import slideStore from '@/features/stores/slide'
 import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
@@ -31,6 +31,11 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
   const [slideCount, setSlideCount] = useState(0)
+  
+  // 動画の再生状態を追跡
+  const [videoPlaying, setVideoPlaying] = useState(false)
+  // 現在のスライドの動画要素を追跡するref
+  const currentVideosRef = useRef<HTMLVideoElement[]>([])
   
   // OBS接続関連の状態を追加
   const [obs, setObs] = useState<any>(null);
@@ -166,6 +171,19 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     }
   }, [connectToOBS, obs, obsConnected, isRecording, stopRecording]);
 
+  // 全てのビデオの再生状態をチェックする関数
+  const checkAllVideosEnded = useCallback(() => {
+    if (currentVideosRef.current.length === 0) {
+      return true; // ビデオがない場合は終了している判定
+    }
+    
+    // すべてのビデオが終了しているかチェック
+    return currentVideosRef.current.every(video => 
+      video.ended || video.paused || video.currentTime >= video.duration - 0.5
+    );
+  }, []);
+
+  // 現在表示しているスライドの動画要素を追跡
   useEffect(() => {
     const currentMarpitContainer = document.querySelector('.marpit')
     if (!currentMarpitContainer) return
@@ -177,14 +195,40 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
         slide.removeAttribute('hidden')
         slide.setAttribute('style', 'display: block;')
 
-        // 新しく表示されるスライド内の video を再生
+        // 新しく表示されるスライド内の video を再生し、イベントリスナーを追加
         const videos = slide.querySelectorAll('video') as NodeListOf<HTMLVideoElement>
+        const videoArray: HTMLVideoElement[] = [];
+        
+        if (videos.length > 0) {
+          console.log(`スライド${currentSlide}には${videos.length}個の動画があります`);
+          setVideoPlaying(true);
+        } else {
+          setVideoPlaying(false);
+        }
+        
         videos.forEach((video) => {
-          //video.muted = true
+          // ビデオの再生が終了したときのイベントリスナーを設定
+          video.addEventListener('ended', () => {
+            console.log('動画の再生が終了しました');
+            // すべての動画が終了したかチェック
+            if (checkAllVideosEnded()) {
+              console.log('すべての動画の再生が終了しました');
+              setVideoPlaying(false);
+            }
+          });
+          
+          // ビデオの再生開始
           video.play().catch((err) => {
             console.warn('Video autoplay failed:', err)
-          })
-        })
+            // 自動再生に失敗した場合は、再生中でないと判断
+            setVideoPlaying(false);
+          });
+          
+          videoArray.push(video);
+        });
+        
+        // 現在のビデオ要素を保存
+        currentVideosRef.current = videoArray;
       } else {
         // 非表示にするスライド
         slide.setAttribute('hidden', '')
@@ -199,7 +243,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
         })
       }
     })
-  }, [currentSlide, marpitContainer])
+  }, [currentSlide, marpitContainer, checkAllVideosEnded])
 
   useEffect(() => {
     const convertMarkdown = async () => {
@@ -333,15 +377,22 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     }
   }
 
+  // 音声ナレーションが終了し、動画も終了した場合に次のスライドへ進む
   useEffect(() => {
-    if (
-      chatProcessingCount === 0 &&
-      isPlaying &&
-      currentSlide < slideCount - 1
-    ) {
-      nextSlide()
+    if (isPlaying && currentSlide < slideCount - 1) {
+      if (chatProcessingCount === 0 && !videoPlaying) {
+        console.log('音声ナレーションと動画の両方が終了したため、次のスライドへ進みます');
+        nextSlide();
+      } else {
+        if (chatProcessingCount > 0) {
+          console.log('音声ナレーション再生中...');
+        }
+        if (videoPlaying) {
+          console.log('動画再生中...');
+        }
+      }
     }
-  }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slideCount])
+  }, [chatProcessingCount, videoPlaying, isPlaying, nextSlide, currentSlide, slideCount]);
 
   // 自動再生モードかどうかを取得
   const isAutoplay = slideStore((state) => state.isAutoplay);
