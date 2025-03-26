@@ -8,10 +8,10 @@ import * as OBSWebSocketModule from 'obs-websocket-js'
 
 const OBSWebSocket = OBSWebSocketModule.default || OBSWebSocketModule;
 
-// OBS接続用の設定
+// OBS接続用の設定を環境変数から取得
 const obsConfig = {
-  url: 'ws://localhost:4455',
-  password: 'testtest', // 必要に応じてパスワードを設定
+  url: process.env.NEXT_PUBLIC_OBS_WEBSOCKET_URL || 'ws://localhost:4455',
+  password: process.env.NEXT_PUBLIC_OBS_WEBSOCKET_PASSWORD || '', // パスワードを.envから取得
 }
 
 interface SlidesProps {
