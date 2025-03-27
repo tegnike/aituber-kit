@@ -608,7 +608,7 @@ const Character = () => {
                         presetName: customName,
                       }),
                       type: 'info',
-                      tag: `character-preset-switching-${index + 1}`,
+                      tag: `character-preset-switching`,
                     })
                   }}
                   role="tab"
@@ -627,7 +627,7 @@ const Character = () => {
                           presetName: customName,
                         }),
                         type: 'info',
-                        tag: `character-preset-switching-${index + 1}`,
+                        tag: `character-preset-switching`,
                       })
                     }
                   }}

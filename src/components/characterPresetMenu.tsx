@@ -58,7 +58,7 @@ const CharacterPresetMenu = () => {
         presetName: customName,
       }),
       type: 'info',
-      tag: `character-preset-switching-${index + 1}`,
+      tag: `character-preset-switching`,
     })
     setIsOpen(false)
   }
