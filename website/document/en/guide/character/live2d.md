@@ -16,6 +16,7 @@ NEXT_PUBLIC_HAPPY_EMOTIONS=Happy,Happy2
 NEXT_PUBLIC_SAD_EMOTIONS=Sad,Sad2,Troubled
 NEXT_PUBLIC_ANGRY_EMOTIONS=Angry,Focus
 NEXT_PUBLIC_RELAXED_EMOTIONS=Relaxed
+NEXT_PUBLIC_SURPRISED_EMOTIONS=Surprised
 
 # Motion group settings
 NEXT_PUBLIC_IDLE_MOTION_GROUP=Idle
@@ -24,6 +25,7 @@ NEXT_PUBLIC_HAPPY_MOTION_GROUP=Happy
 NEXT_PUBLIC_SAD_MOTION_GROUP=Sad
 NEXT_PUBLIC_ANGRY_MOTION_GROUP=Angry
 NEXT_PUBLIC_RELAXED_MOTION_GROUP=Relaxed
+NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 ```
 
 ## Technical Implementation
@@ -75,6 +77,7 @@ You can set the Live2D model's expressions into five emotion categories:
 - **Sad**: Expressions that represent sadness or confusion
 - **Angry**: Expressions that represent anger or focus
 - **Relaxed**: Expressions that represent a relaxed state
+- **Surprised**: Expressions that represent surprise
 
 For each emotion category, you can assign any number of expressions from those available in the model. If multiple are specified with commas, one will be selected randomly.
 
@@ -88,6 +91,7 @@ You can set the Live2D model's motions into six categories:
 - **Sad**: Motion for the sad emotional state
 - **Angry**: Motion for the angry emotional state
 - **Relaxed**: Motion for the relaxed emotional state
+- **Surprised**: Motion for the surprised emotional state
 
 For each category, you can select one motion group from those available in the model.
 

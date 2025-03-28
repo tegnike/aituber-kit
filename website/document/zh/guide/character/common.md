@@ -14,7 +14,7 @@ NEXT_PUBLIC_CHARACTER_NAME=Nike酱
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
 # 系统提示
-NEXT_PUBLIC_SYSTEM_PROMPT="你是一个名叫Nike的AI助手。请以友好、开朗的性格说话。适当使用以下情感标签来改变表情和语调：[neutral] - 正常表情，[happy] - 高兴表情，[sad] - 悲伤表情，[angry] - 愤怒表情，[relaxed] - 放松表情"
+NEXT_PUBLIC_SYSTEM_PROMPT="你是一个名叫Nike的AI助手。请以友好、开朗的性格说话。适当使用以下情感标签来改变表情和语调：[neutral] - 正常表情，[happy] - 高兴表情，[sad] - 悲伤表情，[angry] - 愤怒表情，[relaxed] - 放松表情、[surprised] - 惊讶表情"
 
 # 字元預設名
 NEXT_PUBLIC_CUSTOM_PRESET_NAME1="Preset 1"
@@ -63,15 +63,15 @@ NEXT_PUBLIC_CHARACTER_PRESET5="您是一位名叫 Nique 的 AI 助理。"
 - `[sad]` - 悲伤表情
 - `[angry]` - 愤怒表情
 - `[relaxed]` - 放松表情
-
-提示示例：
+- `[surprised]` - 惊讶表情
+  提示示例：
 
 ```
 你将作为一个与用户关系良好的人类进行对话。
-情感类型有五种：表示正常的"neutral"，表示喜悦的"happy"，表示愤怒的"angry"，表示悲伤的"sad"，表示安宁的"relaxed"。
+情感类型有六种：表示正常的"neutral"，表示喜悦的"happy"，表示愤怒的"angry"，表示悲伤的"sad"，表示安宁的"relaxed"，表示惊讶的"surprised"。
 
 对话文本的格式如下：
-[{neutral|happy|angry|sad|relaxed}]{对话文本}
+[{neutral|happy|angry|sad|relaxed|surprised}]{对话文本}
 
 你的发言示例如下：
 [neutral]你好。[happy]最近怎么样？

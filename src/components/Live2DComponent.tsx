@@ -30,6 +30,9 @@ const Live2DComponent = () => {
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const selectedLive2DPath = settingsStore((state) => state.selectedLive2DPath)
+  // ピンチジェスチャー用の状態
+  const [pinchDistance, setPinchDistance] = useState<number | null>(null)
+  const [initialScale, setInitialScale] = useState<number | null>(null)
 
   useEffect(() => {
     initApp()
@@ -108,6 +111,13 @@ const Live2DComponent = () => {
     }
   }
 
+  // 2点間の距離を計算する関数
+  const getDistance = (touch1: Touch, touch2: Touch): number => {
+    const dx = touch1.clientX - touch2.clientX
+    const dy = touch1.clientY - touch2.clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+
   useEffect(() => {
     if (!canvasContainerRef.current || !model) return
 
@@ -148,11 +158,48 @@ const Live2DComponent = () => {
       }
     }
 
+    // タッチイベント処理
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length === 2) {
+        // ピンチ開始
+        const dist = getDistance(event.touches[0], event.touches[1])
+        setPinchDistance(dist)
+        setInitialScale(model.scale.x)
+      }
+    }
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (
+        event.touches.length === 2 &&
+        pinchDistance !== null &&
+        initialScale !== null
+      ) {
+        // ピンチ中
+        const currentDistance = getDistance(event.touches[0], event.touches[1])
+        const scale = initialScale * (currentDistance / pinchDistance)
+
+        // スケールの範囲制限
+        const newScale = Math.min(Math.max(scale, 0.1), 2.0)
+        model.scale.set(newScale)
+      }
+    }
+
+    const handleTouchEnd = () => {
+      // ピンチ終了
+      setPinchDistance(null)
+      setInitialScale(null)
+    }
+
     // イベントリスナーの登録
     canvas.addEventListener('pointerdown', handlePointerDown)
     canvas.addEventListener('pointermove', handlePointerMove)
     canvas.addEventListener('pointerup', handlePointerUp)
     canvas.addEventListener('wheel', handleWheel, { passive: false })
+
+    // タッチイベントリスナーの登録
+    canvas.addEventListener('touchstart', handleTouchStart)
+    canvas.addEventListener('touchmove', handleTouchMove)
+    canvas.addEventListener('touchend', handleTouchEnd)
 
     // クリーンアップ関数
     return () => {
@@ -160,8 +207,13 @@ const Live2DComponent = () => {
       canvas.removeEventListener('pointermove', handlePointerMove)
       canvas.removeEventListener('pointerup', handlePointerUp)
       canvas.removeEventListener('wheel', handleWheel)
+
+      // タッチイベントリスナーの削除
+      canvas.removeEventListener('touchstart', handleTouchStart)
+      canvas.removeEventListener('touchmove', handleTouchMove)
+      canvas.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [model, isDragging, dragOffset])
+  }, [model, isDragging, dragOffset, pinchDistance, initialScale])
 
   useEffect(() => {
     if (!app || !model) return

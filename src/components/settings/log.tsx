@@ -25,11 +25,18 @@ const Log = () => {
 
   return (
     <div className="">
-      <div className="mb-8 grid-cols-2">
-        <div className="mb-16 typography-20 font-bold">
-          {t('ConversationHistory')}
+      <div className="mb-2 grid-cols-2">
+        <div className="flex items-center mb-4">
+          <Image
+            src="/images/setting-icons/conversation-history.svg"
+            alt="Conversation History"
+            width={24}
+            height={24}
+            className="mr-2"
+          />
+          <h2 className="text-2xl font-bold">{t('ConversationHistory')}</h2>
         </div>
-        <div className="my-8">
+        <div className="my-2">
           {selectAIService !== 'dify'
             ? t('ConversationHistoryInfo', { count: maxPastMessages })
             : t('DifyInfo2')}
@@ -45,21 +52,21 @@ const Log = () => {
       </div>
 
       {chatLog.length > 0 && (
-        <div className="my-8">
+        <div className="my-2">
           {chatLog.map((value, index) => {
             return (
               value.content && (
                 <div
                   key={index}
-                  className="my-8 grid grid-flow-col  grid-cols-[min-content_1fr] gap-x-fixed"
+                  className="my-2 grid grid-flow-col grid-cols-[100px_1fr] gap-x-fixed"
                 >
-                  <div className="w-[64px] py-8">
+                  <div className="min-w-[100px] py-2 whitespace-nowrap">
                     {value.role === 'user' ? 'You' : 'Character'}
                   </div>
                   {typeof value.content == 'string' ? (
                     <input
                       key={index}
-                      className="bg-surface1 hover:bg-surface1-hover rounded-8 w-full px-16 py-8"
+                      className="bg-white hover:bg-white-hover rounded-lg w-full px-4 py-2"
                       type="text"
                       value={value.content}
                       onChange={(e) => {

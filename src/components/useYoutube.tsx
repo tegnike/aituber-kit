@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { fetchAndProcessComments } from '@/features/youtube/youtubeComments'
@@ -9,7 +9,7 @@ interface Params {
   handleSendChat: (text: string) => Promise<void>
 }
 
-const useYoutube = async ({ handleSendChat }: Params) => {
+const useYoutube = ({ handleSendChat }: Params) => {
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
 
   const fetchAndProcessCommentsCallback = useCallback(async () => {
@@ -28,8 +28,8 @@ const useYoutube = async ({ handleSendChat }: Params) => {
     }
 
     console.log('Call fetchAndProcessComments !!!')
-    fetchAndProcessComments(handleSendChat)
-  }, [])
+    await fetchAndProcessComments(handleSendChat)
+  }, [handleSendChat])
 
   useEffect(() => {
     if (!youtubePlaying) return
@@ -40,6 +40,7 @@ const useYoutube = async ({ handleSendChat }: Params) => {
     }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS)
 
     return () => clearInterval(intervalId)
-  }, [youtubePlaying])
+  }, [youtubePlaying, fetchAndProcessCommentsCallback])
 }
+
 export default useYoutube

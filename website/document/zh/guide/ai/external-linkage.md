@@ -65,7 +65,7 @@ NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE=true
 - `text`：让角色说的文本内容（必需）
 - `role`：消息的角色。通常使用"assistant"（必需）
 - `emotion`：情感表达（可选，默认为"neutral"）
-  - 可用值："neutral", "happy", "sad", "angry", "relaxed"
+  - 可用值："neutral", "happy", "sad", "angry", "relaxed", "surprised"
 - `type`：消息类型（可选）
   - 使用"start"开始新的响应块
 

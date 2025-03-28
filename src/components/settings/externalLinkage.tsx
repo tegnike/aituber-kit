@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
+import Image from 'next/image'
 
 const ExternalLinkage = () => {
   const { t } = useTranslation()
@@ -21,11 +22,9 @@ const ExternalLinkage = () => {
   }, [])
 
   return (
-    <div className="mb-40">
-      <div className="mb-16 typography-20 font-bold">
-        {t('ExternalLinkageMode')}
-      </div>
-      <div className="my-8">
+    <div className="mb-10">
+      <div className="mb-4 text-xl font-bold">{t('ExternalLinkageMode')}</div>
+      <div className="my-2">
         <TextButton
           onClick={() => {
             handleExternalLinkageModeChange(!externalLinkageMode)

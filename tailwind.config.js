@@ -1,19 +1,7 @@
-const { light, dark } = require('@charcoal-ui/theme')
-const { createTailwindConfig } = require('@charcoal-ui/tailwind-config')
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
-  // デフォルトのTailwindのclassが効かないのはコイツのせい
-  presets: [
-    createTailwindConfig({
-      version: 'v3',
-      theme: {
-        ':root': light,
-      },
-    }),
-  ],
   theme: {
     extend: {
       colors: {
@@ -25,8 +13,9 @@ module.exports = {
         'secondary-hover': '#FF849B',
         'secondary-press': '#FF9EB1',
         'secondary-disabled': '#FF617F4D',
-        base: '#FBE2CA',
         'text-primary': '#514062',
+        'base-light': '#FBE2CA',
+        'base-dark': '#332D2D',
 
         // トースト用のより鮮明な色定義
         'toast-info': '#007BFF',
@@ -40,19 +29,14 @@ module.exports = {
         M_PLUS_2: ['Montserrat', 'M_PLUS_2', 'sans-serif'],
         Montserrat: ['Montserrat', 'sans-serif'],
       },
-      screens: {
-        sm: '640px',
-        md: '768px',
-        lg: '1024px',
-        xl: '1280px',
-        '2xl': '1536px',
-      },
-      width: {
-        '1/2': '50%',
-      },
       zIndex: {
         5: '5',
         15: '15',
+      },
+      width: {
+        'col-span-2': '184px',
+        'col-span-4': '392px',
+        'col-span-7': '704px',
       },
     },
   },

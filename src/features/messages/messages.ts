@@ -7,7 +7,14 @@ export type Message = {
   timestamp?: string
 }
 
-export const EMOTIONS = ['neutral', 'happy', 'angry', 'sad', 'relaxed'] as const
+export const EMOTIONS = [
+  'neutral',
+  'happy',
+  'angry',
+  'sad',
+  'relaxed',
+  'surprised',
+] as const
 export type EmotionType = (typeof EMOTIONS)[number]
 
 export type Talk = {

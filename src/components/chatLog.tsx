@@ -29,8 +29,8 @@ export const ChatLog = () => {
   }, [messages])
 
   return (
-    <div className="absolute w-col-span-7 max-w-full h-[100svh] pb-64 z-10">
-      <div className="max-h-full px-16 pt-104 pb-64 overflow-y-auto scroll-hidden">
+    <div className="absolute w-col-span-7 max-w-full h-[100svh] pb-16 z-10">
+      <div className="max-h-full px-4 pt-24 pb-16 overflow-y-auto scroll-hidden">
         {messages.map((msg, i) => {
           return (
             <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
@@ -71,29 +71,29 @@ const Chat = ({
   message: string
   characterName: string
 }) => {
-  const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'g')
+  const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'gi')
   const processedMessage = message.replace(emotionPattern, '')
 
   const roleColor =
-    role !== 'user' ? 'bg-secondary text-white ' : 'bg-base text-primary'
+    role !== 'user' ? 'bg-secondary text-white ' : 'bg-base-light text-primary'
   const roleText = role !== 'user' ? 'text-secondary' : 'text-primary'
-  const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
+  const offsetX = role === 'user' ? 'pl-10' : 'pr-10'
 
   return (
-    <div className={`mx-auto max-w-[32rem] my-16 ${offsetX}`}>
+    <div className={`mx-auto max-w-[32rem] my-4 ${offsetX}`}>
       {role === 'code' ? (
-        <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-white p-16 rounded-8">
+        <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-white p-4 rounded-lg">
           <code className="font-mono text-sm">{message}</code>
         </pre>
       ) : (
         <>
           <div
-            className={`px-24 py-8 rounded-t-8 font-bold tracking-wider ${roleColor}`}
+            className={`px-6 py-2 rounded-t-lg font-bold tracking-wider ${roleColor}`}
           >
             {role !== 'user' ? characterName || 'CHARACTER' : 'YOU'}
           </div>
-          <div className="px-24 py-16 bg-white rounded-b-8">
-            <div className={`typography-16 font-bold ${roleText}`}>
+          <div className="px-6 py-4 bg-white rounded-b-lg">
+            <div className={`text-base font-bold ${roleText}`}>
               {processedMessage}
             </div>
           </div>
@@ -115,11 +115,11 @@ const ChatImage = ({
   const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
 
   return (
-    <div className={`mx-auto max-w-[32rem] my-16 ${offsetX}`}>
+    <div className={`mx-auto max-w-[32rem] my-4 ${offsetX}`}>
       <Image
         src={imageUrl}
         alt="Generated Image"
-        className="rounded-8"
+        className="rounded-lg"
         width={512}
         height={512}
       />

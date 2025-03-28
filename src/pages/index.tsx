@@ -76,7 +76,7 @@ const Home = () => {
               presetName: t(`Characterpreset${keyNumber}`),
             }),
             type: 'info',
-            tag: `character-preset-switching-${keyNumber}`,
+            tag: `character-preset-switching`,
           })
         }
       }

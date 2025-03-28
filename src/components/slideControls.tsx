@@ -32,20 +32,20 @@ const SlideControls: React.FC<SlideControlsProps> = ({
           disabled={currentSlide === 0 || isPlaying}
           onClick={prevSlide}
           isProcessing={false}
-          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
+          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-2xl py-2 px-4 text-center mx-16"
         />
         <IconButton
           iconName={isPlaying ? '24/PauseAlt' : '24/Play'}
           onClick={toggleIsPlaying}
           isProcessing={false}
-          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
+          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-2xl py-2 px-4 text-center mx-16"
         />
         <IconButton
           iconName="24/Next"
           disabled={currentSlide === slideCount - 1 || isPlaying}
           onClick={nextSlide}
           isProcessing={false}
-          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-16 py-8 px-16 text-center mx-16"
+          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-2xl py-2 px-4 text-center mx-16"
         />
       </div>
     </div>

@@ -65,7 +65,7 @@ Parameter explanation:
 - `text`: Text content for the character to speak (required)
 - `role`: Role of the message. Usually use "assistant" (required)
 - `emotion`: Emotional expression (optional, default is "neutral")
-  - Available values: "neutral", "happy", "sad", "angry", "relaxed"
+  - Available values: "neutral", "happy", "sad", "angry", "relaxed", "surprised"
 - `type`: Type of message (optional)
   - Use "start" to begin a new response block
 

@@ -237,6 +237,16 @@ aituber-kit/
 - docs/license-faq_en.md
 - docs/license-faq_ko.md
 - docs/license-faq_zh.md
+
+## 音声関連ファイル
+- src/utils/voiceLanguage.ts
+- src/components/messageInputContainer.tsx
+- src/components/messageInput.tsx
+- src/hooks/useSilenceDetection.ts
+- src/hooks/useVoiceRecognition.ts
+- src/utils/audioProcessing.ts
+- src/utils/audioBufferManager.ts
+
 ---
 
 以上の内容を順守し、タスクを遂行してください。

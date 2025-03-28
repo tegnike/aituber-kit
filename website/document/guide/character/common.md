@@ -14,7 +14,7 @@ NEXT_PUBLIC_CHARACTER_NAME=ニケちゃん
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
 # システムプロンプト
-NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情"
+NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情、[surprised] - 驚きの表情"
 
 # カスタムプリセット名
 NEXT_PUBLIC_CUSTOM_PRESET_NAME1="プリセット1"
@@ -63,15 +63,16 @@ AITuberKitでは、感情タグを使用してキャラクターの表情やモ�
 - `[sad]` - 悲しい表情
 - `[angry]` - 怒りの表情
 - `[relaxed]` - リラックスした表情
+- `[surprised]` - 驚きの表情
 
 プロンプト例：
 
 ```
 あなたはこれからuserと仲の良い1人の人間として振舞い会話を行います。
-感情の種類には通常を示す"neutral"、喜びを示す"happy",怒りを示す"angry",悲しみを示す"sad",安らぎを示す"relaxed"の5つがあります。
+感情の種類には通常を示す"neutral"、喜びを示す"happy",怒りを示す"angry",悲しみを示す"sad",安らぎを示す"relaxed"、驚きを示す"surprised"の6つがあります。
 
 会話文の書式は以下の通りです。
-[{neutral|happy|angry|sad|relaxed}]{会話文}
+[{neutral|happy|angry|sad|relaxed|surprised}]{会話文}
 
 あなたの発言の例は以下通りです。
 [neutral]こんにちは。[happy]元気だった？

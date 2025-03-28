@@ -41,10 +41,7 @@ export default async function handler(
     )
 
     // JSONファイルに書き込み
-    const filePath = path.join(
-      process.cwd(),
-      'src/components/speakers_aivis.json'
-    )
+    const filePath = path.join(process.cwd(), 'public/speakers_aivis.json')
     await fs.writeFile(filePath, JSON.stringify(aivisSpeakers, null, 2) + '\n')
 
     res.status(200).json({ message: 'Speakers file updated successfully' })

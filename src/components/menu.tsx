@@ -138,9 +138,9 @@ export const Menu = () => {
 
   return (
     <>
-      <div className="absolute z-15 m-24">
+      <div className="absolute z-15 m-6">
         <div
-          className="grid md:grid-flow-col gap-[8px] mb-40"
+          className="grid md:grid-flow-col gap-[8px] mb-10"
           style={{ width: 'max-content' }}
         >
           {showControlPanel && (

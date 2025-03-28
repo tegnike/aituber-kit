@@ -51,7 +51,7 @@ export const Toast = ({
 
   return (
     <div
-      className={`cursor-pointer top-4 right-4 p-4 rounded-16 text-text1 shadow-lg text-sm flex items-center justify-between mb-8 bg-white bg-opacity-80 transition-opacity duration-300 ${
+      className={`cursor-pointer top-4 right-4 p-4 rounded-2xl text-text1 shadow-lg text-sm flex items-center justify-between mb-2 bg-white bg-opacity-80 transition-opacity duration-300 ${
         closing ? 'opacity-0' : 'opacity-100'
       }`}
     >

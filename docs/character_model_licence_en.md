@@ -2,39 +2,49 @@
 
 ## Overview
 
-This document specifies the terms of use for the following models provided in the [aituber-kit](https://github.com/tegnike/aituber-kit) repository:
+This document establishes the terms of use for the following models provided in the [aituber-kit](https://github.com/tegnike/aituber-kit) repository:
 
 ### VRM Models
 
-- [Nikechan VRM Model v1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm)
-- [Nikechan VRM Model v2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm)
-- [Nikechan VRM Model v2 (Outerwear)](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm)
+- [Nike-chan VRM Model v1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm)
+- [Nike-chan VRM Model v2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm)
+- [Nike-chan VRM Model v2 (Outerwear)](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm)
 
-### Live2D Models
+### Live2D Model
 
-- [Nikechan Live2D Model](https://github.com/tegnike/aituber-kit/blob/main/public/live2d/nike01)
+- [Nike-chan Live2D Model](https://github.com/tegnike/aituber-kit/blob/main/public/live2d/nike01)
 
 ## Copyright
 
-The copyright of these VRM and Live2D models belongs to the creators of each model.
+### VRM Models
 
-## Permitted Use
+The copyright of VRM models belongs to the developer. However, the moral rights belong to their respective creators.
+
+### Live2D Model
+
+The copyright of the Live2D model belongs to its creator.
+
+## Permitted Uses
 
 - Personal use
-- Use for demonstration purposes in non-commercial projects
-- Use for the purpose of introducing this repository and the models
+- Demonstration purposes in non-commercial projects
+- Promotion of this repository or the models
 
-## Prohibited Use
+## Prohibited Uses
 
-- Commercial use, sale, or rental (without prior written permission)
-- Modification of the models or creation of derivative works and their distribution
+The following actions are generally prohibited, however, for VRM models, partial permission may be granted with prior consent from the developer:
+
+- Commercial use, sale, or rental
+- Modification of models or creation and distribution of derivative works
 - Redistribution to third parties
-- Use in a manner that damages the reputation or credit of the owner of this repository or the models
-- Use in a manner that violates public order and morals
+- Use in ways that damage the reputation or credibility of this repository or model owners
+- Use in ways that violate public order and morality
+
+For Live2D models, the above prohibitions apply without any exceptions.
 
 ## Disclaimer
 
-These VRM and Live2D models are provided "as is" and there is no guarantee of fitness for a particular purpose or non-infringement. The owner of the repository is not responsible for any damage caused by the use of the models.
+These VRM and Live2D models are provided "as is" without any warranty of fitness for a particular purpose or non-infringement. The repository owner assumes no responsibility for any damages arising from the use of these models.
 
 ## Changes to the Agreement
 

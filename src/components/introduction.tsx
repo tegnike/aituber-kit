@@ -32,27 +32,29 @@ export const Introduction = () => {
   }
 
   return displayIntroduction && opened ? (
-    <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
-      <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
-        <IconButton
-          iconName="24/Close"
-          isProcessing={false}
-          onClick={() => {
-            setOpened(false)
-            updateLanguage()
-          }}
-          className="absolute top-8 right-8 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
-        ></IconButton>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary ">
+    <div className="absolute z-40 w-full h-full px-6 py-10 bg-black/30 font-M_PLUS_2">
+      <div className="relative mx-auto my-auto max-w-3xl max-h-full p-6 overflow-y-auto bg-white rounded-2xl">
+        <div className="sticky top-0 right-0 z-10 flex justify-end">
+          <IconButton
+            iconName="24/Close"
+            isProcessing={false}
+            onClick={() => {
+              setOpened(false)
+              updateLanguage()
+            }}
+            className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
+          ></IconButton>
+        </div>
+        <div className="mb-6">
+          <div className="mb-2 font-bold text-xl text-secondary ">
             {t('AboutThisApplication')}
           </div>
           <div>
             <Trans i18nKey="AboutThisApplicationDescription2" />
           </div>
         </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
+        <div className="my-6">
+          <div className="my-2 font-bold text-xl text-secondary">
             {t('TechnologyIntroduction')}
           </div>
           <div>
@@ -66,7 +68,7 @@ export const Introduction = () => {
             />
             {t('TechnologyIntroductionDescription2')}
           </div>
-          <div className="my-16">
+          <div className="my-4">
             {t('TechnologyIntroductionDescription3')}
             <Link
               url={'https://github.com/pixiv/three-vrm'}
@@ -93,7 +95,7 @@ export const Introduction = () => {
             />
             {t('TechnologyIntroductionDescription7')}
           </div>
-          <div className="my-16">
+          <div className="my-4">
             {t('SourceCodeDescription1')}
             <br />
             {t('RepositoryURL')}
@@ -103,10 +105,10 @@ export const Introduction = () => {
               label={'https://github.com/tegnike/aituber-kit'}
             />
           </div>
-          <div className="my-16">{t('SourceCodeDescription2')}</div>
+          <div className="my-4">{t('SourceCodeDescription2')}</div>
         </div>
 
-        <div className="my-24">
+        <div className="my-6">
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -117,26 +119,26 @@ export const Introduction = () => {
                 })
                 updateLanguage()
               }}
-              className="mr-8"
+              className="mr-2"
             />
             <span>{t('DontShowIntroductionNextTime')}</span>
           </label>
         </div>
 
-        <div className="my-24">
+        <div className="my-6">
           <button
             onClick={() => {
               setOpened(false)
               updateLanguage()
             }}
-            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
+            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-6 py-2 rounded-full"
           >
             {t('Close')}
           </button>
         </div>
 
         {selectLanguage === 'ja' && (
-          <div className="my-24">
+          <div className="mt-6">
             <p>
               You can select the language from the settings. Japanese, English,
               Traditional Chinese and Korean are available.
