@@ -180,7 +180,9 @@
     "LocalLLMConnectionError": "Local LLM server connection error",
     "LocalLLMNotFound": "Local LLM endpoint not found",
     "LocalLLMAPIError": "Local LLM API error",
-    "EmptyLocalLLMURL": "The URL for the local LLM is not set"
+    "EmptyLocalLLMURL": "The URL for the local LLM is not set",
+    "CustomAPIError": "An error occurred with the custom API",
+    "InvalidJSON": "The JSON format is incorrect"
   },
   "MessageReceiver": "Receive instructions from outside",
   "MessageReceiverDescription": "You can use API to instruct AI characters to speak from outside.",
@@ -269,5 +271,23 @@
   "WhisperSpeechRecognition": "Use Whisper Speech Recognition",
   "WhisperAPIKeyInfo": "An OpenAI API key is required for Whisper mode. Please set the OpenAI API key in the AI settings.",
   "WhisperTranscriptionModel": "Whisper Transcription Model",
-  "WhisperTranscriptionModelInfo": "You can select the model to be used for speech recognition. The higher performance models can achieve higher accuracy, but the API costs may be higher."
+  "WhisperTranscriptionModelInfo": "You can select the model to be used for speech recognition. Higher performance models can achieve higher accuracy, but API costs may increase.",
+  "InitialSpeechTimeout": "Speech Recognition Timeout",
+  "InitialSpeechTimeoutInfo": "Set the waiting time until the first utterance is detected after speech recognition starts. If no utterance is detected within this time, speech recognition will automatically stop.\nSetting it to 0 seconds will make the waiting time unlimited.",
+  "Milliseconds": "Milliseconds",
+  "ContinuousMic": "Continuous Microphone Input",
+  "ContinuousMicActive": "Continuous Microphone Input Active",
+  "ContinuousMicModeOn": "Continuous Microphone Input Mode is On",
+  "ContinuousMicModeOff": "Continuous Microphone Input Mode is Off",
+  "ListeningContinuously": "Waiting for speech input...",
+  "ContinuousMicInfo": "The microphone input will automatically resume when the AI's speech ends. It will automatically send after the set silence duration.",
+  "CustomAPIEndpoint": "Custom API Endpoint",
+  "CustomAPIEndpointInfo": "Please enter the URL of the API endpoint to send POST requests.",
+  "CustomAPIStream": "Streaming Mode",
+  "CustomAPIStreamForced": "Currently, streaming mode is always enabled.",
+  "CustomAPIHeaders": "Custom Headers",
+  "CustomAPIHeadersInfo": "Please enter the header information to include in the API request in JSON format.",
+  "CustomAPIBody": "Custom Body",
+  "CustomAPIBodyInfo": "Please enter the body information to include in the API request in JSON format. Messages will be included automatically.",
+  "CustomAPIDescription": "Note: Messages are automatically included in the request body. In streaming mode, the server must return text/event-stream."
 }
