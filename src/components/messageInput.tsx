@@ -17,6 +17,8 @@ type Props = {
   onClickStopButton: (event: React.MouseEvent<HTMLButtonElement>) => void
   isSpeaking: boolean
   silenceTimeoutRemaining: number | null
+  continuousMicListeningMode: boolean
+  onToggleContinuousMode: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 export const MessageInput = ({
@@ -28,6 +30,8 @@ export const MessageInput = ({
   onClickStopButton,
   isSpeaking,
   silenceTimeoutRemaining,
+  continuousMicListeningMode,
+  onToggleContinuousMode,
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
   const slidePlaying = slideStore((s) => s.isPlaying)
@@ -37,6 +41,7 @@ export const MessageInput = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
+  const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
 
   const { t } = useTranslation()
 
@@ -98,6 +103,13 @@ export const MessageInput = ({
     onClickMicButton(event)
   }
 
+  // 常時マイク入力モードのトグルボタンクリック処理
+  const handleToggleContinuousMode = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onToggleContinuousMode(event)
+  }
+
   return (
     <div className="absolute bottom-0 z-20 w-screen">
       {showPermissionModal && (
@@ -147,7 +159,11 @@ export const MessageInput = ({
           <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
             <IconButton
               iconName="24/Microphone"
-              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+              backgroundColor={
+                continuousMicListeningMode
+                  ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white'
+                  : undefined
+              }
               isProcessing={isMicRecording}
               isProcessingIcon={'24/PauseAlt'}
               disabled={chatProcessing}
@@ -158,7 +174,9 @@ export const MessageInput = ({
               placeholder={
                 chatProcessing
                   ? `${t('AnswerGenerating')}${loadingDots}`
-                  : t('EnterYourQuestion')
+                  : continuousMicListeningMode && isMicRecording
+                    ? t('ListeningContinuously')
+                    : t('EnterYourQuestion')
               }
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}

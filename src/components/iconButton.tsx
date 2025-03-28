@@ -8,6 +8,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   isProcessingIcon?: keyof KnownIconType
   label?: string
   iconColor?: string
+  backgroundColor?: string
 }
 
 export const IconButton = ({
@@ -16,12 +17,13 @@ export const IconButton = ({
   isProcessingIcon,
   label,
   iconColor,
+  backgroundColor = 'bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled',
   ...rest
 }: Props) => {
   return (
     <button
       {...rest}
-      className={`bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled rounded-2xl text-sm p-2 text-center inline-flex items-center
+      className={`${backgroundColor} rounded-2xl text-sm p-2 text-center inline-flex items-center
         ${iconColor || 'text-white'}
         ${rest.className}
       `}

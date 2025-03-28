@@ -229,10 +229,9 @@ export const processAIResponse = async (
 
         // 返答内容の感情部分と返答部分を分離
         const emotionMatch = receivedMessage.match(/^\[(.*?)\]/)
-        console.log('receivedMessage', receivedMessage)
+
         if (emotionMatch && emotionMatch[0]) {
           emotion = emotionMatch[0]
-          console.log('emotion', emotion)
           receivedMessage = receivedMessage.slice(emotion.length)
         }
 

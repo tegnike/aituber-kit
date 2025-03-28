@@ -177,10 +177,12 @@ interface General {
   maxTokens: number
   noSpeechTimeout: number
   showSilenceProgressBar: boolean
+  continuousMicListeningMode: boolean
   presetQuestions: PresetQuestion[]
   showPresetQuestions: boolean
   speechRecognitionMode: SpeechRecognitionMode
   whisperTranscriptionModel: WhisperTranscriptionModel
+  initialSpeechTimeout: number
 }
 
 interface ModelType {
@@ -377,10 +379,12 @@ const settingsStore = create<SettingsState>()(
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
       showSilenceProgressBar: true,
+      continuousMicListeningMode: false,
       presetQuestions: [],
       showPresetQuestions: true,
       speechRecognitionMode: 'browser' as SpeechRecognitionMode,
       whisperTranscriptionModel: 'whisper-1' as WhisperTranscriptionModel,
+      initialSpeechTimeout: 5.0,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -526,6 +530,7 @@ const settingsStore = create<SettingsState>()(
         maxTokens: state.maxTokens,
         noSpeechTimeout: state.noSpeechTimeout,
         showSilenceProgressBar: state.showSilenceProgressBar,
+        continuousMicListeningMode: state.continuousMicListeningMode,
         presetQuestions: state.presetQuestions,
         showPresetQuestions: state.showPresetQuestions,
         speechRecognitionMode: state.speechRecognitionMode,
@@ -534,6 +539,7 @@ const settingsStore = create<SettingsState>()(
         customApiHeaders: state.customApiHeaders,
         customApiBody: state.customApiBody,
         customApiStream: state.customApiStream,
+        initialSpeechTimeout: state.initialSpeechTimeout,
       }),
     }
   )

@@ -7,12 +7,10 @@ import homeStore from '@/features/stores/home'
 import { getVoiceLanguageCode } from '@/utils/voiceLanguage'
 import { processAudio, base64EncodeAudio } from '@/utils/audioProcessing'
 import { useSilenceDetection } from './useSilenceDetection'
+import { SpeakQueue } from '@/features/messages/speakQueue'
 
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
-
-// 音声認識開始後、音声が検出されないまま経過した場合のタイムアウト（5秒）
-const INITIAL_SPEECH_TIMEOUT = 5000
 
 type UseVoiceRecognitionProps = {
   onChatProcessStart: (text: string) => void
@@ -25,6 +23,10 @@ export const useVoiceRecognition = ({
   const selectLanguage = settingsStore((s) => s.selectLanguage)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
+  const continuousMicListeningMode = settingsStore(
+    (s) => s.continuousMicListeningMode
+  )
+  const initialSpeechTimeout = settingsStore((s) => s.initialSpeechTimeout)
 
   // ----- 状態管理 -----
   const [userMessage, setUserMessage] = useState('')
@@ -534,6 +536,86 @@ export const useVoiceRecognition = ({
     checkMicrophonePermission,
   ])
 
+  // AIの発話完了後に音声認識を自動的に再開する処理
+  const handleSpeakCompletion = useCallback(() => {
+    // 常時マイク入力モードがONで、現在マイク入力が行われていない場合のみ実行
+    if (
+      continuousMicListeningMode &&
+      !isListeningRef.current &&
+      speechRecognitionMode === 'browser' &&
+      !homeStore.getState().chatProcessing
+    ) {
+      console.log('🔄 AIの発話が完了しました。音声認識を自動的に再開します。')
+      setTimeout(() => {
+        startListening()
+      }, 300) // マイク起動までに少し遅延を入れる
+    }
+  }, [continuousMicListeningMode, speechRecognitionMode, startListening])
+
+  // 常時マイク入力モードの変更を監視
+  useEffect(() => {
+    if (
+      continuousMicListeningMode &&
+      !isListeningRef.current &&
+      speechRecognitionMode === 'browser' &&
+      !homeStore.getState().isSpeaking &&
+      !homeStore.getState().chatProcessing
+    ) {
+      // 常時マイク入力モードがONになった場合、自動的にマイク入力を開始
+      console.log(
+        '🎤 常時マイク入力モードがONになりました。音声認識を開始します。'
+      )
+      startListening()
+    }
+  }, [continuousMicListeningMode, speechRecognitionMode, startListening])
+
+  // 発話完了時のコールバックを登録
+  useEffect(() => {
+    // ブラウザモードでのみコールバックを登録
+    if (speechRecognitionMode === 'browser') {
+      SpeakQueue.onSpeakCompletion(handleSpeakCompletion)
+
+      return () => {
+        // コンポーネントのアンマウント時にコールバックを削除
+        SpeakQueue.removeSpeakCompletionCallback(handleSpeakCompletion)
+      }
+    }
+  }, [speechRecognitionMode, handleSpeakCompletion])
+
+  // コンポーネントのマウント時に常時マイク入力モードがONの場合は自動的にマイク入力を開始
+  useEffect(() => {
+    if (
+      continuousMicListeningMode &&
+      speechRecognitionMode === 'browser' &&
+      !isListeningRef.current &&
+      !homeStore.getState().isSpeaking &&
+      !homeStore.getState().chatProcessing
+    ) {
+      const delayedStart = async () => {
+        console.log('🎤 コンポーネントマウント時に音声認識を自動的に開始します')
+        // コンポーネントマウント時に少し遅延させてから開始
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        if (
+          continuousMicListeningMode &&
+          !isListeningRef.current &&
+          !homeStore.getState().isSpeaking &&
+          !homeStore.getState().chatProcessing
+        ) {
+          startListening()
+        }
+      }
+
+      delayedStart()
+    }
+
+    return () => {
+      // コンポーネントのアンマウント時にマイク入力を停止
+      if (isListeningRef.current) {
+        stopListeningRef.current?.()
+      }
+    }
+  }, []) // マウント時のみ実行
+
   // ----- 音声認識トグル処理 -----
   const toggleListening = useCallback(() => {
     if (isListeningRef.current) {
@@ -614,20 +696,22 @@ export const useVoiceRecognition = ({
       speechDetectedRef.current = false
 
       // 初期音声検出タイマー設定
-      initialSpeechCheckTimerRef.current = setTimeout(() => {
-        if (!speechDetectedRef.current && isListeningRef.current) {
-          console.log(
-            '⏱️ 5秒間音声が検出されませんでした。音声認識を停止します。'
-          )
-          stopListening()
+      if (initialSpeechTimeout > 0) {
+        initialSpeechCheckTimerRef.current = setTimeout(() => {
+          if (!speechDetectedRef.current && isListeningRef.current) {
+            console.log(
+              `⏱️ ${initialSpeechTimeout}秒間音声が検出されませんでした。音声認識を停止します。`
+            )
+            stopListening()
 
-          toastStore.getState().addToast({
-            message: t('Toasts.NoSpeechDetected'),
-            type: 'info',
-            tag: 'no-speech-detected',
-          })
-        }
-      }, INITIAL_SPEECH_TIMEOUT)
+            toastStore.getState().addToast({
+              message: t('Toasts.NoSpeechDetected'),
+              type: 'info',
+              tag: 'no-speech-detected',
+            })
+          }
+        }, initialSpeechTimeout * 1000)
+      }
 
       // 無音検出開始
       if (stopListeningRef.current) {

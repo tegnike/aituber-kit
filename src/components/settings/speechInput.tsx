@@ -14,6 +14,10 @@ const SpeechInput = () => {
     (s) => s.whisperTranscriptionModel
   )
   const openaiKey = settingsStore((s) => s.openaiKey)
+  const continuousMicListeningMode = settingsStore(
+    (s) => s.continuousMicListeningMode
+  )
+  const initialSpeechTimeout = settingsStore((s) => s.initialSpeechTimeout)
 
   const { t } = useTranslation()
 
@@ -23,6 +27,7 @@ const SpeechInput = () => {
       settingsStore.setState({
         noSpeechTimeout: 0,
         showSilenceProgressBar: false,
+        continuousMicListeningMode: false,
       })
     }
   }, [speechRecognitionMode])
@@ -66,63 +71,101 @@ const SpeechInput = () => {
               : t('WhisperSpeechRecognition')}
           </TextButton>
         </div>
-        {speechRecognitionMode === 'whisper' && (
-          <>
-            <div className="mt-4 text-sm text-gray-600">
-              {t('WhisperAPIKeyInfo')}
+      </div>
+      {speechRecognitionMode === 'whisper' && (
+        <>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">
+              {t('OpenAIAPIKeyLabel')}
             </div>
-            <div className="my-6">
-              <div className="my-4 text-xl font-bold">
-                {t('OpenAIAPIKeyLabel')}
-              </div>
-              <div className="my-4">
-                {t('APIKeyInstruction')}
-                <br />
-                <Link
-                  url="https://platform.openai.com/account/api-keys"
-                  label="OpenAI"
-                />
-              </div>
-              <input
-                className="text-ellipsis px-4 py-2 w-full md:w-1/2 bg-white hover:bg-white-hover rounded-lg"
-                type="text"
-                placeholder="sk-..."
-                value={openaiKey}
-                onChange={(e) =>
-                  settingsStore.setState({ openaiKey: e.target.value })
-                }
+            <div className="my-4">
+              {t('APIKeyInstruction')}
+              <br />
+              <Link
+                url="https://platform.openai.com/account/api-keys"
+                label="OpenAI"
               />
             </div>
-            <div className="mt-6">
-              <div className="mb-4 text-xl font-bold">
-                {t('WhisperTranscriptionModel')}
-              </div>
-              <div className="mb-4 text-base whitespace-pre-line">
-                {t('WhisperTranscriptionModelInfo')}
-              </div>
-              <select
-                id="whisper-model-select"
-                className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
-                value={whisperTranscriptionModel}
-                onChange={(e) =>
-                  settingsStore.setState({
-                    whisperTranscriptionModel: e.target
-                      .value as WhisperTranscriptionModel,
-                  })
-                }
-              >
-                {whisperModels.map((model) => (
-                  <option key={model.value} value={model.value}>
-                    {model.label}
-                  </option>
-                ))}
-              </select>
+            <input
+              className="text-ellipsis px-4 py-2 w-full md:w-1/2 bg-white hover:bg-white-hover rounded-lg"
+              type="text"
+              placeholder="sk-..."
+              value={openaiKey}
+              onChange={(e) =>
+                settingsStore.setState({ openaiKey: e.target.value })
+              }
+            />
+          </div>
+          <div className="mt-6">
+            <div className="mb-4 text-xl font-bold">
+              {t('WhisperTranscriptionModel')}
             </div>
-          </>
-        )}
-      </div>
+            <div className="mb-4 text-base whitespace-pre-line">
+              {t('WhisperTranscriptionModelInfo')}
+            </div>
+            <select
+              id="whisper-model-select"
+              className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
+              value={whisperTranscriptionModel}
+              onChange={(e) =>
+                settingsStore.setState({
+                  whisperTranscriptionModel: e.target
+                    .value as WhisperTranscriptionModel,
+                })
+              }
+            >
+              {whisperModels.map((model) => (
+                <option key={model.value} value={model.value}>
+                  {model.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      )}
       {speechRecognitionMode === 'browser' && (
         <>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">
+              {t('InitialSpeechTimeout')}
+            </div>
+            <div className="my-4 text-base whitespace-pre-line">
+              {t('InitialSpeechTimeoutInfo')}
+            </div>
+            <div className="mt-6 font-bold">
+              <div className="select-none">
+                {t('InitialSpeechTimeout')}: {initialSpeechTimeout.toFixed(1)}秒
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="60"
+                step="0.5"
+                value={initialSpeechTimeout}
+                onChange={(e) =>
+                  settingsStore.setState({
+                    initialSpeechTimeout: parseFloat(e.target.value),
+                  })
+                }
+                className="mt-2 mb-4 input-range"
+              />
+            </div>
+          </div>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">{t('ContinuousMic')}</div>
+            <div className="my-4 text-base whitespace-pre-line">
+              {t('ContinuousMicInfo')}
+            </div>
+            <TextButton
+              onClick={() =>
+                settingsStore.setState({
+                  continuousMicListeningMode: !continuousMicListeningMode,
+                })
+              }
+            >
+              {continuousMicListeningMode ? t('StatusOn') : t('StatusOff')}
+            </TextButton>
+          </div>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
             <div className="my-4 text-base whitespace-pre-line">
@@ -135,8 +178,8 @@ const SpeechInput = () => {
               <input
                 type="range"
                 min="0"
-                max="4"
-                step="0.1"
+                max="10"
+                step="0.5"
                 value={noSpeechTimeout}
                 onChange={(e) =>
                   settingsStore.setState({
@@ -146,7 +189,7 @@ const SpeechInput = () => {
                 className="mt-2 mb-4 input-range"
               />
             </div>
-            <div className="mt-2">
+            <div className="mt-6">
               <div className="font-bold mb-2">
                 {t('ShowSilenceProgressBar')}
               </div>

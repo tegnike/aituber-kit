@@ -66,13 +66,30 @@ export const useSilenceDetection = ({
           `🔊 無音経過時間: ${silenceDuration}ms / 閾値: ${noSpeechTimeoutMs}ms（${(silenceDuration / 1000).toFixed(1)}秒 / ${(noSpeechTimeoutMs / 1000).toFixed(1)}秒）`
         )
 
-        // 無音状態が5秒以上続いた場合は、テキストの有無に関わらず音声認識を停止
-        if (silenceDuration >= 5000 && !speechEndedRef.current) {
+        const initialSpeechTimeout =
+          settingsStore.getState().initialSpeechTimeout
+
+        // 無音状態が設定値以上続いた場合は、テキストの有無に関わらず音声認識を停止
+        if (
+          initialSpeechTimeout > 0 &&
+          silenceDuration >= initialSpeechTimeout * 1000 &&
+          !speechEndedRef.current
+        ) {
           console.log(
             `⏱️ ${silenceDuration}ms の長時間無音を検出しました。音声認識を停止します。`
           )
           speechEndedRef.current = true
           setSilenceTimeoutRemaining(null)
+
+          // TODO:
+          // 常時マイク入力モードをOFFに設定
+          // if (settingsStore.getState().continuousMicListeningMode) {
+          //   console.log(
+          //     '🔇 長時間無音検出により常時マイク入力モードをOFFに設定します。'
+          //   )
+          //   settingsStore.setState({ continuousMicListeningMode: false })
+          // }
+
           stopListeningFn()
 
           // トースト通知を表示
