@@ -233,6 +233,10 @@ export async function getVercelAIChatResponseStream(
                 } catch (error) {
                   console.error('Error parsing JSON:', error)
                 }
+              } else if (line.match(/^[a-z]:/)) {
+                // "e:", "d:"などの形式のメタデータ行をスキップ
+                // これらは通常、ストリームの終了やメタデータを示すものであり、コンテンツではない
+                continue
               } else if (line.trim() !== '') {
                 // Ollamaなど、JSONLフォーマットのストリーミングデータに対応
                 try {
