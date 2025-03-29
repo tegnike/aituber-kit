@@ -128,7 +128,10 @@ const Based = () => {
       {/* コントロールパネル表示設定 */}
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('ShowControlPanel')}</div>
-        <div className="my-4 text-base">{t('ShowControlPanelInfo')}</div>
+        <div className="my-4 text-base whitespace-pre-wrap">
+          {t('ShowControlPanelInfo')}
+        </div>
+
         <div className="my-2">
           <TextButton
             onClick={() =>
