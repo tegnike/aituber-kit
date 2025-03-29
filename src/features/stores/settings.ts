@@ -160,6 +160,7 @@ interface General {
   changeEnglishToJapanese: boolean
   includeTimestampInUserMessage: boolean
   showControlPanel: boolean
+  showCharacterPresetMenu: boolean
   externalLinkageMode: boolean
   realtimeAPIMode: boolean
   realtimeAPIModeContentType: RealtimeAPIModeContentType
@@ -340,6 +341,7 @@ const settingsStore = create<SettingsState>()(
       includeTimestampInUserMessage:
         process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
+      showCharacterPresetMenu: true,
       externalLinkageMode:
         process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
       realtimeAPIMode:
@@ -526,6 +528,7 @@ const settingsStore = create<SettingsState>()(
         surprisedMotionGroup: state.surprisedMotionGroup,
         maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
+        showCharacterPresetMenu: state.showCharacterPresetMenu,
         temperature: state.temperature,
         maxTokens: state.maxTokens,
         noSpeechTimeout: state.noSpeechTimeout,

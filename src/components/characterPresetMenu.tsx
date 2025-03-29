@@ -8,6 +8,12 @@ const CharacterPresetMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
   const store = settingsStore()
   const selectedPresetIndex = store.selectedPresetIndex
+  const showCharacterPresetMenu = store.showCharacterPresetMenu
+
+  // コンポーネントが非表示設定の場合は何も表示しない
+  if (!showCharacterPresetMenu) {
+    return null
+  }
 
   const characterPresets = [
     {

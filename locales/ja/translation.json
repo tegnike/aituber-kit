@@ -153,6 +153,7 @@
   "ShowCharacterName": "回答欄にキャラクター名を表示する",
   "ShowControlPanel": "操作パネルを表示する",
   "ShowControlPanelInfo": "設定画面は Cmd + . (Mac) / Ctrl + . (Windows) で表示することができます。\nスマートフォンをご利用の場合は、画面左上を長押し（約1秒）でも可能です。",
+  "ShowCharacterPresetMenu": "キャラクタープリセットメニューを表示する",
   "SlideMode": "スライドモード",
   "SelectedSlideDocs": "使用するスライド",
   "SlideModeDescription": "AIが自動でスライドを発表するモードです。選択しているAIサービスがOpenAI, Anthropic Claude, Google Geminiの場合のみ有効です。",
