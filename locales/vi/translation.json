@@ -263,7 +263,7 @@
   "CharacterpresetInfo": "Khi bạn chọn một preset, prompt nhân vật sẽ được thay đổi.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) có thể sử dụng phím tắt.",
   "SpeechInputSettings": "Cài đặt đầu vào giọng nói",
   "SpeechRecognitionMode": "Chế độ nhận diện giọng nói",
-  "SpeechRecognitionModeInfo": "Bạn có thể chọn chế độ nhận diện giọng nói.\n\"Chuẩn trình duyệt\" sử dụng nhận diện giọng nói tích hợp trong trình duyệt.\n\"Whisper\" sử dụng API Whisper của OpenAI. Có khả năng nhận diện cao hơn, nhưng cần có khóa API OpenAI.",
+  "SpeechRecognitionModeInfo": "Bạn có thể chọn chế độ nhận diện giọng nói.\n\"Chuẩn trình duyệt\" sử dụng nhận diện giọng nói tích hợp trong trình duyệt.\n\"Whisper\" sử dụng API Whisper của OpenAI. Có khả năng nhận diện nâng cao hơn, nhưng cần có khóa API OpenAI.",
   "BrowserSpeechRecognition": "Sử dụng nhận diện giọng nói chuẩn trình duyệt",
   "WhisperSpeechRecognition": "Sử dụng nhận diện giọng nói Whisper",
   "WhisperAPIKeyInfo": "Chế độ Whisper yêu cầu khóa API OpenAI. Vui lòng thiết lập khóa API OpenAI trong cài đặt AI.",
@@ -283,9 +283,9 @@
   "CustomAPIStream": "Chế độ streaming",
   "CustomAPIStreamForced": "Hiện tại, chế độ streaming luôn được bật.",
   "CustomAPIHeaders": "Tiêu đề tùy chỉnh",
-  "CustomAPIHeadersInfo": "Vui lòng nhập thông tin tiêu đề sẽ được bao gồm trong yêu cầu API dưới dạng JSON.",
+  "CustomAPIHeadersInfo": "Vui lòng nhập thông tin tiêu đề sẽ được bao gồm trong yêu cầu API dưới định dạng JSON.",
   "CustomAPIBody": "Nội dung tùy chỉnh",
-  "CustomAPIBodyInfo": "Vui lòng nhập thông tin nội dung sẽ được bao gồm trong yêu cầu API dưới dạng JSON. messages sẽ được bao gồm tự động.",
+  "CustomAPIBodyInfo": "Vui lòng nhập thông tin nội dung sẽ được bao gồm trong yêu cầu API dưới định dạng JSON. messages sẽ được bao gồm tự động.",
   "CustomAPIDescription": "Lưu ý: Tin nhắn sẽ được bao gồm tự động trong nội dung yêu cầu. Trong chế độ streaming, máy chủ cần trả về text/event-stream.",
   "ShowCharacterPresetMenu": "Hiển thị nút menu cài đặt trước nhân vật"
 }

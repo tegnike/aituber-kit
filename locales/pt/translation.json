@@ -226,7 +226,7 @@
     "userInputTitle": "Enviar entrada do usuário",
     "userInputDescription": "A mensagem enviada é processada como quando inserida pelo formulário de entrada do AITuberKit. Se várias mensagens forem enviadas, elas são processadas em ordem. O modelo de IA e o modelo de voz são os selecionados nas configurações do AITuberKit. O prompt do sistema e o histórico de conversas são os valores configurados no AITuberKit."
   },
-  "CannotUseVoice": "Se o modo de API em tempo real ou o modo de áudio estiver ativado,\n as configurações de voz sintetizada não são necessárias.",
+  "CannotUseVoice": "Se o modo API em tempo real ou o modo de áudio estiver ativado,\n as configurações de voz sintetizada não são necessárias.",
   "Live2D": {
     "FileInfo": "Coloque o modelo Live2D que deseja usar na pasta public/live2d. O arquivo model3.json deve existir na raiz desta pasta.\nSe não aparecer na seleção, por favor recarregue a tela ou verifique se o caminho da pasta está correto.",
     "Info": "Você pode especificar emoções e movimentos.\nCada emoção é controlada pelo prompt. Para mais detalhes, veja \"Configurações de IA => Configurações de personagem\".",
@@ -270,7 +270,7 @@
   "WhisperTranscriptionModel": "Modelo de transcrição Whisper",
   "WhisperTranscriptionModelInfo": "Você pode escolher o modelo a ser usado para reconhecimento de voz. Modelos de maior desempenho podem oferecer maior precisão, mas podem ter custos de API mais altos.",
   "InitialSpeechTimeout": "Tempo limite de reconhecimento de voz",
-  "InitialSpeechTimeoutInfo": "Define o tempo de espera até que a primeira fala seja detectada após o início do reconhecimento de voz. Se nenhuma fala for detectada dentro desse tempo, o reconhecimento de voz será interrompido automaticamente.\nSe definido como 0 segundos, o tempo de espera será ilimitado.",
+  "InitialSpeechTimeoutInfo": "Define o tempo de espera até que a primeira fala seja detectada após o início do reconhecimento de voz. Se nenhuma fala for detectada dentro desse tempo, o reconhecimento de voz será interrompido automaticamente.\nSe definido para 0 segundos, o tempo de espera será ilimitado.",
   "Milliseconds": "Milissegundos",
   "ContinuousMic": "Entrada de microfone contínua",
   "ContinuousMicActive": "Entrada de microfone contínua ativa",
