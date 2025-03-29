@@ -152,21 +152,6 @@ const SpeechInput = () => {
             </div>
           </div>
           <div className="my-6">
-            <div className="my-4 text-xl font-bold">{t('ContinuousMic')}</div>
-            <div className="my-4 text-base whitespace-pre-line">
-              {t('ContinuousMicInfo')}
-            </div>
-            <TextButton
-              onClick={() =>
-                settingsStore.setState({
-                  continuousMicListeningMode: !continuousMicListeningMode,
-                })
-              }
-            >
-              {continuousMicListeningMode ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
-          </div>
-          <div className="my-6">
             <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
             <div className="my-4 text-base whitespace-pre-line">
               {t('NoSpeechTimeoutInfo')}
@@ -203,6 +188,21 @@ const SpeechInput = () => {
                 {showSilenceProgressBar ? t('StatusOn') : t('StatusOff')}
               </TextButton>
             </div>
+          </div>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">{t('ContinuousMic')}</div>
+            <div className="my-4 text-base whitespace-pre-line">
+              {t('ContinuousMicInfo')}
+            </div>
+            <TextButton
+              onClick={() =>
+                settingsStore.setState({
+                  continuousMicListeningMode: !continuousMicListeningMode,
+                })
+              }
+            >
+              {continuousMicListeningMode ? t('StatusOn') : t('StatusOff')}
+            </TextButton>
           </div>
         </>
       )}

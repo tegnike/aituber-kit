@@ -1,16 +1,8 @@
-import { Disclosure } from '@headlessui/react'
-import { ChevronUpIcon } from '@heroicons/react/24/solid'
 import { useTranslation } from 'react-i18next'
-
-import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 
 const AdvancedSettings = () => {
-  const selectLanguage = settingsStore((s) => s.selectLanguage)
-  const changeEnglishToJapanese = settingsStore(
-    (s) => s.changeEnglishToJapanese
-  )
   const includeTimestampInUserMessage = settingsStore(
     (s) => s.includeTimestampInUserMessage
   )
@@ -67,22 +59,6 @@ const AdvancedSettings = () => {
           </TextButton>
         </div>
       </div>
-      {selectLanguage === 'ja' && (
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">{t('EnglishToJapanese')}</div>
-          <div className="my-2">
-            <TextButton
-              onClick={() =>
-                settingsStore.setState((prevState) => ({
-                  changeEnglishToJapanese: !prevState.changeEnglishToJapanese,
-                }))
-              }
-            >
-              {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
-            </TextButton>
-          </div>
-        </div>
-      )}
       <div className="my-6">
         <div className="my-4 text-xl font-bold">
           {t('IncludeTimestampInUserMessage')}

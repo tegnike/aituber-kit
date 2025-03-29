@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import i18n from 'i18next'
 import Image from 'next/image'
-
 import { Language } from '@/features/constants/settings'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
@@ -13,6 +12,9 @@ const Based = () => {
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
+  const changeEnglishToJapanese = settingsStore(
+    (s) => s.changeEnglishToJapanese
+  )
 
   return (
     <>
@@ -79,6 +81,24 @@ const Based = () => {
           </select>
         </div>
       </div>
+      {selectLanguage === 'ja' && (
+        <div className="my-6">
+          <div className="my-4 text-base font-bold">
+            {t('EnglishToJapanese')}
+          </div>
+          <div className="my-2">
+            <TextButton
+              onClick={() =>
+                settingsStore.setState((prevState) => ({
+                  changeEnglishToJapanese: !prevState.changeEnglishToJapanese,
+                }))
+              }
+            >
+              {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
+            </TextButton>
+          </div>
+        </div>
+      )}
       <div className="mt-6">
         <div className="my-4 text-xl font-bold">{t('BackgroundImage')}</div>
         <div className="my-2">

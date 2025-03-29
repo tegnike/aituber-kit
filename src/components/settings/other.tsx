@@ -19,8 +19,8 @@ const Other = () => {
         />
         <h2 className="text-2xl font-bold">{t('OtherSettings')}</h2>
       </div>
-      <PresetQuestions />
       <AdvancedSettings />
+      <PresetQuestions />
       <MessageReceiverSetting />
     </>
   )
