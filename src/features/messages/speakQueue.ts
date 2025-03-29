@@ -19,14 +19,13 @@ export class SpeakQueue {
 
   // 発話完了時のコールバックを登録
   static onSpeakCompletion(callback: () => void) {
-    this.speakCompletionCallbacks.push(callback)
+    SpeakQueue.speakCompletionCallbacks.push(callback)
   }
 
   // 発話完了時のコールバックを削除
   static removeSpeakCompletionCallback(callback: () => void) {
-    this.speakCompletionCallbacks = this.speakCompletionCallbacks.filter(
-      (cb) => cb !== callback
-    )
+    SpeakQueue.speakCompletionCallbacks =
+      SpeakQueue.speakCompletionCallbacks.filter((cb) => cb !== callback)
   }
 
   async addTask(task: SpeakTask) {
