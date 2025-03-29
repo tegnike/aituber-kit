@@ -148,7 +148,7 @@
   "ShowAssistantText": "Show answer box",
   "ShowCharacterName": "Show character name in the answer box",
   "ShowControlPanel": "Show settings button",
-  "ShowControlPanelInfo": "The settings screen can be displayed by pressing Cmd + . (Mac) / Ctrl + . (Windows) .",
+  "ShowControlPanelInfo": "You can display the settings screen by pressing Cmd + . (Mac) / Ctrl + . (Windows).\nIf you are using a smartphone, you can also do this by long-pressing the top left of the screen (for about 1 second).",
   "SlideMode": "Slide Mode",
   "SelectedSlideDocs": "Selected Slide Documents",
   "SlideModeDescription": "This is a mode where AI automatically presents slides. It is only available when the selected AI service is OpenAI, Anthropic Claude, or Google Gemini.",
@@ -229,7 +229,7 @@
     "userInputTitle": "Send user input",
     "userInputDescription": "The message sent is processed the same as when input from the AITuberKit input form. If multiple messages are sent, they are processed in order. The AI model and voice model are the ones selected in the AITuberKit settings. The system prompt and conversation history are the values set in AITuberKit."
   },
-  "CannotUseVoice": "If Real-time API mode or Audio mode is enabled,\nSpeech Synthesis Settings are not needed.",
+  "CannotUseVoice": "If Real-time API mode or Audio mode is enabled,\nSpeech synthesis settings are not needed.",
   "Live2D": {
     "FileInfo": "Place the Live2D model you want to use in the public/live2d folder. The model3.json file must exist in the root of this folder.\nIf it is not displayed in the selection, please reload the screen or check if the folder path is correct.",
     "Info": "You can specify emotions and motions.\nEach emotion is controlled by the prompt. For more details, please refer to \"AI Settings => Character Settings\".",
@@ -271,7 +271,7 @@
   "WhisperSpeechRecognition": "Use Whisper Speech Recognition",
   "WhisperAPIKeyInfo": "An OpenAI API key is required for Whisper mode. Please set the OpenAI API key in the AI settings.",
   "WhisperTranscriptionModel": "Whisper Transcription Model",
-  "WhisperTranscriptionModelInfo": "You can select the model to be used for speech recognition. Higher performance models can achieve higher accuracy, but API costs may increase.",
+  "WhisperTranscriptionModelInfo": "You can select the model to be used for speech recognition. Higher performance models can recognize with greater accuracy, but API costs may be higher.",
   "InitialSpeechTimeout": "Speech Recognition Timeout",
   "InitialSpeechTimeoutInfo": "Set the waiting time until the first utterance is detected after speech recognition starts. If no utterance is detected within this time, speech recognition will automatically stop.\nSetting it to 0 seconds will make the waiting time unlimited.",
   "Milliseconds": "Milliseconds",
@@ -279,15 +279,16 @@
   "ContinuousMicActive": "Continuous Microphone Input Active",
   "ContinuousMicModeOn": "Continuous Microphone Input Mode is On",
   "ContinuousMicModeOff": "Continuous Microphone Input Mode is Off",
-  "ListeningContinuously": "Waiting for speech input...",
+  "ListeningContinuously": "Waiting for voice input...",
   "ContinuousMicInfo": "The microphone input will automatically resume when the AI's speech ends. It will automatically send after the set silence duration.",
   "CustomAPIEndpoint": "Custom API Endpoint",
-  "CustomAPIEndpointInfo": "Please enter the URL of the API endpoint to send POST requests.",
+  "CustomAPIEndpointInfo": "Please enter the URL of the API endpoint to which the POST request will be sent.",
   "CustomAPIStream": "Streaming Mode",
   "CustomAPIStreamForced": "Currently, streaming mode is always enabled.",
   "CustomAPIHeaders": "Custom Headers",
   "CustomAPIHeadersInfo": "Please enter the header information to include in the API request in JSON format.",
   "CustomAPIBody": "Custom Body",
   "CustomAPIBodyInfo": "Please enter the body information to include in the API request in JSON format. Messages will be included automatically.",
-  "CustomAPIDescription": "Note: Messages are automatically included in the request body. In streaming mode, the server must return text/event-stream."
+  "CustomAPIDescription": "Note: Messages are automatically included in the request body. In streaming mode, the server must return text/event-stream.",
+  "ShowCharacterPresetMenu": "Show Character Preset Menu Button"
 }
