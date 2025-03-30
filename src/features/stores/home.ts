@@ -91,20 +91,20 @@ homeStore.subscribe((state, prevState) => {
     const processedMessage =
       messageSelectors.sanitizeMessageForStorage(lastMessage)
 
-    // // バックグラウンドで保存を実行
-    // void fetch('/api/save-chat-log', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     message: processedMessage,
-    //     isNewFile: prevState.chatLog.length === 0,
-    //   }),
-    // }).catch((error) => {
-    //   console.error('チャットログの保存中にエラーが発生しました:', error)
-    //   // エラー発生時の処理をここに追加できます
-    // })
+    // バックグラウンドで保存を実行
+    void fetch('/api/save-chat-log', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: processedMessage,
+        isNewFile: prevState.chatLog.length === 0,
+      }),
+    }).catch((error) => {
+      console.error('チャットログの保存中にエラーが発生しました:', error)
+      // エラー発生時の処理をここに追加できます
+    })
   }
 })
 

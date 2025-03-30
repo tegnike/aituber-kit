@@ -49,7 +49,7 @@ const MessageReceiverSetting = () => {
               href="/send-message"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 hover:underline transition-all duration-300 ease-in-out"
+              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
               {t('OpenSendMessagePage')}
             </a>

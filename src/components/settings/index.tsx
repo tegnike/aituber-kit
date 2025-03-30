@@ -34,7 +34,7 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   return (
     <>
       <GitHubLink />
-      <div className="absolute m-6">
+      <div className="absolute m-6 z-15">
         <IconButton
           iconName="24/Close"
           isProcessing={false}
@@ -148,27 +148,29 @@ const Main = () => {
   }
 
   return (
-    <main className="max-h-full overflow-auto">
-      <div className="text-text1 max-w-5xl mx-auto px-6 py-16">
-        <div className="md:flex mt-4">
+    <main className="max-h-full overflow-auto relative">
+      <div className="text-text1 max-w-5xl mx-auto px-6 py-20">
+        <div className="md:flex">
           {/* タブナビゲーション */}
-          <ul className="flex flex-col space-y-1 text-sm font-medium md:w-[25%] md:me-4 mb-4 md:mb-0">
-            {tabs.map((tab) => (
-              <li key={tab.key}>
-                <button
-                  className={`flex items-center py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  <img
-                    src={tabIconMapping[tab.key]}
-                    alt={`${tab.label} icon`}
-                    className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
-                  />
-                  {tab.label}
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div className="md:w-[25%] md:me-4 mb-4 md:mb-0 md:sticky md:top-20 md:self-start">
+            <ul className="flex flex-col space-y-1 text-sm font-medium">
+              {tabs.map((tab) => (
+                <li key={tab.key}>
+                  <button
+                    className={`flex items-center py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    <img
+                      src={tabIconMapping[tab.key]}
+                      alt={`${tab.label} icon`}
+                      className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
+                    />
+                    {tab.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* タブコンテンツ */}
           <div className="p-6 bg-gray-400 bg-opacity-20 text-medium rounded-lg w-full">

@@ -27,7 +27,7 @@ const Description = () => {
           <div className="my-2 whitespace-pre-line">
             <a
               href="mailto:support@aituberkit.com"
-              className="text-blue-600 hover:text-blue-800 hover:underline transition-all duration-300 ease-in-out"
+              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
               Email: support@aituberkit.com
             </a>
@@ -35,7 +35,7 @@ const Description = () => {
           <div className="my-2 whitespace-pre-line">
             <a
               href="https://twitter.com/tegnike"
-              className="text-blue-600 hover:text-blue-800 hover:underline transition-all duration-300 ease-in-out"
+              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
               Twitter: @tegnike
             </a>
@@ -49,7 +49,7 @@ const Description = () => {
           <div className="my-2 whitespace-pre-line">
             <a
               href="https://nikechan.com"
-              className="text-blue-600 hover:text-blue-800 hover:underline transition-all duration-300 ease-in-out"
+              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
               URL: https://nikechan.com
             </a>
@@ -65,7 +65,7 @@ const Description = () => {
               href="https://docs.aituberkit.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 hover:underline transition-all duration-300 ease-in-out"
+              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
               https://docs.aituberkit.com/
             </a>
