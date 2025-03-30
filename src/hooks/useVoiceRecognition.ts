@@ -85,7 +85,10 @@ export const useVoiceRecognition = ({
   // ----- マイク権限確認 -----
   const checkMicrophonePermission = async (): Promise<boolean> => {
     // Firefoxの場合はエラーメッセージを表示して終了
-    if (navigator.userAgent.toLowerCase().includes('firefox')) {
+    if (
+      navigator.userAgent.toLowerCase().includes('firefox') &&
+      speechRecognitionMode === 'browser'
+    ) {
       toastStore.getState().addToast({
         message: t('Toasts.FirefoxNotSupported'),
         type: 'error',
