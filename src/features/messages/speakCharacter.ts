@@ -36,8 +36,15 @@ function preprocessMessage(
     ''
   )
 
+  // 発音として不適切な記号のみで構成されているかチェック
+  // 感嘆符、疑問符、句読点、括弧類、引用符、数学記号、その他一般的な記号を含む
+  const isOnlySymbols =
+    /^[!?.,。、．，'"(){}[\]<>+=\-*\/\\|;:@#$%^&*_~！？（）「」『』【】〔〕［］｛｝〈〉《》｢｣。、．，：；＋－＊／＝＜＞％＆＾｜～＠＃＄＿"　]+$/.test(
+      processed
+    )
+
   // 空文字列の場合はnullを返す
-  if (!processed) return null
+  if (!processed || isOnlySymbols) return null
 
   // 英語から日本語への変換は次の条件のみ実行
   // 1. 設定でオンになっている
