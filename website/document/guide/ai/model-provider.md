@@ -18,8 +18,10 @@ AITuberKitは以下のAIサービスをサポートしています：
 - Perplexity - Llama 3.1 Sonarシリーズを提供
 - Fireworks - Llama、Mixtralなどの最適化実装を提供
 - DeepSeek - DeepSeek Chat、DeepSeek Reasonerを提供
-- ローカルLLM - Ollamaなどのローカル実行環境と連携
+- LM Studio - ローカルLLMを提供
+- Ollama - ローカルLLMを提供
 - Dify - カスタムチャットボット構築プラットフォーム
+- カスタムAPI - カスタムAPIを提供
 
 ## OpenAI
 
@@ -204,7 +206,7 @@ DEEPSEEK_API_KEY=...
 **APIキーの取得**:
 APIキーは[DeepSeekプラットフォーム](https://platform.deepseek.com/api_keys)から取得できます。
 
-## ローカルLLM
+## LM Studio, Ollama
 
 ```bash
 # ローカルLLM URL
@@ -232,4 +234,22 @@ DIFY_URL=""
 
 ::: warning 注意
 Difyでは、「チャットボット」または「エージェント」タイプのアプリケーションのみ対応しています。また、Dify使用時は過去のメッセージの保持数やシステムプロンプトは、Dify側で設定する必要があります。
+:::
+
+## カスタムAPI
+
+カスタムAPIを利用する場合は、以下の環境変数を設定してください。
+
+```bash
+# カスタムAPI URL
+NEXT_PUBLIC_CUSTOM_API_URL=""
+# カスタムAPIヘッダー
+NEXT_PUBLIC_CUSTOM_API_HEADERS=""
+# カスタムAPIボディ
+NEXT_PUBLIC_CUSTOM_API_BODY=""
+```
+
+::: warning 注意
+このAPIではストリーミングモードが常に有効になっています。返却形式にご注意ください。<br>
+なお、OpenAI互換のAPIや一部のAPIでは動作確認を行っていますが、全てのAPIでの動作を保証するものではありません。
 :::

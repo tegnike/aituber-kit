@@ -208,8 +208,8 @@ API keys can be obtained from the [DeepSeek Platform](https://platform.deepseek.
 
 ```bash
 # Local LLM URL
-# ex. Ollama: http://localhost:11434/v1/chat/completions
 # ex. LM Studio: http://localhost:1234/v1/chat/completions
+# ex. Ollama: http://localhost:11434/v1/chat/completions
 NEXT_PUBLIC_LOCAL_LLM_URL=""
 # Local LLM Model
 NEXT_PUBLIC_LOCAL_LLM_MODEL=""
