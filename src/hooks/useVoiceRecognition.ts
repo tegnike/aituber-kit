@@ -400,7 +400,18 @@ export const useVoiceRecognition = ({
 
     if (speechRecognitionMode === 'browser') {
       // ブラウザモードの場合
-      if (!recognition || isListeningRef.current || !audioContext) return
+      if (!recognition || !audioContext) return
+
+      // 既に認識が開始されている場合は、一度停止してから再開する
+      if (isListeningRef.current) {
+        try {
+          recognition.stop()
+          // 停止完了を待つための短い遅延
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        } catch (err) {
+          console.log('Recognition was not running, proceeding to start', err)
+        }
+      }
 
       // トランスクリプトをリセット
       transcriptRef.current = ''
@@ -408,14 +419,63 @@ export const useVoiceRecognition = ({
 
       try {
         recognition.start()
+        console.log('Recognition started successfully')
+        // リスニング状態を更新
+        isListeningRef.current = true
+        setIsListening(true)
       } catch (error) {
         console.error('Error starting recognition:', error)
-        return
-      }
 
-      // リスニング状態を更新
-      isListeningRef.current = true
-      setIsListening(true)
+        // InvalidStateErrorの場合は、既に開始されているとみなす
+        if (
+          error instanceof DOMException &&
+          error.name === 'InvalidStateError'
+        ) {
+          console.log('Recognition is already running, skipping retry')
+          // 既に実行中なので、リスニング状態を更新する
+          isListeningRef.current = true
+          setIsListening(true)
+        } else {
+          // その他のエラーの場合のみ再試行
+          setTimeout(() => {
+            try {
+              if (recognition) {
+                // 一度確実に停止を試みる
+                try {
+                  recognition.stop()
+                  // 停止後に短い遅延
+                  setTimeout(() => {
+                    recognition.start()
+                    console.log('Recognition started on retry')
+                    isListeningRef.current = true
+                    setIsListening(true)
+                  }, 100)
+                } catch (stopError) {
+                  // 停止できなかった場合は直接スタート
+                  try {
+                    recognition.start()
+                    console.log('Recognition started on retry without stopping')
+                    isListeningRef.current = true
+                    setIsListening(true)
+                  } catch (startError) {
+                    console.error(
+                      'Failed to start recognition on retry:',
+                      startError
+                    )
+                    isListeningRef.current = false
+                    setIsListening(false)
+                  }
+                }
+              }
+            } catch (retryError) {
+              console.error('Failed to start recognition on retry:', retryError)
+              isListeningRef.current = false
+              setIsListening(false)
+              return
+            }
+          }, 300)
+        }
+      }
 
       // リアルタイムAPIモードの場合の録音開始
       if (realtimeAPIMode) {
@@ -725,7 +785,7 @@ export const useVoiceRecognition = ({
     // 音声入力検出時
     newRecognition.onspeechstart = () => {
       console.log('🗣️ 音声入力を検出しました（onspeechstart）')
-      speechDetectedRef.current = true
+      // ここではタイマーをリセットするだけで、speechDetectedRefは設定しない
       updateSpeechTimestamp()
     }
 
@@ -746,7 +806,7 @@ export const useVoiceRecognition = ({
       lastTranscriptLength = transcript.trim().length
 
       if (isSignificantChange) {
-        console.log('📢 有意な音声を検出しました（トランスクリプト変更あり）')
+        console.log('�� 有意な音声を検出しました（トランスクリプト変更あり）')
         updateSpeechTimestamp()
         speechDetectedRef.current = true
       } else {
@@ -776,9 +836,69 @@ export const useVoiceRecognition = ({
     // 音声認識エラー時
     newRecognition.onerror = (event) => {
       console.error('Speech recognition error:', event.error)
-      clearSilenceDetection()
-      clearInitialSpeechCheckTimer()
-      stopListening()
+
+      // no-speechエラーの場合
+      if (event.error === 'no-speech' && isListeningRef.current) {
+        // 初回音声検出されていない場合のみ、累積時間をチェック
+        if (!speechDetectedRef.current && initialSpeechTimeout > 0) {
+          // 認識開始からの経過時間を計算
+          const elapsedTime =
+            (Date.now() - recognitionStartTimeRef.current) / 1000
+          console.log(
+            `音声未検出の累積時間: ${elapsedTime.toFixed(1)}秒 / 設定: ${initialSpeechTimeout}秒`
+          )
+
+          // 設定された初期音声タイムアウトを超えた場合は、再起動せずに終了
+          if (elapsedTime >= initialSpeechTimeout) {
+            console.log(
+              `⏱️ ${initialSpeechTimeout}秒間音声が検出されませんでした。音声認識を停止します。`
+            )
+            clearSilenceDetection()
+            clearInitialSpeechCheckTimer()
+            stopListening()
+
+            toastStore.getState().addToast({
+              message: t('Toasts.NoSpeechDetected'),
+              type: 'info',
+              tag: 'no-speech-detected',
+            })
+            return
+          }
+        }
+
+        // 音声が既に検出されている場合、または初期タイムアウトに達していない場合は再起動
+        console.log(
+          'No speech detected, automatically restarting recognition...'
+        )
+
+        // 少し遅延を入れてから再起動
+        setTimeout(() => {
+          if (
+            isListeningRef.current &&
+            !homeStore.getState().isSpeaking &&
+            !homeStore.getState().chatProcessing
+          ) {
+            try {
+              newRecognition.start()
+              console.log(
+                'Recognition automatically restarted after no-speech timeout'
+              )
+            } catch (restartError) {
+              console.error(
+                'Failed to restart recognition after no-speech:',
+                restartError
+              )
+              isListeningRef.current = false
+              setIsListening(false)
+            }
+          }
+        }, 300)
+      } else {
+        // その他のエラーの場合は通常の終了処理
+        clearSilenceDetection()
+        clearInitialSpeechCheckTimer()
+        stopListening()
+      }
     }
 
     setRecognition(newRecognition)
@@ -791,6 +911,7 @@ export const useVoiceRecognition = ({
     clearSilenceDetection,
     startSilenceDetection,
     updateSpeechTimestamp,
+    initialSpeechTimeout,
   ])
 
   // キーボードショートカットの設定
