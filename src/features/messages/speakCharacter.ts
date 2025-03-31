@@ -28,7 +28,8 @@ function preprocessMessage(
   settings: ReturnType<typeof settingsStore.getState>
 ): string | null {
   // 前後の空白を削除
-  let processed = message.trim()
+  let processed: string | null = message.trim()
+  if (!processed) return null
 
   // 絵文字を削除 (これを先に行うことで変換対象のテキスト量を減らす)
   processed = processed.replace(
@@ -38,13 +39,13 @@ function preprocessMessage(
 
   // 発音として不適切な記号のみで構成されているかチェック
   // 感嘆符、疑問符、句読点、括弧類、引用符、数学記号、その他一般的な記号を含む
-  const isOnlySymbols =
+  const isOnlySymbols: boolean =
     /^[!?.,。、．，'"(){}[\]<>+=\-*\/\\|;:@#$%^&*_~！？（）「」『』【】〔〕［］｛｝〈〉《》｢｣。、．，：；＋－＊／＝＜＞％＆＾｜～＠＃＄＿"　]+$/.test(
       processed
     )
 
   // 空文字列の場合はnullを返す
-  if (!processed || isOnlySymbols) return null
+  if (processed === '' || isOnlySymbols) return null
 
   // 英語から日本語への変換は次の条件のみ実行
   // 1. 設定でオンになっている
