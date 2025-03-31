@@ -43,7 +43,7 @@ export const aiServiceConfig: AIServiceConfig = {
   lmstudio: ({ baseURL }) =>
     createOpenAICompatible({ name: 'lmstudio', baseURL }),
   ollama: ({ baseURL }) => createOllama({ baseURL }),
-  api: () => null, // 特別な処理はせず、カスタムAPI用
+  'custom-api': () => null, // 特別な処理はせず、カスタムAPI用
 }
 
 /**

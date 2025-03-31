@@ -281,9 +281,9 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_OPENAI_TTS_SPEED || '1.0') || 1.0,
       azureTTSKey: '',
       azureTTSEndpoint: '',
-      customApiUrl: '',
-      customApiHeaders: '{}',
-      customApiBody: '{}',
+      customApiUrl: process.env.NEXT_PUBLIC_CUSTOM_API_URL || '',
+      customApiHeaders: process.env.NEXT_PUBLIC_CUSTOM_API_HEADERS || '{}',
+      customApiBody: process.env.NEXT_PUBLIC_CUSTOM_API_BODY || '{}',
       customApiStream: true,
 
       // Integrations
@@ -341,7 +341,8 @@ const settingsStore = create<SettingsState>()(
       includeTimestampInUserMessage:
         process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
-      showCharacterPresetMenu: true,
+      showCharacterPresetMenu:
+        process.env.NEXT_PUBLIC_SHOW_CHARACTER_PRESET_MENU !== 'false',
       externalLinkageMode:
         process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
       realtimeAPIMode:
@@ -380,13 +381,30 @@ const settingsStore = create<SettingsState>()(
       maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
-      showSilenceProgressBar: true,
-      continuousMicListeningMode: false,
-      presetQuestions: [],
-      showPresetQuestions: true,
-      speechRecognitionMode: 'browser' as SpeechRecognitionMode,
-      whisperTranscriptionModel: 'whisper-1' as WhisperTranscriptionModel,
-      initialSpeechTimeout: 5.0,
+      showSilenceProgressBar:
+        process.env.NEXT_PUBLIC_SHOW_SILENCE_PROGRESS_BAR !== 'false',
+      continuousMicListeningMode:
+        process.env.NEXT_PUBLIC_CONTINUOUS_MIC_LISTENING_MODE !== 'false',
+      presetQuestions: (
+        process.env.NEXT_PUBLIC_PRESET_QUESTIONS?.split(',') || []
+      ).map((text, index) => ({
+        id: `preset-question-${index}`,
+        text: text.trim(),
+        order: index,
+      })),
+      showPresetQuestions:
+        process.env.NEXT_PUBLIC_SHOW_PRESET_QUESTIONS === 'true',
+      speechRecognitionMode:
+        (process.env
+          .NEXT_PUBLIC_SPEECH_RECOGNITION_MODE as SpeechRecognitionMode) ||
+        'browser',
+      whisperTranscriptionModel:
+        (process.env
+          .NEXT_PUBLIC_WHISPER_TRANSCRIPTION_MODEL as WhisperTranscriptionModel) ||
+        'whisper-1',
+      initialSpeechTimeout:
+        parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') ||
+        5.0,
 
       // NijiVoice settings
       nijivoiceApiKey: '',

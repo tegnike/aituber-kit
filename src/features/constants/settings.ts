@@ -9,8 +9,11 @@ export type VercelCloudAIService =
   | 'perplexity'
   | 'fireworks'
   | 'deepseek'
+  | 'lmstudio'
+  | 'ollama'
+  | 'custom-api'
 
-export type VercelLocalAIService = 'lmstudio' | 'ollama' | 'api'
+export type VercelLocalAIService = 'lmstudio' | 'ollama' | 'custom-api'
 
 export type VercelAIService = VercelCloudAIService | VercelLocalAIService
 
@@ -37,7 +40,11 @@ export const isVercelCloudAIService = (
 export const isVercelLocalAIService = (
   service: string
 ): service is VercelLocalAIService => {
-  const localServices: VercelLocalAIService[] = ['lmstudio', 'ollama', 'api']
+  const localServices: VercelLocalAIService[] = [
+    'lmstudio',
+    'ollama',
+    'custom-api',
+  ]
   return localServices.includes(service as VercelLocalAIService)
 }
 

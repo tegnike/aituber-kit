@@ -66,7 +66,7 @@ export default async function handler(req: NextRequest) {
   }
 
   // ローカルLLMのURL検証
-  if (isVercelLocalAIService(aiService) && aiService !== 'api') {
+  if (isVercelLocalAIService(aiService) && aiService !== 'custom-api') {
     if (!localLlmUrl) {
       return new Response(
         JSON.stringify({

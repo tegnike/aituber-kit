@@ -25,6 +25,7 @@ const SpeechInput = () => {
   useEffect(() => {
     if (speechRecognitionMode === 'whisper') {
       settingsStore.setState({
+        initialSpeechTimeout: 0,
         noSpeechTimeout: 0,
         showSilenceProgressBar: false,
         continuousMicListeningMode: false,
@@ -70,32 +71,6 @@ const SpeechInput = () => {
               ? t('BrowserSpeechRecognition')
               : t('WhisperSpeechRecognition')}
           </TextButton>
-        </div>
-      </div>
-      <div className="my-6">
-        <div className="my-4 text-xl font-bold">
-          {t('InitialSpeechTimeout')}
-        </div>
-        <div className="my-4 text-base whitespace-pre-line">
-          {t('InitialSpeechTimeoutInfo')}
-        </div>
-        <div className="mt-6 font-bold">
-          <div className="select-none">
-            {t('InitialSpeechTimeout')}: {initialSpeechTimeout.toFixed(1)}秒
-          </div>
-          <input
-            type="range"
-            min="0"
-            max="60"
-            step="0.5"
-            value={initialSpeechTimeout}
-            onChange={(e) =>
-              settingsStore.setState({
-                initialSpeechTimeout: parseFloat(e.target.value),
-              })
-            }
-            className="mt-2 mb-4 input-range"
-          />
         </div>
       </div>
       {speechRecognitionMode === 'whisper' && (
@@ -151,6 +126,32 @@ const SpeechInput = () => {
       )}
       {speechRecognitionMode === 'browser' && (
         <>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">
+              {t('InitialSpeechTimeout')}
+            </div>
+            <div className="my-4 text-base whitespace-pre-line">
+              {t('InitialSpeechTimeoutInfo')}
+            </div>
+            <div className="mt-6 font-bold">
+              <div className="select-none">
+                {t('InitialSpeechTimeout')}: {initialSpeechTimeout.toFixed(1)}秒
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="60"
+                step="0.5"
+                value={initialSpeechTimeout}
+                onChange={(e) =>
+                  settingsStore.setState({
+                    initialSpeechTimeout: parseFloat(e.target.value),
+                  })
+                }
+                className="mt-2 mb-4 input-range"
+              />
+            </div>
+          </div>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
             <div className="my-4 text-base whitespace-pre-line">

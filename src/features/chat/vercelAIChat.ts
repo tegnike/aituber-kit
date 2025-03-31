@@ -16,7 +16,9 @@ const getAIConfig = () => {
 
   // APIキー名は条件分岐で取得
   const apiKey =
-    typeof aiService === 'string' && aiService !== 'dify' && aiService !== 'api'
+    typeof aiService === 'string' &&
+    aiService !== 'dify' &&
+    aiService !== 'custom-api'
       ? (ss[`${aiService}Key` as keyof typeof ss] as string)
       : ''
 
@@ -45,7 +47,7 @@ function handleApiError(errorCode: string): string {
 // APIエンドポイントを決定する関数
 function getApiEndpoint(aiService: string): string {
   // isVercelLocalAIServiceを使用してapiサービスかどうかを判定
-  if (isVercelLocalAIService(aiService) && aiService === 'api') {
+  if (isVercelLocalAIService(aiService) && aiService === 'custom-api') {
     return '/api/ai/custom'
   }
   return '/api/ai/vercel'
@@ -77,7 +79,7 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     }
 
     // サービスタイプに応じてリクエストデータを追加
-    if (selectAIService === 'api') {
+    if (selectAIService === 'custom-api') {
       // カスタムAPI用データ
       Object.assign(requestData, {
         customApiUrl,
@@ -152,7 +154,7 @@ export async function getVercelAIChatResponseStream(
   }
 
   // サービスタイプに応じてリクエストデータを追加
-  if (selectAIService === 'api') {
+  if (selectAIService === 'custom-api') {
     // カスタムAPI用データ
     Object.assign(requestData, {
       customApiUrl,

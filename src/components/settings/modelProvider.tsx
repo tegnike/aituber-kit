@@ -36,7 +36,7 @@ const aiServiceLogos = {
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',
-  api: '/images/ai-logos/api.svg',
+  'custom-api': '/images/ai-logos/custom-api.svg',
 }
 
 // ロゴを表示するコンポーネント
@@ -112,7 +112,7 @@ const ModelProvider = () => {
     { value: 'lmstudio', label: 'LM Studio' },
     { value: 'ollama', label: 'Ollama' },
     { value: 'dify', label: 'Dify' },
-    { value: 'api', label: 'Custom API' },
+    { value: 'custom-api', label: 'Custom API' },
   ]
 
   // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
@@ -131,7 +131,7 @@ const ModelProvider = () => {
     lmstudio: '',
     ollama: '',
     dify: '',
-    api: '',
+    'custom-api': '',
   }
 
   const handleAIServiceChange = useCallback(
@@ -1113,7 +1113,7 @@ const ModelProvider = () => {
               </div>
             </div>
           )
-        } else if (selectAIService === 'api') {
+        } else if (selectAIService === 'custom-api') {
           return (
             <>
               <div className="my-6">
@@ -1135,7 +1135,7 @@ const ModelProvider = () => {
                 <div className="my-4 text-xl font-bold">
                   {t('CustomAPIStream')}
                 </div>
-                <div className=" text-sm">{t('CustomAPIStreamForced')}</div>
+                <div className="">{t('CustomAPIStreamForced')}</div>
                 <div className="my-2">
                   <TextButton
                     onClick={() => {
@@ -1209,46 +1209,48 @@ const ModelProvider = () => {
               />
             </div>
           </div>
-          {!realtimeAPIMode && !audioMode && selectAIService !== 'api' && (
-            <>
-              <div className="my-6">
-                <div className="my-4 text-xl font-bold">
-                  {t('Temperature')}: {temperature.toFixed(2)}
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={2}
-                  step={0.01}
-                  value={temperature}
-                  className="mt-2 mb-4 input-range"
-                  onChange={(e) =>
-                    settingsStore.setState({
-                      temperature: parseFloat(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div className="my-6">
-                <div className="my-4 text-xl font-bold">{t('MaxTokens')}</div>
-                <div className="my-2 text-sm ">{t('MaxTokensInfo')}</div>
-                <div className="my-2">
+          {!realtimeAPIMode &&
+            !audioMode &&
+            selectAIService !== 'custom-api' && (
+              <>
+                <div className="my-6">
+                  <div className="my-4 text-xl font-bold">
+                    {t('Temperature')}: {temperature.toFixed(2)}
+                  </div>
                   <input
-                    type="number"
-                    min="1"
-                    className="px-4 py-2 w-140 bg-white hover:bg-white-hover rounded-lg"
-                    value={maxTokens}
-                    onChange={(e) => {
-                      const value = parseInt(e.target.value)
-                      if (Number.isNaN(value) === false && value >= 1) {
-                        settingsStore.setState({ maxTokens: value })
-                      }
-                    }}
+                    type="range"
+                    min={0}
+                    max={2}
+                    step={0.01}
+                    value={temperature}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        temperature: parseFloat(e.target.value),
+                      })
+                    }
                   />
                 </div>
-              </div>
-            </>
-          )}
+                <div className="my-6">
+                  <div className="my-4 text-xl font-bold">{t('MaxTokens')}</div>
+                  <div className="my-2 text-sm ">{t('MaxTokensInfo')}</div>
+                  <div className="my-2">
+                    <input
+                      type="number"
+                      min="1"
+                      className="px-4 py-2 w-140 bg-white hover:bg-white-hover rounded-lg"
+                      value={maxTokens}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value)
+                        if (Number.isNaN(value) === false && value >= 1) {
+                          settingsStore.setState({ maxTokens: value })
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           {(realtimeAPIMode || audioMode) && (
             <div className="my-6 p-4 bg-white rounded-lg text-sm ">
               {t('CannotUseParameters')}

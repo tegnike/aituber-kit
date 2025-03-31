@@ -28,10 +28,8 @@ export const MessageInput = ({
   onClickMicButton,
   onClickSendButton,
   onClickStopButton,
-  isSpeaking,
   silenceTimeoutRemaining,
   continuousMicListeningMode,
-  onToggleContinuousMode,
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
   const slidePlaying = slideStore((s) => s.isPlaying)
@@ -101,13 +99,6 @@ export const MessageInput = ({
 
   const handleMicClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClickMicButton(event)
-  }
-
-  // 常時マイク入力モードのトグルボタンクリック処理
-  const handleToggleContinuousMode = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    onToggleContinuousMode(event)
   }
 
   return (

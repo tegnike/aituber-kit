@@ -177,10 +177,10 @@
   "NoSpeechTimeoutInfo": "音声入力時に無音状態が続いた場合、自動的に入力を終了するまでの時間を設定します。\n0秒に設定すると、無音検出による自動送信を無効にします。",
   "ShowSilenceProgressBar": "無音検出プログレスバーを表示",
   "SpeechRecognitionMode": "音声認識モード",
-  "SpeechRecognitionModeInfo": "音声認識モードを選択できます。\n「ブラウザ標準」はブラウザ内蔵の音声認識を使用します。\n「Whisper」はOpenAIのWhisper APIを使用します。より高度な認識が可能ですが、OpenAI APIキーが必要です。",
+  "SpeechRecognitionModeInfo": "音声認識モードを選択できます。\n「ブラウザ標準」はブラウザ内蔵の音声認識を使用します。「OpenAI TTS」はOpenAIのText to Speech APIを使用します。\n一般的には「ブラウザ標準」の方が精度が高く、認識速度も速いため推奨されます。ただし、FirefoxなどWebSpeech APIに対応していないブラウザを使用している場合は、「OpenAI TTS」を選択してください。",
   "BrowserSpeechRecognition": "ブラウザ標準の音声認識を使用",
-  "WhisperSpeechRecognition": "Whisper音声認識を使用",
-  "WhisperTranscriptionModel": "Whisper文字起こしモデル",
+  "WhisperSpeechRecognition": "OpenAI TTS音声認識を使用",
+  "WhisperTranscriptionModel": "文字起こしモデル",
   "WhisperTranscriptionModelInfo": "音声認識に使用するモデルを選択できます。より高性能なモデルほど高精度で認識可能ですが、APIコストが高くなる場合があります。",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
