@@ -40,6 +40,8 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   const [videoPlaying, setVideoPlaying] = useState(false)
   // 現在のスライドの動画要素を追跡するref
   const currentVideosRef = useRef<HTMLVideoElement[]>([])
+  // 自動再生の開始状態を追跡するためのRef
+  const playbackStartedRef = useRef(false);
   
   // OBS接続関連の状態を追加
   const [obs, setObs] = useState<any>(null);
@@ -365,21 +367,67 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
 
   // スライドが準備完了したときに、自動再生モードであれば再生を開始
   useEffect(() => {
-    if (slidesReady && isAutoplay && !isPlaying) {
+    // すでに再生を開始している場合は何もしない
+    if (slidesReady && isAutoplay && !isPlaying && !playbackStartedRef.current) {
       console.log('スライドの準備が完了し、自動再生モードが有効なため、再生を開始します');
+      // 再生開始フラグを設定
+      playbackStartedRef.current = true;
       
       // 現在のスライドを明示的に0に設定
       slideStore.setState({ currentSlide: 0 });
       
       // 少し遅延を入れてから再生開始（スライドが確実に表示されてから）
       setTimeout(() => {
-        // 再生開始
-        console.log('スライド0の音声を読み上げ、再生を開始します');
-        readSlide(0);
-        slideStore.setState({ isPlaying: true });
+        // 状態が変わっていないことを確認
+        if (isAutoplay && !slideStore.getState().isPlaying) {
+          console.log('スライド0の音声を読み上げ、再生を開始します');
+          readSlide(0);
+          slideStore.setState({ isPlaying: true });
+        }
       }, 1000);
     }
   }, [slidesReady, isAutoplay, isPlaying, readSlide]);
+
+  // 最後のスライドに到達時の処理を強化
+  useEffect(() => {
+    // 最後のスライドに達し、かつ音声と動画が終了した場合にisPlayingをfalseに設定
+    if (currentSlide === slideCount - 1 && chatProcessingCount === 0 && !videoPlaying) {
+      console.log('最後のスライドの再生が終了しました。自動再生を停止します');
+      
+      // 再生状態と自動再生状態を停止に設定
+      slideStore.setState({ 
+        isPlaying: false,
+        // 自動再生モードも無効化して再ループを防止
+        isAutoplay: false 
+      });
+      
+      // 再生フラグもリセット
+      playbackStartedRef.current = false;
+      
+      // 録画中なら停止
+      if (obsConnected && isRecording) {
+        stopRecording();
+      }
+    }
+  }, [currentSlide, slideCount, chatProcessingCount, videoPlaying, obsConnected, isRecording, stopRecording]);
+  
+  // コンポーネントのアンマウント時や選択スライドの変更時に自動再生状態をリセット
+  useEffect(() => {
+    // 選択スライドが変更された場合、再生開始フラグをリセット
+    playbackStartedRef.current = false;
+    
+    // コンポーネントのアンマウント時や選択スライドの変更時に実行されるクリーンアップ関数
+    return () => {
+      playbackStartedRef.current = false;
+      
+      // 自動再生状態をリセット（コンポーネントのアンマウント時のみ）
+      if (slideStore.getState().isAutoplay) {
+        slideStore.setState({ 
+          isPlaying: false,
+        });
+      }
+    };
+  }, [selectedSlideDocs]);
 
   // 次のスライドに進む関数
   const nextSlide = useCallback(() => {
@@ -426,19 +474,6 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       stopRecording();
     }
   }, [isPlaying, obsConnected, isRecording, startRecording, stopRecording]);
-
-  // 最後のスライドに到達時の処理
-  useEffect(() => {
-    // 最後のスライドに達し、かつ音声が終了した場合にisPlayingをfalseに設定
-    if (currentSlide === slideCount - 1 && chatProcessingCount === 0 && !videoPlaying) {
-      slideStore.setState({ isPlaying: false });
-      
-      // 録画中なら停止
-      if (obsConnected && isRecording) {
-        stopRecording();
-      }
-    }
-  }, [currentSlide, slideCount, chatProcessingCount, videoPlaying, obsConnected, isRecording, stopRecording]);
 
   // 音声ナレーションと動画が終了したら次のスライドへ進む
   useEffect(() => {
