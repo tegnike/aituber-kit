@@ -5,7 +5,7 @@ import {
   VRMLoaderPlugin,
   VRMUtils,
 } from '@pixiv/three-vrm'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { VRMAnimation } from '../../lib/VRMAnimation/VRMAnimation'
 import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlugin/VRMLookAtSmootherLoaderPlugin'
 import { LipSync } from '../lipSync/lipSync'

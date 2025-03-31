@@ -25,6 +25,8 @@ A4: A commercial license is required in the following cases when using this repo
 - Embedding in a product
 - Modifying the software and providing it to third parties
 
+Note that trial internal use during pre-implementation or evaluation phase is exempt from license fees. For production environment use or use beyond the evaluation period, an appropriate commercial license must be obtained.
+
 **Q5: How much does a commercial license cost?**
 
 A5: The commercial license has the following plans:

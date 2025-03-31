@@ -22,6 +22,7 @@ export async function getLocalLLMChatResponseStream(
         model,
         messages,
         temperature: settingsStore.getState().temperature,
+        maxTokens: settingsStore.getState().maxTokens,
       }),
     })
 

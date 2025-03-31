@@ -8,7 +8,7 @@
   "SlideSettings": "■ スライド設定",
   "LogSettings": "■ 会話履歴",
   "OtherSettings": "■ その他",
-  "ExternalLinkageMode": "外部連携モード（WebSocket）",
+  "ExternalLinkageMode": "外部連携モード（ベータ版）",
   "YoutubeMode": "YouTubeモード",
   "YoutubeInfo": "先頭が「#」のコメントは無視されます。",
   "YoutubeAPIKey": "YouTube API キー",
@@ -80,7 +80,7 @@
   "NijiVoiceEmotionalLevel": "感情レベル",
   "NijiVoiceSoundDuration": "音声の長さ",
   "UpdateSpeakerList": "話者リストを更新",
-  "UsingGoogleTTS": "Google TTSを使用する",
+  "UsingGoogleTTS": "Google Text-to-Speechを使用する",
   "UsingStyleBertVITS2": "Style-Bert-VITS2を使用する",
   "StyleBertVITS2Info": "Style-Bert-VITS2を使用しています。日・英・中のみに対応しています。ローカルAPIを使用する場合は、下記のサイトから環境にあったアプリをダウンロードし起動しておく必要があります。必要な場合はAPIキーも設定してください。",
   "SpeakerSelection": "ボイスタイプ選択",
@@ -98,7 +98,7 @@
   "StyleBeatVITS2SdpRatio": "SDP/DP混合比",
   "StyleBeatVITS2Length": "話速",
   "ConversationHistory": "会話履歴",
-  "ConversationHistoryInfo": "直近の10会話文が記憶として保持されます。",
+  "ConversationHistoryInfo": "直近の{{count}}会話文が記憶として保持されます。",
   "ConversationHistoryReset": "会話履歴リセット",
   "NotConnectedToExternalAssistant": "外部アシスタントと接続されていません。",
   "APIKeyNotEntered": "APIキーが入力されていません。",
@@ -127,6 +127,8 @@
   "ContactDescription": "このアプリに関するお問い合わせは下記のメールアドレスまたはTwitterアカウントにお願いします。",
   "Creator": "作成者情報",
   "CreatorDescription": "作成者: ニケ",
+  "Documentation": "ドキュメント",
+  "DocumentationDescription": "AITuberKitの詳細な使い方やチュートリアルは下記のURLからご覧ください。",
   "Language": "言語設定",
   "UsingGSVITTS": "GSVI TTSを使用する",
   "GSVITTSInfo": "GSVI TTS設定",
@@ -160,6 +162,8 @@
   "LocalStorageReset": "設定をリセットする",
   "LocalStorageResetInfo": "環境変数が設定されている場合はその値が優先されます。ページが再読み込みされます。",
   "LocalStorageResetButton": "設定リセット",
+  "NoSpeechTimeout": "無音検出タイムアウト",
+  "NoSpeechTimeoutInfo": "音声入力時に無音状態が続いた場合、自動的に入力を終了するまでの時間を設定します。\n0秒に設定すると、無音検出による自動送信を無効にします。",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
     "AIInvalidProperty": "AIサービスの設定値が正しくありません",
@@ -181,7 +185,7 @@
   "RealtimeAPIMode": "リアルタイムAPIモード",
   "RealtimeAPIModeContentType": "送信タイプ",
   "RealtimeAPIModeVoice": "ボイスタイプ",
-  "AudioMode": "オーディオモード（ベータ版）",
+  "AudioMode": "オーディオモード",
   "InputText": "テキスト",
   "InputAudio": "音声",
   "SearchGrounding": "検索機能を利用する",
@@ -197,7 +201,8 @@
     "FunctionExecuting": "{{funcName}}を実行しています",
     "FunctionExecutionFailed": "{{funcName}}の実行に失敗しました",
     "FirefoxNotSupported": "Firefoxではこの機能はサポートされていません",
-    "SpeechRecognitionError": "音声認識エラーが発生しました"
+    "SpeechRecognitionError": "音声認識エラーが発生しました",
+    "NoSpeechDetected": "音声が検出されませんでした。"
   },
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
@@ -238,5 +243,8 @@
     "relaxedMotionGroup": "リラックス"
   },
   "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
-  "Temperature": "Temperature"
+  "Temperature": "Temperature",
+  "MaxTokens": "最大トークン数",
+  "MaxTokensInfo": "最大トークン数は利用中のAIモデルによって異なります。各モデルの仕様を確認してください。",
+  "CannotUseParameters": "リアルタイムAPIモードまたはオーディオモードが有効の場合、TemperatureとMax Tokensパラメータは指定できません。"
 }

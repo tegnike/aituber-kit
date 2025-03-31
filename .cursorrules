@@ -187,6 +187,17 @@ aituber-kit/
 - locales/ko/translation.json
 - locales/zh/translation.json
 - locales/en/translation.json
+- locales/vi/translation.json
+- locales/fr/translation.json
+- locales/es/translation.json
+- locales/pt/translation.json
+- locales/de/translation.json
+- locales/ru/translation.json
+- locales/it/translation.json
+- locales/ar/translation.json
+- locales/hi/translation.json
+- locales/pl/translation.json
+- locales/th/translation.json
 - src/features/chat/vercelAIChat.ts
 - src/pages/api/aiChat.ts
 - src/features/chat/aiChatFactory.ts
@@ -214,6 +225,18 @@ aituber-kit/
 - src/components/settings/voice.tsx
 - src/components/settings/youtube.tsx
 - src/features/stores/settings.ts
+
+## ライセンスに関するドキュメント
+- README.md
+- LICENSE
+- docs/license.md
+- docs/license_en.md
+- docs/license_ko.md
+- docs/license_zh.md
+- docs/license-faq.md
+- docs/license-faq_en.md
+- docs/license-faq_ko.md
+- docs/license-faq_zh.md
 ---
 
 以上の内容を順守し、タスクを遂行してください。

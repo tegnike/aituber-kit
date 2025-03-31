@@ -6,7 +6,7 @@ This document sets out the terms of use for the logo used in the [aituber-kit](h
 
 ## Copyright
 
-The copyright of this logo belongs to the owner of the repository.
+The copyright of this logo belongs to the creator of the logo.
 
 ## Permitted Use
 
@@ -32,3 +32,7 @@ The owner of the repository has the right to change this agreement without notic
 ## Contact
 
 If you have any questions about the use of the logo, please contact us through the repository's issues.
+
+## Logo Creator Information
+
+- Logo Creator: [Ruka Design](https://coconala.com/users/2208636)

@@ -1,6 +1,6 @@
 # AITuberKit
 
-<img style="max-width: 100%;" src="./docs/logo.png">
+<img style="max-width: 100%;" src="./public/ogp.png">
 
 **お知らせ: 本プロジェクトはバージョン v2.0.0 以降、カスタムライセンスを採用しています。商用目的でご利用の場合は、[利用規約](#利用規約) セクションをご確認ください。**
 
@@ -28,49 +28,93 @@
    </h3>
 </div>
 
+<div align="center">
+   <h3>
+      📚 <a href="https://docs.aituberkit.com/">ドキュメントサイトへ</a> 📚
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="./docs/README_en.md">English</a>｜
    <a href="./docs/README_zh.md">中文</a>｜
-   <a href="./docs/README_ko.md">韓語</a>
+   <a href="./docs/README_ko.md">한국어</a>｜
+   <a href="./docs/README_pl.md">Polski</a>
 </h3>
+
+## 概要
+
+AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。AIキャラクターとの対話機能とAITuber配信機能を中心に、様々な拡張機能を備えています。
+
+詳細な使用方法や設定方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
-## 概要
+## 主な機能
 
-主に以下の2つの機能があります。
+### 1. AIキャラとの対話
 
-1. AIキャラとの対話
-2. AITuber配信
+- 各種LLMのAPIキーを使って、AIキャラクターと簡単に会話可能
+- マルチモーダル対応で、カメラからの映像やアップロードした画像を認識して回答を生成
+- 直近の会話文を記憶として保持
 
-下記の記事に詳細な使用方法を記載しました。
+### 2. AITuber配信
 
-[![今日からあなたもAITuberデベロッパー｜ニケちゃん](https://github.com/tegnike/aituber-kit/assets/35606144/a958f505-72f9-4665-ab6c-b57b692bb166)](https://note.com/nike_cha_n/n/ne98acb25e00f)
+- YouTubeの配信コメントを取得して、AIキャラクターが自動で応答
+- 会話継続モードでコメントがなくても自発的に発言可能
+- "#"から始まるコメントは読まれない機能
 
-## ⚠️ セキュリティに関する重要な注意事項
+### 3. その他の機能
 
-このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
+- **外部連携モード**: WebSocketでサーバーアプリと連携し、より高度な機能を実現
+- **スライドモード**: AIキャラクターがスライドを自動で発表するモード
+- **Realtime API**: OpenAIのRealtime APIを使用した低遅延対話と関数実行
+- **オーディオモード**: OpenAIのAudio API機能を活用した自然な音声対話
+- **メッセージ受信機能**: 専用APIを通じて外部から指示を受け付け、AIキャラクターに発言させることが可能
 
-- **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
+## 対応モデル・サービス
 
-### 本番環境での利用について
+### キャラクターモデル
 
-本番環境で利用する場合は、以下のいずれかの対応を推奨します：
+- **3Dモデル**: VRMファイル
+- **2Dモデル**: Live2Dファイル（Cubism 3以降）
 
-1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
-2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
-3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
+### 対応LLM
 
-## 開発環境
+- OpenAI
+- Anthropic
+- Google Gemini
+- Azure OpenAI
+- Groq
+- Cohere
+- Mistral AI
+- Perplexity
+- Fireworks
+- ローカルLLM
+- Dify
 
-このプロジェクトは以下の環境で開発されています：
+### 対応音声合成エンジン
+
+- VOICEVOX
+- Koeiromap
+- Google Text-to-Speech
+- Style-Bert-VITS2
+- AivisSpeech
+- GSVI TTS
+- ElevenLabs
+- OpenAI
+- Azure OpenAI
+- にじボイス
+
+## クイックスタート
+
+### 開発環境
 
 - Node.js: ^20.0.0
-- npm: 10.8.1
+- npm: ^10.0.0
 
-## 共通事前準備
+### インストール手順
 
 1. リポジトリをローカルにクローンします。
 
@@ -104,168 +148,26 @@ npm run dev
 cp .env.example .env
 ```
 
-## AIキャラとの対話
+詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
-- AIキャラと会話する機能です。
-- このリポジトリの元になっている [pixiv/ChatVRM](https://github.com/pixiv/ChatVRM) を拡張した機能です。
-- 各種LLMのAPIキーさえあれば簡単に始めることが可能です。
-- 直近の会話文を記憶として保持します。
-- マルチモーダルで、カメラからの映像やアップロードした画像を認識して回答を生成することが可能です。
+## ⚠️ セキュリティに関する重要な注意事項
 
-### 使用方法
+このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
 
-1. 設定画面で選択したLLMのAPIキーを入力します。
-   - OpenAI
-   - Anthropic
-   - Google Gemini
-   - Azure OpenAI
-   - Groq
-   - Cohere
-   - Mistral AI
-   - Perplexity
-   - Fireworks
-   - ローカルLLM
-   - Dify（Chatbot or Agent）
-2. 必要に応じてキャラクターの設定プロンプトを編集します。
-3. 必要に応じてキャラクターのVRMファイルまたはLive2Dファイル、および背景ファイルをアップロードします。
-4. 音声合成エンジンを選択し、必要に応じて声の設定を行います。
-   - VOICEVOX: 複数の選択肢から話者を選ぶことができます。予めVOICEVOXアプリを起動しておく必要があります。
-   - Koeiromap: 細かく音声を調整することが可能です。APIキーの入力が必要です。
-   - Google TTS: 日本語以外の言語も選択可能です。credential情報が必要です。
-   - Style-Bert-VITS2: ローカルAPIサーバーを起動しておく必要があります。
-   - AivisSpeech: 予めAivisSpeechアプリを起動しておく必要があります。
-   - GSVI TTS: ローカルAPIサーバーを起動しておく必要があります。
-   - ElevenLabs: 様々な言語の選択が可能です。APIキーの入力が必要です。
-   - OpenAI: APIキーの入力が必要です。
-   - Azure OpenAI: APIキーの入力が必要です。
-   - にじボイス: APIキーの入力が必要です。
-5. 入力フォームからキャラクターと会話を開始します。マイク入力も可能です。
+- **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
 
-## AITuber配信
+### 本番環境での利用について
 
-- Youtubeの配信コメントを取得して発言することが可能です。
-- Youtube APIキーが必要です。
-- "#"から始まるコメントは読まれません。
+本番環境で利用する場合は、以下のいずれかの対応を推奨します：
 
-### 使用方法
-
-1. 設定画面でYoutubeモードをONにします。
-2. Youtube APIキーとYoutube Live IDを入力します。
-3. 他の設定は"AIキャラとの対話"と同様に行います。
-4. Youtubeの配信を開始し、キャラクターがコメントに反応するのを確認します。
-5. 会話継続モードをONにすると、コメントが無いときにAIが自ら発言することができます。
-
-## その他の機能
-
-### 外部連携モード
-
-- WebSocketでサーバーアプリにリクエストを送信して、レスポンスを取得することができます。
-- 別途サーバーアプリを用意する必要があります。
-
-#### 使用方法
-
-1. サーバーアプリを起動し、`ws://127.0.0.1:8000/ws` エンドポイントを開きます。
-2. 設定画面で外部連携モードをONにします。
-3. 他の設定は"AIキャラとの対話"と同様に行います。
-4. 入力フォームからリクエストを送信し、サーバーアプリからのリクエストが返却されるのを確認します。
-
-#### 関連
-
-- こちらのサーバーアプリのリポジトリですぐに試すことが可能です。[tegnike/aituber-server](https://github.com/tegnike/aituber-server)
-- 詳しい設定は"[美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)"をお読みください。
-
-### スライドモード
-
-- スライドをAIキャラが自動で発表するモードです。
-- 予めスライドと台本ファイルを用意しておく必要があります。
-
-#### 使用方法
-
-1. AIキャラと対話できるところまで進めておきます。
-2. スライドフォルダと台本ファイルを指定のフォルダに配置します。
-3. 設定画面でスライドモードをONにします。
-4. スライド開始ボタンを押して発表を開始します。
-
-#### 関連
-
-- 詳しい設定は"[スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)"をお読みください。
-
-### Realtime APIモード
-
-- OpenAIのRealtime APIを使用して、低遅延でキャラと対話できるモードです。
-- 関数実行を定義することができます。
-
-#### 使用方法
-
-1. AIサービスでOpenAIまたはAzure OpenAIを選択します。
-2. Realtime APIモードをONにします。
-3. マイクを使用して話しかけます。
-
-#### 関数実行
-
-- src/components/realtimeAPITools.tsx, src/components/realtimeAPITools.json に新しい関数を定義します。
-- 既存の get_current_weather 関数を参考にしてください。
-
-## TIPS
-
-### Live2Dの仕様に際して
-
-Live2D表示のために非公式ライブラリの [pixi-live2d-display](https://github.com/RaSan147/pixi-live2d-display) を使用しています。
-
-Live2Dは開発用SDKとしてCubismというライブラリが提供されており、現在Cubism 2.1、Cubism 3、Cubism 4、そしてCubism 5が存在します。Cubism 4はCubism 3のモデルと互換性があり、最新のCubism 5はCubism 4と互換性があります。
-
-Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントのLive2Dモデルをサポートしています。
-
-#### Cubism Core
-
-この機能を利用する前に、以下のCubism Core（Cubismランタイムライブラリ）ファイルを両方とも `public/scripts` に設置する必要があります：
-
-1. `live2dcubismcore.min.js`（Cubism 4/5用）
-
-   - [公式サイト](https://www.live2d.com/sdk/download/web/)からダウンロード可能
-   - または[こちら](https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js)から入手可能（注：本番環境での使用は推奨されません）
-
-2. `live2d.min.js`（Cubism 2.1用）
-   - 2019年9月4日以降、公式サイトからはダウンロードできなくなっていますが、以下から入手可能：
-     - GitHub: [dylanNew/live2d](https://github.com/dylanNew/live2d/tree/master/webgl/Live2D/lib)
-     - CDN: https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js
-
-両方のファイルを設置することで、すべてのバージョンのLive2Dモデルをサポートすることができます。
-
-### 背景画像の設定
-
-- 背景画像は `public/bg-c.png` の画像を変更してください。名称は変更しないでください。
-
-### 環境変数の設定
-
-- 一部の設定値は `.env` ファイルの内容を参照することができます。
-- 設定画面で入力した場合は、環境変数で指定された値よりも優先されます。
-
-### マイク入力方法（2パターン）
-
-1. Alt (or option) キーを押している間入力受付 => 離したら送信
-2. マイクボタンをクリック（一度押したら入力受付）=> もう一度クリックで送信
-
-### その他
-
-- 設定情報・会話履歴は設定画面でリセットすることができます。
-- 各種設定項目はブラウザにローカルストレージとして保存されます。
-- コードブロックで囲まれた要素はTTSで読まれません。
-
-## 関連記事
-
-- [今日からあなたもAITuberデベロッパー｜ニケちゃん](https://note.com/nike_cha_n/n/ne98acb25e00f)
-- [美少女と一緒に開発しようぜ！！【Open Interpreter】](https://note.com/nike_cha_n/n/nabcfeb7aaf3f)
-- [スライド発表はAIがやる時代！！！！](https://note.com/nike_cha_n/n/n867081a598f1)
-- [AITuberKitにマルチモーダル機能を追加したのでAIキャラと宅飲みしてみる](https://note.com/nike_cha_n/n/n6d8e330561e4)
-- [AITuberKit × Dify で超簡単チャットボット構築](https://note.com/nike_cha_n/n/n13cd8b3cf88a)
-- [DifyをXserverでインターネットに公開する](https://note.com/nike_cha_n/n/n23467824b22b)
-- [高度な音声モード こと Realtime API を試してみる](https://note.com/nike_cha_n/n/ne51c16ddadd0)
+1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
+2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
+3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
 
 ## スポンサー募集
 
 開発を継続するためにスポンサーの方を募集しています。<br>
-あなたの支援は、AITuberキットの開発と改善に大きく貢献します。
+あなたの支援は、AITuberKitの開発と改善に大きく貢献します。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
 
@@ -337,6 +239,9 @@ Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントの
   <a href="https://github.com/MojaX2" title="MojaX2">
     <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
   </a>
+  <a href="https://github.com/micchi99" title="micchi99">
+    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名
@@ -355,6 +260,11 @@ Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントの
   - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
   - 詳細は、[ライセンスについて](./docs/license.md)をご確認ください。
 
+### その他
+
+- [ロゴの利用規約](./docs/logo_licence.md)
+- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)
+
 ## 優先実装について
 
 本プロジェクトでは、有償での機能優先実装を受け付けています。
@@ -365,29 +275,3 @@ Cubism 2.1とCubism 4/5を使用することで、すべてのバリアントの
 - この優先実装は商用ライセンスとは別の取り組みです。実装された機能を商用利用する場合は、別途商用ライセンスの取得が必要です。
 
 詳細については、support@aituberkit.com までお問い合わせください。
-
-### その他
-
-- [ロゴの利用規約](./docs/logo_licence.md)
-- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)
-
-## OBS連携機能
-
-AITuberKitはOBS Studioと連携してスライドショーの録画を自動化できます。以下の環境変数を設定することで、OBS WebSocketへの接続設定を行います。
-
-```
-# .envファイルに追加
-NEXT_PUBLIC_OBS_WEBSOCKET_URL=ws://localhost:4455
-NEXT_PUBLIC_OBS_WEBSOCKET_PASSWORD=yourpassword
-```
-
-設定方法:
-1. OBS Studioを起動し、「ツール」→「WebSocket Server Settings」を開きます
-2. 「Enable WebSocket Server」にチェックを入れます
-3. 必要に応じてパスワードを設定します（パスワードを設定しない場合は空白にします）
-4. 上記の環境変数を.envファイルに追加し、URLとパスワードを設定します
-
-スライドの自動再生URLパラメータ:
-```
-http://localhost:3000?slide=スライド名&autoplay=true
-```

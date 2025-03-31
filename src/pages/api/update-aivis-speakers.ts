@@ -25,7 +25,11 @@ export default async function handler(
 ) {
   try {
     // APIからデータを取得
-    const response = await fetch('http://127.0.0.1:10101/speakers')
+    const serverUrl =
+      req.query.serverUrl ||
+      process.env.AIVIS_SPEECH_SERVER_URL ||
+      'http://127.0.0.1:10101'
+    const response = await fetch(`${serverUrl}/speakers`)
     const speakers: Speaker[] = await response.json()
 
     // Aivis形式に変換

@@ -11,6 +11,7 @@ const Log = () => {
     homeStore((s) => s.chatLog)
   )
   const selectAIService = settingsStore((s) => s.selectAIService)
+  const maxPastMessages = settingsStore((s) => s.maxPastMessages)
 
   const { t } = useTranslation()
 
@@ -30,7 +31,7 @@ const Log = () => {
         </div>
         <div className="my-8">
           {selectAIService !== 'dify'
-            ? t('ConversationHistoryInfo')
+            ? t('ConversationHistoryInfo', { count: maxPastMessages })
             : t('DifyInfo2')}
         </div>
         <TextButton
