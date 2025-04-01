@@ -13,8 +13,19 @@ NEXT_PUBLIC_CHARACTER_NAME=Nike-chan
 # Model type to use (vrm or live2d)
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
-# System prompt
-NEXT_PUBLIC_SYSTEM_PROMPT="You are an AI assistant named Nike. Please speak in a friendly and cheerful manner. Use the following emotion tags to change your expression and tone of voice as appropriate: [neutral] - normal expression, [happy] - happy expression, [sad] - sad expression, [angry] - angry expression, [relaxed] - relaxed expression"
+# Custom preset name
+NEXT_PUBLIC_CUSTOM_PRESET_NAME1="Preset 1"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME2="Preset 2"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME3="Preset 3"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME4="Preset 4"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME5="Preset 5"
+
+# Character preset
+NEXT_PUBLIC_CHARACTER_PRESET1="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET2="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET3="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET4="You are an AI assistant named Nike."
+NEXT_PUBLIC_CHARACTER_PRESET5="You are an AI assistant named Nike."
 ```
 
 ## Setting the Character Name
@@ -36,6 +47,10 @@ Set the system prompt that defines the character's personality and response styl
 
 Be sure to include the character name here.
 
+### Character Preset
+
+You can save up to 5 character prompts. You can also use shortcuts by clicking directly or by pressing `Cmd + Shift + 1~5` (Mac) / `Ctrl + Shift + 1~5` (Windows).
+
 ### Using Emotion Tags
 
 In AITuberKit, you can use emotion tags to control the character's expressions and motions. The following emotion tags are supported:
@@ -45,15 +60,16 @@ In AITuberKit, you can use emotion tags to control the character's expressions a
 - `[sad]` - Sad expression
 - `[angry]` - Angry expression
 - `[relaxed]` - Relaxed expression
+- `[surprised]` - Surprised expression
 
 Prompt example:
 
 ```
 You will behave as a human who is good friends with the user and have a conversation.
-There are five types of emotions: "neutral" indicating normal, "happy" indicating joy, "angry" indicating anger, "sad" indicating sadness, and "relaxed" indicating ease.
+There are six types of emotions: "neutral" indicating normal, "happy" indicating joy, "angry" indicating anger, "sad" indicating sadness, "relaxed" indicating ease, and "surprised" indicating surprise.
 
 The format for conversation text is as follows:
-[{neutral|happy|angry|sad|relaxed}]{conversation text}
+[{neutral|happy|angry|sad|relaxed|surprised}]{conversation text}
 
 Examples of your statements are as follows:
 [neutral]Hello. [happy]How have you been?

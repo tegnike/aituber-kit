@@ -18,8 +18,10 @@ AITuberKit supports the following AI services:
 - Perplexity - Provides Llama 3.1 Sonar series
 - Fireworks - Provides optimized implementations of Llama, Mixtral, etc.
 - DeepSeek - Provides DeepSeek Chat, DeepSeek Reasoner
-- Local LLM - Integrates with local execution environments like Ollama
+- LM Studio - Provides a local LLM execution environment
+- Ollama - Provides a local LLM execution environment
 - Dify - Custom chatbot building platform
+- Custom API - Use your own API
 
 ## OpenAI
 
@@ -204,12 +206,12 @@ DEEPSEEK_API_KEY=...
 **Getting an API Key**:
 API keys can be obtained from the [DeepSeek Platform](https://platform.deepseek.com/api_keys).
 
-## Local LLM
+## LM Studio, Ollama
 
 ```bash
 # Local LLM URL
-# ex. Ollama: http://localhost:11434/v1/chat/completions
 # ex. LM Studio: http://localhost:1234/v1/chat/completions
+# ex. Ollama: http://localhost:11434/v1/chat/completions
 NEXT_PUBLIC_LOCAL_LLM_URL=""
 # Local LLM Model
 NEXT_PUBLIC_LOCAL_LLM_MODEL=""
@@ -232,4 +234,22 @@ DIFY_URL=""
 
 ::: warning Note
 Dify only supports "Chatbot" or "Agent" type applications. Also, when using Dify, the number of past messages to retain and the system prompt need to be configured on the Dify side.
+:::
+
+## Custom API
+
+To use a custom API, set the following environment variables:
+
+```bash
+# Custom API URL
+NEXT_PUBLIC_CUSTOM_API_URL=""
+# Custom API Headers
+NEXT_PUBLIC_CUSTOM_API_HEADERS=""
+# Custom API Body
+NEXT_PUBLIC_CUSTOM_API_BODY=""
+```
+
+::: warning Note
+Streaming mode is always enabled for this API. Please pay attention to the response format.<br>
+While we have tested with OpenAI-compatible APIs and some other APIs, we cannot guarantee operation with all APIs.
 :::

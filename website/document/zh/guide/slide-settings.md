@@ -72,9 +72,9 @@ AITuberKit默认包含演示幻灯片。为了检查幻灯片模式的功能，�
 {{SUPPLEMENT}}
 
 请按以下格式回应，结合情感和对话文本：
-[{neutral|happy|angry|sad|relaxed}]{对话文本}
+[{neutral|happy|angry|sad|relaxed|surprised}]{对话文本}
 
-回应时，有五种情感类型："neutral"表示正常，"happy"表示喜悦，"angry"表示愤怒，"sad"表示悲伤，"relaxed"表示安宁。
+回应时，有六种情感类型："neutral"表示正常，"happy"表示喜悦，"angry"表示愤怒，"sad"表示悲伤，"relaxed"表示安宁，"surprised"表示惊讶。
 
 你的发言示例如下：
 [neutral]感谢大家今天的到来。
@@ -85,6 +85,7 @@ AITuberKit默认包含演示幻灯片。为了检查幻灯片模式的功能，�
 [sad]抱歉，我目前没有这个信息。
 [angry]不，这是一个误解。让我给您提供准确的信息。
 [neutral]还有其他问题吗？[happy]感谢您的积极参与。
+[surprised]惊讶！
 ```
 
 :::

@@ -16,6 +16,7 @@ NEXT_PUBLIC_HAPPY_EMOTIONS=Happy,Happy2
 NEXT_PUBLIC_SAD_EMOTIONS=Sad,Sad2,Troubled
 NEXT_PUBLIC_ANGRY_EMOTIONS=Angry,Focus
 NEXT_PUBLIC_RELAXED_EMOTIONS=Relaxed
+NEXT_PUBLIC_SURPRISED_EMOTIONS=Surprised
 
 # 动作组设置
 NEXT_PUBLIC_IDLE_MOTION_GROUP=Idle
@@ -24,6 +25,7 @@ NEXT_PUBLIC_HAPPY_MOTION_GROUP=Happy
 NEXT_PUBLIC_SAD_MOTION_GROUP=Sad
 NEXT_PUBLIC_ANGRY_MOTION_GROUP=Angry
 NEXT_PUBLIC_RELAXED_MOTION_GROUP=Relaxed
+NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 ```
 
 ## 技术实现
@@ -55,16 +57,23 @@ AITuberKit支持Live2D Cubism 3及更高版本的模型。要使用Live2D模型�
 
 应用程序中可用的Live2D模型可以从下拉菜单中选择。选择后，模型会实时切换。
 
-## 如何操作模型
+## 模型操作方法
 
-2D模型可以通过以下鼠标操作自由调整：
+2D模型可以通过以下操作自由调整：
 
-### 调整位置和大小
+### 位置和大小调整
 
-- **左键点击或右键点击 + 拖动**：移动角色的位置
-- **鼠标滚轮滚动**：放大或缩小角色的大小
+#### 电脑操作
 
-通过组合这些操作，您可以将屏幕上的角色放置调整到最佳状态。根据您的直播屏幕布局自由定制角色的外观。
+- **左键点击或右键点击 + 拖动**：移动角色位置
+- **鼠标滚轮滚动**：放大或缩小角色大小
+
+#### 智能手机操作
+
+- **点击 + 拖动**：移动角色位置
+- **双指捏合或张开**：放大或缩小角色大小
+
+通过组合这些操作，您可以将角色在屏幕上的位置调整到最佳状态。根据您的直播画面布局，自由定制角色的外观。
 
 ## 表情设置
 

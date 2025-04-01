@@ -54,6 +54,14 @@ If you want to improve code or add new features, try creating a pull request wit
 - Focusing on one feature or fix per pull request makes the review process smoother
 - Including a description of what was changed and why in your pull request makes it easier to understand
 
+::: tip
+Language files `locales/ja/translation.json` only need to be changed. Other language files will be automatically updated when creating and updating a PR.
+:::
+
+::: tip
+README and documentation files `website/document` do not need to be updated. The administrator will update them when merging.
+:::
+
 ## Community
 
 Joining the AITuberKit community to ask questions and share ideas is also an important contribution to the project.

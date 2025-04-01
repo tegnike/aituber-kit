@@ -1,40 +1,50 @@
-# VRM和Live2D模型的使用协议
+# VRM和Live2D模型使用条款
 
 ## 概述
 
-此文档规定了 [aituber-kit](https://github.com/tegnike/aituber-kit) 仓库中提供的以下模型的使用协议：
+本文档规定了[aituber-kit](https://github.com/tegnike/aituber-kit)仓库中提供的以下模型的使用条款：
 
 ### VRM模型
 
-- [Nikechan VRM Model v1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm)
-- [Nikechan VRM Model v2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm)
-- [Nikechan VRM Model v2 (Outerwear)](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm)
+- [妮可酱VRM模型v1](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v1.vrm)
+- [妮可酱VRM模型v2](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2.vrm)
+- [妮可酱VRM模型v2（外套版）](https://github.com/tegnike/aituber-kit/blob/main/public/vrm/nikechan_v2_outerwear.vrm)
 
 ### Live2D模型
 
-- [Nikechan Live2D Model](https://github.com/tegnike/aituber-kit/blob/main/public/live2d/nike01)
+- [妮可酱Live2D模型](https://github.com/tegnike/aituber-kit/blob/main/public/live2d/nike01)
 
 ## 版权
 
-此VRM和Live2D模型的版权属于各模型的创作者。
+### VRM模型
 
-## 允许使用
+VRM模型的版权归开发者所有。但是，精神权利归各模型的创作者所有。
+
+### Live2D模型
+
+Live2D模型的版权归模型创作者所有。
+
+## 允许的使用
 
 - 个人使用目的
-- 在非商业项目中进行演示
-- 用于介绍本存储库和模型
+- 非商业项目中的演示目的使用
+- 用于介绍本仓库和模型
 
-## 禁止使用
+## 禁止的使用
 
-- 商业目的的使用、销售或出租（未经事先书面许可）
-- 修改模型或创建衍生作品及其分发
-- 分发给第三方
-- 以损害存储库或模型所有者的名誉或信用的方式使用
+以下行为原则上禁止，但对于VRM模型，在获得开发者事先同意的情况下可能会部分允许：
+
+- 商业目的的使用、销售或租赁
+- 修改模型或创建和分发衍生作品
+- 向第三方再分发
+- 以损害本仓库或模型所有者名誉和信用的方式使用
 - 以违反公序良俗的方式使用
+
+对于Live2D模型，上述禁止事项无任何例外地适用。
 
 ## 免责声明
 
-此VRM和Live2D模型以"现状有姿"提供，不保证适用于特定目的或不侵权。对于使用模型造成的任何损害，存储库的所有者不承担任何责任。
+这些VRM和Live2D模型按"现状"提供，不保证适合特定目的或不侵权。对于因使用模型而产生的任何损害，仓库所有者概不负责。
 
 ## 协议的更改
 

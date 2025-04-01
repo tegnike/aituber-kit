@@ -109,7 +109,7 @@ export const speakMessageHandler = async (receivedMessage: string) => {
       {
         message: sentence,
         emotion: emotion.includes('[')
-          ? (emotion.slice(1, -1) as EmotionType)
+          ? (emotion.slice(1, -1).toLowerCase() as EmotionType)
           : 'neutral',
       },
       () => {
@@ -229,6 +229,7 @@ export const processAIResponse = async (
 
         // 返答内容の感情部分と返答部分を分離
         const emotionMatch = receivedMessage.match(/^\[(.*?)\]/)
+
         if (emotionMatch && emotionMatch[0]) {
           emotion = emotionMatch[0]
           receivedMessage = receivedMessage.slice(emotion.length)
@@ -267,7 +268,7 @@ export const processAIResponse = async (
             {
               message: sentence,
               emotion: emotion.includes('[')
-                ? (emotion.slice(1, -1) as EmotionType)
+                ? (emotion.slice(1, -1).toLowerCase() as EmotionType)
                 : 'neutral',
             },
             () => {
@@ -309,7 +310,7 @@ export const processAIResponse = async (
           {
             message: receivedMessage,
             emotion: emotion.includes('[')
-              ? (emotion.slice(1, -1) as EmotionType)
+              ? (emotion.slice(1, -1).toLowerCase() as EmotionType)
               : 'neutral',
           },
           () => {

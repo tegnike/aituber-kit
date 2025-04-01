@@ -38,6 +38,21 @@ AITuberKit supports multiple languages, and you can choose from the following:
 If you select a language other than Japanese and have a Japanese-only voice service (VOICEVOX, KOEIROMAP, AivisSpeech, NijiVoice) selected, it will automatically switch to Google Text-to-Speech.
 :::
 
+## English Word Pronunciation Setting
+
+You can set whether to pronounce English words in Japanese.
+
+:::tip
+This setting is only displayed when Japanese is selected.
+:::
+
+**Environment Variables**:
+
+```bash
+# English word pronunciation setting (true/false)
+NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
+```
+
 ## Background Image Settings
 
 **Environment Variables**:
@@ -83,6 +98,7 @@ You can set whether to display the control panel in the upper right corner of th
 
 :::tip Hint
 The settings screen can also be displayed using the shortcut `Cmd + .` on Mac or `Ctrl + .` on Windows.
+If you are using a smartphone, you can also display it by long-pressing the top left corner of the screen (about 1 second).
 :::
 
 **Environment Variables**:

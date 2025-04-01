@@ -13,8 +13,19 @@ NEXT_PUBLIC_CHARACTER_NAME=ニケちゃん
 # 使用するモデルタイプ（vrm または live2d）
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
-# システムプロンプト
-NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情"
+# カスタムプリセット名
+NEXT_PUBLIC_CUSTOM_PRESET_NAME1="プリセット1"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME2="プリセット2"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME3="プリセット3"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME4="プリセット4"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME5="プリセット5"
+
+# キャラクタープリセット
+NEXT_PUBLIC_CHARACTER_PRESET1="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET2="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET3="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET4="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET5="あなたはニケという名前のAIアシスタントです。"
 ```
 
 ## キャラクター名の設定
@@ -36,6 +47,10 @@ NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタン
 
 キャラクター名は必ずここに含めるようにしてください。
 
+### キャラクタープリセット
+
+キャラクタープロンプトを5つまで保存します。直接クリックして呼び出す他、Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)でショートカットが可能です。
+
 ### 感情タグの使用
 
 AITuberKitでは、感情タグを使用してキャラクターの表情やモーションを制御できます。以下の感情タグがサポートされています：
@@ -45,15 +60,16 @@ AITuberKitでは、感情タグを使用してキャラクターの表情やモ�
 - `[sad]` - 悲しい表情
 - `[angry]` - 怒りの表情
 - `[relaxed]` - リラックスした表情
+- `[surprised]` - 驚きの表情
 
 プロンプト例：
 
 ```
 あなたはこれからuserと仲の良い1人の人間として振舞い会話を行います。
-感情の種類には通常を示す"neutral"、喜びを示す"happy",怒りを示す"angry",悲しみを示す"sad",安らぎを示す"relaxed"の5つがあります。
+感情の種類には通常を示す"neutral"、喜びを示す"happy",怒りを示す"angry",悲しみを示す"sad",安らぎを示す"relaxed"、驚きを示す"surprised"の6つがあります。
 
 会話文の書式は以下の通りです。
-[{neutral|happy|angry|sad|relaxed}]{会話文}
+[{neutral|happy|angry|sad|relaxed|surprised}]{会話文}
 
 あなたの発言の例は以下通りです。
 [neutral]こんにちは。[happy]元気だった？
@@ -68,10 +84,6 @@ AITuberKitでは、感情タグを使用してキャラクターの表情やモ�
 ですます調や敬語は使わないでください。
 それでは会話を始めましょう。
 ```
-
-### プロンプトのリセット
-
-「キャラクター設定リセット」ボタンをクリックすると、システムプロンプトをデフォルト値にリセットできます。
 
 ::: warning 注意
 AIサービスで **Dify**を使用している場合、このシステムプロンプトは使用されません。キャラクター設定はDifyチャットボットの設定内で行う必要があります。

@@ -43,7 +43,10 @@
 
 ## 概要
 
-AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。AIキャラクターとの対話機能とAITuber配信機能を中心に、様々な拡張機能を備えています。
+AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。<br>
+豊富なAIサービス、キャラクターモデル、音声合成エンジンに対応し、高いカスタマイズ性を備えた対話機能とAITuber配信機能を中心に、様々な拡張モードを提供しています。
+
+<img src="./docs/images/architecture.svg" alt="AITuberKit Architecture">
 
 詳細な使用方法や設定方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
@@ -241,6 +244,18 @@ cp .env.example .env
   </a>
   <a href="https://github.com/micchi99" title="micchi99">
     <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
+  </a>
+  <a href="https://github.com/nekomeowww" title="nekomeowww">
+    <img src="https://github.com/nekomeowww.png" width="40" height="40" alt="nekomeowww">
+  </a>
+  <a href="https://github.com/yfuku" title="yfuku">
+    <img src="https://github.com/yfuku.png" width="40" height="40" alt="yfuku">
+  </a>
+  <a href="https://x.com/8484ff_42" title="8484ff_42">
+    <img src="https://pbs.twimg.com/profile_images/1869378029786656768/m_K1Cjqx_normal.jpg" width="40" height="40" alt="8484ff_42">
+  </a>
+  <a href="https://github.com/sher1ock-jp" title="sher1ock-jp">
+    <img src="https://github.com/sher1ock-jp.png" width="40" height="40" alt="sher1ock-jp">
   </a>
 </p>
 

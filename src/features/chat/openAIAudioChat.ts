@@ -9,7 +9,7 @@ import {
 } from '@/utils/audioBufferManager'
 import { messageSelectors } from '../messages/messageSelectors'
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
-import { AudioModeModel } from '../constants/settings'
+import { AudioModeModel, RealtimeAPIModeVoice } from '../constants/settings'
 
 export async function getOpenAIAudioChatResponseStream(
   messages: Message[]
@@ -30,7 +30,7 @@ export async function getOpenAIAudioChatResponseStream(
       stream: true,
       modalities: ['text', 'audio'],
       audio: {
-        voice: ss.audioModeVoice,
+        voice: ss.audioModeVoice as RealtimeAPIModeVoice,
         format: 'pcm16',
       },
     })
