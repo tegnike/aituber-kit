@@ -2,58 +2,42 @@
 
 ## Overview
 
-This page introduces tips and tricks to use AITuberKit more conveniently. By learning about features that are difficult to find from the settings screen and techniques for comfortable use, you can expand the possibilities of AITuberKit.
+This page introduces tips and techniques for using AITuberKit more effectively. By learning about features that may be difficult to find in the settings screen and techniques for comfortable use, you can expand the possibilities of AITuberKit.
 
-## Microphone Input
+## Changing the Color Theme
 
-### Overview
+You can easily change the color theme of AITuberKit by editing the `colors` section in the `tailwind.config.js` file. This file defines the colors used throughout the application.
 
-In AITuberKit, in addition to text input, you can also use voice input with a microphone. This feature allows you to enjoy conversations without using a keyboard. Microphone input is especially useful in Realtime API mode and Audio mode.
+```javascript
+colors: {
+  primary: '#856292',
+  'primary-hover': '#8E76A1',
+  'primary-press': '#988BB0',
+  // Other color definitions...
+}
+```
 
-### Basics of Microphone Input
+Simply changing these color codes can refresh the entire look of the application. For example, to create a monochrome theme, change the values as follows:
 
-#### Allowing Microphone Permissions
+```javascript
+colors: {
+  primary: '#505050',
+  'primary-hover': '#707070',
+  'primary-press': '#909090',
+  'primary-disabled': '#5050504D',
+  secondary: '#303030',
+  'secondary-hover': '#404040',
+  'secondary-press': '#606060',
+  'secondary-disabled': '#3030304D',
+  'text-primary': '#202020',
+  'base-light': '#F5F5F5',
+  'base-dark': '#1A1A1A',
+  // Toast colors should also be changed as needed
+}
+```
 
-When using microphone input in AITuberKit for the first time, the browser will display a dialog asking for permission to access the microphone.
+![Changing the Color Theme](/images/usage-tips_lfsd4.png)
 
-1. Select "Allow" when the browser permission dialog appears
-2. If you denied permission or want to change the settings later, you can change the settings from the microphone icon near the browser's address bar
-
-#### How to Use Microphone Input
-
-There are two methods for microphone input:
-
-1. **Using keyboard shortcuts**
-
-   - Press and hold the Alt key (Option key on Mac) to accept voice input
-   - Release the key when you finish speaking to send the request
-
-2. **Using the microphone button**
-   - Click the microphone button at the bottom of the screen to start voice input
-   - Click the button again when you finish speaking to send the request
-   - You can also set "No Speech Timeout" in Other Settings to automatically stop and send voice input
-
-### Microphone Input Tips
-
-#### Tips for Improving Voice Recognition Accuracy
-
-1. **Speak clearly**
-
-   - Especially for languages like Japanese, speaking clearly improves voice recognition accuracy
-
-2. **Reduce environmental noise**
-
-   - Using in a quiet environment improves recognition accuracy
-   - Using a headset or directional microphone can reduce background noise
-
-3. **Speak to the microphone at an appropriate distance**
-   - Too close to the microphone can distort the sound, too far can result in insufficient volume
-   - Generally, a distance of about 10-15cm from your mouth to the microphone is appropriate
-
-#### Selecting Microphone Equipment
-
-If you have multiple microphone devices, you can select which microphone to use from the browser settings:
-
-1. Open the browser settings screen
-2. Look for the Privacy and Security (or equivalent) section
-3. In Site Settings > Microphone, you can select connected devices
+:::tip
+Changing color settings might seem a bit complex, but it's easy with the help of an AI assistant. For example, simply asking the AI "Please change the color theme in tailwind.config.js to monochrome" will get you appropriate color code suggestions. AI can also help with creating custom color themes or fine-tuning existing themes.
+:::

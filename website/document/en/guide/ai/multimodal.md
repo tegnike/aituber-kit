@@ -90,6 +90,10 @@ When you send a message while an image is displayed here, the message will inclu
 - **Drag and Drop**: You can also upload images by dragging and dropping image files onto the chat screen
 - **Capture Feature**: Capture from webcam or shared screen using the shutter button
 
+::: warning Note
+To optimize input context length, the API only sends the latest image. Images used in past conversations are not included when sending a new message, so please note.
+:::
+
 ## Limitations
 
 - Each AI service has limitations on supported input formats and file sizes

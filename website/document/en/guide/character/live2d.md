@@ -57,16 +57,23 @@ AITuberKit supports Live2D Cubism 3 and later models. To use a Live2D model, fol
 
 Live2D models available in the application can be selected from a dropdown menu. The model switches in real-time when selected.
 
-## How to Manipulate the Model
+## How to Operate the Model
 
-The 2D model can be freely adjusted with the following mouse operations:
+2D models can be freely adjusted with the following operations:
 
 ### Adjusting Position and Size
 
-- **Left-click or Right-click + Drag**: Moves the character's position
-- **Mouse wheel scroll**: Enlarges or reduces the character's size
+#### On PC
 
-By combining these operations, you can adjust the placement of the character on the screen to an optimal state. Feel free to customize how the character appears to match your broadcast screen layout.
+- **Left-click or Right-click + Drag**: Move the character's position
+- **Mouse wheel scrolling**: Enlarge or reduce the character's size
+
+#### On Smartphone
+
+- **Tap + Drag**: Move the character's position
+- **Pinch in/out with two fingers**: Enlarge or reduce the character's size
+
+By combining these operations, you can adjust the character's position on the screen to the optimal state. Customize the character's appearance as you see fit according to the layout of the broadcast screen.
 
 ## Expression Settings
 

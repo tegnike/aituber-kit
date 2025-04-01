@@ -49,7 +49,7 @@ NEXT_PUBLIC_CHARACTER_PRESET5="您是一位名叫 Nique 的 AI 助理。"
 
 ### 字元預設
 
-儲存多個字元提示。除了直接點選召回外，還可透過 Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows) 使用捷徑。
+您可以保存多达5个字元预设。您也可以通过点击直接调用或使用快捷键`Cmd + Shift + 1~5`（Mac）/ `Ctrl + Shift + 1~5`（Windows）来使用快捷键。
 
 ### 使用情感标签
 

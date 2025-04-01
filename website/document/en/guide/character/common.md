@@ -49,7 +49,7 @@ Be sure to include the character name here.
 
 ### Character Preset
 
-Save multiple character prompts. In addition to direct click recall, shortcuts are available by pressing Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows).
+You can save up to 5 character prompts. You can also use shortcuts by clicking directly or by pressing `Cmd + Shift + 1~5` (Mac) / `Ctrl + Shift + 1~5` (Windows).
 
 ### Using Emotion Tags
 
