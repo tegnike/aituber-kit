@@ -374,6 +374,14 @@ export const useBrowserSpeechRecognition = (
       console.log('Recognition ended')
       clearSilenceDetection()
       clearInitialSpeechCheckTimer()
+
+      // isListeningRef.currentがtrueの場合は再開
+      if (isListeningRef.current) {
+        console.log('Restarting speech recognition...')
+        setTimeout(() => {
+          startListening()
+        }, 300)
+      }
     }
 
     // 音声認識エラー時
@@ -432,10 +440,23 @@ export const useBrowserSpeechRecognition = (
               isKeyboardTriggered.current)
           ) {
             try {
-              newRecognition.start()
-              console.log(
-                'Recognition automatically restarted after no-speech timeout'
-              )
+              // 明示的に停止してから再開
+              try {
+                newRecognition.stop()
+                // 少し待ってから再開
+                setTimeout(() => {
+                  newRecognition.start()
+                  console.log(
+                    'Recognition automatically restarted after no-speech timeout'
+                  )
+                }, 100)
+              } catch (stopError) {
+                // stop()でエラーが出た場合は直接start()を試みる
+                newRecognition.start()
+                console.log(
+                  'Recognition automatically restarted without stopping'
+                )
+              }
             } catch (restartError) {
               console.error(
                 'Failed to restart recognition after no-speech:',
@@ -458,7 +479,7 @@ export const useBrowserSpeechRecognition = (
               !homeStore.getState().chatProcessing
             )
           }
-        }, 300)
+        }, 1000)
       } else {
         // その他のエラーの場合は通常の終了処理
         clearSilenceDetection()
