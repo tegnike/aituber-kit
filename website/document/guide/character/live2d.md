@@ -16,6 +16,7 @@ NEXT_PUBLIC_HAPPY_EMOTIONS=Happy,Happy2
 NEXT_PUBLIC_SAD_EMOTIONS=Sad,Sad2,Troubled
 NEXT_PUBLIC_ANGRY_EMOTIONS=Angry,Focus
 NEXT_PUBLIC_RELAXED_EMOTIONS=Relaxed
+NEXT_PUBLIC_SURPRISED_EMOTIONS=Surprised
 
 # モーショングループ設定
 NEXT_PUBLIC_IDLE_MOTION_GROUP=Idle
@@ -24,6 +25,7 @@ NEXT_PUBLIC_HAPPY_MOTION_GROUP=Happy
 NEXT_PUBLIC_SAD_MOTION_GROUP=Sad
 NEXT_PUBLIC_ANGRY_MOTION_GROUP=Angry
 NEXT_PUBLIC_RELAXED_MOTION_GROUP=Relaxed
+NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 ```
 
 ## 技術的な実装について
@@ -57,12 +59,19 @@ AITuberKitでは、Live2D Cubism 3以降のモデルに対応しています。L
 
 ## モデルの操作方法
 
-2Dモデルは以下のマウス操作で自由に調整できます：
+2Dモデルは以下の操作で自由に調整できます：
 
 ### 位置・サイズの調整
 
+#### パソコンでの操作
+
 - **左クリック または 右クリック + ドラッグ**：キャラクターの位置を移動できます
 - **マウスホイールのスクロール**：キャラクターのサイズを拡大・縮小できます
+
+#### スマートフォンでの操作
+
+- **タップ + ドラッグ**：キャラクターの位置を移動できます
+- **2本指でのピンチイン・ピンチアウト**：キャラクターのサイズを拡大・縮小できます
 
 これらの操作を組み合わせることで、画面内のキャラクターの配置を最適な状態に調整できます。配信画面のレイアウトに合わせてキャラクターの見え方を自由にカスタマイズしましょう。
 

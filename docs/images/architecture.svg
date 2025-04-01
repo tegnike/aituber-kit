@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
+  <!-- 背景 -->
+  <rect width="900" height="765" fill="#f8f9fa"/>
+  
+  <!-- タイトル -->
+  <text x="450" y="60" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#333">AITuberKit</text>
+  
+  <!-- コア処理フロー -->
+  <rect x="30" y="100" width="840" height="140" rx="10" ry="10" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
+  <text x="450" y="125" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1565c0">コア処理フロー</text>
+  
+  <!-- コア処理フロー内の要素 -->
+  <rect x="70" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="130" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">入力</text>
+  <text x="130" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">テキスト/音声</text>
+  
+  <rect x="230" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="290" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">AI処理</text>
+  <text x="290" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">LLMサービス</text>
+  
+  <rect x="390" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="450" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">ストリーム処理</text>
+  <text x="450" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">応答解析・最適化</text>
+  
+  <rect x="550" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="610" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">音声合成</text>
+  <text x="610" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">TTS</text>
+  
+  <rect x="710" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="770" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">出力</text>
+  <text x="770" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">モーション/発話</text>
+
+  <!-- 矢印 -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2196f3"/>
+    </marker>
+  </defs>
+  
+  <line x1="190" y1="175" x2="220" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="350" y1="175" x2="380" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="510" y1="175" x2="540" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="670" y1="175" x2="700" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <!-- AI対応サービス -->
+  <rect x="30" y="280" width="260" height="190" rx="10" ry="10" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+  <text x="160" y="305" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2e7d32">AI対応サービス</text>
+  
+  <text x="50" y="330" font-family="Arial, sans-serif" font-size="14" fill="#333">OpenAI (GPT-4o, etc.)</text>
+  <text x="50" y="355" font-family="Arial, sans-serif" font-size="14" fill="#333">Anthropic Claude</text>
+  <text x="50" y="380" font-family="Arial, sans-serif" font-size="14" fill="#333">Google Gemini</text>
+  <text x="50" y="405" font-family="Arial, sans-serif" font-size="14" fill="#333">Azure OpenAI</text>
+  <text x="50" y="455" font-family="Arial, sans-serif" font-size="14" fill="#333">ローカルLLM (Ollama, etc.)</text>
+  <text x="50" y="430" font-family="Arial, sans-serif" font-size="14" fill="#333">その他（Groq, Cohere, etc.）</text>
+  
+  <!-- キャラクターモデル -->
+  <rect x="320" y="280" width="260" height="190" rx="10" ry="10" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+  <text x="450" y="305" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#e65100">キャラクターモデル</text>
+  
+  <rect x="340" y="325" width="100" height="125" rx="5" ry="5" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1.5"/>
+  <text x="390" y="345" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">VRM</text>
+  <text x="390" y="370" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">3Dモデル</text>
+  <text x="390" y="390" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">VRM 0.0/1.0</text>
+  <text x="390" y="410" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">位置/向き調整</text>
+  <text x="390" y="430" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">リップシンク</text>
+  
+  <rect x="460" y="325" width="100" height="125" rx="5" ry="5" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1.5"/>
+  <text x="510" y="345" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Live2D</text>
+  <text x="510" y="370" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">2Dモデル</text>
+  <text x="510" y="390" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Cubism 3+</text>
+  <text x="510" y="410" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">表情設定</text>
+  <text x="510" y="430" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">モーション</text>
+  
+  <!-- 音声合成エンジン -->
+  <rect x="610" y="280" width="260" height="190" rx="10" ry="10" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2"/>
+  <text x="740" y="305" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#6a1b9a">音声合成エンジン</text>
+  
+  <text x="630" y="330" font-family="Arial, sans-serif" font-size="14" fill="#333">VOICEVOX</text>
+  <text x="630" y="355" font-family="Arial, sans-serif" font-size="14" fill="#333">Koeiromap</text>
+  <text x="630" y="380" font-family="Arial, sans-serif" font-size="14" fill="#333">Google Text-to-Speech</text>
+  <text x="630" y="405" font-family="Arial, sans-serif" font-size="14" fill="#333">OpenAI/Azure TTS</text>
+  <text x="630" y="430" font-family="Arial, sans-serif" font-size="14" fill="#333">ElevenLabs</text>
+  <text x="630" y="455" font-family="Arial, sans-serif" font-size="14" fill="#333">その他 (Style-Bert-VITS2, etc.)</text>
+  
+  <!-- 拡張モード -->
+  <rect x="30" y="510" width="840" height="160" rx="10" ry="10" fill="#e1f5fe" stroke="#00bcd4" stroke-width="2"/>
+  <text x="450" y="535" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#0277bd">拡張モード</text>
+  
+  <rect x="50" y="550" width="180" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="140" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Youtubeモード</text>
+  <text x="140" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">ライブ配信コメント取得</text>
+  <text x="140" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">会話継続機能</text>
+  <text x="140" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">コメントフィルタリング</text>
+  
+  <rect x="250" y="550" width="180" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="340" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">外部連携モード</text>
+  <text x="340" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">WebSocket通信</text>
+  <text x="340" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">外部アプリ連携</text>
+  <text x="340" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">カスタム感情制御</text>
+  
+  <rect x="450" y="550" width="180" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="540" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">スライドモード</text>
+  <text x="540" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">スライド自動発表</text>
+  <text x="540" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">PDF変換機能</text>
+  <text x="540" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">質問回答機能</text>
+  
+  <rect x="650" y="550" width="200" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="750" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">リアルタイムAPIモード</text>
+  <text x="750" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">WebSocketによる低遅延応答</text>
+  <text x="750" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">関数実行機能</text>
+  <text x="750" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">OpenAI/Azure対応</text>
+</svg>

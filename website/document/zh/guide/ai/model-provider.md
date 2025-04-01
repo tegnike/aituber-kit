@@ -18,8 +18,10 @@ AITuberKit支持以下AI服务：
 - Perplexity - 提供Llama 3.1 Sonar系列
 - Fireworks - 提供Llama、Mixtral等的优化实现
 - DeepSeek - 提供DeepSeek Chat、DeepSeek Reasoner
-- 本地LLM - 与Ollama等本地执行环境集成
+- LM Studio - 提供本地LLM执行环境
+- Ollama - 提供本地LLM执行环境
 - Dify - 自定义聊天机器人构建平台
+- 自定义API - 使用自己的API
 
 ## OpenAI
 
@@ -204,7 +206,7 @@ DEEPSEEK_API_KEY=...
 **获取API密钥**:
 可以从[DeepSeek平台](https://platform.deepseek.com/api_keys)获取API密钥。
 
-## 本地LLM
+## LM Studio, Ollama
 
 ```bash
 # 本地LLM URL
@@ -232,4 +234,22 @@ DIFY_URL=""
 
 ::: warning 注意
 Dify仅支持"聊天机器人"或"代理"类型的应用程序。此外，使用Dify时，需要在Dify端配置要保留的过去消息数量和系统提示。
+:::
+
+## 自定义API
+
+要使用自定义API，请设置以下环境变量：
+
+```bash
+# 自定义API URL
+NEXT_PUBLIC_CUSTOM_API_URL=""
+# 自定义API Headers
+NEXT_PUBLIC_CUSTOM_API_HEADERS=""
+# 自定义API Body
+NEXT_PUBLIC_CUSTOM_API_BODY=""
+```
+
+::: warning 注意
+此API始终启用流式模式。请注意返回格式。<br>
+虽然我们测试了OpenAI兼容的API和一些其他API，但我们不能保证所有API都能正常运行。
 :::

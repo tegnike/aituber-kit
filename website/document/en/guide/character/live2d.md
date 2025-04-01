@@ -16,6 +16,7 @@ NEXT_PUBLIC_HAPPY_EMOTIONS=Happy,Happy2
 NEXT_PUBLIC_SAD_EMOTIONS=Sad,Sad2,Troubled
 NEXT_PUBLIC_ANGRY_EMOTIONS=Angry,Focus
 NEXT_PUBLIC_RELAXED_EMOTIONS=Relaxed
+NEXT_PUBLIC_SURPRISED_EMOTIONS=Surprised
 
 # Motion group settings
 NEXT_PUBLIC_IDLE_MOTION_GROUP=Idle
@@ -24,6 +25,7 @@ NEXT_PUBLIC_HAPPY_MOTION_GROUP=Happy
 NEXT_PUBLIC_SAD_MOTION_GROUP=Sad
 NEXT_PUBLIC_ANGRY_MOTION_GROUP=Angry
 NEXT_PUBLIC_RELAXED_MOTION_GROUP=Relaxed
+NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 ```
 
 ## Technical Implementation
@@ -55,16 +57,23 @@ AITuberKit supports Live2D Cubism 3 and later models. To use a Live2D model, fol
 
 Live2D models available in the application can be selected from a dropdown menu. The model switches in real-time when selected.
 
-## How to Manipulate the Model
+## How to Operate the Model
 
-The 2D model can be freely adjusted with the following mouse operations:
+2D models can be freely adjusted with the following operations:
 
 ### Adjusting Position and Size
 
-- **Left-click or Right-click + Drag**: Moves the character's position
-- **Mouse wheel scroll**: Enlarges or reduces the character's size
+#### On PC
 
-By combining these operations, you can adjust the placement of the character on the screen to an optimal state. Feel free to customize how the character appears to match your broadcast screen layout.
+- **Left-click or Right-click + Drag**: Move the character's position
+- **Mouse wheel scrolling**: Enlarge or reduce the character's size
+
+#### On Smartphone
+
+- **Tap + Drag**: Move the character's position
+- **Pinch in/out with two fingers**: Enlarge or reduce the character's size
+
+By combining these operations, you can adjust the character's position on the screen to the optimal state. Customize the character's appearance as you see fit according to the layout of the broadcast screen.
 
 ## Expression Settings
 
@@ -75,6 +84,7 @@ You can set the Live2D model's expressions into five emotion categories:
 - **Sad**: Expressions that represent sadness or confusion
 - **Angry**: Expressions that represent anger or focus
 - **Relaxed**: Expressions that represent a relaxed state
+- **Surprised**: Expressions that represent surprise
 
 For each emotion category, you can assign any number of expressions from those available in the model. If multiple are specified with commas, one will be selected randomly.
 
@@ -88,6 +98,7 @@ You can set the Live2D model's motions into six categories:
 - **Sad**: Motion for the sad emotional state
 - **Angry**: Motion for the angry emotional state
 - **Relaxed**: Motion for the relaxed emotional state
+- **Surprised**: Motion for the surprised emotional state
 
 For each category, you can select one motion group from those available in the model.
 

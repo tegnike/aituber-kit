@@ -66,5 +66,6 @@ npm run dev
 - 在[角色设置](/zh/guide/character/common)中自定义AI角色
 - 在[AI设置](/zh/guide/ai/common)中调整AI行为
 - 在[语音设置](/zh/guide/voice-settings)中配置语音合成
+- 在[音声入力设置](/zh/guide/speech-input-settings)中配置音声输入
 - 在[Youtube设置](/zh/guide/youtube-settings)中设置AITuber直播
 - 在[幻灯片设置](/zh/guide/slide-settings)中配置幻灯片模式

@@ -43,7 +43,10 @@
 
 ## Przegląd
 
-AITuberKit to zestaw narzędzi open source, który pozwala każdemu łatwo stworzyć aplikację internetową do czatowania z postaciami AI. Oferuje różne funkcje rozszerzające, koncentrując się na interakcji z postaciami AI i funkcjach streamingu AITuber.
+AITuberKit to zestaw narzędzi open source, który pozwala każdemu łatwo zbudować aplikację internetową do czatowania z postaciami AI.<br>
+Obsługuje różnorodne usługi AI, modele postaci i silniki syntezy mowy, oferując różne tryby rozszerzeń, koncentrując się na funkcjach dialogowych i streamingowych AITuber z wysokim stopniem personalizacji.
+
+<img src="./images/architecture_en.svg" alt="AITuberKit Architecture">
 
 Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumentacji](https://docs.aituberkit.com/en/).
 
@@ -241,6 +244,18 @@ Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
   </a>
   <a href="https://github.com/micchi99" title="micchi99">
     <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
+  </a>
+  <a href="https://github.com/nekomeowww" title="nekomeowww">
+    <img src="https://github.com/nekomeowww.png" width="40" height="40" alt="nekomeowww">
+  </a>
+  <a href="https://github.com/yfuku" title="yfuku">
+    <img src="https://github.com/yfuku.png" width="40" height="40" alt="yfuku">
+  </a>
+  <a href="https://x.com/8484ff_42" title="8484ff_42">
+    <img src="https://pbs.twimg.com/profile_images/1869378029786656768/m_K1Cjqx_normal.jpg" width="40" height="40" alt="8484ff_42">
+  </a>
+  <a href="https://github.com/sher1ock-jp" title="sher1ock-jp">
+    <img src="https://github.com/sher1ock-jp.png" width="40" height="40" alt="sher1ock-jp">
   </a>
 </p>
 

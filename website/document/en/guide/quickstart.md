@@ -66,5 +66,6 @@ You can start using AITuberKit by opening [http://localhost:3000](http://localho
 - Customize AI characters in [Character Settings](/en/guide/character/common)
 - Adjust AI behavior in [AI Settings](/en/guide/ai/common)
 - Configure voice synthesis in [Voice Settings](/en/guide/voice-settings)
+- Configure speech input in [Speech Input Settings](/en/guide/speech-input-settings)
 - Set up AITuber streaming in [Youtube Settings](/en/guide/youtube-settings)
 - Configure slide mode in [Slide Settings](/en/guide/slide-settings)

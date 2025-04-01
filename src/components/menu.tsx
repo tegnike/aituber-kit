@@ -16,6 +16,28 @@ import Slides from './slides'
 import Capture from './capture'
 import { multiModalAIServices } from '@/features/stores/settings'
 
+// モバイルデバイス検出用のカスタムフック
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // モバイルデバイス検出用の関数
+    const checkMobile = () => {
+      setIsMobile(
+        window.innerWidth <= 768 ||
+          /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+      )
+    }
+
+    // 初回レンダリング時とウィンドウサイズ変更時に検出
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  return isMobile
+}
+
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
@@ -34,10 +56,35 @@ export const Menu = () => {
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
 
+  // ロングタップ用のステート
+  const [touchStartTime, setTouchStartTime] = useState<number | null>(null)
+  const [touchEndTime, setTouchEndTime] = useState<number | null>(null)
+
+  // モバイルデバイス検出
+  const isMobile = useIsMobile()
+
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const { t } = useTranslation()
 
   const [markdownContent, setMarkdownContent] = useState('')
+
+  // ロングタップ処理用の関数
+  const handleTouchStart = () => {
+    setTouchStartTime(Date.now())
+  }
+
+  const handleTouchEnd = () => {
+    setTouchEndTime(Date.now())
+    if (touchStartTime && Date.now() - touchStartTime >= 800) {
+      // 800ms以上押し続けるとロングタップと判定
+      setShowSettings(true)
+    }
+    setTouchStartTime(null)
+  }
+
+  const handleTouchCancel = () => {
+    setTouchStartTime(null)
+  }
 
   useEffect(() => {
     if (!selectedSlideDocs) return
@@ -138,9 +185,21 @@ export const Menu = () => {
 
   return (
     <>
-      <div className="absolute z-15 m-24">
+      {/* ロングタップ用の透明な領域（モバイルでコントロールパネルが非表示の場合） */}
+      {isMobile && !showControlPanel && (
         <div
-          className="grid md:grid-flow-col gap-[8px] mb-40"
+          className="absolute top-0 left-0 z-30 w-20 h-20"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchCancel}
+        >
+          <div className="w-full h-full opacity-0"></div>
+        </div>
+      )}
+
+      <div className="absolute z-15 m-6">
+        <div
+          className="grid md:grid-flow-col gap-[8px] mb-10"
           style={{ width: 'max-content' }}
         >
           {showControlPanel && (

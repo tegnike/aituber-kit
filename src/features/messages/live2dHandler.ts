@@ -47,6 +47,12 @@ export class Live2DHandler {
           ]
         motion = ss.relaxedMotionGroup
         break
+      case 'surprised':
+        expression =
+          ss.surprisedEmotions[
+            Math.floor(Math.random() * ss.surprisedEmotions.length)
+          ]
+        motion = ss.surprisedMotionGroup
     }
 
     // AudioContextの作成
