@@ -182,6 +182,7 @@
   "WhisperSpeechRecognition": "OpenAI TTS音声認識を使用",
   "WhisperTranscriptionModel": "文字起こしモデル",
   "WhisperTranscriptionModelInfo": "音声認識に使用するモデルを選択できます。より高性能なモデルほど高精度で認識可能ですが、APIコストが高くなる場合があります。",
+  "SpeechRecognitionModeDisabledInfo": "オーディオモードが有効な場合、ブラウザ音声認識のみが使用可能です。\nまた、リアルタイムAPIモードではブラウザ音声認識のみが使用可能な上、音声認識タイムアウト機能が無効になります。",
   "Errors": {
     "EmptyAPIKey": "APIキーが設定されていません",
     "EmptyLocalLLMURL": "ローカルLLMのURLが設定されていません",
@@ -232,7 +233,7 @@
   "ContinuousMicModeOn": "常時マイク入力モードがオンです",
   "ContinuousMicModeOff": "常時マイク入力モードがオフです",
   "ListeningContinuously": "音声入力を待機中...",
-  "ContinuousMicInfo": "AIの発話が終了したタイミングで自動的にマイク入力を再開します。設定された無音時間経過後に自動的に送信します。",
+  "ContinuousMicInfo": "AIの発話が終了したタイミングで自動的にマイク入力を再開します。設定された無音時間経過後に自動的に送信します。\n音声認識がされないまま設定時間を超えると、自動的に常時マイク入力はOFFになるため、常にONにしておきたい場合は音声認識タイムアウトを0秒に設定してください。",
   "UsingOpenAITTS": "OpenAIを使用する",
   "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
   "OpenAITTSVoice": "ボイスタイプ",

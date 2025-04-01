@@ -40,30 +40,6 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
     })
   }
 
-  // キーボードショートカットのイベントリスナーを設定
-  useEffect(() => {
-    const handleKeyDown = async (e: KeyboardEvent) => {
-      if (e.key === 'Alt' && !isListening) {
-        handleStopSpeaking()
-        await startListening()
-      }
-    }
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'Alt') {
-        stopListening()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('keyup', handleKeyUp)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [startListening, stopListening, handleStopSpeaking, isListening])
-
   return (
     <MessageInput
       userMessage={userMessage}

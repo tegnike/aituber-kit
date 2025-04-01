@@ -18,6 +18,8 @@ const SpeechInput = () => {
     (s) => s.continuousMicListeningMode
   )
   const initialSpeechTimeout = settingsStore((s) => s.initialSpeechTimeout)
+  const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
+  const audioMode = settingsStore((s) => s.audioMode)
 
   const { t } = useTranslation()
 
@@ -33,11 +35,23 @@ const SpeechInput = () => {
     }
   }, [speechRecognitionMode])
 
+  // realtimeAPIモードかaudioモードがオンの場合、強制的にbrowserモードに設定
+  useEffect(() => {
+    if (realtimeAPIMode || audioMode) {
+      settingsStore.setState({
+        speechRecognitionMode: 'browser',
+      })
+    }
+  }, [realtimeAPIMode, audioMode])
+
   const whisperModels: { value: WhisperTranscriptionModel; label: string }[] = [
     { value: 'whisper-1', label: 'whisper-1' },
     { value: 'gpt-4o-transcribe', label: 'gpt-4o-transcribe' },
     { value: 'gpt-4o-mini-transcribe', label: 'gpt-4o-mini-transcribe' },
   ]
+
+  // realtimeAPIモードかaudioモードがオンの場合はボタンを無効化
+  const isSpeechModeSwitchDisabled = realtimeAPIMode || audioMode
 
   return (
     <div className="mb-10">
@@ -58,6 +72,11 @@ const SpeechInput = () => {
         <div className="my-4 text-base whitespace-pre-line">
           {t('SpeechRecognitionModeInfo')}
         </div>
+        {isSpeechModeSwitchDisabled && (
+          <div className="my-4 text-sm text-orange-500 whitespace-pre-line">
+            {t('SpeechRecognitionModeDisabledInfo')}
+          </div>
+        )}
         <div className="mt-2">
           <TextButton
             onClick={() =>
@@ -66,6 +85,7 @@ const SpeechInput = () => {
                   speechRecognitionMode === 'browser' ? 'whisper' : 'browser',
               })
             }
+            disabled={isSpeechModeSwitchDisabled}
           >
             {speechRecognitionMode === 'browser'
               ? t('BrowserSpeechRecognition')
@@ -124,7 +144,7 @@ const SpeechInput = () => {
           </div>
         </>
       )}
-      {speechRecognitionMode === 'browser' && (
+      {speechRecognitionMode === 'browser' && !realtimeAPIMode && (
         <>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">

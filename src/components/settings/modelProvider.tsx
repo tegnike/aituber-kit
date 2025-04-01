@@ -171,9 +171,14 @@ const ModelProvider = () => {
       realtimeAPIMode: newMode,
     })
     if (newMode) {
-      settingsStore.setState({ audioMode: false })
       settingsStore.setState({
+        audioMode: false,
+        speechRecognitionMode: 'browser',
         selectAIModel: 'gpt-4o-realtime-preview-2024-12-17',
+        initialSpeechTimeout: 0,
+        noSpeechTimeout: 0,
+        showSilenceProgressBar: false,
+        continuousMicListeningMode: false,
       })
     }
   }, [])
@@ -183,8 +188,9 @@ const ModelProvider = () => {
       audioMode: newMode,
     })
     if (newMode) {
-      settingsStore.setState({ realtimeAPIMode: false })
       settingsStore.setState({
+        realtimeAPIMode: false,
+        speechRecognitionMode: 'browser',
         selectAIModel: 'gpt-4o-audio-preview-2024-12-17',
       })
     } else {
