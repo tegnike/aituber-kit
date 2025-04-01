@@ -380,7 +380,7 @@ export const useBrowserSpeechRecognition = (
         console.log('Restarting speech recognition...')
         setTimeout(() => {
           startListening()
-        }, 300)
+        }, 1000)
       }
     }
 
@@ -479,7 +479,7 @@ export const useBrowserSpeechRecognition = (
               !homeStore.getState().chatProcessing
             )
           }
-        }, 1000)
+        }, 2000)
       } else {
         // その他のエラーの場合は通常の終了処理
         clearSilenceDetection()
