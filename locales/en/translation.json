@@ -1,5 +1,5 @@
 {
-  "Description": "About the App",
+  "Description": "About the app",
   "BasedSettings": "Basic Settings",
   "AISettings": "AI Settings",
   "CharacterSettings": "Character Settings",
@@ -147,7 +147,7 @@
   "ShowAssistantText": "Show answer box",
   "ShowCharacterName": "Show character name in the answer box",
   "ShowControlPanel": "Show settings button",
-  "ShowControlPanelInfo": "You can display the settings screen by pressing Cmd + . (Mac) / Ctrl + . (Windows).\nIf you are using a smartphone, you can also do this by long-pressing the top left of the screen (for about 1 second).",
+  "ShowControlPanelInfo": "You can display the settings screen by pressing Cmd + . (Mac) / Ctrl + . (Windows).\nIf you are using a smartphone, you can also long-press the top left of the screen (for about 1 second).",
   "SlideMode": "Slide Mode",
   "SelectedSlideDocs": "Selected Slide Documents",
   "SlideModeDescription": "This is a mode where AI automatically presents slides. It is only available when the selected AI service is OpenAI, Anthropic Claude, or Google Gemini.",
@@ -209,7 +209,7 @@
     "SpeechRecognitionError": "Speech recognition error occurred",
     "NoSpeechDetected": "No speech detected",
     "PresetSwitching": "Switched to {{presetName}}.",
-    "WhisperError": "An error occurred during speech recognition with Whisper"
+    "WhisperError": "An error occurred in speech recognition by Whisper"
   },
   "UsingOpenAITTS": "Using OpenAI",
   "OpenAITTSInfo": "Using OpenAI. It supports multiple languages. If you select OpenAI as the AI service, you do not need to set the API key below.",
@@ -270,7 +270,7 @@
   "WhisperSpeechRecognition": "Use OpenAI TTS Speech Recognition",
   "WhisperAPIKeyInfo": "An OpenAI API key is required for Whisper mode. Please set the OpenAI API key in the AI settings.",
   "WhisperTranscriptionModel": "Transcription Model",
-  "WhisperTranscriptionModelInfo": "You can select the model used for speech recognition. Higher performance models can recognize with higher accuracy, but may incur higher API costs.",
+  "WhisperTranscriptionModelInfo": "You can select the model to be used for speech recognition. Higher performance models can recognize with higher accuracy, but may incur higher API costs.",
   "InitialSpeechTimeout": "Speech Recognition Timeout",
   "InitialSpeechTimeoutInfo": "Set the waiting time until the first utterance is detected after speech recognition starts. If no utterance is detected within this time, speech recognition will automatically stop.\nSetting it to 0 seconds will make the waiting time unlimited.",
   "Milliseconds": "Milliseconds",
