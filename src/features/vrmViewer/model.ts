@@ -25,7 +25,7 @@ export class Model {
 
   constructor(lookAtTargetParent: THREE.Object3D) {
     this._lookAtTargetParent = lookAtTargetParent
-    this._lipSync = new LipSync(new AudioContext())
+    this._lipSync = new LipSync(new AudioContext(), { forceStart: true })
   }
 
   public async loadVRM(url: string): Promise<void> {
