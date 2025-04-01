@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { useCallback } from 'react'
-import Image from 'next/image'
 
 const ExternalLinkage = () => {
   const { t } = useTranslation()

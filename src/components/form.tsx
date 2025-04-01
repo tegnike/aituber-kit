@@ -45,8 +45,6 @@ export const Form = () => {
     [handleSendChat, webcamStatus, captureStatus, setDelayedText]
   )
 
-  const [selectedQuestion, setSelectedQuestion] = useState('')
-
   return slideMode &&
     slideVisible &&
     (slidePlaying || chatProcessingCount !== 0) ? (
