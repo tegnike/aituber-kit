@@ -6,7 +6,6 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore, { SettingsState } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import { TextButton } from '../textButton'
 
 // Character型の定義
@@ -571,13 +570,6 @@ const Character = () => {
               {t('CharacterSettingsInfo')}
             </div>
           )}
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({ systemPrompt: SYSTEM_PROMPT })
-            }
-          >
-            {t('CharacterSettingsReset')}
-          </TextButton>
         </div>
         <div className="my-4 whitespace-pre-line">
           {t('CharacterpresetInfo')}

@@ -326,7 +326,10 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
       showCharacterName:
         process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
-      systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
+      systemPrompt:
+        process.env.NEXT_PUBLIC_SYSTEM_PROMPT ||
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET1 ||
+        SYSTEM_PROMPT,
       selectedVrmPath:
         process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
       selectedLive2DPath:
@@ -342,7 +345,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
       showCharacterPresetMenu:
-        process.env.NEXT_PUBLIC_SHOW_CHARACTER_PRESET_MENU !== 'false',
+        process.env.NEXT_PUBLIC_SHOW_CHARACTER_PRESET_MENU === 'true',
       externalLinkageMode:
         process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
       realtimeAPIMode:
@@ -382,9 +385,9 @@ const settingsStore = create<SettingsState>()(
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
       showSilenceProgressBar:
-        process.env.NEXT_PUBLIC_SHOW_SILENCE_PROGRESS_BAR !== 'false',
+        process.env.NEXT_PUBLIC_SHOW_SILENCE_PROGRESS_BAR === 'true',
       continuousMicListeningMode:
-        process.env.NEXT_PUBLIC_CONTINUOUS_MIC_LISTENING_MODE !== 'false',
+        process.env.NEXT_PUBLIC_CONTINUOUS_MIC_LISTENING_MODE === 'true',
       presetQuestions: (
         process.env.NEXT_PUBLIC_PRESET_QUESTIONS?.split(',') || []
       ).map((text, index) => ({
@@ -393,7 +396,7 @@ const settingsStore = create<SettingsState>()(
         order: index,
       })),
       showPresetQuestions:
-        process.env.NEXT_PUBLIC_SHOW_PRESET_QUESTIONS === 'true',
+        process.env.NEXT_PUBLIC_SHOW_PRESET_QUESTIONS !== 'false',
       speechRecognitionMode:
         (process.env
           .NEXT_PUBLIC_SPEECH_RECOGNITION_MODE as SpeechRecognitionMode) ||

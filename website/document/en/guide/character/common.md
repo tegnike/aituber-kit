@@ -13,9 +13,6 @@ NEXT_PUBLIC_CHARACTER_NAME=Nike-chan
 # Model type to use (vrm or live2d)
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
-# System prompt
-NEXT_PUBLIC_SYSTEM_PROMPT="You are an AI assistant named Nike. Please speak in a friendly and cheerful manner. Use the following emotion tags to change your expression and tone of voice as appropriate: [neutral] - normal expression, [happy] - happy expression, [sad] - sad expression, [angry] - angry expression, [relaxed] - relaxed expression, [surprised] - surprised expression"
-
 # Custom preset name
 NEXT_PUBLIC_CUSTOM_PRESET_NAME1="Preset 1"
 NEXT_PUBLIC_CUSTOM_PRESET_NAME2="Preset 2"

@@ -39,9 +39,6 @@ NEXT_PUBLIC_CHARACTER_NAME=Nike-chan
 
 # Model type to use (vrm or live2d)
 NEXT_PUBLIC_MODEL_TYPE=vrm
-
-# System prompt
-NEXT_PUBLIC_SYSTEM_PROMPT="You are an AI assistant named Nike..."
 ```
 
 ## AI Settings

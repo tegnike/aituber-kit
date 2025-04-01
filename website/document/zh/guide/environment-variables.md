@@ -39,9 +39,6 @@ NEXT_PUBLIC_CHARACTER_NAME=Nike酱
 
 # 使用的模型类型（vrm或live2d）
 NEXT_PUBLIC_MODEL_TYPE=vrm
-
-# 系统提示
-NEXT_PUBLIC_SYSTEM_PROMPT="你是一个名叫Nike的AI助手..."
 ```
 
 ## AI设置

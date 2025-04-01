@@ -51,9 +51,6 @@ NEXT_PUBLIC_CHARACTER_NAME=ニケちゃん
 # 使用するモデルタイプ（vrm または live2d）
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
-# システムプロンプト
-NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情、[surprised] - 驚きの表情"
-
 # カスタムプリセット名
 NEXT_PUBLIC_CUSTOM_PRESET_NAME1="プリセット1"
 NEXT_PUBLIC_CUSTOM_PRESET_NAME2="プリセット2"
@@ -340,9 +337,6 @@ NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION=1.0
 ```bash
 # 音声認識モード（browser, whisper）
 NEXT_PUBLIC_SPEECH_RECOGNITION_MODE=browser
-
-# 文字起こしモデル（whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe）
-NEXT_PUBLIC_WHISPER_TRANSCRIPTION_MODEL=whisper-1
 
 # 音声認識タイムアウト（秒）
 NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT=5.0

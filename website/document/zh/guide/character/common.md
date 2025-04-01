@@ -13,9 +13,6 @@ NEXT_PUBLIC_CHARACTER_NAME=Nike酱
 # 使用的模型类型（vrm或live2d）
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
-# 系统提示
-NEXT_PUBLIC_SYSTEM_PROMPT="你是一个名叫Nike的AI助手。请以友好、开朗的性格说话。适当使用以下情感标签来改变表情和语调：[neutral] - 正常表情，[happy] - 高兴表情，[sad] - 悲伤表情，[angry] - 愤怒表情，[relaxed] - 放松表情、[surprised] - 惊讶表情"
-
 # 字元預設名
 NEXT_PUBLIC_CUSTOM_PRESET_NAME1="Preset 1"
 NEXT_PUBLIC_CUSTOM_PRESET_NAME2="Preset 2"
