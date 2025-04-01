@@ -43,7 +43,10 @@
 
 ## Przegląd
 
-AITuberKit to zestaw narzędzi open source, który pozwala każdemu łatwo stworzyć aplikację internetową do czatowania z postaciami AI. Oferuje różne funkcje rozszerzające, koncentrując się na interakcji z postaciami AI i funkcjach streamingu AITuber.
+AITuberKit to zestaw narzędzi open source, który pozwala każdemu łatwo zbudować aplikację internetową do czatowania z postaciami AI.<br>
+Obsługuje różnorodne usługi AI, modele postaci i silniki syntezy mowy, oferując różne tryby rozszerzeń, koncentrując się na funkcjach dialogowych i streamingowych AITuber z wysokim stopniem personalizacji.
+
+<img src="./images/architecture_en.svg" alt="AITuberKit Architecture">
 
 Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumentacji](https://docs.aituberkit.com/en/).
 

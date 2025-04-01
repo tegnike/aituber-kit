@@ -43,7 +43,10 @@
 
 ## 概述
 
-AITuberKit是一个开源工具包，允许任何人轻松构建可与AI角色聊天的Web应用程序。它围绕AI角色交互功能和AITuber直播功能提供各种扩展功能。
+AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角色聊天的Web应用程序。<br>
+它支持丰富的AI服务、角色模型和语音合成引擎，提供高度可定制的对话功能和AITuber直播功能，以及各种扩展模式。
+
+<img src="./images/architecture_en.svg" alt="AITuberKit Architecture">
 
 有关详细使用方法和配置说明，请访问[文档网站](https://docs.aituberkit.com/zh/)。
 

@@ -43,7 +43,10 @@
 
 ## 개요
 
-AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플리케이션을 구축할 수 있는 오픈소스 툴킷입니다. AI 캐릭터와의 대화 기능과 AITuber 방송 기능을 중심으로 다양한 확장 기능을 제공합니다.
+AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플리케이션을 구축할 수 있는 오픈소스 툴킷입니다.<br>
+다양한 AI 서비스, 캐릭터 모델, 음성 합성 엔진을 지원하며, 높은 커스터마이징 기능을 갖춘 대화 기능과 AITuber 방송 기능을 중심으로 다양한 확장 모드를 제공합니다.
+
+<img src="./images/architecture_en.svg" alt="AITuberKit Architecture">
 
 자세한 사용 방법과 설정 방법은 [문서 사이트](https://docs.aituberkit.com/en/)를 참조해 주시기 바랍니다.
 
