@@ -38,6 +38,21 @@ AITuberKitは多言語対応しており、以下の言語から選択できま�
 日本語以外の言語を選択すると、日本語専用の音声サービス（VOICEVOX、KOEIROMAP、AivisSpeech、NijiVoice）が選択されている場合は、自動的にGoogle音声合成に切り替わります。
 :::
 
+## 英単語読み上げ設定
+
+英単語を日本語で読み上げるかどうかを設定できます。
+
+:::tip
+この設定は日本語が選択されている場合のみ表示されます。
+:::
+
+**環境変数**:
+
+```bash
+# 英単語を日本語で読み上げる設定（true/false）
+NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
+```
+
 ## 背景画像の設定
 
 **環境変数**:
@@ -83,6 +98,7 @@ NEXT_PUBLIC_SHOW_CHARACTER_NAME=true
 
 :::tip ヒント
 設定画面は Mac では `Cmd + .`、Windows では `Ctrl + .` のショートカットでも表示できます。
+スマートフォンをご利用の場合は、画面左上を長押し（約1秒）でも表示可能です。
 :::
 
 **環境変数**:

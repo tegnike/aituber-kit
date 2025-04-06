@@ -65,6 +65,7 @@ npm run dev
 - [基本設定](/guide/basic-settings)で詳細な設定を行う
 - [キャラクター設定](/guide/character/common)でAIキャラクターをカスタマイズ
 - [AI設定](/guide/ai/common)でAIの動作を調整
-- [音声設定](/guide/voice-settings)で音声合成の設定を行う
+- [合成音声設定](/guide/voice-settings)で合成音声の設定を行う
+- [音声入力設定](/guide/speech-input-settings)で音声入力の設定を行う
 - [Youtube設定](/guide/youtube-settings)でAITuber配信の設定を行う
 - [スライド設定](/guide/slide-settings)でスライドモードの設定を行う

@@ -1,6 +1,5 @@
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
-import englishToJapanese from '@/utils/englishToJapanese.json'
 import { wait } from '@/utils/wait'
 import { Talk } from './messages'
 import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
@@ -17,12 +16,10 @@ import i18next from 'i18next'
 import { SpeakQueue } from './speakQueue'
 import { synthesizeVoiceNijivoiceApi } from './synthesizeVoiceNijivoice'
 import { Live2DHandler } from './live2dHandler'
-
-interface EnglishToJapanese {
-  [key: string]: string
-}
-
-const typedEnglishToJapanese = englishToJapanese as EnglishToJapanese
+import {
+  asyncConvertEnglishToJapaneseReading,
+  containsEnglish,
+} from '@/utils/textProcessing'
 
 const speakQueue = new SpeakQueue()
 
@@ -31,21 +28,40 @@ function preprocessMessage(
   settings: ReturnType<typeof settingsStore.getState>
 ): string | null {
   // 前後の空白を削除
-  let processed = message.trim()
+  let processed: string | null = message.trim()
+  if (!processed) return null
 
-  // 英語から日本語への変換
-  if (settings.changeEnglishToJapanese && settings.selectLanguage === 'ja') {
-    processed = convertEnglishToJapaneseReading(processed)
-  }
-
-  // 絵文字を削除
+  // 絵文字を削除 (これを先に行うことで変換対象のテキスト量を減らす)
   processed = processed.replace(
     /[\u{1F300}-\u{1F9FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F1E0}-\u{1F1FF}]/gu,
     ''
   )
 
+  // 発音として不適切な記号のみで構成されているかチェック
+  // 感嘆符、疑問符、句読点、括弧類、引用符、数学記号、その他一般的な記号を含む
+  const isOnlySymbols: boolean =
+    /^[!?.,。、．，'"(){}[\]<>+=\-*\/\\|;:@#$%^&*_~！？（）「」『』【】〔〕［］｛｝〈〉《》｢｣。、．，：；＋－＊／＝＜＞％＆＾｜～＠＃＄＿"　]+$/.test(
+      processed
+    )
+
   // 空文字列の場合はnullを返す
-  return processed || null
+  if (processed === '' || isOnlySymbols) return null
+
+  // 英語から日本語への変換は次の条件のみ実行
+  // 1. 設定でオンになっている
+  // 2. 言語が日本語
+  // 3. テキストに英語のような文字が含まれている場合のみ
+  if (
+    settings.changeEnglishToJapanese &&
+    settings.selectLanguage === 'ja' &&
+    containsEnglish(processed)
+  ) {
+    // この時点で処理済みのテキストを返す（後で非同期で変換処理を完了する）
+    return processed
+  }
+
+  // 変換不要な場合はそのまま返す
+  return processed
 }
 
 const createSpeakCharacter = () => {
@@ -70,6 +86,22 @@ const createSpeakCharacter = () => {
 
     if (processedMessage) {
       talk.message = processedMessage
+
+      // 英語→日本語変換が必要な場合は、非同期で処理を行う
+      if (
+        ss.changeEnglishToJapanese &&
+        ss.selectLanguage === 'ja' &&
+        containsEnglish(processedMessage)
+      ) {
+        // 非同期で変換処理を行い、結果をtalk.messageに反映
+        asyncConvertEnglishToJapaneseReading(processedMessage)
+          .then((convertedText) => {
+            talk.message = convertedText
+          })
+          .catch((error) => {
+            console.error('Error converting English to Japanese:', error)
+          })
+      }
     }
 
     let isNeedDecode = true
@@ -146,7 +178,7 @@ const createSpeakCharacter = () => {
         } else if (ss.selectVoice == 'openai') {
           buffer = await synthesizeVoiceOpenAIApi(
             talk,
-            ss.openaiTTSKey || ss.openaiKey,
+            ss.openaiKey,
             ss.openaiTTSVoice,
             ss.openaiTTSModel,
             ss.openaiTTSSpeed
@@ -191,18 +223,6 @@ const createSpeakCharacter = () => {
       })
     })
   }
-}
-
-function convertEnglishToJapaneseReading(text: string): string {
-  const sortedKeys = Object.keys(typedEnglishToJapanese).sort(
-    (a, b) => b.length - a.length
-  )
-
-  return sortedKeys.reduce((result, englishWord) => {
-    const japaneseReading = typedEnglishToJapanese[englishWord]
-    const regex = new RegExp(`\\b${englishWord}\\b`, 'gi')
-    return result.replace(regex, japaneseReading)
-  }, text)
 }
 
 function handleTTSError(error: unknown, serviceName: string): void {

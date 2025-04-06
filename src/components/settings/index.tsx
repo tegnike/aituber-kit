@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import menuStore from '@/features/stores/menu'
+import Image from 'next/image'
 
 import { GitHubLink } from '../githubLink'
 import { IconButton } from '../iconButton'
@@ -13,6 +14,7 @@ import YouTube from './youtube'
 import Slide from './slide'
 import Log from './log'
 import Other from './other'
+import SpeechInput from './speechInput'
 
 type Props = {
   onClickClose: () => void
@@ -32,7 +34,7 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   return (
     <>
       <GitHubLink />
-      <div className="absolute m-24">
+      <div className="absolute m-6 z-15">
         <IconButton
           iconName="24/Close"
           isProcessing={false}
@@ -54,6 +56,21 @@ type TabKey =
   | 'slide'
   | 'log'
   | 'other'
+  | 'speechInput'
+
+// アイコンのパスマッピング
+const tabIconMapping: Record<TabKey, string> = {
+  description: '/images/setting-icons/description.svg',
+  based: '/images/setting-icons/basic-settings.svg',
+  character: '/images/setting-icons/character-settings.svg',
+  ai: '/images/setting-icons/ai-settings.svg',
+  voice: '/images/setting-icons/voice-settings.svg',
+  youtube: '/images/setting-icons/youtube-settings.svg',
+  slide: '/images/setting-icons/slide-settings.svg',
+  log: '/images/setting-icons/conversation-history.svg',
+  other: '/images/setting-icons/other-settings.svg',
+  speechInput: '/images/setting-icons/microphone-settings.svg',
+}
 
 const Main = () => {
   const { t } = useTranslation()
@@ -82,6 +99,10 @@ const Main = () => {
     {
       key: 'voice',
       label: t('VoiceSettings'),
+    },
+    {
+      key: 'speechInput',
+      label: t('SpeechInputSettings'),
     },
     {
       key: 'youtube',
@@ -121,34 +142,38 @@ const Main = () => {
         return <Log />
       case 'other':
         return <Other />
+      case 'speechInput':
+        return <SpeechInput />
     }
   }
 
   return (
-    <main className="max-h-full overflow-auto">
-      <div className="text-text1 max-w-5xl mx-auto px-24 py-64">
-        <div className="md:flex mt-16">
+    <main className="max-h-full overflow-auto relative">
+      <div className="text-text1 max-w-5xl mx-auto px-6 py-20">
+        <div className="md:flex">
           {/* タブナビゲーション */}
-          <ul className="flex flex-col space-y-4 text-sm font-medium md:w-[25%] md:me-8 mb-16 md:mb-0">
-            {tabs.map((tab) => (
-              <li key={tab.key}>
-                <button
-                  className={`flex py-8 px-16 rounded-8 w-full typography-16 text-left
-                    ${
-                      activeTab === tab.key
-                        ? 'text-white bg-primary'
-                        : 'bg-gray-50 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  {tab.label}
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div className="md:w-[25%] md:me-4 mb-4 md:mb-0 md:sticky md:top-20 md:self-start">
+            <ul className="flex flex-col space-y-1 text-sm font-medium">
+              {tabs.map((tab) => (
+                <li key={tab.key}>
+                  <button
+                    className={`flex items-center py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    <img
+                      src={tabIconMapping[tab.key]}
+                      alt={`${tab.label} icon`}
+                      className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
+                    />
+                    {tab.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* タブコンテンツ */}
-          <div className="p-24 bg-surface7-hover text-medium rounded-8 w-full">
+          <div className="p-6 bg-gray-400 bg-opacity-20 text-medium rounded-lg w-full">
             {renderTabContent()}
           </div>
         </div>
@@ -159,8 +184,8 @@ const Main = () => {
 
 const Footer = () => {
   return (
-    <footer className="absolute py-4 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
-      powered by ChatVRM from Pixiv / ver. 2.29.0
+    <footer className="absolute py-1 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
+      powered by ChatVRM from Pixiv / ver. 2.30.0
     </footer>
   )
 }

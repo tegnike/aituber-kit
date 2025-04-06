@@ -65,7 +65,7 @@ NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE=true
 - `text`: キャラクターに喋らせるテキスト内容（必須）
 - `role`: メッセージの役割。通常は「assistant」を使用（必須）
 - `emotion`: 感情表現（オプション、デフォルトは "neutral"）
-  - 使用可能な値: "neutral", "happy", "sad", "angry", "relaxed"
+  - 使用可能な値: "neutral", "happy", "sad", "angry", "relaxed", "surprised"
 - `type`: メッセージのタイプ（オプション）
   - "start" を使用すると新しい応答ブロックを開始します
 

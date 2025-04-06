@@ -19,6 +19,9 @@
 # ru: ロシア語, it: イタリア語, ar: アラビア語, hi: ヒンディー語, pl: ポーランド語
 NEXT_PUBLIC_SELECT_LANGUAGE=en
 
+# 英単語を日本語で読み上げる設定（true/false）
+NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
+
 # 背景画像のパス
 NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/bg-c.png
 
@@ -30,6 +33,9 @@ NEXT_PUBLIC_SHOW_CHARACTER_NAME=true
 
 # 操作パネル表示設定（true/false）
 NEXT_PUBLIC_SHOW_CONTROL_PANEL=true
+
+# キャラクタープリセットメニュー表示設定（true/false）
+NEXT_PUBLIC_SHOW_CHARACTER_PRESET_MENU=true
 ```
 
 ## キャラクター設定
@@ -45,8 +51,19 @@ NEXT_PUBLIC_CHARACTER_NAME=ニケちゃん
 # 使用するモデルタイプ（vrm または live2d）
 NEXT_PUBLIC_MODEL_TYPE=vrm
 
-# システムプロンプト
-NEXT_PUBLIC_SYSTEM_PROMPT="あなたはニケという名前のAIアシスタントです。親しみやすく、明るい性格で話してください。適宜次のような感情タグを使って表情や声のトーンを変えてください。[neutral] - 通常の表情、[happy] - 嬉しい表情、[sad] - 悲しい表情、[angry] - 怒りの表情、[relaxed] - リラックスした表情"
+# カスタムプリセット名
+NEXT_PUBLIC_CUSTOM_PRESET_NAME1="プリセット1"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME2="プリセット2"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME3="プリセット3"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME4="プリセット4"
+NEXT_PUBLIC_CUSTOM_PRESET_NAME5="プリセット5"
+
+# キャラクタープリセット
+NEXT_PUBLIC_CHARACTER_PRESET1="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET2="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET3="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET4="あなたはニケという名前のAIアシスタントです。"
+NEXT_PUBLIC_CHARACTER_PRESET5="あなたはニケという名前のAIアシスタントです。"
 ```
 
 ### VRM設定
@@ -68,6 +85,7 @@ NEXT_PUBLIC_HAPPY_EMOTIONS=Happy,Happy2
 NEXT_PUBLIC_SAD_EMOTIONS=Sad,Sad2,Troubled
 NEXT_PUBLIC_ANGRY_EMOTIONS=Angry,Focus
 NEXT_PUBLIC_RELAXED_EMOTIONS=Relaxed
+NEXT_PUBLIC_SURPRISED_EMOTIONS=Surprised
 
 # モーショングループ設定
 NEXT_PUBLIC_IDLE_MOTION_GROUP=Idle
@@ -76,6 +94,7 @@ NEXT_PUBLIC_HAPPY_MOTION_GROUP=Happy
 NEXT_PUBLIC_SAD_MOTION_GROUP=Sad
 NEXT_PUBLIC_ANGRY_MOTION_GROUP=Angry
 NEXT_PUBLIC_RELAXED_MOTION_GROUP=Relaxed
+NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 ```
 
 ## AI設定
@@ -152,6 +171,13 @@ NEXT_PUBLIC_LOCAL_LLM_MODEL=""
 DIFY_API_KEY=""
 # Dify API URL
 DIFY_URL=""
+
+# カスタムAPI URL
+NEXT_PUBLIC_CUSTOM_API_URL=""
+# カスタムAPIヘッダー
+NEXT_PUBLIC_CUSTOM_API_HEADERS=""
+# カスタムAPIボディ
+NEXT_PUBLIC_CUSTOM_API_BODY=""
 ```
 
 ### リアルタイムAPI設定
@@ -197,9 +223,9 @@ NEXT_PUBLIC_AUDIO_MODE_VOICE=alloy
 NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE=true
 ```
 
-## 音声設定
+## 合成音声設定
 
-詳細については[音声設定](/guide/voice-settings)をご覧ください。
+詳細については[合成音声設定](/guide/voice-settings)をご覧ください。
 
 ```bash
 # 使用する音声合成エンジン
@@ -306,6 +332,31 @@ NEXT_PUBLIC_NIJIVOICE_EMOTIONAL_LEVEL=0.0
 NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION=1.0
 ```
 
+## 音声入力設定
+
+```bash
+# 音声認識モード（browser, whisper）
+NEXT_PUBLIC_SPEECH_RECOGNITION_MODE=browser
+
+# 音声認識タイムアウト（秒）
+NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT=5.0
+
+# 無音検出タイムアウト（秒）
+NEXT_PUBLIC_NO_SPEECH_TIMEOUT=2.0
+
+# 無音プログレスバー表示（true/false）
+NEXT_PUBLIC_SHOW_SILENCE_PROGRESS_BAR=true
+
+# 常時マイク入力モード（true/false）
+NEXT_PUBLIC_CONTINUOUS_MIC_LISTENING_MODE=false
+
+# OpenAI APIキー（OpenAI TTSモード用）
+NEXT_PUBLIC_OPENAI_KEY=
+
+# 文字起こしモデル（whisper-1, gpt-4o-transcribe, gpt-4o-mini-transcribe）
+NEXT_PUBLIC_WHISPER_TRANSCRIPTION_MODEL=whisper-1
+```
+
 ## YouTube設定
 
 詳細については[YouTube設定](/guide/youtube-settings)をご覧ください。
@@ -340,14 +391,15 @@ NEXT_PUBLIC_SLIDE_MODE=false
 # 背景映像の使用設定（true/false）
 NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND=false
 
-# 英単語を日本語で読み上げる設定（true/false）
-NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
-
 # タイムスタンプ含有設定（true/false）
 NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE=false
 
-# 無音検出タイムアウト（秒）
-NEXT_PUBLIC_NO_SPEECH_TIMEOUT=2.0
+# プリセット質問表示設定（true/false）
+NEXT_PUBLIC_SHOW_PRESET_QUESTIONS=false
+
+# プリセット質問（カンマ区切りで複数指定可能）
+NEXT_PUBLIC_PRESET_QUESTIONS=
+
 ```
 
 ### API設定

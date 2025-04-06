@@ -1,6 +1,5 @@
 import { Message } from '@/features/messages/messages'
 import { AIService } from '@/features/constants/settings'
-import { getLocalLLMChatResponseStream } from './localLLMChat'
 import { getDifyChatResponseStream } from './difyChat'
 import { getVercelAIChatResponseStream } from './vercelAIChat'
 import settingsStore from '@/features/stores/settings'
@@ -26,13 +25,10 @@ export async function getAIChatResponseStream(
     case 'perplexity':
     case 'fireworks':
     case 'deepseek':
+    case 'lmstudio':
+    case 'ollama':
+    case 'custom-api':
       return getVercelAIChatResponseStream(messages)
-    case 'localLlm':
-      return getLocalLLMChatResponseStream(
-        messages,
-        ss.localLlmUrl,
-        ss.selectAIModel
-      )
     case 'dify':
       return getDifyChatResponseStream(
         messages,

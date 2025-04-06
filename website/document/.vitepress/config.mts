@@ -131,8 +131,12 @@ export default defineConfig({
               ],
             },
             {
-              text: '音声設定',
+              text: '合成音声設定',
               link: '/guide/voice-settings',
+            },
+            {
+              text: '音声入力設定',
+              link: '/guide/speech-input-settings',
             },
             {
               text: 'Youtube設定',
