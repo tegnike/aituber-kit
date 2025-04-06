@@ -198,22 +198,15 @@ export const Menu = () => {
         </div>
       )}
 
-      <div className="absolute z-15 m-6">
-        <div
-          className="grid md:grid-flow-col gap-[8px] mb-10"
-          style={{ width: 'max-content' }}
-        >
-          {showControlPanel && (
-            <>
-              <div className="md:order-1 order-2">
-                <IconButton
-                  iconName="24/Settings"
-                  isProcessing={false}
-                  onClick={() => setShowSettings(true)}
-                ></IconButton>
-              </div>
-              <div className="md:order-2 order-1">
-                {showChatLog ? (
+      {!isAutoplay && (
+        <div className="absolute z-15 m-6">
+          <div
+            className="grid md:grid-flow-col gap-[8px] mb-10"
+            style={{ width: 'max-content' }}
+          >
+            {showControlPanel && (
+              <>
+                <div className="md:order-1 order-2">
                   <IconButton
                     iconName="24/Settings"
                     isProcessing={false}
