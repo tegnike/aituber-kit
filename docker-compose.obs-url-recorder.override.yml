@@ -1,6 +1,6 @@
 services:
   obs:
-    image: obs-url-recorder
+    image: ghcr.io/stealthinu/obs-url-recorder:master
     environment:
       OBS_BROWSER_URL: http://app:3000/?slide=demo&autoplay=true
     ports:
