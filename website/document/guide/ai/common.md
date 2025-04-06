@@ -39,8 +39,10 @@ AITuberKitは以下のAIサービスをサポートしています：
 - Perplexity
 - Fireworks
 - DeepSeek
-- ローカルLLM
+- LM Studio
+- Ollama
 - Dify
+- カスタムAPI
 
 各サービスの利用には、対応するAPIキーが必要です。
 

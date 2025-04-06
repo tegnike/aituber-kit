@@ -13,6 +13,8 @@ import {
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
   AudioModeInputType,
+  SpeechRecognitionMode,
+  WhisperTranscriptionModel,
 } from '../constants/settings'
 
 export const multiModalAIServices = [
@@ -51,9 +53,12 @@ interface APIKeys {
   youtubeApiKey: string
   elevenlabsApiKey: string
   azureEndpoint: string
-  openaiTTSKey: string
   azureTTSKey: string
   azureTTSEndpoint: string
+  customApiUrl: string
+  customApiHeaders: string
+  customApiBody: string
+  customApiStream: boolean
 }
 
 interface Live2DSettings {
@@ -62,12 +67,14 @@ interface Live2DSettings {
   sadEmotions: string[]
   angryEmotions: string[]
   relaxedEmotions: string[]
+  surprisedEmotions: string[]
   idleMotionGroup: string
   neutralMotionGroup: string
   happyMotionGroup: string
   sadMotionGroup: string
   angryMotionGroup: string
   relaxedMotionGroup: string
+  surprisedMotionGroup: string
 }
 
 interface ModelProvider extends Live2DSettings {
@@ -123,6 +130,17 @@ interface Integrations {
 
 interface Character {
   characterName: string
+  characterPreset1: string
+  characterPreset2: string
+  characterPreset3: string
+  characterPreset4: string
+  characterPreset5: string
+  customPresetName1: string
+  customPresetName2: string
+  customPresetName3: string
+  customPresetName4: string
+  customPresetName5: string
+  selectedPresetIndex: number
   showAssistantText: boolean
   showCharacterName: boolean
   systemPrompt: string
@@ -130,11 +148,19 @@ interface Character {
   selectedLive2DPath: string
 }
 
+// Preset question type
+export interface PresetQuestion {
+  id: string
+  text: string
+  order: number
+}
+
 interface General {
   selectLanguage: Language
   changeEnglishToJapanese: boolean
   includeTimestampInUserMessage: boolean
   showControlPanel: boolean
+  showCharacterPresetMenu: boolean
   externalLinkageMode: boolean
   realtimeAPIMode: boolean
   realtimeAPIModeContentType: RealtimeAPIModeContentType
@@ -151,6 +177,13 @@ interface General {
   temperature: number
   maxTokens: number
   noSpeechTimeout: number
+  showSilenceProgressBar: boolean
+  continuousMicListeningMode: boolean
+  presetQuestions: PresetQuestion[]
+  showPresetQuestions: boolean
+  speechRecognitionMode: SpeechRecognitionMode
+  whisperTranscriptionModel: WhisperTranscriptionModel
+  initialSpeechTimeout: number
 }
 
 interface ModelType {
@@ -239,7 +272,6 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') ||
         1.0,
       elevenlabsVoiceId: '',
-      openaiTTSKey: '',
       openaiTTSVoice:
         (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) ||
         'shimmer',
@@ -249,6 +281,10 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_OPENAI_TTS_SPEED || '1.0') || 1.0,
       azureTTSKey: '',
       azureTTSEndpoint: '',
+      customApiUrl: process.env.NEXT_PUBLIC_CUSTOM_API_URL || '',
+      customApiHeaders: process.env.NEXT_PUBLIC_CUSTOM_API_HEADERS || '{}',
+      customApiBody: process.env.NEXT_PUBLIC_CUSTOM_API_BODY || '{}',
+      customApiStream: true,
 
       // Integrations
       difyUrl: '',
@@ -265,11 +301,35 @@ const settingsStore = create<SettingsState>()(
 
       // Character
       characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
+      characterPreset1:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
+      characterPreset2:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
+      characterPreset3:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
+      characterPreset4:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
+      characterPreset5:
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
+      customPresetName1:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME1 || 'Preset 1',
+      customPresetName2:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME2 || 'Preset 2',
+      customPresetName3:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME3 || 'Preset 3',
+      customPresetName4:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME4 || 'Preset 4',
+      customPresetName5:
+        process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME5 || 'Preset 5',
+      selectedPresetIndex: 0,
       showAssistantText:
         process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
       showCharacterName:
         process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
-      systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || SYSTEM_PROMPT,
+      systemPrompt:
+        process.env.NEXT_PUBLIC_SYSTEM_PROMPT ||
+        process.env.NEXT_PUBLIC_CHARACTER_PRESET1 ||
+        SYSTEM_PROMPT,
       selectedVrmPath:
         process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
       selectedLive2DPath:
@@ -284,6 +344,8 @@ const settingsStore = create<SettingsState>()(
       includeTimestampInUserMessage:
         process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
       showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
+      showCharacterPresetMenu:
+        process.env.NEXT_PUBLIC_SHOW_CHARACTER_PRESET_MENU === 'true',
       externalLinkageMode:
         process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
       realtimeAPIMode:
@@ -322,6 +384,30 @@ const settingsStore = create<SettingsState>()(
       maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
+      showSilenceProgressBar:
+        process.env.NEXT_PUBLIC_SHOW_SILENCE_PROGRESS_BAR === 'true',
+      continuousMicListeningMode:
+        process.env.NEXT_PUBLIC_CONTINUOUS_MIC_LISTENING_MODE === 'true',
+      presetQuestions: (
+        process.env.NEXT_PUBLIC_PRESET_QUESTIONS?.split(',') || []
+      ).map((text, index) => ({
+        id: `preset-question-${index}`,
+        text: text.trim(),
+        order: index,
+      })),
+      showPresetQuestions:
+        process.env.NEXT_PUBLIC_SHOW_PRESET_QUESTIONS !== 'false',
+      speechRecognitionMode:
+        (process.env
+          .NEXT_PUBLIC_SPEECH_RECOGNITION_MODE as SpeechRecognitionMode) ||
+        'browser',
+      whisperTranscriptionModel:
+        (process.env
+          .NEXT_PUBLIC_WHISPER_TRANSCRIPTION_MODEL as WhisperTranscriptionModel) ||
+        'whisper-1',
+      initialSpeechTimeout:
+        parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') ||
+        5.0,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -348,12 +434,16 @@ const settingsStore = create<SettingsState>()(
       angryEmotions: process.env.NEXT_PUBLIC_ANGRY_EMOTIONS?.split(',') || [],
       relaxedEmotions:
         process.env.NEXT_PUBLIC_RELAXED_EMOTIONS?.split(',') || [],
+      surprisedEmotions:
+        process.env.NEXT_PUBLIC_SURPRISED_EMOTIONS?.split(',') || [],
       idleMotionGroup: process.env.NEXT_PUBLIC_IDLE_MOTION_GROUP || '',
       neutralMotionGroup: process.env.NEXT_PUBLIC_NEUTRAL_MOTION_GROUP || '',
       happyMotionGroup: process.env.NEXT_PUBLIC_HAPPY_MOTION_GROUP || '',
       sadMotionGroup: process.env.NEXT_PUBLIC_SAD_MOTION_GROUP || '',
       angryMotionGroup: process.env.NEXT_PUBLIC_ANGRY_MOTION_GROUP || '',
       relaxedMotionGroup: process.env.NEXT_PUBLIC_RELAXED_MOTION_GROUP || '',
+      surprisedMotionGroup:
+        process.env.NEXT_PUBLIC_SURPRISED_MOTION_GROUP || '',
     }),
     {
       name: 'aitube-kit-settings',
@@ -404,6 +494,17 @@ const settingsStore = create<SettingsState>()(
         difyConversationId: state.difyConversationId,
         youtubeLiveId: state.youtubeLiveId,
         characterName: state.characterName,
+        characterPreset1: state.characterPreset1,
+        characterPreset2: state.characterPreset2,
+        characterPreset3: state.characterPreset3,
+        characterPreset4: state.characterPreset4,
+        characterPreset5: state.characterPreset5,
+        customPresetName1: state.customPresetName1,
+        customPresetName2: state.customPresetName2,
+        customPresetName3: state.customPresetName3,
+        customPresetName4: state.customPresetName4,
+        customPresetName5: state.customPresetName5,
+        selectedPresetIndex: state.selectedPresetIndex,
         showAssistantText: state.showAssistantText,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
@@ -420,7 +521,6 @@ const settingsStore = create<SettingsState>()(
         messageReceiverEnabled: state.messageReceiverEnabled,
         clientId: state.clientId,
         useSearchGrounding: state.useSearchGrounding,
-        openaiTTSKey: state.openaiTTSKey,
         openaiTTSVoice: state.openaiTTSVoice,
         openaiTTSModel: state.openaiTTSModel,
         openaiTTSSpeed: state.openaiTTSSpeed,
@@ -439,17 +539,31 @@ const settingsStore = create<SettingsState>()(
         sadEmotions: state.sadEmotions,
         angryEmotions: state.angryEmotions,
         relaxedEmotions: state.relaxedEmotions,
+        surprisedEmotions: state.surprisedEmotions,
         idleMotionGroup: state.idleMotionGroup,
         neutralMotionGroup: state.neutralMotionGroup,
         happyMotionGroup: state.happyMotionGroup,
         sadMotionGroup: state.sadMotionGroup,
         angryMotionGroup: state.angryMotionGroup,
         relaxedMotionGroup: state.relaxedMotionGroup,
+        surprisedMotionGroup: state.surprisedMotionGroup,
         maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
+        showCharacterPresetMenu: state.showCharacterPresetMenu,
         temperature: state.temperature,
         maxTokens: state.maxTokens,
         noSpeechTimeout: state.noSpeechTimeout,
+        showSilenceProgressBar: state.showSilenceProgressBar,
+        continuousMicListeningMode: state.continuousMicListeningMode,
+        presetQuestions: state.presetQuestions,
+        showPresetQuestions: state.showPresetQuestions,
+        speechRecognitionMode: state.speechRecognitionMode,
+        whisperTranscriptionModel: state.whisperTranscriptionModel,
+        customApiUrl: state.customApiUrl,
+        customApiHeaders: state.customApiHeaders,
+        customApiBody: state.customApiBody,
+        customApiStream: state.customApiStream,
+        initialSpeechTimeout: state.initialSpeechTimeout,
       }),
     }
   )

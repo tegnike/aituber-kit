@@ -30,12 +30,10 @@ const MessageReceiverSetting = () => {
   }
 
   return (
-    <div className="mt-8 mb-8">
-      <div className="my-16 typography-20 font-bold">
-        {t('MessageReceiver')}
-      </div>
+    <div className="mt-2 mb-2">
+      <div className="my-4 text-xl font-bold">{t('MessageReceiver')}</div>
       <p className="">{t('MessageReceiverDescription')}</p>
-      <div className="my-8">
+      <div className="my-2">
         <TextButton onClick={toggleMessageReceiver}>
           {messageReceiverEnabled ? t('StatusOn') : t('StatusOff')}
         </TextButton>
@@ -51,7 +49,7 @@ const MessageReceiverSetting = () => {
               href="/send-message"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500 hover:text-blue-700 underline"
+              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
               {t('OpenSendMessagePage')}
             </a>

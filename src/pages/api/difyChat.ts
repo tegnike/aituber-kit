@@ -20,7 +20,7 @@ export default async function handler(req: NextRequest) {
 
   const { query, apiKey, url, conversationId, stream } = await req.json()
 
-  const difyKey = apiKey || process.env.DIFY_KEY
+  const difyKey = apiKey || process.env.DIFY_KEY || process.env.DIFY_API_KEY
   if (!difyKey) {
     return new Response(
       JSON.stringify({ error: 'Dify Empty API Key', errorCode: 'EmptyAPIKey' }),

@@ -38,6 +38,21 @@ AITuberKit支持多种语言，您可以从以下语言中选择：
 如果选择日语以外的语言，且已选择日语专用的语音服务（VOICEVOX、KOEIROMAP、AivisSpeech、NijiVoice），系统将自动切换到Google语音合成。
 :::
 
+## 英语单词读取设置
+
+您可以设置是否在日语中读取英语单词。
+
+:::tip
+此设置仅在选择日语时显示。
+:::
+
+**环境变量**:
+
+```bash
+# 英语单词读取设置（true/false）
+NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
+```
+
 ## 背景图像设置
 
 **环境变量**:
@@ -83,6 +98,7 @@ NEXT_PUBLIC_SHOW_CHARACTER_NAME=true
 
 :::tip 提示
 设置界面也可以通过Mac上的`Cmd + .`或Windows上的`Ctrl + .`快捷键显示。
+如果您使用智能手机，也可以通过长按屏幕左上角（约1秒）来显示。
 :::
 
 **环境变量**:

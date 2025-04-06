@@ -15,6 +15,18 @@ export class SpeakQueue {
   private queue: SpeakTask[] = []
   private isProcessing = false
   private currentSessionId: string | null = null
+  private static speakCompletionCallbacks: (() => void)[] = []
+
+  // 発話完了時のコールバックを登録
+  static onSpeakCompletion(callback: () => void) {
+    SpeakQueue.speakCompletionCallbacks.push(callback)
+  }
+
+  // 発話完了時のコールバックを削除
+  static removeSpeakCompletionCallback(callback: () => void) {
+    SpeakQueue.speakCompletionCallbacks =
+      SpeakQueue.speakCompletionCallbacks.filter((cb) => cb !== callback)
+  }
 
   async addTask(task: SpeakTask) {
     this.queue.push(task)
@@ -83,7 +95,26 @@ export class SpeakQueue {
   }
 
   private shouldResetToNeutral(initialLength: number): boolean {
-    return initialLength === 0 && this.queue.length === 0 && !this.isProcessing
+    const isComplete =
+      initialLength === 0 && this.queue.length === 0 && !this.isProcessing
+
+    // 発話完了時にコールバックを呼び出す
+    if (isComplete) {
+      console.log('🎤 発話が完了しました。登録されたコールバックを実行します。')
+      // すべての発話完了コールバックを呼び出す
+      SpeakQueue.speakCompletionCallbacks.forEach((callback) => {
+        try {
+          callback()
+        } catch (error) {
+          console.error(
+            '発話完了コールバックの実行中にエラーが発生しました:',
+            error
+          )
+        }
+      })
+    }
+
+    return isComplete
   }
 
   clearQueue() {

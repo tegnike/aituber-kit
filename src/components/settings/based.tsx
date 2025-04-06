@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import i18n from 'i18next'
-
+import Image from 'next/image'
 import { Language } from '@/features/constants/settings'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
@@ -12,14 +12,27 @@ const Based = () => {
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
+  const changeEnglishToJapanese = settingsStore(
+    (s) => s.changeEnglishToJapanese
+  )
 
   return (
     <>
-      <div className="mb-24">
-        <div className="mb-16 typography-20 font-bold">{t('Language')}</div>
-        <div className="my-8">
+      <div className="mb-6">
+        <div className="flex items-center mb-6">
+          <Image
+            src="/images/setting-icons/basic-settings.svg"
+            alt="Basic Settings"
+            width={24}
+            height={24}
+            className="mr-2"
+          />
+          <h2 className="text-2xl font-bold">{t('BasedSettings')}</h2>
+        </div>
+        <div className="mb-4 text-xl font-bold">{t('Language')}</div>
+        <div className="my-2">
           <select
-            className="px-16 py-8 bg-surface1 hover:bg-surface1-hover rounded-8"
+            className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
             value={selectLanguage}
             onChange={(e) => {
               const newLanguage = e.target.value as Language
@@ -68,11 +81,27 @@ const Based = () => {
           </select>
         </div>
       </div>
-      <div className="mt-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('BackgroundImage')}
+      {selectLanguage === 'ja' && (
+        <div className="my-6">
+          <div className="my-4 text-base font-bold">
+            {t('EnglishToJapanese')}
+          </div>
+          <div className="my-2">
+            <TextButton
+              onClick={() =>
+                settingsStore.setState((prevState) => ({
+                  changeEnglishToJapanese: !prevState.changeEnglishToJapanese,
+                }))
+              }
+            >
+              {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
+            </TextButton>
+          </div>
         </div>
-        <div className="my-8">
+      )}
+      <div className="mt-6">
+        <div className="my-4 text-xl font-bold">{t('BackgroundImage')}</div>
+        <div className="my-2">
           <TextButton
             onClick={() => {
               const { bgFileInput } = menuStore.getState()
@@ -85,11 +114,9 @@ const Based = () => {
       </div>
 
       {/* アシスタントテキスト表示設定 */}
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowAssistantText')}
-        </div>
-        <div className="my-8">
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">{t('ShowAssistantText')}</div>
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState((s) => ({
@@ -103,11 +130,9 @@ const Based = () => {
       </div>
 
       {/* キャラクター名表示設定 */}
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowCharacterName')}
-        </div>
-        <div className="my-8">
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">{t('ShowCharacterName')}</div>
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState((s) => ({
@@ -121,12 +146,13 @@ const Based = () => {
       </div>
 
       {/* コントロールパネル表示設定 */}
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowControlPanel')}
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">{t('ShowControlPanel')}</div>
+        <div className="my-4 text-base whitespace-pre-wrap">
+          {t('ShowControlPanelInfo')}
         </div>
-        <div className="my-16 typography-16">{t('ShowControlPanelInfo')}</div>
-        <div className="my-8">
+
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState({

@@ -5,6 +5,7 @@ import menuStore from '@/features/stores/menu'
 import slideStore from '@/features/stores/slide'
 import { handleSendChatFn } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
+import { PresetQuestionButtons } from './presetQuestionButtons'
 import { SlideText } from './slideText'
 
 export const Form = () => {
@@ -49,6 +50,9 @@ export const Form = () => {
     (slidePlaying || chatProcessingCount !== 0) ? (
     <SlideText />
   ) : (
-    <MessageInputContainer onChatProcessStart={hookSendChat} />
+    <>
+      <PresetQuestionButtons onSelectQuestion={hookSendChat} />
+      <MessageInputContainer onChatProcessStart={hookSendChat} />
+    </>
   )
 }

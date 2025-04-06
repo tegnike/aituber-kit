@@ -1,22 +1,63 @@
-export type AIService =
+export type VercelCloudAIService =
   | 'openai'
   | 'anthropic'
   | 'google'
-  | 'localLlm'
   | 'azure'
   | 'groq'
   | 'cohere'
   | 'mistralai'
   | 'perplexity'
   | 'fireworks'
-  | 'dify'
   | 'deepseek'
+  | 'lmstudio'
+  | 'ollama'
+  | 'custom-api'
+
+export type VercelLocalAIService = 'lmstudio' | 'ollama' | 'custom-api'
+
+export type VercelAIService = VercelCloudAIService | VercelLocalAIService
+
+// VercelCloudAIServiceかどうかを判定する型ガード関数
+export const isVercelCloudAIService = (
+  service: string
+): service is VercelCloudAIService => {
+  const cloudServices: VercelCloudAIService[] = [
+    'openai',
+    'anthropic',
+    'google',
+    'azure',
+    'groq',
+    'cohere',
+    'mistralai',
+    'perplexity',
+    'fireworks',
+    'deepseek',
+  ]
+  return cloudServices.includes(service as VercelCloudAIService)
+}
+
+// VercelLocalAIServiceかどうかを判定する型ガード関数
+export const isVercelLocalAIService = (
+  service: string
+): service is VercelLocalAIService => {
+  const localServices: VercelLocalAIService[] = [
+    'lmstudio',
+    'ollama',
+    'custom-api',
+  ]
+  return localServices.includes(service as VercelLocalAIService)
+}
+
+export type DifyService = 'dify'
+
+export type AIService = VercelAIService | DifyService
 
 export interface AIServiceConfig {
   openai: { key: string; model: string }
   anthropic: { key: string; model: string }
   google: { key: string; model: string }
-  localLlm: { url: string; model: string }
+  lmstudio: { url: string; model: string }
+  ollama: { url: string; model: string }
   azure: { key: string; model: string }
   groq: { key: string; model: string }
   cohere: { key: string; model: string }
@@ -85,12 +126,16 @@ export type VoiceLanguage =
 
 export type OpenAITTSVoice =
   | 'alloy'
+  | 'ash'
+  | 'ballad'
+  | 'coral'
   | 'echo'
   | 'fable'
   | 'onyx'
   | 'nova'
+  | 'sage'
   | 'shimmer'
-export type OpenAITTSModel = 'tts-1' | 'tts-1-hd'
+export type OpenAITTSModel = 'tts-1' | 'tts-1-hd' | 'gpt-4o-mini-tts'
 
 export type RealtimeAPIModeModel =
   | 'gpt-4o-realtime-preview-2024-10-01'
@@ -124,3 +169,10 @@ export type AudioModeModel =
   | 'gpt-4o-audio-preview-2024-12-17'
   | 'gpt-4o-mini-audio-preview-2024-12-17'
 export type AudioModeInputType = 'input_text' | 'input_audio'
+
+export type SpeechRecognitionMode = 'browser' | 'whisper'
+
+export type WhisperTranscriptionModel =
+  | 'whisper-1'
+  | 'gpt-4o-transcribe'
+  | 'gpt-4o-mini-transcribe'
