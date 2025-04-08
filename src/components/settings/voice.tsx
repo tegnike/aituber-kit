@@ -188,7 +188,6 @@ const Voice = () => {
         </select>
       </div>
 
-
       <div className="mt-10">
         <div className="mb-4 text-xl font-bold">{t('VoiceAdjustment')}</div>
         {(() => {
@@ -348,7 +347,6 @@ const Voice = () => {
                       </option>
                     ))}
                   </select>
-
                 </div>
                 <div className="mt-6 font-bold">
                   <div className="select-none">
@@ -434,7 +432,6 @@ const Voice = () => {
                     }
                   />
                 </div>
-
               </>
             )
           } else if (selectVoice === 'stylebertvits2') {
@@ -544,7 +541,6 @@ const Voice = () => {
                     })
                   }}
                 ></input>
-
               </>
             )
           } else if (selectVoice === 'aivis_speech') {
@@ -727,7 +723,6 @@ const Voice = () => {
                     }
                   />
                 </div>
-
               </>
             )
           } else if (selectVoice === 'elevenlabs') {
@@ -779,7 +774,6 @@ const Voice = () => {
                     }
                   />
                 </div>
-
               </>
             )
           } else if (selectVoice === 'openai') {
@@ -855,7 +849,6 @@ const Voice = () => {
                     })
                   }}
                 />
-
               </>
             )
           } else if (selectVoice === 'azure') {
@@ -926,7 +919,6 @@ const Voice = () => {
                     })
                   }}
                 />
-
               </>
             )
           } else if (selectVoice === 'nijivoice') {
@@ -1018,13 +1010,12 @@ const Voice = () => {
                     })
                   }}
                 />
-
               </>
             )
           }
         })()}
       </div>
-      
+
       {/* カスタムテキスト入力と統合テストボタン */}
       <div className="mt-10 p-4 bg-gray-50 rounded-lg">
         <div className="mb-4 text-xl font-bold">{t('TestVoiceSettings')}</div>
