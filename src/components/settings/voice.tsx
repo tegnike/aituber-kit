@@ -188,19 +188,7 @@ const Voice = () => {
         </select>
       </div>
 
-      {/* カスタムテキスト入力フォーム */}
-      <div className="mt-4">
-        <div className="mb-2 font-bold">{t('CustomVoiceText')}</div>
-        <div className="flex items-center">
-          <input
-            className="flex-1 px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
-            type="text"
-            placeholder={t('CustomVoiceTextPlaceholder')}
-            value={customVoiceText}
-            onChange={(e) => setCustomVoiceText(e.target.value)}
-          />
-        </div>
-      </div>
+
       <div className="mt-10">
         <div className="mb-4 text-xl font-bold">{t('VoiceAdjustment')}</div>
         {(() => {
@@ -227,14 +215,7 @@ const Voice = () => {
                     }
                   />
                 </div>
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('koeiromap', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
                 <div className="mt-4 font-bold">プリセット</div>
                 <div className="my-2 grid grid-cols-2 gap-[8px]">
                   <TextButton
@@ -367,12 +348,7 @@ const Voice = () => {
                       </option>
                     ))}
                   </select>
-                  <TextButton
-                    onClick={() => testVoiceVox(customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
+
                 </div>
                 <div className="mt-6 font-bold">
                   <div className="select-none">
@@ -458,14 +434,7 @@ const Voice = () => {
                     }
                   />
                 </div>
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('google', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
               </>
             )
           } else if (selectVoice === 'stylebertvits2') {
@@ -575,14 +544,7 @@ const Voice = () => {
                     })
                   }}
                 ></input>
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('stylebertvits2', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
               </>
             )
           } else if (selectVoice === 'aivis_speech') {
@@ -630,12 +592,7 @@ const Voice = () => {
                       </option>
                     ))}
                   </select>
-                  <TextButton
-                    onClick={() => testAivisSpeech(customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
+
                   <TextButton
                     onClick={async () => {
                       const response = await fetch(
@@ -770,14 +727,7 @@ const Voice = () => {
                     }
                   />
                 </div>
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('gsvitts', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
               </>
             )
           } else if (selectVoice === 'elevenlabs') {
@@ -829,14 +779,7 @@ const Voice = () => {
                     }
                   />
                 </div>
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('elevenlabs', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
               </>
             )
           } else if (selectVoice === 'openai') {
@@ -912,14 +855,7 @@ const Voice = () => {
                     })
                   }}
                 />
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('openai', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
               </>
             )
           } else if (selectVoice === 'azure') {
@@ -990,14 +926,7 @@ const Voice = () => {
                     })
                   }}
                 />
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('azure', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
               </>
             )
           } else if (selectVoice === 'nijivoice') {
@@ -1089,18 +1018,34 @@ const Voice = () => {
                     })
                   }}
                 />
-                <div className="flex items-center mt-2">
-                  <TextButton
-                    onClick={() => testVoice('nijivoice', customVoiceText)}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
-                </div>
+
               </>
             )
           }
         })()}
+      </div>
+      
+      {/* カスタムテキスト入力と統合テストボタン */}
+      <div className="mt-10 p-4 bg-gray-50 rounded-lg">
+        <div className="mb-4 text-xl font-bold">{t('TestVoiceSettings')}</div>
+        <div className="mb-2 font-bold">{t('CustomVoiceText')}</div>
+        <div className="flex items-center">
+          <input
+            className="flex-1 px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+            type="text"
+            placeholder={t('CustomVoiceTextPlaceholder')}
+            value={customVoiceText}
+            onChange={(e) => setCustomVoiceText(e.target.value)}
+          />
+        </div>
+        <div className="flex items-center mt-4">
+          <TextButton
+            onClick={() => testVoice(selectVoice, customVoiceText)}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            {t('TestSelectedVoice')}
+          </TextButton>
+        </div>
       </div>
     </div>
   )
