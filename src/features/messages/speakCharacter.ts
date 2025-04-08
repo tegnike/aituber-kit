@@ -1,5 +1,6 @@
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import { AIVoice } from '@/features/constants/settings'
 import { wait } from '@/utils/wait'
 import { Talk } from './messages'
 import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
@@ -251,52 +252,144 @@ function handleTTSError(error: unknown, serviceName: string): void {
 
 export const speakCharacter = createSpeakCharacter()
 
-export const testVoiceVox = async () => {
-  const ss = settingsStore.getState()
-  const talk: Talk = {
-    message: 'ボイスボックスを使用します',
-    emotion: 'neutral',
-  }
-  const buffer = await synthesizeVoiceVoicevoxApi(
-    talk,
-    ss.voicevoxSpeaker,
-    ss.voicevoxSpeed,
-    ss.voicevoxPitch,
-    ss.voicevoxIntonation,
-    ss.voicevoxServerUrl
-  ).catch(() => null)
-  if (buffer) {
-    const ss = settingsStore.getState()
-    if (ss.modelType === 'vrm') {
-      const hs = homeStore.getState()
-      await hs.viewer.model?.speak(buffer, talk)
-    } else if (ss.modelType === 'live2d') {
-      Live2DHandler.speak(buffer, talk)
-    }
-  }
+export const testVoiceVox = async (customText?: string) => {
+  await testVoice('voicevox', customText)
 }
 
-export const testAivisSpeech = async () => {
+export const testAivisSpeech = async (customText?: string) => {
+  await testVoice('aivis_speech', customText)
+}
+
+/**
+ * すべてのTTSサービスで使用できる汎用的なテスト関数
+ * @param voiceType TTSサービスタイプ
+ * @param customText カスタムテキスト（指定がない場合はデフォルトテキストを使用）
+ */
+export const testVoice = async (voiceType: AIVoice, customText?: string) => {
   const ss = settingsStore.getState()
+
+  const defaultMessages: Record<AIVoice, string> = {
+    voicevox: 'ボイスボックスを使用します',
+    aivis_speech: 'AivisSpeechを使用します',
+    koeiromap: 'コエイロマップを使用します',
+    google: 'Google Text-to-Speechを使用します',
+    stylebertvits2: 'StyleBertVITS2を使用します',
+    gsvitts: 'GSVI TTSを使用します',
+    elevenlabs: 'ElevenLabsを使用します',
+    openai: 'OpenAI TTSを使用します',
+    azure: 'Azure TTSを使用します',
+    nijivoice: 'にじボイスを使用します',
+  }
+
+  const message = customText || defaultMessages[voiceType]
+
   const talk: Talk = {
-    message: 'AivisSpeechを使用します',
+    message,
     emotion: 'neutral',
   }
-  const buffer = await synthesizeVoiceAivisSpeechApi(
-    talk,
-    ss.aivisSpeechSpeaker,
-    ss.aivisSpeechSpeed,
-    ss.aivisSpeechPitch,
-    ss.aivisSpeechIntonation,
-    ss.aivisSpeechServerUrl
-  ).catch(() => null)
-  if (buffer) {
-    const ss = settingsStore.getState()
-    if (ss.modelType === 'vrm') {
-      const hs = homeStore.getState()
-      await hs.viewer.model?.speak(buffer, talk)
-    } else if (ss.modelType === 'live2d') {
-      Live2DHandler.speak(buffer, talk)
+
+  let buffer = null
+
+  try {
+    const currentVoice = ss.selectVoice
+
+    settingsStore.setState({ selectVoice: voiceType })
+
+    if (voiceType === 'koeiromap') {
+      buffer = await synthesizeVoiceKoeiromapApi(
+        talk,
+        ss.koeiromapKey,
+        ss.koeiroParam
+      )
+    } else if (voiceType === 'voicevox') {
+      buffer = await synthesizeVoiceVoicevoxApi(
+        talk,
+        ss.voicevoxSpeaker,
+        ss.voicevoxSpeed,
+        ss.voicevoxPitch,
+        ss.voicevoxIntonation,
+        ss.voicevoxServerUrl
+      )
+    } else if (voiceType === 'google') {
+      buffer = await synthesizeVoiceGoogleApi(
+        talk,
+        ss.googleTtsType,
+        ss.selectLanguage
+      )
+    } else if (voiceType === 'stylebertvits2') {
+      buffer = await synthesizeStyleBertVITS2Api(
+        talk,
+        ss.stylebertvits2ServerUrl,
+        ss.stylebertvits2ApiKey,
+        ss.stylebertvits2ModelId,
+        ss.stylebertvits2Style,
+        ss.stylebertvits2SdpRatio,
+        ss.stylebertvits2Length,
+        ss.selectLanguage
+      )
+    } else if (voiceType === 'aivis_speech') {
+      buffer = await synthesizeVoiceAivisSpeechApi(
+        talk,
+        ss.aivisSpeechSpeaker,
+        ss.aivisSpeechSpeed,
+        ss.aivisSpeechPitch,
+        ss.aivisSpeechIntonation,
+        ss.aivisSpeechServerUrl
+      )
+    } else if (voiceType === 'gsvitts') {
+      buffer = await synthesizeVoiceGSVIApi(
+        talk,
+        ss.gsviTtsServerUrl,
+        ss.gsviTtsModelId,
+        ss.gsviTtsBatchSize,
+        ss.gsviTtsSpeechRate
+      )
+    } else if (voiceType === 'elevenlabs') {
+      buffer = await synthesizeVoiceElevenlabsApi(
+        talk,
+        ss.elevenlabsApiKey,
+        ss.elevenlabsVoiceId,
+        ss.selectLanguage
+      )
+    } else if (voiceType === 'openai') {
+      buffer = await synthesizeVoiceOpenAIApi(
+        talk,
+        ss.openaiKey,
+        ss.openaiTTSVoice,
+        ss.openaiTTSModel,
+        ss.openaiTTSSpeed
+      )
+    } else if (voiceType === 'azure') {
+      buffer = await synthesizeVoiceAzureOpenAIApi(
+        talk,
+        ss.azureTTSKey || ss.azureKey,
+        ss.azureTTSEndpoint || ss.azureEndpoint,
+        ss.openaiTTSVoice,
+        ss.openaiTTSSpeed
+      )
+    } else if (voiceType === 'nijivoice') {
+      buffer = await synthesizeVoiceNijivoiceApi(
+        talk,
+        ss.nijivoiceApiKey,
+        ss.nijivoiceActorId,
+        ss.nijivoiceSpeed,
+        ss.nijivoiceEmotionalLevel,
+        ss.nijivoiceSoundDuration
+      )
     }
+
+    settingsStore.setState({ selectVoice: currentVoice })
+
+    if (buffer) {
+      if (ss.modelType === 'vrm') {
+        const hs = homeStore.getState()
+        await hs.viewer.model?.speak(buffer, talk)
+      } else if (ss.modelType === 'live2d') {
+        Live2DHandler.speak(buffer, talk)
+      }
+    }
+  } catch (error) {
+    console.error(`Error testing ${voiceType} voice:`, error)
+    handleTTSError(error, voiceType)
   }
 }

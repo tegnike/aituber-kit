@@ -160,6 +160,8 @@
   "PdfConvertDescription": "PDFをスライドモード用のデータに変換します。選択しているAIサービスがOpenAI, Anthropic Claude, Google Geminiの場合のみ利用可能です。",
   "PdfConvertFileUpload": "PDFファイルを選択",
   "PdfConvertFolderName": "保存フォルダ名",
+  "CustomVoiceText": "カスタムボイステキスト",
+  "CustomVoiceTextPlaceholder": "試聴したいテキストを入力してください",
   "PdfConvertModelSelect": "モデルを選択",
   "PdfConvertButton": "PDFをスライドに変換",
   "PdfConvertLoading": "変換中...",

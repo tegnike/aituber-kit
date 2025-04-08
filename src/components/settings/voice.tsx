@@ -15,6 +15,7 @@ import {
 } from '@/features/constants/settings'
 import { testVoiceVox } from '@/features/messages/speakCharacter'
 import { testAivisSpeech } from '@/features/messages/speakCharacter'
+import { testVoice } from '@/features/messages/speakCharacter'
 import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
@@ -72,6 +73,7 @@ const Voice = () => {
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
   const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
   const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
+  const [customVoiceText, setCustomVoiceText] = useState<string>('')
 
   // にじボイスの話者一覧を取得する関数
   const fetchNijivoiceSpeakers = async () => {
@@ -185,6 +187,20 @@ const Voice = () => {
           <option value="nijivoice">{t('UsingNijiVoice')}</option>
         </select>
       </div>
+
+      {/* カスタムテキスト入力フォーム */}
+      <div className="mt-4">
+        <div className="mb-2 font-bold">{t('CustomVoiceText')}</div>
+        <div className="flex items-center">
+          <input
+            className="flex-1 px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+            type="text"
+            placeholder={t('CustomVoiceTextPlaceholder')}
+            value={customVoiceText}
+            onChange={(e) => setCustomVoiceText(e.target.value)}
+          />
+        </div>
+      </div>
       <div className="mt-10">
         <div className="mb-4 text-xl font-bold">{t('VoiceAdjustment')}</div>
         {(() => {
@@ -210,6 +226,14 @@ const Voice = () => {
                       settingsStore.setState({ koeiromapKey: e.target.value })
                     }
                   />
+                </div>
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('koeiromap', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
                 </div>
                 <div className="mt-4 font-bold">プリセット</div>
                 <div className="my-2 grid grid-cols-2 gap-[8px]">
@@ -343,7 +367,10 @@ const Voice = () => {
                       </option>
                     ))}
                   </select>
-                  <TextButton onClick={() => testVoiceVox()} className="ml-4">
+                  <TextButton
+                    onClick={() => testVoiceVox(customVoiceText)}
+                    className="ml-4"
+                  >
                     {t('TestVoice')}
                   </TextButton>
                 </div>
@@ -430,6 +457,14 @@ const Voice = () => {
                       settingsStore.setState({ googleTtsType: e.target.value })
                     }
                   />
+                </div>
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('google', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
                 </div>
               </>
             )
@@ -540,6 +575,14 @@ const Voice = () => {
                     })
                   }}
                 ></input>
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('stylebertvits2', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
+                </div>
               </>
             )
           } else if (selectVoice === 'aivis_speech') {
@@ -588,7 +631,7 @@ const Voice = () => {
                     ))}
                   </select>
                   <TextButton
-                    onClick={() => testAivisSpeech()}
+                    onClick={() => testAivisSpeech(customVoiceText)}
                     className="ml-4"
                   >
                     {t('TestVoice')}
@@ -727,6 +770,14 @@ const Voice = () => {
                     }
                   />
                 </div>
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('gsvitts', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
+                </div>
               </>
             )
           } else if (selectVoice === 'elevenlabs') {
@@ -777,6 +828,14 @@ const Voice = () => {
                       })
                     }
                   />
+                </div>
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('elevenlabs', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
                 </div>
               </>
             )
@@ -853,6 +912,14 @@ const Voice = () => {
                     })
                   }}
                 />
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('openai', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
+                </div>
               </>
             )
           } else if (selectVoice === 'azure') {
@@ -923,6 +990,14 @@ const Voice = () => {
                     })
                   }}
                 />
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('azure', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
+                </div>
               </>
             )
           } else if (selectVoice === 'nijivoice') {
@@ -1014,6 +1089,14 @@ const Voice = () => {
                     })
                   }}
                 />
+                <div className="flex items-center mt-2">
+                  <TextButton
+                    onClick={() => testVoice('nijivoice', customVoiceText)}
+                    className="ml-4"
+                  >
+                    {t('TestVoice')}
+                  </TextButton>
+                </div>
               </>
             )
           }
