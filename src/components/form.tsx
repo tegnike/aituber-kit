@@ -17,7 +17,14 @@ export const Form = () => {
   const slidePlaying = slideStore((s) => s.isPlaying)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
   const [delayedText, setDelayedText] = useState('')
-  const handleSendChat = handleSendChatFn()
+  const handleSendChatFn1 = handleSendChatFn()
+
+  const handleSendChat = useCallback(
+    (text: string) => {
+      return handleSendChatFn1(text, 'user')
+    },
+    [handleSendChatFn1]
+  )
 
   useEffect(() => {
     // テキストと画像がそろったら、チャットを送信

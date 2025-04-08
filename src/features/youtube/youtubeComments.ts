@@ -100,7 +100,7 @@ const preProcessAIResponse = async (messages: Message[]) => {
 }
 
 export const fetchAndProcessComments = async (
-  handleSendChat: (text: string) => void
+  handleSendChat: (text: string, userName?: string) => void
 ): Promise<void> => {
   const ss = settingsStore.getState()
   const hs = homeStore.getState()
@@ -147,17 +147,28 @@ export const fetchAndProcessComments = async (
       if (youtubeComments.length > 0) {
         settingsStore.setState({ youtubeNoCommentCount: 0 })
         settingsStore.setState({ youtubeSleepMode: false })
+
         let selectedComment = ''
+        let userName = ''
+
         if (ss.conversationContinuityMode) {
           selectedComment = await getBestComment(chatLog, youtubeComments)
+          for (const comment of youtubeComments) {
+            if (comment.userComment === selectedComment) {
+              userName = comment.userName
+              break
+            }
+          }
         } else {
-          selectedComment =
-            youtubeComments[Math.floor(Math.random() * youtubeComments.length)]
-              .userComment
+          const selectedIndex = Math.floor(
+            Math.random() * youtubeComments.length
+          )
+          selectedComment = youtubeComments[selectedIndex].userComment
+          userName = youtubeComments[selectedIndex].userName
         }
-        console.log('selectedYoutubeComment:', selectedComment)
 
-        handleSendChat(selectedComment)
+        console.log('selectedYoutubeComment:', selectedComment)
+        handleSendChat(selectedComment, userName)
       } else {
         const noCommentCount = ss.youtubeNoCommentCount + 1
         if (ss.conversationContinuityMode) {
