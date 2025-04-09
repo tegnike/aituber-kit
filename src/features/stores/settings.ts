@@ -184,6 +184,7 @@ interface General {
   speechRecognitionMode: SpeechRecognitionMode
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
+  initialChatLogWidth: number
 }
 
 interface ModelType {
@@ -408,6 +409,7 @@ const settingsStore = create<SettingsState>()(
       initialSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') ||
         5.0,
+      initialChatLogWidth: 400,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -564,6 +566,7 @@ const settingsStore = create<SettingsState>()(
         customApiBody: state.customApiBody,
         customApiStream: state.customApiStream,
         initialSpeechTimeout: state.initialSpeechTimeout,
+        initialChatLogWidth: state.initialChatLogWidth,
       }),
     }
   )
