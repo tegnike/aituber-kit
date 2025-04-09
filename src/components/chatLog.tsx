@@ -12,24 +12,12 @@ export const ChatLog = () => {
   const chatLogRef = useRef<HTMLDivElement>(null)
 
   const characterName = settingsStore((s) => s.characterName)
-  const initialChatLogWidth = settingsStore((s) => s.initialChatLogWidth)
+  const chatLogWidth = settingsStore((s) => s.chatLogWidth)
   const messages = messageSelectors.getTextAndImageMessages(
     homeStore((s) => s.chatLog)
   )
 
-  const [width, setWidth] = useState<number>(initialChatLogWidth)
   const [isDragging, setIsDragging] = useState<boolean>(false)
-
-  useEffect(() => {
-    const savedWidth = localStorage.getItem('chatLogWidth')
-    if (savedWidth) {
-      setWidth(parseInt(savedWidth))
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem('chatLogWidth', width.toString())
-  }, [width])
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
@@ -60,7 +48,7 @@ export const ChatLog = () => {
         Math.min(newWidth, window.innerWidth * 0.8)
       )
 
-      setWidth(constrainedWidth)
+      settingsStore.setState({ chatLogWidth: constrainedWidth })
     }
 
     const handleMouseUp = () => {
@@ -87,7 +75,7 @@ export const ChatLog = () => {
     <div
       ref={chatLogRef}
       className="absolute h-[100svh] pb-16 z-10"
-      style={{ width: `${width}px` }}
+      style={{ width: `${chatLogWidth}px` }}
     >
       <div className="max-h-full px-4 pt-24 pb-16 overflow-y-auto scroll-hidden">
         {messages.map((msg, i) => {
