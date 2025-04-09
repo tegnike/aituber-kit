@@ -409,7 +409,9 @@ const settingsStore = create<SettingsState>()(
       initialSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') ||
         5.0,
-      initialChatLogWidth: 400,
+      initialChatLogWidth:
+        parseFloat(process.env.NEXT_PUBLIC_INITIAL_CHAT_LOG_WIDTH || '400') ||
+        400,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
