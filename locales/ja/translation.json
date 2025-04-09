@@ -155,6 +155,7 @@
   "ShowCharacterPresetMenu": "キャラクタープリセットメニューボタンを表示する",
   "SlideMode": "スライドモード",
   "SelectedSlideDocs": "使用するスライド",
+  "EditSlideScripts": "セリフ編集",
   "SlideModeDescription": "AIが自動でスライドを発表するモードです。選択しているAIサービスがOpenAI, Anthropic Claude, Google Geminiの場合のみ有効です。",
   "PdfConvertLabel": "PDFスライド変換",
   "PdfConvertDescription": "PDFをスライドモード用のデータに変換します。選択しているAIサービスがOpenAI, Anthropic Claude, Google Geminiの場合のみ利用可能です。",
