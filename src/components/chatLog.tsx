@@ -74,7 +74,7 @@ export const ChatLog = () => {
   return (
     <div
       ref={chatLogRef}
-      className="absolute h-[100svh] pb-16 z-10"
+      className="absolute h-[100svh] pb-16 z-10 max-w-full"
       style={{ width: `${chatLogWidth}px` }}
     >
       <div className="max-h-full px-4 pt-24 pb-16 overflow-y-auto scroll-hidden">
@@ -136,7 +136,7 @@ const Chat = ({
   const offsetX = role === 'user' ? 'pl-10' : 'pr-10'
 
   return (
-    <div className={`mx-auto ml-20 my-4 ${offsetX}`}>
+    <div className={`mx-auto ml-0 md:ml-10 lg:ml-20 my-4 ${offsetX}`}>
       {role === 'code' ? (
         <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-white p-4 rounded-lg">
           <code className="font-mono text-sm">{message}</code>
@@ -171,7 +171,7 @@ const ChatImage = ({
   const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
 
   return (
-    <div className={`mx-auto ml-20 my-4 ${offsetX}`}>
+    <div className={`mx-auto ml-0 md:ml-10 lg:ml-20 my-4 ${offsetX}`}>
       <Image
         src={imageUrl}
         alt="Generated Image"
