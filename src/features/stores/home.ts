@@ -37,6 +37,11 @@ export interface TransientState {
 
 export type HomeState = PersistedState & TransientState
 
+// 更新の一時的なバッファリングを行うための変数
+let saveDebounceTimer: NodeJS.Timeout | null = null
+const SAVE_DEBOUNCE_DELAY = 2000 // 2秒
+let lastSavedLogLength = 0 // 最後に保存したログの長さを記録
+
 const homeStore = create<HomeState>()(
   persist(
     (set, get) => ({
@@ -123,32 +128,61 @@ const homeStore = create<HomeState>()(
         chatLog: messageSelectors.cutImageMessage(chatLog),
         showIntroduction,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          lastSavedLogLength = state.chatLog.length
+          console.log('Rehydrated chat log length:', lastSavedLogLength)
+        }
+      },
     }
   )
 )
 
-// chatLogの変更を監視して保存
+// chatLogの変更を監視して差分を保存
 homeStore.subscribe((state, prevState) => {
   if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
-    // 最新のメッセージを取得し、保存用に処理
-    const lastMessage = state.chatLog[state.chatLog.length - 1]
-    const processedMessage =
-      messageSelectors.sanitizeMessageForStorage(lastMessage)
+    if (saveDebounceTimer) {
+      clearTimeout(saveDebounceTimer)
+    }
 
-    // バックグラウンドで保存を実行
-    void fetch('/api/save-chat-log', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: processedMessage,
-        isNewFile: prevState.chatLog.length === 0,
-      }),
-    }).catch((error) => {
-      console.error('チャットログの保存中にエラーが発生しました:', error)
-      // エラー発生時の処理をここに追加できます
-    })
+    saveDebounceTimer = setTimeout(() => {
+      const newMessagesToSave = state.chatLog.slice(lastSavedLogLength)
+
+      if (newMessagesToSave.length > 0) {
+        const processedMessages = newMessagesToSave.map((msg) =>
+          messageSelectors.sanitizeMessageForStorage(msg)
+        )
+
+        console.log(`Saving ${processedMessages.length} new messages...`)
+
+        void fetch('/api/save-chat-log', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            messages: processedMessages,
+            isNewFile: lastSavedLogLength === 0,
+          }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              lastSavedLogLength = state.chatLog.length
+              console.log(
+                'Messages saved successfully. New saved length:',
+                lastSavedLogLength
+              )
+            } else {
+              console.error('Failed to save chat log:', response.statusText)
+            }
+          })
+          .catch((error) => {
+            console.error('チャットログの保存中にエラーが発生しました:', error)
+          })
+      } else {
+        console.log('No new messages to save.')
+      }
+    }, SAVE_DEBOUNCE_DELAY)
   }
 })
 

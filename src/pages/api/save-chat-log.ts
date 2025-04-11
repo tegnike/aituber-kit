@@ -2,6 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { Message } from '@/features/messages/messages'
 
 // Supabaseクライアントの初期化
 let supabase: SupabaseClient | null = null
@@ -21,8 +22,15 @@ export default async function handler(
   }
 
   try {
-    const { message, isNewFile } = req.body
-    const created_at = new Date().toISOString()
+    const { messages: newMessages, isNewFile } = req.body as {
+      messages: Message[]
+      isNewFile: boolean
+    }
+    const currentTime = new Date().toISOString()
+
+    if (!Array.isArray(newMessages) || newMessages.length === 0) {
+      return res.status(400).json({ message: 'Invalid messages data' })
+    }
 
     const logsDir = path.join(process.cwd(), 'logs')
 
@@ -31,89 +39,97 @@ export default async function handler(
       fs.mkdirSync(logsDir)
     }
 
-    const fileName = isNewFile
-      ? `log_${created_at.replace(/[:.]/g, '-')}.json`
-      : getLatestLogFile(logsDir)
+    const fileName =
+      getLatestLogFile(logsDir) ||
+      `log_${currentTime.replace(/[:.]/g, '-')}.json`
 
     const filePath = path.join(logsDir, fileName)
 
     // ファイルの読み込みと更新
-    let messages = []
+    let existingMessages: Message[] = []
     if (fs.existsSync(filePath)) {
-      const fileContent = fs.readFileSync(filePath, 'utf-8')
-      messages = JSON.parse(fileContent)
-      if (!Array.isArray(messages)) {
-        messages = [messages] // 単一のメッセージの場合は配列に変換
+      try {
+        const fileContent = fs.readFileSync(filePath, 'utf-8')
+        existingMessages = JSON.parse(fileContent)
+        if (!Array.isArray(existingMessages)) {
+          console.warn(`Invalid format in ${fileName}, resetting file.`)
+          existingMessages = []
+        }
+      } catch (parseError) {
+        console.error(`Error parsing ${fileName}, resetting file.`, parseError)
+        existingMessages = []
       }
     }
-    messages.push(message)
+
+    // 新しいメッセージを既存のメッセージに追加
+    const allMessages = [...existingMessages, ...newMessages]
 
     // 更新されたメッセージ配列を保存
-    fs.writeFileSync(filePath, JSON.stringify(messages, null, 2))
+    fs.writeFileSync(filePath, JSON.stringify(allMessages, null, 2))
 
     if (supabase) {
-      // 既存のセッションを検索
       const { data: existingSession } = await supabase
         .from('local_chat_sessions')
-        .select()
+        .select('id')
         .eq('title', fileName)
-        .single()
+        .maybeSingle()
 
-      let sessionId
+      let sessionId = existingSession?.id
 
-      if (existingSession) {
-        // 既存のセッションが見つかった場合
-        sessionId = existingSession.id
-
-        // updated_at のみ更新
+      if (sessionId) {
         await supabase
           .from('local_chat_sessions')
-          .update({ updated_at: created_at })
+          .update({ updated_at: currentTime })
           .eq('id', sessionId)
       } else {
-        // 新しいセッションを作成
         const { data: newSession, error: sessionError } = await supabase
           .from('local_chat_sessions')
           .insert({
             title: fileName,
-            created_at: created_at,
-            updated_at: created_at,
+            created_at: currentTime,
+            updated_at: currentTime,
           })
-          .select()
+          .select('id')
           .single()
 
         if (sessionError) throw sessionError
         sessionId = newSession.id
       }
 
-      // 最新のメッセージのみを保存
-      const messageToSave = {
+      const messagesToSave = newMessages.map((msg) => ({
         session_id: sessionId,
-        role: message.role,
-        content: Array.isArray(message.content)
-          ? JSON.stringify(message.content)
-          : message.content,
-        created_at: created_at,
-      }
+        role: msg.role,
+        content:
+          typeof msg.content === 'string'
+            ? msg.content
+            : JSON.stringify(msg.content),
+        created_at: msg.timestamp || currentTime,
+      }))
 
       const { error: messageError } = await supabase
         .from('local_messages')
-        .insert(messageToSave)
+        .insert(messagesToSave)
 
       if (messageError) throw messageError
     }
 
-    res.status(200).json({ message: 'Log saved successfully' })
+    res.status(200).json({ message: 'Logs saved successfully' })
   } catch (error) {
     console.error('Error saving chat log:', error)
     res.status(500).json({ message: 'Error saving chat log' })
   }
 }
 
-function getLatestLogFile(dir: string): string {
-  const files = fs.readdirSync(dir)
-  return (
-    files.sort().reverse()[0] ||
-    `log_${new Date().toISOString().replace(/[:.]/g, '-')}.json`
-  )
+function getLatestLogFile(dir: string): string | null {
+  try {
+    const files = fs
+      .readdirSync(dir)
+      .filter((f) => f.startsWith('log_') && f.endsWith('.json'))
+      .sort()
+      .reverse()
+    return files.length > 0 ? files[0] : null
+  } catch (error) {
+    console.error('Error reading log directory:', error)
+    return null
+  }
 }
