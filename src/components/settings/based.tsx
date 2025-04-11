@@ -29,7 +29,7 @@ const Based = () => {
         console.error('Error fetching background list:', error)
       })
   }, [])
-  
+
   const handleBackgroundUpload = async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
@@ -138,18 +138,20 @@ const Based = () => {
       <div className="mt-6">
         <div className="my-4 text-xl font-bold">{t('BackgroundSettings')}</div>
         <div className="my-4">{t('BackgroundSettingsDescription')}</div>
-        
+
         <div className="flex flex-col mb-4">
           <label className="mb-2 text-base">{t('BackgroundImage')}</label>
           <select
-            className="text-ellipsis px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+            className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={backgroundImageUrl}
             onChange={(e) => {
               const path = e.target.value
               homeStore.setState({ backgroundImageUrl: path })
             }}
           >
-            <option value="/bg-c.png">{t('DefaultBackground')}</option>
+            <option value="/backgrounds/bg-c.png">
+              {t('DefaultBackground')}
+            </option>
             {backgroundFiles.map((file) => (
               <option key={file} value={`/backgrounds/${file}`}>
                 {file}
@@ -157,27 +159,7 @@ const Based = () => {
             ))}
           </select>
         </div>
-        
-        <div className="my-4">
-          <TextButton
-            onClick={() => {
-              const { bgFileInput } = menuStore.getState()
-              if (bgFileInput) {
-                bgFileInput.accept = 'image/*'
-                bgFileInput.onchange = (e) => {
-                  const file = (e.target as HTMLInputElement).files?.[0]
-                  if (file) {
-                    handleBackgroundUpload(file)
-                  }
-                }
-                bgFileInput.click()
-              }
-            }}
-          >
-            {t('ChangeBackgroundImage')}
-          </TextButton>
-        </div>
-        
+
         <div className="my-4">
           <TextButton
             onClick={() => {
@@ -196,26 +178,6 @@ const Based = () => {
           >
             {t('UploadBackground')}
           </TextButton>
-        </div>
-        
-        <div className="flex items-center mt-4">
-          <input
-            className="h-4 w-4 m-1 rounded border-gray-300 cursor-pointer"
-            type="checkbox"
-            id="useVideoAsBackground"
-            checked={useVideoAsBackground}
-            onChange={(e) =>
-              settingsStore.setState({
-                useVideoAsBackground: e.target.checked,
-              })
-            }
-          />
-          <label
-            htmlFor="useVideoAsBackground"
-            className="ml-2 text-base cursor-pointer"
-          >
-            {t('UseVideoAsBackground')}
-          </label>
         </div>
       </div>
 

@@ -59,12 +59,12 @@ NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
 
 ```bash
 # 背景图像路径
-NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/bg-c.png
+NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/backgrounds/bg-c.png
 ```
 
 您可以自定义应用程序的背景图像。点击"更改背景图像"按钮上传您喜欢的图像。
 
-要使其持久化，请将所需图像保存为`public/bg-c.png`。
+要使其持久化，请将所需图像保存为`public/backgrounds/bg-c.png`。
 
 您也可以使用环境变量指定文件名。
 

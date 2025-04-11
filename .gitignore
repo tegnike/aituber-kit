@@ -48,7 +48,21 @@ certificates
 
 /logs/*
 
+# Live2D files
 public/live2d/*
 !public/live2d/nike01
 public/scripts/*
 !public/scripts/.gitkeep
+
+# VRM files
+/public/vrm/*
+!/public/vrm/AvatarSample_A.vrm
+!/public/vrm/AvatarSample_B.vrm
+!/public/vrm/AvatarSample_C.vrm
+!/public/vrm/nikechan_v1.vrm
+!/public/vrm/nikechan_v2.vrm
+!/public/vrm/nikechan_v2_outerwear.vrm
+
+# Background files
+/public/backgrounds/*
+!/public/backgrounds/bg-c.png
