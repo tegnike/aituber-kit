@@ -16,136 +16,271 @@ const generateSessionId = () => {
   return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 }
 
+// --- Refactoring Helpers ---
+
 /**
- * 受け取ったメッセージを処理し、AIの応答を生成して発話させる
+ * テキストから感情タグ `[...]` を抽出する
+ * @param text 入力テキスト
+ * @returns 感情タグと残りのテキスト
+ */
+const extractEmotion = (
+  text: string
+): { emotionTag: string; remainingText: string } => {
+  const emotionMatch = text.match(/^\[(.*?)\]/)
+  if (emotionMatch?.[0]) {
+    return {
+      emotionTag: emotionMatch[0],
+      remainingText: text.slice(emotionMatch[0].length),
+    }
+  }
+  return { emotionTag: '', remainingText: text }
+}
+
+/**
+ * テキストから文法的に区切りの良い文を抽出する
+ * @param text 入力テキスト
+ * @returns 抽出された文と残りのテキスト
+ */
+const extractSentence = (
+  text: string
+): { sentence: string; remainingText: string } => {
+  const sentenceMatch = text.match(
+    /^(.{1,19}?(?:[。．.!?！？\n]|(?=\[))|.{20,}?(?:[、,。．.!?！？\n]|(?=\[)))/
+  )
+  if (sentenceMatch?.[0]) {
+    return {
+      sentence: sentenceMatch[0],
+      remainingText: text.slice(sentenceMatch[0].length).trimStart(),
+    }
+  }
+  return { sentence: '', remainingText: text }
+}
+
+/**
+ * 発話と関連する状態更新を行う
+ * @param sessionId セッションID
+ * @param sentence 発話する文
+ * @param emotionTag 感情タグ (例: "[neutral]")
+ * @param currentAssistantMessageListRef アシスタントメッセージリストの参照
+ * @param currentSlideMessagesRef スライドメッセージリストの参照
+ */
+const handleSpeakAndStateUpdate = (
+  sessionId: string,
+  sentence: string,
+  emotionTag: string,
+  currentAssistantMessageListRef: { current: string[] },
+  currentSlideMessagesRef: { current: string[] }
+) => {
+  const hs = homeStore.getState()
+  const emotion = emotionTag.includes('[')
+    ? (emotionTag.slice(1, -1).toLowerCase() as EmotionType)
+    : 'neutral'
+
+  // 発話不要/不可能な文字列だった場合はスキップ
+  if (
+    sentence === '' ||
+    sentence.replace(
+      /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
+      ''
+    ) === ''
+  ) {
+    return
+  }
+
+  speakCharacter(
+    sessionId,
+    { message: sentence, emotion: emotion },
+    () => {
+      // onStart callback
+      homeStore.setState({
+        assistantMessage: currentAssistantMessageListRef.current.join(' '),
+      })
+      hs.incrementChatProcessingCount()
+      currentSlideMessagesRef.current.push(sentence)
+      homeStore.setState({
+        slideMessages: [...currentSlideMessagesRef.current],
+      }) // Ensure array update triggers re-render if needed
+    },
+    () => {
+      // onEnd callback
+      hs.decrementChatProcessingCount()
+      currentSlideMessagesRef.current.shift()
+      homeStore.setState({
+        slideMessages: [...currentSlideMessagesRef.current],
+      }) // Ensure array update triggers re-render if needed
+    }
+  )
+}
+
+// --- Original Functions (Refactored) ---
+
+/**
+ * 受け取ったメッセージを処理し、AIの応答を生成して発話させる (Refactored)
  * @param receivedMessage 処理する文字列
  */
 export const speakMessageHandler = async (receivedMessage: string) => {
   const sessionId = generateSessionId()
   const hs = homeStore.getState()
-  const currentSlideMessages: string[] = []
+  const currentSlideMessagesRef = { current: [] as string[] } // Use ref object
+  const assistantMessageListRef = { current: [] as string[] } // Use ref object
 
   let isCodeBlock: boolean = false
-  let codeBlockText: string = ''
+  let codeBlockContent: string = '' // Renamed for clarity
   let logText: string = ''
-  let assistantMessage: string[] = []
   let remainingMessage = receivedMessage
-  let prevRemainingMessage: string = ''
   const addedChatLog: Message[] = []
   const delimiter = '```'
 
   while (remainingMessage.length > 0 || isCodeBlock) {
-    let sentence = ''
-    prevRemainingMessage = remainingMessage
+    let processableText = '' // Initialize processableText for non-code parts
+    let currentCodeBlock = '' // Code block extracted in this iteration
 
-    if (remainingMessage.includes(delimiter)) {
-      // コードブロックの分割
-      isCodeBlock = true
-      const [first, ...rest] = remainingMessage.split(delimiter)
-      ;[remainingMessage, codeBlockText] = [
-        first,
-        rest.join(delimiter).replace(/^\n/, ''),
-      ]
-    } else if (remainingMessage == '' && isCodeBlock) {
-      // コードブロックの分割
-      let code = ''
-      const [first, ...rest] = codeBlockText.split(delimiter)
-      ;[code, remainingMessage] = [first, rest.join(delimiter)]
-      addedChatLog.push({
-        role: 'assistant',
-        content: logText,
-      })
-      addedChatLog.push({
-        role: 'code',
-        content: code,
-      })
+    if (isCodeBlock) {
+      if (remainingMessage.includes(delimiter)) {
+        // End of code block found in remainingMessage
+        const [codeEnd, ...rest] = remainingMessage.split(delimiter)
+        currentCodeBlock = codeBlockContent + codeEnd
+        codeBlockContent = ''
+        // Update remainingMessage for the next iteration
+        remainingMessage = rest.join(delimiter).trimStart()
+        isCodeBlock = false
 
-      codeBlockText = ''
-      logText = ''
-      isCodeBlock = false
-    }
-
-    // 返答内容の感情部分と返答部分を分離
-    let emotion: string = ''
-    const emotionMatch = remainingMessage.match(/^\[(.*?)\]/)
-    if (emotionMatch?.[0]) {
-      emotion = emotionMatch[0]
-      remainingMessage = remainingMessage.slice(emotion.length)
-    }
-
-    const sentenceMatch = remainingMessage.match(
-      /^(.{1,19}?(?:[。．.!?！？\n]|(?=\[))|.{20,}?(?:[、,。．.!?！？\n]|(?=\[)))/
-    )
-    if (sentenceMatch?.[0]) {
-      sentence = sentenceMatch?.[0]
-      // 区切った文字の残りでremainingMessageを更新
-      remainingMessage = remainingMessage.slice(sentence.length).trimStart()
-    }
-
-    if (remainingMessage != '' && remainingMessage == prevRemainingMessage) {
-      sentence = prevRemainingMessage
-      remainingMessage = ''
-    }
-
-    // 発話不要/不可能な文字列だった場合はスキップ
-    if (
-      sentence == '' ||
-      sentence.replace(
-        /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
-        ''
-      ) == ''
-    ) {
-      continue
-    }
-
-    // 区切った文字をassistantMessageに追加
-    assistantMessage.push(sentence)
-    // em感情と返答を結合（音声再生で使用される）
-    let aiText = emotion ? `${emotion} ${sentence}` : sentence
-    logText = logText + ' ' + aiText
-
-    speakCharacter(
-      sessionId,
-      {
-        message: sentence,
-        emotion: emotion.includes('[')
-          ? (emotion.slice(1, -1).toLowerCase() as EmotionType)
-          : 'neutral',
-      },
-      () => {
-        homeStore.setState({
-          assistantMessage: assistantMessage.join(' '),
-        })
-        hs.incrementChatProcessingCount()
-        // スライド用のメッセージを更新
-        currentSlideMessages.push(sentence)
-      },
-      () => {
-        hs.decrementChatProcessingCount()
-        currentSlideMessages.shift()
-        homeStore.setState({
-          slideMessages: currentSlideMessages,
-        })
+        // Add previous assistant text and the completed code block to log
+        if (logText.trim()) {
+          addedChatLog.push({ role: 'assistant', content: logText.trim() })
+        }
+        addedChatLog.push({ role: 'code', content: currentCodeBlock })
+        logText = ''
+        // Skip processing non-code text in this iteration, handle remainingMessage in the next
+        continue // ★ Go to next iteration
+      } else {
+        // End of code block not found, consume entire remainingMessage
+        codeBlockContent += remainingMessage
+        remainingMessage = ''
+        continue // Skip further processing in this iteration
       }
-    )
+    } else if (remainingMessage.includes(delimiter)) {
+      // Start of code block found
+      const [beforeCode, ...rest] = remainingMessage.split(delimiter)
+      processableText = beforeCode // Set text before delimiter to be processed now
+      codeBlockContent = rest.join(delimiter) // Store potential code content for next iteration
+      isCodeBlock = true
+      remainingMessage = '' // Clear remainingMessage as code part is stored
+    } else {
+      // No code block involved, process the entire remainingMessage
+      processableText = remainingMessage
+      remainingMessage = '' // Consume the text
+    }
+
+    // Process the non-code text part (only if not in code block state initially)
+    // Note: This block is now skipped if we just finished a code block (due to `continue` above)
+    if (processableText.length > 0) {
+      // Check if there is actually text to process
+      let localRemaining = processableText.trimStart()
+      while (localRemaining.length > 0) {
+        const prevLocalRemaining = localRemaining
+        const { emotionTag, remainingText: textAfterEmotion } =
+          extractEmotion(localRemaining)
+        const { sentence, remainingText: textAfterSentence } =
+          extractSentence(textAfterEmotion)
+
+        if (sentence) {
+          assistantMessageListRef.current.push(sentence)
+          const aiText = emotionTag ? `${emotionTag} ${sentence}` : sentence
+          logText += aiText // Accumulate text for logging
+          handleSpeakAndStateUpdate(
+            sessionId,
+            sentence,
+            emotionTag,
+            assistantMessageListRef,
+            currentSlideMessagesRef
+          )
+          localRemaining = textAfterSentence
+        } else {
+          // No standard sentence found, treat the rest as one chunk if unchanged
+          if (localRemaining === prevLocalRemaining && localRemaining) {
+            const finalSentence = localRemaining
+            assistantMessageListRef.current.push(finalSentence)
+            const aiText = emotionTag
+              ? `${emotionTag} ${finalSentence}`
+              : finalSentence
+            logText += aiText
+            handleSpeakAndStateUpdate(
+              sessionId,
+              finalSentence,
+              emotionTag,
+              assistantMessageListRef,
+              currentSlideMessagesRef
+            )
+            localRemaining = ''
+          } else {
+            // No sentence match and text changed (e.g., only emotion extracted), or empty
+            localRemaining = textAfterSentence // Continue with potentially remaining text
+          }
+        }
+        // Safety break: If text remains but no sentence is extracted, avoid infinite loop
+        if (
+          localRemaining.length > 0 &&
+          localRemaining === prevLocalRemaining &&
+          !sentence
+        ) {
+          console.warn(
+            'Potential infinite loop detected in speakMessageHandler, breaking. Remaining:',
+            localRemaining
+          )
+          // Optionally handle the remaining text here, e.g., log it or speak it as one chunk
+          const finalSentence = localRemaining
+          assistantMessageListRef.current.push(finalSentence)
+          logText += finalSentence // Assuming no emotion tag if extractEmotion didn't find one earlier
+          handleSpeakAndStateUpdate(
+            sessionId,
+            finalSentence,
+            '', // No emotion tag assumed here
+            assistantMessageListRef,
+            currentSlideMessagesRef
+          )
+          break
+        }
+      }
+    } // End of non-code text processing
+
+    // Handle the start of a code block detected earlier in the loop
+    if (isCodeBlock && codeBlockContent) {
+      // If code block started, potentially add preceding text to log
+      if (logText.trim()) {
+        addedChatLog.push({ role: 'assistant', content: logText.trim() })
+        logText = ''
+      }
+      // Set remainingMessage for the next loop iteration to handle the code block content
+      remainingMessage = codeBlockContent
+      codeBlockContent = '' // Clear temp holder
+    }
   } // while loop end
 
-  addedChatLog.push({
-    role: 'assistant',
-    content: logText,
-  })
+  // Add any remaining assistant text to the log (if loop ends outside code block)
+  if (logText.trim()) {
+    addedChatLog.push({ role: 'assistant', content: logText.trim() })
+  }
+  // Add remaining code block content if loop ended abruptly while in code block state
+  // (Should ideally not happen with current logic, but as safety)
+  if (isCodeBlock && codeBlockContent.trim()) {
+    console.warn('Loop ended unexpectedly while in code block state.')
+    addedChatLog.push({ role: 'code', content: codeBlockContent.trim() })
+  }
+
+  // Final state update
   homeStore.setState({
-    slideMessages: currentSlideMessages,
+    // slideMessages is updated within handleSpeakAndStateUpdate callbacks
     chatLog: [...hs.chatLog, ...addedChatLog],
+    // assistantMessage is updated within handleSpeakAndStateUpdate callbacks
   })
 }
 
 /**
- * AIからの応答を処理する関数
+ * AIからの応答を処理する関数 (Refactored with improved code block handling)
  * @param currentChatLog ログに残るメッセージの配列
  * @param messages 解答生成に使用するメッセージの配列
  */
-// TODO: 上の関数とかなり処理が被るのでいずれまとめる
 export const processAIResponse = async (
   currentChatLog: Message[],
   messages: Message[]
@@ -155,7 +290,8 @@ export const processAIResponse = async (
   let stream
 
   const hs = homeStore.getState()
-  const currentSlideMessages: string[] = []
+  const currentSlideMessagesRef = { current: [] as string[] } // Use ref object
+  const assistantMessageListRef = { current: [] as string[] } // Use ref object
 
   try {
     stream = await getAIChatResponseStream(messages)
@@ -170,183 +306,225 @@ export const processAIResponse = async (
   }
 
   const reader = stream.getReader()
-  let receivedMessage = ''
+  let receivedChunks = '' // Store unprocessed parts of chunks
   let aiTextLog: Message[] = [] // 会話ログ欄で使用
-  let emotion = ''
+  let currentEmotionTag = '' // Track emotion across chunks
   let isCodeBlock = false
-  let codeBlockText = ''
-  const sentences = new Array<string>() // AssistantMessage欄で使用
+  let codeBlockContent = '' // Store content while inside a code block
+  const CODE_DELIMITER = '```'
 
   try {
     while (true) {
       const { done, value } = await reader.read()
-      if (done && receivedMessage.length === 0) break
+      if (value) receivedChunks += value // Append new chunk
 
-      if (value) receivedMessage += value
+      let processableText = receivedChunks // Text to process in this iteration
+      receivedChunks = '' // Assume we process everything unless part remains
 
-      // 返答を一文単位で切り出して処理する
-      while (receivedMessage.length > 0) {
+      mainLoop: while (processableText.length > 0) {
+        const originalProcessableText = processableText // For loop break detection
+
         if (isCodeBlock) {
-          if (receivedMessage.includes('```')) {
-            // コードブロックの終了処理
-            const [codeEnd, ...restOfSentence] = receivedMessage.split('```')
-            aiTextLog.push({
-              role: 'code',
-              content: codeBlockText + codeEnd,
-            })
+          // Append current chunk first, then search backwards for the delimiter
+          codeBlockContent += processableText
+          processableText = '' // Assume consumed for now
 
-            receivedMessage = restOfSentence.join('```').trimStart()
-            codeBlockText = ''
-            isCodeBlock = false
-            continue
-          } else {
-            // コードブロック中だが終了マークがまだない
-            codeBlockText += receivedMessage
-            receivedMessage = ''
-            continue
-          }
-        }
+          const delimiterIndex = codeBlockContent.lastIndexOf(CODE_DELIMITER)
 
-        if (receivedMessage.includes('```')) {
-          // コードブロックの開始処理
-          const [beforeCode, ...rest] = receivedMessage.split('```')
-
-          // コードブロック前のテキストを処理
-          if (beforeCode.trim()) {
-            receivedMessage = beforeCode
-            isCodeBlock = true
-            codeBlockText = rest.join('```')
-          } else {
-            isCodeBlock = true
-            codeBlockText = rest.join('```')
-            receivedMessage = ''
-            continue
-          }
-        }
-
-        // 先頭の改行を削除
-        receivedMessage = receivedMessage.trimStart()
-
-        // 返答内容の感情部分と返答部分を分離
-        const emotionMatch = receivedMessage.match(/^\[(.*?)\]/)
-
-        if (emotionMatch && emotionMatch[0]) {
-          emotion = emotionMatch[0]
-          receivedMessage = receivedMessage.slice(emotion.length)
-        }
-
-        const sentenceMatch = receivedMessage.match(
-          /^(.{1,19}?(?:[。．.!?！？\n]|(?=\[))|.{20,}?(?:[、,。．.!?！？\n]|(?=\[)))/
-        )
-        if (sentenceMatch?.[0]) {
-          let sentence = sentenceMatch[0]
-          // 区切った文字をsentencesに追加
-          sentences.push(sentence)
-          // 区切った文字の残りでreceivedMessageを更新
-          receivedMessage = receivedMessage.slice(sentence.length).trimStart()
-
-          // 発話不要/不可能な文字列だった場合はスキップ
+          // Check if the found delimiter could reasonably be the *end* delimiter.
+          // It should start at or after the beginning of the newly added text chunk,
+          // minus a small overlap allowance (CODE_DELIMITER.length - 1).
           if (
-            !sentence.includes('```') &&
-            !sentence.replace(
-              /^[\s\u3000\t\n\r\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]'"''""・、。,.!?！？:：;；\-_=+~～*＊@＠#＃$＄%％^＾&＆|｜\\＼/／`｀]+$/gu,
-              ''
-            )
+            delimiterIndex !== -1 &&
+            delimiterIndex >=
+              codeBlockContent.length -
+                (originalProcessableText.length + CODE_DELIMITER.length - 1)
           ) {
-            continue
-          }
+            const actualCode = codeBlockContent.substring(0, delimiterIndex)
+            const remainingAfterDelimiter = codeBlockContent.substring(
+              delimiterIndex + CODE_DELIMITER.length
+            )
 
-          // 感情と返答を結合（音声再生で使用される）
-          let aiText = `${emotion} ${sentence}`
-          aiTextLog.push({ role: 'assistant', content: aiText })
-
-          // 文ごとに音声を生成 & 再生、返答を表示
-          const currentAssistantMessage = sentences.join(' ')
-
-          speakCharacter(
-            sessionId,
-            {
-              message: sentence,
-              emotion: emotion.includes('[')
-                ? (emotion.slice(1, -1).toLowerCase() as EmotionType)
-                : 'neutral',
-            },
-            () => {
-              homeStore.setState({
-                assistantMessage: currentAssistantMessage,
-              })
-              hs.incrementChatProcessingCount()
-              // スライド用のメッセージを更新
-              currentSlideMessages.push(sentence)
-              homeStore.setState({
-                slideMessages: currentSlideMessages,
-              })
-            },
-            () => {
-              hs.decrementChatProcessingCount()
-              currentSlideMessages.shift()
-              homeStore.setState({
-                slideMessages: currentSlideMessages,
-              })
+            if (actualCode.trim()) {
+              // Log the code part
+              aiTextLog.push({ role: 'code', content: actualCode })
             }
-          )
-        } else {
-          // マッチする文がない場合、ループを抜ける
-          break
-        }
-      }
 
-      // ストリームが終了し、receivedMessageが空でない場合の処理
-      if (done && receivedMessage.length > 0) {
-        // 残りのメッセージを処理
-        let aiText = `${emotion} ${receivedMessage}`
-        aiTextLog.push({ role: 'assistant', content: aiText })
-        sentences.push(receivedMessage)
-
-        const currentAssistantMessage = sentences.join(' ')
-
-        speakCharacter(
-          sessionId,
-          {
-            message: receivedMessage,
-            emotion: emotion.includes('[')
-              ? (emotion.slice(1, -1).toLowerCase() as EmotionType)
-              : 'neutral',
-          },
-          () => {
-            homeStore.setState({
-              assistantMessage: currentAssistantMessage,
-            })
-            hs.incrementChatProcessingCount()
-            // スライド用のメッセージを更新
-            currentSlideMessages.push(receivedMessage)
-            homeStore.setState({
-              slideMessages: currentSlideMessages,
-            })
-          },
-          () => {
-            hs.decrementChatProcessingCount()
-            currentSlideMessages.shift()
-            homeStore.setState({
-              slideMessages: currentSlideMessages,
-            })
+            // Reset state and process remaining text
+            codeBlockContent = ''
+            isCodeBlock = false
+            currentEmotionTag = '' // Reset emotion context
+            processableText = remainingAfterDelimiter.trimStart() // Set the remaining text to be processed
+            // Continue the inner loop to process the remaining text
+            continue mainLoop
+          } else {
+            // Delimiter not found spanning the boundary or within the new chunk
+            // The entire originalProcessableText is part of the code block for now.
+            // Break inner loop and wait for the next chunk.
+            break mainLoop
           }
-        )
+        } else {
+          // Not inside a code block
+          const delimiterIndex = processableText.indexOf(CODE_DELIMITER)
+          if (delimiterIndex !== -1) {
+            // Found start delimiter
+            const beforeCode = processableText.substring(0, delimiterIndex)
+            const afterDelimiterRaw = processableText.substring(
+              delimiterIndex + CODE_DELIMITER.length
+            )
 
-        receivedMessage = ''
+            // Process text before the code block starts
+            let textToProcessBeforeCode = beforeCode.trimStart()
+            processLoopBeforeCode: while (textToProcessBeforeCode.length > 0) {
+              const prevText = textToProcessBeforeCode
+              const {
+                emotionTag: extractedEmotion,
+                remainingText: textAfterEmotion,
+              } = extractEmotion(textToProcessBeforeCode)
+              if (extractedEmotion) currentEmotionTag = extractedEmotion
+              const { sentence, remainingText: textAfterSentence } =
+                extractSentence(textAfterEmotion)
+
+              if (sentence) {
+                assistantMessageListRef.current.push(sentence)
+                aiTextLog.push({
+                  role: 'assistant',
+                  content: `${currentEmotionTag} ${sentence}`.trim(),
+                })
+                handleSpeakAndStateUpdate(
+                  sessionId,
+                  sentence,
+                  currentEmotionTag,
+                  assistantMessageListRef,
+                  currentSlideMessagesRef
+                )
+                textToProcessBeforeCode = textAfterSentence
+                if (!textAfterSentence) currentEmotionTag = '' // Reset emotion if sentence ends chunk
+              } else {
+                // If no sentence extracted, store remaining and break this specific loop
+                receivedChunks = textToProcessBeforeCode + receivedChunks // Prepend unprocessed part
+                textToProcessBeforeCode = '' // Stop this loop
+                break processLoopBeforeCode
+              }
+              // Safety break for this inner-inner loop
+              if (
+                textToProcessBeforeCode.length > 0 &&
+                textToProcessBeforeCode === prevText
+              ) {
+                receivedChunks = textToProcessBeforeCode + receivedChunks // Prepend unprocessed part
+                break processLoopBeforeCode
+              }
+            }
+
+            // Check for language name after delimiter (e.g., ```python\n)
+            const langMatch = afterDelimiterRaw.match(/^ *(\w+)? *\n/)
+            let remainingAfterDelimiter = afterDelimiterRaw
+            if (langMatch) {
+              // If language found, start code block content *after* the language and newline
+              remainingAfterDelimiter = afterDelimiterRaw.substring(
+                langMatch[0].length
+              )
+            }
+
+            isCodeBlock = true
+            codeBlockContent = '' // Start fresh code block content
+            processableText = remainingAfterDelimiter // Continue processing text *after* delimiter
+            continue mainLoop // Restart inner loop with remaining text after delimiter
+          } else {
+            // No delimiter found, process as regular text
+            const {
+              emotionTag: extractedEmotion,
+              remainingText: textAfterEmotion,
+            } = extractEmotion(processableText)
+            if (extractedEmotion) currentEmotionTag = extractedEmotion // Update context emotion
+
+            const { sentence, remainingText: textAfterSentence } =
+              extractSentence(textAfterEmotion)
+
+            if (sentence) {
+              assistantMessageListRef.current.push(sentence)
+              aiTextLog.push({
+                role: 'assistant',
+                content: `${currentEmotionTag} ${sentence}`.trim(),
+              })
+              handleSpeakAndStateUpdate(
+                sessionId,
+                sentence,
+                currentEmotionTag,
+                assistantMessageListRef,
+                currentSlideMessagesRef
+              )
+              processableText = textAfterSentence // Continue with the rest
+              if (!textAfterSentence) currentEmotionTag = '' // Reset emotion if sentence ends chunk
+            } else {
+              // No sentence found in this chunk. Store remaining part for next iteration.
+              receivedChunks = processableText + receivedChunks // Prepend unprocessed part
+              processableText = '' // Mark as processed for this inner loop
+              break mainLoop // Break inner loop, wait for more data
+            }
+          }
+        } // end if(isCodeBlock) else
+
+        // Safety check: If no progress is made in the inner loop, store remaining and break
+        if (
+          processableText.length > 0 &&
+          processableText === originalProcessableText
+        ) {
+          receivedChunks = processableText + receivedChunks // Store unprocessed part
+          processableText = ''
+          break mainLoop // Avoid potential infinite loop
+        }
+      } // End inner while(processableText.length > 0)
+
+      // --- Stream End Handling ---
+      if (done) {
+        // If stream finished, process any remaining stored text
+        if (receivedChunks.length > 0) {
+          if (!isCodeBlock) {
+            // Don't process if expecting code end
+            const finalSentence = receivedChunks // Treat remaining as one sentence
+            assistantMessageListRef.current.push(finalSentence)
+            aiTextLog.push({
+              role: 'assistant',
+              content: `${currentEmotionTag} ${finalSentence}`.trim(),
+            })
+            handleSpeakAndStateUpdate(
+              sessionId,
+              finalSentence,
+              currentEmotionTag,
+              assistantMessageListRef,
+              currentSlideMessagesRef
+            )
+            receivedChunks = '' // Clear remaining
+          } else {
+            // Still in code block when stream ends? Append remaining to code block
+            codeBlockContent += receivedChunks
+            receivedChunks = ''
+          }
+        }
+        // If still in code block state when done, log the accumulated content
+        if (isCodeBlock && codeBlockContent.trim()) {
+          aiTextLog.push({ role: 'code', content: codeBlockContent })
+          codeBlockContent = '' // Clear just in case
+          isCodeBlock = false // Ensure state is reset
+        }
+        break // Exit outer while loop
       }
-    }
+    } // End outer while(true) loop
   } catch (e) {
     console.error(e)
   } finally {
     reader.releaseLock()
   }
 
-  aiTextLog = messageSelectors.normalizeMessages(aiTextLog)
-
+  // Final state update after stream processing
   homeStore.setState({
-    chatLog: [...currentChatLog, ...aiTextLog],
+    chatLog: messageSelectors.normalizeMessages([
+      ...currentChatLog,
+      ...aiTextLog,
+    ]),
     chatProcessing: false,
+    // assistantMessage and slideMessages are updated via callbacks
   })
 }
 
