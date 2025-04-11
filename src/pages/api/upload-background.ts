@@ -35,7 +35,7 @@ export default async function handler(
 
     const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
     const extension = path.extname(file.originalFilename || '').toLowerCase()
-    
+
     if (!validExtensions.includes(extension)) {
       return res.status(400).json({
         error: 'Invalid file type',
@@ -48,7 +48,10 @@ export default async function handler(
       fs.mkdirSync(bgDir, { recursive: true })
     }
 
-    const newPath = path.join(bgDir, file.originalFilename || 'background' + extension)
+    const newPath = path.join(
+      bgDir,
+      file.originalFilename || 'background' + extension
+    )
     await fs.promises.copyFile(file.filepath, newPath)
 
     res.status(200).json({
