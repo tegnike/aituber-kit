@@ -287,5 +287,9 @@
   "CustomAPIBodyInfo": "Veuillez entrer les informations du corps à inclure dans la requête API au format JSON. Les messages seront automatiquement inclus.",
   "CustomAPIDescription": "Remarque : les messages sont automatiquement inclus dans le corps de la requête. En mode streaming, le serveur doit renvoyer text/event-stream.",
   "ShowCharacterPresetMenu": "Afficher le bouton du menu des préréglages de personnage",
-  "SpeechRecognitionModeDisabledInfo": "Lorsque le mode audio est activé, seule la reconnaissance vocale du navigateur est disponible.\nDe plus, en mode API en temps réel, seule la reconnaissance vocale du navigateur est disponible et la fonction de délai d'expiration de la reconnaissance vocale est désactivée."
+  "SpeechRecognitionModeDisabledInfo": "Lorsque le mode audio est activé, seule la reconnaissance vocale du navigateur est disponible.\nDe plus, en mode API en temps réel, seule la reconnaissance vocale du navigateur est disponible et la fonction de délai d'expiration de la reconnaissance vocale est désactivée.",
+  "BackgroundSettings": "Paramètres de fond",
+  "BackgroundSettingsDescription": "Vous pouvez télécharger et sélectionner une image de fond pour l'application.",
+  "UploadBackground": "Télécharger une image de fond",
+  "DefaultBackground": "Fond par défaut"
 }
