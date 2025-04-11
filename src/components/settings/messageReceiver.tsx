@@ -31,11 +31,15 @@ const MessageReceiverSetting = () => {
 
   return (
     <div className="mt-2 mb-2">
-      <div className="my-4 text-xl font-bold">{t('MessageReceiver')}</div>
-      <p className="">{t('MessageReceiverDescription')}</p>
+      <div className="my-4 text-xl font-bold">
+        {t('Settings.External.MessageReceiver')}
+      </div>
+      <p className="">{t('Settings.External.MessageReceiverDescription')}</p>
       <div className="my-2">
         <TextButton onClick={toggleMessageReceiver}>
-          {messageReceiverEnabled ? t('StatusOn') : t('StatusOff')}
+          {messageReceiverEnabled
+            ? t('UI.Common.StatusOn')
+            : t('UI.Common.StatusOff')}
         </TextButton>
       </div>
       {messageReceiverEnabled && clientId && (

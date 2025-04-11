@@ -215,14 +215,14 @@ export const Menu = () => {
                 {showChatLog ? (
                   <IconButton
                     iconName="24/CommentOutline"
-                    label={t('ChatLog')}
+                    label={t('UI.Labels.ChatLog')}
                     isProcessing={false}
                     onClick={() => setShowChatLog(false)}
                   />
                 ) : (
                   <IconButton
                     iconName="24/CommentFill"
-                    label={t('ChatLog')}
+                    label={t('UI.Labels.ChatLog')}
                     isProcessing={false}
                     disabled={false}
                     onClick={() => setShowChatLog(true)}

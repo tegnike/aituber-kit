@@ -27,9 +27,13 @@ const Based = () => {
             height={24}
             className="mr-2"
           />
-          <h2 className="text-2xl font-bold">{t('BasedSettings')}</h2>
+          <h2 className="text-2xl font-bold">
+            {t('Settings.Categories.BasedSettings')}
+          </h2>
         </div>
-        <div className="mb-4 text-xl font-bold">{t('Language')}</div>
+        <div className="mb-4 text-xl font-bold">
+          {t('Settings.Categories.Language')}
+        </div>
         <div className="my-2">
           <select
             className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"

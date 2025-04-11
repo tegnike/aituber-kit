@@ -89,7 +89,7 @@ const CharacterPresetMenu = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center"
-        aria-label={t('CharacterSettingsPrompt')}
+        aria-label={t('Settings.Character.CharacterSettingsPrompt')}
         aria-expanded={isOpen}
         aria-controls="preset-menu"
       >

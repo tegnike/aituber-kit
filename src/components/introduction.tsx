@@ -133,7 +133,7 @@ export const Introduction = () => {
             }}
             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-6 py-2 rounded-full"
           >
-            {t('Close')}
+            {t('UI.Common.Close')}
           </button>
         </div>
 

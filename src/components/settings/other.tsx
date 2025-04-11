@@ -17,7 +17,9 @@ const Other = () => {
           height={24}
           className="mr-2"
         />
-        <h2 className="text-2xl font-bold">{t('OtherSettings')}</h2>
+        <h2 className="text-2xl font-bold">
+          {t('Settings.Categories.OtherSettings')}
+        </h2>
       </div>
       <AdvancedSettings />
       <PresetQuestions />

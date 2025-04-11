@@ -206,7 +206,9 @@ const SpeechInput = () => {
                   })
                 }
               >
-                {showSilenceProgressBar ? t('StatusOn') : t('StatusOff')}
+                {showSilenceProgressBar
+                  ? t('UI.Common.StatusOn')
+                  : t('UI.Common.StatusOff')}
               </TextButton>
             </div>
           </div>

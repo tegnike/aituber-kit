@@ -71,10 +71,14 @@ const Slide = () => {
           height={24}
           className="mr-2"
         />
-        <h2 className="text-2xl font-bold">{t('SlideSettings')}</h2>
+        <h2 className="text-2xl font-bold">
+          {t('Settings.Categories.SlideSettings')}
+        </h2>
       </div>
-      <div className="mb-4 text-xl font-bold">{t('SlideMode')}</div>
-      <p className="">{t('SlideModeDescription')}</p>
+      <div className="mb-4 text-xl font-bold">
+        {t('Settings.Slide.SlideMode')}
+      </div>
+      <p className="">{t('Settings.Slide.SlideModeDescription')}</p>
       <div className="my-2">
         <TextButton
           onClick={toggleSlideMode}
@@ -84,7 +88,7 @@ const Slide = () => {
             )
           }
         >
-          {slideMode ? t('StatusOn') : t('StatusOff')}
+          {slideMode ? t('UI.Common.StatusOn') : t('UI.Common.StatusOff')}
         </TextButton>
       </div>
       {slideMode && (

@@ -453,14 +453,18 @@ const Character = () => {
           height={24}
           className="mr-2"
         />
-        <h2 className="text-2xl font-bold">{t('CharacterSettings')}</h2>
+        <h2 className="text-2xl font-bold">
+          {t('Settings.Categories.CharacterSettings')}
+        </h2>
       </div>
       <div className="">
-        <div className="mb-4 text-xl font-bold">{t('CharacterName')}</div>
+        <div className="mb-4 text-xl font-bold">
+          {t('Settings.Character.CharacterName')}
+        </div>
         <input
           className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
           type="text"
-          placeholder={t('CharacterName')}
+          placeholder={t('Settings.Character.CharacterName')}
           value={characterName}
           onChange={(e) =>
             settingsStore.setState({ characterName: e.target.value })
@@ -468,9 +472,11 @@ const Character = () => {
         />
 
         <div className="mt-6 mb-4 text-xl font-bold">
-          {t('CharacterModelLabel')}
+          {t('Settings.Character.CharacterModelLabel')}
         </div>
-        <div className="mb-4 text-base">{t('CharacterModelInfo')}</div>
+        <div className="mb-4 text-base">
+          {t('Settings.Character.CharacterModelInfo')}
+        </div>
 
         <div className="flex mb-2">
           <button
@@ -530,7 +536,7 @@ const Character = () => {
                   }
                 }}
               >
-                {t('OpenVRM')}
+                {t('UI.Buttons.OpenVRM')}
               </TextButton>
             </div>
           </>
@@ -561,13 +567,13 @@ const Character = () => {
 
         <div className="my-6 mb-2">
           <div className="my-4 text-xl font-bold">
-            {t('CharacterSettingsPrompt')}
+            {t('Settings.Character.CharacterSettingsPrompt')}
           </div>
           {selectAIService === 'dify' ? (
-            <div className="my-4">{t('DifyInstruction')}</div>
+            <div className="my-4">{t('Settings.AI.DifyInstruction')}</div>
           ) : (
             <div className="my-4 whitespace-pre-line">
-              {t('CharacterSettingsInfo')}
+              {t('Settings.Character.CharacterSettingsInfo')}
             </div>
           )}
         </div>

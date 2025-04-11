@@ -34,12 +34,16 @@ const Log = () => {
             height={24}
             className="mr-2"
           />
-          <h2 className="text-2xl font-bold">{t('ConversationHistory')}</h2>
+          <h2 className="text-2xl font-bold">
+            {t('Settings.Categories.LogSettings')}
+          </h2>
         </div>
         <div className="my-2">
           {selectAIService !== 'dify'
-            ? t('ConversationHistoryInfo', { count: maxPastMessages })
-            : t('DifyInfo2')}
+            ? t('Settings.Log.ConversationHistoryInfo', {
+                count: maxPastMessages,
+              })
+            : t('Settings.AI.DifyInfo2')}
         </div>
         <TextButton
           onClick={() => {

@@ -144,7 +144,7 @@ const Voice = () => {
   if (realtimeAPIMode || audioMode) {
     return (
       <div className="text-center text-xl whitespace-pre-line">
-        {t('CannotUseVoice')}
+        {t('Settings.Voice.CannotUseVoice')}
       </div>
     )
   }

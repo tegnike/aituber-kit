@@ -15,15 +15,17 @@ const Description = () => {
             height={24}
             className="mr-2"
           />
-          <h2 className="text-2xl font-bold">{t('AboutThisApplication')}</h2>
+          <h2 className="text-2xl font-bold">
+            {t('Unused.AboutThisApplication')}
+          </h2>
         </div>
         <div className="mb-6">
           <div className="my-2 whitespace-pre-line">
-            {t('AboutThisApplicationDescription2')}
+            {t('Unused.AboutThisApplicationDescription2')}
           </div>
         </div>
         <div className="my-10">
-          <div className="mb-4 text-xl font-bold">{t('Contact')}</div>
+          <div className="mb-4 text-xl font-bold">{t('Unused.Contact')}</div>
           <div className="my-2 whitespace-pre-line">
             <a
               href="mailto:support@aituberkit.com"
