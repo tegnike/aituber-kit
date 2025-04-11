@@ -287,5 +287,9 @@
   "CustomAPIBodyInfo": "Inserisci le informazioni del corpo da includere nella richiesta API in formato JSON. I messaggi verranno inclusi automaticamente.",
   "CustomAPIDescription": "Nota: i messaggi vengono inclusi automaticamente nel corpo della richiesta. Nella modalità streaming, il server deve restituire text/event-stream.",
   "ShowCharacterPresetMenu": "Mostra il pulsante del menu dei preset del personaggio",
-  "SpeechRecognitionModeDisabledInfo": "Se la modalità audio è attivata, è disponibile solo il riconoscimento vocale del browser.\nInoltre, nella modalità API in tempo reale, è disponibile solo il riconoscimento vocale del browser e la funzione di timeout per il riconoscimento vocale sarà disabilitata."
+  "SpeechRecognitionModeDisabledInfo": "Se la modalità audio è attivata, è disponibile solo il riconoscimento vocale del browser.\nInoltre, nella modalità API in tempo reale, è disponibile solo il riconoscimento vocale del browser e la funzione di timeout per il riconoscimento vocale sarà disabilitata.",
+  "BackgroundSettings": "Impostazioni di sfondo",
+  "BackgroundSettingsDescription": "Puoi caricare e selezionare un'immagine di sfondo per l'applicazione.",
+  "UploadBackground": "Carica immagine di sfondo",
+  "DefaultBackground": "Sfondo predefinito"
 }

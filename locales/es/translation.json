@@ -287,5 +287,9 @@
   "CustomAPIBodyInfo": "Por favor, ingresa la información del cuerpo que se incluirá en la solicitud de API en formato JSON. messages se incluirán automáticamente.",
   "CustomAPIDescription": "Nota: Los mensajes se incluirán automáticamente en el cuerpo de la solicitud. En modo de streaming, el servidor debe devolver text/event-stream.",
   "ShowCharacterPresetMenu": "Mostrar botón de menú de preajustes de personaje",
-  "SpeechRecognitionModeDisabledInfo": "Si el modo de audio está habilitado, solo se puede usar el reconocimiento de voz del navegador.\nAdemás, en el modo de API en tiempo real, solo se puede usar el reconocimiento de voz del navegador y la función de tiempo de espera de reconocimiento de voz estará desactivada."
+  "SpeechRecognitionModeDisabledInfo": "Si el modo de audio está habilitado, solo se puede usar el reconocimiento de voz del navegador.\nAdemás, en el modo de API en tiempo real, solo se puede usar el reconocimiento de voz del navegador y la función de tiempo de espera de reconocimiento de voz estará desactivada.",
+  "BackgroundSettings": "Configuración de fondo",
+  "BackgroundSettingsDescription": "Puedes subir y seleccionar una imagen de fondo para la aplicación.",
+  "UploadBackground": "Subir imagen de fondo",
+  "DefaultBackground": "Fondo predeterminado"
 }

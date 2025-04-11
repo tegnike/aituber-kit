@@ -52,7 +52,7 @@
   "BackgroundImage": "ภาพพื้นหลัง",
   "ChangeBackgroundImage": "เปลี่ยนภาพพื้นหลัง",
   "BackgroundSettings": "การตั้งค่าพื้นหลัง",
-  "BackgroundSettingsDescription": "อัปโหลดและเลือกภาพพื้นหลังสำหรับแอปพลิเคชัน",
+  "BackgroundSettingsDescription": "คุณสามารถอัปโหลดและเลือกภาพพื้นหลังของแอปพลิเคชันได้",
   "UploadBackground": "อัปโหลดภาพพื้นหลัง",
   "DefaultBackground": "พื้นหลังเริ่มต้น",
   "CharacterSettingsPrompt": "ข้อความ prompt ของตัวละคร",

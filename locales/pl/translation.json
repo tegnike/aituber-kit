@@ -288,5 +288,9 @@
   "CustomAPIBodyInfo": "Proszę wpisać informacje o ciele w formacie JSON, które mają być dołączone do żądania API. messages będą automatycznie dołączone.",
   "CustomAPIDescription": "Uwaga: Wiadomości są automatycznie dołączane do ciała żądania. W trybie strumieniowym serwer musi zwrócić text/event-stream.",
   "ShowCharacterPresetMenu": "Wyświetl przycisk menu presetów postaci",
-  "SpeechRecognitionModeDisabledInfo": "Gdy tryb audio jest włączony, dostępne jest tylko rozpoznawanie mowy w przeglądarce.\nPonadto w trybie API w czasie rzeczywistym dostępne jest tylko rozpoznawanie mowy w przeglądarce, a funkcja limitu czasu rozpoznawania mowy jest wyłączona."
+  "SpeechRecognitionModeDisabledInfo": "Gdy tryb audio jest włączony, dostępne jest tylko rozpoznawanie mowy w przeglądarce.\nPonadto w trybie API w czasie rzeczywistym dostępne jest tylko rozpoznawanie mowy w przeglądarce, a funkcja limitu czasu rozpoznawania mowy jest wyłączona.",
+  "BackgroundSettings": "Ustawienia tła",
+  "BackgroundSettingsDescription": "Możesz przesłać i wybrać obraz tła aplikacji.",
+  "UploadBackground": "Prześlij obraz tła",
+  "DefaultBackground": "Domyślne tło"
 }

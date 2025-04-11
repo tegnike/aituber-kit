@@ -287,5 +287,9 @@
   "CustomAPIBodyInfo": "Bitte geben Sie die Body-Informationen im JSON-Format ein, die in die API-Anfrage aufgenommen werden sollen. messages werden automatisch hinzugefügt.",
   "CustomAPIDescription": "Hinweis: Nachrichten werden automatisch in den Anfrage-Body aufgenommen. Im Streaming-Modus muss der Server text/event-stream zurückgeben.",
   "ShowCharacterPresetMenu": "Charakter-Preset-Menü-Button anzeigen",
-  "SpeechRecognitionModeDisabledInfo": "Wenn der Audiomodus aktiviert ist, ist nur die Browser-Spracherkennung verfügbar.\nAußerdem ist im Echtzeit-API-Modus nur die Browser-Spracherkennung verfügbar, und die Funktion für das Spracherkennung-Timeout wird deaktiviert."
+  "SpeechRecognitionModeDisabledInfo": "Wenn der Audiomodus aktiviert ist, ist nur die Browser-Spracherkennung verfügbar.\nAußerdem ist im Echtzeit-API-Modus nur die Browser-Spracherkennung verfügbar, und die Funktion für das Spracherkennung-Timeout wird deaktiviert.",
+  "BackgroundSettings": "Hintergrund Einstellungen",
+  "BackgroundSettingsDescription": "Sie können ein Hintergrundbild für die Anwendung hochladen und auswählen.",
+  "UploadBackground": "Hintergrundbild hochladen",
+  "DefaultBackground": "Standard Hintergrund"
 }
