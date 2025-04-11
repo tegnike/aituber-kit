@@ -5,6 +5,7 @@ import { Message } from '@/features/messages/messages'
 import { Viewer } from '../vrmViewer/viewer'
 import { messageSelectors } from '../messages/messageSelectors'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
+import { generateMessageId } from '@/utils/messageUtils'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -21,6 +22,7 @@ export interface TransientState {
   chatProcessingCount: number
   incrementChatProcessingCount: () => void
   decrementChatProcessingCount: () => void
+  upsertMessage: (message: Partial<Message>) => void
   backgroundImageUrl: string
   modalImage: string
   triggerShutter: boolean
@@ -59,6 +61,48 @@ const homeStore = create<HomeState>()(
         set(({ chatProcessingCount }) => ({
           chatProcessingCount: chatProcessingCount - 1,
         }))
+      },
+      upsertMessage: (message) => {
+        set((state) => {
+          const currentChatLog = state.chatLog
+          const messageId = message.id ?? generateMessageId()
+          const existingMessageIndex = currentChatLog.findIndex(
+            (msg) => msg.id === messageId
+          )
+
+          let updatedChatLog: Message[]
+
+          if (existingMessageIndex > -1) {
+            updatedChatLog = [...currentChatLog]
+            const existingMessage = updatedChatLog[existingMessageIndex]
+
+            updatedChatLog[existingMessageIndex] = {
+              ...existingMessage,
+              ...message,
+              id: messageId,
+            }
+            console.log(`Message updated: ID=${messageId}`)
+          } else {
+            if (!message.role || message.content === undefined) {
+              console.error(
+                'Cannot add message without role or content',
+                message
+              )
+              return { chatLog: currentChatLog }
+            }
+            const newMessage: Message = {
+              id: messageId,
+              role: message.role,
+              content: message.content,
+              ...(message.audio && { audio: message.audio }),
+              ...(message.timestamp && { timestamp: message.timestamp }),
+            }
+            updatedChatLog = [...currentChatLog, newMessage]
+            console.log(`Message added: ID=${messageId}`)
+          }
+
+          return { chatLog: updatedChatLog }
+        })
       },
       backgroundImageUrl:
         process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH ?? '/bg-c.png',

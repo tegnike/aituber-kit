@@ -84,11 +84,43 @@ export const messageSelectors = {
         }
 
         const lastItem = acc[acc.length - 1]
-        if (lastItem && lastItem.role === item.role) {
-          if (typeof item.content != 'string' && item.content) {
-            lastItem.content += ' ' + item.content[0].text
-          } else {
-            lastItem.content += ' ' + item.content
+        if (
+          lastItem &&
+          lastItem.role === item.role &&
+          lastItem.id === item.id
+        ) {
+          if (typeof item.content !== 'string' && item.content?.[0]?.text) {
+            const currentText =
+              typeof lastItem.content === 'string'
+                ? lastItem.content
+                : lastItem.content?.[0]?.text || ''
+            if (Array.isArray(lastItem.content)) {
+              lastItem.content[0].text = (
+                currentText +
+                ' ' +
+                item.content[0].text
+              ).trim()
+            } else {
+              lastItem.content = (
+                currentText +
+                ' ' +
+                item.content[0].text
+              ).trim()
+            }
+          } else if (typeof item.content === 'string') {
+            const currentText =
+              typeof lastItem.content === 'string'
+                ? lastItem.content
+                : lastItem.content?.[0]?.text || ''
+            if (Array.isArray(lastItem.content)) {
+              lastItem.content[0].text = (
+                currentText +
+                ' ' +
+                item.content
+              ).trim()
+            } else {
+              lastItem.content = (currentText + ' ' + item.content).trim()
+            }
           }
         } else {
           const text = item.content
