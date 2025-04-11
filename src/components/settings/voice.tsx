@@ -1019,7 +1019,6 @@ const Voice = () => {
       {/* カスタムテキスト入力と統合テストボタン */}
       <div className="mt-10 p-4 bg-gray-50 rounded-lg">
         <div className="mb-4 text-xl font-bold">{t('TestVoiceSettings')}</div>
-        <div className="mb-2 font-bold">{t('CustomVoiceText')}</div>
         <div className="flex items-center">
           <input
             className="flex-1 px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
@@ -1032,7 +1031,12 @@ const Voice = () => {
         <div className="flex items-center mt-4">
           <TextButton
             onClick={() => testVoice(selectVoice, customVoiceText)}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            disabled={!customVoiceText}
+            className={`px-6 py-2 rounded-lg ${
+              customVoiceText
+                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                : 'bg-blue-300 text-gray-100 cursor-not-allowed'
+            }`}
           >
             {t('TestSelectedVoice')}
           </TextButton>
