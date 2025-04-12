@@ -11,5 +11,12 @@ export function buildUrl(path: string): string {
     publicRuntimeConfig: { root: string }
   } = getConfig()
 
-  return publicRuntimeConfig.root + path
+  // 空白などの特殊文字を含むパスを適切にエンコード
+  // ただし、パス区切り文字（/）はエンコードしない
+  const encodedPath = path
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')
+
+  return publicRuntimeConfig.root + encodedPath
 }

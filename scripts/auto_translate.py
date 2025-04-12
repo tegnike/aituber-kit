@@ -89,66 +89,19 @@ def get_file_content(file_path: str, ref: Optional[str] = None) -> Optional[str]
         raise
 
 
-def create_or_update_file(
-    file_path: str, content: str, message: str, branch: str
-) -> Dict[str, Any]:
-    """ファイルを作成または更新する (単一ファイル用)"""
-    url = f"{GITHUB_API_BASE}/repos/{REPO_FULL_NAME}/contents/{file_path}"
-
-    # 現在のファイルSHAを取得試行
-    sha = None
+def save_file_locally(file_path: str, content: str) -> bool:
+    """ファイルをローカルに保存する"""
     try:
-        get_response = requests.get(url, headers=headers, params={"ref": branch})
-        if get_response.status_code == 200:
-            sha = get_response.json().get("sha")
-        elif get_response.status_code != 404:
-            get_response.raise_for_status()  # 404以外のエラーは発生させる
-    except requests.exceptions.HTTPError as e:
-        print(f"ファイルSHA取得エラー ({file_path}, branch: {branch}): {e}")
-        # SHA取得失敗しても続行（新規作成扱い）
+        # ディレクトリが存在しない場合は作成
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-    content_encoded = base64.b64encode(content.encode("utf-8")).decode("utf-8")
-    data = {"message": message, "content": content_encoded, "branch": branch}
-    if sha:
-        data["sha"] = sha
-
-    try:
-        response = requests.put(url, headers=headers, json=data)
-        response.raise_for_status()
-        print(f"ファイル更新/作成成功: {file_path}")
-        return {"status": "success", "path": file_path}
-    except requests.exceptions.HTTPError as e:
-        print(
-            f"ファイル更新/作成失敗 ({file_path}): {e.response.status_code} {e.response.text}"
-        )
-        return {"status": "error", "path": file_path, "message": str(e)}
-
-
-def create_or_update_files_batch(
-    files_data: List[Dict[str, str]], message: str, branch: str
-) -> Dict[str, Any]:
-    """複数のファイルを一括でコミット (API制限のため現状は個別呼び出し)"""
-    print(f"複数ファイル ({len(files_data)}) の更新/作成を開始します...")
-    results = []
-    success_count = 0
-    error_count = 0
-
-    # GitHub APIには一括更新がないため、ファイルを個別に更新
-    for file_info in files_data:
-        result = create_or_update_file(
-            file_info["path"], file_info["content"], message, branch
-        )
-        results.append(result)
-        if result["status"] == "success":
-            success_count += 1
-        else:
-            error_count += 1
-
-    print(f"ファイル更新/作成完了。成功: {success_count}, 失敗: {error_count}")
-    return {
-        "status": "error" if error_count > 0 else "success",
-        "results": results,
-    }
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"ファイル保存成功: {file_path}")
+        return True
+    except Exception as e:
+        print(f"ファイル保存失敗 ({file_path}): {e}")
+        return False
 
 
 # --- 差分計算 & 翻訳関数 ---
@@ -183,18 +136,18 @@ def translate_text(text: str, target_language: str, llm: ChatOpenAI) -> str:
     if not isinstance(text, str) or not text.strip():
         return text  # 文字列でない場合や空文字列はそのまま返す
 
-    # シンプルな翻訳プロンプト
+    # 翻訳結果のみを得るための洗練されたプロンプト
     prompt = (
         f"Translate the following Japanese text to {target_language}. "
-        "Preserve variables like '{{variable}}' or '$t(key)' exactly as they are.\n\n"
-        f'Japanese text: "{text}"\n\n'
-        f"{target_language} translation:"
+        "Preserve any variables or placeholders like '{{variable}}' or '$t(key)' exactly as they appear. "
+        "Return ONLY the translation without any explanations, quotes, or additional text.\n\n"
+        f'Text to translate: "{text}"'
     )
 
     messages = [
         {
             "role": "system",
-            "content": "You are a helpful translation assistant specializing in software localization.",
+            "content": "You are a precise translation engine for software localization. Always return ONLY the translated text without any explanations, formatting, or quotation marks. Preserve all variables and placeholders exactly as they appear in the original text.",
         },
         {"role": "user", "content": prompt},
     ]
@@ -275,7 +228,8 @@ def main():
 
     # 4. 各言語の翻訳ファイルを更新
     llm = get_llm()
-    files_to_commit: List[Dict[str, str]] = []
+    updated_files_count = 0
+    error_files_count = 0
 
     for lang in TARGET_LANGUAGES:
         print(f"\n--- 言語 '{lang}' の処理を開始 ---")
@@ -326,9 +280,7 @@ def main():
         if json.dumps(current_lang_json, sort_keys=True) != json.dumps(
             updated_lang_json, sort_keys=True
         ):
-            print(
-                f"  '{target_lang_path}' に変更がありました。コミット対象に追加します。"
-            )
+            print(f"  '{target_lang_path}' に変更がありました。ファイルを更新します。")
             # JSONを整形して文字列化
             updated_content = json.dumps(
                 updated_lang_json,
@@ -336,37 +288,26 @@ def main():
                 ensure_ascii=False,
                 sort_keys=True,  # キーでソート
             )
-            files_to_commit.append(
-                {
-                    "path": target_lang_path,
-                    "content": updated_content + "\n",
-                }  # 末尾に改行追加
-            )
+            # ローカルファイルとして保存
+            if save_file_locally(
+                target_lang_path, updated_content + "\n"
+            ):  # 末尾に改行追加
+                updated_files_count += 1
+            else:
+                error_files_count += 1
         else:
             print(f"  '{target_lang_path}' に変更はありませんでした。")
 
-    # 5. 変更をコミット
-    if files_to_commit:
-        print("\n変更をコミットしています...")
-        commit_message = (
-            f"chore(i18n): Update locale files based on changes in {SOURCE_JSON_PATH}\n\n"
-            f"Base branch: {BASE_BRANCH}\n"
-            f"Target branch: {TARGET_BRANCH}"
-        )
-        result = create_or_update_files_batch(
-            files_to_commit, commit_message, TARGET_BRANCH
-        )
-        if result["status"] == "error":
-            print("エラー: 一部または全てのファイルのコミットに失敗しました。")
-            # 必要であればエラーの詳細を出力
-            # print(json.dumps(result["results"], indent=2))
+    # 5. 結果を報告
+    if updated_files_count > 0:
+        print(f"\n合計 {updated_files_count} ファイルが更新されました。")
+        if error_files_count > 0:
+            print(f"警告: {error_files_count} ファイルの更新に失敗しました。")
             exit(1)
-        else:
-            print("全ての変更が正常にコミットされました。")
     else:
-        print("\nコミットする変更はありませんでした。")
+        print("\n更新するファイルはありませんでした。")
 
-    print("\n処理が正常に完了しました。")
+    print("\n処理が正常に完了しました。GitHub Actionsによりコミットが実行されます。")
 
 
 if __name__ == "__main__":

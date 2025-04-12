@@ -30,6 +30,17 @@ NEXT_PUBLIC_SELECT_VOICE=voicevox
 - Azure TTS：Microsoft Azure提供的多语言语音合成服务
 - Nijivoice：提供100多种声音的日语语音合成服务
 
+## 语音测试
+
+语音测试允许您播放所选语音合成引擎的声音。
+
+### 执行语音测试
+
+1. 选择语音合成引擎。
+2. 在语音测试中输入您想要播放的文本。
+3. 点击"播放"按钮。
+4. 语音将会播放。
+
 ## VOICEVOX
 
 ```bash
