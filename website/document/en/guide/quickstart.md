@@ -42,6 +42,16 @@ npm run dev
 
 You can start using AITuberKit by opening [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Screen Description
+
+![Screen Description](/images/quickstart_cm3w4.png)
+
+- The settings button with a gear icon at the top left allows you to configure various settings related to AI characters and voice
+- The conversation log button (right of the settings button) allows you to display the conversation history with the character by clicking it (adjustable width by dragging)
+- The character is displayed in the center, and its size and position can be freely adjusted by dragging
+- There is an input form with a microphone icon at the bottom, which allows you to text or voice input to the character
+- Click the send button (right arrow) or press Enter to send a message
+
 ## Basic Usage
 
 ### Interacting with AI Characters
@@ -50,7 +60,7 @@ You can start using AITuberKit by opening [http://localhost:3000](http://localho
 2. Edit the character's setting prompt as needed
 3. Upload a VRM file or Live2D file for the character, and a background file if needed
 4. Select a voice synthesis engine and configure voice settings as needed
-5. Start a conversation with the character from the input form. Microphone input is also available
+5. Start a conversation with the character from the input form
 
 ### AITuber Streaming
 

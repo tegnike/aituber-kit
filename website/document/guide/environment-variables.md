@@ -416,4 +416,7 @@ NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED=false
 ```bash
 # 紹介画面の表示設定（true/false）
 NEXT_PUBLIC_SHOW_INTRODUCTION="true"
+
+# チャットログの幅
+NEXT_PUBLIC_CHAT_LOG_WIDTH=400
 ```

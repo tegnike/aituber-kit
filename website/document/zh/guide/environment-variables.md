@@ -416,4 +416,7 @@ NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED=false
 ```bash
 # 介绍屏幕显示设置（true/false）
 NEXT_PUBLIC_SHOW_INTRODUCTION="true"
+
+# 聊天日志宽度
+NEXT_PUBLIC_CHAT_LOG_WIDTH=400
 ```
