@@ -1032,11 +1032,6 @@ const Voice = () => {
           <TextButton
             onClick={() => testVoice(selectVoice, customVoiceText)}
             disabled={!customVoiceText}
-            className={`px-6 py-2 rounded-lg ${
-              customVoiceText
-                ? 'bg-blue-500 text-white hover:bg-blue-600'
-                : 'bg-blue-300 text-gray-100 cursor-not-allowed'
-            }`}
           >
             {t('TestSelectedVoice')}
           </TextButton>
