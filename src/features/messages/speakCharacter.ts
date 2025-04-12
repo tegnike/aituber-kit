@@ -1,5 +1,6 @@
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import { AIVoice } from '@/features/constants/settings'
 import { wait } from '@/utils/wait'
 import { Talk } from './messages'
 import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
@@ -64,6 +65,108 @@ function preprocessMessage(
   return processed
 }
 
+async function synthesizeVoice(
+  talk: Talk,
+  voiceType: AIVoice
+): Promise<ArrayBuffer | null> {
+  const ss = settingsStore.getState()
+
+  if (ss.audioMode) {
+    return null
+  }
+
+  try {
+    switch (voiceType) {
+      case 'koeiromap':
+        return await synthesizeVoiceKoeiromapApi(
+          talk,
+          ss.koeiromapKey,
+          ss.koeiroParam
+        )
+      case 'voicevox':
+        return await synthesizeVoiceVoicevoxApi(
+          talk,
+          ss.voicevoxSpeaker,
+          ss.voicevoxSpeed,
+          ss.voicevoxPitch,
+          ss.voicevoxIntonation,
+          ss.voicevoxServerUrl
+        )
+      case 'google':
+        return await synthesizeVoiceGoogleApi(
+          talk,
+          ss.googleTtsType,
+          ss.selectLanguage
+        )
+      case 'stylebertvits2':
+        return await synthesizeStyleBertVITS2Api(
+          talk,
+          ss.stylebertvits2ServerUrl,
+          ss.stylebertvits2ApiKey,
+          ss.stylebertvits2ModelId,
+          ss.stylebertvits2Style,
+          ss.stylebertvits2SdpRatio,
+          ss.stylebertvits2Length,
+          ss.selectLanguage
+        )
+      case 'aivis_speech':
+        return await synthesizeVoiceAivisSpeechApi(
+          talk,
+          ss.aivisSpeechSpeaker,
+          ss.aivisSpeechSpeed,
+          ss.aivisSpeechPitch,
+          ss.aivisSpeechIntonation,
+          ss.aivisSpeechServerUrl
+        )
+      case 'gsvitts':
+        return await synthesizeVoiceGSVIApi(
+          talk,
+          ss.gsviTtsServerUrl,
+          ss.gsviTtsModelId,
+          ss.gsviTtsBatchSize,
+          ss.gsviTtsSpeechRate
+        )
+      case 'elevenlabs':
+        return await synthesizeVoiceElevenlabsApi(
+          talk,
+          ss.elevenlabsApiKey,
+          ss.elevenlabsVoiceId,
+          ss.selectLanguage
+        )
+      case 'openai':
+        return await synthesizeVoiceOpenAIApi(
+          talk,
+          ss.openaiKey,
+          ss.openaiTTSVoice,
+          ss.openaiTTSModel,
+          ss.openaiTTSSpeed
+        )
+      case 'azure':
+        return await synthesizeVoiceAzureOpenAIApi(
+          talk,
+          ss.azureTTSKey || ss.azureKey,
+          ss.azureTTSEndpoint || ss.azureEndpoint,
+          ss.openaiTTSVoice,
+          ss.openaiTTSSpeed
+        )
+      case 'nijivoice':
+        return await synthesizeVoiceNijivoiceApi(
+          talk,
+          ss.nijivoiceApiKey,
+          ss.nijivoiceActorId,
+          ss.nijivoiceSpeed,
+          ss.nijivoiceEmotionalLevel,
+          ss.nijivoiceSoundDuration
+        )
+      default:
+        return null
+    }
+  } catch (error) {
+    handleTTSError(error, voiceType)
+    return null
+  }
+}
+
 const createSpeakCharacter = () => {
   let lastTime = 0
   let prevFetchPromise: Promise<unknown> = Promise.resolve()
@@ -117,89 +220,8 @@ const createSpeakCharacter = () => {
         if (talk.message == '' && talk.buffer) {
           buffer = talk.buffer
           isNeedDecode = false
-        } else if (ss.audioMode) {
-          buffer = null
-        } else if (ss.selectVoice == 'koeiromap') {
-          buffer = await synthesizeVoiceKoeiromapApi(
-            talk,
-            ss.koeiromapKey,
-            ss.koeiroParam
-          )
-        } else if (ss.selectVoice == 'voicevox') {
-          buffer = await synthesizeVoiceVoicevoxApi(
-            talk,
-            ss.voicevoxSpeaker,
-            ss.voicevoxSpeed,
-            ss.voicevoxPitch,
-            ss.voicevoxIntonation,
-            ss.voicevoxServerUrl
-          )
-        } else if (ss.selectVoice == 'google') {
-          buffer = await synthesizeVoiceGoogleApi(
-            talk,
-            ss.googleTtsType,
-            ss.selectLanguage
-          )
-        } else if (ss.selectVoice == 'stylebertvits2') {
-          buffer = await synthesizeStyleBertVITS2Api(
-            talk,
-            ss.stylebertvits2ServerUrl,
-            ss.stylebertvits2ApiKey,
-            ss.stylebertvits2ModelId,
-            ss.stylebertvits2Style,
-            ss.stylebertvits2SdpRatio,
-            ss.stylebertvits2Length,
-            ss.selectLanguage
-          )
-        } else if (ss.selectVoice == 'aivis_speech') {
-          buffer = await synthesizeVoiceAivisSpeechApi(
-            talk,
-            ss.aivisSpeechSpeaker,
-            ss.aivisSpeechSpeed,
-            ss.aivisSpeechPitch,
-            ss.aivisSpeechIntonation,
-            ss.aivisSpeechServerUrl
-          )
-        } else if (ss.selectVoice == 'gsvitts') {
-          buffer = await synthesizeVoiceGSVIApi(
-            talk,
-            ss.gsviTtsServerUrl,
-            ss.gsviTtsModelId,
-            ss.gsviTtsBatchSize,
-            ss.gsviTtsSpeechRate
-          )
-        } else if (ss.selectVoice == 'elevenlabs') {
-          buffer = await synthesizeVoiceElevenlabsApi(
-            talk,
-            ss.elevenlabsApiKey,
-            ss.elevenlabsVoiceId,
-            ss.selectLanguage
-          )
-        } else if (ss.selectVoice == 'openai') {
-          buffer = await synthesizeVoiceOpenAIApi(
-            talk,
-            ss.openaiKey,
-            ss.openaiTTSVoice,
-            ss.openaiTTSModel,
-            ss.openaiTTSSpeed
-          )
-        } else if (ss.selectVoice == 'azure') {
-          buffer = await synthesizeVoiceAzureOpenAIApi(
-            talk,
-            ss.azureTTSKey || ss.azureKey,
-            ss.azureTTSEndpoint || ss.azureEndpoint,
-            ss.openaiTTSVoice,
-            ss.openaiTTSSpeed
-          )
-        } else if (ss.selectVoice == 'nijivoice') {
-          buffer = await synthesizeVoiceNijivoiceApi(
-            talk,
-            ss.nijivoiceApiKey,
-            ss.nijivoiceActorId,
-            ss.nijivoiceSpeed,
-            ss.nijivoiceEmotionalLevel,
-            ss.nijivoiceSoundDuration
-          )
+        } else {
+          buffer = await synthesizeVoice(talk, ss.selectVoice)
         }
       } catch (error) {
         handleTTSError(error, ss.selectVoice)
@@ -251,52 +273,55 @@ function handleTTSError(error: unknown, serviceName: string): void {
 
 export const speakCharacter = createSpeakCharacter()
 
-export const testVoiceVox = async () => {
-  const ss = settingsStore.getState()
-  const talk: Talk = {
-    message: 'ボイスボックスを使用します',
-    emotion: 'neutral',
-  }
-  const buffer = await synthesizeVoiceVoicevoxApi(
-    talk,
-    ss.voicevoxSpeaker,
-    ss.voicevoxSpeed,
-    ss.voicevoxPitch,
-    ss.voicevoxIntonation,
-    ss.voicevoxServerUrl
-  ).catch(() => null)
-  if (buffer) {
-    const ss = settingsStore.getState()
-    if (ss.modelType === 'vrm') {
-      const hs = homeStore.getState()
-      await hs.viewer.model?.speak(buffer, talk)
-    } else if (ss.modelType === 'live2d') {
-      Live2DHandler.speak(buffer, talk)
-    }
-  }
+export const testVoiceVox = async (customText?: string) => {
+  await testVoice('voicevox', customText)
 }
 
-export const testAivisSpeech = async () => {
+export const testAivisSpeech = async (customText?: string) => {
+  await testVoice('aivis_speech', customText)
+}
+
+export const testVoice = async (voiceType: AIVoice, customText?: string) => {
   const ss = settingsStore.getState()
+
+  const defaultMessages: Record<AIVoice, string> = {
+    voicevox: 'ボイスボックスを使用します',
+    aivis_speech: 'AivisSpeechを使用します',
+    koeiromap: 'コエイロマップを使用します',
+    google: 'Google Text-to-Speechを使用します',
+    stylebertvits2: 'StyleBertVITS2を使用します',
+    gsvitts: 'GSVI TTSを使用します',
+    elevenlabs: 'ElevenLabsを使用します',
+    openai: 'OpenAI TTSを使用します',
+    azure: 'Azure TTSを使用します',
+    nijivoice: 'にじボイスを使用します',
+  }
+
+  const message = customText || defaultMessages[voiceType]
+
   const talk: Talk = {
-    message: 'AivisSpeechを使用します',
+    message,
     emotion: 'neutral',
   }
-  const buffer = await synthesizeVoiceAivisSpeechApi(
-    talk,
-    ss.aivisSpeechSpeaker,
-    ss.aivisSpeechSpeed,
-    ss.aivisSpeechPitch,
-    ss.aivisSpeechIntonation,
-    ss.aivisSpeechServerUrl
-  ).catch(() => null)
-  if (buffer) {
-    const ss = settingsStore.getState()
-    if (ss.modelType === 'vrm') {
-      const hs = homeStore.getState()
-      await hs.viewer.model?.speak(buffer, talk)
-    } else if (ss.modelType === 'live2d') {
-      Live2DHandler.speak(buffer, talk)
+
+  try {
+    const currentVoice = ss.selectVoice
+    settingsStore.setState({ selectVoice: voiceType })
+
+    const buffer = await synthesizeVoice(talk, voiceType)
+
+    settingsStore.setState({ selectVoice: currentVoice })
+
+    if (buffer) {
+      if (ss.modelType === 'vrm') {
+        const hs = homeStore.getState()
+        await hs.viewer.model?.speak(buffer, talk)
+      } else if (ss.modelType === 'live2d') {
+        Live2DHandler.speak(buffer, talk)
+      }
     }
+  } catch (error) {
+    console.error(`Error testing ${voiceType} voice:`, error)
+    handleTTSError(error, voiceType)
   }
 }
