@@ -291,45 +291,8 @@
     "Documentation": "ドキュメント",
     "DocumentationDescription": "AITuberKitの詳細な使い方やチュートリアルは下記のURLからご覧ください。"
   },
-  "UsingGSVITTS": "GSVI TTSを使用する",
-  "GSVITTSInfo": "GSVI TTS設定",
-  "GSVITTSServerUrl": "GSVI TTSサーバーのURL",
-  "GSVITTSModelID": "GSVI TTS モデルID",
-  "GSVITTSBatchSize": "GSVI TTS バッチサイズ (1 ~ 100 数値が大きいほど推論速度は速くなりますが、大きすぎるとメモリを使い果たす可能性があります)",
-  "GSVITTSSpeechRate": "話速 (0.5 ~ 2.0 数値が大きいほど速い)",
+
   "Features": {
-    "ExternalAPI": {
-      "MessageReceiver": "外部からの指示を受け付ける",
-      "MessageReceiverDescription": "APIを利用してAIキャラの発言を外部から指示することができます。",
-      "ClientID": "Client ID",
-      "OpenSendMessagePage": "メッセージ送信ページを開く",
-      "RealtimeAPIMode": "リアルタイムAPIモード",
-      "RealtimeAPIModeContentType": "送信タイプ",
-      "RealtimeAPIModeVoice": "ボイスタイプ",
-      "AudioMode": "オーディオモード",
-      "InputText": "テキスト",
-      "InputAudio": "音声",
-      "UpdateRealtimeAPISettings": "リアルタイムAPI設定を更新",
-      "UpdateRealtimeAPISettingsInfo": "APIキー、Azure Endpoint、ボイスタイプ、モデル、システムプロンプトを更新した際は更新ボタンを押して、新しいWebSocketセッションを開始してください。",
-      "AzureEndpoint": "Azure Endpoint"
-    },
-    "ContinuousMic": {
-      "ContinuousMic": "常時マイク入力",
-      "ContinuousMicActive": "常時マイク入力中",
-      "ContinuousMicModeOn": "常時マイク入力モードがオンです",
-      "ContinuousMicModeOff": "常時マイク入力モードがオフです",
-      "ListeningContinuously": "音声入力を待機中...",
-      "ContinuousMicInfo": "AIの発話が終了したタイミングで自動的にマイク入力を再開します。設定された無音時間経過後に自動的に送信します。\n音声認識がされないまま設定時間を超えると、自動的に常時マイク入力はOFFになるため、常にONにしておきたい場合は音声認識タイムアウトを0秒に設定してください。"
-    },
-    "CustomAPI": {
-      "CustomAPIEndpoint": "カスタムAPIエンドポイント",
-      "CustomAPIEndpointInfo": "カスタムAPIエンドポイントを入力してください。",
-      "CustomAPIHeaders": "カスタムヘッダー",
-      "CustomAPIHeadersInfo": "APIリクエストに含めるヘッダー情報をJSON形式で入力してください。",
-      "CustomAPIBody": "カスタムボディ",
-      "CustomAPIBodyInfo": "APIリクエストに含めるボディ情報をJSON形式で入力してください。messagesは自動的に含まれます。",
-      "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。"
-    },
     "SendMessage": {
       "title": "AITuberKit 外部アダプター",
       "directSendTitle": "AIキャラにそのまま発言させる",
@@ -369,8 +332,7 @@
     "CustomAPIError": "カスタムAPIでエラーが発生しました",
     "InvalidJSON": "JSON形式が正しくありません"
   },
-  "SearchGrounding": "検索機能を利用する",
-  "SearchGroundingDescription": "マルチモーダル機能利用時は、検索機能は自動的に無効になります。",
+
   "Toasts": {
     "WebSocketConnectionError": "WebSocket接続にエラーが発生しました",
     "WebSocketConnectionClosed": "WebSocket接続が閉じられました",
@@ -384,66 +346,7 @@
     "PresetSwitching": "{{presetName}}に切り替わりました。",
     "WhisperError": "Whisperによる音声認識でエラーが発生しました"
   },
-  "Voice": {
-    "OpenAITTS": {
-      "UsingOpenAITTS": "OpenAIを使用する",
-      "OpenAITTSInfo": "OpenAIを使用しています。多言語に対応可能です。AIサービスでOpenAIを選択している場合は下記のAPIキーを設定する必要はありません。",
-      "OpenAITTSVoice": "ボイスタイプ",
-      "OpenAITTSModel": "モデル",
-      "OpenAITTSSpeed": "話速"
-    },
-    "AzureTTS": {
-      "UsingAzureTTS": "Azure OpenAIを使用する",
-      "AzureTTSInfo": "Azure OpenAIを使用しています。多言語に対応可能です。"
-    },
-    "ElevenLabs": {
-      "UsingElevenLabs": "ElevenLabsを使用する",
-      "ElevenLabsInfo": "ElevenLabs APIを使用しています。多言語に対応可能です。APIキーを下記のURLから取得してください。",
-      "ElevenLabsApiKey": "ElevenLabs APIキー",
-      "ElevenLabsVoiceId": "ElevenLabs ボイスID",
-      "ElevenLabsVoiceIdInfo": "ボイスIDは下記のURLから選択してください。"
-    }
-  },
-  "Settings": {
-    "Display": {
-      "CharacterName": "キャラクター名",
-      "ShowAssistantText": "回答欄を表示する",
-      "ShowCharacterName": "回答欄にキャラクター名を表示する",
-      "ShowControlPanel": "操作パネルを表示する",
-      "ShowControlPanelInfo": "設定画面は Cmd + . (Mac) / Ctrl + . (Windows) で表示することができます。\nスマートフォンをご利用の場合は、画面左上を長押し（約1秒）でも可能です。",
-      "ShowCharacterPresetMenu": "キャラクタープリセットメニューボタンを表示する",
-      "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する"
-    },
-    "AI": {
-      "Temperature": "Temperature",
-      "MaxTokens": "最大トークン数",
-      "MaxTokensInfo": "最大トークン数は利用中のAIモデルによって異なります。各モデルの仕様を確認してください。",
-      "CannotUseParameters": "リアルタイムAPIモードまたはオーディオモードが有効の場合、TemperatureとMax Tokensパラメータは指定できません。",
-      "CannotUseVoice": "リアルタイムAPIモード または オーディオモードが有効の場合、\n合成音声設定は不要です。"
-    },
-    "Live2D": {
-      "FileInfo": "使用したいLive2Dモデルのフォルダを、public/live2d に配置してください。このフォルダの直下にmodel3.jsonファイルが存在する必要があります。\n選択肢に表示されない場合は、画面を再読込するかフォルダのパスが正しいか確認してください。",
-      "Info": "感情とモーションを指定できます。\n各感情はプロンプトで制御しています。詳しくは「AI設定 => キャラクター設定」をご覧ください。",
-      "Emotions": "表情設定",
-      "EmotionInfo": "感情はカンマ区切りで複数指定できます。複数指定した場合はランダムに選択されます。\n初期値はAITuberKitで用意しているモデルに対応したものです。オリジナルのモデルを使用する場合はご自身のモデルに合わせた値を入力してください。\n会話完了後は「通常」の表情が表示されます。",
-      "neutralEmotions": "通常",
-      "happyEmotions": "嬉しい",
-      "sadEmotions": "悲しい",
-      "angryEmotions": "怒り",
-      "relaxedEmotions": "リラックス",
-      "surprisedEmotions": "驚き",
-      "MotionGroups": "モーショングループ設定",
-      "MotionGroupsInfo": "モーショングループは選択したグループからランダムに選択されます。\n表情設定と同じく、ご自身のモデルに合わせて設定してください。\n「アイドル時」は会話完了後に表示されるモーションです。",
-      "SelectMotionGroup": "モーショングループを選択",
-      "idleMotionGroup": "アイドル時",
-      "neutralMotionGroup": "通常",
-      "happyMotionGroup": "嬉しい",
-      "sadMotionGroup": "悲しい",
-      "angryMotionGroup": "怒り",
-      "relaxedMotionGroup": "リラックス",
-      "surprisedMotionGroup": "驚き"
-    }
-  },
+
   "UI": {
     "PresetQuestions": {
       "PresetQuestions": "質問の事前設定",
@@ -452,14 +355,7 @@
       "DragToReorder": "ドラッグして順番を変更"
     }
   },
-  "Features": {
-    "CustomAPI": {
-      "CustomAPIEndpoint": "カスタムAPIエンドポイント",
-      "CustomAPIEndpointInfo": "POSTリクエストを送信するAPIエンドポイントのURLを入力してください。",
-      "CustomAPIStream": "ストリーミングモード",
-      "CustomAPIStreamForced": "現在、ストリーミングモードは常に有効になっています。"
-    }
-  },
+
   "Unused": {
     "SendMessage": {
       "aiGenerateTitle": "AIで回答を生成してから発言させる",
