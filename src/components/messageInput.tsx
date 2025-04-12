@@ -107,14 +107,16 @@ export const MessageInput = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl max-w-md">
             <h3 className="text-xl font-bold mb-4">
-              {t('MicrophonePermission')}
+              {t('Errors.Permissions.MicrophonePermission')}
             </h3>
-            <p className="mb-4">{t('MicrophonePermissionMessage')}</p>
+            <p className="mb-4">
+              {t('Errors.Permissions.MicrophonePermissionMessage')}
+            </p>
             <button
               className="bg-secondary hover:bg-secondary-hover px-4 py-2 rounded-lg"
               onClick={() => setShowPermissionModal(false)}
             >
-              {t('Close')}
+              {t('UI.Common.Close')}
             </button>
           </div>
         </div>

@@ -15,7 +15,9 @@ const AI = () => {
           height={24}
           className="mr-2"
         />
-        <h2 className="text-2xl font-bold">{t('AISettings')}</h2>
+        <h2 className="text-2xl font-bold">
+          {t('Settings.Categories.AISettings')}
+        </h2>
       </div>
       <ExternalLinkage />
       <ModelProvider />

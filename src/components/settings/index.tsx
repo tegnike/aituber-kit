@@ -82,7 +82,7 @@ const Main = () => {
   const tabs: { key: TabKey; label: string }[] = [
     {
       key: 'description',
-      label: t('Description'),
+      label: t('Settings.Categories.Description'),
     },
     {
       key: 'based',

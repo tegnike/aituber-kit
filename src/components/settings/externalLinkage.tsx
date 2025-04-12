@@ -22,14 +22,18 @@ const ExternalLinkage = () => {
 
   return (
     <div className="mb-10">
-      <div className="mb-4 text-xl font-bold">{t('ExternalLinkageMode')}</div>
+      <div className="mb-4 text-xl font-bold">
+        {t('Settings.External.ExternalLinkageMode')}
+      </div>
       <div className="my-2">
         <TextButton
           onClick={() => {
             handleExternalLinkageModeChange(!externalLinkageMode)
           }}
         >
-          {externalLinkageMode ? t('StatusOn') : t('StatusOff')}
+          {externalLinkageMode
+            ? t('UI.Common.StatusOn')
+            : t('UI.Common.StatusOff')}
         </TextButton>
       </div>
     </div>

@@ -218,7 +218,9 @@ const ModelProvider = () => {
 
   return externalLinkageMode ? null : (
     <div className="mt-6">
-      <div className="my-4 text-xl font-bold">{t('SelectAIService')}</div>
+      <div className="my-4 text-xl font-bold">
+        {t('Settings.AI.SelectAIService')}
+      </div>
       <div className="my-2">
         <Listbox
           value={selectAIService}

@@ -39,7 +39,9 @@ const AdvancedSettings = () => {
               }))
             }
           >
-            {useVideoAsBackground ? t('StatusOn') : t('StatusOff')}
+            {useVideoAsBackground
+              ? t('UI.Common.StatusOn')
+              : t('UI.Common.StatusOff')}
           </TextButton>
         </div>
       </div>

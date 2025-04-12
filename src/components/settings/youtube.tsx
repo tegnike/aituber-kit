@@ -45,17 +45,21 @@ const YouTube = () => {
           height={24}
           className="mr-2"
         />
-        <h2 className="text-2xl font-bold">{t('YoutubeSettings')}</h2>
+        <h2 className="text-2xl font-bold">
+          {t('Settings.Youtube.YoutubeSettings')}
+        </h2>
       </div>
-      <div className="mb-4 text-xl font-bold">{t('YoutubeMode')}</div>
+      <div className="mb-4 text-xl font-bold">
+        {t('Settings.Youtube.YoutubeMode')}
+      </div>
       <div className="my-2">
         {youtubeMode ? (
           <TextButton onClick={() => handleChangeYoutubeMode(false)}>
-            {t('StatusOn')}
+            {t('UI.Common.StatusOn')}
           </TextButton>
         ) : (
           <TextButton onClick={() => handleChangeYoutubeMode(true)}>
-            {t('StatusOff')}
+            {t('UI.Common.StatusOff')}
           </TextButton>
         )}
       </div>

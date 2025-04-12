@@ -51,7 +51,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     event.preventDefault()
 
     if (!multiModalAIServices.includes(aiService)) {
-      alert(t('InvalidAIService'))
+      alert(t('Errors.InvalidAIService'))
       return
     }
 
@@ -59,7 +59,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     const apiKey = settingsStore.getState()[apiKeyName]
 
     if (!file || !folderName || !apiKey || !model) {
-      alert(t('PdfConvertSubmitError'))
+      alert(t('Errors.PdfConvertSubmitError'))
       return
     }
 
@@ -82,9 +82,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     // フォルダ更新関数を呼び出す
     if (response.ok) {
       onFolderUpdate()
-      alert(t('PdfConvertSuccess'))
+      alert(t('Toasts.PdfConvertSuccess'))
     } else {
-      alert(t('PdfConvertError'))
+      alert(t('Errors.PdfConvertError'))
     }
   }
 
@@ -92,9 +92,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     <div className="mt-6">
       <form onSubmit={handleFormSubmit}>
         <div className="my-4 mb-4 text-xl font-bold">
-          {t('PdfConvertLabel')}
+          {t('Settings.Slide.PdfConvertLabel')}
         </div>
-        <p className="">{t('PdfConvertDescription')}</p>
+        <p className="">{t('Settings.Slide.PdfConvertDescription')}</p>
         <div className="my-4 flex items-center">
           <input
             type="file"
@@ -110,7 +110,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
             }}
             type="button"
           >
-            {t('PdfConvertFileUpload')}
+            {t('UI.Buttons.PdfConvertFileUpload')}
           </TextButton>
           {selectedFileName && (
             <span className="ml-4 text-ellipsis overflow-hidden">
@@ -118,7 +118,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
             </span>
           )}
         </div>
-        <div className="my-4 font-bold">{t('PdfConvertFolderName')}</div>
+        <div className="my-4 font-bold">
+          {t('Settings.Slide.PdfConvertFolderName')}
+        </div>
         <input
           type="text"
           placeholder="Folder Name"
@@ -127,7 +129,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           required
           className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
         />
-        <div className="my-4 font-bold">{t('PdfConvertModelSelect')}</div>
+        <div className="my-4 font-bold">
+          {t('Settings.Slide.PdfConvertModelSelect')}
+        </div>
         <select
           value={model}
           onChange={(e) => setModel(e.target.value)}
@@ -178,7 +182,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
         </select>
         <div className="mt-4">
           <TextButton type="submit" disabled={isLoading}>
-            {isLoading ? t('PdfConvertLoading') : t('PdfConvertButton')}
+            {isLoading
+              ? t('UI.Buttons.PdfConvertLoading')
+              : t('UI.Buttons.PdfConvertButton')}
           </TextButton>
         </div>
       </form>
