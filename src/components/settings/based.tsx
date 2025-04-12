@@ -19,36 +19,75 @@ const Based = () => {
     (s) => s.changeEnglishToJapanese
   )
   const [backgroundFiles, setBackgroundFiles] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const backgroundImageUrl = homeStore((s) => s.backgroundImageUrl)
 
   useEffect(() => {
+    setIsLoading(true)
+    setError(null)
     fetch('/api/get-background-list')
       .then((res) => res.json())
-      .then((files) => setBackgroundFiles(files))
+      .then((files) =>
+        setBackgroundFiles(files.filter((file: string) => file !== 'bg-c.png'))
+      )
       .catch((error) => {
         console.error('Error fetching background list:', error)
+        setError(t('BackgroundListFetchError'))
       })
-  }, [])
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [t])
 
   const handleBackgroundUpload = async (file: File) => {
+    // ファイルタイプの検証
+    if (!file.type.startsWith('image/')) {
+      setUploadError(t('OnlyImageFilesAllowed'))
+      return
+    }
+
+    // ファイルサイズの検証（例：5MB以下）
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError(t('FileSizeLimitExceeded'))
+      return
+    }
+
+    setIsUploading(true)
+    setUploadError(null)
     const formData = new FormData()
     formData.append('file', file)
 
-    const response = await fetch('/api/upload-background', {
-      method: 'POST',
-      body: formData,
-    })
+    try {
+      const response = await fetch('/api/upload-background', {
+        method: 'POST',
+        body: formData,
+      })
 
-    if (response.ok) {
+      if (!response.ok) {
+        throw new Error(`${t('UploadFailed')}: ${response.status}`)
+      }
+
       const { path } = await response.json()
       homeStore.setState({ backgroundImageUrl: path })
 
-      fetch('/api/get-background-list')
-        .then((res) => res.json())
-        .then((files) => setBackgroundFiles(files))
-        .catch((error) => {
-          console.error('Error fetching background list:', error)
-        })
+      // バックグラウンドリストを更新
+      setIsLoading(true)
+      setError(null)
+      const listResponse = await fetch('/api/get-background-list')
+      if (!listResponse.ok) {
+        throw new Error(t('BackgroundListFetchError'))
+      }
+      const files = await listResponse.json()
+      setBackgroundFiles(files.filter((file: string) => file !== 'bg-c.png'))
+    } catch (error) {
+      console.error('Error uploading background:', error)
+      setUploadError(t('BackgroundUploadError'))
+    } finally {
+      setIsUploading(false)
+      setIsLoading(false)
     }
   }
 
@@ -139,6 +178,10 @@ const Based = () => {
         <div className="my-4 text-xl font-bold">{t('BackgroundSettings')}</div>
         <div className="my-4">{t('BackgroundSettingsDescription')}</div>
 
+        {isLoading && <div className="my-2">{t('Loading')}</div>}
+        {error && <div className="my-2 text-red-500">{error}</div>}
+        {uploadError && <div className="my-2 text-red-500">{uploadError}</div>}
+
         <div className="flex flex-col mb-4">
           <label className="mb-2 text-base">{t('BackgroundImage')}</label>
           <select
@@ -148,6 +191,7 @@ const Based = () => {
               const path = e.target.value
               homeStore.setState({ backgroundImageUrl: path })
             }}
+            disabled={isLoading || isUploading}
           >
             <option value="/backgrounds/bg-c.png">
               {t('DefaultBackground')}
@@ -175,8 +219,9 @@ const Based = () => {
                 fileInput.click()
               }
             }}
+            disabled={isLoading || isUploading}
           >
-            {t('UploadBackground')}
+            {isUploading ? t('Uploading') : t('UploadBackground')}
           </TextButton>
         </div>
       </div>
