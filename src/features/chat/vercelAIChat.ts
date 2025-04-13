@@ -235,8 +235,22 @@ export async function getVercelAIChatResponseStream(
                 } catch (error) {
                   console.error('Error parsing JSON:', error)
                 }
+              } else if (line.startsWith('3:')) {
+                const content = line.substring(2).trim()
+                const decodedContent = JSON.parse(content)
+
+                console.error(
+                  `Error fetching ${selectAIService} API response:`,
+                  decodedContent
+                )
+                toastStore.getState().addToast({
+                  message: decodedContent,
+                  type: 'error',
+                  tag: 'vercel-api-error',
+                })
+              } else if (line.startsWith('e:') || line.startsWith('d:')) {
+                continue
               } else if (line.match(/^([a-z]|\d):/)) {
-                // "e:", "d:", "9:"などの形式のメタデータ行をスキップ
                 // これらは通常、ストリームの終了やメタデータを示すものであり、コンテンツではない
                 continue
               } else if (line.trim() !== '') {
