@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "POSTリクエストを送信するAPIエンドポイントのURLを入力してください。",
   "CustomAPIStream": "ストリーミングモード",
   "CustomAPIStreamForced": "現在、ストリーミングモードは常に有効になっています。",
+  "IncludeSystemMessages": "システムメッセージを含める",
   "CustomAPIHeaders": "カスタムヘッダー",
   "CustomAPIHeadersInfo": "APIリクエストに含めるヘッダー情報をJSON形式で入力してください。",
   "CustomAPIBody": "カスタムボディ",

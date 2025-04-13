@@ -35,6 +35,7 @@ const getAIConfig = () => {
     customApiHeaders: ss.customApiHeaders,
     customApiBody: ss.customApiBody,
     customApiStream: ss.customApiStream,
+    includeSystemMessagesInCustomApi: ss.includeSystemMessagesInCustomApi,
   }
 }
 
@@ -81,12 +82,17 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     // サービスタイプに応じてリクエストデータを追加
     if (selectAIService === 'custom-api') {
       // カスタムAPI用データ
+      const filteredMessages = getAIConfig().includeSystemMessagesInCustomApi
+        ? messages
+        : messages.filter((message) => message.role !== 'system')
+
       Object.assign(requestData, {
         customApiUrl,
         customApiHeaders,
         customApiBody,
         temperature,
         maxTokens,
+        messages: filteredMessages, // フィルタリングされたメッセージを使用
       })
     } else {
       // Vercel AI SDK用データ
@@ -156,12 +162,17 @@ export async function getVercelAIChatResponseStream(
   // サービスタイプに応じてリクエストデータを追加
   if (selectAIService === 'custom-api') {
     // カスタムAPI用データ
+    const filteredMessages = getAIConfig().includeSystemMessagesInCustomApi
+      ? messages
+      : messages.filter((message) => message.role !== 'system')
+
     Object.assign(requestData, {
       customApiUrl,
       customApiHeaders,
       customApiBody,
       temperature,
       maxTokens,
+      messages: filteredMessages, // フィルタリングされたメッセージを使用
     })
   } else {
     // Vercel AI SDK用データ
