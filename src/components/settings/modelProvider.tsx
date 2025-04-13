@@ -1161,25 +1161,6 @@ const ModelProvider = () => {
               </div>
               <div className="my-6">
                 <div className="my-4 text-xl font-bold">
-                  {t('IncludeSystemMessages')}
-                </div>
-                <div className="my-2">
-                  <TextButton
-                    onClick={() => {
-                      settingsStore.setState({
-                        includeSystemMessagesInCustomApi:
-                          !includeSystemMessagesInCustomApi,
-                      })
-                    }}
-                  >
-                    {includeSystemMessagesInCustomApi
-                      ? t('StatusOn')
-                      : t('StatusOff')}
-                  </TextButton>
-                </div>
-              </div>
-              <div className="my-6">
-                <div className="my-4 text-xl font-bold">
                   {t('CustomAPIHeaders')}
                 </div>
                 <div className="my-4">{t('CustomAPIHeadersInfo')}</div>
@@ -1208,6 +1189,25 @@ const ModelProvider = () => {
               </div>
               <div className="my-6">
                 <div className="my-4 text-sm">{t('CustomAPIDescription')}</div>
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('IncludeSystemMessages')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        includeSystemMessagesInCustomApi:
+                          !includeSystemMessagesInCustomApi,
+                      })
+                    }}
+                  >
+                    {includeSystemMessagesInCustomApi
+                      ? t('StatusOn')
+                      : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
             </>
           )
