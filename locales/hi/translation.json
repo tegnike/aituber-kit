@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "请输入要发送POST请求的API端点URL。",
   "CustomAPIStream": "流模式",
   "CustomAPIStreamForced": "目前，流模式始终处于启用状态。",
+  "IncludeSystemMessages": "包含系统消息",
   "CustomAPIHeaders": "自定义头部",
   "CustomAPIHeadersInfo": "请以JSON格式输入要包含在API请求中的头部信息。",
   "CustomAPIBody": "自定义主体",

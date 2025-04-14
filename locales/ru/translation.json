@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "Введите URL конечной точки API для отправки POST-запросов.",
   "CustomAPIStream": "Режим потоковой передачи",
   "CustomAPIStreamForced": "В настоящее время режим потоковой передачи всегда включен.",
+  "IncludeSystemMessages": "Включить системные сообщения",
   "CustomAPIHeaders": "Пользовательские заголовки",
   "CustomAPIHeadersInfo": "Введите информацию заголовков, которую нужно включить в API-запрос, в формате JSON.",
   "CustomAPIBody": "Пользовательское тело",

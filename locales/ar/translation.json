@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "أدخل عنوان URL لنقطة نهاية واجهة البرمجة التي سيتم إرسال طلبات POST إليها.",
   "CustomAPIStream": "وضع التدفق",
   "CustomAPIStreamForced": "حاليًا، وضع التدفق مفعل دائمًا.",
+  "IncludeSystemMessages": "تضمين الرسائل النظامية",
   "CustomAPIHeaders": "رؤوس مخصصة",
   "CustomAPIHeadersInfo": "أدخل معلومات الرؤوس التي سيتم تضمينها في طلب واجهة البرمجة بتنسيق JSON.",
   "CustomAPIBody": "هيكل مخصص",

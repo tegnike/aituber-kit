@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "ป้อน URL ของจุดสิ้นสุด API ที่จะส่งคำขอ POST",
   "CustomAPIStream": "โหมดสตรีมมิ่ง",
   "CustomAPIStreamForced": "ขณะนี้ โหมดสตรีมมิ่งเปิดใช้งานตลอดเวลา",
+  "IncludeSystemMessages": "รวมข้อความระบบ",
   "CustomAPIHeaders": "ส่วนหัวแบบกำหนดเอง",
   "CustomAPIHeadersInfo": "ป้อนข้อมูลส่วนหัวที่จะรวมในคำขอ API ในรูปแบบ JSON",
   "CustomAPIBody": "เนื้อหาแบบกำหนดเอง",
