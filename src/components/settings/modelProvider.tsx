@@ -94,6 +94,9 @@ const ModelProvider = () => {
   const customApiHeaders = settingsStore((s) => s.customApiHeaders)
   const customApiBody = settingsStore((s) => s.customApiBody)
   const customApiStream = settingsStore((s) => s.customApiStream)
+  const includeSystemMessagesInCustomApi = settingsStore(
+    (s) => s.includeSystemMessagesInCustomApi
+  )
 
   const { t } = useTranslation()
 
@@ -1186,6 +1189,25 @@ const ModelProvider = () => {
               </div>
               <div className="my-6">
                 <div className="my-4 text-sm">{t('CustomAPIDescription')}</div>
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('IncludeSystemMessages')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        includeSystemMessagesInCustomApi:
+                          !includeSystemMessagesInCustomApi,
+                      })
+                    }}
+                  >
+                    {includeSystemMessagesInCustomApi
+                      ? t('StatusOn')
+                      : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
             </>
           )

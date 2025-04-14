@@ -59,6 +59,7 @@ interface APIKeys {
   customApiHeaders: string
   customApiBody: string
   customApiStream: boolean
+  includeSystemMessagesInCustomApi: boolean
 }
 
 interface Live2DSettings {
@@ -286,6 +287,9 @@ const settingsStore = create<SettingsState>()(
       customApiHeaders: process.env.NEXT_PUBLIC_CUSTOM_API_HEADERS || '{}',
       customApiBody: process.env.NEXT_PUBLIC_CUSTOM_API_BODY || '{}',
       customApiStream: true,
+      includeSystemMessagesInCustomApi:
+        process.env.NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API !==
+        'false',
 
       // Integrations
       difyUrl: '',
@@ -566,6 +570,8 @@ const settingsStore = create<SettingsState>()(
         customApiHeaders: state.customApiHeaders,
         customApiBody: state.customApiBody,
         customApiStream: state.customApiStream,
+        includeSystemMessagesInCustomApi:
+          state.includeSystemMessagesInCustomApi,
         initialSpeechTimeout: state.initialSpeechTimeout,
         chatLogWidth: state.chatLogWidth,
       }),

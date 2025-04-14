@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "Inserisci l'URL dell'endpoint API a cui inviare le richieste POST.",
   "CustomAPIStream": "Modalità streaming",
   "CustomAPIStreamForced": "Attualmente, la modalità streaming è sempre abilitata.",
+  "IncludeSystemMessages": "Includi messaggi del sistema",
   "CustomAPIHeaders": "Header personalizzati",
   "CustomAPIHeadersInfo": "Inserisci in formato JSON le informazioni degli header da includere nella richiesta API.",
   "CustomAPIBody": "Body personalizzato",
