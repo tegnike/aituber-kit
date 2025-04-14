@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "Vui lòng nhập URL điểm cuối API để gửi yêu cầu POST.",
   "CustomAPIStream": "Chế độ truyền phát",
   "CustomAPIStreamForced": "Hiện tại, chế độ truyền phát luôn được bật.",
+  "IncludeSystemMessages": "Bao gồm tin nhắn hệ thống",
   "CustomAPIHeaders": "Header tùy chỉnh",
   "CustomAPIHeadersInfo": "Vui lòng nhập thông tin header để bao gồm trong yêu cầu API ở định dạng JSON.",
   "CustomAPIBody": "Nội dung tùy chỉnh",

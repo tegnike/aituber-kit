@@ -56,7 +56,7 @@ export async function handleCustomApi(
     method: 'POST',
     headers: apiHeaders,
     body: apiBody,
-    signal: AbortSignal.timeout(30000), // 30秒でタイムアウト
+    signal: AbortSignal.timeout(180000), // 3分でタイムアウト
   })
 
   if (!apiResponse.ok) {

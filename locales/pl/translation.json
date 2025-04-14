@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "Wprowadź URL punktu końcowego API, do którego będą wysyłane żądania POST.",
   "CustomAPIStream": "Tryb strumieniowy",
   "CustomAPIStreamForced": "Tryb strumieniowy jest obecnie zawsze włączony.",
+  "IncludeSystemMessages": "Uwzględnij wiadomości systemowe",
   "CustomAPIHeaders": "Niestandardowe nagłówki",
   "CustomAPIHeadersInfo": "Wprowadź informacje nagłówka, które mają być zawarte w żądaniu API, w formacie JSON.",
   "CustomAPIBody": "Niestandardowy treść",

@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "Veuillez saisir l'URL du point de terminaison API auquel envoyer des requêtes POST.",
   "CustomAPIStream": "Mode streaming",
   "CustomAPIStreamForced": "Actuellement, le mode streaming est toujours activé.",
+  "IncludeSystemMessages": "Inclure les messages du système",
   "CustomAPIHeaders": "En-têtes personnalisés",
   "CustomAPIHeadersInfo": "Veuillez saisir les informations d'en-tête à inclure dans la requête API au format JSON.",
   "CustomAPIBody": "Corps personnalisé",

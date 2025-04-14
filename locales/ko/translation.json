@@ -293,6 +293,7 @@
   "CustomAPIEndpointInfo": "POST 요청을 전송할 API 엔드포인트의 URL을 입력해주세요.",
   "CustomAPIStream": "스트리밍 모드",
   "CustomAPIStreamForced": "현재, 스트리밍 모드는 항상 활성화되어 있습니다.",
+  "IncludeSystemMessages": "시스템 메시지 포함",
   "CustomAPIHeaders": "커스텀 헤더",
   "CustomAPIHeadersInfo": "API 요청에 포함할 헤더 정보를 JSON 형식으로 입력해주세요.",
   "CustomAPIBody": "커스텀 바디",
