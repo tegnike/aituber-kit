@@ -143,6 +143,13 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
               <option value="gpt-4.5-preview-2025-02-27">
                 gpt-4.5-preview-2025-02-27
               </option>
+              <option value="gpt-4.1-nano-2025-04-14">
+                gpt-4.1-nano-2025-04-14
+              </option>
+              <option value="gpt-4.1-mini-2025-04-14">
+                gpt-4.1-mini-2025-04-14
+              </option>
+              <option value="gpt-4.1-2025-04-14">gpt-4.1-2025-04-14</option>
             </>
           )}
           {aiService === 'anthropic' && (

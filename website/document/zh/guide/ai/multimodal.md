@@ -25,6 +25,9 @@ AITuberKit支持以下兼容多模态的AI服务和模型：
 - gpt-4.5-preview-2025-02-27
 - gpt-4o-mini-2024-07-18
 - chatgpt-4o-latest
+- gpt-4.1-2025-04-14
+- gpt-4.1-nano-2025-04-14
+- gpt-4.1-mini-2025-04-14
 
 ### Anthropic
 
