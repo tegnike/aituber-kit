@@ -232,7 +232,8 @@
     "SpeechRecognitionError": "音声認識エラーが発生しました",
     "NoSpeechDetected": "音声が検出されませんでした。",
     "PresetSwitching": "{{presetName}}に切り替わりました。",
-    "WhisperError": "Whisperによる音声認識でエラーが発生しました"
+    "WhisperError": "Whisperによる音声認識でエラーが発生しました",
+    "UsingTool": "{{toolName}}を使用中"
   },
   "ContinuousMic": "常時マイク入力",
   "ContinuousMicActive": "常時マイク入力中",

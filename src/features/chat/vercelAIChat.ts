@@ -259,6 +259,26 @@ export async function getVercelAIChatResponseStream(
                   type: 'error',
                   tag: 'vercel-api-error',
                 })
+              } else if (line.startsWith('9:')) {
+                // Anthropicのツール呼び出し情報を処理
+                const content = line.substring(2).trim()
+                try {
+                  const decodedContent = JSON.parse(content)
+                  if (decodedContent.toolName) {
+                    console.log(`Tool called: ${decodedContent.toolName}`)
+                    const message = i18next.t('Toasts.UsingTool', {
+                      toolName: decodedContent.toolName,
+                    })
+                    toastStore.getState().addToast({
+                      message,
+                      type: 'tool',
+                      tag: `vercel-tool-info-${decodedContent.toolName}`,
+                      duration: 3000,
+                    })
+                  }
+                } catch (error) {
+                  console.error('Error parsing tool call JSON:', error)
+                }
               } else if (line.startsWith('e:') || line.startsWith('d:')) {
                 continue
               } else if (line.match(/^([a-z]|\d):/)) {
