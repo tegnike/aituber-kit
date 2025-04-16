@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 type ToastProps = {
   message: string
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'error' | 'info' | 'tool'
   onClose: () => void
   duration?: number
   closing?: boolean
