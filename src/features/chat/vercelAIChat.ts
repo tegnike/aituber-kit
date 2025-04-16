@@ -153,9 +153,8 @@ export async function getVercelAIChatResponseStream(
   if (selectAIService !== 'custom-api') {
     const languageCode = settingsStore.getState().selectLanguage
     i18next.changeLanguage(languageCode)
-    const toolName = typeof selectAIService === 'string' 
-      ? selectAIService 
-      : 'AI'
+    const toolName =
+      typeof selectAIService === 'string' ? selectAIService : 'AI'
     const message = i18next.t('Toasts.UsingTool', { toolName })
     toastStore.getState().addToast({
       message,
