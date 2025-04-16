@@ -184,35 +184,37 @@ const createSpeakCharacter = () => {
 
     const processedMessage = preprocessMessage(talk.message, ss)
     if (!processedMessage && !talk.buffer) {
+      onComplete?.()
       return
     }
 
     if (processedMessage) {
       talk.message = processedMessage
-
-      // 英語→日本語変換が必要な場合は、非同期で処理を行う
-      if (
-        ss.changeEnglishToJapanese &&
-        ss.selectLanguage === 'ja' &&
-        containsEnglish(processedMessage)
-      ) {
-        // 非同期で変換処理を行い、結果をtalk.messageに反映
-        asyncConvertEnglishToJapaneseReading(processedMessage)
-          .then((convertedText) => {
-            talk.message = convertedText
-          })
-          .catch((error) => {
-            console.error('Error converting English to Japanese:', error)
-          })
-      }
+    } else if (talk.buffer) {
+      talk.message = ''
     }
 
     let isNeedDecode = true
 
-    const fetchPromise = prevFetchPromise.then(async () => {
+    const processAndSynthesizePromise = prevFetchPromise.then(async () => {
       const now = Date.now()
       if (now - lastTime < 1000) {
         await wait(1000 - (now - lastTime))
+      }
+
+      if (
+        processedMessage &&
+        ss.changeEnglishToJapanese &&
+        ss.selectLanguage === 'ja' &&
+        containsEnglish(processedMessage)
+      ) {
+        try {
+          const convertedText =
+            await asyncConvertEnglishToJapaneseReading(processedMessage)
+          talk.message = convertedText
+        } catch (error) {
+          console.error('Error converting English to Japanese:', error)
+        }
       }
 
       let buffer
@@ -220,30 +222,41 @@ const createSpeakCharacter = () => {
         if (talk.message == '' && talk.buffer) {
           buffer = talk.buffer
           isNeedDecode = false
-        } else {
+        } else if (talk.message !== '') {
           buffer = await synthesizeVoice(talk, ss.selectVoice)
+        } else {
+          buffer = null
         }
       } catch (error) {
         handleTTSError(error, ss.selectVoice)
         return null
+      } finally {
+        lastTime = Date.now()
       }
-      lastTime = Date.now()
-      return buffer
+
+      return { buffer, isNeedDecode }
     })
 
-    prevFetchPromise = fetchPromise
+    prevFetchPromise = processAndSynthesizePromise
 
-    // キューを使用した処理に変更
-    fetchPromise.then((audioBuffer) => {
-      if (!audioBuffer) return
+    processAndSynthesizePromise
+      .then((result) => {
+        if (!result || !result.buffer) {
+          onComplete?.()
+          return
+        }
 
-      speakQueue.addTask({
-        audioBuffer,
-        talk,
-        isNeedDecode,
-        onComplete,
+        speakQueue.addTask({
+          audioBuffer: result.buffer,
+          talk,
+          isNeedDecode: result.isNeedDecode,
+          onComplete,
+        })
       })
-    })
+      .catch((error) => {
+        console.error('Error in processAndSynthesizePromise chain:', error)
+        onComplete?.()
+      })
   }
 }
 
