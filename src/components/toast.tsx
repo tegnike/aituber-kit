@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 type ToastProps = {
   message: string
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'error' | 'info' | 'tool'
   onClose: () => void
   duration?: number
   closing?: boolean
@@ -33,6 +33,8 @@ export const Toast = ({
         return 'text-toast-success'
       case 'error':
         return 'text-toast-error'
+      case 'tool':
+        return 'text-toast-tool'
       default:
         return 'text-toast-info'
     }

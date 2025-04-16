@@ -15,6 +15,7 @@ import {
 } from '@/features/constants/settings'
 import { testVoiceVox } from '@/features/messages/speakCharacter'
 import { testAivisSpeech } from '@/features/messages/speakCharacter'
+import { testVoice } from '@/features/messages/speakCharacter'
 import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
@@ -72,6 +73,7 @@ const Voice = () => {
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
   const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
   const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
+  const [customVoiceText, setCustomVoiceText] = useState<string>('')
 
   // にじボイスの話者一覧を取得する関数
   const fetchNijivoiceSpeakers = async () => {
@@ -185,6 +187,7 @@ const Voice = () => {
           <option value="nijivoice">{t('UsingNijiVoice')}</option>
         </select>
       </div>
+
       <div className="mt-10">
         <div className="mb-4 text-xl font-bold">{t('VoiceAdjustment')}</div>
         {(() => {
@@ -211,6 +214,7 @@ const Voice = () => {
                     }
                   />
                 </div>
+
                 <div className="mt-4 font-bold">プリセット</div>
                 <div className="my-2 grid grid-cols-2 gap-[8px]">
                   <TextButton
@@ -343,9 +347,6 @@ const Voice = () => {
                       </option>
                     ))}
                   </select>
-                  <TextButton onClick={() => testVoiceVox()} className="ml-4">
-                    {t('TestVoice')}
-                  </TextButton>
                 </div>
                 <div className="mt-6 font-bold">
                   <div className="select-none">
@@ -587,12 +588,7 @@ const Voice = () => {
                       </option>
                     ))}
                   </select>
-                  <TextButton
-                    onClick={() => testAivisSpeech()}
-                    className="ml-4"
-                  >
-                    {t('TestVoice')}
-                  </TextButton>
+
                   <TextButton
                     onClick={async () => {
                       const response = await fetch(
@@ -1018,6 +1014,28 @@ const Voice = () => {
             )
           }
         })()}
+      </div>
+
+      {/* カスタムテキスト入力と統合テストボタン */}
+      <div className="mt-10 p-4 bg-gray-50 rounded-lg">
+        <div className="mb-4 text-xl font-bold">{t('TestVoiceSettings')}</div>
+        <div className="flex items-center">
+          <input
+            className="flex-1 px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+            type="text"
+            placeholder={t('CustomVoiceTextPlaceholder')}
+            value={customVoiceText}
+            onChange={(e) => setCustomVoiceText(e.target.value)}
+          />
+        </div>
+        <div className="flex items-center mt-4">
+          <TextButton
+            onClick={() => testVoice(selectVoice, customVoiceText)}
+            disabled={!customVoiceText}
+          >
+            {t('TestSelectedVoice')}
+          </TextButton>
+        </div>
       </div>
     </div>
   )
