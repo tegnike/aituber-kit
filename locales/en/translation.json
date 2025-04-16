@@ -232,7 +232,8 @@
     "SpeechRecognitionError": "A voice recognition error occurred",
     "NoSpeechDetected": "No voice detected.",
     "PresetSwitching": "Switched to {{presetName}}.",
-    "WhisperError": "An error occurred in voice recognition by Whisper"
+    "WhisperError": "An error occurred in voice recognition by Whisper",
+    "UsingTool": "Using {{toolName}}"
   },
   "ContinuousMic": "Continuous microphone input",
   "ContinuousMicActive": "Continuous microphone input active",
