@@ -237,7 +237,11 @@ const createSpeakCharacter = () => {
       return { buffer, isNeedDecode }
     })
 
-    prevFetchPromise = processAndSynthesizePromise
+    prevFetchPromise = processAndSynthesizePromise.catch((err) => {
+      console.error('Speak chain error (swallowed):', err)
+      // 後続処理を止めないために resolve で返す
+      return null
+    })
 
     processAndSynthesizePromise
       .then((result) => {
