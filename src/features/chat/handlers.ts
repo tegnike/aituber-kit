@@ -355,137 +355,167 @@ export const processAIResponse = async (
  * 画面のチャット欄から入力されたときに実行される処理
  * Youtubeでチャット取得した場合もこの関数を使用する
  */
-export const handleSendChatFn = () => async (text: string) => {
-  const sessionId = generateSessionId()
-  const newMessage = text
-  const timestamp = new Date().toISOString()
+export const handleSendChatFn =
+  () =>
+  async (
+    text: string,
+    source: 'user' | 'youtube' = 'user',
+    userName?: string
+  ) => {
+    const sessionId = generateSessionId()
+    const newMessage = text
+    const timestamp = new Date().toISOString()
 
-  if (newMessage === null) return
+    if (newMessage === null) return
 
-  const ss = settingsStore.getState()
-  const hs = homeStore.getState()
-  const sls = slideStore.getState()
-  const wsManager = webSocketStore.getState().wsManager
+    const ss = settingsStore.getState()
+    const hs = homeStore.getState()
+    const sls = slideStore.getState()
+    const wsManager = webSocketStore.getState().wsManager
 
-  if (ss.externalLinkageMode) {
-    homeStore.setState({ chatProcessing: true })
+    if (ss.externalLinkageMode) {
+      homeStore.setState({ chatProcessing: true })
 
-    if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
-      // ユーザーの発言を追加して表示
-      const updateLog: Message[] = [
-        ...hs.chatLog,
-        { role: 'user', content: newMessage, timestamp: timestamp },
-      ]
-      homeStore.setState({
-        chatLog: updateLog,
-      })
+      if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
+        // ユーザーの発言を追加して表示
+        const updateLog: Message[] = [
+          ...hs.chatLog,
+          { role: 'user', content: newMessage, timestamp: timestamp },
+        ]
+        homeStore.setState({
+          chatLog: updateLog,
+        })
 
-      // WebSocket送信
-      wsManager.websocket.send(
-        JSON.stringify({ content: newMessage, type: 'chat' })
-      )
+        // WebSocket送信
+        wsManager.websocket.send(
+          JSON.stringify({ content: newMessage, type: 'chat' })
+        )
+      } else {
+        toastStore.getState().addToast({
+          message: i18next.t('NotConnectedToExternalAssistant'),
+          type: 'error',
+          tag: 'not-connected-to-external-assistant',
+        })
+        homeStore.setState({
+          chatProcessing: false,
+        })
+      }
+    } else if (ss.realtimeAPIMode) {
+      if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
+        // ユーザーの発言を追加して表示
+        const updateLog: Message[] = [
+          ...hs.chatLog,
+          { role: 'user', content: newMessage, timestamp: timestamp },
+        ]
+        homeStore.setState({
+          chatLog: updateLog,
+        })
+      }
     } else {
-      toastStore.getState().addToast({
-        message: i18next.t('NotConnectedToExternalAssistant'),
-        type: 'error',
-        tag: 'not-connected-to-external-assistant',
-      })
-      homeStore.setState({
-        chatProcessing: false,
-      })
-    }
-  } else if (ss.realtimeAPIMode) {
-    if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
-      // ユーザーの発言を追加して表示
-      const updateLog: Message[] = [
-        ...hs.chatLog,
-        { role: 'user', content: newMessage, timestamp: timestamp },
-      ]
-      homeStore.setState({
-        chatLog: updateLog,
-      })
-    }
-  } else {
-    let systemPrompt = ss.systemPrompt
-    if (ss.slideMode) {
-      if (sls.isPlaying) {
-        return
+      let systemPrompt = ss.systemPrompt
+      if (ss.slideMode) {
+        if (sls.isPlaying) {
+          return
+        }
+
+        try {
+          let scripts = JSON.stringify(
+            require(
+              `../../../public/slides/${sls.selectedSlideDocs}/scripts.json`
+            )
+          )
+          systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
+
+          let supplement = ''
+          try {
+            const response = await fetch(
+              `/api/getSupplement?slideDocs=${sls.selectedSlideDocs}`
+            )
+            if (!response.ok) {
+              throw new Error('Failed to fetch supplement')
+            }
+            const data = await response.json()
+            supplement = data.supplement
+            systemPrompt = systemPrompt.replace('{{SUPPLEMENT}}', supplement)
+          } catch (e) {
+            console.error('supplement.txtの読み込みに失敗しました:', e)
+          }
+
+          const answerString = await judgeSlide(newMessage, scripts, supplement)
+          const answer = JSON.parse(answerString)
+          if (answer.judge === 'true' && answer.page !== '') {
+            goToSlide(Number(answer.page))
+            systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
+          }
+        } catch (e) {
+          console.error(e)
+        }
       }
 
+      homeStore.setState({ chatProcessing: true })
+      // ユーザーの発言を追加して表示
+      let content:
+        | string
+        | [{ type: 'text'; text: string }, { type: 'image'; image: string }] =
+        newMessage
+
+      if (source === 'youtube' && userName) {
+        if (typeof content === 'string') {
+          content = `[YouTube: ${userName}] ${content}`
+        } else if (Array.isArray(content)) {
+          const textPart = content[0] as { type: 'text'; text: string }
+          const imagePart = content[1] as { type: 'image'; image: string }
+
+          content = [
+            { type: 'text', text: `[YouTube: ${userName}] ${textPart.text}` },
+            imagePart,
+          ]
+        }
+      } else if (source === 'user' && typeof content === 'string') {
+        content = `[あなた] ${content}`
+      }
+
+      const messageLog: Message[] = [
+        ...hs.chatLog,
+        {
+          role: 'user',
+          content: hs.modalImage
+            ? [
+                {
+                  type: 'text',
+                  text: typeof content === 'string' ? content : content[0].text,
+                },
+                { type: 'image', image: hs.modalImage },
+              ]
+            : content,
+          timestamp: timestamp,
+        },
+      ]
+      if (hs.modalImage) {
+        homeStore.setState({ modalImage: '' })
+      }
+      homeStore.setState({ chatLog: messageLog })
+
+      const messages: Message[] = [
+        {
+          role: 'system',
+          content: systemPrompt,
+        },
+        ...messageSelectors.getProcessedMessages(
+          messageLog,
+          ss.includeTimestampInUserMessage
+        ),
+      ]
+
       try {
-        let scripts = JSON.stringify(
-          require(
-            `../../../public/slides/${sls.selectedSlideDocs}/scripts.json`
-          )
-        )
-        systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
-
-        let supplement = ''
-        try {
-          const response = await fetch(
-            `/api/getSupplement?slideDocs=${sls.selectedSlideDocs}`
-          )
-          if (!response.ok) {
-            throw new Error('Failed to fetch supplement')
-          }
-          const data = await response.json()
-          supplement = data.supplement
-          systemPrompt = systemPrompt.replace('{{SUPPLEMENT}}', supplement)
-        } catch (e) {
-          console.error('supplement.txtの読み込みに失敗しました:', e)
-        }
-
-        const answerString = await judgeSlide(newMessage, scripts, supplement)
-        const answer = JSON.parse(answerString)
-        if (answer.judge === 'true' && answer.page !== '') {
-          goToSlide(Number(answer.page))
-          systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
-        }
+        await processAIResponse(messageLog, messages)
       } catch (e) {
         console.error(e)
       }
+
+      homeStore.setState({ chatProcessing: false })
     }
-
-    homeStore.setState({ chatProcessing: true })
-    // ユーザーの発言を追加して表示
-    const messageLog: Message[] = [
-      ...hs.chatLog,
-      {
-        role: 'user',
-        content: hs.modalImage
-          ? [
-              { type: 'text', text: newMessage },
-              { type: 'image', image: hs.modalImage },
-            ]
-          : newMessage,
-        timestamp: timestamp,
-      },
-    ]
-    if (hs.modalImage) {
-      homeStore.setState({ modalImage: '' })
-    }
-    homeStore.setState({ chatLog: messageLog })
-
-    const messages: Message[] = [
-      {
-        role: 'system',
-        content: systemPrompt,
-      },
-      ...messageSelectors.getProcessedMessages(
-        messageLog,
-        ss.includeTimestampInUserMessage
-      ),
-    ]
-
-    try {
-      await processAIResponse(messageLog, messages)
-    } catch (e) {
-      console.error(e)
-    }
-
-    homeStore.setState({ chatProcessing: false })
   }
-}
 
 /**
  * WebSocketからのテキストを受信したときの処理

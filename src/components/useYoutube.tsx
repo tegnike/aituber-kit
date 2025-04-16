@@ -6,7 +6,7 @@ import { fetchAndProcessComments } from '@/features/youtube/youtubeComments'
 const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 10000 // 10秒
 
 interface Params {
-  handleSendChat: (text: string) => Promise<void>
+  handleSendChat: (text: string, userName?: string) => Promise<void>
 }
 
 const useYoutube = ({ handleSendChat }: Params) => {
