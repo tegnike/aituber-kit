@@ -1,0 +1,24 @@
+services:
+  obs:
+    image: ghcr.io/stealthinu/obs-url-recorder:master
+    environment:
+      OBS_BROWSER_URL: http://app:3000/?slide=demo&autoplay=true
+    ports:
+      - "5900:5900"  # VNC port
+    volumes:
+      - ~/aituberkit-output:/home/obsuser/output
+
+  aivisspeech-engine:
+    image: ghcr.io/aivis-project/aivisspeech-engine:nvidia-latest
+    restart: always
+    ports:
+      - "10101:10101"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - ~/.local/share/AivisSpeech-Engine:/home/user/.local/share/AivisSpeech-Engine-Dev

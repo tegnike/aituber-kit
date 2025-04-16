@@ -8,6 +8,8 @@ interface SlideControlsProps {
   prevSlide: () => void
   nextSlide: () => void
   toggleIsPlaying: () => void
+  obsConnected?: boolean
+  isRecording?: boolean
 }
 
 const SlideControls: React.FC<SlideControlsProps> = ({
@@ -17,15 +19,11 @@ const SlideControls: React.FC<SlideControlsProps> = ({
   prevSlide,
   nextSlide,
   toggleIsPlaying,
+  obsConnected,
+  isRecording,
 }) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '20px',
-      }}
-    >
+    <div className="flex items-center justify-center bg-gray-100 p-2 rounded-lg">
       <div>
         <IconButton
           iconName="24/Prev"
@@ -48,6 +46,23 @@ const SlideControls: React.FC<SlideControlsProps> = ({
           className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-2xl py-2 px-4 text-center mx-16"
         />
       </div>
+      
+      {/* OBS接続状態と録画状態を表示 */}
+      {obsConnected !== undefined && (
+        <div className="ml-4 flex items-center">
+          <span className={`w-3 h-3 rounded-full mr-1 ${obsConnected ? 'bg-green-500' : 'bg-red-500'}`}></span>
+          <span className="text-xs font-medium">OBS {obsConnected ? '接続中' : '未接続'}</span>
+          
+          {obsConnected && isRecording !== undefined && (
+            <div className="ml-2 flex items-center">
+              <span className={`w-3 h-3 rounded-full mr-1 ${isRecording ? 'bg-red-500 animate-pulse' : 'bg-gray-400'}`}></span>
+              <span className={`text-xs font-medium ${isRecording ? 'text-red-600' : ''}`}>
+                {isRecording ? '🔴 録画中' : '⚪ 録画停止'}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
