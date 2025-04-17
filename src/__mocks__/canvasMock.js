@@ -22,4 +22,4 @@ module.exports = {
     height: 100,
   })),
   loadImage: jest.fn(() => Promise.resolve({})),
-};
+}
