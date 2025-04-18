@@ -24,7 +24,7 @@ import {
 
 const speakQueue = new SpeakQueue()
 
-function preprocessMessage(
+export function preprocessMessage(
   message: string,
   settings: ReturnType<typeof settingsStore.getState>
 ): string | null {
