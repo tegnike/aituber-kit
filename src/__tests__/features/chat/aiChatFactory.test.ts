@@ -41,7 +41,9 @@ describe('aiChatFactory', () => {
 
   it('OpenAIオーディオモードの場合、getOpenAIAudioChatResponseStreamを呼び出す', async () => {
     const mockStream = createMockStream()
-    ;(getOpenAIAudioChatResponseStream as jest.Mock).mockResolvedValue(mockStream)
+    ;(getOpenAIAudioChatResponseStream as jest.Mock).mockResolvedValue(
+      mockStream
+    )
     ;(settingsStore.getState as jest.Mock).mockReturnValue({
       selectAIService: 'openai',
       audioMode: true,
@@ -74,7 +76,9 @@ describe('aiChatFactory', () => {
       jest.clearAllMocks()
 
       const mockStream = createMockStream()
-      ;(getVercelAIChatResponseStream as jest.Mock).mockResolvedValue(mockStream)
+      ;(getVercelAIChatResponseStream as jest.Mock).mockResolvedValue(
+        mockStream
+      )
       ;(settingsStore.getState as jest.Mock).mockReturnValue({
         selectAIService: service,
         audioMode: false,
