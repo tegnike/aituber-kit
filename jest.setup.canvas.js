@@ -1,1 +1,3 @@
-jest.mock('canvas', () => require('./src/__mocks__/canvasMock.js'), { virtual: true });
+jest.mock('canvas', () => require('./src/__mocks__/node-canvas.js'), { virtual: true });
+
+jest.mock('node-canvas', () => require('./src/__mocks__/node-canvas.js'), { virtual: true });
