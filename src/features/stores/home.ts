@@ -38,7 +38,7 @@ export interface TransientState {
 export type HomeState = PersistedState & TransientState
 
 // 更新の一時的なバッファリングを行うための変数
-let saveDebounceTimer: NodeJS.Timeout | null = null
+let saveDebounceTimer: ReturnType<typeof setTimeout> | null = null
 const SAVE_DEBOUNCE_DELAY = 2000 // 2秒
 let lastSavedLogLength = 0 // 最後に保存したログの長さを記録
 
