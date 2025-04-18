@@ -20,6 +20,8 @@ const customJestConfig = {
   transformIgnorePatterns: [
     '/node_modules/(?!(canvas|@ffmpeg-installer|fluent-ffmpeg)).+\\.js$',
   ],
+  moduleDirectories: ['node_modules', '<rootDir>/src/__mocks__'],
+  setupFiles: ['<rootDir>/jest.setup.canvas.js'],
 }
 
 module.exports = createJestConfig(customJestConfig)
