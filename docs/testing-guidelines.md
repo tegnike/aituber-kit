@@ -15,6 +15,7 @@
 ### 設定ファイル
 
 - **jest.config.js**: Jestの主要設定ファイル
+
   - Next.jsと統合するための設定
   - モジュールマッピング（`@/`プレフィックスを`src/`にマッピング）
   - canvasモジュールのモック化
@@ -22,6 +23,7 @@
   - 無視するパスの設定
 
 - **jest.setup.js**: テスト実行前の共通設定
+
   - @testing-library/jest-domのインポート
   - ReadableStreamのモック設定
 
@@ -48,6 +50,7 @@ npm run test:coverage
 テストファイルは`src/__tests__/`ディレクトリ以下に配置し、テスト対象のファイルと同じディレクトリ構造を維持します。
 
 例：
+
 - `src/utils/textProcessing.ts` → `src/__tests__/utils/textProcessing.test.ts`
 - `src/features/chat/aiChatFactory.ts` → `src/__tests__/features/chat/aiChatFactory.test.ts`
 
@@ -81,14 +84,14 @@ describe('モジュール名', () => {
     it('テストケースの説明（日本語）', () => {
       // テストの準備
       const input = 'テスト入力'
-      
+
       // テスト対象の実行
       const result = functionToTest(input)
-      
+
       // 結果の検証
       expect(result).toBe('期待される出力')
     })
-    
+
     // 非同期テストの例
     it('非同期処理のテスト', async () => {
       const result = await asyncFunctionToTest()
