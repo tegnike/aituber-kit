@@ -9,7 +9,7 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^canvas$': '<rootDir>/src/__mocks__/canvasMock.js',
+    '^canvas$': '<rootDir>/src/__mocks__/canvas.js',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
   modulePathIgnorePatterns: [
@@ -21,6 +21,7 @@ const customJestConfig = {
     '/node_modules/(?!(canvas|@ffmpeg-installer|fluent-ffmpeg)).+\\.js$',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/src/__mocks__'],
+  testPathIgnorePatterns: ['/node_modules/', '/\\.next/'],
   setupFiles: ['<rootDir>/jest.setup.canvas.js'],
 }
 
