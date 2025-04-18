@@ -1,7 +1,10 @@
 import settingsStore from '../../../features/stores/settings'
 import toastStore from '../../../features/stores/toast'
 import i18next from 'i18next'
-import { preprocessMessage, handleTTSError } from '../../../features/messages/speakCharacter'
+import {
+  preprocessMessage,
+  handleTTSError,
+} from '../../../features/messages/speakCharacter'
 
 jest.mock('../../../features/stores/settings', () => ({
   getState: jest.fn(),
@@ -27,12 +30,12 @@ describe('speakCharacter', () => {
   describe('preprocessMessage', () => {
     beforeEach(() => {
       jest.clearAllMocks()
-      
+
       const mockSettings = {
         changeEnglishToJapanese: false,
         selectLanguage: 'en',
       }
-      
+
       ;(settingsStore.getState as jest.Mock).mockReturnValue(mockSettings)
     })
 
@@ -45,13 +48,21 @@ describe('speakCharacter', () => {
     })
 
     it('前後の空白を削除する', () => {
-      expect(preprocessMessage('  テスト  ', settingsStore.getState())).toBe('テスト')
+      expect(preprocessMessage('  テスト  ', settingsStore.getState())).toBe(
+        'テスト'
+      )
     })
 
     it('絵文字を削除する', () => {
-      expect(preprocessMessage('テスト😊', settingsStore.getState())).toBe('テスト')
-      expect(preprocessMessage('😊テスト😊', settingsStore.getState())).toBe('テスト')
-      expect(preprocessMessage('テ😊ス😊ト', settingsStore.getState())).toBe('テスト')
+      expect(preprocessMessage('テスト😊', settingsStore.getState())).toBe(
+        'テスト'
+      )
+      expect(preprocessMessage('😊テスト😊', settingsStore.getState())).toBe(
+        'テスト'
+      )
+      expect(preprocessMessage('テ😊ス😊ト', settingsStore.getState())).toBe(
+        'テスト'
+      )
     })
 
     it('記号のみの場合はnullを返す', () => {
@@ -63,8 +74,12 @@ describe('speakCharacter', () => {
     })
 
     it('記号と文字が混在する場合は処理して返す', () => {
-      expect(preprocessMessage('テスト!', settingsStore.getState())).toBe('テスト!')
-      expect(preprocessMessage('!テスト', settingsStore.getState())).toBe('!テスト')
+      expect(preprocessMessage('テスト!', settingsStore.getState())).toBe(
+        'テスト!'
+      )
+      expect(preprocessMessage('!テスト', settingsStore.getState())).toBe(
+        '!テスト'
+      )
     })
 
     it('英語から日本語への変換が無効の場合は元のテキストを返す', () => {
@@ -78,7 +93,7 @@ describe('speakCharacter', () => {
         selectLanguage: 'ja',
       }
       ;(settingsStore.getState as jest.Mock).mockReturnValue(mockSettings)
-      
+
       const text = 'Hello world'
       expect(preprocessMessage(text, settingsStore.getState())).toBe(text)
     })
@@ -89,7 +104,7 @@ describe('speakCharacter', () => {
         selectLanguage: 'en',
       }
       ;(settingsStore.getState as jest.Mock).mockReturnValue(mockSettings)
-      
+
       const text = 'Hello world'
       expect(preprocessMessage(text, settingsStore.getState())).toBe(text)
     })
@@ -100,7 +115,7 @@ describe('speakCharacter', () => {
         selectLanguage: 'ja',
       }
       ;(settingsStore.getState as jest.Mock).mockReturnValue(mockSettings)
-      
+
       const text = 'こんにちは'
       expect(preprocessMessage(text, settingsStore.getState())).toBe(text)
     })
@@ -111,7 +126,6 @@ describe('speakCharacter', () => {
 
     beforeEach(() => {
       jest.clearAllMocks()
-      
       ;(toastStore.getState as jest.Mock).mockReturnValue({
         addToast: mockAddToast,
       })
@@ -120,14 +134,14 @@ describe('speakCharacter', () => {
     it('Errorオブジェクトのエラーを適切に処理する', () => {
       const error = new Error('Test error message')
       const serviceName = 'voicevox'
-      
+
       handleTTSError(error, serviceName)
-      
+
       expect(i18next.t).toHaveBeenCalledWith('Errors.TTSServiceError', {
         serviceName,
         message: 'Test error message',
       })
-      
+
       expect(mockAddToast).toHaveBeenCalledWith({
         message: 'TTS Service Error: voicevox - Test error message',
         type: 'error',
@@ -139,14 +153,14 @@ describe('speakCharacter', () => {
     it('文字列のエラーを適切に処理する', () => {
       const error = 'String error message'
       const serviceName = 'elevenlabs'
-      
+
       handleTTSError(error, serviceName)
-      
+
       expect(i18next.t).toHaveBeenCalledWith('Errors.TTSServiceError', {
         serviceName,
         message: 'String error message',
       })
-      
+
       expect(mockAddToast).toHaveBeenCalledWith({
         message: 'TTS Service Error: elevenlabs - String error message',
         type: 'error',
@@ -158,15 +172,15 @@ describe('speakCharacter', () => {
     it('不明なエラー型を適切に処理する', () => {
       const error = { unknown: 'error' }
       const serviceName = 'openai'
-      
+
       handleTTSError(error, serviceName)
-      
+
       expect(i18next.t).toHaveBeenCalledWith('Errors.UnexpectedError')
       expect(i18next.t).toHaveBeenCalledWith('Errors.TTSServiceError', {
         serviceName,
         message: 'Unexpected Error',
       })
-      
+
       expect(mockAddToast).toHaveBeenCalledWith({
         message: 'TTS Service Error: openai - Unexpected Error',
         type: 'error',
