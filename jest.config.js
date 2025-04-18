@@ -18,7 +18,7 @@ const customJestConfig = {
     'node_modules/fluent-ffmpeg',
   ],
   transformIgnorePatterns: [
-    '/node_modules/(?!(canvas|@ffmpeg-installer|fluent-ffmpeg)).+\\.js$',
+    '/node_modules/(?!(canvas|@ffmpeg-installer|fluent-ffmpeg|three|@pixiv/three-vrm)).+\\.js$',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/src/__mocks__'],
   testPathIgnorePatterns: ['/node_modules/', '/\\.next/'],

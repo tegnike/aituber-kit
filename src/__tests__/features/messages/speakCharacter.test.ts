@@ -1,6 +1,31 @@
+// THREE.js とその依存関係のモック
+jest.mock('three', () => ({
+  Object3D: class {},
+  AnimationMixer: class {},
+  AudioContext: class {},
+}))
+
+jest.mock('three/examples/jsm/loaders/GLTFLoader.js', () => ({
+  GLTFLoader: class {
+    register() {}
+    loadAsync() {
+      return Promise.resolve({ userData: { vrm: {} } })
+    }
+  },
+}))
+
+jest.mock('@pixiv/three-vrm', () => ({
+  VRM: class {},
+  VRMUtils: { rotateVRM0: jest.fn(), deepDispose: jest.fn() },
+  VRMExpressionPresetName: {},
+  VRMLoaderPlugin: class {},
+}))
+
 import settingsStore from '../../../features/stores/settings'
 import toastStore from '../../../features/stores/toast'
 import i18next from 'i18next'
+
+// preprocessMessage と handleTTSError だけを直接インポート
 import {
   preprocessMessage,
   handleTTSError,
@@ -24,6 +49,12 @@ jest.mock('i18next', () => ({
     }
     return key
   }),
+}))
+
+// homeStore のモック
+jest.mock('../../../features/stores/home', () => ({
+  getState: jest.fn(),
+  setState: jest.fn(),
 }))
 
 describe('speakCharacter', () => {
