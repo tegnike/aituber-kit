@@ -1,8 +1,26 @@
 import settingsStore from '../../../features/stores/settings'
-import { preprocessMessage } from '../../../features/messages/speakCharacter'
+import toastStore from '../../../features/stores/toast'
+import i18next from 'i18next'
+import { preprocessMessage, handleTTSError } from '../../../features/messages/speakCharacter'
 
 jest.mock('../../../features/stores/settings', () => ({
   getState: jest.fn(),
+}))
+
+jest.mock('../../../features/stores/toast', () => ({
+  getState: jest.fn(),
+}))
+
+jest.mock('i18next', () => ({
+  t: jest.fn((key, options) => {
+    if (key === 'Errors.TTSServiceError') {
+      return `TTS Service Error: ${options.serviceName} - ${options.message}`
+    }
+    if (key === 'Errors.UnexpectedError') {
+      return 'Unexpected Error'
+    }
+    return key
+  }),
 }))
 
 describe('speakCharacter', () => {
@@ -85,6 +103,76 @@ describe('speakCharacter', () => {
       
       const text = 'こんにちは'
       expect(preprocessMessage(text, settingsStore.getState())).toBe(text)
+    })
+  })
+
+  describe('handleTTSError', () => {
+    const mockAddToast = jest.fn()
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+      
+      ;(toastStore.getState as jest.Mock).mockReturnValue({
+        addToast: mockAddToast,
+      })
+    })
+
+    it('Errorオブジェクトのエラーを適切に処理する', () => {
+      const error = new Error('Test error message')
+      const serviceName = 'voicevox'
+      
+      handleTTSError(error, serviceName)
+      
+      expect(i18next.t).toHaveBeenCalledWith('Errors.TTSServiceError', {
+        serviceName,
+        message: 'Test error message',
+      })
+      
+      expect(mockAddToast).toHaveBeenCalledWith({
+        message: 'TTS Service Error: voicevox - Test error message',
+        type: 'error',
+        duration: 5000,
+        tag: 'tts-error',
+      })
+    })
+
+    it('文字列のエラーを適切に処理する', () => {
+      const error = 'String error message'
+      const serviceName = 'elevenlabs'
+      
+      handleTTSError(error, serviceName)
+      
+      expect(i18next.t).toHaveBeenCalledWith('Errors.TTSServiceError', {
+        serviceName,
+        message: 'String error message',
+      })
+      
+      expect(mockAddToast).toHaveBeenCalledWith({
+        message: 'TTS Service Error: elevenlabs - String error message',
+        type: 'error',
+        duration: 5000,
+        tag: 'tts-error',
+      })
+    })
+
+    it('不明なエラー型を適切に処理する', () => {
+      const error = { unknown: 'error' }
+      const serviceName = 'openai'
+      
+      handleTTSError(error, serviceName)
+      
+      expect(i18next.t).toHaveBeenCalledWith('Errors.UnexpectedError')
+      expect(i18next.t).toHaveBeenCalledWith('Errors.TTSServiceError', {
+        serviceName,
+        message: 'Unexpected Error',
+      })
+      
+      expect(mockAddToast).toHaveBeenCalledWith({
+        message: 'TTS Service Error: openai - Unexpected Error',
+        type: 'error',
+        duration: 5000,
+        tag: 'tts-error',
+      })
     })
   })
 })
