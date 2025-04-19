@@ -328,7 +328,12 @@ export const processAIResponse = async (messages: Message[]) => {
             .chatLog.find((msg) => msg.id === currentMessageId)
 
           if (currentMessage && typeof currentMessage.content === 'string') {
-            currentContentForUpdate = currentMessage.content + textToAdd
+            const baseContent =
+              typeof currentMessage.content === 'string'
+                ? currentMessage.content
+                : ''
+            currentContentForUpdate = baseContent + textToAdd
+
             if (textToAdd) {
               homeStore.getState().upsertMessage({
                 id: currentMessageId,
@@ -336,7 +341,7 @@ export const processAIResponse = async (messages: Message[]) => {
                 content: currentContentForUpdate,
               })
             } else {
-              currentContentForUpdate = currentMessage.content
+              currentContentForUpdate = baseContent
             }
           } else if (currentMessage && currentMessage.content === undefined) {
             currentContentForUpdate = textToAdd

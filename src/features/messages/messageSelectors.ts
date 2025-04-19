@@ -95,17 +95,10 @@ export const messageSelectors = {
                 ? lastItem.content
                 : lastItem.content?.[0]?.text || ''
             if (Array.isArray(lastItem.content)) {
-              lastItem.content[0].text = (
-                currentText +
-                ' ' +
-                item.content[0].text
-              ).trim()
+              lastItem.content[0].text =
+                currentText + ' ' + item.content[0].text
             } else {
-              lastItem.content = (
-                currentText +
-                ' ' +
-                item.content[0].text
-              ).trim()
+              lastItem.content = currentText + ' ' + item.content[0].text
             }
           } else if (typeof item.content === 'string') {
             const currentText =
@@ -113,13 +106,9 @@ export const messageSelectors = {
                 ? lastItem.content
                 : lastItem.content?.[0]?.text || ''
             if (Array.isArray(lastItem.content)) {
-              lastItem.content[0].text = (
-                currentText +
-                ' ' +
-                item.content
-              ).trim()
+              lastItem.content[0].text = currentText + ' ' + item.content
             } else {
-              lastItem.content = (currentText + ' ' + item.content).trim()
+              lastItem.content = currentText + ' ' + item.content
             }
           }
         } else {

@@ -57,10 +57,26 @@ describe('openAIAudioChat', () => {
     }
     ;(settingsStore.getState as jest.Mock).mockReturnValue(mockSettings)
 
+    const mockChatLog: Message[] = []
     const mockHomeStore = {
-      chatLog: [],
+      chatLog: mockChatLog,
+      upsertMessage: jest.fn((newMessage: Message) => {
+        const existingIndex = mockChatLog.findIndex(
+          (msg) =>
+            msg.audio?.id === newMessage.audio?.id &&
+            newMessage.audio?.id !== undefined
+        )
+        if (existingIndex !== -1) {
+          mockChatLog[existingIndex] = {
+            ...mockChatLog[existingIndex],
+            ...newMessage,
+          }
+        } else {
+          mockChatLog.push(newMessage)
+        }
+      }),
     }
-    ;(homeStore.getState as jest.Mock).mockReturnValue(mockHomeStore)
+    ;(homeStore.getState as jest.Mock).mockImplementation(() => mockHomeStore)
 
     const mockHandleReceiveText = jest.fn()
     ;(handleReceiveTextFromRtFn as jest.Mock).mockReturnValue(
@@ -181,6 +197,7 @@ describe('openAIAudioChat', () => {
       expect(homeStore.getState().chatLog).toContainEqual({
         role: 'assistant',
         audio: { id: 'audio-id-123' },
+        content: '',
       })
 
       expect(bufferManagerInstance.flush).toHaveBeenCalled()
