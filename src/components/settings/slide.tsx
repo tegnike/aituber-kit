@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link' // Link をインポート
 import settingsStore, {
   multiModalAIServices,
   multiModalAIServiceKey,
@@ -92,19 +93,53 @@ const Slide = () => {
           <div className="mt-6 mb-4 text-xl font-bold">
             {t('SelectedSlideDocs')}
           </div>
-          <select
-            id="folder-select"
-            className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
-            value={selectedSlideDocs}
-            onChange={handleFolderChange}
-            key={updateKey}
-          >
-            {slideFolders.map((folder) => (
-              <option key={folder} value={folder}>
-                {folder}
-              </option>
-            ))}
-          </select>
+          {/* プルダウンと編集ボタンを横並びにする */}
+          <div className="flex items-center gap-2">
+            <select
+              id="folder-select"
+              className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
+              value={selectedSlideDocs}
+              onChange={handleFolderChange}
+              key={updateKey}
+            >
+              {slideFolders.map((folder) => (
+                <option key={folder} value={folder}>
+                  {folder}
+                </option>
+              ))}
+            </select>
+            {/* 編集ページへのリンクボタン */}
+            {selectedSlideDocs && ( // スライドが選択されている場合のみ表示
+              <Link
+                href={`/slide-editor/${selectedSlideDocs}`}
+                passHref
+                legacyBehavior
+              >
+                <a
+                  target="_blank" // 新しいタブで開く
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl text-white font-bold transition-colors duration-200 whitespace-nowrap"
+                >
+                  {t('EditSlideScripts')}
+                  {/* 外部リンクアイコンを追加しても良いかも */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 ml-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </a>
+              </Link>
+            )}
+          </div>
           {multiModalAIServices.includes(
             selectAIService as multiModalAIServiceKey
           ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
