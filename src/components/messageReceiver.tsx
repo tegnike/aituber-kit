@@ -118,7 +118,7 @@ const MessageReceiver = () => {
               homeStore.setState({ modalImage: '' })
             }
 
-            await processAIResponse(hs.chatLog, messages)
+            await processAIResponse(messages)
             break
           }
           case 'user_input': {
