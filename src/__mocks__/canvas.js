@@ -1,4 +1,4 @@
-module.exports = jest.genMockFromModule('canvas');
+module.exports = jest.genMockFromModule('canvas')
 
 module.exports.createCanvas = jest.fn(() => ({
   getContext: jest.fn(() => ({
@@ -20,14 +20,16 @@ module.exports.createCanvas = jest.fn(() => ({
   toDataURL: jest.fn(() => ''),
   width: 100,
   height: 100,
-}));
+}))
 
-module.exports.Image = jest.fn(function() {
-  this.src = '';
-  this.onload = null;
-  this.width = 0;
-  this.height = 0;
-});
+module.exports.Image = jest.fn(function () {
+  this.src = ''
+  this.onload = null
+  this.width = 0
+  this.height = 0
+})
 
-module.exports.loadImage = jest.fn(() => Promise.resolve(new module.exports.Image()));
-module.exports.registerFont = jest.fn();
+module.exports.loadImage = jest.fn(() =>
+  Promise.resolve(new module.exports.Image())
+)
+module.exports.registerFont = jest.fn()

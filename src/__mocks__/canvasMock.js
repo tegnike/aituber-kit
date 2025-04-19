@@ -18,23 +18,23 @@ const Canvas = jest.fn(() => ({
   toDataURL: jest.fn(() => ''),
   width: 100,
   height: 100,
-}));
+}))
 
 const createCanvas = jest.fn((width, height) => {
-  const canvas = new Canvas();
-  canvas.width = width || 100;
-  canvas.height = height || 100;
-  return canvas;
-});
+  const canvas = new Canvas()
+  canvas.width = width || 100
+  canvas.height = height || 100
+  return canvas
+})
 
-const Image = jest.fn(function() {
-  this.src = '';
-  this.onload = null;
-  this.width = 0;
-  this.height = 0;
-});
+const Image = jest.fn(function () {
+  this.src = ''
+  this.onload = null
+  this.width = 0
+  this.height = 0
+})
 
-const loadImage = jest.fn(() => Promise.resolve(new Image()));
+const loadImage = jest.fn(() => Promise.resolve(new Image()))
 
 module.exports = {
   Canvas,

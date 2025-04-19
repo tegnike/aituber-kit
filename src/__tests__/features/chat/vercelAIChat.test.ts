@@ -57,7 +57,11 @@ describe('vercelAIChat', () => {
   })
 
   const testMessages: Message[] = [
-    { role: 'system', content: 'システムプロンプト', timestamp: '2023-01-01T00:00:00Z' },
+    {
+      role: 'system',
+      content: 'システムプロンプト',
+      timestamp: '2023-01-01T00:00:00Z',
+    },
     { role: 'user', content: 'こんにちは', timestamp: '2023-01-01T00:00:01Z' },
   ]
 
@@ -155,7 +159,9 @@ describe('vercelAIChat', () => {
           value: undefined,
         })
 
-      mockDecode.mockReturnValueOnce('data: {"choices":[{"delta":{"content":"こんにちは"}}]}\n\n')
+      mockDecode.mockReturnValueOnce(
+        'data: {"choices":[{"delta":{"content":"こんにちは"}}]}\n\n'
+      )
 
       mockFetch.mockResolvedValueOnce({
         ok: true,

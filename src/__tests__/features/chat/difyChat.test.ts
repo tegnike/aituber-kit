@@ -42,7 +42,11 @@ describe('difyChat', () => {
   })
 
   const testMessages: Message[] = [
-    { role: 'system', content: 'システムプロンプト', timestamp: '2023-01-01T00:00:00Z' },
+    {
+      role: 'system',
+      content: 'システムプロンプト',
+      timestamp: '2023-01-01T00:00:00Z',
+    },
     { role: 'user', content: 'こんにちは', timestamp: '2023-01-01T00:00:01Z' },
   ]
 
@@ -154,7 +158,9 @@ describe('difyChat', () => {
 
       await (stream as any)._startFn(mockController)
 
-      expect(mockController.enqueue).toHaveBeenCalledWith('エージェントからの応答')
+      expect(mockController.enqueue).toHaveBeenCalledWith(
+        'エージェントからの応答'
+      )
       expect(settingsStore.setState).toHaveBeenCalledWith({
         difyConversationId: 'agent-conversation-id',
       })
@@ -306,7 +312,9 @@ describe('difyChat', () => {
           'https://test-dify-url',
           'old-conversation-id'
         )
-      ).rejects.toThrow('API request to Dify failed with status 401 and body Unauthorized')
+      ).rejects.toThrow(
+        'API request to Dify failed with status 401 and body Unauthorized'
+      )
 
       expect(i18next.t).toHaveBeenCalledWith('Errors.InvalidAPIKey')
       expect(mockAddToast).toHaveBeenCalledWith({
