@@ -95,7 +95,9 @@ export async function getDifyChatResponseStream(
       },
     })
   } catch (error: any) {
-    const errorMessage = handleApiError(error.cause.errorCode)
+    const errorMessage = handleApiError(
+      error.cause ? error.cause.errorCode : 'AIAPIError'
+    )
     toastStore.getState().addToast({
       message: errorMessage,
       type: 'error',

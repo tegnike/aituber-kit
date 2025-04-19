@@ -24,7 +24,7 @@ import {
 
 const speakQueue = new SpeakQueue()
 
-function preprocessMessage(
+export function preprocessMessage(
   message: string,
   settings: ReturnType<typeof settingsStore.getState>
 ): string | null {
@@ -264,7 +264,7 @@ const createSpeakCharacter = () => {
   }
 }
 
-function handleTTSError(error: unknown, serviceName: string): void {
+export function handleTTSError(error: unknown, serviceName: string): void {
   let message: string
   if (error instanceof Error) {
     message = error.message

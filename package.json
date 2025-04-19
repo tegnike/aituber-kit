@@ -12,7 +12,10 @@
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
     "electron": "wait-on http://localhost:3000 && electron ./electron.mjs",
-    "desktop": "NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=\"\" run-p dev electron"
+    "desktop": "NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=\"\" run-p dev electron",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.48",
@@ -66,9 +69,12 @@
   "devDependencies": {
     "@charcoal-ui/tailwind-config": "^2.6.0",
     "@gltf-transform/core": "^2.4.6",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/fluent-ffmpeg": "^2.1.27",
     "@types/formidable": "^3.4.5",
+    "@types/jest": "^29.5.14",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.1.0",
     "@types/react": "^18.3.3",
@@ -81,12 +87,17 @@
     "eslint-config-next": "^14.2.5",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-mock": "^29.7.0",
+    "jest-mock-extended": "^4.0.0-beta1",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "sass": "^1.77.8",
     "style-loader": "^4.0.0",
     "tailwindcss": "^3.4.14",
+    "ts-jest": "^29.3.2",
     "typescript": "5.0.2",
     "wait-on": "^7.2.0"
   },

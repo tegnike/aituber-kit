@@ -128,7 +128,9 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     return { text: data.text }
   } catch (error: any) {
     console.error(`Error fetching ${selectAIService} API response:`, error)
-    const errorCode = error.cause?.errorCode || 'AIAPIError'
+    const errorCode = error.cause
+      ? error.cause.errorCode || 'AIAPIError'
+      : 'AIAPIError'
     return { text: handleApiError(errorCode) }
   }
 }
@@ -317,7 +319,9 @@ export async function getVercelAIChatResponseStream(
       },
     })
   } catch (error: any) {
-    const errorMessage = handleApiError(error.cause.errorCode)
+    const errorMessage = handleApiError(
+      error.cause ? error.cause.errorCode : 'AIAPIError'
+    )
     toastStore.getState().addToast({
       message: errorMessage,
       type: 'error',
