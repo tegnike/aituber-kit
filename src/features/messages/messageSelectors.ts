@@ -87,6 +87,8 @@ export const messageSelectors = {
         if (
           lastItem &&
           lastItem.role === item.role &&
+          lastItem.id !== undefined &&
+          item.id !== undefined &&
           lastItem.id === item.id
         ) {
           if (typeof item.content !== 'string' && item.content?.[0]?.text) {
