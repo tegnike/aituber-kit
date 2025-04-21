@@ -198,6 +198,7 @@ describe('openAIAudioChat', () => {
         role: 'assistant',
         audio: { id: 'audio-id-123' },
         content: '',
+        id: 'audio-id-123',
       })
 
       expect(bufferManagerInstance.flush).toHaveBeenCalled()
