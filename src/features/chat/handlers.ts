@@ -379,7 +379,7 @@ export const processAIResponse = async (messages: Message[]) => {
       let processableTextForSpeech = receivedChunksForSpeech
       receivedChunksForSpeech = ''
 
-      mainLoop: while (processableTextForSpeech.length > 0) {
+      while (processableTextForSpeech.length > 0) {
         const originalProcessableText = processableTextForSpeech
 
         if (isCodeBlock) {
@@ -413,11 +413,11 @@ export const processAIResponse = async (messages: Message[]) => {
             currentMessageId = generateMessageId()
 
             processableTextForSpeech = remainingAfterDelimiter.trimStart()
-            continue mainLoop
+            continue
           } else {
             receivedChunksForSpeech = codeBlockContent + receivedChunksForSpeech
             codeBlockContent = ''
-            break mainLoop
+            break
           }
         } else {
           const delimiterIndex =
@@ -433,7 +433,7 @@ export const processAIResponse = async (messages: Message[]) => {
 
             //
             let textToProcessBeforeCode = beforeCode.trimStart()
-            processLoopBeforeCode: while (textToProcessBeforeCode.length > 0) {
+            while (textToProcessBeforeCode.length > 0) {
               const prevText = textToProcessBeforeCode
               const {
                 emotionTag: extractedEmotion,
@@ -457,7 +457,7 @@ export const processAIResponse = async (messages: Message[]) => {
                 receivedChunksForSpeech =
                   textToProcessBeforeCode + receivedChunksForSpeech
                 textToProcessBeforeCode = ''
-                break processLoopBeforeCode
+                break
               }
 
               if (
@@ -467,7 +467,7 @@ export const processAIResponse = async (messages: Message[]) => {
                 console.warn('Speech processing loop stuck on:', prevText)
                 receivedChunksForSpeech =
                   textToProcessBeforeCode + receivedChunksForSpeech
-                break processLoopBeforeCode
+                break
               }
             }
 
@@ -482,7 +482,7 @@ export const processAIResponse = async (messages: Message[]) => {
               )
             }
             processableTextForSpeech = remainingAfterDelimiter
-            continue mainLoop
+            continue
           } else {
             const {
               emotionTag: extractedEmotion,
@@ -507,7 +507,7 @@ export const processAIResponse = async (messages: Message[]) => {
               receivedChunksForSpeech =
                 processableTextForSpeech + receivedChunksForSpeech
               processableTextForSpeech = ''
-              break mainLoop
+              break
             }
           }
         }
@@ -523,7 +523,7 @@ export const processAIResponse = async (messages: Message[]) => {
           receivedChunksForSpeech =
             processableTextForSpeech + receivedChunksForSpeech
           processableTextForSpeech = ''
-          break mainLoop
+          break
         }
       }
 

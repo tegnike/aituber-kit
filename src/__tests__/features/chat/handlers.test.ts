@@ -144,7 +144,21 @@ describe('handlers', () => {
         assistantMessage: '',
         modalImage: '',
         setState: jest.fn(),
-        upsertMessage: jest.fn(),
+        upsertMessage: jest.fn((newMessage: Message) => {
+          const existingIndex = mockChatLog.findIndex(
+            (msg) =>
+              msg.audio?.id === newMessage.audio?.id &&
+              newMessage.audio?.id !== undefined
+          )
+          if (existingIndex !== -1) {
+            mockChatLog[existingIndex] = {
+              ...mockChatLog[existingIndex],
+              ...newMessage,
+            }
+          } else {
+            mockChatLog.push({ content: '', ...newMessage })
+          }
+        }),
       }
       ;(homeStore.getState as jest.Mock).mockReturnValue(mockHomeStore)
       ;(settingsStore.getState as jest.Mock).mockReturnValue({
