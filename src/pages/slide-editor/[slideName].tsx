@@ -31,6 +31,22 @@ const SlideEditorPage: React.FC = () => {
   const [initialScripts, setInitialScripts] = useState<typeof scripts>([])
   const [initialSupplementContent, setInitialSupplementContent] = useState('')
   const [isComposing, setIsComposing] = useState(false) // IME変換中フラグ
+  const [screenWidth, setScreenWidth] = useState(0) // 画面幅を管理するstate
+
+  // 画面幅の取得と更新
+  useEffect(() => {
+    const updateScreenWidth = () => {
+      setScreenWidth(window.innerWidth)
+    }
+
+    updateScreenWidth()
+
+    window.addEventListener('resize', updateScreenWidth)
+
+    return () => {
+      window.removeEventListener('resize', updateScreenWidth)
+    }
+  }, [])
 
   // Marp スライドの取得と表示
   useEffect(() => {
@@ -327,16 +343,28 @@ const SlideEditorPage: React.FC = () => {
     setCurrentNotes(script && script.notes ? script.notes : '')
   }, [initialScripts, initialSupplementContent, currentSlide])
 
-  // スライドサイズ計算
-  const calculateSlideSize = () => {
-    const maxHeight = '65vh'
+  const calculateSlideSize = useCallback(() => {
+    let maxHeight = '65vh'
+    let maxWidth = '70vw'
+
+    // 画面幅に基づいてサイズを調整
+    if (screenWidth < 768) {
+      // スマートフォンなど小さい画面
+      maxHeight = '80vh'
+      maxWidth = '90vw'
+    } else if (screenWidth < 1024) {
+      // タブレットなど中程度の画面
+      maxHeight = '70vh'
+      maxWidth = '80vw'
+    }
+    // 1024px以上はデフォルト値を使用
+
     const width = `calc(${maxHeight} * (16 / 9))`
-    const maxWidth = '70vw'
     return {
       width: `min(${width}, ${maxWidth})`,
       height: `min(calc(${maxWidth} * (9 / 16)), ${maxHeight})`,
     }
-  }
+  }, [screenWidth])
 
   const slideSize = calculateSlideSize()
 
@@ -418,138 +446,134 @@ const SlideEditorPage: React.FC = () => {
   // 通常の表示
   return (
     <div className="flex flex-col items-center text-black min-h-screen bg-gradient-to-b from-purple-50 to-white py-8">
-      <div className="w-full max-w-4xl px-4 md:px-8">
+      <div className="w-full px-4 md:px-8">
         <h1 className="text-text-primary text-3xl font-bold mb-8 text-center">
           スライド編集: {slideName}
         </h1>
         <div
-          className="mb-6 bg-white px-4 pt-4 shadow-md"
+          className="bg-white shadow-md w-full"
           style={{ width: slideSize.width, margin: '0 auto' }}
         >
-          <div style={{ height: slideSize.height, position: 'relative' }}>
-            <SlideContent marpitContainer={marpitContainer} />
+          <div className="mb-2 bg-white px-4 pt-4">
+            <div style={{ height: slideSize.height, position: 'relative' }}>
+              <SlideContent marpitContainer={marpitContainer} />
+            </div>
           </div>
-        </div>
-        <div
-          className="mb-8 bg-white pt-2 shadow-md"
-          style={{ width: slideSize.width, margin: '0 auto' }}
-        >
-          <SlideControls
-            currentSlide={currentSlide}
-            slideCount={slideCount}
-            isPlaying={false}
-            prevSlide={prevSlide}
-            nextSlide={nextSlide}
-            toggleIsPlaying={() => {}}
-            showPlayButton={false} // 中央ボタンを非表示にする
-          />
-        </div>
-        <div
-          className="bg-white p-6 shadow-md"
-          style={{ width: slideSize.width, margin: '0 auto' }}
-        >
-          {/* セリフ編集 */}
-          <div className="mb-6">
-            <h2 className="text-text-primary text-lg font-bold mb-3">
-              ページ {currentSlide + 1} のセリフ
-            </h2>
-            <textarea
-              value={currentScript}
-              onChange={handleScriptChange}
-              onCompositionStart={() => setIsComposing(true)}
-              onCompositionEnd={(e) => {
-                setIsComposing(false)
-                updateScriptsState(
-                  currentSlide,
-                  'line',
-                  (e.target as HTMLTextAreaElement).value
-                )
-              }}
-              // onBlur は不要になったので削除
-              rows={4}
-              className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-text-primary text-base font-medium transition-all duration-200"
-              style={{
-                lineHeight: '1.5',
-                padding: '12px 16px',
-                resize: 'vertical',
-              }}
-              placeholder="このページのセリフを入力..."
+          <div className="mb-8 bg-white pt-2">
+            <SlideControls
+              currentSlide={currentSlide}
+              slideCount={slideCount}
+              isPlaying={false}
+              prevSlide={prevSlide}
+              nextSlide={nextSlide}
+              toggleIsPlaying={() => {}}
+              showPlayButton={false} // 中央ボタンを非表示にする
             />
           </div>
-          {/* 追加情報編集 */}
-          <div className="mb-6">
-            <h2 className="text-text-primary text-lg font-bold mb-3">
-              追加情報
-            </h2>
-            <textarea
-              value={currentNotes}
-              onChange={handleNotesChange}
-              onCompositionStart={() => setIsComposing(true)}
-              onCompositionEnd={(e) => {
-                setIsComposing(false)
-                updateScriptsState(
-                  currentSlide,
-                  'notes',
-                  (e.target as HTMLTextAreaElement).value
-                )
-              }}
-              // onBlur は不要になったので削除
-              rows={3}
-              className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-text-primary text-base font-medium transition-all duration-200"
-              style={{
-                lineHeight: '1.5',
-                padding: '12px 16px',
-                resize: 'vertical',
-              }}
-              placeholder="追加情報を入力..."
-            />
-          </div>
-          {/* スライド全体の補足情報編集 */}
-          <div className="mb-6">
-            <h2 className="text-text-primary text-lg font-bold mb-3">
-              スライド全体の補足情報 (supplement.txt)
-            </h2>
-            <textarea
-              value={supplementContent}
-              onChange={handleSupplementChange}
-              rows={5}
-              className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-text-primary text-base font-medium transition-all duration-200"
-              style={{
-                lineHeight: '1.5',
-                padding: '12px 16px',
-                resize: 'vertical',
-              }}
-              placeholder="スライド全体に関する補足情報を入力..."
-            />
-          </div>
-          {/* ボタンエリア */}
-          <div className="flex justify-center gap-4 mt-8">
-            {' '}
-            {/* 右寄せに戻し、gapで間隔調整 */}
-            {/* 元に戻すボタン */}
-            <button
-              onClick={handleRevert}
-              className={`px-6 py-3 rounded-xl font-bold transition-colors duration-200 ${
-                !isDirty
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-              }`}
-              disabled={!isDirty}
-            >
-              元に戻す
-            </button>
-            {/* 保存ボタン */}
-            <button
-              onClick={handleSave}
-              className={`px-6 py-3 rounded-xl font-bold text-white transition-colors duration-200 ${
-                !slideName || !isDirty
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-primary hover:bg-primary-hover'
-              }`}
-              disabled={!slideName || !isDirty}
-            >
-              {isDirty ? '変更を保存 *' : '保存済み'}
-            </button>
+          <div className="bg-white p-6">
+            {/* セリフ編集 */}
+            <div className="mb-6">
+              <h2 className="text-text-primary text-lg font-bold mb-3">
+                ページ {currentSlide + 1} のセリフ
+              </h2>
+              <textarea
+                value={currentScript}
+                onChange={handleScriptChange}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={(e) => {
+                  setIsComposing(false)
+                  updateScriptsState(
+                    currentSlide,
+                    'line',
+                    (e.target as HTMLTextAreaElement).value
+                  )
+                }}
+                // onBlur は不要になったので削除
+                rows={4}
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-text-primary text-base font-medium transition-all duration-200"
+                style={{
+                  lineHeight: '1.5',
+                  padding: '12px 16px',
+                  resize: 'vertical',
+                }}
+                placeholder="このページのセリフを入力..."
+              />
+            </div>
+            {/* 追加情報編集 */}
+            <div className="mb-6">
+              <h2 className="text-text-primary text-lg font-bold mb-3">
+                追加情報
+              </h2>
+              <textarea
+                value={currentNotes}
+                onChange={handleNotesChange}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={(e) => {
+                  setIsComposing(false)
+                  updateScriptsState(
+                    currentSlide,
+                    'notes',
+                    (e.target as HTMLTextAreaElement).value
+                  )
+                }}
+                // onBlur は不要になったので削除
+                rows={3}
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-text-primary text-base font-medium transition-all duration-200"
+                style={{
+                  lineHeight: '1.5',
+                  padding: '12px 16px',
+                  resize: 'vertical',
+                }}
+                placeholder="追加情報を入力..."
+              />
+            </div>
+            {/* スライド全体の補足情報編集 */}
+            <div className="mb-6">
+              <h2 className="text-text-primary text-lg font-bold mb-3">
+                スライド全体の補足情報 (supplement.txt)
+              </h2>
+              <textarea
+                value={supplementContent}
+                onChange={handleSupplementChange}
+                rows={5}
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-text-primary text-base font-medium transition-all duration-200"
+                style={{
+                  lineHeight: '1.5',
+                  padding: '12px 16px',
+                  resize: 'vertical',
+                }}
+                placeholder="スライド全体に関する補足情報を入力..."
+              />
+            </div>
+            {/* ボタンエリア */}
+            <div className="flex justify-center gap-4 mt-8">
+              {' '}
+              {/* 右寄せに戻し、gapで間隔調整 */}
+              {/* 元に戻すボタン */}
+              <button
+                onClick={handleRevert}
+                className={`px-6 py-3 rounded-xl font-bold transition-colors duration-200 ${
+                  !isDirty
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                }`}
+                disabled={!isDirty}
+              >
+                元に戻す
+              </button>
+              {/* 保存ボタン */}
+              <button
+                onClick={handleSave}
+                className={`px-6 py-3 rounded-xl font-bold text-white transition-colors duration-200 ${
+                  !slideName || !isDirty
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-primary hover:bg-primary-hover'
+                }`}
+                disabled={!slideName || !isDirty}
+              >
+                {isDirty ? '変更を保存 *' : '保存済み'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
