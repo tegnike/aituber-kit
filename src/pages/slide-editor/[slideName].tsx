@@ -445,16 +445,16 @@ const SlideEditorPage: React.FC = () => {
 
   // 通常の表示
   return (
-    <div className="flex flex-col items-center text-black min-h-screen bg-gradient-to-b from-purple-50 to-white py-8">
+    <div className="flex flex-col items-center text-black min-h-screen bg-purple-50 py-8">
       <div className="w-full px-4 md:px-8">
         <h1 className="text-text-primary text-3xl font-bold mb-8 text-center">
           スライド編集: {slideName}
         </h1>
         <div
-          className="bg-white shadow-md w-full"
+          className="bg-white shadow-md w-full mb-8 rounded-xl shadow-md"
           style={{ width: slideSize.width, margin: '0 auto' }}
         >
-          <div className="mb-2 bg-white px-4 pt-4">
+          <div className="mb-2 bg-white px-4 pt-4 rounded-xl">
             <div style={{ height: slideSize.height, position: 'relative' }}>
               <SlideContent marpitContainer={marpitContainer} />
             </div>
@@ -470,7 +470,7 @@ const SlideEditorPage: React.FC = () => {
               showPlayButton={false} // 中央ボタンを非表示にする
             />
           </div>
-          <div className="bg-white p-6">
+          <div className="bg-white p-6 rounded-xl">
             {/* セリフ編集 */}
             <div className="mb-6">
               <h2 className="text-text-primary text-lg font-bold mb-3">
