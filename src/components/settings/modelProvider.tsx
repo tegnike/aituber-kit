@@ -94,6 +94,9 @@ const ModelProvider = () => {
   const customApiHeaders = settingsStore((s) => s.customApiHeaders)
   const customApiBody = settingsStore((s) => s.customApiBody)
   const customApiStream = settingsStore((s) => s.customApiStream)
+  const includeSystemMessagesInCustomApi = settingsStore(
+    (s) => s.includeSystemMessagesInCustomApi
+  )
 
   const { t } = useTranslation()
 
@@ -484,6 +487,15 @@ const ModelProvider = () => {
                       </option>
                       <option value="gpt-4.5-preview-2025-02-27">
                         gpt-4.5-preview-2025-02-27
+                      </option>
+                      <option value="gpt-4.1-nano-2025-04-14">
+                        gpt-4.1-nano-2025-04-14
+                      </option>
+                      <option value="gpt-4.1-mini-2025-04-14">
+                        gpt-4.1-mini-2025-04-14
+                      </option>
+                      <option value="gpt-4.1-2025-04-14">
+                        gpt-4.1-2025-04-14
                       </option>
                     </>
                   </select>
@@ -1186,6 +1198,25 @@ const ModelProvider = () => {
               </div>
               <div className="my-6">
                 <div className="my-4 text-sm">{t('CustomAPIDescription')}</div>
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('IncludeSystemMessages')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        includeSystemMessagesInCustomApi:
+                          !includeSystemMessagesInCustomApi,
+                      })
+                    }}
+                  >
+                    {includeSystemMessagesInCustomApi
+                      ? t('StatusOn')
+                      : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
             </>
           )
