@@ -1,0 +1,20 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# API バージョン管理
+
+## 重要な制約事項
+- **クライアントの一元管理:** すべてのAPIクライアントロジックは [`app/lib/api/client.ts`](mdc:app/lib/api/client.ts) で一元管理されます。
+- **厳格なバージョン管理:** AIモデルのバージョンは [`app/lib/api/client.ts`](mdc:app/lib/api/client.ts) 内で厳密に管理されます。
+- **コアファイルの変更禁止:** 以下のファイルは**変更禁止**です（変更には承認が必要）：
+    - [`app/lib/api/client.ts`](mdc:app/lib/api/client.ts) - コアAIモデルとAPI設定。
+    - [`app/lib/api/types.ts`](mdc:app/lib/api/types.ts) - 一元管理された型定義。
+    - [`app/lib/api/config.ts`](mdc:app/lib/api/config.ts) - 一元管理された環境設定。
+
+## 実装規則
+- **モデルバージョン:** AIモデルのバージョンは**必ず** [`app/lib/api/client.ts`](mdc:app/lib/api/client.ts) で定義してください。
+- **型定義:** 型定義には**必ず** [`app/lib/api/types.ts`](mdc:app/lib/api/types.ts) を参照してください。
+- **環境変数:** 環境変数へのアクセスは**必ず** [`app/lib/api/config.ts`](mdc:app/lib/api/config.ts) を経由してください。
+- **配置場所:** すべてのAPI関連処理ロジックは [`app/lib/api/`](mdc:app/lib/api) ディレクトリ内に配置してください。

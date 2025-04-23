@@ -1,0 +1,45 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+\
+# プロジェクト構成とファイル配置
+
+すべての実装において、以下のディレクトリ構造に従ってください：
+
+```
+aituber-kit/
+├── app/                             # Next.js 13のappディレクトリ
+│   ├── api/                         # APIエンドポイント
+│   │   └── [endpoint]/
+│   │       └── route.ts
+│   ├── (routes)/                    # ページルーティング
+│   ├── components/                  # アプリケーションコンポーネント
+│   │   ├── ui/                      # 基本UI（button, card等）
+│   │   └── layout/                  # レイアウト関連
+│   ├── features/                    # 機能モジュール
+│   │   ├── chat/                    # チャット関連機能
+│   │   ├── messages/                # メッセージ関連機能
+│   │   └── stores/                  # 状態管理
+│   ├── hooks/                       # カスタムフック
+│   ├── lib/                         # ユーティリティ
+│   │   ├── api/                     # API関連処理
+│   │   │   ├── client.ts            # AIモデル設定（変更は承認要）
+│   │   │   ├── types.ts             # 型定義（変更は承認要）
+│   │   │   └── config.ts            # 環境設定（変更は承認要）
+│   │   └── utils/                   # 共通関数
+│   └── styles/                      # スタイル定義
+├── public/                          # 静的ファイル
+├── locales/                         # 多言語化リソース
+├── docs/                            # ドキュメント
+└── scripts/                         # ユーティリティスクリプト
+```
+
+## 配置ルール
+- **UIコンポーネント:** 基本的なUI要素は [`app/components/ui/`](mdc:app/components/ui/) に配置してください。
+- **APIエンドポイント:** APIルートは [`app/api/[endpoint]/route.ts`](mdc:app/api/) で定義してください。
+- **共通ユーティリティ:** 共有関数は [`app/lib/utils/`](mdc:app/lib/utils/) に配置してください。
+- **APIロジック:** API関連の処理は [`app/lib/api/`](mdc:app/lib/api/) に実装してください。
+- **機能モジュール:** 機能固有のコード（チャット、メッセージ、状態管理など）は [`app/features/`](mdc:app/features/) 以下にグループ化してください。
+- **カスタムフック:** カスタムReactフックは [`app/hooks/`](mdc:app/hooks/) に配置してください。
