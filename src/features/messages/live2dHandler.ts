@@ -100,19 +100,23 @@ export class Live2DHandler {
       live2dViewer.motion(motion, undefined, 3)
     }
 
-    // 音声再生の完了を待つ
-    // live2dViewer.speakでは音声完了を検知できないので、Audioオブジェクトを使用して音声再生完了を検知している
-    // Audioオブジェクトの方も再生すると二重に聞こえてしまうので、再生音量を最低限に設定
-    // TODO: もっといい方法があればそれに変更する
+    // live2dViewer.speak の onFinish コールバックを利用して音声再生完了を検知
     await new Promise<void>((resolve) => {
-      const audio = new Audio(audioUrl)
-      audio.volume = 0.01
-      audio.onended = () => {
-        resolve()
-        URL.revokeObjectURL(audioUrl)
-      }
-      audio.play()
-      live2dViewer.speak(audioUrl)
+      live2dViewer.speak(audioUrl, {
+        volume: 1.0,
+        expression,
+        resetExpression: true,
+        onFinish: () => {
+          resolve()
+          URL.revokeObjectURL(audioUrl)
+        },
+        onError: (e: any) => {
+          console.error('speak error:', e)
+          // エラー時も先に進める
+          resolve()
+          URL.revokeObjectURL(audioUrl)
+        },
+      })
     })
   }
 
@@ -137,11 +141,11 @@ export class Live2DHandler {
     }
 
     // 5秒ごとのアイドルモーション再生を開始
-    Live2DHandler.startIdleMotion(idleMotion, live2dViewer)
+    Live2DHandler.startIdleMotion(idleMotion)
   }
 
   // アイドルモーションのインターバル開始
-  private static startIdleMotion(idleMotion: string, live2dViewer: any) {
+  private static startIdleMotion(idleMotion: string) {
     const ss = settingsStore.getState()
     if (ss.modelType !== 'live2d') return
 
@@ -151,7 +155,22 @@ export class Live2DHandler {
         this.stopIdleMotion()
         return
       }
-      live2dViewer.motion(idleMotion)
+
+      const hs = homeStore.getState()
+      const viewer = hs.live2dViewer
+
+      // Viewerが存在しない、または破棄済みの場合はインターバルを停止
+      if (!viewer || (viewer as any).destroyed) {
+        this.stopIdleMotion()
+        return
+      }
+
+      try {
+        viewer.motion(idleMotion)
+      } catch (error) {
+        console.error('Idle motion failed:', error)
+        this.stopIdleMotion()
+      }
     }, 5000)
   }
 
