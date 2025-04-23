@@ -258,6 +258,9 @@ cp .env.example .env
   <a href="https://github.com/sher1ock-jp" title="sher1ock-jp">
     <img src="https://github.com/sher1ock-jp.png" width="40" height="40" alt="sher1ock-jp">
   </a>
+  <a href="https://github.com/uwaguchi" title="uwaguchi">
+    <img src="https://github.com/uwaguchi.png" width="40" height="40" alt="uwaguchi">
+  </a>
 </p>
 
 此外还有多位私人赞助者
