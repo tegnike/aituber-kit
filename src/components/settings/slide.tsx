@@ -31,13 +31,6 @@ const Slide = () => {
     }
   }, [slideMode, updateKey])
 
-  useEffect(() => {
-    // 初期値を 'demo' に設定
-    if (!selectedSlideDocs) {
-      slideStore.setState({ selectedSlideDocs: 'demo' })
-    }
-  }, [selectedSlideDocs])
-
   const handleFolderUpdate = () => {
     setUpdateKey((prevKey) => prevKey + 1) // 更新トリガー
   }
@@ -98,10 +91,11 @@ const Slide = () => {
             <select
               id="folder-select"
               className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
-              value={selectedSlideDocs}
+              value={selectedSlideDocs || ''}
               onChange={handleFolderChange}
               key={updateKey}
             >
+              <option value="">{t('PleaseSelectSlide')}</option>
               {slideFolders.map((folder) => (
                 <option key={folder} value={folder}>
                   {folder}
