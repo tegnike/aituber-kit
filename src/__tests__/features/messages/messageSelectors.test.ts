@@ -207,11 +207,15 @@ describe('messageSelectors', () => {
       ]
 
       const result = messageSelectors.normalizeMessages(messages)
-      expect(result).toHaveLength(2)
+      expect(result).toHaveLength(4)
       expect(result[0].role).toBe('user')
-      expect(result[0].content).toBe('こんにちは お元気ですか？')
-      expect(result[1].role).toBe('assistant')
-      expect(result[1].content).toBe('はい、 元気です！')
+      expect(result[0].content).toBe('こんにちは')
+      expect(result[1].role).toBe('user')
+      expect(result[1].content).toBe('お元気ですか？')
+      expect(result[2].role).toBe('assistant')
+      expect(result[2].content).toBe('はい、')
+      expect(result[3].role).toBe('assistant')
+      expect(result[3].content).toBe('元気です！')
     })
 
     it('画像を含むメッセージを正しく処理する', () => {
@@ -237,31 +241,40 @@ describe('messageSelectors', () => {
       ]
 
       const result = messageSelectors.normalizeMessages(messages)
-      expect(result).toHaveLength(2)
+      expect(result).toHaveLength(3)
       expect(result[0].role).toBe('user')
-      expect(result[0].content).toBe('こんにちは この画像について教えて')
-      expect(result[1].role).toBe('assistant')
+      expect(result[0].content).toBe('こんにちは')
+      expect(result[1].role).toBe('user')
       expect(result[1].content).toEqual([
-        { type: 'text', text: '素敵な画像ですね' },
+        { type: 'text', text: 'この画像について教えて' },
         { type: 'image', image: 'image-url-1' },
       ])
+      expect(result[2].role).toBe('assistant')
+      expect(result[2].content).toBe('素敵な画像ですね')
     })
 
     it('空のコンテンツを持つメッセージをフィルタリングする', () => {
       const messages: Message[] = [
-        { role: 'user', content: '', timestamp: '2023-01-01T00:00:00Z' },
         {
           role: 'user',
           content: 'こんにちは',
-          timestamp: '2023-01-01T00:00:01Z',
+          timestamp: '2023-01-01T00:00:00Z',
         },
-        { role: 'assistant', content: '', timestamp: '2023-01-01T00:00:02Z' },
+        { role: 'user', content: '', timestamp: '2023-01-01T00:00:01Z' },
+        { role: 'assistant', content: ' ', timestamp: '2023-01-01T00:00:02Z' },
       ]
 
       const result = messageSelectors.normalizeMessages(messages)
       expect(result).toHaveLength(1)
       expect(result[0].role).toBe('user')
-      expect(result[0].content).toBe(' こんにちは')
+      expect(result[0].content).toBe('こんにちは')
+    })
+
+    test('空のメッセージ配列を正しく処理する', () => {
+      const messages: Message[] = []
+
+      const result = messageSelectors.normalizeMessages(messages)
+      expect(result).toHaveLength(0)
     })
   })
 

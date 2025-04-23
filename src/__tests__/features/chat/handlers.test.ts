@@ -23,6 +23,7 @@ jest.mock('../../../features/messages/speakCharacter', () => ({
 jest.mock('../../../features/stores/home', () => ({
   getState: jest.fn(),
   setState: jest.fn(),
+  upsertMessage: jest.fn(),
 }))
 
 jest.mock('../../../features/stores/settings', () => ({
@@ -74,6 +75,7 @@ describe('handlers', () => {
       })
       ;(homeStore.getState as jest.Mock).mockReturnValue({
         chatLog: [],
+        upsertMessage: jest.fn(),
       })
 
       const handleSendChat = handleSendChatFn()
@@ -83,14 +85,12 @@ describe('handlers', () => {
       expect(mockWebSocket.send).toHaveBeenCalledWith(
         JSON.stringify({ content: 'テストメッセージ', type: 'chat' })
       )
-      expect(homeStore.setState).toHaveBeenCalledWith({
-        chatLog: expect.arrayContaining([
-          expect.objectContaining({
-            role: 'user',
-            content: 'テストメッセージ',
-          }),
-        ]),
-      })
+      expect((homeStore.getState() as any).upsertMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          role: 'user',
+          content: 'テストメッセージ',
+        })
+      )
     })
 
     it('externalLinkageModeがtrueだがWebSocketが接続されていない場合、エラーを表示する', async () => {
@@ -127,19 +127,40 @@ describe('handlers', () => {
 
     it('通常モードの場合、AIチャットレスポンスを処理する', async () => {
       const mockChatLog: Message[] = []
-      const mockStream = new ReadableStream({
-        start(controller) {
-          controller.enqueue('テスト応答')
-          controller.close()
-        },
-      })
+      const mockReader = {
+        read: jest
+          .fn()
+          .mockResolvedValueOnce({ value: 'テスト応答', done: false })
+          .mockResolvedValueOnce({ value: undefined, done: true }),
+        releaseLock: jest.fn(),
+      }
+      const mockStream = {
+        getReader: jest.fn().mockReturnValue(mockReader),
+      } as unknown as ReadableStream<string>
       ;(getAIChatResponseStream as jest.Mock).mockResolvedValue(mockStream)
-      ;(homeStore.getState as jest.Mock).mockReturnValue({
+      const mockHomeStore = {
         chatLog: mockChatLog,
+        chatProcessing: false,
+        assistantMessage: '',
         modalImage: '',
-        incrementChatProcessingCount: jest.fn(),
-        decrementChatProcessingCount: jest.fn(),
-      })
+        setState: jest.fn(),
+        upsertMessage: jest.fn((newMessage: Message) => {
+          const existingIndex = mockChatLog.findIndex(
+            (msg) =>
+              msg.audio?.id === newMessage.audio?.id &&
+              newMessage.audio?.id !== undefined
+          )
+          if (existingIndex !== -1) {
+            mockChatLog[existingIndex] = {
+              ...mockChatLog[existingIndex],
+              ...newMessage,
+            }
+          } else {
+            mockChatLog.push({ content: '', ...newMessage })
+          }
+        }),
+      }
+      ;(homeStore.getState as jest.Mock).mockReturnValue(mockHomeStore)
       ;(settingsStore.getState as jest.Mock).mockReturnValue({
         externalLinkageMode: false,
         realtimeAPIMode: false,
@@ -152,14 +173,12 @@ describe('handlers', () => {
       await handleSendChat('テストメッセージ')
 
       expect(homeStore.setState).toHaveBeenCalledWith({ chatProcessing: true })
-      expect(homeStore.setState).toHaveBeenCalledWith({
-        chatLog: expect.arrayContaining([
-          expect.objectContaining({
-            role: 'user',
-            content: 'テストメッセージ',
-          }),
-        ]),
-      })
+      expect(mockHomeStore.upsertMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          role: 'user',
+          content: 'テストメッセージ',
+        })
+      )
       expect(getAIChatResponseStream).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
@@ -175,7 +194,7 @@ describe('handlers', () => {
     it('AIレスポンスストリームがnullの場合、処理を終了する', async () => {
       ;(getAIChatResponseStream as jest.Mock).mockResolvedValue(null)
 
-      await processAIResponse([], [])
+      await processAIResponse([])
 
       expect(homeStore.setState).toHaveBeenCalledWith({ chatProcessing: false })
       expect(speakCharacter).not.toHaveBeenCalled()
