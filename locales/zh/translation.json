@@ -229,10 +229,11 @@
     "FunctionExecuting": "正在执行{{funcName}}",
     "FunctionExecutionFailed": "{{funcName}}执行失败",
     "FirefoxNotSupported": "Firefox不支持此功能",
-    "SpeechRecognitionError": "发生语音识别错误",
-    "NoSpeechDetected": "未检测到语音。",
+    "SpeechRecognitionError": "发生了语音识别错误",
+    "NoSpeechDetected": "未检测到音频。",
     "PresetSwitching": "已切换到{{presetName}}。",
-    "WhisperError": "Whisper语音识别发生错误"
+    "WhisperError": "Whisper的语音识别发生错误",
+    "UsingTool": "正在使用{{toolName}}"
   },
   "ContinuousMic": "常时麦克风输入",
   "ContinuousMicActive": "常时麦克风输入中",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "请以JSON格式输入要包含在API请求中的标头信息。",
   "CustomAPIBody": "自定义正文",
   "CustomAPIBodyInfo": "请以JSON格式输入要包含在API请求中的正文信息。messages将自动包含。",
-  "CustomAPIDescription": "注意：消息将自动包含在请求正文中。在流式模式下，服务器需要返回text/event-stream。"
+  "CustomAPIDescription": "注意：消息将自动包含在请求正文中。在流式模式下，服务器需要返回text/event-stream。",
+  "EditSlideScripts": "台词编辑",
+  "PleaseSelectSlide": "请选择幻灯片"
 }

@@ -227,12 +227,13 @@
     "WebSocketConnectionAttempt": "WebSocket 연결을 시도하고 있습니다...",
     "WebSocketConnectionSuccess": "WebSocket 연결에 성공했습니다",
     "FunctionExecuting": "{{funcName}}을(를) 실행하고 있습니다",
-    "FunctionExecutionFailed": "{{funcName}} 실행에 실패했습니다",
+    "FunctionExecutionFailed": "{{funcName}}의 실행에 실패했습니다",
     "FirefoxNotSupported": "Firefox에서는 이 기능이 지원되지 않습니다",
     "SpeechRecognitionError": "음성 인식 오류가 발생했습니다",
     "NoSpeechDetected": "음성이 감지되지 않았습니다.",
-    "PresetSwitching": "{{presetName}}(으)로 전환되었습니다.",
-    "WhisperError": "Whisper에 의한 음성 인식에서 오류가 발생했습니다"
+    "PresetSwitching": "{{presetName}}로 전환되었습니다.",
+    "WhisperError": "Whisper에 의한 음성 인식에서 오류가 발생했습니다",
+    "UsingTool": "{{toolName}} 사용 중"
   },
   "ContinuousMic": "상시 마이크 입력",
   "ContinuousMicActive": "상시 마이크 입력 중",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "API 요청에 포함할 헤더 정보를 JSON 형식으로 입력해주세요.",
   "CustomAPIBody": "커스텀 바디",
   "CustomAPIBodyInfo": "API 요청에 포함할 바디 정보를 JSON 형식으로 입력해주세요. messages는 자동으로 포함됩니다.",
-  "CustomAPIDescription": "주의: 메시지는 자동으로 요청 바디에 포함됩니다. 스트리밍 모드에서는, 서버가 text/event-stream을 반환해야 합니다."
+  "CustomAPIDescription": "주의: 메시지는 자동으로 요청 바디에 포함됩니다. 스트리밍 모드에서는, 서버가 text/event-stream을 반환해야 합니다.",
+  "EditSlideScripts": "대사 편집",
+  "PleaseSelectSlide": "슬라이드를 선택하세요"
 }

@@ -223,14 +223,14 @@
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "An error occurred in the WebSocket connection",
-    "WebSocketConnectionClosed": "WebSocket connection closed",
+    "WebSocketConnectionClosed": "The WebSocket connection has been closed",
     "WebSocketConnectionAttempt": "Attempting WebSocket connection...",
-    "WebSocketConnectionSuccess": "WebSocket connection successful",
-    "FunctionExecuting": "Executing {{funcName}}",
-    "FunctionExecutionFailed": "Execution of {{funcName}} failed",
+    "WebSocketConnectionSuccess": "WebSocket connection succeeded",
+    "FunctionExecuting": "Running {{funcName}}",
+    "FunctionExecutionFailed": "Failed to execute {{funcName}}",
     "FirefoxNotSupported": "This feature is not supported in Firefox",
-    "SpeechRecognitionError": "A voice recognition error occurred",
-    "NoSpeechDetected": "No voice detected.",
+    "SpeechRecognitionError": "A speech recognition error has occurred",
+    "NoSpeechDetected": "No audio was detected.",
     "PresetSwitching": "Switched to {{presetName}}.",
     "WhisperError": "An error occurred in voice recognition by Whisper",
     "UsingTool": "Using {{toolName}}"
@@ -299,5 +299,7 @@
   "CustomAPIHeadersInfo": "Enter header information to include in API requests in JSON format.",
   "CustomAPIBody": "Custom body",
   "CustomAPIBodyInfo": "Enter body information to include in API requests in JSON format. messages will be automatically included.",
-  "CustomAPIDescription": "Note: Messages are automatically included in the request body. In streaming mode, the server must return text/event-stream."
+  "CustomAPIDescription": "Note: Messages are automatically included in the request body. In streaming mode, the server must return text/event-stream.",
+  "EditSlideScripts": "Edit Dialogue",
+  "PleaseSelectSlide": "Please select a slide"
 }

@@ -224,15 +224,16 @@
   "Toasts": {
     "WebSocketConnectionError": "Ocorreu um erro na conexão WebSocket",
     "WebSocketConnectionClosed": "A conexão WebSocket foi fechada",
-    "WebSocketConnectionAttempt": "Tentando conexão WebSocket...",
+    "WebSocketConnectionAttempt": "Tentando conectar ao WebSocket...",
     "WebSocketConnectionSuccess": "Conexão WebSocket bem-sucedida",
     "FunctionExecuting": "Executando {{funcName}}",
-    "FunctionExecutionFailed": "Falha na execução de {{funcName}}",
-    "FirefoxNotSupported": "Esta função não é suportada no Firefox",
+    "FunctionExecutionFailed": "Falha ao executar {{funcName}}",
+    "FirefoxNotSupported": "O Firefox não suporta este recurso",
     "SpeechRecognitionError": "Ocorreu um erro de reconhecimento de voz",
-    "NoSpeechDetected": "Nenhuma voz foi detectada.",
-    "PresetSwitching": "Alterado para {{presetName}}.",
-    "WhisperError": "Ocorreu um erro no reconhecimento de voz pelo Whisper"
+    "NoSpeechDetected": "Não foi detectado nenhum som.",
+    "PresetSwitching": "{{presetName}} foi alterado.",
+    "WhisperError": "Ocorreu um erro no reconhecimento de voz pelo Whisper",
+    "UsingTool": "Usando {{toolName}}"
   },
   "ContinuousMic": "Entrada de microfone contínua",
   "ContinuousMicActive": "Entrada de microfone contínua ativa",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "Insira as informações de cabeçalho a serem incluídas na solicitação de API no formato JSON.",
   "CustomAPIBody": "Corpo personalizado",
   "CustomAPIBodyInfo": "Insira as informações do corpo a serem incluídas na solicitação de API no formato JSON. As mensagens são incluídas automaticamente.",
-  "CustomAPIDescription": "Nota: As mensagens são incluídas automaticamente no corpo da solicitação. No modo de streaming, o servidor deve retornar text/event-stream."
+  "CustomAPIDescription": "Nota: As mensagens são incluídas automaticamente no corpo da solicitação. No modo de streaming, o servidor deve retornar text/event-stream.",
+  "EditSlideScripts": "Edição de falas",
+  "PleaseSelectSlide": "Selecione um slide"
 }

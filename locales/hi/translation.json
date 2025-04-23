@@ -222,17 +222,18 @@
   "UpdateRealtimeAPISettingsInfo": "जब आप API कुंजी, Azure एंडपॉइंट, आवाज़ प्रकार, मॉडल, या सिस्टम प्रॉम्प्ट को अपडेट करते हैं, तो एक नया WebSocket सत्र शुरू करने के लिए अपडेट बटन दबाएं।",
   "AzureEndpoint": "Azure एंडपॉइंट",
   "Toasts": {
-    "WebSocketConnectionError": "WebSocket कनेक्शन में एक त्रुटि हुई",
-    "WebSocketConnectionClosed": "WebSocket कनेक्शन बंद",
+    "WebSocketConnectionError": "WebSocket कनेक्शन में त्रुटि हुई है",
+    "WebSocketConnectionClosed": "WebSocket कनेक्शन बंद कर दिया गया है",
     "WebSocketConnectionAttempt": "WebSocket कनेक्शन का प्रयास कर रहा है...",
-    "WebSocketConnectionSuccess": "WebSocket कनेक्शन सफल",
-    "FunctionExecuting": "{{funcName}} निष्पादित कर रहा है",
-    "FunctionExecutionFailed": "{{funcName}} का निष्पादन विफल रहा",
-    "FirefoxNotSupported": "यह सुविधा Firefox में समर्थित नहीं है",
-    "SpeechRecognitionError": "एक आवाज़ पहचान त्रुटि हुई",
-    "NoSpeechDetected": "कोई आवाज़ का पता नहीं चला।",
-    "PresetSwitching": "{{presetName}} पर स्विच किया गया।",
-    "WhisperError": "Whisper द्वारा आवाज़ पहचान में एक त्रुटि हुई"
+    "WebSocketConnectionSuccess": "WebSocket कनेक्शन सफल हुआ",
+    "FunctionExecuting": "{{funcName}} को निष्पादित कर रहे हैं",
+    "FunctionExecutionFailed": "{{funcName}} के निष्पादन में विफलता हुई",
+    "FirefoxNotSupported": "Firefox में यह सुविधा समर्थित नहीं है।",
+    "SpeechRecognitionError": "वॉयस मान्यता त्रुटि हुई",
+    "NoSpeechDetected": "ऑडियो का पता नहीं चला।",
+    "PresetSwitching": "{{presetName}} में स्विच किया गया है।",
+    "WhisperError": "Whisper द्वारा ध्वनि पहचान में त्रुटि हुई।",
+    "UsingTool": "{{toolName}} का उपयोग करते समय"
   },
   "ContinuousMic": "निरंतर माइक्रोफोन इनपुट",
   "ContinuousMicActive": "निरंतर माइक्रोफोन इनपुट सक्रिय",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "API अनुरोधों में शामिल करने के लिए JSON प्रारूप में हेडर जानकारी दर्ज करें।",
   "CustomAPIBody": "कस्टम बॉडी",
   "CustomAPIBodyInfo": "API अनुरोधों में शामिल करने के लिए JSON प्रारूप में बॉडी जानकारी दर्ज करें। संदेश स्वचालित रूप से शामिल किए जाएंगे।",
-  "CustomAPIDescription": "नोट: संदेश स्वचालित रूप से अनुरोध बॉडी में शामिल किए जाते हैं। स्ट्रीमिंग मोड में, सर्वर को text/event-stream वापस करना चाहिए।"
+  "CustomAPIDescription": "नोट: संदेश स्वचालित रूप से अनुरोध बॉडी में शामिल किए जाते हैं। स्ट्रीमिंग मोड में, सर्वर को text/event-stream वापस करना चाहिए।",
+  "EditSlideScripts": "सेल्फ़ संपादन",
+  "PleaseSelectSlide": "कृपया स्लाइड चुनें"
 }

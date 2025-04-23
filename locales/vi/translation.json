@@ -223,16 +223,17 @@
   "AzureEndpoint": "Điểm cuối Azure",
   "Toasts": {
     "WebSocketConnectionError": "Đã xảy ra lỗi kết nối WebSocket",
-    "WebSocketConnectionClosed": "Kết nối WebSocket đã đóng",
+    "WebSocketConnectionClosed": "Kết nối WebSocket đã bị đóng",
     "WebSocketConnectionAttempt": "Đang thử kết nối WebSocket...",
     "WebSocketConnectionSuccess": "Kết nối WebSocket thành công",
-    "FunctionExecuting": "Đang thực thi {{funcName}}",
-    "FunctionExecutionFailed": "Thực thi {{funcName}} thất bại",
-    "FirefoxNotSupported": "Tính năng này không được hỗ trợ trong Firefox",
+    "FunctionExecuting": "Đang thực hiện {{funcName}}",
+    "FunctionExecutionFailed": "Đã thất bại trong việc thực thi {{funcName}}",
+    "FirefoxNotSupported": "Tính năng này không được hỗ trợ trên Firefox",
     "SpeechRecognitionError": "Đã xảy ra lỗi nhận dạng giọng nói",
-    "NoSpeechDetected": "Không phát hiện giọng nói.",
+    "NoSpeechDetected": "Không phát hiện thấy âm thanh.",
     "PresetSwitching": "Đã chuyển sang {{presetName}}.",
-    "WhisperError": "Đã xảy ra lỗi trong nhận dạng giọng nói bằng Whisper"
+    "WhisperError": "Đã xảy ra lỗi trong nhận dạng giọng nói bằng Whisper",
+    "UsingTool": "Đang sử dụng {{toolName}}"
   },
   "ContinuousMic": "Đầu vào micro liên tục",
   "ContinuousMicActive": "Đang nhập micro liên tục",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "Vui lòng nhập thông tin header để bao gồm trong yêu cầu API ở định dạng JSON.",
   "CustomAPIBody": "Nội dung tùy chỉnh",
   "CustomAPIBodyInfo": "Vui lòng nhập thông tin nội dung để bao gồm trong yêu cầu API ở định dạng JSON. Tin nhắn sẽ tự động được bao gồm.",
-  "CustomAPIDescription": "Lưu ý: Tin nhắn sẽ tự động được bao gồm trong nội dung yêu cầu. Trong chế độ truyền phát, máy chủ cần trả về text/event-stream."
+  "CustomAPIDescription": "Lưu ý: Tin nhắn sẽ tự động được bao gồm trong nội dung yêu cầu. Trong chế độ truyền phát, máy chủ cần trả về text/event-stream.",
+  "EditSlideScripts": "Chỉnh sửa lời thoại",
+  "PleaseSelectSlide": "Vui lòng chọn một slide"
 }

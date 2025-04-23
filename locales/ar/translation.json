@@ -224,15 +224,16 @@
   "Toasts": {
     "WebSocketConnectionError": "حدث خطأ في اتصال WebSocket",
     "WebSocketConnectionClosed": "تم إغلاق اتصال WebSocket",
-    "WebSocketConnectionAttempt": "محاولة الاتصال بـ WebSocket...",
+    "WebSocketConnectionAttempt": "جارٍ محاولة الاتصال بـ WebSocket...",
     "WebSocketConnectionSuccess": "تم الاتصال بـ WebSocket بنجاح",
-    "FunctionExecuting": "تنفيذ {{funcName}}",
+    "FunctionExecuting": "يجري تنفيذ {{funcName}}",
     "FunctionExecutionFailed": "فشل تنفيذ {{funcName}}",
-    "FirefoxNotSupported": "هذه الميزة غير مدعومة في Firefox",
-    "SpeechRecognitionError": "حدث خطأ في التعرف على الكلام",
-    "NoSpeechDetected": "لم يتم اكتشاف كلام.",
+    "FirefoxNotSupported": "لا يدعم Firefox هذه الميزة",
+    "SpeechRecognitionError": "حدث خطأ في التعرف على الصوت",
+    "NoSpeechDetected": "لم يتم اكتشاف صوت.",
     "PresetSwitching": "تم التبديل إلى {{presetName}}.",
-    "WhisperError": "حدث خطأ في التعرف على الكلام باستخدام Whisper"
+    "WhisperError": "حدث خطأ في التعرف على الصوت بواسطة Whisper",
+    "UsingTool": "قيد الاستخدام {{toolName}}"
   },
   "ContinuousMic": "إدخال الميكروفون المستمر",
   "ContinuousMicActive": "إدخال الميكروفون المستمر نشط",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "أدخل معلومات الرؤوس التي سيتم تضمينها في طلب واجهة البرمجة بتنسيق JSON.",
   "CustomAPIBody": "هيكل مخصص",
   "CustomAPIBodyInfo": "أدخل معلومات الهيكل التي سيتم تضمينها في طلب واجهة البرمجة بتنسيق JSON. سيتم تضمين الرسائل تلقائيًا.",
-  "CustomAPIDescription": "ملاحظة: سيتم تضمين الرسائل تلقائيًا في جسم الطلب. في وضع التدفق، يجب أن يعيد الخادم text/event-stream."
+  "CustomAPIDescription": "ملاحظة: سيتم تضمين الرسائل تلقائيًا في جسم الطلب. في وضع التدفق، يجب أن يعيد الخادم text/event-stream.",
+  "EditSlideScripts": "تحرير الحوار",
+  "PleaseSelectSlide": "يرجى اختيار الشريحة"
 }
