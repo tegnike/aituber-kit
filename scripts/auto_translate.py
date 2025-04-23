@@ -286,7 +286,6 @@ def main():
                 updated_lang_json,
                 indent=2,
                 ensure_ascii=False,
-                sort_keys=True,  # キーでソート
             )
             # ローカルファイルとして保存
             if save_file_locally(
