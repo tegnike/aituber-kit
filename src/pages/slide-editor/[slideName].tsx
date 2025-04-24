@@ -60,6 +60,8 @@ const SlideEditorPage: React.FC = () => {
 
     let styleElement: HTMLStyleElement | null = null
     let customStyleElement: HTMLStyleElement | null = null
+    const controller = new AbortController() //
+    const signal = controller.signal
 
     const convertMarkdown = async () => {
       try {
@@ -67,6 +69,7 @@ const SlideEditorPage: React.FC = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slideName: slideName as string }),
+          signal: signal,
         })
         if (!response.ok) {
           if (response.status === 404) {
@@ -105,6 +108,10 @@ const SlideEditorPage: React.FC = () => {
         customStyleElement.setAttribute('data-custom-css', 'true')
         document.head.appendChild(customStyleElement)
       } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.log('Fetch aborted: convertMarkdown')
+          return
+        }
         console.error('Error converting markdown:', error)
         setIsError(true)
         setErrorMessage(
@@ -116,6 +123,7 @@ const SlideEditorPage: React.FC = () => {
     convertMarkdown()
 
     return () => {
+      controller.abort()
       const addedStyle = document.head.querySelector(
         'style[data-marp-css="true"]'
       )
@@ -140,9 +148,14 @@ const SlideEditorPage: React.FC = () => {
   // scripts.json の読み込み
   useEffect(() => {
     if (!slideName || isError) return
+    const controller = new AbortController()
+    const signal = controller.signal
+
     const fetchScripts = async () => {
       try {
-        const response = await fetch(`/slides/${slideName}/scripts.json`)
+        const response = await fetch(`/slides/${slideName}/scripts.json`, {
+          signal: signal,
+        })
         if (!response.ok) {
           if (response.status === 404) {
             console.warn(
@@ -176,6 +189,10 @@ const SlideEditorPage: React.FC = () => {
           setInitialScripts([])
         }
       } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.log('Fetch aborted: fetchScripts')
+          return
+        }
         console.error('Error fetching scripts:', error)
         setIsError(true)
         setErrorMessage(
@@ -187,26 +204,48 @@ const SlideEditorPage: React.FC = () => {
       }
     }
     fetchScripts()
+
+    return () => {
+      controller.abort()
+    }
   }, [slideName, isError])
 
   // supplement.txt の読み込み
   useEffect(() => {
     if (!slideName || isError) return
+    const controller = new AbortController()
+    const signal = controller.signal
+
     const fetchSupplement = async () => {
       try {
         const response = await fetch(
-          `/api/getSupplement?slideName=${slideName}`
+          `/api/getSupplement?slideName=${slideName}`,
+          { signal: signal }
         )
         if (!response.ok && response.status !== 404) {
           throw new Error(
             `Failed to fetch supplement content: ${response.status} ${response.statusText}`
           )
         }
-        const data = await response.json()
-        const fetchedContent = data.content || ''
+        // 404の場合でも .json() を呼ぶとエラーになるため、okの場合のみ処理する
+        let fetchedContent = ''
+        if (response.ok) {
+          const data = await response.json()
+          fetchedContent = data.content || ''
+        } else {
+          // 404 の場合は空文字列として扱う
+          console.warn(
+            `supplement.txt not found for slide "${slideName}". Proceeding with empty content.`
+          )
+        }
+
         setSupplementContent(fetchedContent)
         setInitialSupplementContent(fetchedContent)
       } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.log('Fetch aborted: fetchSupplement')
+          return
+        }
         console.error('Error fetching supplement content:', error)
         setIsError(true)
         setErrorMessage(
@@ -219,6 +258,11 @@ const SlideEditorPage: React.FC = () => {
       }
     }
     fetchSupplement()
+
+    // クリーンアップ関数で abort を呼び出す
+    return () => {
+      controller.abort()
+    }
   }, [slideName, isError])
 
   // 現在のスライドに対応するセリフと追加情報を更新
@@ -324,13 +368,13 @@ const SlideEditorPage: React.FC = () => {
 
       await response.json()
       console.log('Save successful')
-      alert('セリフと補足情報を保存しました。')
+      alert('Scripts and supplementary information have been saved.')
 
       setInitialScripts(scripts)
       setInitialSupplementContent(supplementContent)
     } catch (error) {
       console.error('Error saving script:', error)
-      alert('セリフと補足情報の保存に失敗しました。')
+      alert('Failed to save scripts and supplementary information.')
     }
   }, [slideName, scripts, supplementContent])
 
