@@ -53,15 +53,24 @@ export class SpeakQueue {
   public static stopAll() {
     const instance = SpeakQueue.getInstance()
     instance.stopped = true
+    // 発話キューの処理状態をリセットして次回の再生を可能にする
+    instance.isProcessing = false
     SpeakQueue.stopTokenCounter++
     instance.clearQueue()
     const hs = homeStore.getState()
-    hs.viewer.model?.stopSpeaking()
+    const ss = settingsStore.getState()
+    if (ss.modelType === 'live2d') {
+      Live2DHandler.stopSpeaking()
+    } else {
+      hs.viewer.model?.stopSpeaking()
+    }
     homeStore.setState({ isSpeaking: false })
   }
 
   async addTask(task: SpeakTask) {
     this.queue.push(task)
+    // キューにタスクが追加された時点で発話中フラグを立てる
+    homeStore.setState({ isSpeaking: true })
     await this.processQueue()
   }
 
@@ -78,7 +87,8 @@ export class SpeakQueue {
     const hs = homeStore.getState()
     const ss = settingsStore.getState()
 
-    while (this.queue.length > 0 && hs.isSpeaking) {
+    // isSpeaking はループ内部で最新値を参照するため、ここでは条件に含めない
+    while (this.queue.length > 0) {
       const currentState = homeStore.getState()
       if (!currentState.isSpeaking) {
         this.clearQueue()
@@ -168,14 +178,13 @@ export class SpeakQueue {
   }
 
   checkSessionId(sessionId: string) {
-    // 停止中の場合は、**異なるセッションID** が来たときのみ再開
+    // 停止中の場合はセッションIDに関わらず再開する
     if (this.stopped) {
-      if (this.currentSessionId !== sessionId) {
-        this.currentSessionId = sessionId
-        this.clearQueue()
-        this.stopped = false
-        homeStore.setState({ isSpeaking: true })
-      }
+      this.currentSessionId = sessionId
+      // 念のためキューをクリア（Stop 時点で空だが保険）
+      this.clearQueue()
+      this.stopped = false
+      homeStore.setState({ isSpeaking: true })
       return
     }
 

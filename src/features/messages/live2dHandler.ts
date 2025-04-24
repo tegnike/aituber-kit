@@ -101,23 +101,41 @@ export class Live2DHandler {
     }
 
     // live2dViewer.speak の onFinish コールバックを利用して音声再生完了を検知
+    // StopSpeaking で強制停止された場合 onFinish が呼び出されず Promise が未解決のまま
+    // 次の再生がブロックされる問題を回避するため、タイムアウトでフォールバック解決を追加
     await new Promise<void>((resolve) => {
+      let resolved = false
+
+      const finish = () => {
+        if (resolved) return
+        resolved = true
+        resolve()
+        URL.revokeObjectURL(audioUrl)
+      }
+
+      // ライブラリ経由の終了通知
       live2dViewer.speak(audioUrl, {
         volume: 1.0,
         expression,
         resetExpression: true,
-        onFinish: () => {
-          resolve()
-          URL.revokeObjectURL(audioUrl)
-        },
+        onFinish: finish,
         onError: (e: any) => {
           console.error('speak error:', e)
-          // エラー時も先に進める
-          resolve()
-          URL.revokeObjectURL(audioUrl)
+          finish()
         },
       })
+
+      // フォールバック: 音声の理論上の再生時間 + 1 秒で強制解決
+      const fallbackTimeout = (decodedAudio.duration || 0) * 1000 + 1000
+      setTimeout(finish, fallbackTimeout)
     })
+  }
+
+  static async stopSpeaking() {
+    const hs = homeStore.getState()
+    const live2dViewer = hs.live2dViewer
+    if (!live2dViewer) return
+    live2dViewer.stopSpeaking()
   }
 
   static async resetToIdle() {
