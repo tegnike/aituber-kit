@@ -4,6 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import { Live2DHandler } from './live2dHandler'
 
 type SpeakTask = {
+  sessionId: string
   audioBuffer: ArrayBuffer
   talk: Talk
   isNeedDecode: boolean
@@ -16,6 +17,13 @@ export class SpeakQueue {
   private isProcessing = false
   private currentSessionId: string | null = null
   private static speakCompletionCallbacks: (() => void)[] = []
+  private static _instance: SpeakQueue | null = null
+  private stopped = false
+  private static stopTokenCounter = 0
+
+  public static get currentStopToken() {
+    return SpeakQueue.stopTokenCounter
+  }
 
   // 発話完了時のコールバックを登録
   static onSpeakCompletion(callback: () => void) {
@@ -28,6 +36,30 @@ export class SpeakQueue {
       SpeakQueue.speakCompletionCallbacks.filter((cb) => cb !== callback)
   }
 
+  /**
+   * キューのグローバルインスタンスを取得します。
+   */
+  public static getInstance(): SpeakQueue {
+    if (!SpeakQueue._instance) {
+      SpeakQueue._instance = new SpeakQueue()
+    }
+    return SpeakQueue._instance
+  }
+
+  /**
+   * すべての発話を停止し、キューをクリアします。
+   * Stop ボタンから呼び出されます。
+   */
+  public static stopAll() {
+    const instance = SpeakQueue.getInstance()
+    instance.stopped = true
+    SpeakQueue.stopTokenCounter++
+    instance.clearQueue()
+    const hs = homeStore.getState()
+    hs.viewer.model?.stopSpeaking()
+    homeStore.setState({ isSpeaking: false })
+  }
+
   async addTask(task: SpeakTask) {
     this.queue.push(task)
     await this.processQueue()
@@ -35,6 +67,12 @@ export class SpeakQueue {
 
   private async processQueue() {
     if (this.isProcessing) return
+
+    // 停止中は処理しない
+    if (this.stopped) {
+      this.clearQueue()
+      return
+    }
 
     this.isProcessing = true
     const hs = homeStore.getState()
@@ -50,6 +88,10 @@ export class SpeakQueue {
 
       const task = this.queue.shift()
       if (task) {
+        if (task.sessionId !== this.currentSessionId) {
+          // 旧セッションのタスクは破棄
+          continue
+        }
         try {
           const { audioBuffer, talk, isNeedDecode, onComplete } = task
           if (ss.modelType === 'live2d') {
@@ -101,6 +143,10 @@ export class SpeakQueue {
     // 発話完了時にコールバックを呼び出す
     if (isComplete) {
       console.log('🎤 発話が完了しました。登録されたコールバックを実行します。')
+      // 発話完了時に isSpeaking を必ず false に設定
+      homeStore.setState({ isSpeaking: false })
+      // 停止フラグもリセットして次回の動作に備える
+      this.stopped = false
       // すべての発話完了コールバックを呼び出す
       SpeakQueue.speakCompletionCallbacks.forEach((callback) => {
         try {
@@ -122,10 +168,27 @@ export class SpeakQueue {
   }
 
   checkSessionId(sessionId: string) {
+    // 停止中の場合は、**異なるセッションID** が来たときのみ再開
+    if (this.stopped) {
+      if (this.currentSessionId !== sessionId) {
+        this.currentSessionId = sessionId
+        this.clearQueue()
+        this.stopped = false
+        homeStore.setState({ isSpeaking: true })
+      }
+      return
+    }
+
+    // 通常時にセッションIDが変わった場合はキューをリセット
     if (this.currentSessionId !== sessionId) {
       this.currentSessionId = sessionId
       this.clearQueue()
       homeStore.setState({ isSpeaking: true })
     }
+  }
+
+  // インスタンスが停止状態かどうか
+  public isStopped(): boolean {
+    return this.stopped
   }
 }

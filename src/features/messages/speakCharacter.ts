@@ -22,7 +22,7 @@ import {
   containsEnglish,
 } from '@/utils/textProcessing'
 
-const speakQueue = new SpeakQueue()
+const speakQueue = SpeakQueue.getInstance()
 
 export function preprocessMessage(
   message: string,
@@ -180,7 +180,15 @@ const createSpeakCharacter = () => {
     const ss = settingsStore.getState()
     onStart?.()
 
+    const initialToken = SpeakQueue.currentStopToken
+
     speakQueue.checkSessionId(sessionId)
+
+    // 停止後なら即完了
+    if (SpeakQueue.currentStopToken !== initialToken) {
+      onComplete?.()
+      return
+    }
 
     const processedMessage = preprocessMessage(talk.message, ss)
     if (!processedMessage && !talk.buffer) {
@@ -200,6 +208,11 @@ const createSpeakCharacter = () => {
       const now = Date.now()
       if (now - lastTime < 1000) {
         await wait(1000 - (now - lastTime))
+      }
+
+      // ボタン停止でキャンセルされた場合はここで終了
+      if (SpeakQueue.currentStopToken !== initialToken) {
+        return null
       }
 
       if (
@@ -234,7 +247,8 @@ const createSpeakCharacter = () => {
         lastTime = Date.now()
       }
 
-      return { buffer, isNeedDecode }
+      const tokenAtStart = SpeakQueue.currentStopToken
+      return { buffer, isNeedDecode, tokenAtStart }
     })
 
     prevFetchPromise = processAndSynthesizePromise.catch((err) => {
@@ -250,7 +264,15 @@ const createSpeakCharacter = () => {
           return
         }
 
+        // Stop ボタン後に生成された音声でないか確認
+        if (result.tokenAtStart !== SpeakQueue.currentStopToken) {
+          // 生成中に Stop された => 破棄
+          onComplete?.()
+          return
+        }
+
         speakQueue.addTask({
+          sessionId,
           audioBuffer: result.buffer,
           talk,
           isNeedDecode: result.isNeedDecode,

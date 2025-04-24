@@ -13,9 +13,7 @@ import toastStore from '@/features/stores/toast'
 import { generateMessageId } from '@/utils/messageUtils'
 
 // セッションIDを生成する関数
-const generateSessionId = () => {
-  return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-}
+const generateSessionId = () => generateMessageId()
 
 // コードブロックのデリミネーター
 const CODE_DELIMITER = '```'

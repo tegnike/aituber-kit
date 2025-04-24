@@ -5,6 +5,7 @@ import toastStore from '@/features/stores/toast'
 import homeStore from '@/features/stores/home'
 import { useTranslation } from 'react-i18next'
 import { useSilenceDetection } from './useSilenceDetection'
+import { SpeakQueue } from '@/features/messages/speakQueue'
 
 /**
  * ブラウザの音声認識APIを使用するためのカスタムフック
@@ -254,6 +255,7 @@ export const useBrowserSpeechRecognition = (
     if (userMessage.trim()) {
       // AIの発話を停止
       homeStore.setState({ isSpeaking: false })
+      SpeakQueue.stopAll()
       onChatProcessStart(userMessage)
       setUserMessage('')
     }
