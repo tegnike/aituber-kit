@@ -117,7 +117,7 @@ const Slide = () => {
                   {t('EditSlideScripts')}
                   <Image
                     src="/images/icons/external-link.svg"
-                    alt={t('OpenInNewTab')}
+                    alt="open in new tab"
                     width={16}
                     height={16}
                     className="ml-1"
