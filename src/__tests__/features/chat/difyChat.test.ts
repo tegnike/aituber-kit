@@ -18,12 +18,21 @@ jest.mock('i18next', () => ({
   changeLanguage: jest.fn(),
 }))
 
+const originalFetch = global.fetch
+const originalTextDecoder = global.TextDecoder
+
 const mockFetch = jest.fn()
 global.fetch = mockFetch
 
 const mockDecode = jest.fn()
 global.TextDecoder = jest.fn().mockImplementation(() => ({
   decode: mockDecode,
+
+afterAll(() => {
+  global.fetch = originalFetch
+  global.TextDecoder = originalTextDecoder
+})
+
 }))
 
 describe('difyChat', () => {
