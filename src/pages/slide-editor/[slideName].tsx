@@ -281,7 +281,7 @@ const SlideEditorPage: React.FC = () => {
 
   const prevSlide = useCallback(() => {
     slideStore.setState((state) => ({
-      currentSlide: Math.max(state.currentSlide - 1, 0),
+      currentSlide: Math.max((state.currentSlide ?? 0) - 1, 0),
     }))
   }, [])
 

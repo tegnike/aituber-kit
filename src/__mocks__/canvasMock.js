@@ -1,5 +1,10 @@
-const Canvas = jest.fn(() => ({
-  getContext: jest.fn(() => ({
+class Canvas {
+  constructor() {
+    this.width = 100
+    this.height = 100
+  }
+
+  getContext = jest.fn(() => ({
     measureText: jest.fn(() => ({ width: 0 })),
     fillText: jest.fn(),
     fillRect: jest.fn(),
@@ -13,12 +18,11 @@ const Canvas = jest.fn(() => ({
     translate: jest.fn(),
     rotate: jest.fn(),
     scale: jest.fn(),
-  })),
-  toBuffer: jest.fn(() => Buffer.from([])),
-  toDataURL: jest.fn(() => ''),
-  width: 100,
-  height: 100,
-}))
+  }))
+
+  toBuffer = jest.fn(() => Buffer.from([]))
+  toDataURL = jest.fn(() => '')
+}
 
 const createCanvas = jest.fn((width, height) => {
   const canvas = new Canvas()
