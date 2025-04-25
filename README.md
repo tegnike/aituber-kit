@@ -261,6 +261,9 @@ cp .env.example .env
   <a href="https://github.com/uwaguchi" title="uwaguchi">
     <img src="https://github.com/uwaguchi.png" width="40" height="40" alt="uwaguchi">
   </a>
+  <a href="https://x.com/M1RA_A_Project" title="M1RA_A_Project">
+    <img src="https://pbs.twimg.com/profile_images/1903385253504507904/ceBSG9Wl_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名
