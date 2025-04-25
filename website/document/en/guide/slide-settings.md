@@ -145,6 +145,25 @@ You can use slides you have created yourself. Prepare custom slides with the fol
    - **supplement.txt** (optional): Additional information file
    - **images/** (optional): Folder to store images used in slides
 
+## Editing Slide Scripts
+
+Slide scripts can be edited on the screen. Click the "Edit Script" button next to the selected slide in the slide settings to open the script editing screen.
+
+![Slide Script Editing 1](/images/slide_fa3sf.png)
+![Slide Script Editing 2](/images/slide_vhy4s.png)
+
+### Page Script
+
+This is the actual script that the AI character will read.
+
+### Additional Information
+
+Add additional information for that page. This information is used in question answering. If the question content is included in this additional information, the AI character will automatically switch to that page.
+
+### Overall Additional Information
+
+Add additional information for the entire slide. This information is used in question answering. Do not include information that depends on the page. If the information is referenced and answered, the slide will not switch.
+
 ## PDF Slide Conversion
 
 This is a function to convert PDF files to data that can be used in slide mode. It analyzes the content of PDFs using multimodal AI and saves it as slide data.
