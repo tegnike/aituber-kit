@@ -26,11 +26,15 @@ const CODE_DELIMITER = '```'
 const extractEmotion = (
   text: string
 ): { emotionTag: string; remainingText: string } => {
-  const emotionMatch = text.match(/^\[(.*?)\]/)
+  // 先頭のスペースを無視して、感情タグを検出
+  const emotionMatch = text.match(/^\s*\[(.*?)\]/)
   if (emotionMatch?.[0]) {
     return {
-      emotionTag: emotionMatch[0],
-      remainingText: text.slice(emotionMatch[0].length),
+      emotionTag: emotionMatch[0].trim(), // タグ自体の前後のスペースは除去
+      // 先頭のスペースも含めて削除し、さらに前後のスペースを除去
+      remainingText: text
+        .slice(text.indexOf(emotionMatch[0]) + emotionMatch[0].length)
+        .trimStart(),
     }
   }
   return { emotionTag: '', remainingText: text }

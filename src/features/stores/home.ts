@@ -44,6 +44,16 @@ let lastSavedLogLength = 0 // 最後に保存したログの長さを記録
 // 履歴削除後に次回保存で新規ファイルを作成するかどうかを示すフラグ
 let shouldCreateNewFile = false
 
+// ログ保存状態をリセットする共通関数
+const resetSaveState = () => {
+  console.log('Chat log was cleared, resetting save state.')
+  lastSavedLogLength = 0
+  shouldCreateNewFile = true
+  if (saveDebounceTimer) {
+    clearTimeout(saveDebounceTimer)
+  }
+}
+
 const homeStore = create<HomeState>()(
   persist(
     (set, get) => ({
@@ -145,8 +155,7 @@ const homeStore = create<HomeState>()(
 homeStore.subscribe((state, prevState) => {
   if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
     if (lastSavedLogLength > state.chatLog.length) {
-      console.log('Chat log was likely cleared, resetting lastSavedLogLength.')
-      lastSavedLogLength = 0
+      resetSaveState()
     }
 
     if (saveDebounceTimer) {
@@ -203,13 +212,7 @@ homeStore.subscribe((state, prevState) => {
     state.chatLog !== prevState.chatLog &&
     state.chatLog.length === 0
   ) {
-    console.log('Chat log cleared, resetting lastSavedLogLength.')
-    lastSavedLogLength = 0
-    // 次の保存時に新規ファイルを作成するようフラグを立てる
-    shouldCreateNewFile = true
-    if (saveDebounceTimer) {
-      clearTimeout(saveDebounceTimer)
-    }
+    resetSaveState()
   }
 })
 

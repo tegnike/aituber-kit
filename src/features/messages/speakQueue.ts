@@ -95,7 +95,7 @@ export class SpeakQueue {
     while (this.queue.length > 0) {
       // StopAll() によりトークンが変化していたら直ちに処理を中断
       if (startToken !== SpeakQueue.currentStopToken) {
-        console.log('�� Stop token changed. Abort current queue processing.')
+        console.log('Stop token changed. Abort current queue processing.')
         break
       }
 
@@ -194,14 +194,18 @@ export class SpeakQueue {
     this.queue = []
   }
 
+  private resetStoppedState() {
+    this.stopped = false
+    homeStore.setState({ isSpeaking: true })
+  }
+
   checkSessionId(sessionId: string) {
     // 停止中の場合はセッションIDに関わらず再開する
     if (this.stopped) {
       this.currentSessionId = sessionId
       // 念のためキューをクリア（Stop 時点で空だが保険）
       this.clearQueue()
-      this.stopped = false
-      homeStore.setState({ isSpeaking: true })
+      this.resetStoppedState()
       return
     }
 
