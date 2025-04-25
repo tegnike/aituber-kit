@@ -42,7 +42,7 @@
   "LocalLLMInfo": "Wymagane jest uruchomienie serwera lokalnego LLM.",
   "LocalLLMInfo2": "Wprowadź URL lokalnego LLM (włącznie z numerem portu) i nazwę modelu.",
   "GroqInfo": "API Groq jest dostępne bezpośrednio z przeglądarki.",
-  "DifyInfo": "Dify obsługuje tylko chatboty lub typy agentów.",
+  "DifyInfo": "W Dify obsługiwane są tylko chatboty lub typy agentów. Jeśli nie uzyskasz poprawnej odpowiedzi, usuń historię rozmów i spróbuj ponownie zadać pytanie.",
   "DifyInfo2": "Długość historii rozmowy zależy od ustawień chatbota Dify.",
   "DifyInfo3": "Przykład: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "Gdy używasz Dify, ten prompt systemowy nie jest używany. Ustaw go w chatbocie Dify.",
@@ -225,15 +225,15 @@
     "WebSocketConnectionError": "Wystąpił błąd połączenia WebSocket.",
     "WebSocketConnectionClosed": "Połączenie WebSocket zostało zamknięte",
     "WebSocketConnectionAttempt": "Próba połączenia WebSocket...",
-    "WebSocketConnectionSuccess": "Połączenie WebSocket zakończone sukcesem",
+    "WebSocketConnectionSuccess": "Połączenie WebSocket zostało nawiązane pomyślnie",
     "FunctionExecuting": "Uruchamianie {{funcName}}",
-    "FunctionExecutionFailed": "Nie udało się wykonać {{funcName}}",
+    "FunctionExecutionFailed": "Nie udało się wykonać {{funcName}}.",
     "FirefoxNotSupported": "Firefox nie obsługuje tej funkcji",
     "SpeechRecognitionError": "Wystąpił błąd rozpoznawania mowy",
     "NoSpeechDetected": "Nie wykryto dźwięku.",
     "PresetSwitching": "Przełączono na {{presetName}}.",
     "WhisperError": "Wystąpił błąd podczas rozpoznawania mowy przez Whisper.",
-    "UsingTool": "Używanie {{toolName}}"
+    "UsingTool": "Korzystanie z {{toolName}}"
   },
   "ContinuousMic": "Ciągłe wejście mikrofonu",
   "ContinuousMicActive": "Ciągłe wejście mikrofonu aktywne",
@@ -301,5 +301,5 @@
   "CustomAPIBodyInfo": "Wprowadź informacje treści, które mają być zawarte w żądaniu API, w formacie JSON. Wiadomości są automatycznie dołączane.",
   "CustomAPIDescription": "Uwaga: Wiadomości są automatycznie dołączane do treści żądania. W trybie strumieniowym serwer musi zwracać text/event-stream.",
   "EditSlideScripts": "Edycja dialogów",
-  "PleaseSelectSlide": "Proszę wybrać slajd"
+  "PleaseSelectSlide": "Wybierz slajd."
 }

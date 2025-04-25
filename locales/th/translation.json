@@ -42,7 +42,7 @@
   "LocalLLMInfo": "คุณต้องเปิดเซิร์ฟเวอร์ LLM แบบโลคอล",
   "LocalLLMInfo2": "กรุณาป้อน URL ของ LLM แบบโลคอล (รวมหมายเลขพอร์ต) และชื่อโมเดล",
   "GroqInfo": "Groq API เข้าถึงโดยตรงจากเบราว์เซอร์",
-  "DifyInfo": "Dify รองรับเฉพาะชนิด Chatbot หรือ Agent เท่านั้น",
+  "DifyInfo": "Dify รองรับเฉพาะประเภทแชทบอทหรือเอเจนต์เท่านั้น หากไม่ได้รับคำตอบที่ดี กรุณาลบประวัติการสนทนาแล้วลองถามใหม่อีกครั้ง",
   "DifyInfo2": "ความยาวของประวัติการสนทนาขึ้นอยู่กับการตั้งค่าของ Dify Chatbot",
   "DifyInfo3": "ตัวอย่าง: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "เมื่อใช้ Dify, prompt ระบบนี้จะไม่ถูกใช้ กรุณาตั้งค่าใน Dify Chatbot",
@@ -233,7 +233,7 @@
     "NoSpeechDetected": "ไม่พบเสียง",
     "PresetSwitching": "เปลี่ยนเป็น {{presetName}} แล้ว",
     "WhisperError": "เกิดข้อผิดพลาดในการรู้จำเสียงโดย Whisper",
-    "UsingTool": "กำลังใช้{{toolName}}"
+    "UsingTool": "กำลังใช้ {{toolName}}"
   },
   "ContinuousMic": "การป้อนข้อมูลด้วยไมโครโฟนต่อเนื่อง",
   "ContinuousMicActive": "กำลังป้อนข้อมูลด้วยไมโครโฟนต่อเนื่อง",

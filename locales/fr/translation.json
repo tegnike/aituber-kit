@@ -42,7 +42,7 @@
   "LocalLLMInfo": "Vous devez avoir un serveur LLM local en cours d'exécution.",
   "LocalLLMInfo2": "Veuillez entrer l'URL du LLM local (avec le numéro de port) et le nom du modèle.",
   "GroqInfo": "L'API Groq est accessible directement depuis le navigateur.",
-  "DifyInfo": "Dify ne prend en charge que les types chatbot ou agent.",
+  "DifyInfo": "Dify ne prend en charge que les types chatbot ou agent.  \nSi vous n'obtenez pas de réponse satisfaisante, veuillez supprimer l'historique de conversation et poser à nouveau votre question.",
   "DifyInfo2": "La longueur de l'historique des conversations dépend des paramètres du chatbot Dify.",
   "DifyInfo3": "Exemple: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "Lorsque vous utilisez Dify, ce prompt système n'est pas utilisé. Veuillez le configurer dans votre chatbot Dify.",

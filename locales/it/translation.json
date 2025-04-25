@@ -42,7 +42,7 @@
   "LocalLLMInfo": "È necessario avviare il server LLM locale.",
   "LocalLLMInfo2": "Inserisci l'URL del LLM locale (incluso il numero di porta) e il nome del modello.",
   "GroqInfo": "L'API Groq è accessibile direttamente dal browser.",
-  "DifyInfo": "Dify supporta solo chatbot o tipi di agenti.",
+  "DifyInfo": "In Dify, sono supportati solo i tipi chatbot o agente. Se non si ottiene una risposta soddisfacente, eliminare la cronologia delle conversazioni e riprovare a fare la domanda.",
   "DifyInfo2": "La lunghezza della cronologia delle conversazioni dipende dalle impostazioni del chatbot Dify.",
   "DifyInfo3": "Esempio: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "Quando si utilizza Dify, questo prompt di sistema non viene utilizzato. Configuralo nel chatbot Dify.",
@@ -232,7 +232,7 @@
     "SpeechRecognitionError": "Si è verificato un errore di riconoscimento vocale",
     "NoSpeechDetected": "Audio non rilevato.",
     "PresetSwitching": "È stato cambiato a {{presetName}}.",
-    "WhisperError": "Si è verificato un errore nel riconoscimento vocale tramite Whisper.",
+    "WhisperError": "Si è verificato un errore nel riconoscimento vocale tramite Whisper",
     "UsingTool": "Utilizzando {{toolName}}"
   },
   "ContinuousMic": "Input microfono continuo",
