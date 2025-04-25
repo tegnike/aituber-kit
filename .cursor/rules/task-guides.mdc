@@ -1,0 +1,42 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# タスク別ファイルガイド
+
+一般的なタスクを実行する際は、以下のファイルリストを参照してください：
+
+## 新しいLLMサービスの追加
+- [`src/features/chat/handlers.ts`](mdc:src/features/chat/handlers.ts)
+- [`src/components/settings/modelProvider.tsx`](mdc:src/components/settings/modelProvider.tsx)
+- [`src/features/stores/settings.ts`](mdc:src/features/stores/settings.ts)
+- [`locales/`](mdc:locales/) 内のローカライゼーションファイル（例: [`locales/ja/translation.json`](mdc:locales/ja/translation.json), [`locales/en/translation.json`](mdc:locales/en/translation.json) など）
+- [`src/features/chat/vercelAIChat.ts`](mdc:src/features/chat/vercelAIChat.ts) （または新しいVercel AI SDK統合ファイルを作成）
+- [`src/pages/api/aiChat.ts`](mdc:src/pages/api/aiChat.ts)
+- [`src/features/chat/aiChatFactory.ts`](mdc:src/features/chat/aiChatFactory.ts)
+- [`.env.example`](mdc:.env.example) （新しい環境変数用）
+
+## 入力フォーム -> LLMワークフローの実装
+- [`src/components/form.tsx`](mdc:src/components/form.tsx) （または関連するフォームコンポーネント）
+- [`src/features/chat/handlers.ts`](mdc:src/features/chat/handlers.ts)
+- [`src/features/chat/vercelAIChat.ts`](mdc:src/features/chat/vercelAIChat.ts) （または特定のLLM統合）
+- [`src/features/chat/aiChatFactory.ts`](mdc:src/features/chat/aiChatFactory.ts)
+- [`src/pages/api/aiChat.ts`](mdc:src/pages/api/aiChat.ts)
+
+## 新しい設定の追加
+- [`src/components/settings/`](mdc:src/components/settings/) 内の設定コンポーネント（例: [`advancedSettings.tsx`](mdc:src/components/settings/advancedSettings.tsx), [`ai.tsx`](mdc:src/components/settings/ai.tsx) など）
+- 設定ストア: [`src/features/stores/settings.ts`](mdc:src/features/stores/settings.ts)
+- メイン設定インデックス: [`src/components/settings/index.tsx`](mdc:src/components/settings/index.tsx)
+
+## ライセンスドキュメントの変更
+- [`README.md`](mdc:README.md)
+- [`LICENSE`](mdc:LICENSE)
+- [`docs/`](mdc:docs/) 内のコアライセンスドキュメント（例: [`license.md`](mdc:docs/license.md), [`license_en.md`](mdc:docs/license_en.md) など）
+- [`docs/`](mdc:docs/) 内のライセンスFAQドキュメント（例: [`license-faq.md`](mdc:docs/license-faq.md), [`license-faq_en.md`](mdc:docs/license-faq_en.md) など）
+
+## 音声関連機能の処理
+- 音声言語設定: [`src/utils/voiceLanguage.ts`](mdc:src/utils/voiceLanguage.ts)
+- メッセージ入力コンポーネント: [`src/components/messageInputContainer.tsx`](mdc:src/components/messageInputContainer.tsx), [`src/components/messageInput.tsx`](mdc:src/components/messageInput.tsx)
+- 音声認識フック: [`src/hooks/useSilenceDetection.ts`](mdc:src/hooks/useSilenceDetection.ts), [`src/hooks/useVoiceRecognition.ts`](mdc:src/hooks/useVoiceRecognition.ts)
+- 音声処理ユーティリティ: [`src/utils/audioProcessing.ts`](mdc:src/utils/audioProcessing.ts), [`src/utils/audioBufferManager.ts`](mdc:src/utils/audioBufferManager.ts)
