@@ -42,7 +42,7 @@
   "LocalLLMInfo": "ローカルLLM サーバーを起動している必要があります。",
   "LocalLLMInfo2": "ローカルLLMのURL（ポート番号込み）とモデル名を入力してください。",
   "GroqInfo": "Groq APIはブラウザから直接アクセスしています。",
-  "DifyInfo": "Difyでは、チャットボット または エージェントタイプのみ対応しています。",
+  "DifyInfo": "Difyでは、チャットボット または エージェントタイプのみ対応しています。\n上手く回答が得られない場合は、会話履歴を削除してから改めて質問してください。",
   "DifyInfo2": "会話履歴の長さはDifyチャットボットの設定に依存します。",
   "DifyInfo3": "例：https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "Difyを使用している場合、このシステムプロンプトは使用されません。Difyチャットボットに設定してください。",
