@@ -247,7 +247,8 @@ const createSpeakCharacter = () => {
         lastTime = Date.now()
       }
 
-      const tokenAtStart = SpeakQueue.currentStopToken
+      // 合成開始前に取得した initialToken をそのまま保持する
+      const tokenAtStart = initialToken
       return { buffer, isNeedDecode, tokenAtStart }
     })
 
