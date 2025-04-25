@@ -290,6 +290,7 @@ export const processAIResponse = async (messages: Message[]) => {
   const reader = stream.getReader()
   let receivedChunksForSpeech = ''
   let currentMessageId: string | null = null
+  let currentMessageContent = ''
   let currentEmotionTag = ''
   let isCodeBlock = false
   let codeBlockContent = ''
@@ -308,67 +309,30 @@ export const processAIResponse = async (messages: Message[]) => {
           }
         }
 
-        let currentContentForUpdate = ''
-
         if (currentMessageId === null) {
           currentMessageId = generateMessageId()
-          currentContentForUpdate = textToAdd
-          if (currentContentForUpdate) {
+          currentMessageContent = textToAdd
+          if (currentMessageContent) {
             homeStore.getState().upsertMessage({
               id: currentMessageId,
               role: 'assistant',
-              content: currentContentForUpdate,
+              content: currentMessageContent,
             })
           }
         } else if (!isCodeBlock) {
-          const currentMessage = homeStore
-            .getState()
-            .chatLog.find((msg) => msg.id === currentMessageId)
+          currentMessageContent += textToAdd
 
-          if (currentMessage && typeof currentMessage.content === 'string') {
-            const baseContent =
-              typeof currentMessage.content === 'string'
-                ? currentMessage.content
-                : ''
-            currentContentForUpdate = baseContent + textToAdd
-
-            if (textToAdd) {
-              homeStore.getState().upsertMessage({
-                id: currentMessageId,
-                role: 'assistant',
-                content: currentContentForUpdate,
-              })
-            } else {
-              currentContentForUpdate = baseContent
-            }
-          } else if (currentMessage && currentMessage.content === undefined) {
-            currentContentForUpdate = textToAdd
-            if (currentContentForUpdate) {
-              homeStore.getState().upsertMessage({
-                id: currentMessageId,
-                role: 'assistant',
-                content: currentContentForUpdate,
-              })
-            }
-          } else if (!currentMessage) {
-            console.warn(
-              'Message with ID not found during update, creating new one.',
-              currentMessageId
-            )
-            currentMessageId = generateMessageId()
-            currentContentForUpdate = textToAdd
-            if (currentContentForUpdate) {
-              homeStore.getState().upsertMessage({
-                id: currentMessageId,
-                role: 'assistant',
-                content: currentContentForUpdate,
-              })
-            }
+          if (textToAdd) {
+            homeStore.getState().upsertMessage({
+              id: currentMessageId,
+              role: 'assistant',
+              content: currentMessageContent,
+            })
           }
         }
 
-        if (!isCodeBlock && currentContentForUpdate) {
-          homeStore.setState({ assistantMessage: currentContentForUpdate })
+        if (!isCodeBlock && currentMessageContent) {
+          homeStore.setState({ assistantMessage: currentMessageContent })
         }
 
         receivedChunksForSpeech += value
@@ -409,6 +373,7 @@ export const processAIResponse = async (messages: Message[]) => {
             currentEmotionTag = ''
 
             currentMessageId = generateMessageId()
+            currentMessageContent = ''
 
             processableTextForSpeech = remainingAfterDelimiter.trimStart()
             continue
@@ -580,6 +545,25 @@ export const processAIResponse = async (messages: Message[]) => {
   homeStore.setState({
     chatProcessing: false,
   })
+
+  if (currentMessageContent.trim()) {
+    homeStore.getState().upsertMessage({
+      id: currentMessageId ?? generateMessageId(),
+      role: 'assistant',
+      content: currentMessageContent.trim(),
+    })
+  }
+  if (isCodeBlock && codeBlockContent.trim()) {
+    console.warn(
+      'Stream ended unexpectedly while in code block state. Saving buffered code.'
+    )
+    homeStore.getState().upsertMessage({
+      role: 'code',
+      content: codeBlockContent,
+    })
+    codeBlockContent = ''
+    isCodeBlock = false
+  }
 }
 
 /**

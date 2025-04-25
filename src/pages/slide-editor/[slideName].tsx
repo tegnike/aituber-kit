@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback, KeyboardEvent } from 'react' // KeyboardEvent をインポート
 import { useRouter } from 'next/router'
 import slideStore from '@/features/stores/slide'
-import homeStore from '@/features/stores/home'
 import SlideContent from '@/components/slideContent'
 import SlideControls from '@/components/slideControls'
 

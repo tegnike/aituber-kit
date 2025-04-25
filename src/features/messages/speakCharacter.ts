@@ -177,6 +177,7 @@ const createSpeakCharacter = () => {
     onStart?: () => void,
     onComplete?: () => void
   ) => {
+    let called = false
     const ss = settingsStore.getState()
     onStart?.()
 
@@ -186,13 +187,19 @@ const createSpeakCharacter = () => {
 
     // 停止後なら即完了
     if (SpeakQueue.currentStopToken !== initialToken) {
-      onComplete?.()
+      if (onComplete && !called) {
+        called = true
+        onComplete()
+      }
       return
     }
 
     const processedMessage = preprocessMessage(talk.message, ss)
     if (!processedMessage && !talk.buffer) {
-      onComplete?.()
+      if (onComplete && !called) {
+        called = true
+        onComplete()
+      }
       return
     }
 
@@ -261,15 +268,29 @@ const createSpeakCharacter = () => {
     processAndSynthesizePromise
       .then((result) => {
         if (!result || !result.buffer) {
-          onComplete?.()
+          if (onComplete && !called) {
+            called = true
+            onComplete()
+          }
           return
         }
 
         // Stop ボタン後に生成された音声でないか確認
         if (result.tokenAtStart !== SpeakQueue.currentStopToken) {
           // 生成中に Stop された => 破棄
-          onComplete?.()
+          if (onComplete && !called) {
+            called = true
+            onComplete()
+          }
           return
+        }
+
+        // Wrap the onComplete passed to speakQueue.addTask
+        const guardedOnComplete = () => {
+          if (onComplete && !called) {
+            called = true
+            onComplete()
+          }
         }
 
         speakQueue.addTask({
@@ -277,12 +298,15 @@ const createSpeakCharacter = () => {
           audioBuffer: result.buffer,
           talk,
           isNeedDecode: result.isNeedDecode,
-          onComplete,
+          onComplete: guardedOnComplete, // Pass the guarded function
         })
       })
       .catch((error) => {
         console.error('Error in processAndSynthesizePromise chain:', error)
-        onComplete?.()
+        if (onComplete && !called) {
+          called = true
+          onComplete()
+        }
       })
   }
 }

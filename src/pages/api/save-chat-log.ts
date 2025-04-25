@@ -24,7 +24,7 @@ export default async function handler(
   try {
     const { messages: newMessages, isNewFile } = req.body as {
       messages: Message[]
-      isNewFile: boolean
+      isNewFile?: boolean
     }
     const currentTime = new Date().toISOString()
 
@@ -39,9 +39,11 @@ export default async function handler(
       fs.mkdirSync(logsDir)
     }
 
-    const fileName =
-      getLatestLogFile(logsDir) ||
-      `log_${currentTime.replace(/[:.]/g, '-')}.json`
+    // isNewFile が true の場合は強制的に新しいファイルを作成
+    const fileName = isNewFile
+      ? `log_${currentTime.replace(/[:.]/g, '-')}.json`
+      : getLatestLogFile(logsDir) ||
+        `log_${currentTime.replace(/[:.]/g, '-')}.json`
 
     const filePath = path.join(logsDir, fileName)
 

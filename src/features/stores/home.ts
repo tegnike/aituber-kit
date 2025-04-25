@@ -41,6 +41,8 @@ export type HomeState = PersistedState & TransientState
 let saveDebounceTimer: ReturnType<typeof setTimeout> | null = null
 const SAVE_DEBOUNCE_DELAY = 2000 // 2秒
 let lastSavedLogLength = 0 // 最後に保存したログの長さを記録
+// 履歴削除後に次回保存で新規ファイルを作成するかどうかを示すフラグ
+let shouldCreateNewFile = false
 
 const homeStore = create<HomeState>()(
   persist(
@@ -142,6 +144,11 @@ const homeStore = create<HomeState>()(
 // chatLogの変更を監視して差分を保存
 homeStore.subscribe((state, prevState) => {
   if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
+    if (lastSavedLogLength > state.chatLog.length) {
+      console.log('Chat log was likely cleared, resetting lastSavedLogLength.')
+      lastSavedLogLength = 0
+    }
+
     if (saveDebounceTimer) {
       clearTimeout(saveDebounceTimer)
     }
@@ -169,12 +176,14 @@ homeStore.subscribe((state, prevState) => {
           },
           body: JSON.stringify({
             messages: processedMessages,
-            isNewFile: lastSavedLogLength === 0,
+            isNewFile: shouldCreateNewFile,
           }),
         })
           .then((response) => {
             if (response.ok) {
               lastSavedLogLength = state.chatLog.length
+              // 新規ファイルが作成された場合はフラグをリセット
+              shouldCreateNewFile = false
               console.log(
                 'Messages saved successfully. New saved length:',
                 lastSavedLogLength
@@ -190,6 +199,17 @@ homeStore.subscribe((state, prevState) => {
         console.log('No new messages to save.')
       }
     }, SAVE_DEBOUNCE_DELAY)
+  } else if (
+    state.chatLog !== prevState.chatLog &&
+    state.chatLog.length === 0
+  ) {
+    console.log('Chat log cleared, resetting lastSavedLogLength.')
+    lastSavedLogLength = 0
+    // 次の保存時に新規ファイルを作成するようフラグを立てる
+    shouldCreateNewFile = true
+    if (saveDebounceTimer) {
+      clearTimeout(saveDebounceTimer)
+    }
   }
 })
 

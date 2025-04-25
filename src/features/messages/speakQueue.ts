@@ -75,7 +75,11 @@ export class SpeakQueue {
   }
 
   private async processQueue() {
+    // 既に別の processQueue が動作中の場合は新たに起動しない
     if (this.isProcessing) return
+
+    // Stop ボタンが押された後に再開されたかどうかを判定するためのトークンをキャプチャ
+    const startToken = SpeakQueue.currentStopToken
 
     // 停止中は処理しない
     if (this.stopped) {
@@ -89,6 +93,12 @@ export class SpeakQueue {
 
     // isSpeaking はループ内部で最新値を参照するため、ここでは条件に含めない
     while (this.queue.length > 0) {
+      // StopAll() によりトークンが変化していたら直ちに処理を中断
+      if (startToken !== SpeakQueue.currentStopToken) {
+        console.log('�� Stop token changed. Abort current queue processing.')
+        break
+      }
+
       const currentState = homeStore.getState()
       if (!currentState.isSpeaking) {
         this.clearQueue()
@@ -122,7 +132,14 @@ export class SpeakQueue {
       }
     }
 
+    // 処理を完全に終える、またはトークン変化で中断した場合どちらでも isProcessing を解除
     this.isProcessing = false
+
+    // トークンが変化して中断された場合は後続処理を行わずに終了
+    if (startToken !== SpeakQueue.currentStopToken) {
+      return
+    }
+
     this.scheduleNeutralExpression()
     if (!hs.chatProcessing) {
       this.clearQueue()

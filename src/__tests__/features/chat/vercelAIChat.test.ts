@@ -20,6 +20,14 @@ jest.mock('i18next', () => ({
   changeLanguage: jest.fn(),
 }))
 
+// Preserve original global objects to avoid side-effects across test suites
+const originalFetch = global.fetch
+// TextDecoder may be undefined in some Node versions, so we keep the current value as is
+// (could be `undefined` as well, which is fine for restoration later)
+// @ts-ignore – Node 20 provides TextDecoder globally; ignore for earlier versions in typings
+const originalTextDecoder =
+  global.TextDecoder as unknown as typeof global.TextDecoder
+
 const mockFetch = jest.fn()
 global.fetch = mockFetch
 
@@ -171,11 +179,6 @@ describe('vercelAIChat', () => {
         },
       })
 
-      const mockController = {
-        enqueue: jest.fn(),
-        close: jest.fn(),
-      }
-
       const stream = await getVercelAIChatResponseStream(testMessages)
 
       // ストリームの内容を読み取る
@@ -185,12 +188,11 @@ describe('vercelAIChat', () => {
         const { value, done } = await reader.read()
         if (done) break
         if (value) {
-          mockController.enqueue(value)
           result += value
         }
       }
 
-      expect(mockController.enqueue).toHaveBeenCalledWith('こんにちは')
+      expect(result).toBe('こんにちは')
     })
 
     it('ストリーミング中のエラーを適切に処理する', async () => {
@@ -206,11 +208,6 @@ describe('vercelAIChat', () => {
           getReader: () => mockReader,
         },
       })
-
-      const mockController = {
-        enqueue: jest.fn(),
-        close: jest.fn(),
-      }
 
       const mockAddToast = jest.fn()
       ;(toastStore.getState as jest.Mock).mockReturnValue({
@@ -244,11 +241,6 @@ describe('vercelAIChat', () => {
         status: 200,
         body: null,
       })
-
-      const mockController = {
-        enqueue: jest.fn(),
-        close: jest.fn(),
-      }
 
       const stream = await getVercelAIChatResponseStream(testMessages)
 
@@ -290,4 +282,11 @@ describe('vercelAIChat', () => {
       })
     })
   })
+})
+
+// Restore the original implementations after all tests in this file have finished
+afterAll(() => {
+  global.fetch = originalFetch
+  // @ts-ignore – restore possibly undefined original value safely
+  global.TextDecoder = originalTextDecoder
 })
