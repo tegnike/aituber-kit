@@ -1,4 +1,4 @@
-module.exports = jest.genMockFromModule('canvas')
+module.exports = {}
 
 module.exports.createCanvas = jest.fn(() => ({
   getContext: jest.fn(() => ({

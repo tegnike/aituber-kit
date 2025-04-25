@@ -147,7 +147,13 @@ homeStore.subscribe((state, prevState) => {
     }
 
     saveDebounceTimer = setTimeout(() => {
-      const newMessagesToSave = state.chatLog.slice(lastSavedLogLength)
+      // 新規追加 or 更新があったメッセージだけを抽出
+      const newMessagesToSave = state.chatLog.filter(
+        (msg, idx) =>
+          idx >= lastSavedLogLength || // 追加分
+          prevState.chatLog.find((p) => p.id === msg.id)?.content !==
+            msg.content // 更新分
+      )
 
       if (newMessagesToSave.length > 0) {
         const processedMessages = newMessagesToSave.map((msg) =>
