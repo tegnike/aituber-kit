@@ -92,6 +92,13 @@ export class Model {
   }
 
   /**
+   * 現在の音声再生を停止
+   */
+  public stopSpeaking() {
+    this._lipSync?.stopCurrentPlayback()
+  }
+
+  /**
    * 感情表現を再生する
    */
   public async playEmotion(preset: VRMExpressionPresetName) {
