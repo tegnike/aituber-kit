@@ -24,6 +24,8 @@ module.exports = {
         'toast-error-hover': '#BD2130',
         'toast-success': '#28A745',
         'toast-success-hover': '#218838',
+        'toast-tool': '#9C27B0',
+        'toast-tool-hover': '#7B1FA2',
       },
       fontFamily: {
         M_PLUS_2: ['Montserrat', 'M_PLUS_2', 'sans-serif'],

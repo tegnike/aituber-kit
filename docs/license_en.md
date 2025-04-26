@@ -57,7 +57,7 @@ Note that **trial internal use during pre-implementation or evaluation phase** i
 - Licenses apply to the **latest version** at the time of acquisition. Upgrade fees may apply if there is a major update.
 - If commercial use is confirmed after starting use as personal, educational, or non-profit use, **commercial license fees will be charged from the start of commercial use**.
 - **Exhibitions and demonstrations** aimed at increasing the project's recognition are not subject to commercial licenses.
-- If you use the **Live2D feature**, an additional fee of 25% of the basic license fee will be charged. If you don't need the Live2D feature from the beginning, no additional fee will be charged, and if you need it later, you can use it by paying the additional fee at that time if you contact us before you start using it. Also, regarding the use of Live2D, the conditions described in the "Third Party Licenses" section below also apply.
+- **When using the Live2D feature**, an additional fee of 40% of the basic license fee will be charged. This is because when revenue is generated from services utilizing Live2D models, there is an obligation to pay a portion of the revenue as a license fee to Live2D Inc. If the Live2D feature is not needed from the beginning, no additional fee will be incurred. If it becomes necessary later, it can be used by paying the additional fee at that time, provided you contact us before starting to use it. Additionally, regarding the use of Live2D, the conditions stated in the "Third Party Licenses" section below also apply.
 
 For details and purchase methods of commercial licenses, please contact support@aituberkit.com.
 

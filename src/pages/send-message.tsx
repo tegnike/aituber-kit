@@ -317,7 +317,7 @@ const SendMessage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center text-black min-h-screen bg-gradient-to-b from-purple-50 to-white py-8">
+    <div className="flex flex-col items-center text-black min-h-screen bg-purple-50 py-8">
       <div className="w-full max-w-4xl px-4 md:px-8">
         <h1 className="text-text-primary text-3xl font-bold mb-8 text-center">
           {t('SendMessage.title')}

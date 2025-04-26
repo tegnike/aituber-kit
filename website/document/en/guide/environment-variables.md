@@ -178,6 +178,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # Custom API body
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# Enable system messages in custom API (true/false)
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ### Realtime API Settings

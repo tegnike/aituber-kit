@@ -4,6 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import homeStore from '@/features/stores/home'
 import { useAudioProcessing } from './useAudioProcessing'
+import { SpeakQueue } from '@/features/messages/speakQueue'
 
 /**
  * Whisper APIを使用した音声認識のカスタムフック
@@ -185,6 +186,7 @@ export const useWhisperRecognition = (
     } else {
       // AIの発話を停止
       homeStore.setState({ isSpeaking: false })
+      SpeakQueue.stopAll()
       startListening()
     }
   }, [startListening, stopListening])
@@ -194,6 +196,7 @@ export const useWhisperRecognition = (
     if (userMessage.trim()) {
       // AIの発話を停止
       homeStore.setState({ isSpeaking: false })
+      SpeakQueue.stopAll()
       onChatProcessStart(userMessage)
       setUserMessage('')
     }

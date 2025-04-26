@@ -42,7 +42,7 @@
   "LocalLLMInfo": "คุณต้องเปิดเซิร์ฟเวอร์ LLM แบบโลคอล",
   "LocalLLMInfo2": "กรุณาป้อน URL ของ LLM แบบโลคอล (รวมหมายเลขพอร์ต) และชื่อโมเดล",
   "GroqInfo": "Groq API เข้าถึงโดยตรงจากเบราว์เซอร์",
-  "DifyInfo": "Dify รองรับเฉพาะชนิด Chatbot หรือ Agent เท่านั้น",
+  "DifyInfo": "Dify รองรับเฉพาะประเภทแชทบอทหรือเอเจนต์เท่านั้น หากไม่ได้รับคำตอบที่ดี กรุณาลบประวัติการสนทนาแล้วลองถามใหม่อีกครั้ง",
   "DifyInfo2": "ความยาวของประวัติการสนทนาขึ้นอยู่กับการตั้งค่าของ Dify Chatbot",
   "DifyInfo3": "ตัวอย่าง: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "เมื่อใช้ Dify, prompt ระบบนี้จะไม่ถูกใช้ กรุณาตั้งค่าใน Dify Chatbot",
@@ -223,16 +223,17 @@
   "AzureEndpoint": "Azure Endpoint",
   "Toasts": {
     "WebSocketConnectionError": "เกิดข้อผิดพลาดในการเชื่อมต่อ WebSocket",
-    "WebSocketConnectionClosed": "การเชื่อมต่อ WebSocket ถูกปิด",
+    "WebSocketConnectionClosed": "การเชื่อมต่อ WebSocket ถูกปิดแล้ว",
     "WebSocketConnectionAttempt": "กำลังพยายามเชื่อมต่อ WebSocket...",
-    "WebSocketConnectionSuccess": "เชื่อมต่อ WebSocket สำเร็จ",
-    "FunctionExecuting": "กำลังทำงาน {{funcName}}",
-    "FunctionExecutionFailed": "การทำงานของ {{funcName}} ล้มเหลว",
+    "WebSocketConnectionSuccess": "เชื่อมต่อ WebSocket สำเร็จแล้ว",
+    "FunctionExecuting": "กำลังเรียกใช้ {{funcName}}",
+    "FunctionExecutionFailed": "การเรียกใช้ {{funcName}} ล้มเหลว",
     "FirefoxNotSupported": "Firefox ไม่รองรับฟีเจอร์นี้",
-    "SpeechRecognitionError": "เกิดข้อผิดพลาดในการรับรู้เสียง",
+    "SpeechRecognitionError": "เกิดข้อผิดพลาดในการรู้จำเสียง",
     "NoSpeechDetected": "ไม่พบเสียง",
-    "PresetSwitching": "เปลี่ยนเป็น {{presetName}}",
-    "WhisperError": "เกิดข้อผิดพลาดในการรับรู้เสียงโดย Whisper"
+    "PresetSwitching": "เปลี่ยนเป็น {{presetName}} แล้ว",
+    "WhisperError": "เกิดข้อผิดพลาดในการรู้จำเสียงโดย Whisper",
+    "UsingTool": "กำลังใช้ {{toolName}}"
   },
   "ContinuousMic": "การป้อนข้อมูลด้วยไมโครโฟนต่อเนื่อง",
   "ContinuousMicActive": "กำลังป้อนข้อมูลด้วยไมโครโฟนต่อเนื่อง",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "ป้อนข้อมูลส่วนหัวที่จะรวมในคำขอ API ในรูปแบบ JSON",
   "CustomAPIBody": "เนื้อหาแบบกำหนดเอง",
   "CustomAPIBodyInfo": "ป้อนข้อมูลเนื้อหาที่จะรวมในคำขอ API ในรูปแบบ JSON ข้อความจะถูกรวมโดยอัตโนมัติ",
-  "CustomAPIDescription": "หมายเหตุ: ข้อความจะถูกรวมในเนื้อหาคำขอโดยอัตโนมัติ ในโหมดสตรีมมิ่ง เซิร์ฟเวอร์ต้องส่งกลับ text/event-stream"
+  "CustomAPIDescription": "หมายเหตุ: ข้อความจะถูกรวมในเนื้อหาคำขอโดยอัตโนมัติ ในโหมดสตรีมมิ่ง เซิร์ฟเวอร์ต้องส่งกลับ text/event-stream",
+  "EditSlideScripts": "แก้ไขบทสนทนา",
+  "PleaseSelectSlide": "โปรดเลือกสไลด์"
 }

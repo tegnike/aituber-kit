@@ -42,7 +42,7 @@
   "LocalLLMInfo": "È necessario avviare il server LLM locale.",
   "LocalLLMInfo2": "Inserisci l'URL del LLM locale (incluso il numero di porta) e il nome del modello.",
   "GroqInfo": "L'API Groq è accessibile direttamente dal browser.",
-  "DifyInfo": "Dify supporta solo chatbot o tipi di agenti.",
+  "DifyInfo": "In Dify, sono supportati solo i tipi chatbot o agente. Se non si ottiene una risposta soddisfacente, eliminare la cronologia delle conversazioni e riprovare a fare la domanda.",
   "DifyInfo2": "La lunghezza della cronologia delle conversazioni dipende dalle impostazioni del chatbot Dify.",
   "DifyInfo3": "Esempio: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "Quando si utilizza Dify, questo prompt di sistema non viene utilizzato. Configuralo nel chatbot Dify.",
@@ -226,13 +226,14 @@
     "WebSocketConnectionClosed": "La connessione WebSocket è stata chiusa",
     "WebSocketConnectionAttempt": "Tentativo di connessione WebSocket in corso...",
     "WebSocketConnectionSuccess": "Connessione WebSocket riuscita",
-    "FunctionExecuting": "Esecuzione di {{funcName}} in corso",
-    "FunctionExecutionFailed": "Esecuzione di {{funcName}} fallita",
-    "FirefoxNotSupported": "Questa funzione non è supportata in Firefox",
-    "SpeechRecognitionError": "Si è verificato un errore nel riconoscimento vocale",
-    "NoSpeechDetected": "Nessun audio rilevato.",
-    "PresetSwitching": "Passaggio a {{presetName}}.",
-    "WhisperError": "Si è verificato un errore nel riconoscimento vocale con Whisper"
+    "FunctionExecuting": "Sto eseguendo {{funcName}}",
+    "FunctionExecutionFailed": "Impossibile eseguire {{funcName}}",
+    "FirefoxNotSupported": "Questa funzione non è supportata in Firefox.",
+    "SpeechRecognitionError": "Si è verificato un errore di riconoscimento vocale",
+    "NoSpeechDetected": "Audio non rilevato.",
+    "PresetSwitching": "È stato cambiato a {{presetName}}.",
+    "WhisperError": "Si è verificato un errore nel riconoscimento vocale tramite Whisper",
+    "UsingTool": "Utilizzando {{toolName}}"
   },
   "ContinuousMic": "Input microfono continuo",
   "ContinuousMicActive": "Input microfono continuo attivo",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "Inserisci in formato JSON le informazioni degli header da includere nella richiesta API.",
   "CustomAPIBody": "Body personalizzato",
   "CustomAPIBodyInfo": "Inserisci in formato JSON le informazioni del body da includere nella richiesta API. I messaggi verranno inclusi automaticamente.",
-  "CustomAPIDescription": "Nota: i messaggi verranno inclusi automaticamente nel body della richiesta. In modalità streaming, il server deve restituire text/event-stream."
+  "CustomAPIDescription": "Nota: i messaggi verranno inclusi automaticamente nel body della richiesta. In modalità streaming, il server deve restituire text/event-stream.",
+  "EditSlideScripts": "Modifica dei dialoghi",
+  "PleaseSelectSlide": "Seleziona una diapositiva"
 }

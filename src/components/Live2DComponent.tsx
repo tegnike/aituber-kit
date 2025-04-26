@@ -158,6 +158,33 @@ const Live2DComponent = () => {
       }
     }
 
+    const handleDragOver = (event: DragEvent) => {
+      event.preventDefault()
+    }
+
+    const handleDrop = (event: DragEvent) => {
+      event.preventDefault()
+
+      const files = event.dataTransfer?.files
+      if (!files) {
+        return
+      }
+
+      const file = files[0]
+      if (!file) {
+        return
+      }
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = function () {
+          const image = reader.result as string
+          image !== '' && homeStore.setState({ modalImage: image })
+        }
+      }
+    }
+
     // タッチイベント処理
     const handleTouchStart = (event: TouchEvent) => {
       if (event.touches.length === 2) {
@@ -195,6 +222,8 @@ const Live2DComponent = () => {
     canvas.addEventListener('pointermove', handlePointerMove)
     canvas.addEventListener('pointerup', handlePointerUp)
     canvas.addEventListener('wheel', handleWheel, { passive: false })
+    canvas.addEventListener('dragover', handleDragOver)
+    canvas.addEventListener('drop', handleDrop)
 
     // タッチイベントリスナーの登録
     canvas.addEventListener('touchstart', handleTouchStart)
@@ -207,6 +236,8 @@ const Live2DComponent = () => {
       canvas.removeEventListener('pointermove', handlePointerMove)
       canvas.removeEventListener('pointerup', handlePointerUp)
       canvas.removeEventListener('wheel', handleWheel)
+      canvas.removeEventListener('dragover', handleDragOver)
+      canvas.removeEventListener('drop', handleDrop)
 
       // タッチイベントリスナーの削除
       canvas.removeEventListener('touchstart', handleTouchStart)

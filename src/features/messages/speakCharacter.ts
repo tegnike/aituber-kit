@@ -22,9 +22,9 @@ import {
   containsEnglish,
 } from '@/utils/textProcessing'
 
-const speakQueue = new SpeakQueue()
+const speakQueue = SpeakQueue.getInstance()
 
-function preprocessMessage(
+export function preprocessMessage(
   message: string,
   settings: ReturnType<typeof settingsStore.getState>
 ): string | null {
@@ -177,42 +177,64 @@ const createSpeakCharacter = () => {
     onStart?: () => void,
     onComplete?: () => void
   ) => {
+    let called = false
     const ss = settingsStore.getState()
     onStart?.()
 
+    const initialToken = SpeakQueue.currentStopToken
+
     speakQueue.checkSessionId(sessionId)
+
+    // 停止後なら即完了
+    if (SpeakQueue.currentStopToken !== initialToken) {
+      if (onComplete && !called) {
+        called = true
+        onComplete()
+      }
+      return
+    }
 
     const processedMessage = preprocessMessage(talk.message, ss)
     if (!processedMessage && !talk.buffer) {
+      if (onComplete && !called) {
+        called = true
+        onComplete()
+      }
       return
     }
 
     if (processedMessage) {
       talk.message = processedMessage
-
-      // 英語→日本語変換が必要な場合は、非同期で処理を行う
-      if (
-        ss.changeEnglishToJapanese &&
-        ss.selectLanguage === 'ja' &&
-        containsEnglish(processedMessage)
-      ) {
-        // 非同期で変換処理を行い、結果をtalk.messageに反映
-        asyncConvertEnglishToJapaneseReading(processedMessage)
-          .then((convertedText) => {
-            talk.message = convertedText
-          })
-          .catch((error) => {
-            console.error('Error converting English to Japanese:', error)
-          })
-      }
+    } else if (talk.buffer) {
+      talk.message = ''
     }
 
     let isNeedDecode = true
 
-    const fetchPromise = prevFetchPromise.then(async () => {
+    const processAndSynthesizePromise = prevFetchPromise.then(async () => {
       const now = Date.now()
       if (now - lastTime < 1000) {
         await wait(1000 - (now - lastTime))
+      }
+
+      // ボタン停止でキャンセルされた場合はここで終了
+      if (SpeakQueue.currentStopToken !== initialToken) {
+        return null
+      }
+
+      if (
+        processedMessage &&
+        ss.changeEnglishToJapanese &&
+        ss.selectLanguage === 'ja' &&
+        containsEnglish(processedMessage)
+      ) {
+        try {
+          const convertedText =
+            await asyncConvertEnglishToJapaneseReading(processedMessage)
+          talk.message = convertedText
+        } catch (error) {
+          console.error('Error converting English to Japanese:', error)
+        }
       }
 
       let buffer
@@ -220,34 +242,76 @@ const createSpeakCharacter = () => {
         if (talk.message == '' && talk.buffer) {
           buffer = talk.buffer
           isNeedDecode = false
-        } else {
+        } else if (talk.message !== '') {
           buffer = await synthesizeVoice(talk, ss.selectVoice)
+        } else {
+          buffer = null
         }
       } catch (error) {
         handleTTSError(error, ss.selectVoice)
         return null
+      } finally {
+        lastTime = Date.now()
       }
-      lastTime = Date.now()
-      return buffer
+
+      // 合成開始前に取得した initialToken をそのまま保持する
+      const tokenAtStart = initialToken
+      return { buffer, isNeedDecode, tokenAtStart }
     })
 
-    prevFetchPromise = fetchPromise
+    prevFetchPromise = processAndSynthesizePromise.catch((err) => {
+      console.error('Speak chain error (swallowed):', err)
+      // 後続処理を止めないために resolve で返す
+      return null
+    })
 
-    // キューを使用した処理に変更
-    fetchPromise.then((audioBuffer) => {
-      if (!audioBuffer) return
+    processAndSynthesizePromise
+      .then((result) => {
+        if (!result || !result.buffer) {
+          if (onComplete && !called) {
+            called = true
+            onComplete()
+          }
+          return
+        }
 
-      speakQueue.addTask({
-        audioBuffer,
-        talk,
-        isNeedDecode,
-        onComplete,
+        // Stop ボタン後に生成された音声でないか確認
+        if (result.tokenAtStart !== SpeakQueue.currentStopToken) {
+          // 生成中に Stop された => 破棄
+          if (onComplete && !called) {
+            called = true
+            onComplete()
+          }
+          return
+        }
+
+        // Wrap the onComplete passed to speakQueue.addTask
+        const guardedOnComplete = () => {
+          if (onComplete && !called) {
+            called = true
+            onComplete()
+          }
+        }
+
+        speakQueue.addTask({
+          sessionId,
+          audioBuffer: result.buffer,
+          talk,
+          isNeedDecode: result.isNeedDecode,
+          onComplete: guardedOnComplete, // Pass the guarded function
+        })
       })
-    })
+      .catch((error) => {
+        console.error('Error in processAndSynthesizePromise chain:', error)
+        if (onComplete && !called) {
+          called = true
+          onComplete()
+        }
+      })
   }
 }
 
-function handleTTSError(error: unknown, serviceName: string): void {
+export function handleTTSError(error: unknown, serviceName: string): void {
   let message: string
   if (error instanceof Error) {
     message = error.message

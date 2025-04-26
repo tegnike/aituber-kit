@@ -42,7 +42,7 @@
   "LocalLLMInfo": "Wymagane jest uruchomienie serwera lokalnego LLM.",
   "LocalLLMInfo2": "Wprowadź URL lokalnego LLM (włącznie z numerem portu) i nazwę modelu.",
   "GroqInfo": "API Groq jest dostępne bezpośrednio z przeglądarki.",
-  "DifyInfo": "Dify obsługuje tylko chatboty lub typy agentów.",
+  "DifyInfo": "W Dify obsługiwane są tylko chatboty lub typy agentów. Jeśli nie uzyskasz poprawnej odpowiedzi, usuń historię rozmów i spróbuj ponownie zadać pytanie.",
   "DifyInfo2": "Długość historii rozmowy zależy od ustawień chatbota Dify.",
   "DifyInfo3": "Przykład: https://api.dify.ai/v1, http://localhost:80/v1",
   "DifyInstruction": "Gdy używasz Dify, ten prompt systemowy nie jest używany. Ustaw go w chatbocie Dify.",
@@ -222,17 +222,18 @@
   "UpdateRealtimeAPISettingsInfo": "Po aktualizacji klucza API, endpointu Azure, typu głosu, modelu lub promptu systemowego, naciśnij przycisk aktualizacji, aby rozpocząć nową sesję WebSocket.",
   "AzureEndpoint": "Endpoint Azure",
   "Toasts": {
-    "WebSocketConnectionError": "Wystąpił błąd połączenia WebSocket",
+    "WebSocketConnectionError": "Wystąpił błąd połączenia WebSocket.",
     "WebSocketConnectionClosed": "Połączenie WebSocket zostało zamknięte",
     "WebSocketConnectionAttempt": "Próba połączenia WebSocket...",
-    "WebSocketConnectionSuccess": "Połączenie WebSocket udane",
-    "FunctionExecuting": "Wykonywanie {{funcName}}",
-    "FunctionExecutionFailed": "Wykonanie {{funcName}} nie powiodło się",
-    "FirefoxNotSupported": "Ta funkcja nie jest obsługiwana w Firefoxie",
+    "WebSocketConnectionSuccess": "Połączenie WebSocket zostało nawiązane pomyślnie",
+    "FunctionExecuting": "Uruchamianie {{funcName}}",
+    "FunctionExecutionFailed": "Nie udało się wykonać {{funcName}}.",
+    "FirefoxNotSupported": "Firefox nie obsługuje tej funkcji",
     "SpeechRecognitionError": "Wystąpił błąd rozpoznawania mowy",
-    "NoSpeechDetected": "Nie wykryto mowy.",
+    "NoSpeechDetected": "Nie wykryto dźwięku.",
     "PresetSwitching": "Przełączono na {{presetName}}.",
-    "WhisperError": "Wystąpił błąd podczas rozpoznawania mowy przez Whisper"
+    "WhisperError": "Wystąpił błąd podczas rozpoznawania mowy przez Whisper.",
+    "UsingTool": "Korzystanie z {{toolName}}"
   },
   "ContinuousMic": "Ciągłe wejście mikrofonu",
   "ContinuousMicActive": "Ciągłe wejście mikrofonu aktywne",
@@ -298,5 +299,7 @@
   "CustomAPIHeadersInfo": "Wprowadź informacje nagłówka, które mają być zawarte w żądaniu API, w formacie JSON.",
   "CustomAPIBody": "Niestandardowy treść",
   "CustomAPIBodyInfo": "Wprowadź informacje treści, które mają być zawarte w żądaniu API, w formacie JSON. Wiadomości są automatycznie dołączane.",
-  "CustomAPIDescription": "Uwaga: Wiadomości są automatycznie dołączane do treści żądania. W trybie strumieniowym serwer musi zwracać text/event-stream."
+  "CustomAPIDescription": "Uwaga: Wiadomości są automatycznie dołączane do treści żądania. W trybie strumieniowym serwer musi zwracać text/event-stream.",
+  "EditSlideScripts": "Edycja dialogów",
+  "PleaseSelectSlide": "Wybierz slajd."
 }

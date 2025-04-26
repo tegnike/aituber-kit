@@ -233,7 +233,9 @@ DIFY_URL=""
 ```
 
 ::: warning Note
-Dify only supports "Chatbot" or "Agent" type applications. Also, when using Dify, the number of past messages to retain and the system prompt need to be configured on the Dify side.
+Dify only supports "Chatbot" or "Agent" type applications.<br>
+Also, when using Dify, the number of past messages to retain and system prompts need to be configured on the Dify side.<br>
+If you're not getting satisfactory responses, try deleting the conversation history before asking again.
 :::
 
 ## Custom API
@@ -247,6 +249,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # Custom API Body
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# Enable system messages in custom API (true/false)
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ::: warning Note
