@@ -73,7 +73,7 @@ AITuber配信
 TIPS
 VRMモデル、背景固定方法
 - VRMモデルは public/AvatarSample_B.vrm のデータを変更してください。名称は変更しないでください。
-- 背景画像は public/bg-c.png の画像を変更してください。名称は変更しないでください。
+- 背景画像は public/backgrounds/bg-c.png の画像を変更してください。名称は変更しないでください。
 
 環境変数の設定
 - 一部の設定値は .env ファイルの内容を参照することができます。

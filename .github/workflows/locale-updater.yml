@@ -1,47 +1,60 @@
 name: Locale Files Updater
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-    branches:
-      - develop
-    paths:
-      - 'locales/ja/translation.json'
   workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Target branch to compare and update locale files'
+        required: true
+        default: 'develop' # デフォルトを設定するか、required: true のままにするか検討
 
 jobs:
   update-locales:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
+      # pull-requests: write # PRコメントが不要なら削除可能
     steps:
+      - name: Check if target branch is main
+        if: github.event.inputs.target_branch == 'main'
+        run: |
+          echo "Error: This workflow cannot be run on the main branch."
+          exit 1
+
+      - name: Determine base branch
+        id: set_base
+        run: |
+          if [[ "${{ github.event.inputs.target_branch }}" == "develop" ]]; then
+            echo "base_branch=main" >> $GITHUB_OUTPUT
+          else
+            echo "base_branch=develop" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Use v4
         with:
-          fetch-depth: 0 # 履歴を全て取得して差分比較に使用
-          ref: ${{ github.head_ref || github.event.pull_request.head.ref }} # より堅牢なブランチ参照方法
-          repository: ${{ github.event.pull_request.head.repo.full_name }} # フォークリポジトリを明示的に指定
+          fetch-depth: 0 # Keep fetch-depth 0 for diff
+          ref: ${{ github.event.inputs.target_branch }} # Checkout the target branch
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Use v5
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install openai GitPython
+          # auto_translate.py に必要なライブラリをインストール
+          pip install requests langchain-openai pydantic
 
       - name: Update locale files
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_EVENT_ACTION: ${{ github.event.action }}
-          GITHUB_BEFORE_SHA: ${{ github.event.before }}
-        run: python scripts/update_locales.py
+          TARGET_BRANCH: ${{ github.event.inputs.target_branch }}
+          BASE_BRANCH: ${{ steps.set_base.outputs.base_branch }}
+          REPO_FULL_NAME: ${{ github.repository }} # スクリプト内でリポジトリ名が必要な場合に備えて残す
+        run: python scripts/auto_translate.py
 
       - name: Commit and push changes
         run: |
@@ -49,14 +62,12 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add locales/*/translation.json
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No changes to commit in locale files."
             exit 0
           fi
-          git commit -m "update locale files"
+          # コミットメッセージを改善
+          COMMIT_MESSAGE="chore(i18n): Update locale files based on ja/translation.json changes in ${{ github.event.inputs.target_branch }}"
+          git commit -m "$COMMIT_MESSAGE"
 
-          # PRの場合はPRのブランチに、それ以外は現在のブランチにプッシュ
-          if [ -n "${{ github.head_ref }}" ]; then
-            git push origin HEAD:${{ github.head_ref }}
-          else
-            git push origin HEAD:${{ github.event.pull_request.head.ref }}
-          fi
+          # ターゲットブランチにプッシュ
+          git push origin HEAD:${{ github.event.inputs.target_branch }}

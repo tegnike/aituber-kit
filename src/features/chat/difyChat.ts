@@ -40,17 +40,18 @@ export async function getDifyChatResponseStream(
 
     return new ReadableStream({
       async start(controller) {
-        if (!response.body) {
-          throw new Error('API response from Dify is empty', {
-            cause: { errorCode: 'AIAPIError' },
-          })
-        }
-
-        const reader = response.body.getReader()
-        const decoder = new TextDecoder('utf-8')
-        let buffer = ''
-
+        let reader: ReadableStreamDefaultReader<Uint8Array> | undefined
         try {
+          if (!response.body) {
+            throw new Error('API response from Dify is empty', {
+              cause: { errorCode: 'AIAPIError' },
+            })
+          }
+
+          reader = response.body.getReader()
+          const decoder = new TextDecoder('utf-8')
+          let buffer = ''
+
           while (true) {
             const { done, value } = await reader.read()
             if (done) break
@@ -90,12 +91,16 @@ export async function getDifyChatResponseStream(
           })
         } finally {
           controller.close()
-          reader.releaseLock()
+          if (reader) {
+            reader.releaseLock()
+          }
         }
       },
     })
   } catch (error: any) {
-    const errorMessage = handleApiError(error.cause.errorCode)
+    const errorMessage = handleApiError(
+      error.cause ? error.cause.errorCode : 'AIAPIError'
+    )
     toastStore.getState().addToast({
       message: errorMessage,
       type: 'error',

@@ -59,14 +59,14 @@ NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
 
 ```bash
 # Background image path
-NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/bg-c.png
+NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/backgrounds/bg-c.png
 ```
 
-You can customize the application's background image. Click the "Change Background Image" button to upload your preferred image.
+You can customize the background image of the application. Click the "Upload Background Image" button to upload your preferred image.
 
-To make it persistent, save your desired image as `public/bg-c.png`.
+Once uploaded, the image can be selected from the settings screen at any time.
 
-You can also specify the file name using an environment variable.
+You can also specify the default background image using an environment variable.
 
 ## Show Answer Box
 

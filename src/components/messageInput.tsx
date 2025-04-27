@@ -28,6 +28,7 @@ export const MessageInput = ({
   onClickMicButton,
   onClickSendButton,
   onClickStopButton,
+  isSpeaking,
   silenceTimeoutRemaining,
   continuousMicListeningMode,
 }: Props) => {
@@ -157,7 +158,7 @@ export const MessageInput = ({
               }
               isProcessing={isMicRecording}
               isProcessingIcon={'24/PauseAlt'}
-              disabled={chatProcessing}
+              disabled={chatProcessing || isSpeaking}
               onClick={handleMicClick}
             />
             <textarea

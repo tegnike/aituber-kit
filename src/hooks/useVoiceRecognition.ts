@@ -44,7 +44,9 @@ export const useVoiceRecognition = ({
 
   // ----- 音声停止 -----
   const handleStopSpeaking = useCallback(() => {
+    // isSpeaking を false に設定し、発話キューを完全に停止
     homeStore.setState({ isSpeaking: false })
+    SpeakQueue.stopAll()
   }, [])
 
   // AIの発話完了後に音声認識を自動的に再開する処理

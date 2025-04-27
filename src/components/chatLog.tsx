@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { EMOTIONS } from '@/features/messages/messages'
 
 import homeStore from '@/features/stores/home'
@@ -8,11 +8,16 @@ import { messageSelectors } from '@/features/messages/messageSelectors'
 
 export const ChatLog = () => {
   const chatScrollRef = useRef<HTMLDivElement>(null)
+  const resizeHandleRef = useRef<HTMLDivElement>(null)
+  const chatLogRef = useRef<HTMLDivElement>(null)
 
   const characterName = settingsStore((s) => s.characterName)
+  const chatLogWidth = settingsStore((s) => s.chatLogWidth)
   const messages = messageSelectors.getTextAndImageMessages(
     homeStore((s) => s.chatLog)
   )
+
+  const [isDragging, setIsDragging] = useState<boolean>(false)
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
@@ -28,8 +33,50 @@ export const ChatLog = () => {
     })
   }, [messages])
 
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      setIsDragging(true)
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return
+
+      const newWidth = e.clientX
+
+      const constrainedWidth = Math.max(
+        300,
+        Math.min(newWidth, window.innerWidth * 0.8)
+      )
+
+      settingsStore.setState({ chatLogWidth: constrainedWidth })
+    }
+
+    const handleMouseUp = () => {
+      setIsDragging(false)
+    }
+
+    const resizeHandle = resizeHandleRef.current
+    if (resizeHandle) {
+      resizeHandle.addEventListener('mousedown', handleMouseDown)
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+    }
+
+    return () => {
+      if (resizeHandle) {
+        resizeHandle.removeEventListener('mousedown', handleMouseDown)
+      }
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isDragging])
+
   return (
-    <div className="absolute w-col-span-7 max-w-full h-[100svh] pb-16 z-10">
+    <div
+      ref={chatLogRef}
+      className="absolute h-[100svh] pb-16 z-10 max-w-full"
+      style={{ width: `${chatLogWidth}px` }}
+    >
       <div className="max-h-full px-4 pt-24 pb-16 overflow-y-auto scroll-hidden">
         {messages.map((msg, i) => {
           return (
@@ -58,6 +105,15 @@ export const ChatLog = () => {
           )
         })}
       </div>
+      <div
+        ref={resizeHandleRef}
+        className="absolute top-0 right-0 h-full w-4 cursor-ew-resize hover:bg-secondary hover:bg-opacity-20"
+        style={{
+          cursor: isDragging ? 'grabbing' : 'ew-resize',
+        }}
+      >
+        <div className="absolute top-1/2 right-1 h-16 w-1 bg-secondary bg-opacity-40 rounded-full transform -translate-y-1/2"></div>
+      </div>
     </div>
   )
 }
@@ -80,7 +136,7 @@ const Chat = ({
   const offsetX = role === 'user' ? 'pl-10' : 'pr-10'
 
   return (
-    <div className={`mx-auto max-w-[32rem] my-4 ${offsetX}`}>
+    <div className={`mx-auto ml-0 md:ml-10 lg:ml-20 my-4 ${offsetX}`}>
       {role === 'code' ? (
         <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-white p-4 rounded-lg">
           <code className="font-mono text-sm">{message}</code>
@@ -115,7 +171,7 @@ const ChatImage = ({
   const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
 
   return (
-    <div className={`mx-auto max-w-[32rem] my-4 ${offsetX}`}>
+    <div className={`mx-auto ml-0 md:ml-10 lg:ml-20 my-4 ${offsetX}`}>
       <Image
         src={imageUrl}
         alt="Generated Image"

@@ -7,6 +7,7 @@ import homeStore from '@/features/stores/home'
 import { useSilenceDetection } from './useSilenceDetection'
 import { processAudio, base64EncodeAudio } from '@/utils/audioProcessing'
 import { useAudioProcessing } from './useAudioProcessing'
+import { SpeakQueue } from '@/features/messages/speakQueue'
 
 /**
  * リアルタイムAPIを使用した音声認識のカスタムフック
@@ -317,6 +318,7 @@ export const useRealtimeVoiceAPI = (
       startListening()
       // AIの発話を停止
       homeStore.setState({ isSpeaking: false })
+      SpeakQueue.stopAll()
     }
   }, [startListening, stopListening])
 
@@ -325,6 +327,7 @@ export const useRealtimeVoiceAPI = (
     if (userMessage.trim()) {
       // AIの発話を停止
       homeStore.setState({ isSpeaking: false })
+      SpeakQueue.stopAll()
       onChatProcessStart(userMessage)
       setUserMessage('')
     }

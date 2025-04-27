@@ -233,7 +233,9 @@ DIFY_URL=""
 ```
 
 ::: warning 注意
-Dify仅支持"聊天机器人"或"代理"类型的应用程序。此外，使用Dify时，需要在Dify端配置要保留的过去消息数量和系统提示。
+Dify仅支持"聊天机器人"或"代理"类型的应用程序。<br>
+此外，使用Dify时，过去消息的保留数量和系统提示需要在Dify端进行设置。<br>
+如果无法获得良好的回答，请删除对话历史记录后再次提问。
 :::
 
 ## 自定义API
@@ -247,6 +249,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # 自定义API Body
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# 在自定义API中启用系统消息（true/false）
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ::: warning 注意
