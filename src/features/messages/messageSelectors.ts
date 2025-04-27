@@ -46,18 +46,40 @@ export const messageSelectors = {
           : message.content || ''
 
         let content: Message['content']
-        if (includeTimestamp) {
-          content = message.timestamp
-            ? `[${message.timestamp}] ${messageText}`
-            : messageText
+        if (
+          message.role === 'user' &&
+          message.userName &&
+          message.userName !== 'あなた'
+        ) {
+          const baseContent =
+            includeTimestamp && message.timestamp
+              ? `[${message.timestamp}] ${messageText}`
+              : messageText
+
+          const contentWithUserName = `[${message.userName}] ${baseContent}`
+
           if (isLastMessage && Array.isArray(message.content)) {
             content = [
-              { type: 'text', text: content },
+              { type: 'text', text: contentWithUserName },
               { type: 'image', image: message.content[1].image },
             ]
+          } else {
+            content = contentWithUserName
           }
         } else {
-          content = isLastMessage ? message.content : messageText
+          if (includeTimestamp) {
+            content = message.timestamp
+              ? `[${message.timestamp}] ${messageText}`
+              : messageText
+            if (isLastMessage && Array.isArray(message.content)) {
+              content = [
+                { type: 'text', text: content },
+                { type: 'image', image: message.content[1].image },
+              ]
+            }
+          } else {
+            content = isLastMessage ? message.content : messageText
+          }
         }
 
         return {
