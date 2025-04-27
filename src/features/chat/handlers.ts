@@ -668,14 +668,14 @@ export const handleSendChatFn =
       homeStore.setState({ chatProcessing: true })
       // ユーザーの発言を追加して表示
       let content: Message['content'] = newMessage
-      
+
       if (source === 'youtube' && userName) {
         if (typeof content === 'string') {
           content = `[YouTube: ${userName}] ${content}`
         } else if (Array.isArray(content)) {
           const textPart = content[0] as { type: 'text'; text: string }
           const imagePart = content[1] as { type: 'image'; image: string }
-          
+
           content = [
             { type: 'text', text: `[YouTube: ${userName}] ${textPart.text}` },
             imagePart,
@@ -684,24 +684,27 @@ export const handleSendChatFn =
       } else if (source === 'user' && typeof content === 'string') {
         content = `[あなた] ${content}`
       }
-      
+
       homeStore.getState().upsertMessage({
         role: 'user',
         content: modalImage
           ? [
-              { type: 'text' as const, text: typeof content === 'string' ? content : content[0].text },
+              {
+                type: 'text' as const,
+                text: typeof content === 'string' ? content : content[0].text,
+              },
               { type: 'image' as const, image: modalImage },
             ]
           : content,
         timestamp: timestamp,
       })
-      
+
       if (modalImage) {
         homeStore.setState({ modalImage: '' })
       }
-      
+
       const currentChatLog = homeStore.getState().chatLog
-      
+
       const messages: Message[] = [
         {
           role: 'system',
@@ -712,7 +715,7 @@ export const handleSendChatFn =
           ss.includeTimestampInUserMessage
         ),
       ]
-      
+
       try {
         await processAIResponse(messages)
       } catch (e) {
