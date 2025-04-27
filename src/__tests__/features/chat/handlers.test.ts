@@ -176,7 +176,7 @@ describe('handlers', () => {
       expect(mockHomeStore.upsertMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           role: 'user',
-          content: 'テストメッセージ',
+          content: '[あなた] テストメッセージ',
         })
       )
       expect(getAIChatResponseStream).toHaveBeenCalledWith(
