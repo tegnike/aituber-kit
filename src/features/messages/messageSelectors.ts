@@ -34,7 +34,8 @@ export const messageSelectors = {
   // メッセージを処理して、テキストメッセージのみを取得
   getProcessedMessages: (
     messages: Message[],
-    includeTimestamp: boolean
+    includeTimestamp: boolean,
+    youtubeMode: boolean
   ): Message[] => {
     const maxPastMessages = settingsStore.getState().maxPastMessages
     return messages
@@ -49,14 +50,16 @@ export const messageSelectors = {
         if (
           message.role === 'user' &&
           message.userName &&
-          message.userName !== 'あなた'
+          message.userName !== 'YOU'
         ) {
           const baseContent =
             includeTimestamp && message.timestamp
               ? `[${message.timestamp}] ${messageText}`
               : messageText
 
-          const contentWithUserName = `[${message.userName}] ${baseContent}`
+          const contentWithUserName = youtubeMode
+            ? `${message.userName}: ${baseContent}`
+            : baseContent
 
           if (isLastMessage && Array.isArray(message.content)) {
             content = [

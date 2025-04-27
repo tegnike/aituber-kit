@@ -576,7 +576,8 @@ export const processAIResponse = async (messages: Message[]) => {
  * Youtubeでチャット取得した場合もこの関数を使用する
  */
 export const handleSendChatFn =
-  () => async (text: string, userName?: string) => {
+  () =>
+  async (text: string, userName: string = 'YOU') => {
     const sessionId = generateSessionId()
     const newMessage = text
     const timestamp = new Date().toISOString()
@@ -596,7 +597,7 @@ export const handleSendChatFn =
           role: 'user',
           content: newMessage,
           timestamp: timestamp,
-          userName: userName || 'あなた',
+          userName: userName,
         })
 
         wsManager.websocket.send(
@@ -618,7 +619,7 @@ export const handleSendChatFn =
           role: 'user',
           content: newMessage,
           timestamp: timestamp,
-          userName: userName || 'あなた',
+          userName: userName,
         })
       }
     } else {
@@ -674,7 +675,7 @@ export const handleSendChatFn =
         role: 'user',
         content: userMessageContent,
         timestamp: timestamp,
-        userName: userName || 'あなた',
+        userName: userName,
       })
 
       if (modalImage) {
@@ -690,7 +691,8 @@ export const handleSendChatFn =
         },
         ...messageSelectors.getProcessedMessages(
           currentChatLog,
-          ss.includeTimestampInUserMessage
+          ss.includeTimestampInUserMessage,
+          ss.youtubeMode
         ),
       ]
 
