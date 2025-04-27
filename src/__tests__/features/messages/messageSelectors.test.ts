@@ -115,7 +115,11 @@ describe('messageSelectors', () => {
         },
       ]
 
-      const result = messageSelectors.getProcessedMessages(messages, true)
+      const result = messageSelectors.getProcessedMessages(
+        messages,
+        true,
+        false
+      )
       expect(result).toHaveLength(3)
       expect(result[0].content).toBe(
         '[2023-01-01T00:00:00Z] システムプロンプト'
@@ -151,7 +155,11 @@ describe('messageSelectors', () => {
         },
       ]
 
-      const result = messageSelectors.getProcessedMessages(messages, false)
+      const result = messageSelectors.getProcessedMessages(
+        messages,
+        false,
+        false
+      )
       expect(result).toHaveLength(3)
       expect(result[0].content).toBe('システムプロンプト')
       expect(result[1].content).toBe('ユーザーメッセージ')
@@ -159,6 +167,94 @@ describe('messageSelectors', () => {
         { type: 'text', text: 'テキストと画像' },
         { type: 'image', image: 'image-url' },
       ])
+    })
+
+    it('ユーザー名を含むメッセージをYouTubeモードで処理する', () => {
+      const messages: Message[] = [
+        {
+          role: 'system',
+          content: 'システムプロンプト',
+          timestamp: '2023-01-01T00:00:00Z',
+        },
+        {
+          role: 'user',
+          content: 'ユーザーメッセージ',
+          timestamp: '2023-01-01T00:00:01Z',
+          userName: '視聴者A',
+        },
+        {
+          role: 'user',
+          content: 'YOUユーザーメッセージ',
+          timestamp: '2023-01-01T00:00:02Z',
+          userName: 'YOU',
+        },
+        {
+          role: 'assistant',
+          content: 'アシスタントの返答',
+          timestamp: '2023-01-01T00:00:03Z',
+        },
+      ]
+
+      const result = messageSelectors.getProcessedMessages(messages, true, true)
+      expect(result).toHaveLength(4)
+      expect(result[0].content).toBe(
+        '[2023-01-01T00:00:00Z] システムプロンプト'
+      )
+      expect(result[1].content).toBe(
+        '視聴者A: [2023-01-01T00:00:01Z] ユーザーメッセージ'
+      )
+      expect(result[2].content).toBe(
+        '[2023-01-01T00:00:02Z] YOUユーザーメッセージ'
+      )
+      expect(result[3].content).toBe(
+        '[2023-01-01T00:00:03Z] アシスタントの返答'
+      )
+    })
+
+    it('ユーザー名を含むメッセージをYouTubeモードなしで処理する', () => {
+      const messages: Message[] = [
+        {
+          role: 'system',
+          content: 'システムプロンプト',
+          timestamp: '2023-01-01T00:00:00Z',
+        },
+        {
+          role: 'user',
+          content: 'ユーザーメッセージ',
+          timestamp: '2023-01-01T00:00:01Z',
+          userName: '視聴者A',
+        },
+        {
+          role: 'user',
+          content: 'YOUユーザーメッセージ',
+          timestamp: '2023-01-01T00:00:02Z',
+          userName: 'YOU',
+        },
+        {
+          role: 'assistant',
+          content: 'アシスタントの返答',
+          timestamp: '2023-01-01T00:00:03Z',
+        },
+      ]
+
+      const result = messageSelectors.getProcessedMessages(
+        messages,
+        true,
+        false
+      )
+      expect(result).toHaveLength(4)
+      expect(result[0].content).toBe(
+        '[2023-01-01T00:00:00Z] システムプロンプト'
+      )
+      expect(result[1].content).toBe(
+        '[2023-01-01T00:00:01Z] ユーザーメッセージ'
+      )
+      expect(result[2].content).toBe(
+        '[2023-01-01T00:00:02Z] YOUユーザーメッセージ'
+      )
+      expect(result[3].content).toBe(
+        '[2023-01-01T00:00:03Z] アシスタントの返答'
+      )
     })
 
     it('maxPastMessagesに基づいてメッセージを制限する', () => {
@@ -174,7 +270,11 @@ describe('messageSelectors', () => {
         maxPastMessages: 5,
       })
 
-      const result = messageSelectors.getProcessedMessages(messages, false)
+      const result = messageSelectors.getProcessedMessages(
+        messages,
+        false,
+        false
+      )
       expect(result).toHaveLength(5)
       expect(result[0].content).toBe('メッセージ10')
       expect(result[4].content).toBe('メッセージ14')
