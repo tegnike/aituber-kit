@@ -149,6 +149,10 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     })
     if (newIsPlaying) {
       readSlide(currentSlide)
+    } else {
+      import('@/features/messages/speakQueue').then(({ SpeakQueue }) => {
+        SpeakQueue.stopAll()
+      })
     }
   }
 
