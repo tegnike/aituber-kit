@@ -18,6 +18,20 @@ import {
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
+import {
+  defaultModels,
+  openaiModels,
+  openaiRealtimeModels,
+  openaiAudioModels,
+  anthropicModels,
+  googleModels,
+  groqModels,
+  cohereModels,
+  mistralaiModels,
+  perplexityModels,
+  fireworksModels,
+  deepseekModels,
+} from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
 
@@ -118,24 +132,7 @@ const ModelProvider = () => {
     { value: 'custom-api', label: 'Custom API' },
   ]
 
-  // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
-  // ローカルLLMが選択された場合、AIモデルを空文字に設定
-  const defaultModels = {
-    openai: 'gpt-4o-2024-11-20',
-    anthropic: 'claude-3-5-sonnet-20241022',
-    google: 'gemini-1.5-flash-latest',
-    azure: '',
-    groq: 'gemma2-9b-it',
-    cohere: 'command-r-plus',
-    mistralai: 'mistral-large-latest',
-    perplexity: 'llama-3-sonar-large-32k-online',
-    fireworks: 'accounts/fireworks/models/firefunction-v2',
-    deepseek: 'deepseek-chat',
-    lmstudio: '',
-    ollama: '',
-    dify: '',
-    'custom-api': '',
-  }
+  // defaultModelsは@/features/constants/aiModelsからインポート済み
 
   const handleAIServiceChange = useCallback(
     (newService: keyof typeof defaultModels) => {
@@ -370,15 +367,11 @@ const ModelProvider = () => {
                         settingsStore.setState({ selectAIModel: model })
                       }}
                     >
-                      <option value="gpt-4o-realtime-preview-2024-10-01">
-                        gpt-4o-realtime-preview-2024-10-01
-                      </option>
-                      <option value="gpt-4o-realtime-preview-2024-12-17">
-                        gpt-4o-realtime-preview-2024-12-17
-                      </option>
-                      <option value="gpt-4o-mini-realtime-preview-2024-12-17">
-                        gpt-4o-mini-realtime-preview-2024-12-17
-                      </option>
+                      {openaiRealtimeModels.map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="my-4">
@@ -441,15 +434,11 @@ const ModelProvider = () => {
                         settingsStore.setState({ selectAIModel: model })
                       }}
                     >
-                      <option value="gpt-4o-audio-preview-2024-10-01">
-                        gpt-4o-audio-preview-2024-10-01
-                      </option>
-                      <option value="gpt-4o-audio-preview-2024-12-17">
-                        gpt-4o-audio-preview-2024-12-17
-                      </option>
-                      <option value="gpt-4o-mini-audio-preview-2024-12-17">
-                        gpt-4o-mini-audio-preview-2024-12-17
-                      </option>
+                      {openaiAudioModels.map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </>
@@ -476,27 +465,11 @@ const ModelProvider = () => {
                     }}
                   >
                     <>
-                      <option value="chatgpt-4o-latest">
-                        chatgpt-4o-latest
-                      </option>
-                      <option value="gpt-4o-mini-2024-07-18">
-                        gpt-4o-mini-2024-07-18
-                      </option>
-                      <option value="gpt-4o-2024-11-20">
-                        gpt-4o-2024-11-20
-                      </option>
-                      <option value="gpt-4.5-preview-2025-02-27">
-                        gpt-4.5-preview-2025-02-27
-                      </option>
-                      <option value="gpt-4.1-nano-2025-04-14">
-                        gpt-4.1-nano-2025-04-14
-                      </option>
-                      <option value="gpt-4.1-mini-2025-04-14">
-                        gpt-4.1-mini-2025-04-14
-                      </option>
-                      <option value="gpt-4.1-2025-04-14">
-                        gpt-4.1-2025-04-14
-                      </option>
+                      {openaiModels.map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
                     </>
                   </select>
                 </div>
@@ -536,18 +509,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="claude-3-opus-20240229">
-                    claude-3-opus-20240229
-                  </option>
-                  <option value="claude-3-7-sonnet-20250219">
-                    claude-3-7-sonnet-20250219
-                  </option>
-                  <option value="claude-3-5-sonnet-20241022">
-                    claude-3.5-sonnet-20241022
-                  </option>
-                  <option value="claude-3-5-haiku-20241022">
-                    claude-3.5-haiku-20241022
-                  </option>
+                  {anthropicModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -594,18 +560,11 @@ const ModelProvider = () => {
                     }
                   }}
                 >
-                  <option value="gemini-2.0-flash-001">
-                    gemini-2.0-flash-001
-                  </option>
-                  <option value="gemini-1.5-flash-latest">
-                    gemini-1.5-flash-latest
-                  </option>
-                  <option value="gemini-1.5-flash-8b-latest">
-                    gemini-1.5-flash-8b-latest
-                  </option>
-                  <option value="gemini-1.5-pro-latest">
-                    gemini-1.5-pro-latest
-                  </option>
+                  {googleModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="my-6">
@@ -787,12 +746,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="gemma2-9b-it">gemma2-9b-it</option>
-                  <option value="llama-3.3-70b-versatile">
-                    llama-3.3-70b-versatile
-                  </option>
-                  <option value="llama3-8b-8192">llama3-8b-8192</option>
-                  <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+                  {groqModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -833,17 +791,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="command-light">command-light</option>
-                  <option value="command-light-nightly">
-                    command-light-nightly
-                  </option>
-                  <option value="command-nightly">command-nightly</option>
-                  <option value="command-r">command-r</option>
-                  <option value="command-r-08-2024">command-r-08-2024</option>
-                  <option value="command-r-plus">command-r-plus</option>
-                  <option value="command-r-plus-08-2024">
-                    command-r-plus-08-2024
-                  </option>
+                  {cohereModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -884,12 +836,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="mistral-large-latest">
-                    mistral-large-latest
-                  </option>
-                  <option value="open-mistral-nemo">open-mistral-nemo</option>
-                  <option value="codestral-latest">codestral-latest</option>
-                  <option value="mistral-embed">mistral-embed</option>
+                  {mistralaiModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -930,21 +881,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="llama-3.1-sonar-small-128k-online">
-                    llama-3.1-sonar-small-128k-online
-                  </option>
-                  <option value="llama-3.1-sonar-large-128k-online">
-                    llama-3.1-sonar-large-128k-online
-                  </option>
-                  <option value="llama-3.1-sonar-huge-128k-online">
-                    llama-3.1-sonar-huge-128k-online
-                  </option>
-                  <option value="llama-3.1-sonar-small-128k-chat">
-                    llama-3.1-sonar-small-128k-chat
-                  </option>
-                  <option value="llama-3.1-sonar-large-128k-chat">
-                    llama-3.1-sonar-large-128k-chat
-                  </option>
+                  {perplexityModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -985,27 +926,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="accounts/fireworks/models/llama-v3p1-405b-instruct">
-                    llama-v3p1-405b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/llama-v3p1-70b-instruct">
-                    llama-v3p1-70b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/llama-v3p1-8b-instruct">
-                    llama-v3p1-8b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/llama-v3-70b-instruct">
-                    llama-v3-70b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/mixtral-8x22b-instruct">
-                    mixtral-8x22b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/mixtral-8x7b-instruct">
-                    mixtral-8x7b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/firefunction-v2">
-                    firefunction-v2
-                  </option>
+                  {fireworksModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model.replace('accounts/fireworks/models/', '')}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -1125,8 +1050,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="deepseek-chat">deepseek-chat</option>
-                  <option value="deepseek-reasoner">deepseek-reasoner</option>
+                  {deepseekModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

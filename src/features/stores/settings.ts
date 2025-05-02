@@ -16,20 +16,15 @@ import {
   SpeechRecognitionMode,
   WhisperTranscriptionModel,
 } from '../constants/settings'
+import {
+  multiModalAIServices as importedMultiModalAIServices,
+  googleSearchGroundingModels as importedGoogleSearchGroundingModels,
+} from '../constants/aiModels'
 
-export const multiModalAIServices = [
-  'openai',
-  'anthropic',
-  'google',
-  'azure',
-] as const
+export const multiModalAIServices = importedMultiModalAIServices
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 
-export const googleSearchGroundingModels = [
-  'gemini-1.5-flash-latest',
-  'gemini-1.5-pro-latest',
-  'gemini-2.0-flash-001',
-] as const
+export const googleSearchGroundingModels = importedGoogleSearchGroundingModels
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]
 
