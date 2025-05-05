@@ -87,7 +87,7 @@ export default defineConfig({
       provider: 'local',
       options: {
         locales: {
-          root: {
+          '/': {
             translations: {
               button: {
                 buttonText: '検索',
@@ -128,7 +128,7 @@ export default defineConfig({
               },
             },
           },
-          en: {
+          '/en/': {
             translations: {
               button: {
                 buttonText: 'Search',
@@ -169,7 +169,7 @@ export default defineConfig({
               },
             },
           },
-          zh: {
+          '/zh/': {
             translations: {
               button: {
                 buttonText: '搜索',

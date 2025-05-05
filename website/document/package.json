@@ -13,7 +13,7 @@
   "description": "",
   "dependencies": {
     "autoprefixer": "^10.4.21",
-    "vitepress": "^1.6.3"
+    "vitepress": "^3.3.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.17"
