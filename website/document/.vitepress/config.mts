@@ -83,6 +83,136 @@ export default defineConfig({
     logo: '/logo2.png',
     siteTitle: false,
 
+    search: {
+      provider: 'local',
+      options: {
+        locales: {
+          root: {
+            translations: {
+              button: {
+                buttonText: '検索',
+                buttonAriaLabel: '検索',
+              },
+              modal: {
+                searchBox: {
+                  resetButtonTitle: '検索条件をクリア',
+                  resetButtonAriaLabel: '検索条件をクリア',
+                  cancelButtonText: 'キャンセル',
+                  cancelButtonAriaLabel: 'キャンセル',
+                },
+                startScreen: {
+                  recentSearchesTitle: '検索履歴',
+                  noRecentSearchesText: '検索履歴はありません',
+                  saveRecentSearchButtonTitle: '検索履歴に保存',
+                  removeRecentSearchButtonTitle: '検索履歴から削除',
+                  favoriteSearchesTitle: 'お気に入り',
+                  removeFavoriteSearchButtonTitle: 'お気に入りから削除',
+                },
+                errorScreen: {
+                  titleText: '結果を取得できませんでした',
+                  helpText: 'ネットワーク接続を確認してください',
+                },
+                footer: {
+                  selectText: '選択',
+                  navigateText: '切替',
+                  closeText: '閉じる',
+                  searchByText: '検索提供元',
+                },
+                noResultsScreen: {
+                  noResultsText: '関連する結果が見つかりませんでした',
+                  suggestedQueryText: '次の検索を試してみてください',
+                  reportMissingResultsText:
+                    '検索結果が表示されるべきだと思いますか？',
+                  reportMissingResultsLinkText: 'フィードバック',
+                },
+              },
+            },
+          },
+          en: {
+            translations: {
+              button: {
+                buttonText: 'Search',
+                buttonAriaLabel: 'Search',
+              },
+              modal: {
+                searchBox: {
+                  resetButtonTitle: 'Clear query',
+                  resetButtonAriaLabel: 'Clear query',
+                  cancelButtonText: 'Cancel',
+                  cancelButtonAriaLabel: 'Cancel',
+                },
+                startScreen: {
+                  recentSearchesTitle: 'Recent',
+                  noRecentSearchesText: 'No recent searches',
+                  saveRecentSearchButtonTitle: 'Save to recent searches',
+                  removeRecentSearchButtonTitle: 'Remove from recent searches',
+                  favoriteSearchesTitle: 'Favorite',
+                  removeFavoriteSearchButtonTitle: 'Remove from favorites',
+                },
+                errorScreen: {
+                  titleText: 'Unable to fetch results',
+                  helpText: 'You might want to check your network connection',
+                },
+                footer: {
+                  selectText: 'Select',
+                  navigateText: 'Navigate',
+                  closeText: 'Close',
+                  searchByText: 'Search by',
+                },
+                noResultsScreen: {
+                  noResultsText: 'No results for',
+                  suggestedQueryText: 'Try searching for',
+                  reportMissingResultsText:
+                    'Believe this query should return results?',
+                  reportMissingResultsLinkText: 'Let us know',
+                },
+              },
+            },
+          },
+          zh: {
+            translations: {
+              button: {
+                buttonText: '搜索',
+                buttonAriaLabel: '搜索',
+              },
+              modal: {
+                searchBox: {
+                  resetButtonTitle: '清除查询条件',
+                  resetButtonAriaLabel: '清除查询条件',
+                  cancelButtonText: '取消',
+                  cancelButtonAriaLabel: '取消',
+                },
+                startScreen: {
+                  recentSearchesTitle: '搜索历史',
+                  noRecentSearchesText: '没有搜索历史',
+                  saveRecentSearchButtonTitle: '保存至搜索历史',
+                  removeRecentSearchButtonTitle: '从搜索历史中移除',
+                  favoriteSearchesTitle: '收藏',
+                  removeFavoriteSearchButtonTitle: '从收藏中移除',
+                },
+                errorScreen: {
+                  titleText: '无法获取结果',
+                  helpText: '你可能需要检查你的网络连接',
+                },
+                footer: {
+                  selectText: '选择',
+                  navigateText: '切换',
+                  closeText: '关闭',
+                  searchByText: '搜索提供者',
+                },
+                noResultsScreen: {
+                  noResultsText: '无法找到相关结果',
+                  suggestedQueryText: '你可以尝试查询',
+                  reportMissingResultsText: '你认为该查询应该有结果？',
+                  reportMissingResultsLinkText: '点击反馈',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+
     socialLinks: [
       { icon: 'github', link: 'https://github.com/tegnike/aituber-kit' },
       { icon: 'x', link: 'https://twitter.com/tegnike' },
