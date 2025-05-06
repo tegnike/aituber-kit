@@ -45,14 +45,6 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/en/guide/introduction' },
           { text: 'Demo Site', link: 'https://aituberkit.com/' },
-          {
-            text: '🌐 Language',
-            items: [
-              { text: '日本語', link: '/' },
-              { text: 'English', link: '/en/' },
-              { text: '中文', link: '/zh/' },
-            ],
-          },
         ],
       },
     },
@@ -65,14 +57,6 @@ export default defineConfig({
         nav: [
           { text: '指南', link: '/zh/guide/introduction' },
           { text: '演示站点', link: 'https://aituberkit.com/' },
-          {
-            text: '🌐 Language',
-            items: [
-              { text: '日本語', link: '/' },
-              { text: 'English', link: '/en/' },
-              { text: '中文', link: '/zh/' },
-            ],
-          },
         ],
       },
     },
