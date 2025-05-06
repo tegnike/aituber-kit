@@ -113,6 +113,7 @@ const homeStore = create<HomeState>()(
               content: message.content,
               ...(message.audio && { audio: message.audio }),
               ...(message.timestamp && { timestamp: message.timestamp }),
+              ...(message.userName && { userName: message.userName }),
             }
             updatedChatLog = [...currentChatLog, newMessage]
             console.log(`Message added: ID=${messageId}`)

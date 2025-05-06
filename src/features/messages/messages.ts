@@ -6,6 +6,7 @@ export type Message = {
     | [{ type: 'text'; text: string }, { type: 'image'; image: string }] // マルチモーダル拡張
   audio?: { id: string }
   timestamp?: string
+  userName?: string // ユーザー名を保存するフィールドを追加
 }
 
 export const EMOTIONS = [
