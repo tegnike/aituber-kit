@@ -18,7 +18,12 @@ import {
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
-import { defaultModels, getModels } from '@/features/constants/aiModels'
+import {
+  defaultModels,
+  getModels,
+  getOpenAIRealtimeModels,
+  getOpenAIAudioModels,
+} from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
 
@@ -159,7 +164,7 @@ const ModelProvider = () => {
       settingsStore.setState({
         audioMode: false,
         speechRecognitionMode: 'browser',
-        selectAIModel: 'gpt-4o-realtime-preview-2024-12-17',
+        selectAIModel: defaultModels.openaiRealtime,
         initialSpeechTimeout: 0,
         noSpeechTimeout: 0,
         showSilenceProgressBar: false,
@@ -176,11 +181,11 @@ const ModelProvider = () => {
       settingsStore.setState({
         realtimeAPIMode: false,
         speechRecognitionMode: 'browser',
-        selectAIModel: 'gpt-4o-audio-preview-2024-12-17',
+        selectAIModel: defaultModels.openaiAudio,
       })
     } else {
       settingsStore.setState({
-        selectAIModel: 'gpt-4o-2024-11-20',
+        selectAIModel: defaultModels.openai,
       })
     }
   }, [])
@@ -352,15 +357,11 @@ const ModelProvider = () => {
                         settingsStore.setState({ selectAIModel: model })
                       }}
                     >
-                      <option value="gpt-4o-realtime-preview-2024-10-01">
-                        gpt-4o-realtime-preview-2024-10-01
-                      </option>
-                      <option value="gpt-4o-realtime-preview-2024-12-17">
-                        gpt-4o-realtime-preview-2024-12-17
-                      </option>
-                      <option value="gpt-4o-mini-realtime-preview-2024-12-17">
-                        gpt-4o-mini-realtime-preview-2024-12-17
-                      </option>
+                      {getOpenAIRealtimeModels().map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="my-4">
@@ -423,15 +424,11 @@ const ModelProvider = () => {
                         settingsStore.setState({ selectAIModel: model })
                       }}
                     >
-                      <option value="gpt-4o-audio-preview-2024-10-01">
-                        gpt-4o-audio-preview-2024-10-01
-                      </option>
-                      <option value="gpt-4o-audio-preview-2024-12-17">
-                        gpt-4o-audio-preview-2024-12-17
-                      </option>
-                      <option value="gpt-4o-mini-audio-preview-2024-12-17">
-                        gpt-4o-mini-audio-preview-2024-12-17
-                      </option>
+                      {getOpenAIAudioModels().map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </>
@@ -447,14 +444,6 @@ const ModelProvider = () => {
                     onChange={(e) => {
                       const model = e.target.value
                       settingsStore.setState({ selectAIModel: model })
-
-                      if (
-                        model !== 'gpt-4-turbo' &&
-                        model !== 'gpt-4o' &&
-                        model !== 'gpt-4o-mini'
-                      ) {
-                        menuStore.setState({ showWebcam: false })
-                      }
                     }}
                   >
                     {getModels('openai').map((model) => (

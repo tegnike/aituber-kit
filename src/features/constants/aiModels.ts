@@ -12,12 +12,6 @@ export const aiModels: Record<AIService, string[]> = {
     'gpt-4.1-nano-2025-04-14',
     'gpt-4.1-mini-2025-04-14',
     'gpt-4.1-2025-04-14',
-    'gpt-4o-realtime-preview-2024-10-01',
-    'gpt-4o-realtime-preview-2024-12-17',
-    'gpt-4o-mini-realtime-preview-2024-12-17',
-    'gpt-4o-audio-preview-2024-10-01',
-    'gpt-4o-audio-preview-2024-12-17',
-    'gpt-4o-mini-audio-preview-2024-12-17',
   ],
   anthropic: [
     'claude-3-opus-20240229',
@@ -101,8 +95,13 @@ export const slideConvertModels: Partial<Record<AIService, string[]>> = {
 /**
  * 各AIサービスのデフォルトモデル
  */
-export const defaultModels: Record<AIService, string> = {
+export const defaultModels: Record<
+  AIService | 'openaiAudio' | 'openaiRealtime',
+  string
+> = {
   openai: 'gpt-4o-2024-11-20',
+  openaiAudio: 'gpt-4o-audio-preview-2024-10-01',
+  openaiRealtime: 'gpt-4o-realtime-preview-2024-10-01',
   anthropic: 'claude-3-5-sonnet-20241022',
   google: 'gemini-1.5-flash-latest',
   azure: '',
@@ -116,6 +115,17 @@ export const defaultModels: Record<AIService, string> = {
   ollama: '',
   dify: '',
   'custom-api': '',
+}
+
+/**
+ * 特定のAIサービスのデフォルトモデルを取得する（openaiAudio, openaiRealtime も対応）
+ * @param service AIサービス名、または 'openaiAudio'/'openaiRealtime'
+ * @returns デフォルトモデル
+ */
+export function getSpecificDefaultModel(
+  service: AIService | 'openaiAudio' | 'openaiRealtime'
+): string {
+  return defaultModels[service] || ''
 }
 
 /**
@@ -143,4 +153,66 @@ export function getModels(service: AIService): string[] {
  */
 export function getSlideConvertModels(service: AIService): string[] {
   return slideConvertModels[service] || []
+}
+
+/**
+ * OpenAIのリアルタイムAPIモードで使用するモデル一覧
+ */
+export const openAIRealtimeModels = [
+  'gpt-4o-realtime-preview-2024-10-01',
+  'gpt-4o-realtime-preview-2024-12-17',
+  'gpt-4o-mini-realtime-preview-2024-12-17',
+] as const
+
+/**
+ * OpenAIのオーディオAPIモードで使用するモデル一覧
+ */
+export const openAIAudioModels = [
+  'gpt-4o-audio-preview-2024-10-01',
+  'gpt-4o-audio-preview-2024-12-17',
+  'gpt-4o-mini-audio-preview-2024-12-17',
+] as const
+
+/**
+ * OpenAIのリアルタイムAPIモデル一覧を取得する
+ * @returns OpenAIのリアルタイムAPIモデル一覧
+ */
+export function getOpenAIRealtimeModels(): string[] {
+  return [...openAIRealtimeModels]
+}
+
+/**
+ * OpenAIのオーディオAPIモデル一覧を取得する
+ * @returns OpenAIのオーディオAPIモデル一覧
+ */
+export function getOpenAIAudioModels(): string[] {
+  return [...openAIAudioModels]
+}
+
+/**
+ * OpenAIのWhisper(音声認識)用モデル一覧
+ */
+export const openAIWhisperModels = [
+  'whisper-1',
+  'gpt-4o-transcribe',
+  'gpt-4o-mini-transcribe',
+] as const
+
+/**
+ * OpenAIのWhisperモデル一覧を取得する
+ */
+export function getOpenAIWhisperModels(): string[] {
+  return [...openAIWhisperModels]
+}
+
+/**
+ * OpenAIのTTS(音声合成)用モデル一覧
+ */
+export const openAITTSModels = ['tts-1', 'tts-1-hd', 'gpt-4o-mini-tts'] as const
+
+/**
+ * OpenAIのTTSモデル一覧を取得する
+ */
+export function getOpenAITTSModels(): string[] {
+  return [...openAITTSModels]
 }

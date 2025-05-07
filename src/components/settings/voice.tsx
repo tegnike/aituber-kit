@@ -13,8 +13,7 @@ import {
   OpenAITTSVoice,
   OpenAITTSModel,
 } from '@/features/constants/settings'
-import { testVoiceVox } from '@/features/messages/speakCharacter'
-import { testAivisSpeech } from '@/features/messages/speakCharacter'
+import { getOpenAITTSModels } from '@/features/constants/aiModels'
 import { testVoice } from '@/features/messages/speakCharacter'
 import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
@@ -828,9 +827,11 @@ const Voice = () => {
                     }
                     className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
-                    <option value="tts-1">tts-1</option>
-                    <option value="tts-1-hd">tts-1-hd</option>
-                    <option value="gpt-4o-mini-tts">gpt-4o-mini-tts</option>
+                    {getOpenAITTSModels().map((model) => (
+                      <option key={model} value={model}>
+                        {model}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="mt-4 font-bold">

@@ -9,6 +9,7 @@ import {
 } from '../../../utils/audioBufferManager'
 import { messageSelectors } from '../../../features/messages/messageSelectors'
 import { Message } from '../../../features/messages/messages'
+import { defaultModels } from '../../../features/constants/aiModels'
 
 jest.mock('openai', () => {
   return {
@@ -52,7 +53,7 @@ describe('openAIAudioChat', () => {
 
     const mockSettings = {
       openaiKey: 'test-openai-key',
-      selectAIModel: 'gpt-4o-audio-preview',
+      selectAIModel: defaultModels.openaiAudio,
       audioModeVoice: 'alloy',
     }
     ;(settingsStore.getState as jest.Mock).mockReturnValue(mockSettings)
@@ -189,7 +190,7 @@ describe('openAIAudioChat', () => {
       })
 
       expect(mockCreate).toHaveBeenCalledWith({
-        model: 'gpt-4o-audio-preview',
+        model: defaultModels.openaiAudio,
         messages: testMessages,
         stream: true,
         modalities: ['text', 'audio'],
