@@ -264,6 +264,9 @@ Your support greatly contributes to the development and improvement of AITuberKi
   <a href="https://x.com/M1RA_A_Project" title="M1RA_A_Project">
     <img src="https://pbs.twimg.com/profile_images/1903385253504507904/ceBSG9Wl_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
   </a>
+  <a href="https://github.com/teruPP" title="teruPP">
+    <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
+  </a>
 </p>
 
 Plus multiple private sponsors
