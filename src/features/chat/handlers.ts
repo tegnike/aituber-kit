@@ -636,7 +636,7 @@ export const handleSendChatFn = () => async (text: string) => {
         let supplement = ''
         try {
           const response = await fetch(
-            `/api/getSupplement?slideDocs=${sls.selectedSlideDocs}`
+            `/api/getSupplement?slideName=${sls.selectedSlideDocs}`
           )
           if (!response.ok) {
             throw new Error('Failed to fetch supplement')

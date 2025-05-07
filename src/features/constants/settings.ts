@@ -1,3 +1,9 @@
+import {
+  openAITTSModels,
+  openAIWhisperModels,
+  openAIRealtimeModels,
+} from './aiModels'
+
 export type VercelCloudAIService =
   | 'openai'
   | 'anthropic'
@@ -135,12 +141,9 @@ export type OpenAITTSVoice =
   | 'nova'
   | 'sage'
   | 'shimmer'
-export type OpenAITTSModel = 'tts-1' | 'tts-1-hd' | 'gpt-4o-mini-tts'
+export type OpenAITTSModel = (typeof openAITTSModels)[number]
 
-export type RealtimeAPIModeModel =
-  | 'gpt-4o-realtime-preview-2024-10-01'
-  | 'gpt-4o-realtime-preview-2024-12-17'
-  | 'gpt-4o-mini-realtime-preview-2024-12-17'
+export type RealtimeAPIModeModel = (typeof openAIRealtimeModels)[number]
 export type RealtimeAPIModeContentType = 'input_text' | 'input_audio'
 export type RealtimeAPIModeVoice =
   | 'alloy'
@@ -164,15 +167,9 @@ export type RealtimeAPIModeAzureVoice =
   | 'marilyn'
   | 'shimmer'
 
-export type AudioModeModel =
-  | 'gpt-4o-audio-preview-2024-10-01'
-  | 'gpt-4o-audio-preview-2024-12-17'
-  | 'gpt-4o-mini-audio-preview-2024-12-17'
+export type AudioModeModel = string
 export type AudioModeInputType = 'input_text' | 'input_audio'
 
 export type SpeechRecognitionMode = 'browser' | 'whisper'
 
-export type WhisperTranscriptionModel =
-  | 'whisper-1'
-  | 'gpt-4o-transcribe'
-  | 'gpt-4o-mini-transcribe'
+export type WhisperTranscriptionModel = (typeof openAIWhisperModels)[number]
