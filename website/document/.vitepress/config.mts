@@ -287,6 +287,10 @@ export default defineConfig({
               link: '/guide/usage-tips',
             },
             {
+              text: 'トラブルシューティング',
+              link: '/guide/troubleshooting',
+            },
+            {
               text: '貢献',
               link: '/guide/contributing',
             },
@@ -382,6 +386,10 @@ export default defineConfig({
               link: '/en/guide/usage-tips',
             },
             {
+              text: 'Troubleshooting',
+              link: '/en/guide/troubleshooting',
+            },
+            {
               text: 'Contributing',
               link: '/en/guide/contributing',
             },
@@ -469,6 +477,10 @@ export default defineConfig({
             {
               text: '使用技巧',
               link: '/zh/guide/usage-tips',
+            },
+            {
+              text: '故障排除',
+              link: '/zh/guide/troubleshooting',
             },
             {
               text: '贡献',
