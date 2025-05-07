@@ -149,6 +149,8 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     })
     if (newIsPlaying) {
       readSlide(currentSlide)
+    } else {
+      homeStore.setState({ isSpeaking: false })
     }
   }
 
