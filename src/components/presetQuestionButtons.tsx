@@ -1,5 +1,7 @@
 import { useCallback, useRef, useEffect, useState } from 'react'
 import settingsStore from '@/features/stores/settings'
+import homeStore from '@/features/stores/home'
+import { SpeakQueue } from '@/features/messages/speakQueue'
 
 type Props = {
   onSelectQuestion: (text: string) => void
@@ -14,6 +16,8 @@ export const PresetQuestionButtons = ({ onSelectQuestion }: Props) => {
 
   const handleQuestionClick = useCallback(
     (text: string) => {
+      homeStore.setState({ isSpeaking: false })
+      SpeakQueue.stopAll()
       onSelectQuestion(text)
     },
     [onSelectQuestion]
