@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useEffect } from 'react'
 import { WhisperTranscriptionModel } from '@/features/constants/settings'
 import { Link } from '../link'
+import { getOpenAIWhisperModels } from '@/features/constants/aiModels'
 
 const SpeechInput = () => {
   const noSpeechTimeout = settingsStore((s) => s.noSpeechTimeout)
@@ -44,11 +45,11 @@ const SpeechInput = () => {
     }
   }, [realtimeAPIMode, audioMode])
 
-  const whisperModels: { value: WhisperTranscriptionModel; label: string }[] = [
-    { value: 'whisper-1', label: 'whisper-1' },
-    { value: 'gpt-4o-transcribe', label: 'gpt-4o-transcribe' },
-    { value: 'gpt-4o-mini-transcribe', label: 'gpt-4o-mini-transcribe' },
-  ]
+  const whisperModels: { value: WhisperTranscriptionModel; label: string }[] =
+    getOpenAIWhisperModels().map((m) => ({
+      value: m as WhisperTranscriptionModel,
+      label: m,
+    }))
 
   // realtimeAPIモードかaudioモードがオンの場合はボタンを無効化
   const isSpeechModeSwitchDisabled = realtimeAPIMode || audioMode
