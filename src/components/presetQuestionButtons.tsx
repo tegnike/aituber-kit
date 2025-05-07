@@ -18,7 +18,6 @@ export const PresetQuestionButtons = ({ onSelectQuestion }: Props) => {
     (text: string) => {
       homeStore.setState({ isSpeaking: false })
       SpeakQueue.stopAll()
-      
       onSelectQuestion(text)
     },
     [onSelectQuestion]
