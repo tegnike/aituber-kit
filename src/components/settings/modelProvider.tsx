@@ -144,7 +144,10 @@ const ModelProvider = () => {
     }
 
     if (newService !== 'openai' && newService !== 'azure') {
-      settingsStore.setState({ realtimeAPIMode: false })
+      settingsStore.setState({
+        realtimeAPIMode: false,
+        audioMode: false,
+      })
     }
 
     if (newService === 'google') {
