@@ -1,4 +1,8 @@
-import { openAITTSModels, openAIWhisperModels } from './aiModels'
+import {
+  openAITTSModels,
+  openAIWhisperModels,
+  openAIRealtimeModels,
+} from './aiModels'
 
 export type VercelCloudAIService =
   | 'openai'
@@ -139,7 +143,7 @@ export type OpenAITTSVoice =
   | 'shimmer'
 export type OpenAITTSModel = (typeof openAITTSModels)[number]
 
-export type RealtimeAPIModeModel = string
+export type RealtimeAPIModeModel = (typeof openAIRealtimeModels)[number]
 export type RealtimeAPIModeContentType = 'input_text' | 'input_audio'
 export type RealtimeAPIModeVoice =
   | 'alloy'
