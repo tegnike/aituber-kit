@@ -26,6 +26,7 @@ import {
 } from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
+import { AIService } from '@/features/constants/settings'
 
 // AIサービスロゴのパスを定義
 const aiServiceLogos = {
@@ -124,37 +125,34 @@ const ModelProvider = () => {
     { value: 'custom-api', label: 'Custom API' },
   ]
 
-  const handleAIServiceChange = useCallback(
-    (newService: keyof typeof defaultModels) => {
+  const handleAIServiceChange = useCallback((newService: AIService) => {
+    settingsStore.setState({
+      selectAIService: newService,
+      selectAIModel: defaultModels[newService],
+    })
+
+    if (!multiModalAIServices.includes(newService as any)) {
+      menuStore.setState({ showWebcam: false })
+
       settingsStore.setState({
-        selectAIService: newService,
-        selectAIModel: defaultModels[newService],
+        conversationContinuityMode: false,
+        slideMode: false,
       })
+      slideStore.setState({
+        isPlaying: false,
+      })
+    }
 
-      if (!multiModalAIServices.includes(newService as any)) {
-        menuStore.setState({ showWebcam: false })
+    if (newService !== 'openai' && newService !== 'azure') {
+      settingsStore.setState({ realtimeAPIMode: false })
+    }
 
-        settingsStore.setState({
-          conversationContinuityMode: false,
-          slideMode: false,
-        })
-        slideStore.setState({
-          isPlaying: false,
-        })
+    if (newService === 'google') {
+      if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
+        settingsStore.setState({ useSearchGrounding: false })
       }
-
-      if (newService !== 'openai' && newService !== 'azure') {
-        settingsStore.setState({ realtimeAPIMode: false })
-      }
-
-      if (newService === 'google') {
-        if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
-          settingsStore.setState({ useSearchGrounding: false })
-        }
-      }
-    },
-    []
-  )
+    }
+  }, [])
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
     settingsStore.setState({
@@ -212,9 +210,7 @@ const ModelProvider = () => {
       <div className="my-2">
         <Listbox
           value={selectAIService}
-          onChange={(value) =>
-            handleAIServiceChange(value as keyof typeof defaultModels)
-          }
+          onChange={(value) => handleAIServiceChange(value as AIService)}
         >
           <div className="relative inline-block min-w-[240px]">
             <Listbox.Button className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg flex items-center cursor-pointer">
