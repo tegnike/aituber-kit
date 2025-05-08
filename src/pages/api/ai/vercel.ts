@@ -39,6 +39,8 @@ export default async function handler(req: NextRequest) {
     azureEndpoint,
     stream,
     useSearchGrounding,
+    dynamicRetrievalMode,
+    dynamicRetrievalThreshold,
     temperature = 1.0,
     maxTokens = 4096,
   } = await req.json()
@@ -142,7 +144,22 @@ export default async function handler(req: NextRequest) {
       aiService === 'google' &&
       useSearchGrounding &&
       modifiedMessages.every((msg) => typeof msg.content === 'string')
-    const options = isUseSearchGrounding ? { useSearchGrounding: true } : {}
+
+    let options = {}
+    if (isUseSearchGrounding) {
+      options = {
+        useSearchGrounding: true,
+        ...(dynamicRetrievalMode && {
+          dynamicRetrievalConfig: {
+            mode: dynamicRetrievalMode,
+            ...(dynamicRetrievalThreshold !== undefined && {
+              dynamicThreshold: dynamicRetrievalThreshold,
+            }),
+          },
+        }),
+      }
+    }
+
     console.log('options', options)
 
     // ストリーミングレスポンスまたは一括レスポンスの生成

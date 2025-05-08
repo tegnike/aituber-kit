@@ -79,6 +79,10 @@ const ModelProvider = () => {
   const fireworksKey = settingsStore((s) => s.fireworksKey)
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
+  const dynamicRetrievalMode = settingsStore((s) => s.dynamicRetrievalMode)
+  const dynamicRetrievalThreshold = settingsStore(
+    (s) => s.dynamicRetrievalThreshold
+  )
   const deepseekKey = settingsStore((s) => s.deepseekKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
@@ -617,6 +621,67 @@ const ModelProvider = () => {
                     {useSearchGrounding ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
                 </div>
+
+                {useSearchGrounding &&
+                  googleSearchGroundingModels.includes(selectAIModel as any) &&
+                  selectAIModel !== 'gemini-1.5-flash-8b-latest' && (
+                    <>
+                      <div className="mt-6 mb-4 text-xl font-bold">
+                        {t('DynamicRetrieval')}
+                      </div>
+                      <div className="my-4">
+                        {t('DynamicRetrievalDescription')}
+                      </div>
+
+                      <div className="my-4">
+                        <div className="mb-2 font-medium">
+                          {t('DynamicRetrievalMode')}
+                        </div>
+                        <select
+                          className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                          value={dynamicRetrievalMode}
+                          onChange={(e) => {
+                            settingsStore.setState({
+                              dynamicRetrievalMode: e.target.value as
+                                | 'MODE_DYNAMIC'
+                                | 'MODE_UNSPECIFIED',
+                            })
+                          }}
+                        >
+                          <option value="MODE_DYNAMIC">
+                            {t('DynamicRetrievalModeDynamic')}
+                          </option>
+                          <option value="MODE_UNSPECIFIED">
+                            {t('DynamicRetrievalModeUnspecified')}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div className="my-4">
+                        <div className="mb-2 font-medium">
+                          {t('DynamicRetrievalThreshold')}
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            value={dynamicRetrievalThreshold}
+                            onChange={(e) => {
+                              settingsStore.setState({
+                                dynamicRetrievalThreshold: parseFloat(
+                                  e.target.value
+                                ),
+                              })
+                            }}
+                            className="w-64 mr-4"
+                          />
+                          <span>{dynamicRetrievalThreshold.toFixed(1)}</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
               </div>
             </>
           )

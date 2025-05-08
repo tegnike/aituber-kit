@@ -172,6 +172,8 @@ interface General {
   messageReceiverEnabled: boolean
   clientId: string
   useSearchGrounding: boolean
+  dynamicRetrievalMode: 'MODE_DYNAMIC' | 'MODE_UNSPECIFIED'
+  dynamicRetrievalThreshold: number
   maxPastMessages: number
   useVideoAsBackground: boolean
   temperature: number
@@ -375,6 +377,8 @@ const settingsStore = create<SettingsState>()(
       clientId: '',
       useSearchGrounding:
         process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
+      dynamicRetrievalMode: 'MODE_DYNAMIC',
+      dynamicRetrievalThreshold: 0.5,
       maxPastMessages:
         parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
       useVideoAsBackground:
