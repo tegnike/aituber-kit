@@ -61,6 +61,7 @@ describe('aiChatFactory', () => {
       'anthropic',
       'google',
       'azure',
+      'xai',
       'groq',
       'cohere',
       'mistralai',

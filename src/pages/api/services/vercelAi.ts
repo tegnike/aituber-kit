@@ -1,6 +1,7 @@
 import { Message } from '@/features/messages/messages'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createAnthropic } from '@ai-sdk/anthropic'
+import { createXai } from '@ai-sdk/xai'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
@@ -25,6 +26,7 @@ export const aiServiceConfig: AIServiceConfig = {
       resourceName,
       apiKey,
     }),
+  xai: ({ apiKey }) => createXai({ apiKey }),
   groq: ({ apiKey }) =>
     createOpenAI({
       baseURL: 'https://api.groq.com/openai/v1',

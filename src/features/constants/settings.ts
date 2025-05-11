@@ -9,6 +9,7 @@ export type VercelCloudAIService =
   | 'anthropic'
   | 'google'
   | 'azure'
+  | 'xai'
   | 'groq'
   | 'cohere'
   | 'mistralai'
@@ -32,6 +33,7 @@ export const isVercelCloudAIService = (
     'anthropic',
     'google',
     'azure',
+    'xai',
     'groq',
     'cohere',
     'mistralai',
@@ -65,6 +67,7 @@ export interface AIServiceConfig {
   lmstudio: { url: string; model: string }
   ollama: { url: string; model: string }
   azure: { key: string; model: string }
+  xai: { key: string; model: string }
   groq: { key: string; model: string }
   cohere: { key: string; model: string }
   mistralai: { key: string; model: string }

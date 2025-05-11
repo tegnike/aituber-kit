@@ -19,6 +19,7 @@ export async function getAIChatResponseStream(
     case 'anthropic':
     case 'google':
     case 'azure':
+    case 'xai':
     case 'groq':
     case 'cohere':
     case 'mistralai':

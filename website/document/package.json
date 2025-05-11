@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@ai-sdk/xai": "^1.2.16",
     "autoprefixer": "^10.4.21",
     "vitepress": "^1.6.3"
   },

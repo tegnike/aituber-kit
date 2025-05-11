@@ -26,6 +26,15 @@ export const aiModels: Record<AIService, string[]> = {
     'gemini-1.5-pro-latest',
   ],
   azure: [],
+  xai: [
+    'grok-3',
+    'grok-3-fast',
+    'grok-3-mini',
+    'grok-3-mini-fast',
+    'grok-2-1212',
+    'grok-2-vision-1212',
+    'grok-beta',
+  ],
   groq: [
     'gemma2-9b-it',
     'llama-3.3-70b-versatile',
@@ -105,6 +114,7 @@ export const defaultModels: Record<
   anthropic: 'claude-3-5-sonnet-20241022',
   google: 'gemini-1.5-flash-latest',
   azure: '',
+  xai: 'grok-3',
   groq: 'gemma2-9b-it',
   cohere: 'command-r-plus',
   mistralai: 'mistral-large-latest',

@@ -34,6 +34,7 @@ const aiServiceLogos = {
   anthropic: '/images/ai-logos/anthropic.svg',
   google: '/images/ai-logos/google.svg',
   azure: '/images/ai-logos/azure.svg',
+  xai: '/images/ai-logos/xai.svg',
   groq: '/images/ai-logos/groq.svg',
   cohere: '/images/ai-logos/cohere.svg',
   mistralai: '/images/ai-logos/mistralai.svg',
@@ -79,6 +80,7 @@ const ModelProvider = () => {
   const googleKey = settingsStore((s) => s.googleKey)
   const azureKey = settingsStore((s) => s.azureKey)
   const azureEndpoint = settingsStore((s) => s.azureEndpoint)
+  const xaiKey = settingsStore((s) => s.xaiKey)
   const groqKey = settingsStore((s) => s.groqKey)
   const cohereKey = settingsStore((s) => s.cohereKey)
   const mistralaiKey = settingsStore((s) => s.mistralaiKey)
@@ -113,6 +115,7 @@ const ModelProvider = () => {
     { value: 'anthropic', label: 'Anthropic' },
     { value: 'google', label: 'Google Gemini' },
     { value: 'azure', label: 'Azure OpenAI' },
+    { value: 'xai', label: 'xAI' },
     { value: 'groq', label: 'Groq' },
     { value: 'cohere', label: 'Cohere' },
     { value: 'mistralai', label: 'Mistral AI' },
@@ -686,6 +689,48 @@ const ModelProvider = () => {
                     </div>
                   </>
                 )}
+              </div>
+            </>
+          )
+        } else if (selectAIService === 'xai') {
+          return (
+            <>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('XAIAPIKeyLabel')}
+                </div>
+                <div className="my-4">
+                  {t('APIKeyInstruction')}
+                  <br />
+                  <Link url="https://x.ai/api" label="xAI Dashboard" />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="text"
+                  placeholder="..."
+                  value={xaiKey}
+                  onChange={(e) =>
+                    settingsStore.setState({ xaiKey: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
+                <select
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                >
+                  {getModels('xai').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                </select>
               </div>
             </>
           )

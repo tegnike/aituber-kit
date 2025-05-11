@@ -42,6 +42,7 @@ interface APIKeys {
   anthropicKey: string
   googleKey: string
   azureKey: string
+  xaiKey: string
   groqKey: string
   difyKey: string
   cohereKey: string
@@ -214,6 +215,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_AZURE_API_KEY ||
         process.env.NEXT_PUBLIC_AZURE_KEY ||
         '',
+      xaiKey: '',
       groqKey: '',
       cohereKey: '',
       mistralaiKey: '',
@@ -459,6 +461,7 @@ const settingsStore = create<SettingsState>()(
         anthropicKey: state.anthropicKey,
         googleKey: state.googleKey,
         azureKey: state.azureKey,
+        xaiKey: state.xaiKey,
         groqKey: state.groqKey,
         cohereKey: state.cohereKey,
         mistralaiKey: state.mistralaiKey,
