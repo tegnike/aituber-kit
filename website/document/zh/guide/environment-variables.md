@@ -105,8 +105,8 @@ NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 
 ```bash
 # AI服务选择
-# openai, anthropic, google, azure, groq, cohere,
-# mistralai, perplexity, fireworks, deepseek, localLlm, dify
+# openai, anthropic, google, azure, groq, xai, cohere,
+# mistralai, perplexity, fireworks, deepseek, openrouter, localLlm, dify
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # 所选AI模型名称
@@ -142,6 +142,9 @@ AZURE_API_KEY=...
 # Azure OpenAI端点
 AZURE_ENDPOINT="https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION"
 
+# xAI API密钥
+XAI_API_KEY=...
+
 # Groq API密钥
 GROQ_API_KEY=...
 
@@ -159,6 +162,9 @@ FIREWORKS_API_KEY=...
 
 # DeepSeek API密钥
 DEEPSEEK_API_KEY=...
+
+# OpenRouter API密钥
+OPENROUTER_API_KEY=...
 
 # 本地LLM URL
 # 例如 Ollama: http://localhost:11434/v1/chat/completions

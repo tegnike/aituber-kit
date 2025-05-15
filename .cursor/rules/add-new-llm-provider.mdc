@@ -1,0 +1,100 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+\
+---
+title: 新しいLLMサービスプロバイダを追加する手順
+glob: "**/src/features/stores/settings.ts"
+---
+# 新しいLLMサービスプロバイダを追加する手順
+
+このドキュメントは、AITuberKitに新しいLLM（Large Language Model）サービスプロバイダを追加する際の標準的な手順と、変更が必要な主要ファイルをまとめたものです。
+
+## 概要
+
+新しいLLMサービスを統合するには、主に以下の対応が必要です。
+
+1.  **依存関係の追加**: 新しいLLMサービス用のSDKやライブラリをプロジェクトに追加します。
+2.  **設定の追加**:
+    *   APIキーやエンドポイントURLなどの設定項目を状態管理ストアに追加します。
+    *   設定画面に、新しいLLMサービスと関連モデルの選択肢、APIキー入力欄などを追加します。
+3.  **型定義の更新**: 新しいサービス名やモデル名を型定義に追加します。
+4.  **API連携処理の実装**:
+    *   LLMサービスを呼び出すためのクライアント初期化処理を追加します。
+    *   チャット処理のファクトリやハンドラに、新しいサービスへの分岐処理を追加します。
+5.  **UIテキストの多言語対応**: 設定画面などに追加したテキストの翻訳を各言語ファイルに追加します。
+6.  **ロゴ画像の追加**: 新しいLLMサービスのロゴ画像を配置します。
+7.  **テストコードの更新**: 新しいサービスプロバイダに対応したテストケースを追加・更新します。
+8.  **環境変数サンプルの更新**: `.env.example` に必要な環境変数を追記します。
+
+## 変更が必要な主要ファイル
+
+以下は、新しいLLMサービスを追加する際に変更または確認が必要となる主要なファイルのリストです。
+
+### 1. パッケージ管理
+- [`package.json`](mdc:package.json): 新しいLLM SDKなどの依存関係を追記します。
+    ```bash
+    npm install --save <NEW_LLM_SDK_PACKAGE_NAME>
+    ```
+- [`package-lock.json`](mdc:package-lock.json): `npm install` を実行して更新します。
+
+### 2. 設定と状態管理
+- [`src/features/stores/settings.ts`](mdc:src/features/stores/settings.ts):
+    - **APIキーの型定義**: `APIKeys` インターフェースに、新しいサービスプロバイダ用のAPIキーの型定義を追加します。例: `newProvider?: string;`
+    - **初期設定への追加**: `settingsStore` の `persist` コールバック関数内で返されるオブジェクトに、新しいAPIキーの初期値を**フラットな構造で**追加します。既存のキー名（例: `openaiKey`）に合わせて `newProviderKey: ""` のように追加してください。
+        - **注意点**: 既存のコードでは、`APIKeys` インターフェースのキー名 (例: `openai`) と `persist` 内のキー名 (例: `openaiKey`) が異なる場合があります。既存の命名規則に従ってください。
+    - `SettingsState` 型は、`APIKeys` と他の型が結合されているため、上記2点の修正で自動的に更新されるはずですが、念のため確認してください。
+- [`src/components/settings/modelProvider.tsx`](mdc:src/components/settings/modelProvider.tsx):
+    - `aiServiceLogos` に新しいサービスのロゴパスを追加します。例: `newProvider: '/images/ai-logos/new-provider.svg'`
+    - ストアから新しいAPIキー (例: `newProviderKey`) を取得するよう修正します。
+    - `aiServiceOptions` に新しいサービスの選択肢を追加します。例: `{ value: 'newProvider', label: 'New Provider Name' }`
+    - 新しいサービス選択時のAPIキー入力欄とモデル選択UIを実装します。翻訳キー (例: `APIKeyDescriptionNewProvider`) も考慮してください。
+- [`src/features/constants/settings.ts`](mdc:src/features/constants/settings.ts):
+    - `VercelCloudAIService` (または該当するサービスカテゴリの型) に新しいサービス名を追加します。例: `| 'newProvider'`
+    - 関連する型ガード関数 (例: `isVercelCloudAIService`) のリストにも新しいサービス名を追加します。
+    - `AIServiceConfig` インターフェースに、新しいサービス用の設定型を追加します。例: `newProvider: { key: string; model: string }`
+- [`src/features/constants/aiModels.ts`](mdc:src/features/constants/aiModels.ts):
+    - `aiModels` レコードに、新しいサービス名 (`newProvider`) をキーとして、対応モデルの文字列配列を追加します。
+    - `defaultModels` レコードに、新しいサービス名のデフォルトモデルを指定します。
+
+### 3. API連携とチャット処理
+- **APIクライアント初期化**:
+    - APIクライアントの初期化は、主にバックエンドのサービスファイルで行われます。
+    - プロジェクトのルーティング方式（Pages Router または App Router）によって対象ファイルが異なります。
+        - Pages Router の場合: [`src/pages/api/services/vercelAi.ts`](mdc:src/pages/api/services/vercelAi.ts) (または類似のパス)
+        - App Router の場合: `app/api/ai/vercel/route.ts` (または類似のパス)
+    - 上記ファイル内の `aiServiceConfig` オブジェクトに、新しいサービスのエントリを追加します。
+        - 新しいLLMプロバイダのSDKから、クライアント作成関数 (例: `createNewProvider`) をインポートします。
+        - `aiServiceConfig` に `newProvider: ({ apiKey }) => createNewProvider({ apiKey })` のような形で追加します。
+- [`src/features/chat/vercelAIChat.ts`](mdc:src/features/chat/vercelAIChat.ts):
+    - このファイルはフロントエンド側のAPIリクエスト処理を行っており、APIキー名は動的に解決されるため、通常は大きな変更は不要です。
+- APIエンドポイント本体 (例: [`src/pages/api/ai/vercel.ts`](mdc:src/pages/api/ai/vercel.ts) または `app/api/ai/vercel/route.ts`):
+    - こちらも通常大きな変更は不要ですが、上記の `aiServiceConfig` の修正が正しく反映され、新しいプロバイダが処理されることを確認してください。
+
+### 4. アセットと多言語対応
+- `public/images/ai-logos/`: 新しいLLMサービスのロゴ画像（SVG形式推奨）をこのディレクトリに追加します。例: `new-provider.svg`
+- `locales/[lang]/translation.json`: (各言語ファイル)
+    - `modelProvider.tsx` などで追加したUIテキストに対応する翻訳を追加します。
+        - サービス名: `AIService.newProvider` (例: `"newProvider": "New Provider Name"`)
+        - APIキーの説明文: `Settings.ModelProvider.APIKeyDescriptionNewProvider`
+    - **注意点**: JSONファイル編集時、既存のキーと同じ階層に新しいキーが追加されるように注意してください。意図しないネストが発生しないように確認が必要です。
+
+### 5. テスト
+- (任意) [`src/__tests__/features/chat/aiChatFactory.test.ts`](mdc:src/__tests__/features/chat/aiChatFactory.test.ts) (または関連するテストファイル):
+    - 新しく追加したLLMサービスプロバイダに対するテストケースを追加・更新します。
+
+### 6. 環境変数
+- [`.env.example`](mdc:.env.example): 新しいLLMサービスのAPIキーなど、必要な環境変数の記述例を追加します。例: `NEW_PROVIDER_API_KEY=""`
+    - **注意点**: このファイルはセキュリティ設定により直接編集がブロックされる場合があります。その場合は手動で追記するようユーザーに指示してください。
+
+## 注意事項
+- **APIキーの管理**: APIキーはセンシティブな情報です。`.env` ファイルで管理し、リポジトリにコミットしないように注意してください。
+- **ドキュメント更新**: 必要に応じて `README.md` の「対応LLM」セクションなど、関連ドキュメントも更新することを検討してください。
+- **プロジェクト構造とAPIエンドポイントの特定**:
+    - このプロジェクトでは、APIエンドポイントが Pages Router (`src/pages/api/...`) または App Router (`app/api/...`) のどちらで実装されているか確認が必要です。ルール内のパスは一例として参考にし、実際のプロジェクト構造に合わせてください。
+- **状態管理ファイルのキー命名規則**:
+    - [`src/features/stores/settings.ts`](mdc:src/features/stores/settings.ts) では、`APIKeys` インターフェース内のキー名と、`persist` コールバック内で実際に使用されるキー名が異なる場合があります（例: `openai` vs `openaiKey`）。既存の命名規則やパターンをよく確認し、それに倣って新しいキーを追加してください。
+
+このルールが、新しいLLMサービスをスムーズに統合するための一助となれば幸いです。

@@ -35,11 +35,14 @@ AITuberKit是一个开源工具包，使任何人都能轻松构建与AI角色�
 - Anthropic
 - Google Gemini
 - Azure OpenAI
+- xAI
 - Groq
 - Cohere
 - Mistral AI
 - Perplexity
 - Fireworks
+- DeepSeek
+- OpenRouter
 - 本地LLM
 - Dify
 

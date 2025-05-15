@@ -8,8 +8,8 @@ AITuberKit与多个AI服务合作，实现角色的对话能力。本页介绍AI
 
 ```bash
 # AI服务选择
-# openai, anthropic, google, azure, groq, cohere,
-# mistralai, perplexity, fireworks, deepseek, localLlm, dify
+# openai, anthropic, google, azure, groq, xai, cohere,
+# mistralai, perplexity, fireworks, deepseek, openrouter, localLlm, dify
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # 选择的AI模型名称
@@ -33,12 +33,14 @@ AITuberKit支持以下AI服务：
 - Anthropic Claude
 - Google Gemini
 - Azure OpenAI
+- xAI
 - Groq
 - Cohere
 - Mistral AI
 - Perplexity
 - Fireworks
 - DeepSeek
+- OpenRouter
 - LM Studio
 - Ollama
 - Dify
