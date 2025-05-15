@@ -30,6 +30,17 @@ Select the voice synthesis engine that your AI character will use. The following
 - Azure TTS: Microsoft Azure's multilingual voice synthesis service
 - Nijivoice: Japanese voice synthesis service with over 100 voices available
 
+## Voice Test
+
+Voice test allows you to play the voice of the selected voice synthesis engine.
+
+### Voice Test Execution
+
+1. Select the voice synthesis engine.
+2. Enter the text you want to play in the voice test.
+3. Click the "Play" button.
+4. The voice will play.
+
 ## VOICEVOX
 
 ```bash

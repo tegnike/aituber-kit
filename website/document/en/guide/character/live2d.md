@@ -130,7 +130,7 @@ When using Live2D commercially, you may need to purchase a license from Live2D.
 - Please check the official site for commercial use conditions and details:
   [Live2D SDK License](https://www.live2d.com/sdk/license/)
 
-- If you fall under conditions requiring a license purchase, the seller of AITuberKit will also incur payment obligations, resulting in a 25% surcharge
+- When using Live2D models, an additional fee of 40% of the basic license fee will be charged. This is because when revenue is generated from services utilizing Live2D models, there is an obligation to pay a license fee to Live2D Inc.
 
 - For detailed questions about Live2D licensing, please contact Live2D directly
 

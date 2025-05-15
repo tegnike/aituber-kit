@@ -42,6 +42,7 @@ interface APIKeys {
   anthropicKey: string
   googleKey: string
   azureKey: string
+  xaiKey: string
   groqKey: string
   difyKey: string
   cohereKey: string
@@ -49,6 +50,7 @@ interface APIKeys {
   perplexityKey: string
   fireworksKey: string
   deepseekKey: string
+  openrouterKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -59,6 +61,7 @@ interface APIKeys {
   customApiHeaders: string
   customApiBody: string
   customApiStream: boolean
+  includeSystemMessagesInCustomApi: boolean
 }
 
 interface Live2DSettings {
@@ -186,6 +189,7 @@ interface General {
   speechRecognitionMode: SpeechRecognitionMode
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
+  chatLogWidth: number
 }
 
 interface ModelType {
@@ -214,6 +218,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_AZURE_API_KEY ||
         process.env.NEXT_PUBLIC_AZURE_KEY ||
         '',
+      xaiKey: '',
       groqKey: '',
       cohereKey: '',
       mistralaiKey: '',
@@ -221,6 +226,7 @@ const settingsStore = create<SettingsState>()(
       fireworksKey: '',
       difyKey: '',
       deepseekKey: '',
+      openrouterKey: '',
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
@@ -287,6 +293,9 @@ const settingsStore = create<SettingsState>()(
       customApiHeaders: process.env.NEXT_PUBLIC_CUSTOM_API_HEADERS || '{}',
       customApiBody: process.env.NEXT_PUBLIC_CUSTOM_API_BODY || '{}',
       customApiStream: true,
+      includeSystemMessagesInCustomApi:
+        process.env.NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API !==
+        'false',
 
       // Integrations
       difyUrl: '',
@@ -412,6 +421,8 @@ const settingsStore = create<SettingsState>()(
       initialSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') ||
         5.0,
+      chatLogWidth:
+        parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -456,6 +467,7 @@ const settingsStore = create<SettingsState>()(
         anthropicKey: state.anthropicKey,
         googleKey: state.googleKey,
         azureKey: state.azureKey,
+        xaiKey: state.xaiKey,
         groqKey: state.groqKey,
         cohereKey: state.cohereKey,
         mistralaiKey: state.mistralaiKey,
@@ -463,6 +475,7 @@ const settingsStore = create<SettingsState>()(
         fireworksKey: state.fireworksKey,
         difyKey: state.difyKey,
         deepseekKey: state.deepseekKey,
+        openrouterKey: state.openrouterKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
@@ -567,7 +580,10 @@ const settingsStore = create<SettingsState>()(
         customApiHeaders: state.customApiHeaders,
         customApiBody: state.customApiBody,
         customApiStream: state.customApiStream,
+        includeSystemMessagesInCustomApi:
+          state.includeSystemMessagesInCustomApi,
         initialSpeechTimeout: state.initialSpeechTimeout,
+        chatLogWidth: state.chatLogWidth,
       }),
     }
   )

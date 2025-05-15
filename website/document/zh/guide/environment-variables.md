@@ -23,7 +23,7 @@ NEXT_PUBLIC_SELECT_LANGUAGE=en
 NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
 
 # 背景图片路径
-NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/bg-c.png
+NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/backgrounds/bg-c.png
 
 # 助手文本显示设置（true/false）
 NEXT_PUBLIC_SHOW_ASSISTANT_TEXT=true
@@ -105,8 +105,8 @@ NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 
 ```bash
 # AI服务选择
-# openai, anthropic, google, azure, groq, cohere,
-# mistralai, perplexity, fireworks, deepseek, localLlm, dify
+# openai, anthropic, google, azure, groq, xai, cohere,
+# mistralai, perplexity, fireworks, deepseek, openrouter, localLlm, dify
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # 所选AI模型名称
@@ -142,6 +142,9 @@ AZURE_API_KEY=...
 # Azure OpenAI端点
 AZURE_ENDPOINT="https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION"
 
+# xAI API密钥
+XAI_API_KEY=...
+
 # Groq API密钥
 GROQ_API_KEY=...
 
@@ -159,6 +162,9 @@ FIREWORKS_API_KEY=...
 
 # DeepSeek API密钥
 DEEPSEEK_API_KEY=...
+
+# OpenRouter API密钥
+OPENROUTER_API_KEY=...
 
 # 本地LLM URL
 # 例如 Ollama: http://localhost:11434/v1/chat/completions
@@ -178,6 +184,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # 自定义API主体
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# 在自定义API中启用系统消息（true/false）
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ### 实时API设置
@@ -416,4 +424,7 @@ NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED=false
 ```bash
 # 介绍屏幕显示设置（true/false）
 NEXT_PUBLIC_SHOW_INTRODUCTION="true"
+
+# 聊天日志宽度
+NEXT_PUBLIC_CHAT_LOG_WIDTH=400
 ```

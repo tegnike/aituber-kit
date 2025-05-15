@@ -23,7 +23,7 @@ NEXT_PUBLIC_SELECT_LANGUAGE=en
 NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
 
 # 背景画像のパス
-NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/bg-c.png
+NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/backgrounds/bg-c.png
 
 # 回答欄の表示設定（true/false）
 NEXT_PUBLIC_SHOW_ASSISTANT_TEXT=true
@@ -105,8 +105,8 @@ NEXT_PUBLIC_SURPRISED_MOTION_GROUP=Surprised
 
 ```bash
 # AIサービスの選択
-# openai, anthropic, google, azure, groq, cohere,
-# mistralai, perplexity, fireworks, deepseek, localLlm, dify
+# openai, anthropic, google, azure, xai, groq, cohere,
+# mistralai, perplexity, fireworks, deepseek, openrouter, localLlm, dify
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # 選択するAIモデル名
@@ -142,6 +142,9 @@ AZURE_API_KEY=...
 # Azure OpenAI エンドポイント
 AZURE_ENDPOINT="https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION"
 
+# xAI API キー
+XAI_API_KEY=...
+
 # Groq API キー
 GROQ_API_KEY=...
 
@@ -159,6 +162,9 @@ FIREWORKS_API_KEY=...
 
 # DeepSeek API キー
 DEEPSEEK_API_KEY=...
+
+# OpenRouter API キー
+OPENROUTER_API_KEY=...
 
 # ローカルLLM URL
 # ex. Ollama: http://localhost:11434/v1/chat/completions
@@ -178,6 +184,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # カスタムAPIボディ
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# カスタムAPIでシステムメッセージを含めるかどうか（true/false）
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ### リアルタイムAPI設定
@@ -416,4 +424,7 @@ NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED=false
 ```bash
 # 紹介画面の表示設定（true/false）
 NEXT_PUBLIC_SHOW_INTRODUCTION="true"
+
+# チャットログの幅
+NEXT_PUBLIC_CHAT_LOG_WIDTH=400
 ```

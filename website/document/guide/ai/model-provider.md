@@ -12,12 +12,14 @@ AITuberKitは以下のAIサービスをサポートしています：
 - Anthropic - Claude 3.5 Sonnet、Claude 3.7 Sonnetなどを提供
 - Google Gemini - Gemini 2.0 Flash、Gemini 1.5シリーズを提供
 - Azure OpenAI - Azureプラットフォーム上のOpenAIモデル
+- xAI - Grokモデルを提供
 - Groq - 高速推論に特化した様々なモデルを提供
 - Cohere - Command-Rシリーズを提供
 - Mistral AI - Mistral Large、Open Mistralなどを提供
 - Perplexity - Llama 3.1 Sonarシリーズを提供
 - Fireworks - Llama、Mixtralなどの最適化実装を提供
 - DeepSeek - DeepSeek Chat、DeepSeek Reasonerを提供
+- OpenRouter - 幅広いモデルを提供
 - LM Studio - ローカルLLMを提供
 - Ollama - ローカルLLMを提供
 - Dify - カスタムチャットボット構築プラットフォーム
@@ -98,6 +100,26 @@ AZURE_ENDPOINT="https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOY
 
 **APIキーの取得**:
 APIキーは[Azureポータル](https://portal.azure.com/#view/Microsoft_Azure_AI/AzureOpenAI/keys)から取得できます。
+
+## xAI
+
+```bash
+# xAI API Key
+XAI_API_KEY=...
+```
+
+**対応モデル**:
+
+- grok-3
+- grok-3-fast
+- grok-3-mini
+- grok-3-mini-fast
+- grok-2-1212
+- grok-2-vision-1212
+- grok-beta
+
+**APIキーの取得**:
+APIキーは[xAIダッシュボード](https://x.ai/api)から取得できます。
 
 ## Groq
 
@@ -206,6 +228,20 @@ DEEPSEEK_API_KEY=...
 **APIキーの取得**:
 APIキーは[DeepSeekプラットフォーム](https://platform.deepseek.com/api_keys)から取得できます。
 
+## OpenRouter
+
+```bash
+# OpenRouter API Key
+OPENROUTER_API_KEY=...
+```
+
+**対応モデル**:
+
+[OpenRouter Models](https://openrouter.ai/models)を参照してください。
+
+**APIキーの取得**:
+APIキーは[OpenRouterダッシュボード](https://openrouter.ai/keys)から取得できます。
+
 ## LM Studio, Ollama
 
 ```bash
@@ -233,7 +269,9 @@ DIFY_URL=""
 ```
 
 ::: warning 注意
-Difyでは、「チャットボット」または「エージェント」タイプのアプリケーションのみ対応しています。また、Dify使用時は過去のメッセージの保持数やシステムプロンプトは、Dify側で設定する必要があります。
+Difyでは、「チャットボット」または「エージェント」タイプのアプリケーションのみ対応しています。<br>
+また、Dify使用時は過去のメッセージの保持数やシステムプロンプトは、Dify側で設定する必要があります。<br>
+上手く回答が得られない場合は、会話履歴を削除してから改めて質問してください。
 :::
 
 ## カスタムAPI
@@ -247,6 +285,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # カスタムAPIボディ
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# カスタムAPIでシステムメッセージを含めるかどうか（true/false）
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ::: warning 注意

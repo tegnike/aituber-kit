@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import Image from 'next/image'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { v4 as uuidv4 } from 'uuid'
+import Link from 'next/link'
 
 const MessageReceiverSetting = () => {
   const { t } = useTranslation()
@@ -45,14 +47,22 @@ const MessageReceiverSetting = () => {
             <div className="bg-gray-100 p-2 rounded">{clientId}</div>
           </div>
           <div className="mt-4">
-            <a
-              href="/send-message"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
-            >
-              {t('OpenSendMessagePage')}
-            </a>
+            <Link href={`/send-message`} passHref legacyBehavior>
+              <a
+                target="_blank" // 新しいタブで開く
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl text-white font-bold transition-colors duration-200 whitespace-nowrap"
+              >
+                {t('OpenSendMessagePage')}
+                <Image
+                  src="/images/icons/external-link.svg"
+                  alt="open in new tab"
+                  width={16}
+                  height={16}
+                  className="ml-1"
+                />
+              </a>
+            </Link>
           </div>
         </>
       )}

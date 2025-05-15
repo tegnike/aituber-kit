@@ -53,6 +53,7 @@ If you want to improve code or add new features, try creating a pull request wit
 
 - Focusing on one feature or fix per pull request makes the review process smoother
 - Including a description of what was changed and why in your pull request makes it easier to understand
+- When creating a pull request, be sure to set the merge target branch to `develop`
 
 ::: tip
 Language files `locales/ja/translation.json` only need to be changed. Other language files will be automatically updated when creating and updating a PR.

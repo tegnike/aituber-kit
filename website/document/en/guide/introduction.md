@@ -35,11 +35,14 @@ AITuberKit is an open-source toolkit that allows anyone to easily build web appl
 - Anthropic
 - Google Gemini
 - Azure OpenAI
+- xAI
 - Groq
 - Cohere
 - Mistral AI
 - Perplexity
 - Fireworks
+- DeepSeek
+- OpenRouter
 - Local LLM
 - Dify
 

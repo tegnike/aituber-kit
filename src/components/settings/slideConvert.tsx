@@ -4,6 +4,10 @@ import settingsStore, {
   multiModalAIServiceKey,
   multiModalAIServices,
 } from '@/features/stores/settings'
+import {
+  getDefaultModel,
+  getSlideConvertModels,
+} from '@/features/constants/aiModels'
 import { TextButton } from '../textButton'
 
 interface SlideConvertProps {
@@ -20,19 +24,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const [model, setModel] = useState<string>('')
 
   useEffect(() => {
-    switch (aiService) {
-      case 'openai':
-        setModel('gpt-4o')
-        break
-      case 'anthropic':
-        setModel('claude-3-5-sonnet-20241022')
-        break
-      case 'google':
-        setModel('gemini-1.5-flash-latest')
-        break
-      default:
-        setModel('')
-    }
+    const defaultModel = getDefaultModel(aiService)
+    setModel(defaultModel)
   }, [aiService])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -133,48 +126,12 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           onChange={(e) => setModel(e.target.value)}
           className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
         >
-          {aiService === 'openai' && (
-            <>
-              <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
-              <option value="gpt-4o-mini-2024-07-18">
-                gpt-4o-mini-2024-07-18
+          {aiService &&
+            getSlideConvertModels(aiService).map((model) => (
+              <option key={model} value={model}>
+                {model}
               </option>
-              <option value="gpt-4o-2024-11-20">gpt-4o-2024-11-20</option>
-              <option value="gpt-4.5-preview-2025-02-27">
-                gpt-4.5-preview-2025-02-27
-              </option>
-            </>
-          )}
-          {aiService === 'anthropic' && (
-            <>
-              <option value="claude-3-opus-20240229">
-                claude-3-opus-20240229
-              </option>
-              <option value="claude-3-7-sonnet-20250219">
-                claude-3-7-sonnet-20250219
-              </option>
-              <option value="claude-3-5-sonnet-20241022">
-                claude-3.5-sonnet-20241022
-              </option>
-              <option value="claude-3-5-haiku-20241022">
-                claude-3.5-haiku-20241022
-              </option>
-            </>
-          )}
-          {aiService === 'google' && (
-            <>
-              <option value="gemini-2.0-flash-001">gemini-2.0-flash-001</option>
-              <option value="gemini-1.5-flash-latest">
-                gemini-1.5-flash-latest
-              </option>
-              <option value="gemini-1.5-flash-8b-latest">
-                gemini-1.5-flash-8b-latest
-              </option>
-              <option value="gemini-1.5-pro-latest">
-                gemini-1.5-pro-latest
-              </option>
-            </>
-          )}
+            ))}
         </select>
         <div className="mt-4">
           <TextButton type="submit" disabled={isLoading}>

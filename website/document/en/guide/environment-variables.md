@@ -23,7 +23,7 @@ NEXT_PUBLIC_SELECT_LANGUAGE=en
 NEXT_PUBLIC_CHANGE_ENGLISH_TO_JAPANESE=false
 
 # Background image path
-NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/bg-c.png
+NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=/backgrounds/bg-c.png
 
 # Assistant text display setting (true/false)
 NEXT_PUBLIC_SHOW_ASSISTANT_TEXT=true
@@ -105,8 +105,8 @@ For details, see [AI Settings](/guide/ai/common).
 
 ```bash
 # AI service selection
-# openai, anthropic, google, azure, groq, cohere,
-# mistralai, perplexity, fireworks, deepseek, localLlm, dify
+# openai, anthropic, google, azure, , xai, groq, cohere,
+# mistralai, perplexity, fireworks, deepseek, openrouter, localLlm, dify
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # Selected AI model name
@@ -178,6 +178,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # Custom API body
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# Enable system messages in custom API (true/false)
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ### Realtime API Settings
@@ -416,4 +418,7 @@ NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED=false
 ```bash
 # Introduction screen display setting (true/false)
 NEXT_PUBLIC_SHOW_INTRODUCTION="true"
+
+# Chat log width
+NEXT_PUBLIC_CHAT_LOG_WIDTH=400
 ```

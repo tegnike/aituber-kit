@@ -18,8 +18,15 @@ import {
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
+import {
+  defaultModels,
+  getModels,
+  getOpenAIRealtimeModels,
+  getOpenAIAudioModels,
+} from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
+import { AIService } from '@/features/constants/settings'
 
 // AIサービスロゴのパスを定義
 const aiServiceLogos = {
@@ -27,12 +34,14 @@ const aiServiceLogos = {
   anthropic: '/images/ai-logos/anthropic.svg',
   google: '/images/ai-logos/google.svg',
   azure: '/images/ai-logos/azure.svg',
+  xai: '/images/ai-logos/xai.svg',
   groq: '/images/ai-logos/groq.svg',
   cohere: '/images/ai-logos/cohere.svg',
   mistralai: '/images/ai-logos/mistralai.svg',
   perplexity: '/images/ai-logos/perplexity.svg',
   fireworks: '/images/ai-logos/fireworks.svg',
   deepseek: '/images/ai-logos/deepseek.svg',
+  openrouter: '/images/ai-logos/openrouter.svg',
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',
@@ -72,6 +81,7 @@ const ModelProvider = () => {
   const googleKey = settingsStore((s) => s.googleKey)
   const azureKey = settingsStore((s) => s.azureKey)
   const azureEndpoint = settingsStore((s) => s.azureEndpoint)
+  const xaiKey = settingsStore((s) => s.xaiKey)
   const groqKey = settingsStore((s) => s.groqKey)
   const cohereKey = settingsStore((s) => s.cohereKey)
   const mistralaiKey = settingsStore((s) => s.mistralaiKey)
@@ -84,6 +94,7 @@ const ModelProvider = () => {
     (s) => s.dynamicRetrievalThreshold
   )
   const deepseekKey = settingsStore((s) => s.deepseekKey)
+  const openrouterKey = settingsStore((s) => s.openrouterKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
@@ -98,6 +109,9 @@ const ModelProvider = () => {
   const customApiHeaders = settingsStore((s) => s.customApiHeaders)
   const customApiBody = settingsStore((s) => s.customApiBody)
   const customApiStream = settingsStore((s) => s.customApiStream)
+  const includeSystemMessagesInCustomApi = settingsStore(
+    (s) => s.includeSystemMessagesInCustomApi
+  )
 
   const { t } = useTranslation()
 
@@ -107,68 +121,51 @@ const ModelProvider = () => {
     { value: 'anthropic', label: 'Anthropic' },
     { value: 'google', label: 'Google Gemini' },
     { value: 'azure', label: 'Azure OpenAI' },
+    { value: 'xai', label: 'xAI' },
     { value: 'groq', label: 'Groq' },
     { value: 'cohere', label: 'Cohere' },
     { value: 'mistralai', label: 'Mistral AI' },
     { value: 'perplexity', label: 'Perplexity' },
     { value: 'fireworks', label: 'Fireworks' },
     { value: 'deepseek', label: 'DeepSeek' },
+    { value: 'openrouter', label: 'OpenRouter' },
     { value: 'lmstudio', label: 'LM Studio' },
     { value: 'ollama', label: 'Ollama' },
     { value: 'dify', label: 'Dify' },
     { value: 'custom-api', label: 'Custom API' },
   ]
 
-  // オブジェクトを定義して、各AIサービスのデフォルトモデルを保存する
-  // ローカルLLMが選択された場合、AIモデルを空文字に設定
-  const defaultModels = {
-    openai: 'gpt-4o-2024-11-20',
-    anthropic: 'claude-3-5-sonnet-20241022',
-    google: 'gemini-1.5-flash-latest',
-    azure: '',
-    groq: 'gemma2-9b-it',
-    cohere: 'command-r-plus',
-    mistralai: 'mistral-large-latest',
-    perplexity: 'llama-3-sonar-large-32k-online',
-    fireworks: 'accounts/fireworks/models/firefunction-v2',
-    deepseek: 'deepseek-chat',
-    lmstudio: '',
-    ollama: '',
-    dify: '',
-    'custom-api': '',
-  }
+  const handleAIServiceChange = useCallback((newService: AIService) => {
+    settingsStore.setState({
+      selectAIService: newService,
+      selectAIModel: defaultModels[newService],
+    })
 
-  const handleAIServiceChange = useCallback(
-    (newService: keyof typeof defaultModels) => {
+    if (!multiModalAIServices.includes(newService as any)) {
+      menuStore.setState({ showWebcam: false })
+
       settingsStore.setState({
-        selectAIService: newService,
-        selectAIModel: defaultModels[newService],
+        conversationContinuityMode: false,
+        slideMode: false,
       })
+      slideStore.setState({
+        isPlaying: false,
+      })
+    }
 
-      if (!multiModalAIServices.includes(newService as any)) {
-        menuStore.setState({ showWebcam: false })
+    if (newService !== 'openai' && newService !== 'azure') {
+      settingsStore.setState({
+        realtimeAPIMode: false,
+        audioMode: false,
+      })
+    }
 
-        settingsStore.setState({
-          conversationContinuityMode: false,
-          slideMode: false,
-        })
-        slideStore.setState({
-          isPlaying: false,
-        })
+    if (newService === 'google') {
+      if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
+        settingsStore.setState({ useSearchGrounding: false })
       }
-
-      if (newService !== 'openai' && newService !== 'azure') {
-        settingsStore.setState({ realtimeAPIMode: false })
-      }
-
-      if (newService === 'google') {
-        if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
-          settingsStore.setState({ useSearchGrounding: false })
-        }
-      }
-    },
-    []
-  )
+    }
+  }, [])
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
     settingsStore.setState({
@@ -178,7 +175,7 @@ const ModelProvider = () => {
       settingsStore.setState({
         audioMode: false,
         speechRecognitionMode: 'browser',
-        selectAIModel: 'gpt-4o-realtime-preview-2024-12-17',
+        selectAIModel: defaultModels.openaiRealtime,
         initialSpeechTimeout: 0,
         noSpeechTimeout: 0,
         showSilenceProgressBar: false,
@@ -195,11 +192,11 @@ const ModelProvider = () => {
       settingsStore.setState({
         realtimeAPIMode: false,
         speechRecognitionMode: 'browser',
-        selectAIModel: 'gpt-4o-audio-preview-2024-12-17',
+        selectAIModel: defaultModels.openaiAudio,
       })
     } else {
       settingsStore.setState({
-        selectAIModel: 'gpt-4o-2024-11-20',
+        selectAIModel: defaultModels.openai,
       })
     }
   }, [])
@@ -226,9 +223,7 @@ const ModelProvider = () => {
       <div className="my-2">
         <Listbox
           value={selectAIService}
-          onChange={(value) =>
-            handleAIServiceChange(value as keyof typeof defaultModels)
-          }
+          onChange={(value) => handleAIServiceChange(value as AIService)}
         >
           <div className="relative inline-block min-w-[240px]">
             <Listbox.Button className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg flex items-center cursor-pointer">
@@ -371,15 +366,11 @@ const ModelProvider = () => {
                         settingsStore.setState({ selectAIModel: model })
                       }}
                     >
-                      <option value="gpt-4o-realtime-preview-2024-10-01">
-                        gpt-4o-realtime-preview-2024-10-01
-                      </option>
-                      <option value="gpt-4o-realtime-preview-2024-12-17">
-                        gpt-4o-realtime-preview-2024-12-17
-                      </option>
-                      <option value="gpt-4o-mini-realtime-preview-2024-12-17">
-                        gpt-4o-mini-realtime-preview-2024-12-17
-                      </option>
+                      {getOpenAIRealtimeModels().map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="my-4">
@@ -442,15 +433,11 @@ const ModelProvider = () => {
                         settingsStore.setState({ selectAIModel: model })
                       }}
                     >
-                      <option value="gpt-4o-audio-preview-2024-10-01">
-                        gpt-4o-audio-preview-2024-10-01
-                      </option>
-                      <option value="gpt-4o-audio-preview-2024-12-17">
-                        gpt-4o-audio-preview-2024-12-17
-                      </option>
-                      <option value="gpt-4o-mini-audio-preview-2024-12-17">
-                        gpt-4o-mini-audio-preview-2024-12-17
-                      </option>
+                      {getOpenAIAudioModels().map((model) => (
+                        <option key={model} value={model}>
+                          {model}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </>
@@ -466,30 +453,13 @@ const ModelProvider = () => {
                     onChange={(e) => {
                       const model = e.target.value
                       settingsStore.setState({ selectAIModel: model })
-
-                      if (
-                        model !== 'gpt-4-turbo' &&
-                        model !== 'gpt-4o' &&
-                        model !== 'gpt-4o-mini'
-                      ) {
-                        menuStore.setState({ showWebcam: false })
-                      }
                     }}
                   >
-                    <>
-                      <option value="chatgpt-4o-latest">
-                        chatgpt-4o-latest
+                    {getModels('openai').map((model) => (
+                      <option key={model} value={model}>
+                        {model}
                       </option>
-                      <option value="gpt-4o-mini-2024-07-18">
-                        gpt-4o-mini-2024-07-18
-                      </option>
-                      <option value="gpt-4o-2024-11-20">
-                        gpt-4o-2024-11-20
-                      </option>
-                      <option value="gpt-4.5-preview-2025-02-27">
-                        gpt-4.5-preview-2025-02-27
-                      </option>
-                    </>
+                    ))}
                   </select>
                 </div>
               )}
@@ -528,18 +498,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="claude-3-opus-20240229">
-                    claude-3-opus-20240229
-                  </option>
-                  <option value="claude-3-7-sonnet-20250219">
-                    claude-3-7-sonnet-20250219
-                  </option>
-                  <option value="claude-3-5-sonnet-20241022">
-                    claude-3.5-sonnet-20241022
-                  </option>
-                  <option value="claude-3-5-haiku-20241022">
-                    claude-3.5-haiku-20241022
-                  </option>
+                  {getModels('anthropic').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -586,18 +549,11 @@ const ModelProvider = () => {
                     }
                   }}
                 >
-                  <option value="gemini-2.0-flash-001">
-                    gemini-2.0-flash-001
-                  </option>
-                  <option value="gemini-1.5-flash-latest">
-                    gemini-1.5-flash-latest
-                  </option>
-                  <option value="gemini-1.5-flash-8b-latest">
-                    gemini-1.5-flash-8b-latest
-                  </option>
-                  <option value="gemini-1.5-pro-latest">
-                    gemini-1.5-pro-latest
-                  </option>
+                  {getModels('google').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="my-6">
@@ -804,6 +760,48 @@ const ModelProvider = () => {
               </div>
             </>
           )
+        } else if (selectAIService === 'xai') {
+          return (
+            <>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('XAIAPIKeyLabel')}
+                </div>
+                <div className="my-4">
+                  {t('APIKeyInstruction')}
+                  <br />
+                  <Link url="https://x.ai/api" label="xAI Dashboard" />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="text"
+                  placeholder="..."
+                  value={xaiKey}
+                  onChange={(e) =>
+                    settingsStore.setState({ xaiKey: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
+                <select
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                >
+                  {getModels('xai').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )
         } else if (selectAIService === 'groq') {
           return (
             <>
@@ -840,12 +838,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="gemma2-9b-it">gemma2-9b-it</option>
-                  <option value="llama-3.3-70b-versatile">
-                    llama-3.3-70b-versatile
-                  </option>
-                  <option value="llama3-8b-8192">llama3-8b-8192</option>
-                  <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+                  {getModels('groq').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -886,17 +883,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="command-light">command-light</option>
-                  <option value="command-light-nightly">
-                    command-light-nightly
-                  </option>
-                  <option value="command-nightly">command-nightly</option>
-                  <option value="command-r">command-r</option>
-                  <option value="command-r-08-2024">command-r-08-2024</option>
-                  <option value="command-r-plus">command-r-plus</option>
-                  <option value="command-r-plus-08-2024">
-                    command-r-plus-08-2024
-                  </option>
+                  {getModels('cohere').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -937,12 +928,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="mistral-large-latest">
-                    mistral-large-latest
-                  </option>
-                  <option value="open-mistral-nemo">open-mistral-nemo</option>
-                  <option value="codestral-latest">codestral-latest</option>
-                  <option value="mistral-embed">mistral-embed</option>
+                  {getModels('mistralai').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -983,21 +973,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="llama-3.1-sonar-small-128k-online">
-                    llama-3.1-sonar-small-128k-online
-                  </option>
-                  <option value="llama-3.1-sonar-large-128k-online">
-                    llama-3.1-sonar-large-128k-online
-                  </option>
-                  <option value="llama-3.1-sonar-huge-128k-online">
-                    llama-3.1-sonar-huge-128k-online
-                  </option>
-                  <option value="llama-3.1-sonar-small-128k-chat">
-                    llama-3.1-sonar-small-128k-chat
-                  </option>
-                  <option value="llama-3.1-sonar-large-128k-chat">
-                    llama-3.1-sonar-large-128k-chat
-                  </option>
+                  {getModels('perplexity').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -1038,27 +1018,11 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="accounts/fireworks/models/llama-v3p1-405b-instruct">
-                    llama-v3p1-405b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/llama-v3p1-70b-instruct">
-                    llama-v3p1-70b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/llama-v3p1-8b-instruct">
-                    llama-v3p1-8b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/llama-v3-70b-instruct">
-                    llama-v3-70b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/mixtral-8x22b-instruct">
-                    mixtral-8x22b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/mixtral-8x7b-instruct">
-                    mixtral-8x7b-instruct
-                  </option>
-                  <option value="accounts/fireworks/models/firefunction-v2">
-                    firefunction-v2
-                  </option>
+                  {getModels('fireworks').map((model) => (
+                    <option key={model} value={model}>
+                      {model.replace('accounts/fireworks/models/', '')}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>
@@ -1178,11 +1142,68 @@ const ModelProvider = () => {
                     })
                   }
                 >
-                  <option value="deepseek-chat">deepseek-chat</option>
-                  <option value="deepseek-reasoner">deepseek-reasoner</option>
+                  {getModels('deepseek').map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
+          )
+        } else if (selectAIService === 'openrouter') {
+          return (
+            <>
+              {/* API Key Section */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('OpenRouterAPIKeyLabel')}
+                </div>
+                <div className="my-4">
+                  {t('APIKeyInstruction')}
+                  <br />
+                  <Link
+                    url="https://openrouter.ai/keys"
+                    label={t('OpenRouterDashboardLink', 'OpenRouter Dashboard')}
+                  />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="password"
+                  placeholder={t('APIKeyPlaceholder', 'sk-or-...')}
+                  value={openrouterKey}
+                  onChange={(e) =>
+                    settingsStore.setState({ openrouterKey: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Model Selection Section (LMStudio style) */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
+                <div className="my-4">
+                  {t('OpenRouterModelNameInstruction')}
+                  <br />
+                  <Link
+                    url="https://openrouter.ai/models"
+                    label={t('OpenRouterModelLink', 'OpenRouter Model')}
+                  />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="text"
+                  placeholder={t('ModelIdentifierPlaceholder', {
+                    defaultValue: 'openai/gpt-4o',
+                  })}
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </>
           )
         } else if (selectAIService === 'custom-api') {
           return (
@@ -1251,6 +1272,25 @@ const ModelProvider = () => {
               </div>
               <div className="my-6">
                 <div className="my-4 text-sm">{t('CustomAPIDescription')}</div>
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('IncludeSystemMessages')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        includeSystemMessagesInCustomApi:
+                          !includeSystemMessagesInCustomApi,
+                      })
+                    }}
+                  >
+                    {includeSystemMessagesInCustomApi
+                      ? t('StatusOn')
+                      : t('StatusOff')}
+                  </TextButton>
+                </div>
               </div>
             </>
           )

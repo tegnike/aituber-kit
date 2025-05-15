@@ -12,12 +12,14 @@ AITuberKit支持以下AI服务：
 - Anthropic - 提供Claude 3.5 Sonnet、Claude 3.7 Sonnet等
 - Google Gemini - 提供Gemini 2.0 Flash、Gemini 1.5系列
 - Azure OpenAI - Azure平台上的OpenAI模型
+- xAI - 提供Grok模型
 - Groq - 提供专注于快速推理的各种模型
 - Cohere - 提供Command-R系列
 - Mistral AI - 提供Mistral Large、Open Mistral等
 - Perplexity - 提供Llama 3.1 Sonar系列
 - Fireworks - 提供Llama、Mixtral等的优化实现
 - DeepSeek - 提供DeepSeek Chat、DeepSeek Reasoner
+- OpenRouter - 提供广泛的模型
 - LM Studio - 提供本地LLM执行环境
 - Ollama - 提供本地LLM执行环境
 - Dify - 自定义聊天机器人构建平台
@@ -98,6 +100,26 @@ AZURE_ENDPOINT="https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOY
 
 **获取API密钥**:
 可以从[Azure门户](https://portal.azure.com/#view/Microsoft_Azure_AI/AzureOpenAI/keys)获取API密钥。
+
+## xAI
+
+```bash
+# xAI API Key
+XAI_API_KEY=...
+```
+
+**支持的模型**:
+
+- grok-3
+- grok-3-fast
+- grok-3-mini
+- grok-3-mini-fast
+- grok-2-1212
+- grok-2-vision-1212
+- grok-beta
+
+**获取API密钥**:
+可以从[xAI仪表板](https://x.ai/api)获取API密钥。
 
 ## Groq
 
@@ -206,6 +228,20 @@ DEEPSEEK_API_KEY=...
 **获取API密钥**:
 可以从[DeepSeek平台](https://platform.deepseek.com/api_keys)获取API密钥。
 
+## OpenRouter
+
+```bash
+# OpenRouter API Key
+OPENROUTER_API_KEY=...
+```
+
+**支持的模型**:
+
+[OpenRouter Models](https://openrouter.ai/models)を参照してください。
+
+**获取API密钥**:
+可以从[OpenRouter仪表板](https://openrouter.ai/keys)获取API密钥。
+
 ## LM Studio, Ollama
 
 ```bash
@@ -233,7 +269,9 @@ DIFY_URL=""
 ```
 
 ::: warning 注意
-Dify仅支持"聊天机器人"或"代理"类型的应用程序。此外，使用Dify时，需要在Dify端配置要保留的过去消息数量和系统提示。
+Dify仅支持"聊天机器人"或"代理"类型的应用程序。<br>
+此外，使用Dify时，过去消息的保留数量和系统提示需要在Dify端进行设置。<br>
+如果无法获得良好的回答，请删除对话历史记录后再次提问。
 :::
 
 ## 自定义API
@@ -247,6 +285,8 @@ NEXT_PUBLIC_CUSTOM_API_URL=""
 NEXT_PUBLIC_CUSTOM_API_HEADERS=""
 # 自定义API Body
 NEXT_PUBLIC_CUSTOM_API_BODY=""
+# 在自定义API中启用系统消息（true/false）
+NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API=true
 ```
 
 ::: warning 注意

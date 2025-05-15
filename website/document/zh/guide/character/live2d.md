@@ -128,7 +128,7 @@ AITuberKit支持Cubism 3及更高版本的模型，但由于兼容性问题，�
 - 请在官方网站上查看商业使用条件和详情：
   [Live2D SDK许可证](https://www.live2d.com/sdk/license/)
 
-- 如果您符合需要购买许可证的条件，AITuberKit的销售方也将产生付款义务，导致25%的附加费用
+- 当使用Live2D模型时，基本许可证费用的40%将作为附加费用收取。这是因为当使用Live2D模型产生的收入时，有义务向Live2D公司支付许可证费用。
 
 - 有关Live2D许可的详细问题，请直接联系Live2D
 
