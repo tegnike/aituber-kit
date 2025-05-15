@@ -1,0 +1,228 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# AITuberKit テストガイドライン
+
+このドキュメントは、AITuberKitプロジェクトのテスト実装に関するガイドラインと規約をまとめたものです。
+
+## テスト環境
+
+### 使用ツール
+
+- **Jest**: テストフレームワーク
+- **@testing-library/react**: Reactコンポーネントのテスト用ライブラリ
+- **@testing-library/jest-dom**: DOMアサーション用の拡張機能
+- **jest-environment-jsdom**: ブラウザ環境のシミュレーション
+- **ts-jest**: TypeScriptサポート
+
+### 設定ファイル
+
+- **jest.config.js**: Jestの主要設定ファイル
+
+  - Next.jsと統合するための設定
+  - モジュールマッピング（`@/`プレフィックスを`src/`にマッピング）
+  - canvasモジュールのモック化
+  - テストマッチパターン（`**/__tests__/**/*.test.[jt]s?(x)`）
+  - 無視するパスの設定
+
+- **jest.setup.js**: テスト実行前の共通設定
+
+  - @testing-library/jest-domのインポート
+  - ReadableStreamのモック設定
+
+- **jest.setup.canvas.js**: canvas関連のモック設定
+  - canvasとnode-canvasモジュールのモック化
+
+### テスト実行コマンド
+
+```bash
+# 全テストの実行
+npm test
+
+# ウォッチモードでテスト実行（変更を監視）
+npm run test:watch
+
+# カバレッジレポート付きでテスト実行
+npm run test:coverage
+```
+
+## テストの構造とパターン
+
+### ディレクトリ構造
+
+テストファイルは`src/__tests__/`ディレクトリ以下に配置し、テスト対象のファイルと同じディレクトリ構造を維持します。
+
+例：
+
+- `src/utils/textProcessing.ts` → `src/__tests__/utils/textProcessing.test.ts`
+- `src/features/chat/aiChatFactory.ts` → `src/__tests__/features/chat/aiChatFactory.test.ts`
+
+### テストファイルの命名規則
+
+- テストファイルは`.test.ts`または`.test.tsx`の拡張子を使用
+- ファイル名はテスト対象のファイル名と一致させる
+
+### テストの基本構造
+
+```typescript
+// 1. テスト対象のインポート
+import { functionToTest } from '../../../path/to/module'
+
+// 2. 必要に応じてモックの設定
+jest.mock('../../../path/to/dependency', () => ({
+  dependencyFunction: jest.fn(),
+}))
+
+// 3. テストスイートの定義
+describe('モジュール名', () => {
+  // 4. 各テストケース前の共通設定
+  beforeEach(() => {
+    jest.clearAllMocks()
+    // その他の初期化処理
+  })
+
+  // 5. テストケースのグループ化（必要に応じて）
+  describe('関数名', () => {
+    // 6. 個別のテストケース
+    it('テストケースの説明（日本語）', () => {
+      // テストの準備
+      const input = 'テスト入力'
+
+      // テスト対象の実行
+      const result = functionToTest(input)
+
+      // 結果の検証
+      expect(result).toBe('期待される出力')
+    })
+
+    // 非同期テストの例
+    it('非同期処理のテスト', async () => {
+      const result = await asyncFunctionToTest()
+      expect(result).toContain('期待される部分文字列')
+    })
+  })
+})
+```
+
+### モックの使用パターン
+
+#### 依存モジュールのモック
+
+```typescript
+jest.mock('../../../path/to/module', () => ({
+  exportedFunction: jest.fn(),
+  ExportedClass: jest.fn().mockImplementation(() => ({
+    classMethod: jest.fn(),
+  })),
+}))
+```
+
+#### Zustandストアのモック
+
+```typescript
+jest.mock('../../../features/stores/storeName', () => ({
+  getState: jest.fn(),
+  setState: jest.fn(),
+}))
+
+// テスト内での使用
+;(storeModule.getState as jest.Mock).mockReturnValue({
+  stateProperty: 'value',
+})
+```
+
+#### 外部APIのモック
+
+```typescript
+// OpenAIなどの外部APIのモック
+jest.mock('openai', () => ({
+  OpenAI: jest.fn().mockImplementation(() => ({
+    chat: {
+      completions: {
+        create: jest.fn().mockResolvedValue({
+          choices: [{ message: { content: 'モックレスポンス' } }],
+        }),
+      },
+    },
+  })),
+}))
+```
+
+### テスト記述のガイドライン
+
+1. **テスト説明は日本語で記述**：`it('日本語でテストの目的を説明', ...)`
+2. **一つのテストケースでは一つの機能をテスト**：複数の機能や条件を一つのテストに詰め込まない
+3. **エッジケースを考慮**：空文字列、null、undefined、不正な入力などのケースもテスト
+4. **モックはテストごとにリセット**：`beforeEach(() => { jest.clearAllMocks() })`
+5. **テストデータは明示的に定義**：ハードコードされた値を使用し、テスト内で生成しない
+
+## 特殊なモック
+
+### canvasモジュールのモック
+
+canvasモジュールは、Node.js環境でブラウザのCanvas APIをシミュレートするために特別なモック実装が必要です。
+
+```javascript
+// src/__mocks__/canvas.js
+module.exports = {
+  createCanvas: jest.fn(() => ({
+    getContext: jest.fn(() => ({
+      // コンテキストメソッドのモック
+    })),
+    // その他のプロパティとメソッド
+  })),
+  // その他のcanvas機能
+}
+```
+
+### ReadableStreamのモック
+
+```javascript
+// src/__mocks__/readableStream.js
+class MockReadableStream {
+  constructor(options) {
+    this._startFn = options.start
+  }
+}
+
+global.ReadableStream = MockReadableStream
+```
+
+## CI/CD統合
+
+GitHub Actionsを使用して、プッシュやプルリクエスト時に自動的にテストを実行します。
+
+```yaml
+# .github/workflows/test.yml
+name: Run Tests
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run linter
+        run: npm run lint
+      - name: Run tests
+        run: npm test
+```
+
+## テスト対象の優先順位
+
+1. **ユーティリティ関数**：`textProcessing.ts`などの純粋な関数
+2. **コア機能**：AIチャット処理、音声合成、メッセージ処理など
+3. **ストア**：Zustandストアの状態管理
+4. **UI コンポーネント**：ユーザーインターフェース要素

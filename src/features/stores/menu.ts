@@ -5,8 +5,9 @@ type SettingsTabKey =
   | 'based'
   | 'character'
   | 'ai'
-  | 'youtube'
   | 'voice'
+  | 'speechInput'
+  | 'youtube'
   | 'slide'
   | 'log'
   | 'other'
@@ -24,7 +25,7 @@ const menuStore = create<MenuState>((set, get) => ({
   showCapture: false,
   fileInput: null,
   bgFileInput: null,
-  slideVisible: true,
+  slideVisible: false,
   activeSettingsTab: 'description',
 }))
 

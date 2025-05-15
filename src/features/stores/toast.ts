@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export interface Toast {
   id: string
   message: string
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'error' | 'info' | 'tool'
   duration?: number
   tag?: string
   closing?: boolean
@@ -22,13 +22,13 @@ const toastStore = create<ToastState>((set, get) => ({
     const { tag } = toast
     const currentToasts = get().toasts
 
-    if (tag && currentToasts.some((t) => t.tag === tag)) {
-      return null
-    }
+    const filteredToasts = tag
+      ? currentToasts.filter((t) => t.tag !== tag)
+      : currentToasts
 
     const id = Math.random().toString(36).substring(2, 11)
-    set((state) => ({
-      toasts: [...state.toasts, { ...toast, id }],
+    set(() => ({
+      toasts: [...filteredToasts, { ...toast, id }],
     }))
     return id
   },

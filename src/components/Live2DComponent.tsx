@@ -1,6 +1,6 @@
 import { Application, Ticker, DisplayObject } from 'pixi.js'
-import { useEffect, useRef, useState } from 'react'
-import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
+import React, { useEffect, useRef, useState } from 'react'
+import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch/cubism4'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { Live2DHandler } from '@/features/messages/live2dHandler'
@@ -18,7 +18,7 @@ const setModelPosition = (
   model.y = app.renderer.height / 2
 }
 
-const Live2DComponent = () => {
+const Live2DComponent = (): JSX.Element => {
   console.log('Live2DComponent rendering')
 
   const canvasContainerRef = useRef<HTMLCanvasElement>(null)
@@ -30,6 +30,9 @@ const Live2DComponent = () => {
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const selectedLive2DPath = settingsStore((state) => state.selectedLive2DPath)
+  // ピンチジェスチャー用の状態
+  const [pinchDistance, setPinchDistance] = useState<number | null>(null)
+  const [initialScale, setInitialScale] = useState<number | null>(null)
 
   useEffect(() => {
     initApp()
@@ -108,6 +111,13 @@ const Live2DComponent = () => {
     }
   }
 
+  // 2点間の距離を計算する関数
+  const getDistance = (touch1: Touch, touch2: Touch): number => {
+    const dx = touch1.clientX - touch2.clientX
+    const dy = touch1.clientY - touch2.clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+
   useEffect(() => {
     if (!canvasContainerRef.current || !model) return
 
@@ -148,11 +158,77 @@ const Live2DComponent = () => {
       }
     }
 
+    const handleDragOver = (event: DragEvent) => {
+      event.preventDefault()
+    }
+
+    const handleDrop = (event: DragEvent) => {
+      event.preventDefault()
+
+      const files = event.dataTransfer?.files
+      if (!files) {
+        return
+      }
+
+      const file = files[0]
+      if (!file) {
+        return
+      }
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = function () {
+          const image = reader.result as string
+          image !== '' && homeStore.setState({ modalImage: image })
+        }
+      }
+    }
+
+    // タッチイベント処理
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length === 2) {
+        // ピンチ開始
+        const dist = getDistance(event.touches[0], event.touches[1])
+        setPinchDistance(dist)
+        setInitialScale(model.scale.x)
+      }
+    }
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (
+        event.touches.length === 2 &&
+        pinchDistance !== null &&
+        initialScale !== null
+      ) {
+        // ピンチ中
+        const currentDistance = getDistance(event.touches[0], event.touches[1])
+        const scale = initialScale * (currentDistance / pinchDistance)
+
+        // スケールの範囲制限
+        const newScale = Math.min(Math.max(scale, 0.1), 2.0)
+        model.scale.set(newScale)
+      }
+    }
+
+    const handleTouchEnd = () => {
+      // ピンチ終了
+      setPinchDistance(null)
+      setInitialScale(null)
+    }
+
     // イベントリスナーの登録
     canvas.addEventListener('pointerdown', handlePointerDown)
     canvas.addEventListener('pointermove', handlePointerMove)
     canvas.addEventListener('pointerup', handlePointerUp)
     canvas.addEventListener('wheel', handleWheel, { passive: false })
+    canvas.addEventListener('dragover', handleDragOver)
+    canvas.addEventListener('drop', handleDrop)
+
+    // タッチイベントリスナーの登録
+    canvas.addEventListener('touchstart', handleTouchStart)
+    canvas.addEventListener('touchmove', handleTouchMove)
+    canvas.addEventListener('touchend', handleTouchEnd)
 
     // クリーンアップ関数
     return () => {
@@ -160,8 +236,15 @@ const Live2DComponent = () => {
       canvas.removeEventListener('pointermove', handlePointerMove)
       canvas.removeEventListener('pointerup', handlePointerUp)
       canvas.removeEventListener('wheel', handleWheel)
+      canvas.removeEventListener('dragover', handleDragOver)
+      canvas.removeEventListener('drop', handleDrop)
+
+      // タッチイベントリスナーの削除
+      canvas.removeEventListener('touchstart', handleTouchStart)
+      canvas.removeEventListener('touchmove', handleTouchMove)
+      canvas.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [model, isDragging, dragOffset])
+  }, [model, isDragging, dragOffset, pinchDistance, initialScale])
 
   useEffect(() => {
     if (!app || !model) return

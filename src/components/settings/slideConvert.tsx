@@ -4,6 +4,10 @@ import settingsStore, {
   multiModalAIServiceKey,
   multiModalAIServices,
 } from '@/features/stores/settings'
+import {
+  getDefaultModel,
+  getSlideConvertModels,
+} from '@/features/constants/aiModels'
 import { TextButton } from '../textButton'
 
 interface SlideConvertProps {
@@ -20,19 +24,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const [model, setModel] = useState<string>('')
 
   useEffect(() => {
-    switch (aiService) {
-      case 'openai':
-        setModel('gpt-4o')
-        break
-      case 'anthropic':
-        setModel('claude-3-5-sonnet-20241022')
-        break
-      case 'google':
-        setModel('gemini-1.5-flash-latest')
-        break
-      default:
-        setModel('')
-    }
+    const defaultModel = getDefaultModel(aiService)
+    setModel(defaultModel)
   }, [aiService])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -89,13 +82,13 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   }
 
   return (
-    <div className="mt-24">
+    <div className="mt-6">
       <form onSubmit={handleFormSubmit}>
-        <div className="my-16 mb-16 typography-20 font-bold">
+        <div className="my-4 mb-4 text-xl font-bold">
           {t('PdfConvertLabel')}
         </div>
         <p className="">{t('PdfConvertDescription')}</p>
-        <div className="my-16 flex items-center">
+        <div className="my-4 flex items-center">
           <input
             type="file"
             onChange={handleFileChange}
@@ -113,67 +106,34 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
             {t('PdfConvertFileUpload')}
           </TextButton>
           {selectedFileName && (
-            <span className="ml-16 text-ellipsis overflow-hidden">
+            <span className="ml-4 text-ellipsis overflow-hidden">
               {selectedFileName}
             </span>
           )}
         </div>
-        <div className="my-16 font-bold">{t('PdfConvertFolderName')}</div>
+        <div className="my-4 font-bold">{t('PdfConvertFolderName')}</div>
         <input
           type="text"
           placeholder="Folder Name"
           value={folderName}
           onChange={(e) => setFolderName(e.target.value)}
           required
-          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+          className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
         />
-        <div className="my-16 font-bold">{t('PdfConvertModelSelect')}</div>
+        <div className="my-4 font-bold">{t('PdfConvertModelSelect')}</div>
         <select
           value={model}
           onChange={(e) => setModel(e.target.value)}
-          className="text-ellipsis px-16 py-8 w-col-span-4 bg-surface1 hover:bg-surface1-hover rounded-8"
+          className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
         >
-          {aiService === 'openai' && (
-            <>
-              <option value="chatgpt-4o-latest">chatgpt-4o-latest</option>
-              <option value="gpt-4o-mini">gpt-4o-mini</option>
-              <option value="gpt-4o-2024-08-06">gpt-4o-2024-08-06</option>
-              <option value="gpt-4o-2024-11-20">gpt-4o-2024-11-20</option>
-              <option value="gpt-4-turbo">gpt-4-turbo</option>
-            </>
-          )}
-          {aiService === 'anthropic' && (
-            <>
-              <option value="claude-3-opus-20240229">
-                claude-3-opus-20240229
+          {aiService &&
+            getSlideConvertModels(aiService).map((model) => (
+              <option key={model} value={model}>
+                {model}
               </option>
-              <option value="claude-3-5-sonnet-20241022">
-                claude-3.5-sonnet-20241022
-              </option>
-              <option value="claude-3-5-haiku-20241022">
-                claude-3.5-haiku-20241022
-              </option>
-            </>
-          )}
-          {aiService === 'google' && (
-            <>
-              <option value="gemini-2.0-flash-001">gemini-2.0-flash-001</option>
-              <option value="gemini-2.0-flash-lite-preview-02-05">
-                gemini-2.0-flash-lite-preview-02-05
-              </option>
-              <option value="gemini-1.5-flash-latest">
-                gemini-1.5-flash-latest
-              </option>
-              <option value="gemini-1.5-flash-8b-latest">
-                gemini-1.5-flash-8b-latest
-              </option>
-              <option value="gemini-1.5-pro-latest">
-                gemini-1.5-pro-latest
-              </option>
-            </>
-          )}
+            ))}
         </select>
-        <div className="mt-16">
+        <div className="mt-4">
           <TextButton type="submit" disabled={isLoading}>
             {isLoading ? t('PdfConvertLoading') : t('PdfConvertButton')}
           </TextButton>

@@ -5,7 +5,7 @@ import {
   VRMLoaderPlugin,
   VRMUtils,
 } from '@pixiv/three-vrm'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { VRMAnimation } from '../../lib/VRMAnimation/VRMAnimation'
 import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlugin/VRMLookAtSmootherLoaderPlugin'
 import { LipSync } from '../lipSync/lipSync'
@@ -25,7 +25,7 @@ export class Model {
 
   constructor(lookAtTargetParent: THREE.Object3D) {
     this._lookAtTargetParent = lookAtTargetParent
-    this._lipSync = new LipSync(new AudioContext())
+    this._lipSync = new LipSync(new AudioContext(), { forceStart: true })
   }
 
   public async loadVRM(url: string): Promise<void> {
@@ -101,6 +101,13 @@ export class Model {
         isNeedDecode
       )
     })
+  }
+
+  /**
+   * 現在の音声再生を停止
+   */
+  public stopSpeaking() {
+    this._lipSync?.stopCurrentPlayback()
   }
 
   /**

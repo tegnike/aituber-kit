@@ -1,33 +1,23 @@
-import { Disclosure } from '@headlessui/react'
-import { ChevronUpIcon } from '@heroicons/react/24/solid'
 import { useTranslation } from 'react-i18next'
-
-import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 
 const AdvancedSettings = () => {
-  const selectLanguage = settingsStore((s) => s.selectLanguage)
-  const changeEnglishToJapanese = settingsStore(
-    (s) => s.changeEnglishToJapanese
-  )
-  const showControlPanel = settingsStore((s) => s.showControlPanel)
   const includeTimestampInUserMessage = settingsStore(
     (s) => s.includeTimestampInUserMessage
   )
-  const showAssistantText = settingsStore((s) => s.showAssistantText)
-  const showCharacterName = settingsStore((s) => s.showCharacterName)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
+  const showCharacterPresetMenu = settingsStore(
+    (s) => s.showCharacterPresetMenu
+  )
 
   const { t } = useTranslation()
 
   return (
-    <div className="mb-40">
-      <div className="mb-24 grid-cols-2">
-        <div className="mb-16 typography-20 font-bold">
-          {t('LocalStorageReset')}
-        </div>
-        <div className="my-16 typography-16">{t('LocalStorageResetInfo')}</div>
+    <div className="mb-10">
+      <div className="mb-6 grid-cols-2">
+        <div className="mb-4 text-xl font-bold">{t('LocalStorageReset')}</div>
+        <div className="my-4 text-base">{t('LocalStorageResetInfo')}</div>
         <TextButton
           onClick={() => {
             settingsStore.persist.clearStorage()
@@ -37,11 +27,11 @@ const AdvancedSettings = () => {
           {t('LocalStorageResetButton')}
         </TextButton>
       </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">
           {t('UseVideoAsBackground')}
         </div>
-        <div className="my-8">
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState((s) => ({
@@ -53,81 +43,30 @@ const AdvancedSettings = () => {
           </TextButton>
         </div>
       </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowAssistantText')}
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">
+          {t('ShowCharacterPresetMenu')}
         </div>
-        <div className="my-8">
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState((s) => ({
-                showAssistantText: !s.showAssistantText,
+                showCharacterPresetMenu: !s.showCharacterPresetMenu,
               }))
             }
           >
-            {showAssistantText ? t('StatusOn') : t('StatusOff')}
+            {showCharacterPresetMenu ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>
       </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowCharacterName')}
-        </div>
-        <div className="my-8">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState((s) => ({
-                showCharacterName: !s.showCharacterName,
-              }))
-            }
-          >
-            {showCharacterName ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
-        </div>
-      </div>
-      {selectLanguage === 'ja' && (
-        <div className="my-24">
-          <div className="my-16 typography-20 font-bold">
-            {t('EnglishToJapanese')}
-          </div>
-          <div className="my-8">
-            <TextButton
-              onClick={() =>
-                settingsStore.setState((prevState) => ({
-                  changeEnglishToJapanese: !prevState.changeEnglishToJapanese,
-                }))
-              }
-            >
-              {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
-            </TextButton>
-          </div>
-        </div>
-      )}
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
-          {t('ShowControlPanel')}
-        </div>
-        <div className="my-16 typography-16">{t('ShowControlPanelInfo')}</div>
-        <div className="my-8">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({
-                showControlPanel: !showControlPanel,
-              })
-            }
-          >
-            {showControlPanel ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
-        </div>
-      </div>
-      <div className="my-24">
-        <div className="my-16 typography-20 font-bold">
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">
           {t('IncludeTimestampInUserMessage')}
         </div>
-        <div className="my-16 typography-16 whitespace-pre-line">
+        <div className="my-4 text-base whitespace-pre-line">
           {t('IncludeTimestampInUserMessageInfo')}
         </div>
-        <div className="my-8">
+        <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState({

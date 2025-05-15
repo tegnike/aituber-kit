@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 type ToastProps = {
   message: string
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'error' | 'info' | 'tool'
   onClose: () => void
   duration?: number
   closing?: boolean
@@ -33,6 +33,8 @@ export const Toast = ({
         return 'text-toast-success'
       case 'error':
         return 'text-toast-error'
+      case 'tool':
+        return 'text-toast-tool'
       default:
         return 'text-toast-info'
     }
@@ -51,7 +53,7 @@ export const Toast = ({
 
   return (
     <div
-      className={`cursor-pointer top-4 right-4 p-4 rounded-16 text-text1 shadow-lg text-sm flex items-center justify-between mb-8 bg-white bg-opacity-80 transition-opacity duration-300 ${
+      className={`cursor-pointer top-4 right-4 p-4 rounded-2xl text-text1 shadow-lg text-sm flex items-center justify-between mb-2 bg-white bg-opacity-80 transition-opacity duration-300 ${
         closing ? 'opacity-0' : 'opacity-100'
       }`}
     >
