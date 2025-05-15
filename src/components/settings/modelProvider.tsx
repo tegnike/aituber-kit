@@ -7,10 +7,7 @@ import { TextButton } from '../textButton'
 import { useCallback } from 'react'
 import Image from 'next/image'
 import { Listbox } from '@headlessui/react'
-import {
-  multiModalAIServices,
-  googleSearchGroundingModels,
-} from '@/features/stores/settings'
+import { multiModalAIServices } from '@/features/stores/settings'
 import {
   AudioModeInputType,
   OpenAITTSVoice,
@@ -19,10 +16,11 @@ import {
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
 import {
-  defaultModels,
   getModels,
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
+  googleSearchGroundingModels,
+  defaultModels,
 } from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
@@ -89,6 +87,9 @@ const ModelProvider = () => {
   const fireworksKey = settingsStore((s) => s.fireworksKey)
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
+  const dynamicRetrievalThreshold = settingsStore(
+    (s) => s.dynamicRetrievalThreshold
+  )
   const deepseekKey = settingsStore((s) => s.deepseekKey)
   const openrouterKey = settingsStore((s) => s.openrouterKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
@@ -573,6 +574,44 @@ const ModelProvider = () => {
                     {useSearchGrounding ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
                 </div>
+
+                {useSearchGrounding &&
+                  googleSearchGroundingModels.includes(
+                    selectAIModel as any
+                  ) && (
+                    <>
+                      <div className="mt-6 mb-4 text-xl font-bold">
+                        {t('DynamicRetrieval')}
+                      </div>
+                      <div className="my-4">
+                        {t('DynamicRetrievalDescription')}
+                      </div>
+
+                      <div className="my-4">
+                        <div className="mb-2 font-medium">
+                          {t('DynamicRetrievalThreshold')}:{' '}
+                          {dynamicRetrievalThreshold.toFixed(1)}
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            value={dynamicRetrievalThreshold}
+                            onChange={(e) => {
+                              settingsStore.setState({
+                                dynamicRetrievalThreshold: parseFloat(
+                                  e.target.value
+                                ),
+                              })
+                            }}
+                            className="mt-2 mb-4 input-range"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
               </div>
             </>
           )

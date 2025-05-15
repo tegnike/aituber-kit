@@ -20,7 +20,10 @@ export const aiModels: Record<AIService, string[]> = {
     'claude-3-5-haiku-20241022',
   ],
   google: [
-    'gemini-2.0-flash-001',
+    'gemini-2.5-pro-preview-05-06',
+    'gemini-2.5-flash-preview-04-17',
+    'gemini-2.5-pro-exp-03-25',
+    'gemini-2.0-flash',
     'gemini-1.5-flash-latest',
     'gemini-1.5-flash-8b-latest',
     'gemini-1.5-pro-latest',
@@ -95,7 +98,10 @@ export const slideConvertModels: Partial<Record<AIService, string[]>> = {
     'claude-3-5-haiku-20241022',
   ],
   google: [
-    'gemini-2.0-flash-001',
+    'gemini-2.5-pro-preview-05-06',
+    'gemini-2.5-flash-preview-04-17',
+    'gemini-2.5-pro-exp-03-25',
+    'gemini-2.0-flash',
     'gemini-1.5-flash-latest',
     'gemini-1.5-flash-8b-latest',
     'gemini-1.5-pro-latest',
@@ -228,3 +234,9 @@ export const openAITTSModels = ['tts-1', 'tts-1-hd', 'gpt-4o-mini-tts'] as const
 export function getOpenAITTSModels(): string[] {
   return [...openAITTSModels]
 }
+
+export const googleSearchGroundingModels = [
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-pro-latest',
+  'gemini-1.5-flash-8b-latest',
+] as const
