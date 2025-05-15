@@ -12,12 +12,14 @@ AITuberKit supports the following AI services:
 - Anthropic - Provides Claude 3.5 Sonnet, Claude 3.7 Sonnet, etc.
 - Google Gemini - Provides Gemini 2.0 Flash, Gemini 1.5 series
 - Azure OpenAI - OpenAI models on the Azure platform
+- xAI - Provides Grok models
 - Groq - Provides various models specialized for fast inference
 - Cohere - Provides Command-R series
 - Mistral AI - Provides Mistral Large, Open Mistral, etc.
 - Perplexity - Provides Llama 3.1 Sonar series
 - Fireworks - Provides optimized implementations of Llama, Mixtral, etc.
 - DeepSeek - Provides DeepSeek Chat, DeepSeek Reasoner
+- OpenRouter - Provides a wide range of models
 - LM Studio - Provides a local LLM execution environment
 - Ollama - Provides a local LLM execution environment
 - Dify - Custom chatbot building platform
@@ -98,6 +100,26 @@ AZURE_ENDPOINT="https://RESOURCE_NAME.openai.azure.com/openai/deployments/DEPLOY
 
 **Getting an API Key**:
 API keys can be obtained from the [Azure Portal](https://portal.azure.com/#view/Microsoft_Azure_AI/AzureOpenAI/keys).
+
+## xAI
+
+```bash
+# xAI API Key
+XAI_API_KEY=...
+```
+
+**Supported Models**:
+
+- grok-3
+- grok-3-fast
+- grok-3-mini
+- grok-3-mini-fast
+- grok-2-1212
+- grok-2-vision-1212
+- grok-beta
+
+**Getting an API Key**:
+API keys can be obtained from the [xAI Dashboard](https://x.ai/api).
 
 ## Groq
 
@@ -205,6 +227,20 @@ DEEPSEEK_API_KEY=...
 
 **Getting an API Key**:
 API keys can be obtained from the [DeepSeek Platform](https://platform.deepseek.com/api_keys).
+
+## OpenRouter
+
+```bash
+# OpenRouter API Key
+OPENROUTER_API_KEY=...
+```
+
+**Supported Models**:
+
+See [OpenRouter Models](https://openrouter.ai/models).
+
+**Getting an API Key**:
+API keys can be obtained from the [OpenRouter Dashboard](https://openrouter.ai/keys).
 
 ## LM Studio, Ollama
 
