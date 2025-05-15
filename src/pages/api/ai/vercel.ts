@@ -11,6 +11,7 @@ import {
   streamAiText,
   generateAiText,
 } from '../services/vercelAi'
+import { googleSearchGroundingModels } from '@/features/constants/aiModels'
 
 export const config = {
   runtime: 'edge',
@@ -39,7 +40,6 @@ export default async function handler(req: NextRequest) {
     azureEndpoint,
     stream,
     useSearchGrounding,
-    dynamicRetrievalMode,
     dynamicRetrievalThreshold,
     temperature = 1.0,
     maxTokens = 4096,
@@ -149,14 +149,12 @@ export default async function handler(req: NextRequest) {
     if (isUseSearchGrounding) {
       options = {
         useSearchGrounding: true,
-        ...(dynamicRetrievalMode && {
-          dynamicRetrievalConfig: {
-            mode: dynamicRetrievalMode,
-            ...(dynamicRetrievalThreshold !== undefined && {
+        ...(dynamicRetrievalThreshold !== undefined &&
+          googleSearchGroundingModels.includes(modifiedModel as any) && {
+            dynamicRetrievalConfig: {
               dynamicThreshold: dynamicRetrievalThreshold,
-            }),
-          },
-        }),
+            },
+          }),
       }
     }
 

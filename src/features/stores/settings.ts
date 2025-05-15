@@ -16,6 +16,7 @@ import {
   SpeechRecognitionMode,
   WhisperTranscriptionModel,
 } from '../constants/settings'
+import { googleSearchGroundingModels } from '../constants/aiModels'
 
 export const multiModalAIServices = [
   'openai',
@@ -25,11 +26,6 @@ export const multiModalAIServices = [
 ] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 
-export const googleSearchGroundingModels = [
-  'gemini-1.5-flash-latest',
-  'gemini-1.5-pro-latest',
-  'gemini-2.0-flash-001',
-] as const
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]
 
@@ -175,7 +171,6 @@ interface General {
   messageReceiverEnabled: boolean
   clientId: string
   useSearchGrounding: boolean
-  dynamicRetrievalMode: 'MODE_DYNAMIC' | 'MODE_UNSPECIFIED'
   dynamicRetrievalThreshold: number
   maxPastMessages: number
   useVideoAsBackground: boolean
@@ -386,8 +381,7 @@ const settingsStore = create<SettingsState>()(
       clientId: '',
       useSearchGrounding:
         process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
-      dynamicRetrievalMode: 'MODE_DYNAMIC',
-      dynamicRetrievalThreshold: 0.5,
+      dynamicRetrievalThreshold: 0.3,
       maxPastMessages:
         parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
       useVideoAsBackground:
