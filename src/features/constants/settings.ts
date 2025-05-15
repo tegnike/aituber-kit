@@ -16,6 +16,7 @@ export type VercelCloudAIService =
   | 'perplexity'
   | 'fireworks'
   | 'deepseek'
+  | 'openrouter'
   | 'lmstudio'
   | 'ollama'
   | 'custom-api'
@@ -40,6 +41,7 @@ export const isVercelCloudAIService = (
     'perplexity',
     'fireworks',
     'deepseek',
+    'openrouter',
   ]
   return cloudServices.includes(service as VercelCloudAIService)
 }
@@ -73,6 +75,7 @@ export interface AIServiceConfig {
   mistralai: { key: string; model: string }
   perplexity: { key: string; model: string }
   fireworks: { key: string; model: string }
+  openrouter: { key: string; model: string }
   dify: {
     key: string
     url: string

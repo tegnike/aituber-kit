@@ -68,6 +68,7 @@ describe('aiChatFactory', () => {
       'perplexity',
       'fireworks',
       'deepseek',
+      'openrouter',
       'lmstudio',
       'ollama',
       'custom-api',

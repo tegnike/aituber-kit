@@ -26,6 +26,7 @@ export async function getAIChatResponseStream(
     case 'perplexity':
     case 'fireworks':
     case 'deepseek':
+    case 'openrouter':
     case 'lmstudio':
     case 'ollama':
     case 'custom-api':

@@ -9,6 +9,7 @@ import { createAzure } from '@ai-sdk/azure'
 import { createDeepSeek } from '@ai-sdk/deepseek'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createOllama } from 'ollama-ai-provider'
+import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import { streamText, generateText, CoreMessage } from 'ai'
 import { VercelAIService } from '@/features/constants/settings'
 
@@ -42,6 +43,7 @@ export const aiServiceConfig: AIServiceConfig = {
       apiKey,
     }),
   deepseek: ({ apiKey }) => createDeepSeek({ apiKey }),
+  openrouter: ({ apiKey }) => createOpenRouter({ apiKey }),
   lmstudio: ({ baseURL }) =>
     createOpenAICompatible({ name: 'lmstudio', baseURL }),
   ollama: ({ baseURL }) => createOllama({ baseURL }),

@@ -38,6 +38,7 @@
     "@heroicons/react": "^2.1.5",
     "@marp-team/marp-core": "^3.9.0",
     "@marp-team/marpit": "^3.0.0",
+    "@openrouter/ai-sdk-provider": "^0.4.5",
     "@pixiv/three-vrm": "^3.0.0",
     "@supabase/supabase-js": "^2.46.2",
     "@types/react-beautiful-dnd": "^13.1.8",

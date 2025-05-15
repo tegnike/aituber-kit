@@ -41,6 +41,7 @@ const aiServiceLogos = {
   perplexity: '/images/ai-logos/perplexity.svg',
   fireworks: '/images/ai-logos/fireworks.svg',
   deepseek: '/images/ai-logos/deepseek.svg',
+  openrouter: '/images/ai-logos/openrouter.svg',
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',
@@ -89,6 +90,7 @@ const ModelProvider = () => {
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
   const deepseekKey = settingsStore((s) => s.deepseekKey)
+  const openrouterKey = settingsStore((s) => s.openrouterKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
@@ -122,6 +124,7 @@ const ModelProvider = () => {
     { value: 'perplexity', label: 'Perplexity' },
     { value: 'fireworks', label: 'Fireworks' },
     { value: 'deepseek', label: 'DeepSeek' },
+    { value: 'openrouter', label: 'OpenRouter' },
     { value: 'lmstudio', label: 'LM Studio' },
     { value: 'ollama', label: 'Ollama' },
     { value: 'dify', label: 'Dify' },
@@ -1082,6 +1085,60 @@ const ModelProvider = () => {
                 </select>
               </div>
             </div>
+          )
+        } else if (selectAIService === 'openrouter') {
+          return (
+            <>
+              {/* API Key Section */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('OpenRouterAPIKeyLabel')}
+                </div>
+                <div className="my-4">
+                  {t('APIKeyInstruction')}
+                  <br />
+                  <Link
+                    url="https://openrouter.ai/keys"
+                    label={t('OpenRouterDashboardLink', 'OpenRouter Dashboard')}
+                  />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="password"
+                  placeholder={t('APIKeyPlaceholder', 'sk-or-...')}
+                  value={openrouterKey}
+                  onChange={(e) =>
+                    settingsStore.setState({ openrouterKey: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Model Selection Section (LMStudio style) */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
+                <div className="my-4">
+                  {t('OpenRouterModelNameInstruction')}
+                  <br />
+                  <Link
+                    url="https://openrouter.ai/models"
+                    label={t('OpenRouterModelLink', 'OpenRouter Model')}
+                  />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="text"
+                  placeholder={t('ModelIdentifierPlaceholder', {
+                    defaultValue: 'openai/gpt-4o',
+                  })}
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </>
           )
         } else if (selectAIService === 'custom-api') {
           return (
