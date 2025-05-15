@@ -20,6 +20,7 @@ import {
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
   googleSearchGroundingModels,
+  defaultModels,
 } from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
