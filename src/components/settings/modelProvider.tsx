@@ -7,20 +7,19 @@ import { TextButton } from '../textButton'
 import { useCallback } from 'react'
 import Image from 'next/image'
 import { Listbox } from '@headlessui/react'
-import {
-  multiModalAIServices,
-  // googleSearchGroundingModels, // settings.ts からのインポートは削除またはコメントアウト
-} from '@/features/stores/settings'
+import { multiModalAIServices } from '@/features/stores/settings'
 import {
   AudioModeInputType,
   OpenAITTSVoice,
   RealtimeAPIModeContentType,
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
+} from '@/features/constants/settings'
+import {
   getModels,
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
-  googleSearchGroundingModels, // aiModels.ts からインポート
+  googleSearchGroundingModels,
 } from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
