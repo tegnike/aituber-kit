@@ -4,15 +4,18 @@ import { Model } from './model'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+// import { loadMixamoAnimation } from '@/lib/VRMAnimation/loadMixamoAnimation' // いったんコメントアウト
 
 /**
- * three.jsを使った3Dビューワー
+ * three.js を使用した 3D ビューア
  *
- * setup()でcanvasを渡してから使う
+ * setup() で canvas を渡してから使用
  */
 export class Viewer {
   public isReady: boolean
   public model?: Model
+  private readonly idleAnimationName = 'idle_default' // アイドルアニメーションのデフォルト名
+  private readonly defaultIdleAnimationPath = '/idle_loop.vrma' // デフォルトアイドルアニメーションのパス
 
   private _renderer?: THREE.WebGLRenderer
   private _clock: THREE.Clock
@@ -63,18 +66,42 @@ export class Viewer {
       })
 
       this._scene.add(this.model.vrm.scene)
+      this.model.setIdleAnimationName(this.idleAnimationName) // アイドルアニメーション名を設定
+
+      // Load and play default idle animation
+      // _currentAnimationUrl と _currentAnimationType はデフォルトアイドルアニメーションのパスとタイプとして解釈
+      // 将来的には settingsStore などから取得するのが良いと想定
+      this._currentAnimationUrl = buildUrl(this.defaultIdleAnimationPath)
+      this._currentAnimationType = 'vrma'
 
       if (this._currentAnimationUrl && this._currentAnimationType === 'vrma') {
-        const vrma = await loadVRMAnimation(this._currentAnimationUrl)
-        if (vrma) this.model.loadAnimation(vrma)
-      } else if (
-        this._currentAnimationUrl &&
-        this._currentAnimationType === 'fbx'
-      ) {
-        this.loadFbx(this._currentAnimationUrl)
+        try {
+          const vrma = await loadVRMAnimation(this._currentAnimationUrl) // buildUrl で処理されたパスを使用
+          if (vrma && this.model) {
+            await this.model.loadAnimation(vrma, this.idleAnimationName)
+            this.model.playAnimation(this.idleAnimationName, THREE.LoopRepeat)
+            console.log(
+              `Default animation '${this.idleAnimationName}' loaded and playing.`
+            )
+
+            // アイドルアニメーションをロードした後、他の感情アニメーションもロード
+            await this.model.loadAllEmotionAnimations()
+          } else {
+            console.warn(
+              'Failed to load default VRMA animation or model not ready.'
+            )
+          }
+        } catch (error) {
+          console.error('Error loading default VRMA animation:', error)
+        }
+      } else {
+        // FBXアイドルの処理は変更されません。まだ実装されていません。
+        console.warn(
+          'Default FBX idle animation not implemented or path not set for VRMA.'
+        )
       }
 
-      // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
+      // HACK: アニメーションの原点に誤差があるため、後処理でカメラ位置を調整します。
       requestAnimationFrame(() => {
         this.resetCamera()
       })
@@ -84,48 +111,95 @@ export class Viewer {
   public unloadVRM(): void {
     if (this.model?.vrm) {
       this._scene.remove(this.model.vrm.scene)
+      this.model?.resetAnimations() // Unload時にアニメーションもリセット
       this.model?.unLoadVrm()
+      this.model = undefined
     }
   }
 
-  public async loadVrma(url: string) {
-    if (this.model?.vrm) {
-      this._currentAnimationUrl = url
-      this._currentAnimationType = 'vrma'
+  public async loadVrma(
+    url: string,
+    animationName?: string,
+    loop: boolean = true
+  ) {
+    if (!this.model?.vrm) {
+      console.warn('VRM model not loaded. Cannot load VRMA animation.')
+      return
+    }
+    const nameToLoad = animationName || `vrma_${Date.now()}` // 適切な名前を生成
+    // this._currentAnimationUrl = url // 最後にロードしたURLを維持する必要性は減りました。
+    // this._currentAnimationType = 'vrma'
 
-      const vrma = await loadVRMAnimation(this._currentAnimationUrl)
-      if (vrma) {
-        await this.model.loadAnimation(vrma)
+    try {
+      const vrma = await loadVRMAnimation(url)
+      if (vrma && this.model) {
+        await this.model.loadAnimation(vrma, nameToLoad)
+        this.model.crossFadeToAnimation(
+          nameToLoad,
+          0.5,
+          loop ? THREE.LoopRepeat : THREE.LoopOnce
+        )
+        console.log(
+          `VRMA animation '${nameToLoad}' loaded and playing with crossfade (loop: ${loop}).`
+        )
+      } else {
+        console.warn(`Failed to load VRMA from ${url} or model not ready.`)
       }
-
-      // requestAnimationFrame(() => {
-      //   this.resetCamera();
-      // });
+    } catch (error) {
+      console.error(`Error loading VRMA animation from ${url}:`, error)
     }
   }
 
-  public async loadFbx(url: string) {
-    if (this.model?.vrm) {
-      this._currentAnimationUrl = url
-      this._currentAnimationType = 'fbx'
+  public async loadFbx(
+    url: string,
+    animationName?: string,
+    loop: boolean = true
+  ) {
+    if (!this.model?.vrm) {
+      console.warn('VRM model not loaded. Cannot load FBX animation.')
+      return
+    }
+    // const nameToLoad = animationName || `fbx_${Date.now()}` // 適切な名前を生成
+    // this._currentAnimationUrl = url
+    // this._currentAnimationType = 'fbx'
 
-      // Load animation
-      loadMixamoAnimation(this._currentAnimationUrl, this.model.vrm)
-        .then((clip: THREE.AnimationClip) => {
-          this.model?.loadFbxAnimation(clip)
-        })
-        .then(() => {
-          // requestAnimationFrame(() => {
-          //   this.resetCamera();
-          // });
-        })
+    console.warn(
+      'loadMixamoAnimation is not implemented yet. FBX animation loading skipped.'
+    )
+    // try {
+    //   // const clip = await loadMixamoAnimation(url, this.model.vrm) // loadMixamoAnimation が Promise を返すものとして想定
+    //   // if (clip && this.model) {
+    //   //   await this.model.loadFbxAnimation(clip, nameToLoad)
+    //   //   this.model.crossFadeToAnimation(nameToLoad, 0.5, loop ? THREE.LoopRepeat : THREE.LoopOnce)
+    //   //   console.log(`FBX animation '${nameToLoad}' loaded and playing with crossfade (loop: ${loop}).`)
+    //   // } else {
+    //   //   console.warn(`Failed to load FBX from ${url} or model not ready.`)
+    //   // }
+    // } catch (error) {
+    //   console.error(`Error loading FBX animation from ${url}:`, error)
+    // }
+  }
+
+  /**
+   * 指定された感情のアニメーションを再生します。
+   * @param emotionName 再生する感情の名前 (例: "happy", "sad")
+   * @param crossFadeDuration フェード時間 (秒)
+   * @param loop 繰り返し再生するかどうか
+   */
+  public playEmotionAnimation(
+    emotionName: string,
+    crossFadeDuration: number = 0.3,
+    loop: boolean = false
+  ) {
+    if (this.model) {
+      this.model.playEmotionAnimation(emotionName, crossFadeDuration, loop)
     } else {
-      console.error('No VRM loaded yet, cannot load FBX animation.')
+      console.warn('Model not loaded. Cannot play emotion animation.')
     }
   }
 
   /**
-   * Reactで管理しているCanvasを後から設定する
+   * React で管理する Canvas を後で設定する
    */
   public setup(canvas: HTMLCanvasElement) {
     const parentElement = canvas.parentElement
@@ -161,7 +235,7 @@ export class Viewer {
   }
 
   /**
-   * canvasの親要素を参照してサイズを変更する
+   * canvas の親要素を参照してサイズを変更します。
    */
   public resize() {
     if (!this._renderer) return
@@ -181,7 +255,7 @@ export class Viewer {
   }
 
   /**
-   * VRMのheadノードを参照してカメラ位置を調整する
+   * VRM の head ノードを参照してカメラ位置を調整します。
    */
   public resetCamera() {
     const headNode = this.model?.vrm?.humanoid.getNormalizedBoneNode('head')
