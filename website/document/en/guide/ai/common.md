@@ -8,8 +8,8 @@ AITuberKit works with multiple AI services to enable character conversation capa
 
 ```bash
 # AI service selection
-# openai, anthropic, google, azure, groq, cohere,
-# mistralai, perplexity, fireworks, deepseek, localLlm, dify
+# openai, anthropic, google, azure, xai, groq, cohere,
+# mistralai, perplexity, fireworks, deepseek, openrouter, localLlm, dify
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # Selected AI model name

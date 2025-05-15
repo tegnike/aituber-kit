@@ -10,6 +10,7 @@ import {
 import { messageSelectors } from '../messages/messageSelectors'
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 import { AudioModeModel, RealtimeAPIModeVoice } from '../constants/settings'
+import { defaultModels } from '../constants/aiModels'
 
 export async function getOpenAIAudioChatResponseStream(
   messages: Message[]
@@ -22,7 +23,7 @@ export async function getOpenAIAudioChatResponseStream(
 
   try {
     const response = await openai.chat.completions.create({
-      model: (ss.selectAIModel as AudioModeModel) || 'gpt-4o-audio-preview',
+      model: (ss.selectAIModel as AudioModeModel) || defaultModels.openaiAudio,
       messages: messageSelectors.getAudioMessages(
         messages
       ) as ChatCompletionMessageParam[],

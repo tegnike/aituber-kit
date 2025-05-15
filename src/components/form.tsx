@@ -47,7 +47,8 @@ export const Form = () => {
 
   return slideMode &&
     slideVisible &&
-    (slidePlaying || chatProcessingCount !== 0) ? (
+    slidePlaying &&
+    chatProcessingCount !== 0 ? (
     <SlideText />
   ) : (
     <>

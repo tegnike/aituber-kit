@@ -11,6 +11,7 @@ import {
   streamAiText,
   generateAiText,
 } from '../services/vercelAi'
+import { googleSearchGroundingModels } from '@/features/constants/aiModels'
 
 export const config = {
   runtime: 'edge',
@@ -39,6 +40,7 @@ export default async function handler(req: NextRequest) {
     azureEndpoint,
     stream,
     useSearchGrounding,
+    dynamicRetrievalThreshold,
     temperature = 1.0,
     maxTokens = 4096,
   } = await req.json()
@@ -142,7 +144,20 @@ export default async function handler(req: NextRequest) {
       aiService === 'google' &&
       useSearchGrounding &&
       modifiedMessages.every((msg) => typeof msg.content === 'string')
-    const options = isUseSearchGrounding ? { useSearchGrounding: true } : {}
+
+    let options = {}
+    if (isUseSearchGrounding) {
+      options = {
+        useSearchGrounding: true,
+        ...(dynamicRetrievalThreshold !== undefined &&
+          googleSearchGroundingModels.includes(modifiedModel as any) && {
+            dynamicRetrievalConfig: {
+              dynamicThreshold: dynamicRetrievalThreshold,
+            },
+          }),
+      }
+    }
+
     console.log('options', options)
 
     // ストリーミングレスポンスまたは一括レスポンスの生成

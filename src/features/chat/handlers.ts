@@ -698,6 +698,34 @@ export const handleSendChatFn =
 
       try {
         await processAIResponse(messages)
+        let scripts = JSON.stringify(
+          require(
+            `../../../public/slides/${sls.selectedSlideDocs}/scripts.json`
+          )
+        )
+        systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
+
+        let supplement = ''
+        try {
+          const response = await fetch(
+            `/api/getSupplement?slideName=${sls.selectedSlideDocs}`
+          )
+          if (!response.ok) {
+            throw new Error('Failed to fetch supplement')
+          }
+          const data = await response.json()
+          supplement = data.supplement
+          systemPrompt = systemPrompt.replace('{{SUPPLEMENT}}', supplement)
+        } catch (e) {
+          console.error('supplement.txtの読み込みに失敗しました:', e)
+        }
+
+        const answerString = await judgeSlide(newMessage, scripts, supplement)
+        const answer = JSON.parse(answerString)
+        if (answer.judge === 'true' && answer.page !== '') {
+          goToSlide(Number(answer.page))
+          systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
+        }
       } catch (e) {
         console.error(e)
         homeStore.setState({ chatProcessing: false })

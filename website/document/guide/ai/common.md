@@ -8,8 +8,8 @@ AITuberKitでは、複数のAIサービスと連携して、キャラクター�
 
 ```bash
 # AIサービスの選択
-# openai, anthropic, google, azure, groq, cohere,
-# mistralai, perplexity, fireworks, deepseek, localLlm, dify
+# openai, anthropic, google, azure, xai, groq, cohere,
+# mistralai, perplexity, fireworks, deepseek, openrouter, localLlm, dify
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # 選択するAIモデル名
@@ -33,12 +33,14 @@ AITuberKitは以下のAIサービスをサポートしています：
 - Anthropic Claude
 - Google Gemini
 - Azure OpenAI
+- xAI
 - Groq
 - Cohere
 - Mistral AI
 - Perplexity
 - Fireworks
 - DeepSeek
+- OpenRouter
 - LM Studio
 - Ollama
 - Dify

@@ -1,5 +1,5 @@
 import { Application, Ticker, DisplayObject } from 'pixi.js'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch/cubism4'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -18,7 +18,7 @@ const setModelPosition = (
   model.y = app.renderer.height / 2
 }
 
-const Live2DComponent = () => {
+const Live2DComponent = (): JSX.Element => {
   console.log('Live2DComponent rendering')
 
   const canvasContainerRef = useRef<HTMLCanvasElement>(null)

@@ -35,11 +35,14 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - Anthropic
 - Google Gemini
 - Azure OpenAI
+- xAI
 - Groq
 - Cohere
 - Mistral AI
 - Perplexity
 - Fireworks
+- DeepSeek
+- OpenRouter
 - ローカルLLM
 - Dify
 

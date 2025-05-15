@@ -31,5 +31,5 @@
     ".next/types/**/*.ts",
     "src/types/**/*.d.ts"
   ],
-  "exclude": ["node_modules", ".mypy_cache", "scripts"]
+  "exclude": ["node_modules", ".mypy_cache", "scripts", "website"]
 }

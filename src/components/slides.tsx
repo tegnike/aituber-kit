@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import slideStore from '@/features/stores/slide'
 import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
+import { SpeakQueue } from '@/features/messages/speakQueue'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
 
@@ -149,6 +150,9 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     })
     if (newIsPlaying) {
       readSlide(currentSlide)
+    } else {
+      homeStore.setState({ isSpeaking: false })
+      SpeakQueue.stopAll()
     }
   }
 
