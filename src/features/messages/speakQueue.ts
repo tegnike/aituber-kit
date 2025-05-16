@@ -159,6 +159,7 @@ export class SpeakQueue {
         await Live2DHandler.resetToIdle()
       } else {
         await hs.viewer.model?.playEmotion('neutral')
+        hs.viewer.switchToIdleAnimation()
       }
     }
   }

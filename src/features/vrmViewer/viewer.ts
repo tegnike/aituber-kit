@@ -184,15 +184,13 @@ export class Viewer {
    * 指定された感情のアニメーションを再生します。
    * @param emotionName 再生する感情の名前 (例: "happy", "sad")
    * @param crossFadeDuration フェード時間 (秒)
-   * @param loop 繰り返し再生するかどうか
    */
   public playEmotionAnimation(
     emotionName: string,
-    crossFadeDuration: number = 0.3,
-    loop: boolean = false
+    crossFadeDuration: number = 0.3
   ) {
     if (this.model) {
-      this.model.playEmotionAnimation(emotionName, crossFadeDuration, loop)
+      this.model.playEmotionAnimation(emotionName, crossFadeDuration)
     } else {
       console.warn('Model not loaded. Cannot play emotion animation.')
     }
@@ -282,6 +280,18 @@ export class Viewer {
 
     if (this._renderer && this._camera) {
       this._renderer.render(this._scene, this._camera)
+    }
+  }
+
+  /**
+   * アイドルアニメーションに切り替える
+   * @param crossFadeDuration クロスフェード時間 (秒)
+   */
+  public switchToIdleAnimation(crossFadeDuration: number = 0.3) {
+    if (this.model) {
+      this.model.returnToIdleAnimation(crossFadeDuration)
+    } else {
+      console.warn('Model not loaded. Cannot switch to idle animation.')
     }
   }
 }

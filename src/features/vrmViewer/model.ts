@@ -305,8 +305,7 @@ export class Model {
    */
   public playEmotionAnimation(
     emotionName: string,
-    crossFadeDuration: number = 0.3,
-    loop: boolean = false
+    crossFadeDuration: number = 0.3
   ) {
     if (!this._animationActions.has(this._idleAnimationName)) {
       console.warn(
@@ -321,28 +320,11 @@ export class Model {
       return
     }
 
-    // 他の感情アニメーションが終了待ちの場合は中断して新しい感情へ
-    if (
-      this._watchingEmotionAction &&
-      this._watchingEmotionAction !== emotionAction
-    ) {
-      this._watchingEmotionAction = null // 前の監視をキャンセル
-    }
-
     console.log(
       `[playEmotionAnimation] Starting emotion: "${emotionName}". Current action: "${this._currentAction?.getClip().name}", Crossfade duration: ${crossFadeDuration}`
     )
-    this.crossFadeToAnimation(
-      emotionName,
-      crossFadeDuration,
-      loop ? THREE.LoopRepeat : THREE.LoopOnce
-    )
-    this._isEmotionAnimating = !loop // ループしない場合のみ感情アニメーション中フラグを立てる
-
-    if (!loop) {
-      // ループしないアニメーションの場合、終了監視リストに追加
-      this._watchingEmotionAction = emotionAction
-    }
+    this.crossFadeToAnimation(emotionName, crossFadeDuration, THREE.LoopRepeat)
+    this._isEmotionAnimating = true // 感情アニメーション中フラグを立てる
   }
 
   public update(delta: number): void {
@@ -351,35 +333,46 @@ export class Model {
       this.emoteController?.lipSync('aa', volume)
     }
 
-    // 感情アニメーションの終了監視とアイドルへの遷移
-    if (
-      this._watchingEmotionAction &&
-      this._watchingEmotionAction.isRunning() && // 実行中であること
-      this._watchingEmotionAction.loop === THREE.LoopOnce && // ループしない設定であること
-      this._currentAction === this._watchingEmotionAction // 現在のアクションが監視対象であること
-    ) {
-      const clipDuration = this._watchingEmotionAction.getClip().duration
-      const currentTime = this._watchingEmotionAction.time
-      const remainingTime = clipDuration - currentTime
-
-      if (remainingTime <= this._emotionFadeOutThreshold) {
-        console.log(
-          `[update] Emotion animation "${this._watchingEmotionAction.getClip().name}" nearing end. Remaining: ${remainingTime.toFixed(2)}s. Transitioning to idle: "${this._idleAnimationName}"`
-        )
-        if (this._animationActions.has(this._idleAnimationName)) {
-          this.crossFadeToAnimation(
-            this._idleAnimationName,
-            this._emotionFadeOutThreshold, // フェードアウト時間も閾値に合わせるか、別途設定
-            THREE.LoopRepeat
-          )
-        }
-        this._isEmotionAnimating = false
-        this._watchingEmotionAction = null // 監視終了
-      }
-    }
-
     this.emoteController?.update(delta)
     this.mixer?.update(delta)
     this.vrm?.update(delta)
+  }
+
+  /**
+   * アイドルアニメーションに戻る
+   * @param crossFadeDuration クロスフェード時間 (秒)
+   */
+  public returnToIdleAnimation(crossFadeDuration: number = 0.3) {
+    if (!this.vrm || !this.mixer) {
+      console.warn('VRM or Mixer not ready to return to idle animation.')
+      return
+    }
+
+    if (!this._animationActions.has(this._idleAnimationName)) {
+      console.warn(
+        `Idle animation "${this._idleAnimationName}" not loaded. Cannot return to idle.`
+      )
+      return
+    }
+
+    // 現在再生中のアニメーションがアイドルアニメーションでなければ遷移する
+    if (
+      !this._currentAction ||
+      this._currentAction.getClip().name !== this._idleAnimationName
+    ) {
+      console.log(
+        `[returnToIdleAnimation] Transitioning to idle: "${this._idleAnimationName}", Crossfade duration: ${crossFadeDuration}`
+      )
+      this.crossFadeToAnimation(
+        this._idleAnimationName,
+        crossFadeDuration,
+        THREE.LoopRepeat
+      )
+      this._isEmotionAnimating = false
+    } else {
+      console.log(
+        `[returnToIdleAnimation] Already in idle animation: "${this._idleAnimationName}". No transition needed.`
+      )
+    }
   }
 }

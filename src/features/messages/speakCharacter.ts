@@ -306,7 +306,7 @@ const createSpeakCharacter = () => {
         if (ss.modelType === 'vrm') {
           if (hs.viewer && talk.emotion && talk.emotion !== 'neutral') {
             // neutral は常時アイドルアニメーションが流れているため、個別に再生しない
-            hs.viewer.playEmotionAnimation(talk.emotion, 0.3, false)
+            hs.viewer.playEmotionAnimation(talk.emotion, 0.3)
             console.log(`VRM emotion animation started: ${talk.emotion}`)
           }
         }
