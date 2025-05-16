@@ -4,7 +4,7 @@ import { Model } from './model'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-// import { loadMixamoAnimation } from '@/lib/VRMAnimation/loadMixamoAnimation' // いったんコメントアウト
+import { loadMixamoAnimation } from '@/lib/fbxAnimation/loadMixamoAnimation' // いったんコメントアウト
 
 /**
  * three.js を使用した 3D ビューア
@@ -159,25 +159,31 @@ export class Viewer {
       console.warn('VRM model not loaded. Cannot load FBX animation.')
       return
     }
-    // const nameToLoad = animationName || `fbx_${Date.now()}` // 適切な名前を生成
-    // this._currentAnimationUrl = url
-    // this._currentAnimationType = 'fbx'
+    const nameToLoad = animationName || `fbx_${Date.now()}` // 適切な名前を生成
+    this._currentAnimationUrl = url
+    this._currentAnimationType = 'fbx'
 
     console.warn(
       'loadMixamoAnimation is not implemented yet. FBX animation loading skipped.'
     )
-    // try {
-    //   // const clip = await loadMixamoAnimation(url, this.model.vrm) // loadMixamoAnimation が Promise を返すものとして想定
-    //   // if (clip && this.model) {
-    //   //   await this.model.loadFbxAnimation(clip, nameToLoad)
-    //   //   this.model.crossFadeToAnimation(nameToLoad, 0.5, loop ? THREE.LoopRepeat : THREE.LoopOnce)
-    //   //   console.log(`FBX animation '${nameToLoad}' loaded and playing with crossfade (loop: ${loop}).`)
-    //   // } else {
-    //   //   console.warn(`Failed to load FBX from ${url} or model not ready.`)
-    //   // }
-    // } catch (error) {
-    //   console.error(`Error loading FBX animation from ${url}:`, error)
-    // }
+    try {
+      const clip = await loadMixamoAnimation(url, this.model.vrm) // loadMixamoAnimation が Promise を返すものとして想定
+      if (clip && this.model) {
+        await this.model.loadFbxAnimation(clip, nameToLoad)
+        this.model.crossFadeToAnimation(
+          nameToLoad,
+          0.5,
+          loop ? THREE.LoopRepeat : THREE.LoopOnce
+        )
+        console.log(
+          `FBX animation '${nameToLoad}' loaded and playing with crossfade (loop: ${loop}).`
+        )
+      } else {
+        console.warn(`Failed to load FBX from ${url} or model not ready.`)
+      }
+    } catch (error) {
+      console.error(`Error loading FBX animation from ${url}:`, error)
+    }
   }
 
   /**
