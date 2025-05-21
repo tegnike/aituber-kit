@@ -3,6 +3,7 @@ import { MessageInput } from '@/components/messageInput'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition'
+import { PersonDetector } from './personDetector'
 
 // 無音検出用の状態と変数を追加
 type Props = {
@@ -41,19 +42,38 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
   }
 
   return (
-    <MessageInput
-      userMessage={userMessage}
-      isMicRecording={isListening}
-      onChangeUserMessage={handleInputChange}
-      onClickMicButton={toggleListening}
-      onClickSendButton={handleSendMessage}
-      onClickStopButton={handleStopSpeaking}
-      isSpeaking={isSpeaking}
-      silenceTimeoutRemaining={silenceTimeoutRemaining}
-      continuousMicListeningMode={
-        continuousMicListeningMode && speechRecognitionMode === 'browser'
-      }
-      onToggleContinuousMode={toggleContinuousMode}
-    />
+    <>
+      <PersonDetector
+        onUserDetected={(userId, isNewUser) => {
+          console.log(`messageInputContainer:ユーザー検出: ${userId}, 新規ユーザー: ${isNewUser}`, Date.now())
+          if (true) { //isNewUser
+            startListening()
+            settingsStore.setState({
+              continuousMicListeningMode: true,
+            })
+          }
+        }}
+        onUserDisappeared={() => {
+          console.log('ユーザーが消失')
+          stopListening()
+        }}
+      />
+      <div className="flex gap-2 p-2">
+        <MessageInput
+          userMessage={userMessage}
+          isMicRecording={isListening}
+          onChangeUserMessage={handleInputChange}
+          onClickMicButton={toggleListening}
+          onClickSendButton={handleSendMessage}
+          onClickStopButton={handleStopSpeaking}
+          isSpeaking={isSpeaking}
+          silenceTimeoutRemaining={silenceTimeoutRemaining}
+          continuousMicListeningMode={
+            continuousMicListeningMode && speechRecognitionMode === 'browser'
+          }
+          onToggleContinuousMode={toggleContinuousMode}
+        />
+      </div>
+    </>
   )
 }

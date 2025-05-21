@@ -700,6 +700,85 @@ export const handleSendChatFn = () => async (text: string) => {
 }
 
 /**
+ * ユーザーID変更処理関数
+ * @param userId 新しいユーザーID
+ * @param callback ユーザーID変更後に実行するコールバック
+ * @returns 変更があったかどうか
+ */
+export const updateUserId = (userId: string, callback?: (userId: string) => void): boolean => {
+  const ss = settingsStore.getState()
+  
+  if (userId && ss.userId !== userId) {
+    console.log(`ユーザーIDが変更されました: ${ss.userId} → ${userId}`)
+    settingsStore.setState({ userId: userId })
+    
+    // ユーザーID変更後に任意の処理を実行
+    if (callback) {
+      callback(userId)
+    }
+    
+    return true
+  }
+  
+  return false
+}
+
+/**
+ * 人物検出APIからユーザーIDを取得する
+ * @param callback ユーザーID取得後に実行するコールバック
+ * @param apiUrl 人物検出APIのURL（デフォルト: http://localhost:8888/data/）
+ */
+export const fetchUserIdFromCamera = async (
+  callback?: (userId: string) => void,
+  apiUrl: string = 'http://localhost:8888/data/'
+): Promise<string | null> => {
+  try {
+    const response = await fetch(apiUrl)
+    
+    if (!response.ok) {
+      throw new Error(`人物検出APIリクエスト失敗: ${response.status} ${response.statusText}`)
+    }
+    
+    const data = await response.json()
+    
+    // 認識状態の確認 - recognizestateがfalseならユーザーなし
+    if (data.recognizestate === false) {
+      console.log('人物検出API: ユーザー未検出')
+      return null
+    }
+    
+    // recognizednameフィールドをユーザーIDとして使用
+    const userId = data.recognizedname
+    
+    if (userId) {
+      // ユーザーIDの変更を処理
+      const updated = updateUserId(userId, () => {
+        // ユーザーID変更時の特別な処理をここに
+        // callback が設定されていればそれも後で実行される
+      })
+      
+      if (updated) {
+        console.log(`人物検出APIからユーザーID「${userId}」を検出しました`)
+      }
+      
+      // コールバックが指定されていれば実行
+      if (callback) {
+        callback(userId)
+      }
+      
+      return userId
+    } else {
+      console.warn('人物検出APIからのレスポンスにrecognizednameフィールドがありません:', data)
+    }
+  } catch (e) {
+    console.error('人物検出APIからのユーザーID取得エラー:', e)
+  }
+  
+  return null
+}
+
+
+/**
  * WebSocketからのテキストを受信したときの処理
  */
 export const handleReceiveTextFromWsFn =
