@@ -18,6 +18,13 @@ const generateSessionId = () => generateMessageId()
 // コードブロックのデリミネーター
 const CODE_DELIMITER = '```'
 
+// 'lost' ユーザーの検出タイムアウト（ミリ秒）
+const LOST_USER_TIMEOUT = 5000; // 5秒
+
+// lost ユーザーのタイムアウト管理用
+let lostUserTimeoutId: NodeJS.Timeout | null = null;
+let lastDetectedUserId: string | null = null;
+
 /**
  * テキストから感情タグ `[...]` を抽出する
  * @param text 入力テキスト
@@ -751,11 +758,41 @@ export const fetchUserIdFromCamera = async (
     const userId = data.recognizedname
     
     if (userId) {
+      // 'lost'の場合の特別処理
+      console.log('人物検出API:', userId, lostUserTimeoutId, Date.now())
+      if (userId === 'lost') {
+        // 前回のタイムアウトがまだあれば何もしない
+        if (lostUserTimeoutId) {
+          return lastDetectedUserId;
+        }
+        
+        // タイムアウトを設定
+        lostUserTimeoutId = setTimeout(() => {
+          console.log(`'lost' タイムアウト: ユーザーなしと判定`);
+          // 直前のユーザーIDをクリア
+          lastDetectedUserId = null;
+          // ユーザーIDをクリア
+          updateUserId('', callback);
+          // タイムアウトIDをクリア
+          lostUserTimeoutId = null;
+        }, LOST_USER_TIMEOUT);
+        
+        // 直前のユーザーID（もしあれば）を返す
+        return lastDetectedUserId;
+      } 
+            
+      // もし前回'lost'で今回有効なユーザーだった場合はタイムアウトをクリア
+      if (lostUserTimeoutId && userId !== 'lost') {
+        clearTimeout(lostUserTimeoutId);
+        lostUserTimeoutId = null;
+      }
+      
+      // 最後に検出したユーザーIDを更新
+      lastDetectedUserId = userId;
+      
       // ユーザーIDの変更を処理
-      const updated = updateUserId(userId, () => {
-        // ユーザーID変更時の特別な処理をここに
-        // callback が設定されていればそれも後で実行される
-      })
+      const shouldUpdate = userId !== 'lost' && userId.endsWith('male');
+      const updated = shouldUpdate ? updateUserId(userId, callback) : false;
       
       if (updated) {
         console.log(`人物検出APIからユーザーID「${userId}」を検出しました`)
@@ -766,17 +803,16 @@ export const fetchUserIdFromCamera = async (
         callback(userId)
       }
       
-      return userId
+      return userId;
     } else {
-      console.warn('人物検出APIからのレスポンスにrecognizednameフィールドがありません:', data)
+      console.warn('人物検出APIからのレスポンスにrecognizednameフィールドがありません:', data);
     }
   } catch (e) {
-    console.error('人物検出APIからのユーザーID取得エラー:', e)
+    console.error('人物検出APIからのユーザーID取得エラー:', e);
   }
   
-  return null
+  return lastDetectedUserId;
 }
-
 
 /**
  * WebSocketからのテキストを受信したときの処理
