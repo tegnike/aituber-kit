@@ -6,7 +6,6 @@ import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
-import { multiModalAIServices } from '@/features/stores/settings'
 import { isCurrentModelMultiModal } from '@/features/utils/multimodal'
 
 const YouTube = () => {

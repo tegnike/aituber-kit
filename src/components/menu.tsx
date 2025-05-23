@@ -14,7 +14,6 @@ import Settings from './settings'
 import { Webcam } from './webcam'
 import Slides from './slides'
 import Capture from './capture'
-import { multiModalAIServices } from '@/features/stores/settings'
 import { isCurrentModelMultiModal } from '@/features/utils/multimodal'
 
 // モバイルデバイス検出用のカスタムフック
