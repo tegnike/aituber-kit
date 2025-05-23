@@ -8,7 +8,7 @@ Multimodal AI models are AI models that can understand and process multiple form
 
 ```bash
 # Select an AI service that supports multimodal
-# Multimodal supported: openai, anthropic, google, azure
+# Multimodal supported: openai, anthropic, google, azure, xai, openrouter
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # Select a model that supports multimodal
@@ -46,6 +46,19 @@ AITuberKit supports the following multimodal-compatible AI services and models:
 ### Azure OpenAI Service
 
 - Depends on settings in the Azure portal
+
+### xAI
+
+- grok-3
+- grok-2-vision-1212
+
+### OpenRouter
+
+- anthropic/claude-3.5-sonnet
+- anthropic/claude-3-opus
+- google/gemini-pro-vision
+- meta-llama/llama-3.1-8b-instruction
+- meta-llama/llama-3.1-405b-instruct
 
 ## How to Use
 

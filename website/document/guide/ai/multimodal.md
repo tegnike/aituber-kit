@@ -8,7 +8,7 @@
 
 ```bash
 # マルチモーダル対応のAIサービスを選択
-# マルチモーダル対応: openai, anthropic, google, azure
+# マルチモーダル対応: openai, anthropic, google, azure, xai, openrouter
 NEXT_PUBLIC_SELECT_AI_SERVICE=openai
 
 # マルチモーダル対応のモデルを選択
@@ -46,6 +46,19 @@ AITuberKitでは、以下のマルチモーダル対応AIサービスおよび�
 ### Azure OpenAI Service
 
 - Azureポータルでの設定に依存
+
+### xAI
+
+- grok-3
+- grok-2-vision-1212
+
+### OpenRouter
+
+- anthropic/claude-3.5-sonnet
+- anthropic/claude-3-opus
+- google/gemini-pro-vision
+- meta-llama/llama-3.1-8b-instruction
+- meta-llama/llama-3.1-405b-instruct
 
 ## 使用方法
 
