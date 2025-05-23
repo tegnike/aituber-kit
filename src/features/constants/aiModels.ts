@@ -43,6 +43,8 @@ export const aiModels: Record<AIService, string[]> = {
     'llama-3.3-70b-versatile',
     'llama3-8b-8192',
     'mixtral-8x7b-32768',
+    'llama-3.1-8b',
+    'llama-3.1-70b',
   ],
   cohere: [
     'command-light',
@@ -61,17 +63,30 @@ export const aiModels: Record<AIService, string[]> = {
   ],
   perplexity: [
     'llama-3-sonar-large-32k-online',
-    'sonar-small-online',
-    'sonar-medium-online',
-    'sonar-large-online',
+    'llama-3.1-sonar-small-128k-online',
+    'llama-3.1-sonar-large-128k-online',
+    'llama-3.1-sonar-huge-128k-online',
+    'llama-3.1-sonar-small-128k-chat',
+    'llama-3.1-sonar-large-128k-chat',
   ],
   fireworks: [
     'accounts/fireworks/models/firefunction-v2',
     'accounts/fireworks/models/llama-v3-8b',
     'accounts/fireworks/models/llama-v3-70b',
+    'accounts/fireworks/models/llama-v3p1-405b-instruct',
+    'accounts/fireworks/models/llama-v3p1-70b-instruct',
+    'accounts/fireworks/models/llama-v3p1-8b-instruct',
+    'accounts/fireworks/models/mixtral-8x22b-instruct',
   ],
   deepseek: ['deepseek-chat', 'deepseek-coder', 'deepseek-reasoner'],
-  openrouter: [],
+  openrouter: [
+    'anthropic/claude-3.5-sonnet',
+    'anthropic/claude-3-opus',
+    'google/gemini-pro-vision',
+    'meta-llama/llama-3.1-8b-instruction',
+    'meta-llama/llama-3.1-405b-instruct',
+    'mistralai/mistral-large-2',
+  ],
   lmstudio: [],
   ollama: [],
   dify: [],
@@ -122,10 +137,10 @@ export const defaultModels: Record<
   google: 'gemini-1.5-flash-latest',
   azure: '',
   xai: 'grok-3',
-  groq: 'gemma2-9b-it',
-  cohere: 'command-r-plus',
+  groq: 'llama-3.3-70b-versatile',
+  cohere: 'command-r-plus-08-2024',
   mistralai: 'mistral-large-latest',
-  perplexity: 'llama-3-sonar-large-32k-online',
+  perplexity: 'llama-3.1-sonar-large-128k-online',
   fireworks: 'accounts/fireworks/models/firefunction-v2',
   deepseek: 'deepseek-chat',
   openrouter: 'anthropic/claude-3.5-sonnet',
@@ -236,7 +251,41 @@ export function getOpenAITTSModels(): string[] {
 }
 
 export const googleSearchGroundingModels = [
+  'gemini-2.5-pro-preview-05-06',
+  'gemini-2.5-flash-preview-04-17',
   'gemini-1.5-flash-latest',
   'gemini-1.5-pro-latest',
   'gemini-1.5-flash-8b-latest',
 ] as const
+
+/**
+ * マルチモーダル対応モデルのリスト
+ */
+export const multiModalModels = [
+  'gpt-4o-2024-11-20',
+  'gpt-4.5-preview-2025-02-27',
+  'gpt-4o-mini-2024-07-18',
+  'chatgpt-4o-latest',
+  'gpt-4.1-2025-04-14',
+  'gpt-4.1-nano-2025-04-14',
+  'gpt-4.1-mini-2025-04-14',
+  'claude-3-5-sonnet-20241022',
+  'claude-3-7-sonnet-20250219',
+  'claude-3-opus-20240229',
+  'claude-3-5-haiku-20241022',
+  'gemini-2.0-flash-001',
+  'gemini-2.5-pro-preview-05-06',
+  'gemini-2.5-flash-preview-04-17',
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-flash-8b-latest',
+  'gemini-1.5-pro-latest',
+  'grok-3',
+  'grok-2-vision-1212',
+  'anthropic/claude-3.5-sonnet',
+  'anthropic/claude-3-opus',
+  'google/gemini-pro-vision',
+  'meta-llama/llama-3.1-8b-instruction',
+  'meta-llama/llama-3.1-405b-instruct',
+] as const
+
+export type MultiModalModel = (typeof multiModalModels)[number]

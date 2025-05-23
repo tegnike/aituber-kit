@@ -23,6 +23,8 @@ export const multiModalAIServices = [
   'anthropic',
   'google',
   'azure',
+  'xai',
+  'openrouter',
 ] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 
