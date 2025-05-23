@@ -1,5 +1,5 @@
 import { multiModalModels } from '../constants/aiModels'
-import { settingsStore } from '../stores/settings'
+import settingsStore from '../stores/settings'
 
 /**
  * 現在選択されているモデルがマルチモーダル対応かどうかを判定する

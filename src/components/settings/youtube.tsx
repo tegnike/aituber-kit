@@ -7,6 +7,7 @@ import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
 import { multiModalAIServices } from '@/features/stores/settings'
+import { isCurrentModelMultiModal } from '@/features/utils/multimodal'
 
 const YouTube = () => {
   const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
@@ -113,7 +114,8 @@ const YouTube = () => {
                       })
                     }
                     disabled={
-                      !multiModalAIServices.includes(selectAIService as any) ||
+                      // !multiModalAIServices.includes(selectAIService as any) ||
+                      !isCurrentModelMultiModal() ||
                       slideMode ||
                       externalLinkageMode
                     }
