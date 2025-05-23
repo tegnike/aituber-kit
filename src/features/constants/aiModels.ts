@@ -257,3 +257,35 @@ export const googleSearchGroundingModels = [
   'gemini-1.5-pro-latest',
   'gemini-1.5-flash-8b-latest',
 ] as const
+
+/**
+ * マルチモーダル対応モデルのリスト
+ */
+export const multiModalModels = [
+  'gpt-4o-2024-11-20',
+  'gpt-4.5-preview-2025-02-27',
+  'gpt-4o-mini-2024-07-18',
+  'chatgpt-4o-latest',
+  'gpt-4.1-2025-04-14',
+  'gpt-4.1-nano-2025-04-14',
+  'gpt-4.1-mini-2025-04-14',
+  'claude-3-5-sonnet-20241022',
+  'claude-3-7-sonnet-20250219',
+  'claude-3-opus-20240229',
+  'claude-3-5-haiku-20241022',
+  'gemini-2.0-flash-001',
+  'gemini-2.5-pro-preview-05-06',
+  'gemini-2.5-flash-preview-04-17',
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-flash-8b-latest',
+  'gemini-1.5-pro-latest',
+  'grok-3',
+  'grok-2-vision-1212',
+  'anthropic/claude-3.5-sonnet',
+  'anthropic/claude-3-opus',
+  'google/gemini-pro-vision',
+  'meta-llama/llama-3.1-8b-instruction',
+  'meta-llama/llama-3.1-405b-instruct',
+] as const
+
+export type MultiModalModel = (typeof multiModalModels)[number]

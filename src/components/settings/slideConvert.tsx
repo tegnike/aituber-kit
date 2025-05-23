@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore, {
   multiModalAIServiceKey,
-  multiModalAIServices,
 } from '@/features/stores/settings'
 import {
   getDefaultModel,
   getSlideConvertModels,
 } from '@/features/constants/aiModels'
+import { isCurrentModelMultiModal } from '@/features/utils/multimodal'
 import { TextButton } from '../textButton'
 
 interface SlideConvertProps {
@@ -43,7 +43,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    if (!multiModalAIServices.includes(aiService)) {
+    // if (!multiModalAIServices.includes(aiService)) {
+    if (!isCurrentModelMultiModal()) {
       alert(t('InvalidAIService'))
       return
     }

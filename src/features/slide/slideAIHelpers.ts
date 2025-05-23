@@ -1,8 +1,8 @@
 import { getVercelAIChatResponse } from '@/features/chat/vercelAIChat'
 import settingsStore, {
   multiModalAIServiceKey,
-  multiModalAIServices,
 } from '@/features/stores/settings'
+import { isCurrentModelMultiModal } from '@/features/utils/multimodal'
 
 export const judgeSlide = async (
   queryText: string,
@@ -12,7 +12,8 @@ export const judgeSlide = async (
   const ss = settingsStore.getState()
   const aiService = ss.selectAIService as multiModalAIServiceKey
 
-  if (!multiModalAIServices.includes(aiService)) {
+  // if (!multiModalAIServices.includes(aiService)) {
+  if (!isCurrentModelMultiModal()) {
     throw new Error('Invalid AI service')
   }
 

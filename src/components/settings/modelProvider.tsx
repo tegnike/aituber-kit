@@ -7,7 +7,7 @@ import { TextButton } from '../textButton'
 import { useCallback } from 'react'
 import Image from 'next/image'
 import { Listbox } from '@headlessui/react'
-import { multiModalAIServices } from '@/features/stores/settings'
+import { multiModalModels } from '@/features/constants/aiModels'
 import {
   AudioModeInputType,
   OpenAITTSVoice,
@@ -138,7 +138,10 @@ const ModelProvider = () => {
       selectAIModel: defaultModels[newService],
     })
 
-    if (!multiModalAIServices.includes(newService as any)) {
+    const newModel = defaultModels[newService]
+    const isMultiModal = multiModalModels.includes(newModel as any)
+
+    if (!isMultiModal) {
       menuStore.setState({ showWebcam: false })
 
       settingsStore.setState({
