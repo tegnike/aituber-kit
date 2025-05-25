@@ -795,7 +795,7 @@ export const fetchUserIdFromCamera = async (
       const updated = shouldUpdate ? updateUserId(userId, callback) : false;
       
       if (updated) {
-        console.log(`人物検出APIからユーザーID「${userId}」を検出しました`)
+        console.log(`人物検出APIからユーザーID「${userId}」を検出しました`, Date.now())
       }
       
       // コールバックが指定されていれば実行
@@ -803,7 +803,7 @@ export const fetchUserIdFromCamera = async (
         callback(userId)
       }
       
-      return userId;
+      return userId
     } else {
       console.warn('人物検出APIからのレスポンスにrecognizednameフィールドがありません:', data);
     }
