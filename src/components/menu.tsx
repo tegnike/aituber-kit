@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore, {
-  multiModalAIServiceKey,
-} from '@/features/stores/settings'
+import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
@@ -14,7 +12,7 @@ import Settings from './settings'
 import { Webcam } from './webcam'
 import Slides from './slides'
 import Capture from './capture'
-import { multiModalAIServices } from '@/features/stores/settings'
+import { isMultiModalModel } from '@/features/constants/aiModels'
 
 // モバイルデバイス検出用のカスタムフック
 const useIsMobile = () => {
@@ -230,8 +228,9 @@ export const Menu = () => {
                 )}
               </div>
               {!youtubeMode &&
-                multiModalAIServices.includes(
-                  selectAIService as multiModalAIServiceKey
+                isMultiModalModel(
+                  selectAIService,
+                  settingsStore.getState().selectAIModel
                 ) && (
                   <>
                     <div className="order-3">

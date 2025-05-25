@@ -12,6 +12,15 @@ export const aiModels: Record<AIService, string[]> = {
     'gpt-4.1-nano-2025-04-14',
     'gpt-4.1-mini-2025-04-14',
     'gpt-4.1-2025-04-14',
+    'gpt-4o-audio-preview-2024-10-01',
+    'gpt-4o-audio-preview-2024-12-17',
+    'gpt-4o-mini-audio-preview-2024-12-17',
+    'gpt-4o-realtime-preview-2024-10-01',
+    'gpt-4o-realtime-preview-2024-12-17',
+    'gpt-4o-mini-realtime-preview-2024-12-17',
+    'gpt-4o-transcribe',
+    'gpt-4o-mini-transcribe',
+    'gpt-4o-mini-tts',
   ],
   anthropic: [
     'claude-3-opus-20240229',
@@ -28,7 +37,7 @@ export const aiModels: Record<AIService, string[]> = {
     'gemini-1.5-flash-8b-latest',
     'gemini-1.5-pro-latest',
   ],
-  azure: [],
+  azure: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-vision'],
   xai: [
     'grok-3',
     'grok-3-fast',
@@ -40,8 +49,11 @@ export const aiModels: Record<AIService, string[]> = {
   ],
   groq: [
     'gemma2-9b-it',
-    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'llama-3.1-70b-versatile',
+    'llama-3.1-405b',
     'llama3-8b-8192',
+    'llama3-70b-8192',
     'mixtral-8x7b-32768',
   ],
   cohere: [
@@ -52,26 +64,55 @@ export const aiModels: Record<AIService, string[]> = {
     'command-r-08-2024',
     'command-r-plus',
     'command-r-plus-08-2024',
+    'aya-23-8k',
   ],
   mistralai: [
     'mistral-large-latest',
+    'pixtral-large-latest',
+    'mistral-medium-latest',
+    'mistral-small-latest',
     'open-mistral-nemo',
     'codestral-latest',
     'mistral-embed',
+    'pixtral-12b-2409',
   ],
   perplexity: [
     'llama-3-sonar-large-32k-online',
     'sonar-small-online',
     'sonar-medium-online',
     'sonar-large-online',
+    'sonar-small-chat',
+    'sonar-medium-chat',
+    'sonar-large-chat',
   ],
   fireworks: [
     'accounts/fireworks/models/firefunction-v2',
     'accounts/fireworks/models/llama-v3-8b',
     'accounts/fireworks/models/llama-v3-70b',
+    'accounts/fireworks/models/yi-vl-34b-chat',
+    'accounts/fireworks/models/llava-v1.6-34b-chat',
   ],
-  deepseek: ['deepseek-chat', 'deepseek-coder', 'deepseek-reasoner'],
-  openrouter: [],
+  deepseek: [
+    'deepseek-chat',
+    'deepseek-coder',
+    'deepseek-reasoner',
+    'deepseek-vl',
+  ],
+  openrouter: [
+    'anthropic/claude-3-opus',
+    'anthropic/claude-3-sonnet',
+    'anthropic/claude-3-haiku',
+    'google/gemini-pro',
+    'google/gemini-1.5-pro',
+    'meta-llama/llama-3-70b-instruct',
+    'meta-llama/llama-3-8b-instruct',
+    'mistralai/mistral-large',
+    'mistralai/mistral-medium',
+    'mistralai/mistral-small',
+    'perplexity/sonar-small-chat',
+    'perplexity/sonar-medium-chat',
+    'perplexity/sonar-large-chat',
+  ],
   lmstudio: [],
   ollama: [],
   dify: [],
@@ -233,6 +274,81 @@ export const openAITTSModels = ['tts-1', 'tts-1-hd', 'gpt-4o-mini-tts'] as const
  */
 export function getOpenAITTSModels(): string[] {
   return [...openAITTSModels]
+}
+
+/**
+ * マルチモーダル対応モデル一覧
+ */
+export const multiModalModels: Record<AIService, string[]> = {
+  openai: [
+    'chatgpt-4o-latest',
+    'gpt-4o-mini-2024-07-18',
+    'gpt-4o-2024-11-20',
+    'gpt-4.5-preview-2025-02-27',
+    'gpt-4.1-nano-2025-04-14',
+    'gpt-4.1-mini-2025-04-14',
+    'gpt-4.1-2025-04-14',
+  ],
+  anthropic: [
+    'claude-3-opus-20240229',
+    'claude-3-7-sonnet-20250219',
+    'claude-3-5-sonnet-20241022',
+    'claude-3-5-haiku-20241022',
+  ],
+  google: [
+    'gemini-2.5-pro-preview-05-06',
+    'gemini-2.5-flash-preview-04-17',
+    'gemini-2.5-pro-exp-03-25',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash-latest',
+    'gemini-1.5-flash-8b-latest',
+    'gemini-1.5-pro-latest',
+  ],
+  azure: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-vision'],
+  xai: ['grok-2-vision-1212'],
+  groq: [],
+  cohere: ['aya-23-8k'],
+  mistralai: [
+    'pixtral-large-latest',
+    'mistral-medium-latest',
+    'pixtral-12b-2409',
+  ],
+  perplexity: [
+    'sonar-small-online',
+    'sonar-medium-online',
+    'sonar-small-chat',
+    'sonar-medium-chat',
+    'sonar-large-chat',
+  ],
+  fireworks: [
+    'accounts/fireworks/models/yi-vl-34b-chat',
+    'accounts/fireworks/models/llava-v1.6-34b-chat',
+  ],
+  deepseek: ['deepseek-vl'],
+  openrouter: [
+    'anthropic/claude-3-opus',
+    'anthropic/claude-3-sonnet',
+    'anthropic/claude-3-haiku',
+    'google/gemini-pro',
+    'google/gemini-1.5-pro',
+    'perplexity/sonar-small-chat',
+    'perplexity/sonar-medium-chat',
+    'perplexity/sonar-large-chat',
+  ],
+  lmstudio: [],
+  ollama: [],
+  dify: [],
+  'custom-api': [],
+}
+
+/**
+ * モデルがマルチモーダル対応かどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @returns マルチモーダル対応の場合はtrue
+ */
+export function isMultiModalModel(service: AIService, model: string): boolean {
+  return multiModalModels[service]?.includes(model) || false
 }
 
 export const googleSearchGroundingModels = [

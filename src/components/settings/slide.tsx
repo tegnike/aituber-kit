@@ -2,10 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link' // Link をインポート
-import settingsStore, {
-  multiModalAIServices,
-  multiModalAIServiceKey,
-} from '@/features/stores/settings'
+import settingsStore from '@/features/stores/settings'
+import { isMultiModalModel } from '@/features/constants/aiModels'
 import menuStore from '@/features/stores/menu'
 import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
@@ -73,8 +71,9 @@ const Slide = () => {
         <TextButton
           onClick={toggleSlideMode}
           disabled={
-            !multiModalAIServices.includes(
-              selectAIService as multiModalAIServiceKey
+            !isMultiModalModel(
+              selectAIService,
+              settingsStore.getState().selectAIModel
             )
           }
         >
@@ -126,8 +125,9 @@ const Slide = () => {
               </Link>
             )}
           </div>
-          {multiModalAIServices.includes(
-            selectAIService as multiModalAIServiceKey
+          {isMultiModalModel(
+            selectAIService,
+            settingsStore.getState().selectAIModel
           ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
         </>
       )}

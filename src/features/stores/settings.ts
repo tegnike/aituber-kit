@@ -23,6 +23,13 @@ export const multiModalAIServices = [
   'anthropic',
   'google',
   'azure',
+  'xai',
+  'cohere',
+  'mistralai',
+  'perplexity',
+  'fireworks',
+  'deepseek',
+  'openrouter',
 ] as const
 export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
 

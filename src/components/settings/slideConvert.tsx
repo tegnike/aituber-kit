@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import settingsStore, {
-  multiModalAIServiceKey,
-  multiModalAIServices,
-} from '@/features/stores/settings'
+import settingsStore from '@/features/stores/settings'
 import {
   getDefaultModel,
   getSlideConvertModels,
+  isMultiModalModel,
 } from '@/features/constants/aiModels'
 import { TextButton } from '../textButton'
 
@@ -18,8 +16,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const { t } = useTranslation()
   const [file, setFile] = useState<File | null>(null)
   const [folderName, setFolderName] = useState<string>('')
-  const aiService = settingsStore.getState()
-    .selectAIService as multiModalAIServiceKey
+  const aiService = settingsStore.getState().selectAIService
 
   const [model, setModel] = useState<string>('')
 
@@ -43,13 +40,28 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    if (!multiModalAIServices.includes(aiService)) {
+    const currentModel = settingsStore.getState().selectAIModel
+    if (!isMultiModalModel(aiService, currentModel)) {
       alert(t('InvalidAIService'))
       return
     }
 
-    const apiKeyName = `${aiService}Key` as const
-    const apiKey = settingsStore.getState()[apiKeyName]
+    let apiKey = ''
+    const settings = settingsStore.getState()
+
+    if (aiService === 'openai') apiKey = settings.openaiKey
+    else if (aiService === 'anthropic') apiKey = settings.anthropicKey
+    else if (aiService === 'google') apiKey = settings.googleKey
+    else if (aiService === 'azure') apiKey = settings.azureKey
+    else if (aiService === 'xai') apiKey = settings.xaiKey
+    else if (aiService === 'groq') apiKey = settings.groqKey
+    else if (aiService === 'cohere') apiKey = settings.cohereKey
+    else if (aiService === 'mistralai') apiKey = settings.mistralaiKey
+    else if (aiService === 'perplexity') apiKey = settings.perplexityKey
+    else if (aiService === 'fireworks') apiKey = settings.fireworksKey
+    else if (aiService === 'deepseek') apiKey = settings.deepseekKey
+    else if (aiService === 'openrouter') apiKey = settings.openrouterKey
+    else if (aiService === 'dify') apiKey = settings.difyKey
 
     if (!file || !folderName || !apiKey || !model) {
       alert(t('PdfConvertSubmitError'))
