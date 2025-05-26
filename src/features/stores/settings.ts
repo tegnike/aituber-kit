@@ -18,27 +18,8 @@ import {
 } from '../constants/settings'
 import { googleSearchGroundingModels } from '../constants/aiModels'
 
-export const multiModalAIServices = [
-  'openai',
-  'anthropic',
-  'google',
-  'azure',
-  'xai',
-  'cohere',
-  'mistralai',
-  'perplexity',
-  'fireworks',
-  'deepseek',
-  'openrouter',
-] as const
-export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
-
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]
-
-type multiModalAPIKeys = {
-  [K in multiModalAIServiceKey as `${K}Key`]: string
-}
 
 interface APIKeys {
   openaiKey: string
@@ -199,7 +180,6 @@ interface ModelType {
 }
 
 export type SettingsState = APIKeys &
-  multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &

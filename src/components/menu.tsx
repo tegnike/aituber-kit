@@ -16,7 +16,7 @@ import { isMultiModalModel } from '@/features/constants/aiModels'
 
 // モバイルデバイス検出用のカスタムフック
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
 
   useEffect(() => {
     // モバイルデバイス検出用の関数
@@ -38,6 +38,7 @@ const useIsMobile = () => {
 
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
   const slideMode = settingsStore((s) => s.slideMode)
@@ -184,7 +185,7 @@ export const Menu = () => {
   return (
     <>
       {/* ロングタップ用の透明な領域（モバイルでコントロールパネルが非表示の場合） */}
-      {isMobile && !showControlPanel && (
+      {isMobile === true && !showControlPanel && (
         <div
           className="absolute top-0 left-0 z-30 w-20 h-20"
           onTouchStart={handleTouchStart}
@@ -230,7 +231,7 @@ export const Menu = () => {
               {!youtubeMode &&
                 isMultiModalModel(
                   selectAIService,
-                  settingsStore.getState().selectAIModel
+                  selectAIModel
                 ) && (
                   <>
                     <div className="order-3">

@@ -14,6 +14,7 @@ const YouTube = () => {
   const youtubeLiveId = settingsStore((s) => s.youtubeLiveId)
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
 
   const conversationContinuityMode = settingsStore(
     (s) => s.conversationContinuityMode
@@ -115,7 +116,7 @@ const YouTube = () => {
                     disabled={
                       !isMultiModalModel(
                         selectAIService,
-                        settingsStore.getState().selectAIModel
+                        selectAIModel
                       ) ||
                       slideMode ||
                       externalLinkageMode

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import {
   getDefaultModel,
-  getSlideConvertModels,
+  getMultiModalModels,
   isMultiModalModel,
 } from '@/features/constants/aiModels'
 import { TextButton } from '../textButton'
@@ -16,7 +16,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const { t } = useTranslation()
   const [file, setFile] = useState<File | null>(null)
   const [folderName, setFolderName] = useState<string>('')
-  const aiService = settingsStore.getState().selectAIService
+  const aiService = settingsStore((s) => s.selectAIService)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
 
   const [model, setModel] = useState<string>('')
 
@@ -26,7 +27,6 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   }, [aiService])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const selectLanguage = settingsStore.getState().selectLanguage
   const [selectedFileName, setSelectedFileName] = useState<string>('')
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,7 +139,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
         >
           {aiService &&
-            getSlideConvertModels(aiService).map((model) => (
+            getMultiModalModels(aiService).map((model) => (
               <option key={model} value={model}>
                 {model}
               </option>

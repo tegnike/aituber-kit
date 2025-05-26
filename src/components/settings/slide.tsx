@@ -12,6 +12,7 @@ import SlideConvert from './slideConvert'
 const Slide = () => {
   const { t } = useTranslation()
   const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
 
   const slideMode = settingsStore((s) => s.slideMode)
 
@@ -73,7 +74,7 @@ const Slide = () => {
           disabled={
             !isMultiModalModel(
               selectAIService,
-              settingsStore.getState().selectAIModel
+              selectAIModel
             )
           }
         >
@@ -127,7 +128,7 @@ const Slide = () => {
           </div>
           {isMultiModalModel(
             selectAIService,
-            settingsStore.getState().selectAIModel
+            selectAIModel
           ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
         </>
       )}

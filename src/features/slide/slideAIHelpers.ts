@@ -1,8 +1,6 @@
 import { getVercelAIChatResponse } from '@/features/chat/vercelAIChat'
-import settingsStore, {
-  multiModalAIServiceKey,
-  multiModalAIServices,
-} from '@/features/stores/settings'
+import settingsStore from '@/features/stores/settings'
+import { isMultiModalModel } from '@/features/constants/aiModels'
 
 export const judgeSlide = async (
   queryText: string,
@@ -10,10 +8,12 @@ export const judgeSlide = async (
   supplement: string
 ): Promise<string> => {
   const ss = settingsStore.getState()
-  const aiService = ss.selectAIService as multiModalAIServiceKey
+  const aiService = ss.selectAIService
+  const aiModel = ss.selectAIModel
 
-  if (!multiModalAIServices.includes(aiService)) {
-    throw new Error('Invalid AI service')
+  // 現在選択されているモデルがマルチモーダル対応かチェック
+  if (!isMultiModalModel(aiService, aiModel)) {
+    throw new Error('Selected model does not support multimodal features')
   }
 
   const apiKeyName = `${aiService}Key` as const
