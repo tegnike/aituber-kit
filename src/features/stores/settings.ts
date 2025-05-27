@@ -17,7 +17,7 @@ import {
   WhisperTranscriptionModel,
 } from '../constants/settings'
 import { googleSearchGroundingModels } from '../constants/aiModels'
-import { migrateOpenAIModelName } from '@/utils/migrateStore'
+import { migrateOpenAIModelName } from '@/utils/modelMigration'
 
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]

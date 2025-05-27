@@ -3,7 +3,7 @@ import {
   asyncConvertEnglishToJapaneseReading,
   containsEnglish,
 } from '../../../src/utils/textProcessing'
-import { migrateOpenAIModelName } from '../../../src/utils/migrateStore'
+import { migrateOpenAIModelName } from '../../../src/utils/modelMigration'
 
 jest.mock('../../../src/utils/englishToJapanese.json', () => ({
   hello: 'ハロー',
