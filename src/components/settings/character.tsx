@@ -147,7 +147,7 @@ const Live2DSettingsForm = () => {
     if (Object.keys(updates).length > 0) {
       settingsStore.setState(updates)
     }
-  }, [store])
+  }, [])
 
   const handleEmotionChange = (
     key: EmotionFieldKey,
