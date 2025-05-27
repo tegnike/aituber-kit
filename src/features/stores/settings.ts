@@ -17,6 +17,7 @@ import {
   WhisperTranscriptionModel,
 } from '../constants/settings'
 import { googleSearchGroundingModels } from '../constants/aiModels'
+import { migrateOpenAIModelName } from '@/utils/migrateStore'
 
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]
@@ -221,7 +222,9 @@ const settingsStore = create<SettingsState>()(
       // Model Provider
       selectAIService:
         (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai',
-      selectAIModel: process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4',
+      selectAIModel: migrateOpenAIModelName(
+        process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4'
+      ),
       localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
       selectVoice:
         (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
@@ -447,6 +450,19 @@ const settingsStore = create<SettingsState>()(
     }),
     {
       name: 'aitube-kit-settings',
+      onRehydrateStorage: () => (state) => {
+        // Migrate OpenAI model names when loading from storage
+        if (
+          state &&
+          state.selectAIService === 'openai' &&
+          state.selectAIModel
+        ) {
+          const migratedModel = migrateOpenAIModelName(state.selectAIModel)
+          if (migratedModel !== state.selectAIModel) {
+            state.selectAIModel = migratedModel
+          }
+        }
+      },
       partialize: (state) => ({
         openaiKey: state.openaiKey,
         anthropicKey: state.anthropicKey,
