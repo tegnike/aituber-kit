@@ -35,6 +35,8 @@ interface APIKeys {
   fireworksKey: string
   deepseekKey: string
   openrouterKey: string
+  lmstudioKey: string
+  ollamaKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -209,6 +211,8 @@ const settingsStore = create<SettingsState>()(
       difyKey: '',
       deepseekKey: '',
       openrouterKey: '',
+      lmstudioKey: '',
+      ollamaKey: '',
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
@@ -457,6 +461,8 @@ const settingsStore = create<SettingsState>()(
         difyKey: state.difyKey,
         deepseekKey: state.deepseekKey,
         openrouterKey: state.openrouterKey,
+        lmstudioKey: state.lmstudioKey,
+        ollamaKey: state.ollamaKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,

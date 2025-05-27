@@ -13,6 +13,7 @@ import { Webcam } from './webcam'
 import Slides from './slides'
 import Capture from './capture'
 import { isMultiModalModel } from '@/features/constants/aiModels'
+import { AIService } from '@/features/constants/settings'
 
 // モバイルデバイス検出用のカスタムフック
 const useIsMobile = () => {
@@ -230,7 +231,7 @@ export const Menu = () => {
               </div>
               {!youtubeMode &&
                 isMultiModalModel(
-                  selectAIService,
+                  selectAIService as AIService,
                   selectAIModel
                 ) && (
                   <>

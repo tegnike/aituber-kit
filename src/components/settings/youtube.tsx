@@ -114,10 +114,7 @@ const YouTube = () => {
                       })
                     }
                     disabled={
-                      !isMultiModalModel(
-                        selectAIService,
-                        selectAIModel
-                      ) ||
+                      !isMultiModalModel(selectAIService, selectAIModel) ||
                       slideMode ||
                       externalLinkageMode
                     }
