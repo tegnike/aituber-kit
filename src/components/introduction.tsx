@@ -14,6 +14,7 @@ export const Introduction = () => {
 
   const [displayIntroduction, setDisplayIntroduction] = useState(false)
   const [opened, setOpened] = useState(true)
+  const [dontShowAgain, setDontShowAgain] = useState(false)
 
   const { t } = useTranslation()
 
@@ -31,6 +32,18 @@ export const Introduction = () => {
     })
   }
 
+  const handleClose = () => {
+    setOpened(false)
+    updateLanguage()
+
+    // Only update showIntroduction if "don't show again" is checked
+    if (dontShowAgain) {
+      homeStore.setState({
+        showIntroduction: false,
+      })
+    }
+  }
+
   return displayIntroduction && opened ? (
     <div className="absolute z-40 w-full h-full px-6 py-10 bg-black/30 font-M_PLUS_2">
       <div className="relative mx-auto my-auto max-w-3xl max-h-full p-6 overflow-y-auto bg-white rounded-2xl">
@@ -38,10 +51,7 @@ export const Introduction = () => {
           <IconButton
             iconName="24/Close"
             isProcessing={false}
-            onClick={() => {
-              setOpened(false)
-              updateLanguage()
-            }}
+            onClick={handleClose}
             className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
           ></IconButton>
         </div>
@@ -112,12 +122,9 @@ export const Introduction = () => {
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={showIntroduction}
+              checked={dontShowAgain}
               onChange={(e) => {
-                homeStore.setState({
-                  showIntroduction: e.target.checked,
-                })
-                updateLanguage()
+                setDontShowAgain(e.target.checked)
               }}
               className="mr-2"
             />
@@ -127,10 +134,7 @@ export const Introduction = () => {
 
         <div className="my-6">
           <button
-            onClick={() => {
-              setOpened(false)
-              updateLanguage()
-            }}
+            onClick={handleClose}
             className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-6 py-2 rounded-full"
           >
             {t('Close')}
