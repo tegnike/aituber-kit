@@ -112,10 +112,10 @@ export const Introduction = () => {
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={showIntroduction}
+              checked={!showIntroduction}
               onChange={(e) => {
                 homeStore.setState({
-                  showIntroduction: e.target.checked,
+                  showIntroduction: !e.target.checked,
                 })
                 updateLanguage()
               }}
