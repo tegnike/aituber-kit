@@ -303,7 +303,7 @@
     "FileRequirements": "ファイル要件：",
     "RequirementFileName": "ファイル名に「live2dcubismcore」を含む",
     "RequirementExtension": "拡張子：.js",
-    "RequirementSize": "ファイルサイズ：100KB ～ 5MB",
+    "RequirementSize": "ファイルサイズ：100KB ～ 10MB",
     "DownloadInstructions": "<downloadLink>Live2D公式サイト</downloadLink>からCubism SDK for Webをダウンロードしてください",
     "ExtractDescription": "<code>live2dcubismcore.min.js</code> ファイルを抽出してアップロードしてください"
   },
