@@ -9,7 +9,6 @@ import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
 import { IconButton } from '../iconButton'
 import { live2dStorage, validateCubismCoreFile } from '@/lib/indexedDB'
-import { Link } from '../link'
 
 // Character型の定義
 type Character = Pick<
