@@ -49,10 +49,24 @@ export default function Live2DViewer() {
   )
   const MAX_RETRIES = 3
 
+  // useRefで最新値を追跡
+  const blobURLRef = useRef<string | null>(null)
+  const loadedScriptRef = useRef<HTMLScriptElement | null>(null)
+
+  // 値が変更された時にrefも更新
+  useEffect(() => {
+    blobURLRef.current = blobURL
+  }, [blobURL])
+
+  useEffect(() => {
+    loadedScriptRef.current = loadedScript
+  }, [loadedScript])
+
   const isCubismCoreLoaded = homeStore((s) => s.isCubismCoreLoaded)
   const setIsCubismCoreLoaded = homeStore((s) => s.setIsCubismCoreLoaded)
   const isLive2dLoaded = homeStore((s) => s.isLive2dLoaded)
   const setIsLive2dLoaded = homeStore((s) => s.setIsLive2dLoaded)
+  const setLive2dVisible = homeStore((s) => s.setLive2dVisible)
 
   // スクリプトの再読み込み処理
   const retryLoadScript = (scriptName: 'cubismcore' | 'live2d') => {
@@ -69,12 +83,10 @@ export default function Live2DViewer() {
   // publicフォルダのファイル存在確認
   const checkPublicFile = useCallback(async (): Promise<boolean> => {
     try {
-      console.log('Checking public file existence...')
       const response = await fetch('/scripts/live2dcubismcore.min.js', {
         method: 'HEAD',
       })
       const exists = response.ok
-      console.log('Public file exists:', exists)
       return exists
     } catch (error) {
       console.error('Error checking public file:', error)
@@ -93,43 +105,40 @@ export default function Live2DViewer() {
           const url = live2dStorage.createBlobURL(coreFile.fileContent)
           setBlobURL(url)
           setLoadingMethod('indexeddb')
+          setLive2dVisible(true)
           return true
         }
       }
 
       // IndexedDBにファイルがない場合、publicフォルダをチェック
-      console.log('IndexedDB file not found, checking public folder...')
       const publicFileExists = await checkPublicFile()
       if (publicFileExists) {
-        console.log('Using public folder file')
         setLoadingMethod('public')
+        setLive2dVisible(true)
         return false
       } else {
         // どちらにもファイルがない場合、即座にエラー表示
-        console.log('No Core file found in IndexedDB or public folder')
         setLoadingMethod('failed')
+        setLive2dVisible(false)
         setShowErrorMessage(true)
         return false
       }
     } catch (error) {
       console.error('Error checking IndexedDB:', error)
       // エラーが発生した場合、publicフォルダをチェック
-      console.log(
-        'IndexedDB error occurred, fallback to public folder check...'
-      )
       const publicFileExists = await checkPublicFile()
       if (publicFileExists) {
-        console.log('Using public folder file as fallback')
         setLoadingMethod('public')
+        setLive2dVisible(true)
         return false
       } else {
-        console.log('No fallback file available')
         setLoadingMethod('failed')
+        setLive2dVisible(false)
         setShowErrorMessage(true)
         return false
       }
     }
-  }, [checkPublicFile])
+  }, [checkPublicFile, setLive2dVisible])
 
   // 動的スクリプト実行
   const loadScriptFromBlob = useCallback(
@@ -205,14 +214,14 @@ export default function Live2DViewer() {
   // クリーンアップ - リソースとスクリプトの削除
   useEffect(() => {
     return () => {
-      if (blobURL) {
-        URL.revokeObjectURL(blobURL)
+      if (blobURLRef.current) {
+        live2dStorage.revokeBlobURL(blobURLRef.current)
       }
-      if (loadedScript && loadedScript.parentNode) {
-        loadedScript.parentNode.removeChild(loadedScript)
+      if (loadedScriptRef.current && loadedScriptRef.current.parentNode) {
+        loadedScriptRef.current.parentNode.removeChild(loadedScriptRef.current)
       }
     }
-  }, [blobURL, loadedScript])
+  }, [])
 
   if (!isMounted) {
     console.log('Live2DViewer not mounted yet')
@@ -314,6 +323,7 @@ export default function Live2DViewer() {
             } else {
               console.error('Max retries reached for cubismcore')
               setLoadingMethod('failed')
+              setLive2dVisible(false)
               setShowErrorMessage(true)
             }
           }}

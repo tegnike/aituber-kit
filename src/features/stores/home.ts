@@ -32,6 +32,8 @@ export interface TransientState {
   setIsCubismCoreLoaded: (loaded: boolean) => void
   isLive2dLoaded: boolean
   setIsLive2dLoaded: (loaded: boolean) => void
+  live2dVisible: boolean
+  setLive2dVisible: (visible: boolean) => void
   isSpeaking: boolean
 }
 
@@ -133,6 +135,8 @@ const homeStore = create<HomeState>()(
         set(() => ({ isCubismCoreLoaded: loaded })),
       isLive2dLoaded: false,
       setIsLive2dLoaded: (loaded) => set(() => ({ isLive2dLoaded: loaded })),
+      live2dVisible: false,
+      setLive2dVisible: (visible) => set(() => ({ live2dVisible: visible })),
       isSpeaking: false,
     }),
     {

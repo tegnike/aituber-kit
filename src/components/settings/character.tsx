@@ -357,6 +357,9 @@ const Live2DCubismCoreManager = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
 
+  // Live2D表示状態を管理
+  const setLive2dVisible = homeStore((s) => s.setLive2dVisible)
+
   useEffect(() => {
     const loadStoredFile = async () => {
       try {
@@ -368,11 +371,14 @@ const Live2DCubismCoreManager = () => {
             fileSize: coreFile.fileSize,
             uploadDate: coreFile.uploadDate,
           })
+          setLive2dVisible(true)
         } else {
           setStoredFile(null)
+          setLive2dVisible(false)
         }
       } catch (error) {
         console.error('Failed to load stored file info:', error)
+        setLive2dVisible(false)
       } finally {
         setIsLoading(false)
       }
@@ -403,6 +409,7 @@ const Live2DCubismCoreManager = () => {
           uploadDate: coreFile.uploadDate,
         })
         setUploadSuccess(true)
+        setLive2dVisible(true)
         setTimeout(() => setUploadSuccess(false), 3000)
       }
     } catch (error) {
@@ -417,6 +424,7 @@ const Live2DCubismCoreManager = () => {
     try {
       await live2dStorage.deleteCoreFile()
       setStoredFile(null)
+      setLive2dVisible(false)
     } catch (error) {
       console.error('Failed to delete file:', error)
     }
@@ -626,6 +634,9 @@ const Character = () => {
   >([])
   const selectAIService = settingsStore((s) => s.selectAIService)
   const systemPrompt = settingsStore((s) => s.systemPrompt)
+
+  const setLive2dVisible = homeStore((s) => s.setLive2dVisible)
+
   const characterPresets = [
     {
       key: 'characterPreset1',
@@ -695,6 +706,34 @@ const Character = () => {
       })
   }, [])
 
+  // モデルタイプに応じた初期表示状態の設定
+  useEffect(() => {
+    const initializeLive2DVisibility = async () => {
+      if (modelType === 'live2d') {
+        try {
+          const hasFile = await live2dStorage.hasCoreFile()
+          if (hasFile) {
+            setLive2dVisible(true)
+          } else {
+            // ファイルがない場合はpublicフォルダをチェック
+            const response = await fetch('/scripts/live2dcubismcore.min.js', {
+              method: 'HEAD',
+            })
+            setLive2dVisible(response.ok)
+          }
+        } catch (error) {
+          console.error('Error checking Live2D file availability:', error)
+          setLive2dVisible(false)
+        }
+      } else {
+        // VRMモードの場合はLive2Dを非表示
+        setLive2dVisible(false)
+      }
+    }
+
+    initializeLive2DVisibility()
+  }, [modelType, setLive2dVisible])
+
   const handleVrmUpload = async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
@@ -756,7 +795,11 @@ const Character = () => {
                 ? 'bg-primary text-white'
                 : 'bg-white hover:bg-white-hover'
             }`}
-            onClick={() => settingsStore.setState({ modelType: 'vrm' })}
+            onClick={() => {
+              settingsStore.setState({ modelType: 'vrm' })
+              // VRMモードに切り替え時はLive2Dを非表示
+              setLive2dVisible(false)
+            }}
           >
             VRM
           </button>
@@ -766,7 +809,28 @@ const Character = () => {
                 ? 'bg-primary text-white'
                 : 'bg-white hover:bg-white-hover'
             }`}
-            onClick={() => settingsStore.setState({ modelType: 'live2d' })}
+            onClick={async () => {
+              settingsStore.setState({ modelType: 'live2d' })
+              // Live2Dモードに切り替え時はファイルの存在確認をしてから表示状態を決定
+              try {
+                const hasFile = await live2dStorage.hasCoreFile()
+                if (hasFile) {
+                  setLive2dVisible(true)
+                } else {
+                  // ファイルがない場合はpublicフォルダをチェック
+                  const response = await fetch(
+                    '/scripts/live2dcubismcore.min.js',
+                    {
+                      method: 'HEAD',
+                    }
+                  )
+                  setLive2dVisible(response.ok)
+                }
+              } catch (error) {
+                console.error('Error checking Live2D file availability:', error)
+                setLive2dVisible(false)
+              }
+            }}
           >
             Live2D
           </button>

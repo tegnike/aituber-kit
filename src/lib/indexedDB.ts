@@ -19,6 +19,7 @@ const CORE_FILE_ID = 'cubism-core'
 class Live2DStorage {
   private db: IDBDatabase | null = null
   private initPromise: Promise<void> | null = null
+  private activeBlobURLs: Set<string> = new Set()
 
   async init(): Promise<void> {
     if (this.initPromise) {
@@ -134,10 +135,29 @@ class Live2DStorage {
 
   createBlobURL(arrayBuffer: ArrayBuffer): string {
     const blob = new Blob([arrayBuffer], { type: 'application/javascript' })
-    return URL.createObjectURL(blob)
+    const url = URL.createObjectURL(blob)
+    this.activeBlobURLs.add(url)
+    return url
+  }
+
+  revokeBlobURL(url: string): void {
+    if (this.activeBlobURLs.has(url)) {
+      URL.revokeObjectURL(url)
+      this.activeBlobURLs.delete(url)
+    }
+  }
+
+  revokeAllBlobURLs(): void {
+    this.activeBlobURLs.forEach((url) => {
+      URL.revokeObjectURL(url)
+    })
+    this.activeBlobURLs.clear()
   }
 
   cleanup(): void {
+    // すべてのBlobURLを削除
+    this.revokeAllBlobURLs()
+
     if (this.db) {
       this.db.close()
       this.db = null
@@ -175,7 +195,7 @@ export const validateCubismCoreFile = (
   }
 
   if (file.size > 10000000) {
-    return { isValid: false, error: 'ファイルサイズが大きすぎます（最大5MB）' }
+    return { isValid: false, error: 'ファイルサイズが大きすぎます（最大10MB）' }
   }
 
   // MIMEタイプチェック
