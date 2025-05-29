@@ -35,7 +35,7 @@ Live2Dは開発用SDKとしてCubismというライブラリが提供されて�
 
 ### Cubism Coreのセットアップ
 
-Live2D機能を利用する場合、以下のファイルを `public/scripts` に設置するか、設定画面からアップロードしてください：
+Live2D機能を利用する場合、以下のファイルを `public/scripts` に設置してください：
 
 `live2dcubismcore.min.js`（Cubism 4/5用）
 

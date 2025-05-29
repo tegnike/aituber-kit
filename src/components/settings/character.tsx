@@ -534,9 +534,7 @@ const Live2DCubismCoreManager = () => {
 
       {/* ファイルアップロード領域 */}
       <div className="space-y-2">
-        <div className="text-base font-bold">
-          {t('Live2D.Settings.FileTitle')}
-        </div>
+        <div className="text-base font-bold">{t('Live2D.FileTitle')}</div>
         <div
           className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
             isDragOver
