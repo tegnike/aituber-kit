@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import Script from 'next/script'
 import homeStore from '@/features/stores/home'
 import { live2dStorage } from '@/lib/indexedDB'
 import { IconButton } from './iconButton'
+import { Link } from './link'
 
 const Live2DComponent = dynamic(
   () => {
@@ -156,7 +157,6 @@ export default function Live2DViewer() {
 
           const onLoad = () => {
             cleanup()
-            console.log('Cubism Core loaded from IndexedDB')
             setIsCubismCoreLoaded(true)
             setLoadedScript(script)
             resolve()
@@ -233,42 +233,52 @@ export default function Live2DViewer() {
           </div>
           <div className="mb-6">
             <div className="mb-2 font-bold text-xl text-secondary">
-              Live2D Cubism Core が見つかりません
+              {t('Live2D.CubismCoreNotFound')}
             </div>
-            <div>Live2D機能を使用するには、Cubism Coreファイルが必要です。</div>
+            <Trans
+              i18nKey="Live2D.CubismCoreDescription"
+              components={{
+                code: (
+                  <code className="bg-gray-100 px-1 rounded mt-1 inline-block" />
+                ),
+              }}
+            />
           </div>
 
           <div className="my-6">
             <div className="my-2 font-bold text-xl text-secondary">
-              対処方法
+              {t('Live2D.Solutions')}
             </div>
             <ol className="list-decimal list-inside mt-2 space-y-2">
-              <li>設定画面からファイルをアップロード</li>
+              <li>{t('Live2D.SolutionUpload')}</li>
               <li>
-                または、
-                <code className="bg-gray-100 px-1 rounded">
-                  public/scripts/live2dcubismcore.min.js
-                </code>{' '}
-                に配置
+                <Trans
+                  i18nKey="Live2D.SolutionManualText"
+                  components={{
+                    code: (
+                      <code className="bg-gray-100 px-1 rounded mt-1 inline-block" />
+                    ),
+                  }}
+                />
               </li>
             </ol>
           </div>
 
           <div className="my-6">
             <div className="my-2 font-bold text-xl text-secondary">
-              ファイルの取得方法
+              {t('Live2D.FileSource')}
             </div>
-            <div>
-              <a
-                href="https://www.live2d.com/sdk/download/web/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                Live2D公式サイト
-              </a>
-              からSDKをダウンロードしてください
-            </div>
+            <Trans
+              i18nKey="Live2D.FileSourceDescription"
+              components={{
+                downloadLink: (
+                  <Link
+                    url="https://www.live2d.com/sdk/download/web/"
+                    label={t('Live2D.OfficialSiteLink')}
+                  />
+                ),
+              }}
+            />
           </div>
 
           <div className="my-6">

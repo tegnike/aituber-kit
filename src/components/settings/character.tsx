@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import Image from 'next/image'
 
 import homeStore from '@/features/stores/home'
@@ -9,6 +9,7 @@ import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
 import { IconButton } from '../iconButton'
 import { live2dStorage, validateCubismCoreFile } from '@/lib/indexedDB'
+import { Link } from '../link'
 
 // Character型の定義
 type Character = Pick<
@@ -349,17 +350,52 @@ interface StoredFileInfo {
 
 // Live2D Cubism Core管理コンポーネント
 const Live2DCubismCoreManager = () => {
-  const [isDragOver, setIsDragOver] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadError, setUploadError] = useState<string | null>(null)
-  const [uploadSuccess, setUploadSuccess] = useState(false)
+  const { t } = useTranslation()
   const [storedFile, setStoredFile] = useState<StoredFileInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string>('')
+  const [uploadSuccess, setUploadSuccess] = useState(false)
+  const [isDragOver, setIsDragOver] = useState(false)
 
-  // ページ読み込み時に保存されているファイル情報を取得
-  const checkStoredFile = useCallback(async () => {
+  useEffect(() => {
+    const loadStoredFile = async () => {
+      try {
+        setIsLoading(true)
+        const coreFile = await live2dStorage.getCoreFile()
+        if (coreFile) {
+          setStoredFile({
+            fileName: coreFile.fileName,
+            fileSize: coreFile.fileSize,
+            uploadDate: coreFile.uploadDate,
+          })
+        } else {
+          setStoredFile(null)
+        }
+      } catch (error) {
+        console.error('Failed to load stored file info:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadStoredFile()
+  }, [])
+
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true)
+    setUploadError('')
+    setUploadSuccess(false)
+
     try {
-      setIsLoading(true)
+      const result = validateCubismCoreFile(file)
+      if (!result.isValid) {
+        setUploadError(result.error || '不明なエラーが発生しました')
+        return
+      }
+
+      await live2dStorage.saveCoreFile(file)
+
       const coreFile = await live2dStorage.getCoreFile()
       if (coreFile) {
         setStoredFile({
@@ -367,77 +403,34 @@ const Live2DCubismCoreManager = () => {
           fileSize: coreFile.fileSize,
           uploadDate: coreFile.uploadDate,
         })
-      } else {
-        setStoredFile(null)
+        setUploadSuccess(true)
+        setTimeout(() => setUploadSuccess(false), 3000)
       }
     } catch (error) {
-      console.error('Error checking stored file:', error)
+      console.error('File upload failed:', error)
+      setUploadError('ファイルのアップロードに失敗しました')
     } finally {
-      setIsLoading(false)
+      setIsUploading(false)
     }
-  }, [])
-
-  useEffect(() => {
-    checkStoredFile()
-  }, [checkStoredFile])
-
-  const handleFileUpload = useCallback(
-    async (file: File) => {
-      setIsUploading(true)
-      setUploadError(null)
-      setUploadSuccess(false)
-
-      try {
-        // ファイル検証
-        const validation = validateCubismCoreFile(file)
-        if (!validation.isValid) {
-          setUploadError(validation.error || 'ファイルが無効です')
-          return
-        }
-
-        // ファイル保存
-        await live2dStorage.saveCoreFile(file)
-        setUploadSuccess(true)
-        await checkStoredFile() // 保存情報を更新
-
-        // 成功メッセージを一定時間後に消す
-        setTimeout(() => {
-          setUploadSuccess(false)
-        }, 3000)
-      } catch (error) {
-        console.error('Error uploading file:', error)
-        setUploadError('ファイルのアップロードに失敗しました')
-      } finally {
-        setIsUploading(false)
-      }
-    },
-    [checkStoredFile]
-  )
+  }
 
   const handleFileDelete = async () => {
     try {
       await live2dStorage.deleteCoreFile()
       setStoredFile(null)
-      setUploadSuccess(false)
-      setUploadError(null)
     } catch (error) {
-      console.error('Error deleting file:', error)
-      setUploadError('ファイルの削除に失敗しました')
+      console.error('Failed to delete file:', error)
     }
   }
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault()
-      setIsDragOver(false)
-
-      const files = Array.from(e.dataTransfer.files)
-      if (files.length > 0) {
-        handleFileUpload(files[0])
-      }
-    },
-    [handleFileUpload]
-  )
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+    const files = Array.from(e.dataTransfer.files)
+    if (files.length > 0) {
+      handleFileUpload(files[0])
+    }
+  }, [])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -477,9 +470,9 @@ const Live2DCubismCoreManager = () => {
   if (isLoading) {
     return (
       <div className="mt-6 space-y-4">
-        <div className="text-xl font-bold">Cubism Core設定</div>
+        <div className="text-xl font-bold">{t('Live2D.Title')}</div>
         <div className="flex items-center justify-center py-8">
-          <div className="text-gray-500">読み込み中...</div>
+          <div className="text-gray-500">{t('Live2D.Loading')}</div>
         </div>
       </div>
     )
@@ -487,9 +480,9 @@ const Live2DCubismCoreManager = () => {
 
   return (
     <div className="mt-6 space-y-4">
-      <div className="text-xl font-bold">Cubism Core設定</div>
-      <div className="text-base text-gray-600 whitespace-pre-line">
-        Live2D機能を使用するために必要なCubism Coreファイルを管理します。
+      <div className="text-xl font-bold">{t('Live2D.Title')}</div>
+      <div className="mb-6 text-base whitespace-pre-line">
+        {t('Live2D.Description')}
       </div>
 
       {/* アップロード状態の表示 */}
@@ -501,7 +494,7 @@ const Live2DCubismCoreManager = () => {
 
       {uploadSuccess && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
-          ✅ ファイルが正常にアップロードされました
+          ✅ {t('Live2D.UploadSuccess')}
         </div>
       )}
 
@@ -534,7 +527,9 @@ const Live2DCubismCoreManager = () => {
 
       {/* ファイルアップロード領域 */}
       <div className="space-y-2">
-        <div className="text-base font-bold">Cubism Coreファイル</div>
+        <div className="text-base font-bold">
+          {t('Live2D.Settings.FileTitle')}
+        </div>
         <div
           className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
             isDragOver
@@ -549,10 +544,10 @@ const Live2DCubismCoreManager = () => {
         >
           <div className="text-4xl mb-2">📁</div>
           <p className="text-sm font-medium text-gray-700 mb-1">
-            {storedFile ? 'ファイルを更新する' : 'ファイルをドラッグ＆ドロップ'}
+            {storedFile ? t('Live2D.UpdateFile') : t('Live2D.DragAndDrop')}
           </p>
           <p className="text-xs text-gray-500 mb-3">
-            または、ボタンをクリックしてファイルを選択
+            {t('Live2D.ClickToSelect')}
           </p>
 
           <input
@@ -572,46 +567,51 @@ const Live2DCubismCoreManager = () => {
             }}
             disabled={isUploading}
           >
-            {isUploading ? '処理中...' : 'ファイルを選択'}
+            {isUploading ? t('Live2D.Processing') : t('Live2D.SelectFile')}
           </TextButton>
         </div>
       </div>
 
       {/* ファイル要件の説明 */}
       <div className="text-sm text-gray-600">
-        <p className="font-medium mb-2">ファイル要件：</p>
+        <p className="font-medium mb-2">{t('Live2D.FileRequirements')}</p>
         <ul className="list-disc list-inside space-y-1 ml-4 text-xs">
-          <li>ファイル名に「live2dcubismcore」を含む</li>
-          <li>拡張子：.js</li>
-          <li>ファイルサイズ：100KB ～ 5MB</li>
+          <li>{t('Live2D.RequirementFileName')}</li>
+          <li>{t('Live2D.RequirementExtension')}</li>
+          <li>{t('Live2D.RequirementSize')}</li>
         </ul>
       </div>
 
       {/* ダウンロードリンク */}
       <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-xs font-medium text-blue-800 mb-1">
-          ファイルの取得方法：
+          {t('Live2D.FileSource')}
         </p>
-        <a
-          href="https://www.live2d.com/sdk/download/web/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline text-xs"
-        >
-          Live2D公式サイト
-        </a>
-        <span className="text-xs text-blue-700">
-          {' '}
-          からCubism SDK for Webをダウンロードし、
-        </span>
-        <br />
-        <code className="text-xs bg-blue-100 px-1 rounded">
-          live2dcubismcore.min.js
-        </code>
-        <span className="text-xs text-blue-700">
-          {' '}
-          ファイルを抽出してアップロードしてください。
-        </span>
+        <div className="mb-2 text-xs text-blue-700">
+          <Trans
+            i18nKey="Live2D.DownloadInstructions"
+            components={{
+              downloadLink: (
+                <a
+                  href="https://www.live2d.com/sdk/download/web/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                />
+              ),
+            }}
+          />
+        </div>
+        <div className="text-xs text-blue-700">
+          <Trans
+            i18nKey="Live2D.ExtractDescription"
+            components={{
+              code: (
+                <code className="bg-gray-100 px-1 rounded mt-1 inline-block" />
+              ),
+            }}
+          />
+        </div>
       </div>
     </div>
   )
