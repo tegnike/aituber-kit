@@ -18,6 +18,13 @@ const generateSessionId = () => generateMessageId()
 // コードブロックのデリミネーター
 const CODE_DELIMITER = '```'
 
+// 'lost' ユーザーの検出タイムアウト（ミリ秒）
+const LOST_USER_TIMEOUT = 5000; // 5秒
+
+// lost ユーザーのタイムアウト管理用
+let lostUserTimeoutId: NodeJS.Timeout | null = null;
+let lastDetectedUserId: string | null = null;
+
 /**
  * テキストから感情タグ `[...]` を抽出する
  * @param text 入力テキスト
@@ -697,6 +704,114 @@ export const handleSendChatFn = () => async (text: string) => {
       homeStore.setState({ chatProcessing: false })
     }
   }
+}
+
+/**
+ * ユーザーID変更処理関数
+ * @param userId 新しいユーザーID
+ * @param callback ユーザーID変更後に実行するコールバック
+ * @returns 変更があったかどうか
+ */
+export const updateUserId = (userId: string, callback?: (userId: string) => void): boolean => {
+  const ss = settingsStore.getState()
+  
+  if (userId && ss.userId !== userId) {
+    console.log(`ユーザーIDが変更されました: ${ss.userId} → ${userId}`)
+    settingsStore.setState({ userId: userId })
+    
+    // ユーザーID変更後に任意の処理を実行
+    if (callback) {
+      callback(userId)
+    }
+    
+    return true
+  }
+  
+  return false
+}
+
+/**
+ * 人物検出APIからユーザーIDを取得する
+ * @param callback ユーザーID取得後に実行するコールバック
+ * @param apiUrl 人物検出APIのURL（デフォルト: http://localhost:8888/data/）
+ */
+export const fetchUserIdFromCamera = async (
+  callback?: (userId: string) => void,
+  apiUrl: string = 'http://localhost:8888/data/'
+): Promise<string | null> => {
+  try {
+    const response = await fetch(apiUrl)
+    
+    if (!response.ok) {
+      throw new Error(`人物検出APIリクエスト失敗: ${response.status} ${response.statusText}`)
+    }
+    
+    const data = await response.json()
+    
+    // 認識状態の確認 - recognizestateがfalseならユーザーなし
+    if (data.recognizestate === false) {
+      console.log('人物検出API: ユーザー未検出')
+      return null
+    }
+    
+    // recognizednameフィールドをユーザーIDとして使用
+    const userId = data.recognizedname
+    
+    if (userId) {
+      // 'lost'の場合の特別処理
+      console.log('人物検出API:', userId, lostUserTimeoutId, Date.now())
+      if (userId === 'lost') {
+        // 前回のタイムアウトがまだあれば何もしない
+        if (lostUserTimeoutId) {
+          return lastDetectedUserId;
+        }
+        
+        // タイムアウトを設定
+        lostUserTimeoutId = setTimeout(() => {
+          console.log(`'lost' タイムアウト: ユーザーなしと判定`);
+          // 直前のユーザーIDをクリア
+          lastDetectedUserId = null;
+          // ユーザーIDをクリア
+          updateUserId('', callback);
+          // タイムアウトIDをクリア
+          lostUserTimeoutId = null;
+        }, LOST_USER_TIMEOUT);
+        
+        // 直前のユーザーID（もしあれば）を返す
+        return lastDetectedUserId;
+      } 
+            
+      // もし前回'lost'で今回有効なユーザーだった場合はタイムアウトをクリア
+      if (lostUserTimeoutId && userId !== 'lost') {
+        clearTimeout(lostUserTimeoutId);
+        lostUserTimeoutId = null;
+      }
+      
+      // 最後に検出したユーザーIDを更新
+      lastDetectedUserId = userId;
+      
+      // ユーザーIDの変更を処理
+      const shouldUpdate = userId !== 'lost' && userId.endsWith('male');
+      const updated = shouldUpdate ? updateUserId(userId, callback) : false;
+      
+      if (updated) {
+        console.log(`人物検出APIからユーザーID「${userId}」を検出しました`, Date.now())
+      }
+      
+      // コールバックが指定されていれば実行
+      if (callback) {
+        callback(userId)
+      }
+      
+      return userId
+    } else {
+      console.warn('人物検出APIからのレスポンスにrecognizednameフィールドがありません:', data);
+    }
+  } catch (e) {
+    console.error('人物検出APIからのユーザーID取得エラー:', e);
+  }
+  
+  return lastDetectedUserId;
 }
 
 /**

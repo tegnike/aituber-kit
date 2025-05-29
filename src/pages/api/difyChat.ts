@@ -18,7 +18,8 @@ export default async function handler(req: NextRequest) {
     )
   }
 
-  const { query, apiKey, url, conversationId, stream } = await req.json()
+  // for multi-user support
+  const { query, apiKey, url, conversationId, stream, userId } = await req.json()
 
   const difyKey = apiKey || process.env.DIFY_KEY || process.env.DIFY_API_KEY
   if (!difyKey) {
@@ -65,7 +66,7 @@ export default async function handler(req: NextRequest) {
     query: query,
     response_mode: stream ? 'streaming' : 'blocking',
     conversation_id: conversationId,
-    user: 'aituber-kit',
+    user: userId || 'aituber-kit', // for multi-user support
     files: [],
   })
 
