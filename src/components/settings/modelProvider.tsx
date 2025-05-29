@@ -7,7 +7,6 @@ import { TextButton } from '../textButton'
 import { useCallback } from 'react'
 import Image from 'next/image'
 import { Listbox } from '@headlessui/react'
-import { multiModalAIServices } from '@/features/stores/settings'
 import {
   AudioModeInputType,
   OpenAITTSVoice,
@@ -15,6 +14,7 @@ import {
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
+import { isMultiModalModel } from '@/features/constants/aiModels'
 import {
   getModels,
   getOpenAIRealtimeModels,
@@ -132,37 +132,41 @@ const ModelProvider = () => {
     { value: 'custom-api', label: 'Custom API' },
   ]
 
-  const handleAIServiceChange = useCallback((newService: AIService) => {
-    settingsStore.setState({
-      selectAIService: newService,
-      selectAIModel: defaultModels[newService],
-    })
-
-    if (!multiModalAIServices.includes(newService as any)) {
-      menuStore.setState({ showWebcam: false })
-
+  const handleAIServiceChange = useCallback(
+    (newService: AIService) => {
+      const selectedModel = defaultModels[newService]
       settingsStore.setState({
-        conversationContinuityMode: false,
-        slideMode: false,
+        selectAIService: newService,
+        selectAIModel: selectedModel,
       })
-      slideStore.setState({
-        isPlaying: false,
-      })
-    }
 
-    if (newService !== 'openai' && newService !== 'azure') {
-      settingsStore.setState({
-        realtimeAPIMode: false,
-        audioMode: false,
-      })
-    }
+      if (!isMultiModalModel(newService, selectedModel)) {
+        menuStore.setState({ showWebcam: false })
 
-    if (newService === 'google') {
-      if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
-        settingsStore.setState({ useSearchGrounding: false })
+        settingsStore.setState({
+          conversationContinuityMode: false,
+          slideMode: false,
+        })
+        slideStore.setState({
+          isPlaying: false,
+        })
       }
-    }
-  }, [])
+
+      if (newService !== 'openai' && newService !== 'azure') {
+        settingsStore.setState({
+          realtimeAPIMode: false,
+          audioMode: false,
+        })
+      }
+
+      if (newService === 'google') {
+        if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
+          settingsStore.setState({ useSearchGrounding: false })
+        }
+      }
+    },
+    [selectAIModel]
+  )
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
     settingsStore.setState({

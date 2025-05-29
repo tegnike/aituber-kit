@@ -17,21 +17,10 @@ import {
   WhisperTranscriptionModel,
 } from '../constants/settings'
 import { googleSearchGroundingModels } from '../constants/aiModels'
-
-export const multiModalAIServices = [
-  'openai',
-  'anthropic',
-  'google',
-  'azure',
-] as const
-export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
+import { migrateOpenAIModelName } from '@/utils/modelMigration'
 
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]
-
-type multiModalAPIKeys = {
-  [K in multiModalAIServiceKey as `${K}Key`]: string
-}
 
 interface APIKeys {
   openaiKey: string
@@ -47,6 +36,8 @@ interface APIKeys {
   fireworksKey: string
   deepseekKey: string
   openrouterKey: string
+  lmstudioKey: string
+  ollamaKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -192,7 +183,6 @@ interface ModelType {
 }
 
 export type SettingsState = APIKeys &
-  multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &
@@ -222,6 +212,8 @@ const settingsStore = create<SettingsState>()(
       difyKey: '',
       deepseekKey: '',
       openrouterKey: '',
+      lmstudioKey: '',
+      ollamaKey: '',
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
@@ -230,7 +222,9 @@ const settingsStore = create<SettingsState>()(
       // Model Provider
       selectAIService:
         (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai',
-      selectAIModel: process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4',
+      selectAIModel: migrateOpenAIModelName(
+        process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4'
+      ),
       localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
       selectVoice:
         (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
@@ -456,6 +450,19 @@ const settingsStore = create<SettingsState>()(
     }),
     {
       name: 'aitube-kit-settings',
+      onRehydrateStorage: () => (state) => {
+        // Migrate OpenAI model names when loading from storage
+        if (
+          state &&
+          state.selectAIService === 'openai' &&
+          state.selectAIModel
+        ) {
+          const migratedModel = migrateOpenAIModelName(state.selectAIModel)
+          if (migratedModel !== state.selectAIModel) {
+            state.selectAIModel = migratedModel
+          }
+        }
+      },
       partialize: (state) => ({
         openaiKey: state.openaiKey,
         anthropicKey: state.anthropicKey,
@@ -470,6 +477,8 @@ const settingsStore = create<SettingsState>()(
         difyKey: state.difyKey,
         deepseekKey: state.deepseekKey,
         openrouterKey: state.openrouterKey,
+        lmstudioKey: state.lmstudioKey,
+        ollamaKey: state.ollamaKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
