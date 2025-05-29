@@ -188,10 +188,10 @@ export default function Live2DViewer() {
   }, [])
 
   useEffect(() => {
-    if (isMounted && loadingMethod === 'checking') {
-      checkIndexedDBFile()
-    }
-  }, [isMounted, loadingMethod, checkIndexedDBFile])
+    if (!isMounted) return
+
+    checkIndexedDBFile()
+  }, [isMounted, live2dVisible, checkIndexedDBFile])
 
   useEffect(() => {
     if (loadingMethod === 'indexeddb' && blobURL && !isCubismCoreLoaded) {
