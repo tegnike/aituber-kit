@@ -29,7 +29,6 @@ const Home = () => {
       : `url(${buildUrl(backgroundImageUrl)})`
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
   const modelType = settingsStore((s) => s.modelType)
-  const live2dVisible = homeStore((s) => s.live2dVisible)
   const { t } = useTranslation()
   const characterPresets = [
     {
@@ -93,11 +92,7 @@ const Home = () => {
     <div className="h-[100svh] bg-cover" style={{ backgroundImage: bgUrl }}>
       <Meta />
       <Introduction />
-      {modelType === 'vrm' ? (
-        <VrmViewer />
-      ) : (
-        modelType === 'live2d' && live2dVisible && <Live2DViewer />
-      )}
+      {modelType === 'vrm' ? <VrmViewer /> : <Live2DViewer />}
       <Form />
       <Menu />
       <ModalImage />

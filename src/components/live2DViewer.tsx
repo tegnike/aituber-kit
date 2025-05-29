@@ -66,6 +66,7 @@ export default function Live2DViewer() {
   const setIsCubismCoreLoaded = homeStore((s) => s.setIsCubismCoreLoaded)
   const isLive2dLoaded = homeStore((s) => s.isLive2dLoaded)
   const setIsLive2dLoaded = homeStore((s) => s.setIsLive2dLoaded)
+  const live2dVisible = homeStore((s) => s.live2dVisible)
   const setLive2dVisible = homeStore((s) => s.setLive2dVisible)
 
   // スクリプトの再読み込み処理
@@ -329,7 +330,7 @@ export default function Live2DViewer() {
           }}
         />
       )}
-      {isCubismCoreLoaded && <Live2DComponent />}
+      {live2dVisible && isCubismCoreLoaded && <Live2DComponent />}
     </div>
   )
 }
