@@ -18,14 +18,33 @@ const CORE_FILE_ID = 'cubism-core'
 
 class Live2DStorage {
   private db: IDBDatabase | null = null
+  private initPromise: Promise<void> | null = null
 
   async init(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    if (this.initPromise) {
+      return this.initPromise
+    }
+
+    if (this.db) {
+      return Promise.resolve()
+    }
+
+    this.initPromise = new Promise((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, DB_VERSION)
 
-      request.onerror = () => reject(request.error)
+      request.onerror = () => {
+        this.initPromise = null
+        reject(request.error)
+      }
+
       request.onsuccess = () => {
         this.db = request.result
+
+        this.db.onclose = () => {
+          this.db = null
+          this.initPromise = null
+        }
+
         resolve()
       }
 
@@ -38,6 +57,8 @@ class Live2DStorage {
         }
       }
     })
+
+    return this.initPromise
   }
 
   async saveCoreFile(file: File): Promise<void> {
@@ -50,10 +71,15 @@ class Live2DStorage {
       fileContent: arrayBuffer,
       uploadDate: new Date(),
       fileSize: file.size,
+      version: '1.0.0',
     }
 
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([STORE_NAME], 'readwrite')
+
+      transaction.onerror = () => reject(transaction.error)
+      transaction.onabort = () => reject(new Error('Transaction aborted'))
+
       const store = transaction.objectStore(STORE_NAME)
       const request = store.put(coreFile)
 
@@ -67,6 +93,10 @@ class Live2DStorage {
 
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([STORE_NAME], 'readonly')
+
+      transaction.onerror = () => reject(transaction.error)
+      transaction.onabort = () => reject(new Error('Transaction aborted'))
+
       const store = transaction.objectStore(STORE_NAME)
       const request = store.get(CORE_FILE_ID)
 
@@ -80,6 +110,10 @@ class Live2DStorage {
 
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction([STORE_NAME], 'readwrite')
+
+      transaction.onerror = () => reject(transaction.error)
+      transaction.onabort = () => reject(new Error('Transaction aborted'))
+
       const store = transaction.objectStore(STORE_NAME)
       const request = store.delete(CORE_FILE_ID)
 
@@ -89,13 +123,26 @@ class Live2DStorage {
   }
 
   async hasCoreFile(): Promise<boolean> {
-    const file = await this.getCoreFile()
-    return file !== null
+    try {
+      const file = await this.getCoreFile()
+      return file !== null
+    } catch (error) {
+      console.error('Error checking core file existence:', error)
+      return false
+    }
   }
 
   createBlobURL(arrayBuffer: ArrayBuffer): string {
     const blob = new Blob([arrayBuffer], { type: 'application/javascript' })
     return URL.createObjectURL(blob)
+  }
+
+  cleanup(): void {
+    if (this.db) {
+      this.db.close()
+      this.db = null
+    }
+    this.initPromise = null
   }
 }
 
@@ -119,7 +166,7 @@ export const validateCubismCoreFile = (
     }
   }
 
-  // ファイルサイズチェック（100KB〜5MB）
+  // ファイルサイズチェック（100KB〜10MB）
   if (file.size < 100000) {
     return {
       isValid: false,
@@ -127,7 +174,7 @@ export const validateCubismCoreFile = (
     }
   }
 
-  if (file.size > 5000000) {
+  if (file.size > 10000000) {
     return { isValid: false, error: 'ファイルサイズが大きすぎます（最大5MB）' }
   }
 

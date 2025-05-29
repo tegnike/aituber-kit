@@ -357,11 +357,7 @@ const Live2DCubismCoreManager = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   // ページ読み込み時に保存されているファイル情報を取得
-  useEffect(() => {
-    checkStoredFile()
-  }, [])
-
-  const checkStoredFile = async () => {
+  const checkStoredFile = useCallback(async () => {
     try {
       setIsLoading(true)
       const coreFile = await live2dStorage.getCoreFile()
@@ -379,37 +375,44 @@ const Live2DCubismCoreManager = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  const handleFileUpload = async (file: File) => {
-    setIsUploading(true)
-    setUploadError(null)
-    setUploadSuccess(false)
+  useEffect(() => {
+    checkStoredFile()
+  }, [checkStoredFile])
 
-    try {
-      // ファイル検証
-      const validation = validateCubismCoreFile(file)
-      if (!validation.isValid) {
-        setUploadError(validation.error || 'ファイルが無効です')
-        return
+  const handleFileUpload = useCallback(
+    async (file: File) => {
+      setIsUploading(true)
+      setUploadError(null)
+      setUploadSuccess(false)
+
+      try {
+        // ファイル検証
+        const validation = validateCubismCoreFile(file)
+        if (!validation.isValid) {
+          setUploadError(validation.error || 'ファイルが無効です')
+          return
+        }
+
+        // ファイル保存
+        await live2dStorage.saveCoreFile(file)
+        setUploadSuccess(true)
+        await checkStoredFile() // 保存情報を更新
+
+        // 成功メッセージを一定時間後に消す
+        setTimeout(() => {
+          setUploadSuccess(false)
+        }, 3000)
+      } catch (error) {
+        console.error('Error uploading file:', error)
+        setUploadError('ファイルのアップロードに失敗しました')
+      } finally {
+        setIsUploading(false)
       }
-
-      // ファイル保存
-      await live2dStorage.saveCoreFile(file)
-      setUploadSuccess(true)
-      await checkStoredFile() // 保存情報を更新
-
-      // 成功メッセージを一定時間後に消す
-      setTimeout(() => {
-        setUploadSuccess(false)
-      }, 3000)
-    } catch (error) {
-      console.error('Error uploading file:', error)
-      setUploadError('ファイルのアップロードに失敗しました')
-    } finally {
-      setIsUploading(false)
-    }
-  }
+    },
+    [checkStoredFile]
+  )
 
   const handleFileDelete = async () => {
     try {
@@ -829,7 +832,6 @@ const Character = () => {
               ))}
             </select>
 
-            {/* Cubism Core管理セクションを追加 */}
             <Live2DCubismCoreManager />
 
             <div className="my-4">

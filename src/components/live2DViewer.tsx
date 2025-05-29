@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
+import { useTranslation } from 'react-i18next'
 import Script from 'next/script'
 import homeStore from '@/features/stores/home'
-import menuStore from '@/features/stores/menu'
 import { live2dStorage } from '@/lib/indexedDB'
-import settingsStore from '@/features/stores/settings'
+import { IconButton } from './iconButton'
 
 const Live2DComponent = dynamic(
   () => {
@@ -30,17 +30,22 @@ const Live2DComponent = dynamic(
   }
 )
 
+type LoadingMethod = 'checking' | 'indexeddb' | 'public' | 'failed'
+
 export default function Live2DViewer() {
+  const { t } = useTranslation()
+
   const [isMounted, setIsMounted] = useState(false)
   const [scriptLoadRetries, setScriptLoadRetries] = useState({
     cubismcore: 0,
     live2d: 0,
   })
   const [showErrorMessage, setShowErrorMessage] = useState(false)
-  const [loadingMethod, setLoadingMethod] = useState<
-    'checking' | 'indexeddb' | 'public' | 'failed'
-  >('checking')
+  const [loadingMethod, setLoadingMethod] = useState<LoadingMethod>('checking')
   const [blobURL, setBlobURL] = useState<string | null>(null)
+  const [loadedScript, setLoadedScript] = useState<HTMLScriptElement | null>(
+    null
+  )
   const MAX_RETRIES = 3
 
   const isCubismCoreLoaded = homeStore((s) => s.isCubismCoreLoaded)
@@ -60,14 +65,28 @@ export default function Live2DViewer() {
     return false
   }
 
-  // IndexedDBからファイルを確認
-  const checkIndexedDBFile = async () => {
+  // publicフォルダのファイル存在確認
+  const checkPublicFile = useCallback(async (): Promise<boolean> => {
     try {
-      console.log('Checking IndexedDB for Cubism Core file...')
+      console.log('Checking public file existence...')
+      const response = await fetch('/scripts/live2dcubismcore.min.js', {
+        method: 'HEAD',
+      })
+      const exists = response.ok
+      console.log('Public file exists:', exists)
+      return exists
+    } catch (error) {
+      console.error('Error checking public file:', error)
+      return false
+    }
+  }, [])
+
+  // IndexedDBからファイルを確認
+  const checkIndexedDBFile = useCallback(async (): Promise<boolean> => {
+    try {
       const hasFile = await live2dStorage.hasCoreFile()
 
       if (hasFile) {
-        console.log('Found Cubism Core file in IndexedDB')
         const coreFile = await live2dStorage.getCoreFile()
         if (coreFile) {
           const url = live2dStorage.createBlobURL(coreFile.fileContent)
@@ -77,47 +96,94 @@ export default function Live2DViewer() {
         }
       }
 
-      console.log(
-        'No Cubism Core file found in IndexedDB, trying public folder...'
-      )
-      setLoadingMethod('public')
-      return false
+      // IndexedDBにファイルがない場合、publicフォルダをチェック
+      console.log('IndexedDB file not found, checking public folder...')
+      const publicFileExists = await checkPublicFile()
+      if (publicFileExists) {
+        console.log('Using public folder file')
+        setLoadingMethod('public')
+        return false
+      } else {
+        // どちらにもファイルがない場合、即座にエラー表示
+        console.log('No Core file found in IndexedDB or public folder')
+        setLoadingMethod('failed')
+        setShowErrorMessage(true)
+        return false
+      }
     } catch (error) {
       console.error('Error checking IndexedDB:', error)
-      setLoadingMethod('public')
-      return false
+      // エラーが発生した場合、publicフォルダをチェック
+      console.log(
+        'IndexedDB error occurred, fallback to public folder check...'
+      )
+      const publicFileExists = await checkPublicFile()
+      if (publicFileExists) {
+        console.log('Using public folder file as fallback')
+        setLoadingMethod('public')
+        return false
+      } else {
+        console.log('No fallback file available')
+        setLoadingMethod('failed')
+        setShowErrorMessage(true)
+        return false
+      }
     }
-  }
+  }, [checkPublicFile])
 
   // 動的スクリプト実行
-  const loadScriptFromBlob = async (blobURL: string) => {
-    try {
-      console.log('Loading script from blob URL:', blobURL)
+  const loadScriptFromBlob = useCallback(
+    async (blobURL: string): Promise<void> => {
+      if (!blobURL) return
 
-      // スクリプトタグを動的に作成
-      const script = document.createElement('script')
-      script.src = blobURL
-      script.async = true
+      try {
+        // 既存のスクリプトがあれば削除
+        if (loadedScript && loadedScript.parentNode) {
+          loadedScript.parentNode.removeChild(loadedScript)
+          setLoadedScript(null)
+        }
 
-      // Promise でスクリプトの読み込み完了を待つ
-      await new Promise<void>((resolve, reject) => {
-        script.onload = () => {
-          console.log('Cubism Core loaded from IndexedDB')
-          setIsCubismCoreLoaded(true)
-          resolve()
-        }
-        script.onerror = (error) => {
-          console.error('Failed to load script from blob:', error)
-          reject(error)
-        }
-        document.head.appendChild(script)
-      })
-    } catch (error) {
-      console.error('Error loading script from blob:', error)
-      // フォールバック: public フォルダからの読み込みを試行
-      setLoadingMethod('public')
-    }
-  }
+        // スクリプトタグを動的に作成
+        const script = document.createElement('script')
+        script.src = blobURL
+        script.async = true
+
+        // Promise でスクリプトの読み込み完了を待つ
+        await new Promise<void>((resolve, reject) => {
+          const cleanup = () => {
+            script.removeEventListener('load', onLoad)
+            script.removeEventListener('error', onError)
+          }
+
+          const onLoad = () => {
+            cleanup()
+            console.log('Cubism Core loaded from IndexedDB')
+            setIsCubismCoreLoaded(true)
+            setLoadedScript(script)
+            resolve()
+          }
+
+          const onError = (error: Event | string) => {
+            cleanup()
+            console.error('Failed to load script from blob:', error)
+            // スクリプト要素を削除
+            if (script.parentNode) {
+              script.parentNode.removeChild(script)
+            }
+            reject(new Error('Script load failed'))
+          }
+
+          script.addEventListener('load', onLoad)
+          script.addEventListener('error', onError)
+          document.head.appendChild(script)
+        })
+      } catch (error) {
+        console.error('Error loading script from blob:', error)
+        // フォールバック: public フォルダからの読み込みを試行
+        setLoadingMethod('public')
+      }
+    },
+    [setIsCubismCoreLoaded, loadedScript]
+  )
 
   useEffect(() => {
     console.log('Live2DViewer mounted')
@@ -128,32 +194,25 @@ export default function Live2DViewer() {
     if (isMounted && loadingMethod === 'checking') {
       checkIndexedDBFile()
     }
-  }, [isMounted, loadingMethod])
+  }, [isMounted, loadingMethod, checkIndexedDBFile])
 
   useEffect(() => {
-    if (loadingMethod === 'indexeddb' && blobURL) {
+    if (loadingMethod === 'indexeddb' && blobURL && !isCubismCoreLoaded) {
       loadScriptFromBlob(blobURL)
     }
-  }, [loadingMethod, blobURL])
+  }, [loadingMethod, blobURL, isCubismCoreLoaded, loadScriptFromBlob])
 
-  // クリーンアップ
+  // クリーンアップ - リソースとスクリプトの削除
   useEffect(() => {
     return () => {
       if (blobURL) {
         URL.revokeObjectURL(blobURL)
       }
+      if (loadedScript && loadedScript.parentNode) {
+        loadedScript.parentNode.removeChild(loadedScript)
+      }
     }
-  }, [blobURL])
-
-  const handleOpenSettings = () => {
-    setShowErrorMessage(false)
-    // キャラクター設定画面を開いてLive2Dを選択状態にする
-    settingsStore.setState({ modelType: 'live2d' })
-    menuStore.setState({
-      showSettingsScreen: true,
-      activeSettingsTab: 'character',
-    })
-  }
+  }, [blobURL, loadedScript])
 
   if (!isMounted) {
     console.log('Live2DViewer not mounted yet')
@@ -162,56 +221,62 @@ export default function Live2DViewer() {
 
   if (showErrorMessage) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div className="bg-white p-6 rounded-lg max-w-md mx-4">
-          <h3 className="text-lg font-bold text-red-600 mb-4">
-            Live2D Cubism Core が見つかりません
-          </h3>
-          <div className="text-sm text-gray-700 space-y-2">
-            <p>Live2D機能を使用するには、Cubism Coreファイルが必要です。</p>
-
-            <div className="mt-4">
-              <p className="font-semibold">対処方法：</p>
-              <ol className="list-decimal list-inside mt-2 space-y-1 text-xs">
-                <li>設定画面からファイルをアップロード</li>
-                <li>
-                  または、<code>public/scripts/live2dcubismcore.min.js</code>{' '}
-                  に配置
-                </li>
-              </ol>
+      <div className="absolute z-40 w-full h-full px-6 py-10 bg-black/30 font-M_PLUS_2 flex items-center justify-center">
+        <div className="relative max-w-3xl max-h-full p-6 overflow-y-auto bg-white rounded-2xl">
+          <div className="sticky top-0 right-0 z-10 flex justify-end">
+            <IconButton
+              iconName="24/Close"
+              isProcessing={false}
+              onClick={() => setShowErrorMessage(false)}
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
+            />
+          </div>
+          <div className="mb-6">
+            <div className="mb-2 font-bold text-xl text-secondary">
+              Live2D Cubism Core が見つかりません
             </div>
+            <div>Live2D機能を使用するには、Cubism Coreファイルが必要です。</div>
+          </div>
 
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
-              <p className="text-xs font-medium text-blue-800">
-                ファイルの取得方法：
-              </p>
+          <div className="my-6">
+            <div className="my-2 font-bold text-xl text-secondary">
+              対処方法
+            </div>
+            <ol className="list-decimal list-inside mt-2 space-y-2">
+              <li>設定画面からファイルをアップロード</li>
+              <li>
+                または、
+                <code className="bg-gray-100 px-1 rounded">
+                  public/scripts/live2dcubismcore.min.js
+                </code>{' '}
+                に配置
+              </li>
+            </ol>
+          </div>
+
+          <div className="my-6">
+            <div className="my-2 font-bold text-xl text-secondary">
+              ファイルの取得方法
+            </div>
+            <div>
               <a
                 href="https://www.live2d.com/sdk/download/web/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline text-xs"
+                className="text-blue-600 hover:underline"
               >
                 Live2D公式サイト
               </a>
-              <span className="text-xs">
-                {' '}
-                からSDKをダウンロードしてください
-              </span>
+              からSDKをダウンロードしてください
             </div>
           </div>
 
-          <div className="mt-4 flex gap-2">
-            <button
-              onClick={handleOpenSettings}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-            >
-              設定画面を開く
-            </button>
+          <div className="my-6">
             <button
               onClick={() => setShowErrorMessage(false)}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm"
+              className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-6 py-2 rounded-full"
             >
-              閉じる
+              {t('Close')}
             </button>
           </div>
         </div>
