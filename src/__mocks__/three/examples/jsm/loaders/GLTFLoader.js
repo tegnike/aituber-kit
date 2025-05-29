@@ -1,6 +1,6 @@
 export class GLTFLoader {
   constructor() {}
-  
+
   load(url, onLoad, onProgress, onError) {
     setTimeout(() => {
       onLoad({
@@ -10,11 +10,11 @@ export class GLTFLoader {
         cameras: [],
         asset: {},
         parser: {},
-        userData: {}
-      });
-    }, 0);
+        userData: {},
+      })
+    }, 0)
   }
-  
+
   loadAsync(url) {
     return Promise.resolve({
       scene: {},
@@ -23,39 +23,39 @@ export class GLTFLoader {
       cameras: [],
       asset: {},
       parser: {},
-      userData: {}
-    });
+      userData: {},
+    })
   }
-  
+
   setDRACOLoader() {
-    return this;
+    return this
   }
-  
+
   setKTX2Loader() {
-    return this;
+    return this
   }
-  
+
   setMeshoptDecoder() {
-    return this;
+    return this
   }
-  
+
   register() {
-    return this;
+    return this
   }
-  
+
   unregister() {
-    return this;
+    return this
   }
-  
+
   setPath() {
-    return this;
+    return this
   }
-  
+
   setResourcePath() {
-    return this;
+    return this
   }
-  
+
   setCrossOrigin() {
-    return this;
+    return this
   }
 }
