@@ -27,35 +27,35 @@ export class GLTFLoader {
     })
   }
 
-  setDRACOLoader() {
+  setDRACOLoader(dracoLoader) {
     return this
   }
 
-  setKTX2Loader() {
+  setKTX2Loader(ktx2Loader) {
     return this
   }
 
-  setMeshoptDecoder() {
+  setMeshoptDecoder(decoder) {
     return this
   }
 
-  register() {
+  register(plugin) {
     return this
   }
 
-  unregister() {
+  unregister(plugin) {
     return this
   }
 
-  setPath() {
+  setPath(path) {
     return this
   }
 
-  setResourcePath() {
+  setResourcePath(path) {
     return this
   }
 
-  setCrossOrigin() {
+  setCrossOrigin(crossOrigin) {
     return this
   }
 }
