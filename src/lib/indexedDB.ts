@@ -199,13 +199,8 @@ export const validateCubismCoreFile = (
   }
 
   // MIMEタイプチェック
-  const validTypes = [
-    'application/javascript',
-    'text/javascript',
-    'text/plain',
-    '',
-  ]
-  if (file.type && !validTypes.includes(file.type)) {
+  const validTypes = ['application/javascript', 'text/javascript', 'text/plain']
+  if (!file.type || !validTypes.includes(file.type)) {
     return { isValid: false, error: 'JavaScriptファイルではありません' }
   }
 

@@ -49,19 +49,6 @@ export default function Live2DViewer() {
   )
   const MAX_RETRIES = 3
 
-  // useRefで最新値を追跡
-  const blobURLRef = useRef<string | null>(null)
-  const loadedScriptRef = useRef<HTMLScriptElement | null>(null)
-
-  // 値が変更された時にrefも更新
-  useEffect(() => {
-    blobURLRef.current = blobURL
-  }, [blobURL])
-
-  useEffect(() => {
-    loadedScriptRef.current = loadedScript
-  }, [loadedScript])
-
   const isCubismCoreLoaded = homeStore((s) => s.isCubismCoreLoaded)
   const setIsCubismCoreLoaded = homeStore((s) => s.setIsCubismCoreLoaded)
   const isLive2dLoaded = homeStore((s) => s.isLive2dLoaded)
@@ -212,17 +199,23 @@ export default function Live2DViewer() {
     }
   }, [loadingMethod, blobURL, isCubismCoreLoaded, loadScriptFromBlob])
 
-  // クリーンアップ - リソースとスクリプトの削除
+  // blobURLのクリーンアップ
   useEffect(() => {
     return () => {
-      if (blobURLRef.current) {
-        live2dStorage.revokeBlobURL(blobURLRef.current)
-      }
-      if (loadedScriptRef.current && loadedScriptRef.current.parentNode) {
-        loadedScriptRef.current.parentNode.removeChild(loadedScriptRef.current)
+      if (blobURL) {
+        live2dStorage.revokeBlobURL(blobURL)
       }
     }
-  }, [])
+  }, [blobURL])
+
+  // loadedScriptのクリーンアップ
+  useEffect(() => {
+    return () => {
+      if (loadedScript && loadedScript.parentNode) {
+        loadedScript.parentNode.removeChild(loadedScript)
+      }
+    }
+  }, [loadedScript])
 
   if (!isMounted) {
     console.log('Live2DViewer not mounted yet')

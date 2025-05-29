@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import Image from 'next/image'
 
@@ -357,6 +357,9 @@ const Live2DCubismCoreManager = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
 
+  // useRef for file input
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   // Live2D表示状態を管理
   const setLive2dVisible = homeStore((s) => s.setLive2dVisible)
 
@@ -562,13 +565,11 @@ const Live2DCubismCoreManager = () => {
             className="hidden"
             id="cubism-core-upload"
             disabled={isUploading}
+            ref={fileInputRef}
           />
           <TextButton
             onClick={() => {
-              const input = document.getElementById(
-                'cubism-core-upload'
-              ) as HTMLInputElement
-              input?.click()
+              fileInputRef.current?.click()
             }}
             disabled={isUploading}
           >
@@ -688,6 +689,21 @@ const Character = () => {
     setTooltip((prev) => ({ ...prev, visible: false }))
   }
 
+  const checkLive2DAvailability = async (): Promise<boolean> => {
+    try {
+      const hasFile = await live2dStorage.hasCoreFile()
+      if (hasFile) return true
+
+      const response = await fetch('/scripts/live2dcubismcore.min.js', {
+        method: 'HEAD',
+      })
+      return response.ok
+    } catch (error) {
+      console.error('Error checking Live2D file availability:', error)
+      return false
+    }
+  }
+
   useEffect(() => {
     fetch('/api/get-vrm-list')
       .then((res) => res.json())
@@ -706,30 +722,11 @@ const Character = () => {
 
   // モデルタイプに応じた初期表示状態の設定
   useEffect(() => {
-    const initializeLive2DVisibility = async () => {
-      if (modelType === 'live2d') {
-        try {
-          const hasFile = await live2dStorage.hasCoreFile()
-          if (hasFile) {
-            setLive2dVisible(true)
-          } else {
-            // ファイルがない場合はpublicフォルダをチェック
-            const response = await fetch('/scripts/live2dcubismcore.min.js', {
-              method: 'HEAD',
-            })
-            setLive2dVisible(response.ok)
-          }
-        } catch (error) {
-          console.error('Error checking Live2D file availability:', error)
-          setLive2dVisible(false)
-        }
-      } else {
-        // VRMモードの場合はLive2Dを非表示
-        setLive2dVisible(false)
-      }
+    if (modelType === 'live2d') {
+      checkLive2DAvailability().then((hasFile) => {
+        setLive2dVisible(hasFile)
+      })
     }
-
-    initializeLive2DVisibility()
   }, [modelType, setLive2dVisible])
 
   const handleVrmUpload = async (file: File) => {
@@ -811,19 +808,9 @@ const Character = () => {
               settingsStore.setState({ modelType: 'live2d' })
               // Live2Dモードに切り替え時はファイルの存在確認をしてから表示状態を決定
               try {
-                const hasFile = await live2dStorage.hasCoreFile()
-                if (hasFile) {
-                  setLive2dVisible(true)
-                } else {
-                  // ファイルがない場合はpublicフォルダをチェック
-                  const response = await fetch(
-                    '/scripts/live2dcubismcore.min.js',
-                    {
-                      method: 'HEAD',
-                    }
-                  )
-                  setLive2dVisible(response.ok)
-                }
+                checkLive2DAvailability().then((hasFile) => {
+                  setLive2dVisible(hasFile)
+                })
               } catch (error) {
                 console.error('Error checking Live2D file availability:', error)
                 setLive2dVisible(false)
