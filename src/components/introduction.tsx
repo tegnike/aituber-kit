@@ -35,7 +35,7 @@ export const Introduction = () => {
   const handleClose = () => {
     setOpened(false)
     updateLanguage()
-    
+
     // Only update showIntroduction if "don't show again" is checked
     if (dontShowAgain) {
       homeStore.setState({
