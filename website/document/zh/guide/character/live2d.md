@@ -35,7 +35,7 @@ Live2D提供了一个名为Cubism的库作为开发SDK，AITuberKit在获得Live
 
 ### Cubism Core设置
 
-要使用Live2D功能，请将以下文件放置在`public/scripts`中：
+要使用Live2D功能，请将以下文件放置在`public/scripts`中，或者在设置画面中上传：
 
 `live2dcubismcore.min.js`（适用于Cubism 4/5）
 

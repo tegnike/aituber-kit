@@ -35,7 +35,7 @@ Live2D provides a library called Cubism as a development SDK, and AITuberKit use
 
 ### Cubism Core Setup
 
-To use the Live2D feature, please place the following file in `public/scripts`:
+To use the Live2D feature, please place the following file in `public/scripts` or upload it from the settings screen:
 
 `live2dcubismcore.min.js` (for Cubism 4/5)
 
