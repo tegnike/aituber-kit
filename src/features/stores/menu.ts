@@ -11,6 +11,7 @@ type SettingsTabKey =
   | 'slide'
   | 'log'
   | 'other'
+
 interface MenuState {
   showWebcam: boolean
   showCapture: boolean
@@ -18,6 +19,7 @@ interface MenuState {
   bgFileInput: HTMLInputElement | null
   slideVisible: boolean
   activeSettingsTab: SettingsTabKey
+  showSettingsScreen: boolean
 }
 
 const menuStore = create<MenuState>((set, get) => ({
@@ -27,6 +29,7 @@ const menuStore = create<MenuState>((set, get) => ({
   bgFileInput: null,
   slideVisible: false,
   activeSettingsTab: 'description',
+  showSettingsScreen: false,
 }))
 
 export default menuStore
