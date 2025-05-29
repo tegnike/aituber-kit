@@ -10,7 +10,8 @@ const customJestConfig = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^canvas$': '<rootDir>/src/__mocks__/node-canvas.js',
-    '^three/examples/jsm/(.*)$': '<rootDir>/src/__mocks__/three/examples/jsm/$1',
+    '^three/examples/jsm/(.*)$':
+      '<rootDir>/src/__mocks__/three/examples/jsm/$1',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
   modulePathIgnorePatterns: [
