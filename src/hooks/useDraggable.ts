@@ -74,11 +74,16 @@ export const useDraggable = (initialPosition?: Position) => {
     }
   }, [isDragging, handleMouseMove, handleMouseUp, isMobile])
 
+  const resetPosition = useCallback(() => {
+    setPosition(initialPosition || { x: 0, y: 0 })
+  }, [initialPosition])
+
   return {
     position,
     isDragging,
     isMobile,
     handleMouseDown,
+    resetPosition,
     style: {
       transform: `translate(${position.x}px, ${position.y}px)`,
       cursor: isMobile ? 'default' : isDragging ? 'grabbing' : 'grab',

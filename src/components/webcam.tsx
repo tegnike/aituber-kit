@@ -14,8 +14,12 @@ export const Webcam = () => {
   const [isExpanded, setIsExpanded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const backgroundVideoRef = useRef<HTMLVideoElement>(null)
-  const { position, isDragging, isMobile, handleMouseDown, style } =
-    useDraggable()
+  const {
+    isMobile,
+    handleMouseDown,
+    resetPosition,
+    style: dragStyle,
+  } = useDraggable()
 
   const refreshDevices = useCallback(async () => {
     if (!navigator.mediaDevices) return
@@ -126,7 +130,9 @@ export const Webcam = () => {
     setIsExpanded(!isExpanded)
     // When expanded, use video as background
     settingsStore.setState({ useVideoAsBackground: !isExpanded })
-  }, [isExpanded])
+    // Reset position and size when toggling background mode
+    resetPosition()
+  }, [isExpanded, resetPosition])
 
   return (
     <>
@@ -139,7 +145,7 @@ export const Webcam = () => {
           className="fixed top-0 left-0 w-full h-full object-cover -z-10"
         />
       )}
-      <div className="fixed right-4 top-4 max-h-[40vh] z-10" style={style}>
+      <div className="fixed right-4 top-4 max-h-[40vh] z-10" style={dragStyle}>
         <div
           className="relative w-full md:max-w-[512px] max-w-[70%] select-none"
           onMouseDown={!isMobile ? handleMouseDown : undefined}
