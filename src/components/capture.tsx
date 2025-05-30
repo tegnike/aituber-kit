@@ -15,7 +15,8 @@ const Capture = () => {
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false)
   const [showPermissionModal, setShowPermissionModal] = useState<boolean>(true)
   const [isExpanded, setIsExpanded] = useState(false)
-  const { position, isDragging, isMobile, handleMouseDown, style } = useDraggable()
+  const { position, isDragging, isMobile, handleMouseDown, style } =
+    useDraggable()
 
   // 初回のみ許可を要求するために useRef で状態を保持
   const requestCapturePermissionAttempted = useRef<boolean>(false)
@@ -168,11 +169,8 @@ const Capture = () => {
           className="fixed top-0 left-0 w-full h-full object-cover -z-10"
         />
       )}
-      <div 
-        className="fixed right-4 top-4 max-h-[40vh] z-10"
-        style={style}
-      >
-        <div 
+      <div className="fixed right-4 top-4 max-h-[40vh] z-10" style={style}>
+        <div
           className="relative w-full md:max-w-[512px] max-w-[70%] select-none"
           onMouseDown={!isMobile ? handleMouseDown : undefined}
         >
@@ -192,7 +190,7 @@ const Capture = () => {
               onClick={startCapture}
             />
             <IconButton
-              iconName="24/External"
+              iconName="24/Expand"
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-2"
               isProcessing={false}
               onClick={handleExpand}
