@@ -4,10 +4,5 @@
   "rules": {
     "prettier/prettier": "error"
   },
-  "ignorePatterns": [
-    "public/scripts/*",
-    "scripts/**",
-    ".mypy_cache/**",
-    "website/**"
-  ]
+  "ignorePatterns": ["public/scripts/*", "scripts/**", ".mypy_cache/**"]
 }
