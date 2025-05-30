@@ -149,7 +149,7 @@ export class SpeakQueue {
     const initialLength = this.queue.length
     const ss = settingsStore.getState()
     await new Promise((resolve) =>
-      setTimeout(resolve, ss.queueCheckDelay)
+      setTimeout(resolve, ss.queueCheckDelay * 1000)
     )
 
     if (this.shouldResetToNeutral(initialLength)) {

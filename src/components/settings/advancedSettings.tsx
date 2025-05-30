@@ -10,7 +10,6 @@ const AdvancedSettings = () => {
   const showCharacterPresetMenu = settingsStore(
     (s) => s.showCharacterPresetMenu
   )
-  const queueCheckDelay = settingsStore((s) => s.queueCheckDelay)
 
   const { t } = useTranslation()
 
@@ -78,30 +77,6 @@ const AdvancedSettings = () => {
             {includeTimestampInUserMessage ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>
-      </div>
-      <div className="my-6">
-        <div className="my-4 text-xl font-bold">
-          Queue Check Delay
-        </div>
-        <div className="my-4 text-base whitespace-pre-line">
-          Time to wait before resetting to neutral expression after speech queue becomes empty (in milliseconds).
-        </div>
-        <div className="select-none">
-          Queue Check Delay: {queueCheckDelay}ms
-        </div>
-        <input
-          type="range"
-          min="500"
-          max="5000"
-          step="100"
-          value={queueCheckDelay}
-          onChange={(e) =>
-            settingsStore.setState({
-              queueCheckDelay: parseInt(e.target.value),
-            })
-          }
-          className="mt-2 mb-4 input-range"
-        />
       </div>
     </div>
   )

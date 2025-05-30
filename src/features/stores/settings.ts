@@ -413,7 +413,7 @@ const settingsStore = create<SettingsState>()(
       chatLogWidth:
         parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
       queueCheckDelay:
-        parseFloat(process.env.NEXT_PUBLIC_QUEUE_CHECK_DELAY || '1500') || 1500,
+        parseFloat(process.env.NEXT_PUBLIC_QUEUE_CHECK_DELAY || '1.5') || 1.5,
 
       // NijiVoice settings
       nijivoiceApiKey: '',

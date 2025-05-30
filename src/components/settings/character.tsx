@@ -681,6 +681,31 @@ const Character = () => {
             )
           })}
         </div>
+
+        <div className="my-6">
+          <div className="my-4 text-xl font-bold">{t('QueueCheckDelay')}</div>
+          <div className="my-4 text-base whitespace-pre-line">
+            {t('QueueCheckDelayInfo')}
+          </div>
+          <div className="select-none">
+            {t('QueueCheckDelayLabel', {
+              delay: settingsStore((s) => s.queueCheckDelay),
+            })}
+          </div>
+          <input
+            type="range"
+            min="0.5"
+            max="60"
+            step="0.1"
+            value={settingsStore((s) => s.queueCheckDelay)}
+            onChange={(e) =>
+              settingsStore.setState({
+                queueCheckDelay: parseFloat(e.target.value),
+              })
+            }
+            className="mt-2 mb-4 input-range"
+          />
+        </div>
       </div>
     </>
   )
