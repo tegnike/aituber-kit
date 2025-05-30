@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { IconButton } from './iconButton'
+import { useDraggable } from '@/hooks/useDraggable'
 
 export const Webcam = () => {
   const triggerShutter = homeStore((s) => s.triggerShutter)
@@ -10,8 +11,10 @@ export const Webcam = () => {
   const [selectedDevice, setSelectedDevice] = useState<string>('')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
   const [showRotateButton, setShowRotateButton] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const backgroundVideoRef = useRef<HTMLVideoElement>(null)
+  const { position, isDragging, isMobile, handleMouseDown, style } = useDraggable()
 
   const refreshDevices = useCallback(async () => {
     if (!navigator.mediaDevices) return
@@ -118,6 +121,12 @@ export const Webcam = () => {
     }
   }, [triggerShutter, handleCapture])
 
+  const handleExpand = useCallback(() => {
+    setIsExpanded(!isExpanded)
+    // When expanded, use video as background
+    settingsStore.setState({ useVideoAsBackground: !isExpanded })
+  }, [isExpanded])
+
   return (
     <>
       {useVideoAsBackground && (
@@ -129,8 +138,14 @@ export const Webcam = () => {
           className="fixed top-0 left-0 w-full h-full object-cover -z-10"
         />
       )}
-      <div className="absolute row-span-1 flex right-0 max-h-[40vh] z-10">
-        <div className="relative w-full md:max-w-[512px] max-w-[70%] m-4 md:m-4 ml-auto">
+      <div 
+        className="fixed right-4 top-4 max-h-[40vh] z-10"
+        style={style}
+      >
+        <div 
+          className="relative w-full md:max-w-[512px] max-w-[70%] select-none"
+          onMouseDown={!isMobile ? handleMouseDown : undefined}
+        >
           <video
             ref={videoRef}
             width={512}
@@ -139,7 +154,7 @@ export const Webcam = () => {
             autoPlay
             playsInline
             muted
-            className={`rounded-lg w-auto object-contain max-h-[100%] ml-auto ${
+            className={`rounded-lg w-auto object-contain max-h-[100%] ${
               useVideoAsBackground ? 'invisible' : ''
             }`}
           />
@@ -150,6 +165,12 @@ export const Webcam = () => {
               isProcessing={false}
               disabled={!showRotateButton}
               onClick={handleRotateCamera}
+            />
+            <IconButton
+              iconName="24/External"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-2"
+              isProcessing={false}
+              onClick={handleExpand}
             />
             <IconButton
               iconName="24/Shutter"

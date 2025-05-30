@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { IconButton } from './iconButton'
+import { useDraggable } from '@/hooks/useDraggable'
 
 const Capture = () => {
   const triggerShutter = homeStore((s) => s.triggerShutter)
@@ -13,6 +14,8 @@ const Capture = () => {
 
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false)
   const [showPermissionModal, setShowPermissionModal] = useState<boolean>(true)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const { position, isDragging, isMobile, handleMouseDown, style } = useDraggable()
 
   // 初回のみ許可を要求するために useRef で状態を保持
   const requestCapturePermissionAttempted = useRef<boolean>(false)
@@ -142,6 +145,12 @@ const Capture = () => {
     }
   }, [triggerShutter, handleCapture])
 
+  const handleExpand = useCallback(() => {
+    setIsExpanded(!isExpanded)
+    // When expanded, use video as background
+    settingsStore.setState({ useVideoAsBackground: !isExpanded })
+  }, [isExpanded])
+
   useEffect(() => {
     return () => {
       cleanupStream()
@@ -159,15 +168,21 @@ const Capture = () => {
           className="fixed top-0 left-0 w-full h-full object-cover -z-10"
         />
       )}
-      <div className="absolute row-span-1 flex right-0 max-h-[40vh] z-10">
-        <div className="relative w-full md:max-w-[512px] max-w-[70%] m-4 md:m-4 ml-auto">
+      <div 
+        className="fixed right-4 top-4 max-h-[40vh] z-10"
+        style={style}
+      >
+        <div 
+          className="relative w-full md:max-w-[512px] max-w-[70%] select-none"
+          onMouseDown={!isMobile ? handleMouseDown : undefined}
+        >
           <video
             ref={videoRef}
             autoPlay
             playsInline
             width={512}
             height={512}
-            className={useVideoAsBackground ? 'invisible' : ''}
+            className={`rounded-lg w-auto object-contain max-h-[100%] ${useVideoAsBackground ? 'invisible' : ''}`}
           />
           <div className="md:block absolute top-2 right-2">
             <IconButton
@@ -175,6 +190,12 @@ const Capture = () => {
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-2"
               isProcessing={false}
               onClick={startCapture}
+            />
+            <IconButton
+              iconName="24/External"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled m-2"
+              isProcessing={false}
+              onClick={handleExpand}
             />
             <IconButton
               iconName="24/Shutter"
