@@ -12,7 +12,6 @@ type SpeakTask = {
 }
 
 export class SpeakQueue {
-  private static readonly QUEUE_CHECK_DELAY = 1500
   private queue: SpeakTask[] = []
   private isProcessing = false
   private currentSessionId: string | null = null
@@ -148,8 +147,9 @@ export class SpeakQueue {
 
   private async scheduleNeutralExpression() {
     const initialLength = this.queue.length
+    const ss = settingsStore.getState()
     await new Promise((resolve) =>
-      setTimeout(resolve, SpeakQueue.QUEUE_CHECK_DELAY)
+      setTimeout(resolve, ss.queueCheckDelay)
     )
 
     if (this.shouldResetToNeutral(initialLength)) {
