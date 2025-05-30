@@ -160,9 +160,11 @@ const Main = () => {
                     className={`flex items-center py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
                     onClick={() => setActiveTab(tab.key)}
                   >
-                    <img
+                    <Image
                       src={tabIconMapping[tab.key]}
                       alt={`${tab.label} icon`}
+                      width={20}
+                      height={20}
                       className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
                     />
                     {tab.label}

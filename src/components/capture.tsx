@@ -22,23 +22,26 @@ const Capture = () => {
   const requestCapturePermissionAttempted = useRef<boolean>(false)
 
   // ストリームの設定を一元管理する関数
-  const setupStream = async (stream: MediaStream) => {
-    mediaStreamRef.current = stream
-    captureStartedRef.current = true
-    homeStore.setState({ captureStatus: true })
+  const setupStream = useCallback(
+    async (stream: MediaStream) => {
+      mediaStreamRef.current = stream
+      captureStartedRef.current = true
+      homeStore.setState({ captureStatus: true })
 
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream
-      await videoRef.current.play()
-    }
-    if (backgroundVideoRef.current && useVideoAsBackground) {
-      backgroundVideoRef.current.srcObject = stream
-      await backgroundVideoRef.current.play()
-    }
-  }
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
+      }
+      if (backgroundVideoRef.current && useVideoAsBackground) {
+        backgroundVideoRef.current.srcObject = stream
+        await backgroundVideoRef.current.play()
+      }
+    },
+    [useVideoAsBackground]
+  )
 
   // ストリームのクリーンアップを一元管理する関数
-  const cleanupStream = () => {
+  const cleanupStream = useCallback(() => {
     if (mediaStreamRef.current) {
       const tracks = mediaStreamRef.current.getTracks()
       tracks.forEach((track) => track.stop())
@@ -53,10 +56,10 @@ const Capture = () => {
     if (backgroundVideoRef.current) {
       backgroundVideoRef.current.srcObject = null
     }
-  }
+  }, [])
 
   // Capture permission request
-  const requestCapturePermission = async () => {
+  const requestCapturePermission = useCallback(async () => {
     try {
       if (!navigator.mediaDevices) {
         throw new Error('Media Devices API non supported.')
@@ -72,7 +75,7 @@ const Capture = () => {
       setShowPermissionModal(true)
       cleanupStream()
     }
-  }
+  }, [setupStream, cleanupStream])
 
   useEffect(() => {
     // 初回のみ許可を要求
@@ -80,7 +83,7 @@ const Capture = () => {
       requestCapturePermission()
       requestCapturePermissionAttempted.current = true
     }
-  }, [permissionGranted])
+  }, [permissionGranted, requestCapturePermission])
 
   useEffect(() => {
     if (useVideoAsBackground && mediaStreamRef.current) {
@@ -156,7 +159,7 @@ const Capture = () => {
     return () => {
       cleanupStream()
     }
-  }, [])
+  }, [cleanupStream])
 
   return (
     <>

@@ -10,9 +10,10 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateObject } from 'ai'
 import { z } from 'zod'
 
-import { multiModalAIServiceKey } from '@/features/stores/settings'
+import { AIService } from '@/features/constants/settings'
+import { isMultiModalModel } from '@/features/constants/aiModels'
 
-type AIServiceConfig = Record<multiModalAIServiceKey, () => any>
+type AIServiceConfig = Record<AIService, () => any>
 
 export const config = {
   api: {
@@ -160,17 +161,24 @@ async function createSlideLine(
     ? `Previous slide content: ${previousResult}`
     : 'This is the first slide.'
 
-  const aiServiceConfig: AIServiceConfig = {
+  // マルチモーダル対応のチェック
+  if (!isMultiModalModel(aiService as AIService, model)) {
+    throw new Error(`Model ${model} does not support multimodal features`)
+  }
+
+  const aiServiceConfig: Partial<AIServiceConfig> = {
     openai: () => createOpenAI({ apiKey }),
     anthropic: () => createAnthropic({ apiKey }),
     google: () => createGoogleGenerativeAI({ apiKey }),
-    azure: () => {},
+    // 他のプロバイダーは必要に応じて追加
   }
 
-  const aiServiceInstance = aiServiceConfig[aiService as multiModalAIServiceKey]
+  const aiServiceInstance = aiServiceConfig[aiService as AIService]
 
   if (!aiServiceInstance) {
-    throw new Error('Invalid AI service')
+    throw new Error(
+      `AI service ${aiService} is not supported for slide conversion`
+    )
   }
 
   const instance = aiServiceInstance()

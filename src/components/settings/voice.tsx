@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 
 import {
@@ -75,7 +75,7 @@ const Voice = () => {
   const [customVoiceText, setCustomVoiceText] = useState<string>('')
 
   // にじボイスの話者一覧を取得する関数
-  const fetchNijivoiceSpeakers = async () => {
+  const fetchNijivoiceSpeakers = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/get-nijivoice-actors?apiKey=${nijivoiceApiKey}`
@@ -90,7 +90,7 @@ const Voice = () => {
     } catch (error) {
       console.error('Failed to fetch nijivoice speakers:', error)
     }
-  }
+  }, [nijivoiceApiKey])
 
   // AIVISの話者一覧を取得する関数
   const fetchAivisSpeakers = async () => {
@@ -108,7 +108,7 @@ const Voice = () => {
     if (selectVoice === 'nijivoice') {
       fetchNijivoiceSpeakers()
     }
-  }, [selectVoice, nijivoiceApiKey])
+  }, [selectVoice, nijivoiceApiKey, fetchNijivoiceSpeakers])
 
   // コンポーネントマウント時またはAIVIS選択時に話者一覧を取得
   useEffect(() => {
