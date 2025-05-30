@@ -307,5 +307,8 @@
   "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。",
   "XAIAPIKeyLabel": "xAI APIキー",
   "OpenRouterAPIKeyLabel": "OpenRouter APIキー",
-  "OpenRouterModelNameInstruction": "OpenRouterからモデル識別子を入力してください（例： \"openai/gpt-4o\", \"mistralai/mistral-large-latest\"）。モデル識別子はOpenRouterモデルページで確認できます。"
+  "OpenRouterModelNameInstruction": "OpenRouterからモデル識別子を入力してください（例： \"openai/gpt-4o\", \"mistralai/mistral-large-latest\"）。モデル識別子はOpenRouterモデルページで確認できます。",
+  "QueueCheckDelay": "キューチェック遅延",
+  "QueueCheckDelayInfo": "音声キューが空になった後、ニュートラル表情にリセットするまでの待機時間（秒）。",
+  "QueueCheckDelayLabel": "キューチェック遅延: {{delay}}秒"
 }

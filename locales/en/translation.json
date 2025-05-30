@@ -301,5 +301,8 @@
   "CustomAPIBodyInfo": "Enter body information to include in API requests in JSON format. messages will be automatically included.",
   "CustomAPIDescription": "Note: Messages are automatically included in the request body. In streaming mode, the server must return text/event-stream.",
   "EditSlideScripts": "Edit Dialogue",
-  "PleaseSelectSlide": "Please select a slide"
+  "PleaseSelectSlide": "Please select a slide",
+  "QueueCheckDelay": "Queue Check Delay",
+  "QueueCheckDelayInfo": "Time to wait before resetting to neutral expression after speech queue becomes empty (in seconds).",
+  "QueueCheckDelayLabel": "Queue Check Delay: {{delay}}s"
 }
