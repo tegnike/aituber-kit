@@ -134,7 +134,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
         // Video is wider than container
         actualWidth = container.clientWidth
         actualHeight = container.clientWidth / videoAspectRatio
-        offsetY = (container.clientHeight - actualHeight) / 2
+        offsetY = 0 // Align to top
       } else {
         // Video is taller than container
         actualHeight = container.clientHeight
@@ -206,7 +206,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
               autoPlay
               playsInline
               muted
-              className={`rounded-lg w-full h-full object-contain ${
+              className={`w-full h-full object-top ${
                 useVideoAsBackground ? 'invisible' : ''
               }`}
             />
