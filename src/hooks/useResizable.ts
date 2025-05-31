@@ -49,7 +49,7 @@ export const useResizable = (options: ResizableOptions = {}) => {
       const deltaX = e.clientX - startPosRef.current.x
       const deltaY = e.clientY - startPosRef.current.y
       const direction = resizeDirectionRef.current
-      
+
       let newWidth = startSizeRef.current.width
       let newHeight = startSizeRef.current.height
 
@@ -97,19 +97,21 @@ export const useResizable = (options: ResizableOptions = {}) => {
       document.addEventListener('mousemove', handleResizeMove)
       document.addEventListener('mouseup', handleResizeEnd)
       document.body.style.cursor = resizeDirectionRef.current?.includes('right')
-        ? resizeDirectionRef.current.includes('top') || resizeDirectionRef.current.includes('bottom')
+        ? resizeDirectionRef.current.includes('top') ||
+          resizeDirectionRef.current.includes('bottom')
           ? resizeDirectionRef.current.includes('top')
             ? 'nesw-resize'
             : 'nwse-resize'
           : 'ew-resize'
         : resizeDirectionRef.current?.includes('left')
-        ? resizeDirectionRef.current.includes('top') || resizeDirectionRef.current.includes('bottom')
-          ? resizeDirectionRef.current.includes('top')
-            ? 'nwse-resize'
-            : 'nesw-resize'
-          : 'ew-resize'
-        : 'ns-resize'
-      
+          ? resizeDirectionRef.current.includes('top') ||
+            resizeDirectionRef.current.includes('bottom')
+            ? resizeDirectionRef.current.includes('top')
+              ? 'nwse-resize'
+              : 'nesw-resize'
+            : 'ew-resize'
+          : 'ns-resize'
+
       return () => {
         document.removeEventListener('mousemove', handleResizeMove)
         document.removeEventListener('mouseup', handleResizeEnd)

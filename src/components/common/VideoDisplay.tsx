@@ -46,12 +46,9 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
       resetPosition,
       style: dragStyle,
     } = useDraggable()
-    const {
-      size,
-      isResizing,
-      handleResizeStart,
-      resetSize,
-    } = useResizable({ aspectRatio: true })
+    const { size, isResizing, handleResizeStart, resetSize } = useResizable({
+      aspectRatio: true,
+    })
 
     // Handle background video sync
     useEffect(() => {
