@@ -40,6 +40,13 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
     const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
     const backgroundVideoRef = useRef<HTMLVideoElement>(null)
     const [isExpanded, setIsExpanded] = useState(false)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [videoBounds, setVideoBounds] = useState({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    })
     const {
       isMobile,
       handleMouseDown,
@@ -108,6 +115,63 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
       resetSize()
     }, [isExpanded, resetPosition, resetSize])
 
+    // Calculate actual video bounds within container
+    const updateVideoBounds = useCallback(() => {
+      if (!videoRef.current || !containerRef.current) return
+
+      const video = videoRef.current
+      const container = containerRef.current
+      const videoAspectRatio = video.videoWidth / video.videoHeight
+      const containerAspectRatio =
+        container.clientWidth / container.clientHeight
+
+      let actualWidth: number
+      let actualHeight: number
+      let offsetX = 0
+      let offsetY = 0
+
+      if (videoAspectRatio > containerAspectRatio) {
+        // Video is wider than container
+        actualWidth = container.clientWidth
+        actualHeight = container.clientWidth / videoAspectRatio
+        offsetY = (container.clientHeight - actualHeight) / 2
+      } else {
+        // Video is taller than container
+        actualHeight = container.clientHeight
+        actualWidth = container.clientHeight * videoAspectRatio
+        offsetX = (container.clientWidth - actualWidth) / 2
+      }
+
+      setVideoBounds({
+        x: offsetX,
+        y: offsetY,
+        width: actualWidth,
+        height: actualHeight,
+      })
+    }, [videoRef])
+
+    // Update bounds when size changes or video loads
+    useEffect(() => {
+      const video = videoRef.current
+      if (!video) return
+
+      const handleLoadedMetadata = () => {
+        updateVideoBounds()
+      }
+
+      video.addEventListener('loadedmetadata', handleLoadedMetadata)
+      updateVideoBounds()
+
+      return () => {
+        video.removeEventListener('loadedmetadata', handleLoadedMetadata)
+      }
+    }, [videoRef, size, updateVideoBounds])
+
+    // Update bounds on resize
+    useEffect(() => {
+      updateVideoBounds()
+    }, [size, updateVideoBounds])
+
     return (
       <>
         {useVideoAsBackground && (
@@ -131,6 +195,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
           }}
         >
           <div
+            ref={containerRef}
             className="relative w-full h-full select-none"
             onMouseDown={!isMobile && !isResizing ? handleMouseDown : undefined}
           >
@@ -146,40 +211,76 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
               }`}
             />
             {/* Resize handles */}
-            {!isExpanded && !isMobile && (
+            {!isExpanded && !isMobile && videoBounds.width > 0 && (
               <>
                 {/* Corner handles */}
                 <div
-                  className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize"
+                  className="absolute w-3 h-3 cursor-nwse-resize"
+                  style={{
+                    left: `${videoBounds.x}px`,
+                    top: `${videoBounds.y}px`,
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'top-left')}
                 />
                 <div
-                  className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize"
+                  className="absolute w-3 h-3 cursor-nesw-resize"
+                  style={{
+                    left: `${videoBounds.x + videoBounds.width - 12}px`,
+                    top: `${videoBounds.y}px`,
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'top-right')}
                 />
                 <div
-                  className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize"
+                  className="absolute w-3 h-3 cursor-nesw-resize"
+                  style={{
+                    left: `${videoBounds.x}px`,
+                    top: `${videoBounds.y + videoBounds.height - 12}px`,
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'bottom-left')}
                 />
                 <div
-                  className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize"
+                  className="absolute w-3 h-3 cursor-nwse-resize"
+                  style={{
+                    left: `${videoBounds.x + videoBounds.width - 12}px`,
+                    top: `${videoBounds.y + videoBounds.height - 12}px`,
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}
                 />
                 {/* Edge handles */}
                 <div
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-2 cursor-ns-resize"
+                  className="absolute w-1/3 h-2 cursor-ns-resize"
+                  style={{
+                    left: `${videoBounds.x + videoBounds.width / 2}px`,
+                    top: `${videoBounds.y}px`,
+                    transform: 'translateX(-50%)',
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'top')}
                 />
                 <div
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-2 cursor-ns-resize"
+                  className="absolute w-1/3 h-2 cursor-ns-resize"
+                  style={{
+                    left: `${videoBounds.x + videoBounds.width / 2}px`,
+                    top: `${videoBounds.y + videoBounds.height - 8}px`,
+                    transform: 'translateX(-50%)',
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'bottom')}
                 />
                 <div
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-1/3 cursor-ew-resize"
+                  className="absolute w-2 h-1/3 cursor-ew-resize"
+                  style={{
+                    left: `${videoBounds.x}px`,
+                    top: `${videoBounds.y + videoBounds.height / 2}px`,
+                    transform: 'translateY(-50%)',
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'left')}
                 />
                 <div
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-1/3 cursor-ew-resize"
+                  className="absolute w-2 h-1/3 cursor-ew-resize"
+                  style={{
+                    left: `${videoBounds.x + videoBounds.width - 8}px`,
+                    top: `${videoBounds.y + videoBounds.height / 2}px`,
+                    transform: 'translateY(-50%)',
+                  }}
                   onMouseDown={(e) => handleResizeStart(e, 'right')}
                 />
               </>
