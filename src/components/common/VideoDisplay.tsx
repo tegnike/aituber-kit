@@ -9,6 +9,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { IconButton } from '../iconButton'
 import { useDraggable } from '@/hooks/useDraggable'
+import { useResizable } from '@/hooks/useResizable'
 
 interface VideoDisplayProps {
   videoRef: React.RefObject<HTMLVideoElement>
@@ -45,6 +46,12 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
       resetPosition,
       style: dragStyle,
     } = useDraggable()
+    const {
+      size,
+      isResizing,
+      handleResizeStart,
+      resetSize,
+    } = useResizable({ aspectRatio: true })
 
     // Handle background video sync
     useEffect(() => {
@@ -102,7 +109,8 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
       setIsExpanded(!isExpanded)
       settingsStore.setState({ useVideoAsBackground: !isExpanded })
       resetPosition()
-    }, [isExpanded, resetPosition])
+      resetSize()
+    }, [isExpanded, resetPosition, resetSize])
 
     return (
       <>
@@ -117,12 +125,18 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
         )}
         <div
           ref={ref}
-          className={`fixed right-4 top-4 max-h-[40vh] z-10 ${className}`}
-          style={dragStyle}
+          className={`fixed right-4 top-4 z-10 ${className}`}
+          style={{
+            ...dragStyle,
+            width: isExpanded ? 'auto' : `${size.width}px`,
+            height: isExpanded ? 'auto' : `${size.height}px`,
+            maxWidth: isExpanded ? '70%' : 'none',
+            maxHeight: isExpanded ? '40vh' : 'none',
+          }}
         >
           <div
-            className="relative w-full md:max-w-[512px] max-w-[70%] select-none"
-            onMouseDown={!isMobile ? handleMouseDown : undefined}
+            className="relative w-full h-full select-none"
+            onMouseDown={!isMobile && !isResizing ? handleMouseDown : undefined}
           >
             <video
               ref={videoRef}
@@ -131,10 +145,49 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
               autoPlay
               playsInline
               muted
-              className={`rounded-lg w-auto object-contain max-h-[100%] ${
+              className={`rounded-lg w-full h-full object-contain ${
                 useVideoAsBackground ? 'invisible' : ''
               }`}
             />
+            {/* Resize handles */}
+            {!isExpanded && !isMobile && (
+              <>
+                {/* Corner handles */}
+                <div
+                  className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'top-left')}
+                />
+                <div
+                  className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'top-right')}
+                />
+                <div
+                  className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'bottom-left')}
+                />
+                <div
+                  className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}
+                />
+                {/* Edge handles */}
+                <div
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-2 cursor-ns-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'top')}
+                />
+                <div
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-2 cursor-ns-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'bottom')}
+                />
+                <div
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-1/3 cursor-ew-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'left')}
+                />
+                <div
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-1/3 cursor-ew-resize"
+                  onMouseDown={(e) => handleResizeStart(e, 'right')}
+                />
+              </>
+            )}
             <div className="md:block absolute top-2 right-2">
               {showToggleButton && (
                 <IconButton
