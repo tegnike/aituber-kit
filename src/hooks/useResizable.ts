@@ -96,21 +96,23 @@ export const useResizable = (options: ResizableOptions = {}) => {
     if (isResizing) {
       document.addEventListener('mousemove', handleResizeMove)
       document.addEventListener('mouseup', handleResizeEnd)
-      document.body.style.cursor = resizeDirectionRef.current?.includes('right')
-        ? resizeDirectionRef.current.includes('top') ||
-          resizeDirectionRef.current.includes('bottom')
-          ? resizeDirectionRef.current.includes('top')
-            ? 'nesw-resize'
-            : 'nwse-resize'
-          : 'ew-resize'
-        : resizeDirectionRef.current?.includes('left')
-          ? resizeDirectionRef.current.includes('top') ||
-            resizeDirectionRef.current.includes('bottom')
-            ? resizeDirectionRef.current.includes('top')
-              ? 'nwse-resize'
-              : 'nesw-resize'
-            : 'ew-resize'
-          : 'ns-resize'
+
+      const getCursorForDirection = (direction: string) => {
+        if (direction.includes('right') && direction.includes('top'))
+          return 'nesw-resize'
+        if (direction.includes('right') && direction.includes('bottom'))
+          return 'nwse-resize'
+        if (direction.includes('left') && direction.includes('top'))
+          return 'nwse-resize'
+        if (direction.includes('left') && direction.includes('bottom'))
+          return 'nesw-resize'
+        if (direction.includes('right') || direction.includes('left'))
+          return 'ew-resize'
+        return 'ns-resize'
+      }
+      document.body.style.cursor = getCursorForDirection(
+        resizeDirectionRef.current || ''
+      )
 
       return () => {
         document.removeEventListener('mousemove', handleResizeMove)

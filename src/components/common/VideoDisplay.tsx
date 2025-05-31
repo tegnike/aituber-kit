@@ -104,7 +104,6 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
 
     const handleExpand = useCallback(() => {
       setIsExpanded(!isExpanded)
-      settingsStore.setState({ useVideoAsBackground: !isExpanded })
       resetPosition()
       resetSize()
     }, [isExpanded, resetPosition, resetSize])
