@@ -31,13 +31,14 @@ export async function getDifyChatResponseStream(
       // 会話IDをユーザー固有のものに、または新規の場合は空文字列を送信
       conversationId: userConversationId || "",
       stream: true,
-      user: userId, // ユーザーIDを必ず送信 org : "aituber-kit" + 
+      userId: userId, // ユーザーIDを必ず送信 org : "aituber-kit" + 
+      inputs: {}, // 必要に応じて追加の入力パラメータ
     }),
   })
   // for debugging
   console.log('difyChat request:', {
     query: messages[messages.length - 1].content,
-    conversationId,
+    userConversationId,
     userId
   });
 
@@ -85,6 +86,10 @@ export async function getDifyChatResponseStream(
                     controller.enqueue(data.answer)
                     settingsStore.setState({
                       difyConversationId: data.conversation_id,
+                      difyConversationMap: {
+                        ...ss.difyConversationMap,
+                        [userId]: data.conversation_id,
+                      },
                     })
                   }
                 } catch (error) {

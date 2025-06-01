@@ -66,7 +66,7 @@ export default async function handler(req: NextRequest) {
     query: query,
     response_mode: stream ? 'streaming' : 'blocking',
     conversation_id: conversationId,
-    user: userId || 'aituber-kit', // for multi-user support
+    user: userId || 'aituber-kit',
     files: [],
   })
 
