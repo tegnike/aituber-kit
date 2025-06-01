@@ -9,7 +9,8 @@
       "Bash(npm test:*)",
       "Bash(rm:*)",
       "Bash(mkdir:*)",
-      "Bash(npm rebuild:*)"
+      "Bash(npm rebuild:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": []
   }
