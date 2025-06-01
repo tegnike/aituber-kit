@@ -782,7 +782,7 @@ export const fetchUserIdFromCamera = async (
       } 
             
       // もし前回'lost'で今回有効なユーザーだった場合はタイムアウトをクリア
-      if (lostUserTimeoutId && userId !== 'lost') {
+      if (lostUserTimeoutId && lastDetectedUserId === 'lost' && userId.endsWith('male')){
         clearTimeout(lostUserTimeoutId);
         lostUserTimeoutId = null;
       }
