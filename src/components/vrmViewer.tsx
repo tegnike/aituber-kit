@@ -40,6 +40,14 @@ export default function VrmViewer() {
             const image = reader.result as string
             image !== '' && homeStore.setState({ modalImage: image })
           }
+        } else if (file_type === 'vrma') {
+          const blob = new Blob([file], { type: 'application/octet-stream' })
+          const url = window.URL.createObjectURL(blob)
+          viewer.loadVrma(url)
+        } else if (file_type === 'fbx') {
+          const blob = new Blob([file], { type: 'application/octet-stream' })
+          const url = window.URL.createObjectURL(blob)
+          viewer.loadFbx(url)
         }
       })
     }
