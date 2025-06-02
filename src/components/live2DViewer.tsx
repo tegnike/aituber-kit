@@ -9,6 +9,7 @@ const Live2DComponent = dynamic(
   () => {
     console.log('Loading Live2DComponent...')
     return import('./Live2DComponent')
+      .then((mod) => mod.default)
       .then((mod) => {
         console.log('Live2DComponent loaded successfully')
         return mod

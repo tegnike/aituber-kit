@@ -10,6 +10,8 @@ const customJestConfig = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^canvas$': '<rootDir>/src/__mocks__/node-canvas.js',
+    '^three/examples/jsm/(.*)$':
+      '<rootDir>/src/__mocks__/three/examples/jsm/$1',
   },
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
   modulePathIgnorePatterns: [
@@ -18,7 +20,7 @@ const customJestConfig = {
     'node_modules/fluent-ffmpeg',
   ],
   transformIgnorePatterns: [
-    '/node_modules/(?!(canvas|@ffmpeg-installer|fluent-ffmpeg|three|@pixiv/three-vrm)).+\\.js$',
+    'node_modules/(?!(@pixiv/three-vrm|three/examples/jsm))',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/src/__mocks__'],
   testPathIgnorePatterns: ['/node_modules/', '/\\.next/'],

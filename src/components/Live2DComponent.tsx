@@ -33,7 +33,7 @@ const setModelPosition = (
   }
 }
 
-const Live2DComponent = () => {
+const Live2DComponent = (): JSX.Element => {
   console.log('Live2DComponent rendering')
 
   const canvasContainerRef = useRef<HTMLCanvasElement>(null)

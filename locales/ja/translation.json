@@ -228,6 +228,9 @@
   "InputAudio": "音声",
   "SearchGrounding": "検索機能を利用する",
   "SearchGroundingDescription": "マルチモーダル機能利用時は、検索機能は自動的に無効になります。",
+  "DynamicRetrieval": "動的検索",
+  "DynamicRetrievalDescription": "モデルが検索を実行するタイミングしきい値を設定します。0の場合は常に検索を実行し、1の場合は検索を実行しません。",
+  "DynamicRetrievalThreshold": "動的しきい値",
   "UpdateRealtimeAPISettings": "リアルタイムAPI設定を更新",
   "UpdateRealtimeAPISettingsInfo": "APIキー、Azure Endpoint、ボイスタイプ、モデル、システムプロンプトを更新した際は更新ボタンを押して、新しいWebSocketセッションを開始してください。",
   "AzureEndpoint": "Azure Endpoint",
@@ -312,5 +315,8 @@
   "CustomAPIHeadersInfo": "APIリクエストに含めるヘッダー情報をJSON形式で入力してください。",
   "CustomAPIBody": "カスタムボディ",
   "CustomAPIBodyInfo": "APIリクエストに含めるボディ情報をJSON形式で入力してください。messagesは自動的に含まれます。",
-  "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。"
+  "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。",
+  "XAIAPIKeyLabel": "xAI APIキー",
+  "OpenRouterAPIKeyLabel": "OpenRouter APIキー",
+  "OpenRouterModelNameInstruction": "OpenRouterからモデル識別子を入力してください（例： \"openai/gpt-4o\", \"mistralai/mistral-large-latest\"）。モデル識別子はOpenRouterモデルページで確認できます。"
 }

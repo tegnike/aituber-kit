@@ -1,13 +1,11 @@
 import { Message } from '../messages/messages'
 import i18next from 'i18next'
-import settingsStore, {
-  multiModalAIServiceKey,
-} from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import {
   isVercelLocalAIService,
   AIService,
 } from '@/features/constants/settings'
+import settingsStore from '../stores/settings'
 
 const getAIConfig = () => {
   const ss = settingsStore.getState()
