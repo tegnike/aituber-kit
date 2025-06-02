@@ -399,7 +399,10 @@ const settingsStore = create<SettingsState>()(
       clientId: '',
       useSearchGrounding:
         process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
-      dynamicRetrievalThreshold: 0.3,
+      dynamicRetrievalThreshold:
+        parseFloat(
+          process.env.NEXT_PUBLIC_DYNAMIC_RETRIEVAL_THRESHOLD || '0.3'
+        ) || 0.3,
       maxPastMessages:
         parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
       useVideoAsBackground:
