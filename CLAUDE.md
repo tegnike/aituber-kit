@@ -54,8 +54,6 @@ cp .env.example .env  # Configure environment variables
 - **Chat**: `/src/features/chat/` - Factory pattern for multiple providers
 - **Voice**: `/src/features/messages/synthesizeVoice*.ts` - 13 TTS engines
 - **Models**: VRM (3D) in `/src/features/vrmViewer/`, Live2D (2D) support
-- **xAI**: `/src/features/chat/aiChatFactory.ts` - xAI Grok models integration via Vercel AI SDK
-- **OpenRouter**: `/src/features/chat/aiChatFactory.ts` - OpenRouter multi-model access via Vercel AI SDK
 
 ### Important Patterns
 
