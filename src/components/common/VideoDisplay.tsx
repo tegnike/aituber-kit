@@ -86,6 +86,11 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
 
     const handleCapture = useCallback(() => {
       if (!videoRef.current) return
+      if (
+        videoRef.current.videoWidth === 0 ||
+        videoRef.current.videoHeight === 0
+      )
+        return
 
       const canvas = document.createElement('canvas')
       canvas.width = videoRef.current.videoWidth
