@@ -115,7 +115,7 @@ export class Viewer {
     })
     this.isReady = true
     this.update()
-    
+
     // Restore saved position if available
     this.restoreCameraPosition()
   }
@@ -145,7 +145,6 @@ export class Viewer {
    */
   public resetCamera() {
     const { fixedCharacterPosition } = settingsStore.getState()
-    
     // If position is fixed, restore saved position instead of auto-adjusting
     if (fixedCharacterPosition) {
       this.restoreCameraPosition()
@@ -191,7 +190,7 @@ export class Viewer {
         x: this._camera.position.x,
         y: this._camera.position.y,
         z: this._camera.position.z,
-        scale: settings.characterPosition.scale, // Keep existing scale for Live2D compatibility
+        scale: settings.characterPosition?.scale ?? 1,
       },
       characterRotation: {
         x: this._cameraControls.target.x,
@@ -207,11 +206,25 @@ export class Viewer {
   public restoreCameraPosition() {
     if (!this._camera || !this._cameraControls) return
 
-    const { characterPosition, characterRotation, fixedCharacterPosition } = settingsStore.getState()
-    
-    if (fixedCharacterPosition && (characterPosition.x !== 0 || characterPosition.y !== 0 || characterPosition.z !== 0)) {
-      this._camera.position.set(characterPosition.x, characterPosition.y, characterPosition.z)
-      this._cameraControls.target.set(characterRotation.x, characterRotation.y, characterRotation.z)
+    const { characterPosition, characterRotation, fixedCharacterPosition } =
+      settingsStore.getState()
+
+    if (
+      fixedCharacterPosition &&
+      (characterPosition.x !== 0 ||
+        characterPosition.y !== 0 ||
+        characterPosition.z !== 0)
+    ) {
+      this._camera.position.set(
+        characterPosition.x,
+        characterPosition.y,
+        characterPosition.z
+      )
+      this._cameraControls.target.set(
+        characterRotation.x,
+        characterRotation.y,
+        characterRotation.z
+      )
       this._cameraControls.update()
     }
   }
