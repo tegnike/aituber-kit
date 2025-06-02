@@ -235,7 +235,7 @@ const settingsStore = create<SettingsState>()(
       selectAIService:
         (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai',
       selectAIModel: migrateOpenAIModelName(
-        process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4'
+        process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4.1'
       ),
       localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
       selectVoice:
