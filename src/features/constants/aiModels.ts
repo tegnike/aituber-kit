@@ -216,3 +216,64 @@ export const openAITTSModels = ['tts-1', 'tts-1-hd', 'gpt-4o-mini-tts'] as const
 export function getOpenAITTSModels(): string[] {
   return [...openAITTSModels]
 }
+
+/**
+ * マルチモーダル対応モデル一覧
+ * 各AIサービスで画像入力に対応しているモデルを定義
+ */
+export const multiModalModels: Partial<Record<AIService, string[]>> = {
+  openai: [
+    'chatgpt-4o-latest',
+    'gpt-4o-mini-2024-07-18',
+    'gpt-4o-2024-11-20',
+    'gpt-4.5-preview-2025-02-27',
+    'gpt-4.1-nano-2025-04-14',
+    'gpt-4.1-mini-2025-04-14',
+    'gpt-4.1-2025-04-14',
+  ],
+  anthropic: [
+    'claude-3-opus-20240229',
+    'claude-3-7-sonnet-20250219',
+    'claude-3-5-sonnet-20241022',
+    'claude-3-5-haiku-20241022',
+  ],
+  google: [
+    'gemini-2.0-flash-001',
+    'gemini-1.5-flash-latest',
+    'gemini-1.5-flash-8b-latest',
+    'gemini-1.5-pro-latest',
+  ],
+  azure: [], // Azure models depend on deployment, so we treat all as potential multimodal
+}
+
+/**
+ * 指定されたAIサービスとモデルがマルチモーダル対応かどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @returns マルチモーダル対応の場合true
+ */
+export function isMultiModalModel(service: AIService, model: string): boolean {
+  const serviceModels = multiModalModels[service]
+  if (!serviceModels) return false
+  
+  // Azure の場合は、サービス自体がマルチモーダル対応サービスリストに含まれていればtrueとする
+  if (service === 'azure') return true
+  
+  // OpenAIのリアルタイムAPIモデルとオーディオAPIモデルも画像入力に対応している
+  if (service === 'openai') {
+    if (openAIRealtimeModels.includes(model as any) || openAIAudioModels.includes(model as any)) {
+      return true
+    }
+  }
+  
+  return serviceModels.includes(model)
+}
+
+/**
+ * 指定されたAIサービスのマルチモーダル対応モデル一覧を取得する
+ * @param service AIサービス名
+ * @returns マルチモーダル対応モデル一覧
+ */
+export function getMultiModalModels(service: AIService): string[] {
+  return multiModalModels[service] || []
+}
