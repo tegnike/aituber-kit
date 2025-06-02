@@ -233,7 +233,11 @@
     "NoSpeechDetected": "未检测到音频。",
     "PresetSwitching": "已切换到{{presetName}}。",
     "WhisperError": "Whisper的语音识别发生错误",
-    "UsingTool": "正在使用{{toolName}}"
+    "UsingTool": "正在使用{{toolName}}",
+    "PositionFixed": "已固定角色的位置",
+    "PositionUnfixed": "已解除角色位置的固定",
+    "PositionReset": "已重置角色的位置",
+    "PositionActionFailed": "位置操作失败"
   },
   "ContinuousMic": "常时麦克风输入",
   "ContinuousMicActive": "常时麦克风输入中",
@@ -301,5 +305,19 @@
   "CustomAPIBodyInfo": "请以JSON格式输入要包含在API请求中的正文信息。messages将自动包含。",
   "CustomAPIDescription": "注意：消息将自动包含在请求正文中。在流式模式下，服务器需要返回text/event-stream。",
   "EditSlideScripts": "台词编辑",
-  "PleaseSelectSlide": "请选择幻灯片"
+  "PleaseSelectSlide": "请选择幻灯片",
+  "XAIAPIKeyLabel": "xAI API密钥",
+  "DynamicRetrievalDescription": "设置模型执行搜索的时机阈值。为0时始终执行搜索，为1时不执行搜索。",
+  "DynamicRetrieval": "动态搜索",
+  "OpenRouterModelNameInstruction": "请从OpenRouter输入模型标识符（例如：\"openai/gpt-4o\", \"mistralai/mistral-large-latest\"）。模型标识符可以在OpenRouter模型页面上查看。",
+  "FixPosition": "固定位置",
+  "ResetPosition": "重置位置",
+  "CharacterPosition": "角色的位置",
+  "DynamicRetrievalThreshold": "动态阈值",
+  "CurrentStatus": "当前状态",
+  "PositionNotFixed": "未固定",
+  "PositionFixed": "固定中",
+  "OpenRouterAPIKeyLabel": "OpenRouter API密钥",
+  "CharacterPositionInfo": "可以固定角色的位置和朝向。VRM保存摄像机位置，Live2D保存模型位置。",
+  "UnfixPosition": "解除固定"
 }

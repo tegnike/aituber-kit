@@ -233,7 +233,11 @@
     "NoSpeechDetected": "لم يتم اكتشاف صوت.",
     "PresetSwitching": "تم التبديل إلى {{presetName}}.",
     "WhisperError": "حدث خطأ في التعرف على الصوت بواسطة Whisper",
-    "UsingTool": "أثناء استخدام {{toolName}}"
+    "UsingTool": "أثناء استخدام {{toolName}}",
+    "PositionFixed": "تم تثبيت موضع الشخصية",
+    "PositionUnfixed": "تم إلغاء تثبيت موضع الشخصية",
+    "PositionReset": "تمت إعادة تعيين موضع الشخصية",
+    "PositionActionFailed": "فشل في عملية تحديد الموقع"
   },
   "ContinuousMic": "إدخال الميكروفون المستمر",
   "ContinuousMicActive": "إدخال الميكروفون المستمر نشط",
@@ -301,5 +305,19 @@
   "CustomAPIBodyInfo": "أدخل معلومات الهيكل التي سيتم تضمينها في طلب واجهة البرمجة بتنسيق JSON. سيتم تضمين الرسائل تلقائيًا.",
   "CustomAPIDescription": "ملاحظة: سيتم تضمين الرسائل تلقائيًا في جسم الطلب. في وضع التدفق، يجب أن يعيد الخادم text/event-stream.",
   "EditSlideScripts": "تحرير الحوار",
-  "PleaseSelectSlide": "يرجى اختيار الشريحة"
+  "PleaseSelectSlide": "يرجى اختيار الشريحة",
+  "XAIAPIKeyLabel": "مفتاح API لـ xAI",
+  "DynamicRetrievalDescription": "يتم تعيين عتبة توقيت تنفيذ البحث بواسطة النموذج. إذا كانت القيمة 0، يتم تنفيذ البحث دائمًا، وإذا كانت القيمة 1، لا يتم تنفيذ البحث.",
+  "DynamicRetrieval": "البحث الديناميكي",
+  "OpenRouterModelNameInstruction": "يرجى إدخال معرف النموذج من OpenRouter (مثال: \"openai/gpt-4o\"، \"mistralai/mistral-large-latest\"). يمكن التحقق من معرف النموذج في صفحة نموذج OpenRouter.",
+  "FixPosition": "تثبيت الموقع",
+  "ResetPosition": "إعادة تعيين الموقع",
+  "CharacterPosition": "موقع الشخصية",
+  "DynamicRetrievalThreshold": "عتبة ديناميكية",
+  "CurrentStatus": "الحالة الحالية",
+  "PositionNotFixed": "غير مثبت",
+  "PositionFixed": "قيد التثبيت",
+  "OpenRouterAPIKeyLabel": "مفتاح API الخاص بـ OpenRouter",
+  "CharacterPositionInfo": "يمكنك تثبيت موضع واتجاه الشخصية. يتم حفظ موضع الكاميرا لـ VRM وموضع النموذج لـ Live2D.",
+  "UnfixPosition": "إلغاء التثبيت"
 }
