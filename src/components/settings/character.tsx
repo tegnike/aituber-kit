@@ -562,9 +562,7 @@ const Character = () => {
         {/* Character Position Controls */}
         <div className="my-6">
           <div className="text-xl font-bold mb-4">{t('CharacterPosition')}</div>
-          <div className="mb-4 text-base text-gray-500">
-            {t('CharacterPositionInfo')}
-          </div>
+          <div className="mb-4 text-base">{t('CharacterPositionInfo')}</div>
           <div className="flex gap-4">
             <TextButton
               onClick={() => {
