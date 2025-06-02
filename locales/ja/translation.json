@@ -50,6 +50,11 @@
   "CharacterModelLabel": "キャラクターモデル",
   "CharacterModelInfo": "モデルによっては初期表示時の読み込みに時間がかかる可能性があります。",
   "OpenVRM": "VRMを開く",
+  "CharacterPosition": "キャラクターの位置",
+  "CharacterPositionInfo": "キャラクターの位置と向きを固定できます。VRMはカメラ位置、Live2Dはモデル位置が保存されます。",
+  "FixPosition": "位置を固定",
+  "UnfixPosition": "固定を解除", 
+  "ResetPosition": "位置をリセット",
   "BackgroundImage": "背景画像",
   "ChangeBackgroundImage": "背景画像を変える",
   "BackgroundSettings": "背景設定",
@@ -235,7 +240,10 @@
     "NoSpeechDetected": "音声が検出されませんでした。",
     "PresetSwitching": "{{presetName}}に切り替わりました。",
     "WhisperError": "Whisperによる音声認識でエラーが発生しました",
-    "UsingTool": "{{toolName}}を使用中"
+    "UsingTool": "{{toolName}}を使用中",
+    "PositionFixed": "キャラクターの位置を固定しました",
+    "PositionUnfixed": "キャラクターの位置の固定を解除しました",
+    "PositionReset": "キャラクターの位置をリセットしました"
   },
   "ContinuousMic": "常時マイク入力",
   "ContinuousMicActive": "常時マイク入力中",

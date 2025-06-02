@@ -147,6 +147,18 @@ interface Character {
   systemPrompt: string
   selectedVrmPath: string
   selectedLive2DPath: string
+  fixedCharacterPosition: boolean
+  characterPosition: {
+    x: number
+    y: number
+    z: number
+    scale: number
+  }
+  characterRotation: {
+    x: number
+    y: number
+    z: number
+  }
 }
 
 // Preset question type
@@ -340,6 +352,18 @@ const settingsStore = create<SettingsState>()(
       selectedLive2DPath:
         process.env.NEXT_PUBLIC_SELECTED_LIVE2D_PATH ||
         '/live2d/nike01/nike01.model3.json',
+      fixedCharacterPosition: false,
+      characterPosition: {
+        x: 0,
+        y: 0,
+        z: 0,
+        scale: 1,
+      },
+      characterRotation: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
 
       // General
       selectLanguage:
@@ -535,6 +559,9 @@ const settingsStore = create<SettingsState>()(
         azureTTSEndpoint: state.azureTTSEndpoint,
         selectedVrmPath: state.selectedVrmPath,
         selectedLive2DPath: state.selectedLive2DPath,
+        fixedCharacterPosition: state.fixedCharacterPosition,
+        characterPosition: state.characterPosition,
+        characterRotation: state.characterRotation,
         nijivoiceApiKey: state.nijivoiceApiKey,
         nijivoiceActorId: state.nijivoiceActorId,
         nijivoiceSpeed: state.nijivoiceSpeed,
