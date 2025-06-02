@@ -53,7 +53,7 @@
   "CharacterPosition": "キャラクターの位置",
   "CharacterPositionInfo": "キャラクターの位置と向きを固定できます。VRMはカメラ位置、Live2Dはモデル位置が保存されます。",
   "FixPosition": "位置を固定",
-  "UnfixPosition": "固定を解除", 
+  "UnfixPosition": "固定を解除",
   "ResetPosition": "位置をリセット",
   "CurrentStatus": "現在の状態",
   "PositionFixed": "固定中",
