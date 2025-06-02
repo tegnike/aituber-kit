@@ -422,6 +422,56 @@ const Character = () => {
         console.error('Error fetching Live2D list:', error)
       })
   }, [])
+  const handlePositionAction = (action: 'fix' | 'unfix' | 'reset') => {
+    try {
+      const { viewer, live2dViewer } = homeStore.getState()
+
+      if (modelType === 'vrm') {
+        const methodMap = {
+          fix: 'fixCameraPosition',
+          unfix: 'unfixCameraPosition',
+          reset: 'resetCameraPosition',
+        }
+        const method = methodMap[action]
+        if (viewer && typeof (viewer as any)[method] === 'function') {
+          ;(viewer as any)[method]()
+        } else {
+          throw new Error(`VRM viewer method ${method} not available`)
+        }
+      } else if (live2dViewer) {
+        const methodMap = {
+          fix: 'fixPosition',
+          unfix: 'unfixPosition',
+          reset: 'resetPosition',
+        }
+        const method = methodMap[action]
+        if (typeof (live2dViewer as any)[method] === 'function') {
+          ;(live2dViewer as any)[method]()
+        } else {
+          throw new Error(`Live2D viewer method ${method} not available`)
+        }
+      }
+
+      const messageMap = {
+        fix: t('Toasts.PositionFixed'),
+        unfix: t('Toasts.PositionUnfixed'),
+        reset: t('Toasts.PositionReset'),
+      }
+
+      toastStore.getState().addToast({
+        message: messageMap[action],
+        type: action === 'fix' ? 'success' : 'info',
+        tag: `position-${action}`,
+      })
+    } catch (error) {
+      console.error(`Position ${action} failed:`, error)
+      toastStore.getState().addToast({
+        message: t('Toasts.PositionActionFailed'),
+        type: 'error',
+        tag: 'position-error',
+      })
+    }
+  }
 
   const handleVrmUpload = async (file: File) => {
     const formData = new FormData()
@@ -577,55 +627,13 @@ const Character = () => {
             </span>
           </div>
           <div className="flex gap-4">
-            <TextButton
-              onClick={() => {
-                const { viewer, live2dViewer } = homeStore.getState()
-                if (modelType === 'vrm') {
-                  viewer.fixCameraPosition()
-                } else if (live2dViewer?.fixPosition) {
-                  live2dViewer.fixPosition()
-                }
-                toastStore.getState().addToast({
-                  message: t('Toasts.PositionFixed'),
-                  type: 'success',
-                  tag: 'position-fixed',
-                })
-              }}
-            >
+            <TextButton onClick={() => handlePositionAction('fix')}>
               {t('FixPosition')}
             </TextButton>
-            <TextButton
-              onClick={() => {
-                const { viewer, live2dViewer } = homeStore.getState()
-                if (modelType === 'vrm') {
-                  viewer.unfixCameraPosition()
-                } else if (live2dViewer?.unfixPosition) {
-                  live2dViewer.unfixPosition()
-                }
-                toastStore.getState().addToast({
-                  message: t('Toasts.PositionUnfixed'),
-                  type: 'info',
-                  tag: 'position-unfixed',
-                })
-              }}
-            >
+            <TextButton onClick={() => handlePositionAction('unfix')}>
               {t('UnfixPosition')}
             </TextButton>
-            <TextButton
-              onClick={() => {
-                const { viewer, live2dViewer } = homeStore.getState()
-                if (modelType === 'vrm') {
-                  viewer.resetCameraPosition()
-                } else if (live2dViewer?.resetPosition) {
-                  live2dViewer.resetPosition()
-                }
-                toastStore.getState().addToast({
-                  message: t('Toasts.PositionReset'),
-                  type: 'info',
-                  tag: 'position-reset',
-                })
-              }}
-            >
+            <TextButton onClick={() => handlePositionAction('reset')}>
               {t('ResetPosition')}
             </TextButton>
           </div>

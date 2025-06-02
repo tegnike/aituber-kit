@@ -249,7 +249,8 @@
     "UsingTool": "{{toolName}}を使用中",
     "PositionFixed": "キャラクターの位置を固定しました",
     "PositionUnfixed": "キャラクターの位置の固定を解除しました",
-    "PositionReset": "キャラクターの位置をリセットしました"
+    "PositionReset": "キャラクターの位置をリセットしました",
+    "PositionActionFailed": "位置操作に失敗しました"
   },
   "ContinuousMic": "常時マイク入力",
   "ContinuousMicActive": "常時マイク入力中",
