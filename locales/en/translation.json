@@ -244,7 +244,8 @@
     "UsingTool": "Using {{toolName}}",
     "PositionFixed": "Character position has been fixed",
     "PositionUnfixed": "Character position has been unfixed",
-    "PositionReset": "Character position has been reset"
+    "PositionReset": "Character position has been reset",
+    "PositionActionFailed": "Failed to perform position action"
   },
   "ContinuousMic": "Continuous microphone input",
   "ContinuousMicActive": "Continuous microphone input active",
