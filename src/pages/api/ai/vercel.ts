@@ -150,7 +150,10 @@ export default async function handler(req: NextRequest) {
       options = {
         useSearchGrounding: true,
         ...(dynamicRetrievalThreshold !== undefined &&
-          googleSearchGroundingModels.includes(modifiedModel as any) && {
+          modifiedModel &&
+          googleSearchGroundingModels.includes(
+            modifiedModel as (typeof googleSearchGroundingModels)[number]
+          ) && {
             dynamicRetrievalConfig: {
               dynamicThreshold: dynamicRetrievalThreshold,
             },

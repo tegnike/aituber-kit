@@ -12,8 +12,8 @@ export const useResizable = (options: ResizableOptions = {}) => {
   const {
     minWidth = 200,
     minHeight = 150,
-    maxWidth = window.innerWidth * 0.8,
-    maxHeight = window.innerHeight * 0.8,
+    maxWidth = typeof window === 'undefined' ? 1024 : window.innerWidth * 0.8,
+    maxHeight = typeof window === 'undefined' ? 768 : window.innerHeight * 0.8,
     aspectRatio = true,
   } = options
 

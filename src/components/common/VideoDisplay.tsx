@@ -68,6 +68,12 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
           backgroundVideoRef.current.srcObject = null
         }
       }
+
+      return () => {
+        if (backgroundVideoRef.current) {
+          backgroundVideoRef.current.srcObject = null
+        }
+      }
     }, [useVideoAsBackground, videoRef])
 
     // Handle media stream updates
@@ -121,6 +127,8 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
       if (!videoRef.current || !containerRef.current) return
 
       const video = videoRef.current
+      if (video.videoHeight === 0 || video.videoWidth === 0) return
+
       const container = containerRef.current
       const videoAspectRatio = video.videoWidth / video.videoHeight
       const containerAspectRatio =

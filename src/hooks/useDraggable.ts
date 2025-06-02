@@ -17,6 +17,9 @@ export const useDraggable = (initialPosition?: Position) => {
   // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
+      if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+        return
+      }
       setIsMobile(
         window.innerWidth <= 768 ||
           /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)

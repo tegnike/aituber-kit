@@ -160,7 +160,7 @@ const ModelProvider = () => {
       }
 
       if (newService === 'google') {
-        if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
+        if (!googleSearchGroundingModels.includes(selectedModel as any)) {
           settingsStore.setState({ useSearchGrounding: false })
         }
       }
