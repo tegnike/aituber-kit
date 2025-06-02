@@ -341,8 +341,13 @@ const Live2DSettingsForm = () => {
 
 const Character = () => {
   const { t } = useTranslation()
-  const { characterName, selectedVrmPath, selectedLive2DPath, modelType } =
-    settingsStore()
+  const {
+    characterName,
+    selectedVrmPath,
+    selectedLive2DPath,
+    modelType,
+    fixedCharacterPosition,
+  } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
     Array<{ path: string; name: string }>
@@ -558,6 +563,73 @@ const Character = () => {
             </div>
           </>
         )}
+
+        {/* Character Position Controls */}
+        <div className="my-6">
+          <div className="text-xl font-bold mb-4">{t('CharacterPosition')}</div>
+          <div className="mb-4 text-base">{t('CharacterPositionInfo')}</div>
+          <div className="mb-2 text-sm font-medium">
+            {t('CurrentStatus')}:{' '}
+            <span className="font-bold">
+              {fixedCharacterPosition
+                ? t('PositionFixed')
+                : t('PositionNotFixed')}
+            </span>
+          </div>
+          <div className="flex gap-4">
+            <TextButton
+              onClick={() => {
+                const { viewer, live2dViewer } = homeStore.getState()
+                if (modelType === 'vrm') {
+                  viewer.fixCameraPosition()
+                } else if (live2dViewer?.fixPosition) {
+                  live2dViewer.fixPosition()
+                }
+                toastStore.getState().addToast({
+                  message: t('Toasts.PositionFixed'),
+                  type: 'success',
+                  tag: 'position-fixed',
+                })
+              }}
+            >
+              {t('FixPosition')}
+            </TextButton>
+            <TextButton
+              onClick={() => {
+                const { viewer, live2dViewer } = homeStore.getState()
+                if (modelType === 'vrm') {
+                  viewer.unfixCameraPosition()
+                } else if (live2dViewer?.unfixPosition) {
+                  live2dViewer.unfixPosition()
+                }
+                toastStore.getState().addToast({
+                  message: t('Toasts.PositionUnfixed'),
+                  type: 'info',
+                  tag: 'position-unfixed',
+                })
+              }}
+            >
+              {t('UnfixPosition')}
+            </TextButton>
+            <TextButton
+              onClick={() => {
+                const { viewer, live2dViewer } = homeStore.getState()
+                if (modelType === 'vrm') {
+                  viewer.resetCameraPosition()
+                } else if (live2dViewer?.resetPosition) {
+                  live2dViewer.resetPosition()
+                }
+                toastStore.getState().addToast({
+                  message: t('Toasts.PositionReset'),
+                  type: 'info',
+                  tag: 'position-reset',
+                })
+              }}
+            >
+              {t('ResetPosition')}
+            </TextButton>
+          </div>
+        </div>
 
         <div className="my-6 mb-2">
           <div className="my-4 text-xl font-bold">
