@@ -301,5 +301,7 @@
   "CustomAPIBodyInfo": "API 요청에 포함할 바디 정보를 JSON 형식으로 입력해주세요. messages는 자동으로 포함됩니다.",
   "CustomAPIDescription": "주의: 메시지는 자동으로 요청 바디에 포함됩니다. 스트리밍 모드에서는, 서버가 text/event-stream을 반환해야 합니다.",
   "EditSlideScripts": "대사 편집",
-  "PleaseSelectSlide": "슬라이드를 선택하세요"
+  "PleaseSelectSlide": "슬라이드를 선택하세요",
+  "MultimodalCapable": "🖼️ 멀티모달",
+  "MultimodalTooltip": "이 모델은 이미지 입력을 지원합니다"
 }

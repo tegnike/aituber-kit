@@ -301,5 +301,7 @@
   "CustomAPIHeadersInfo": "APIリクエストに含めるヘッダー情報をJSON形式で入力してください。",
   "CustomAPIBody": "カスタムボディ",
   "CustomAPIBodyInfo": "APIリクエストに含めるボディ情報をJSON形式で入力してください。messagesは自動的に含まれます。",
-  "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。"
+  "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。",
+  "MultimodalCapable": "🖼️ マルチモーダル対応",
+  "MultimodalTooltip": "このモデルは画像入力に対応しています"
 }

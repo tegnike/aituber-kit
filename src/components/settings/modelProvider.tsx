@@ -23,6 +23,7 @@ import {
   getModels,
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
+  isMultiModalCapable,
 } from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
@@ -63,6 +64,7 @@ const ServiceLogo = ({ service }: { service: keyof typeof aiServiceLogos }) => {
     </div>
   )
 }
+
 
 const ModelProvider = () => {
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
@@ -358,7 +360,7 @@ const ModelProvider = () => {
                     >
                       {getOpenAIRealtimeModels().map((model) => (
                         <option key={model} value={model}>
-                          {model}
+                          {model}{isMultiModalCapable('openai', model) ? ' 🖼️' : ''}
                         </option>
                       ))}
                     </select>
@@ -425,7 +427,7 @@ const ModelProvider = () => {
                     >
                       {getOpenAIAudioModels().map((model) => (
                         <option key={model} value={model}>
-                          {model}
+                          {model}{isMultiModalCapable('openai', model) ? ' 🖼️' : ''}
                         </option>
                       ))}
                     </select>
@@ -447,7 +449,7 @@ const ModelProvider = () => {
                   >
                     {getModels('openai').map((model) => (
                       <option key={model} value={model}>
-                        {model}
+                        {model}{isMultiModalCapable('openai', model) ? ' 🖼️' : ''}
                       </option>
                     ))}
                   </select>
@@ -490,7 +492,7 @@ const ModelProvider = () => {
                 >
                   {getModels('anthropic').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{isMultiModalCapable('anthropic', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>
@@ -541,7 +543,7 @@ const ModelProvider = () => {
                 >
                   {getModels('google').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{isMultiModalCapable('google', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>
@@ -727,7 +729,7 @@ const ModelProvider = () => {
                 >
                   {getModels('groq').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{isMultiModalCapable('groq', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>
@@ -772,7 +774,7 @@ const ModelProvider = () => {
                 >
                   {getModels('cohere').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{isMultiModalCapable('cohere', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>
@@ -817,7 +819,7 @@ const ModelProvider = () => {
                 >
                   {getModels('mistralai').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{isMultiModalCapable('mistralai', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>
@@ -862,7 +864,7 @@ const ModelProvider = () => {
                 >
                   {getModels('perplexity').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{isMultiModalCapable('perplexity', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>
@@ -907,7 +909,7 @@ const ModelProvider = () => {
                 >
                   {getModels('fireworks').map((model) => (
                     <option key={model} value={model}>
-                      {model.replace('accounts/fireworks/models/', '')}
+                      {model.replace('accounts/fireworks/models/', '')}{isMultiModalCapable('fireworks', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>
@@ -1031,7 +1033,7 @@ const ModelProvider = () => {
                 >
                   {getModels('deepseek').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{isMultiModalCapable('deepseek', model) ? ' 🖼️' : ''}
                     </option>
                   ))}
                 </select>

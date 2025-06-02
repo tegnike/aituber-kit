@@ -216,3 +216,18 @@ export const openAITTSModels = ['tts-1', 'tts-1-hd', 'gpt-4o-mini-tts'] as const
 export function getOpenAITTSModels(): string[] {
   return [...openAITTSModels]
 }
+
+/**
+ * 指定されたAIサービスとモデルがマルチモーダル（画像入力）に対応しているかチェックする
+ * @param service AIサービス名
+ * @param model モデル名（省略可）
+ * @returns マルチモーダル対応の場合true
+ */
+export function isMultiModalCapable(service: AIService, model?: string): boolean {
+  const slideModels = slideConvertModels[service]
+  if (!slideModels) return false
+  
+  if (!model) return slideModels.length > 0
+  
+  return slideModels.includes(model)
+}

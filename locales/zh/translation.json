@@ -301,5 +301,7 @@
   "CustomAPIBodyInfo": "请以JSON格式输入要包含在API请求中的正文信息。messages将自动包含。",
   "CustomAPIDescription": "注意：消息将自动包含在请求正文中。在流式模式下，服务器需要返回text/event-stream。",
   "EditSlideScripts": "台词编辑",
-  "PleaseSelectSlide": "请选择幻灯片"
+  "PleaseSelectSlide": "请选择幻灯片",
+  "MultimodalCapable": "🖼️ 多模态",
+  "MultimodalTooltip": "此模型支持图像输入"
 }

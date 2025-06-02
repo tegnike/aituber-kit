@@ -301,5 +301,7 @@
   "CustomAPIBodyInfo": "Enter body information to include in API requests in JSON format. messages will be automatically included.",
   "CustomAPIDescription": "Note: Messages are automatically included in the request body. In streaming mode, the server must return text/event-stream.",
   "EditSlideScripts": "Edit Dialogue",
-  "PleaseSelectSlide": "Please select a slide"
+  "PleaseSelectSlide": "Please select a slide",
+  "MultimodalCapable": "🖼️ Multimodal",
+  "MultimodalTooltip": "This model supports image input"
 }
