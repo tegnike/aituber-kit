@@ -10,7 +10,9 @@
       "Bash(rm:*)",
       "Bash(mkdir:*)",
       "Bash(npm rebuild:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run dev:*)",
+      "Bash(npm run typecheck:*)"
     ],
     "deny": []
   }

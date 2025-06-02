@@ -49,12 +49,28 @@ const Live2DComponent = (): JSX.Element => {
   const [pinchDistance, setPinchDistance] = useState<number | null>(null)
   const [initialScale, setInitialScale] = useState<number | null>(null)
 
+  // モデルの現在位置を設定に保存する関数
+  const saveModelPosition = useCallback(() => {
+    if (!model) return
+
+    const settings = settingsStore.getState()
+    settingsStore.setState({
+      characterPosition: {
+        x: model.x,
+        y: model.y,
+        z: settings.characterPosition.z, // Keep existing z for VRM compatibility
+        scale: model.scale.x,
+      },
+      characterRotation: settings.characterRotation, // Keep existing rotation for VRM compatibility
+    })
+  }, [model])
+
   // Position management functions that can be called from settings
   const fixPosition = useCallback(() => {
     if (!model) return
     saveModelPosition()
     settingsStore.setState({ fixedCharacterPosition: true })
-  }, [model])
+  }, [model, saveModelPosition])
 
   const unfixPosition = useCallback(() => {
     settingsStore.setState({ fixedCharacterPosition: false })
@@ -72,13 +88,17 @@ const Live2DComponent = (): JSX.Element => {
 
   // Store position management functions in homeStore for access from settings
   useEffect(() => {
-    homeStore.setState({
-      live2dViewer: {
+    if (model) {
+      // Merge position management functions with the Live2D model instance
+      const viewerWithPositionControls = Object.assign(model, {
         fixPosition,
         unfixPosition,
         resetPosition,
-      },
-    })
+      })
+      homeStore.setState({
+        live2dViewer: viewerWithPositionControls,
+      })
+    }
   }, [model, app, fixPosition, unfixPosition, resetPosition])
 
   useEffect(() => {
@@ -150,7 +170,7 @@ const Live2DComponent = (): JSX.Element => {
 
       modelRef.current = newModel
       setModel(newModel)
-      hs.live2dViewer = newModel
+      // Don't set live2dViewer here, it will be set in the useEffect with position controls
 
       await Live2DHandler.resetToIdle()
     } catch (error) {
@@ -163,22 +183,6 @@ const Live2DComponent = (): JSX.Element => {
     const dx = touch1.clientX - touch2.clientX
     const dy = touch1.clientY - touch2.clientY
     return Math.sqrt(dx * dx + dy * dy)
-  }
-
-  // モデルの現在位置を設定に保存する関数
-  const saveModelPosition = () => {
-    if (!model) return
-
-    const settings = settingsStore.getState()
-    settingsStore.setState({
-      characterPosition: {
-        x: model.x,
-        y: model.y,
-        z: settings.characterPosition.z, // Keep existing z for VRM compatibility
-        scale: model.scale.x,
-      },
-      characterRotation: settings.characterRotation, // Keep existing rotation for VRM compatibility
-    })
   }
 
   useEffect(() => {
