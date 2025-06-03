@@ -64,18 +64,6 @@ const ServiceLogo = ({ service }: { service: keyof typeof aiServiceLogos }) => {
   )
 }
 
-// マルチモーダル対応を示すアイコンコンポーネント
-const MultiModalBadge = () => {
-  return (
-    <span
-      className="inline-flex items-center justify-center ml-2 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full"
-      title="マルチモーダル対応 (画像入力可能)"
-    >
-      📷 Vision
-    </span>
-  )
-}
-
 const ModelProvider = () => {
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
