@@ -341,8 +341,13 @@ const Live2DSettingsForm = () => {
 
 const Character = () => {
   const { t } = useTranslation()
-  const { characterName, selectedVrmPath, selectedLive2DPath, modelType } =
-    settingsStore()
+  const {
+    characterName,
+    selectedVrmPath,
+    selectedLive2DPath,
+    modelType,
+    fixedCharacterPosition,
+  } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
     Array<{ path: string; name: string }>
@@ -417,6 +422,56 @@ const Character = () => {
         console.error('Error fetching Live2D list:', error)
       })
   }, [])
+  const handlePositionAction = (action: 'fix' | 'unfix' | 'reset') => {
+    try {
+      const { viewer, live2dViewer } = homeStore.getState()
+
+      if (modelType === 'vrm') {
+        const methodMap = {
+          fix: 'fixCameraPosition',
+          unfix: 'unfixCameraPosition',
+          reset: 'resetCameraPosition',
+        }
+        const method = methodMap[action]
+        if (viewer && typeof (viewer as any)[method] === 'function') {
+          ;(viewer as any)[method]()
+        } else {
+          throw new Error(`VRM viewer method ${method} not available`)
+        }
+      } else if (live2dViewer) {
+        const methodMap = {
+          fix: 'fixPosition',
+          unfix: 'unfixPosition',
+          reset: 'resetPosition',
+        }
+        const method = methodMap[action]
+        if (typeof (live2dViewer as any)[method] === 'function') {
+          ;(live2dViewer as any)[method]()
+        } else {
+          throw new Error(`Live2D viewer method ${method} not available`)
+        }
+      }
+
+      const messageMap = {
+        fix: t('Toasts.PositionFixed'),
+        unfix: t('Toasts.PositionUnfixed'),
+        reset: t('Toasts.PositionReset'),
+      }
+
+      toastStore.getState().addToast({
+        message: messageMap[action],
+        type: action === 'fix' ? 'success' : 'info',
+        tag: `position-${action}`,
+      })
+    } catch (error) {
+      console.error(`Position ${action} failed:`, error)
+      toastStore.getState().addToast({
+        message: t('Toasts.PositionActionFailed'),
+        type: 'error',
+        tag: 'position-error',
+      })
+    }
+  }
 
   const handleVrmUpload = async (file: File) => {
     const formData = new FormData()
@@ -558,6 +613,31 @@ const Character = () => {
             </div>
           </>
         )}
+
+        {/* Character Position Controls */}
+        <div className="my-6">
+          <div className="text-xl font-bold mb-4">{t('CharacterPosition')}</div>
+          <div className="mb-4 text-base">{t('CharacterPositionInfo')}</div>
+          <div className="mb-2 text-sm font-medium">
+            {t('CurrentStatus')}:{' '}
+            <span className="font-bold">
+              {fixedCharacterPosition
+                ? t('PositionFixed')
+                : t('PositionNotFixed')}
+            </span>
+          </div>
+          <div className="flex gap-4">
+            <TextButton onClick={() => handlePositionAction('fix')}>
+              {t('FixPosition')}
+            </TextButton>
+            <TextButton onClick={() => handlePositionAction('unfix')}>
+              {t('UnfixPosition')}
+            </TextButton>
+            <TextButton onClick={() => handlePositionAction('reset')}>
+              {t('ResetPosition')}
+            </TextButton>
+          </div>
+        </div>
 
         <div className="my-6 mb-2">
           <div className="my-4 text-xl font-bold">

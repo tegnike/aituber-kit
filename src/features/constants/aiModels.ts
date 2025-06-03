@@ -1,64 +1,117 @@
 import { AIService } from './settings'
 
 /**
- * 各AIサービスのモデル一覧
+ * モデルの属性定義
  */
-export const aiModels: Record<AIService, string[]> = {
+interface ModelInfo {
+  /** モデル名 */
+  name: string
+  /** マルチモーダル対応かどうか */
+  multiModal?: boolean
+  /** デフォルトモデルかどうか */
+  isDefault?: boolean
+}
+
+/**
+ * 各AIサービスのモデル定義（属性付き）
+ */
+const modelDefinitions: Record<AIService, ModelInfo[]> = {
   openai: [
-    'chatgpt-4o-latest',
-    'gpt-4o-mini-2024-07-18',
-    'gpt-4o-2024-11-20',
-    'gpt-4.5-preview-2025-02-27',
-    'gpt-4.1-nano-2025-04-14',
-    'gpt-4.1-mini-2025-04-14',
-    'gpt-4.1-2025-04-14',
+    { name: 'gpt-4.1', multiModal: true, isDefault: true },
+    { name: 'gpt-4.1-mini', multiModal: true },
+    { name: 'gpt-4.1-nano', multiModal: true },
+    { name: 'gpt-4o', multiModal: true },
+    { name: 'gpt-4o-mini', multiModal: true },
+    { name: 'o1', multiModal: true },
+    { name: 'o1-mini', multiModal: true },
+    { name: 'o1-preview' },
+    { name: 'o3-mini' },
+    { name: 'o3', multiModal: true },
+    { name: 'o4-mini', multiModal: true },
+    { name: 'chatgpt-4o-latest', multiModal: true },
   ],
   anthropic: [
-    'claude-3-opus-20240229',
-    'claude-3-7-sonnet-20250219',
-    'claude-3-5-sonnet-20241022',
-    'claude-3-5-haiku-20241022',
+    { name: 'claude-4-opus-20250514', multiModal: true },
+    { name: 'claude-4-sonnet-20250514', multiModal: true },
+    { name: 'claude-3-7-sonnet-20250219', multiModal: true },
+    { name: 'claude-3-5-sonnet-20241022', multiModal: true, isDefault: true },
+    { name: 'claude-3-5-sonnet-20240620', multiModal: true },
+    { name: 'claude-3-5-haiku-20241022', multiModal: true },
   ],
   google: [
-    'gemini-2.0-flash-001',
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-flash-8b-latest',
-    'gemini-1.5-pro-latest',
+    { name: 'gemini-2.5-pro-preview-05-06', multiModal: true },
+    { name: 'gemini-2.5-flash-preview-04-17', multiModal: true },
+    { name: 'gemini-2.5-pro-exp-03-25', multiModal: true },
+    { name: 'gemini-2.0-flash', multiModal: true },
+    { name: 'gemini-1.5-pro', multiModal: true },
+    { name: 'gemini-1.5-pro-latest', multiModal: true },
+    { name: 'gemini-1.5-flash', multiModal: true },
+    { name: 'gemini-1.5-flash-latest', multiModal: true, isDefault: true },
+    { name: 'gemini-1.5-flash-8b', multiModal: true },
+    { name: 'gemini-1.5-flash-8b-latest', multiModal: true },
   ],
   azure: [],
+  xai: [
+    { name: 'grok-3', isDefault: true },
+    { name: 'grok-3-fast' },
+    { name: 'grok-3-mini' },
+    { name: 'grok-3-mini-fast' },
+    { name: 'grok-2-1212' },
+    { name: 'grok-2-vision-1212', multiModal: true },
+  ],
   groq: [
-    'gemma2-9b-it',
-    'llama-3.3-70b-versatile',
-    'llama3-8b-8192',
-    'mixtral-8x7b-32768',
+    { name: 'meta-llama/llama-4-scout-17b-16e-instruct', multiModal: true },
+    { name: 'gemma2-9b-it' },
+    { name: 'llama-3.3-70b-versatile' },
+    { name: 'llama-3.1-8b-instant' },
+    { name: 'llama-guard-3-8b' },
+    { name: 'llama3-70b-8192' },
+    { name: 'llama3-8b-8192' },
+    { name: 'mixtral-8x7b-32768' },
+    { name: 'qwen-qwq-32b' },
+    { name: 'mistral-saba-24b' },
+    { name: 'qwen-2.5-32b' },
+    { name: 'deepseek-r1-distill-qwen-32b' },
+    { name: 'deepseek-r1-distill-llama-70b' },
   ],
   cohere: [
-    'command-light',
-    'command-light-nightly',
-    'command-nightly',
-    'command-r',
-    'command-r-08-2024',
-    'command-r-plus',
-    'command-r-plus-08-2024',
+    { name: 'command-a-03-2025' },
+    { name: 'command-r-plus' },
+    { name: 'command-r' },
+    { name: 'command' },
+    { name: 'command-light' },
   ],
   mistralai: [
-    'mistral-large-latest',
-    'open-mistral-nemo',
-    'codestral-latest',
-    'mistral-embed',
+    { name: 'pixtral-large-latest', multiModal: true },
+    { name: 'mistral-large-latest' },
+    { name: 'mistral-small-latest' },
+    { name: 'ministral-3b-latest' },
+    { name: 'ministral-8b-latest' },
+    { name: 'pixtral-12b-2409', multiModal: true },
   ],
   perplexity: [
-    'llama-3-sonar-large-32k-online',
-    'sonar-small-online',
-    'sonar-medium-online',
-    'sonar-large-online',
+    { name: 'sonar-pro' },
+    { name: 'sonar' },
+    { name: 'sonar-deep-research' },
   ],
   fireworks: [
-    'accounts/fireworks/models/firefunction-v2',
-    'accounts/fireworks/models/llama-v3-8b',
-    'accounts/fireworks/models/llama-v3-70b',
+    { name: 'accounts/fireworks/models/deepseek-r1' },
+    { name: 'accounts/fireworks/models/deepseek-v3' },
+    { name: 'accounts/fireworks/models/llama-v3p1-405b-instruct' },
+    { name: 'accounts/fireworks/models/llama-v3p1-8b-instruct' },
+    { name: 'accounts/fireworks/models/llama-v3p2-3b-instruct' },
+    { name: 'accounts/fireworks/models/llama-v3p3-70b-instruct' },
+    { name: 'accounts/fireworks/models/mixtral-8x7b-instruct-hf' },
+    { name: 'accounts/fireworks/models/mixtral-8x22b-instruct' },
+    { name: 'accounts/fireworks/models/qwen2p5-coder-32b-instruct' },
+    {
+      name: 'accounts/fireworks/models/llama-v3p2-11b-vision-instruct',
+      multiModal: true,
+    },
+    { name: 'accounts/fireworks/models/yi-large' },
   ],
-  deepseek: ['deepseek-chat', 'deepseek-coder', 'deepseek-reasoner'],
+  deepseek: [{ name: 'deepseek-chat' }, { name: 'deepseek-reasoner' }],
+  openrouter: [],
   lmstudio: [],
   ollama: [],
   dify: [],
@@ -66,31 +119,14 @@ export const aiModels: Record<AIService, string[]> = {
 }
 
 /**
- * スライド変換時に使用するモデル一覧
+ * 各AIサービスのモデル一覧（従来の形式との互換性のため）
  */
-export const slideConvertModels: Partial<Record<AIService, string[]>> = {
-  openai: [
-    'chatgpt-4o-latest',
-    'gpt-4o-mini-2024-07-18',
-    'gpt-4o-2024-11-20',
-    'gpt-4.5-preview-2025-02-27',
-    'gpt-4.1-nano-2025-04-14',
-    'gpt-4.1-mini-2025-04-14',
-    'gpt-4.1-2025-04-14',
-  ],
-  anthropic: [
-    'claude-3-opus-20240229',
-    'claude-3-7-sonnet-20250219',
-    'claude-3-5-sonnet-20241022',
-    'claude-3-5-haiku-20241022',
-  ],
-  google: [
-    'gemini-2.0-flash-001',
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-flash-8b-latest',
-    'gemini-1.5-pro-latest',
-  ],
-}
+export const aiModels: Record<AIService, string[]> = Object.fromEntries(
+  Object.entries(modelDefinitions).map(([service, models]) => [
+    service,
+    models.map((model) => model.name),
+  ])
+) as Record<AIService, string[]>
 
 /**
  * 各AIサービスのデフォルトモデル
@@ -99,23 +135,25 @@ export const defaultModels: Record<
   AIService | 'openaiAudio' | 'openaiRealtime',
   string
 > = {
-  openai: 'gpt-4o-2024-11-20',
+  ...Object.fromEntries(
+    Object.entries(modelDefinitions).map(([service, models]) => [
+      service,
+      models.find((model) => model.isDefault)?.name || '',
+    ])
+  ),
   openaiAudio: 'gpt-4o-audio-preview-2024-10-01',
   openaiRealtime: 'gpt-4o-realtime-preview-2024-10-01',
-  anthropic: 'claude-3-5-sonnet-20241022',
-  google: 'gemini-1.5-flash-latest',
-  azure: '',
-  groq: 'gemma2-9b-it',
-  cohere: 'command-r-plus',
-  mistralai: 'mistral-large-latest',
-  perplexity: 'llama-3-sonar-large-32k-online',
-  fireworks: 'accounts/fireworks/models/firefunction-v2',
-  deepseek: 'deepseek-chat',
-  lmstudio: '',
-  ollama: '',
-  dify: '',
-  'custom-api': '',
-}
+} as Record<AIService | 'openaiAudio' | 'openaiRealtime', string>
+
+/**
+ * マルチモーダル対応モデル一覧
+ */
+export const multiModalModels: Record<AIService, string[]> = Object.fromEntries(
+  Object.entries(modelDefinitions).map(([service, models]) => [
+    service,
+    models.filter((model) => model.multiModal).map((model) => model.name),
+  ])
+) as Record<AIService, string[]>
 
 /**
  * 特定のAIサービスのデフォルトモデルを取得する（openaiAudio, openaiRealtime も対応）
@@ -147,12 +185,12 @@ export function getModels(service: AIService): string[] {
 }
 
 /**
- * AIサービス名からスライド変換用のモデル一覧を取得する
+ * AIサービス名からマルチモーダル対応モデル一覧を取得する
  * @param service AIサービス名
- * @returns スライド変換用のモデル一覧
+ * @returns マルチモーダル対応モデル一覧
  */
-export function getSlideConvertModels(service: AIService): string[] {
-  return slideConvertModels[service] || []
+export function getMultiModalModels(service: AIService): string[] {
+  return multiModalModels[service] || []
 }
 
 /**
@@ -218,62 +256,17 @@ export function getOpenAITTSModels(): string[] {
 }
 
 /**
- * マルチモーダル対応モデル一覧
- * 各AIサービスで画像入力に対応しているモデルを定義
- */
-export const multiModalModels: Partial<Record<AIService, string[]>> = {
-  openai: [
-    'chatgpt-4o-latest',
-    'gpt-4o-mini-2024-07-18',
-    'gpt-4o-2024-11-20',
-    'gpt-4.5-preview-2025-02-27',
-    'gpt-4.1-nano-2025-04-14',
-    'gpt-4.1-mini-2025-04-14',
-    'gpt-4.1-2025-04-14',
-  ],
-  anthropic: [
-    'claude-3-opus-20240229',
-    'claude-3-7-sonnet-20250219',
-    'claude-3-5-sonnet-20241022',
-    'claude-3-5-haiku-20241022',
-  ],
-  google: [
-    'gemini-2.0-flash-001',
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-flash-8b-latest',
-    'gemini-1.5-pro-latest',
-  ],
-  azure: [], // Azure models depend on deployment, so we treat all as potential multimodal
-}
-
-/**
- * 指定されたAIサービスとモデルがマルチモーダル対応かどうかを判定する
+ * モデルがマルチモーダル対応かどうかを判定する
  * @param service AIサービス名
  * @param model モデル名
- * @returns マルチモーダル対応の場合true
+ * @returns マルチモーダル対応の場合はtrue
  */
 export function isMultiModalModel(service: AIService, model: string): boolean {
-  const serviceModels = multiModalModels[service]
-  if (!serviceModels) return false
-  
-  // Azure の場合は、サービス自体がマルチモーダル対応サービスリストに含まれていればtrueとする
-  if (service === 'azure') return true
-  
-  // OpenAIのリアルタイムAPIモデルとオーディオAPIモデルも画像入力に対応している
-  if (service === 'openai') {
-    if (openAIRealtimeModels.includes(model as any) || openAIAudioModels.includes(model as any)) {
-      return true
-    }
-  }
-  
-  return serviceModels.includes(model)
+  return multiModalModels[service]?.includes(model) || false
 }
 
-/**
- * 指定されたAIサービスのマルチモーダル対応モデル一覧を取得する
- * @param service AIサービス名
- * @returns マルチモーダル対応モデル一覧
- */
-export function getMultiModalModels(service: AIService): string[] {
-  return multiModalModels[service] || []
-}
+export const googleSearchGroundingModels = [
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-pro-latest',
+  'gemini-1.5-flash-8b-latest',
+] as const

@@ -59,7 +59,7 @@ SOURCE_JSON_PATH = "locales/ja/translation.json"
 # --- LLM ---
 def get_llm():
     """LLMインスタンスを取得する"""
-    return ChatOpenAI(model="gpt-4o", temperature=0, api_key=OPENAI_API_KEY)
+    return ChatOpenAI(model="gpt-4.1-mini", temperature=0, api_key=OPENAI_API_KEY)
 
 
 # --- GitHub API 関数 ---

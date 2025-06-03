@@ -160,9 +160,11 @@ const Main = () => {
                     className={`flex items-center py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
                     onClick={() => setActiveTab(tab.key)}
                   >
-                    <img
+                    <Image
                       src={tabIconMapping[tab.key]}
                       alt={`${tab.label} icon`}
+                      width={20}
+                      height={20}
                       className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
                     />
                     {tab.label}
@@ -185,7 +187,7 @@ const Main = () => {
 const Footer = () => {
   return (
     <footer className="absolute py-1 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
-      powered by ChatVRM from Pixiv / ver. 2.34.0
+      powered by ChatVRM from Pixiv / ver. 2.35.0
     </footer>
   )
 }
