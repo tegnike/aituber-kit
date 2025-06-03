@@ -788,7 +788,7 @@ const ModelProvider = () => {
                 >
                   {getModels('xai').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('xai', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
