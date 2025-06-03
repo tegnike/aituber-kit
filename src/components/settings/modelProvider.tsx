@@ -8,10 +8,6 @@ import { useCallback } from 'react'
 import Image from 'next/image'
 import { Listbox } from '@headlessui/react'
 import {
-  multiModalAIServices,
-  googleSearchGroundingModels,
-} from '@/features/stores/settings'
-import {
   AudioModeInputType,
   OpenAITTSVoice,
   RealtimeAPIModeContentType,
@@ -19,10 +15,12 @@ import {
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
 import {
-  defaultModels,
   getModels,
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
+  isMultiModalModel,
+  googleSearchGroundingModels,
+  defaultModels,
 } from '@/features/constants/aiModels'
 import toastStore from '@/features/stores/toast'
 import webSocketStore from '@/features/stores/websocketStore'
@@ -34,12 +32,14 @@ const aiServiceLogos = {
   anthropic: '/images/ai-logos/anthropic.svg',
   google: '/images/ai-logos/google.svg',
   azure: '/images/ai-logos/azure.svg',
+  xai: '/images/ai-logos/xai.svg',
   groq: '/images/ai-logos/groq.svg',
   cohere: '/images/ai-logos/cohere.svg',
   mistralai: '/images/ai-logos/mistralai.svg',
   perplexity: '/images/ai-logos/perplexity.svg',
   fireworks: '/images/ai-logos/fireworks.svg',
   deepseek: '/images/ai-logos/deepseek.svg',
+  openrouter: '/images/ai-logos/openrouter.svg',
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',
@@ -79,6 +79,7 @@ const ModelProvider = () => {
   const googleKey = settingsStore((s) => s.googleKey)
   const azureKey = settingsStore((s) => s.azureKey)
   const azureEndpoint = settingsStore((s) => s.azureEndpoint)
+  const xaiKey = settingsStore((s) => s.xaiKey)
   const groqKey = settingsStore((s) => s.groqKey)
   const cohereKey = settingsStore((s) => s.cohereKey)
   const mistralaiKey = settingsStore((s) => s.mistralaiKey)
@@ -86,7 +87,11 @@ const ModelProvider = () => {
   const fireworksKey = settingsStore((s) => s.fireworksKey)
   const difyKey = settingsStore((s) => s.difyKey)
   const useSearchGrounding = settingsStore((s) => s.useSearchGrounding)
+  const dynamicRetrievalThreshold = settingsStore(
+    (s) => s.dynamicRetrievalThreshold
+  )
   const deepseekKey = settingsStore((s) => s.deepseekKey)
+  const openrouterKey = settingsStore((s) => s.openrouterKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
@@ -113,12 +118,14 @@ const ModelProvider = () => {
     { value: 'anthropic', label: 'Anthropic' },
     { value: 'google', label: 'Google Gemini' },
     { value: 'azure', label: 'Azure OpenAI' },
+    { value: 'xai', label: 'xAI' },
     { value: 'groq', label: 'Groq' },
     { value: 'cohere', label: 'Cohere' },
     { value: 'mistralai', label: 'Mistral AI' },
     { value: 'perplexity', label: 'Perplexity' },
     { value: 'fireworks', label: 'Fireworks' },
     { value: 'deepseek', label: 'DeepSeek' },
+    { value: 'openrouter', label: 'OpenRouter' },
     { value: 'lmstudio', label: 'LM Studio' },
     { value: 'ollama', label: 'Ollama' },
     { value: 'dify', label: 'Dify' },
@@ -126,12 +133,13 @@ const ModelProvider = () => {
   ]
 
   const handleAIServiceChange = useCallback((newService: AIService) => {
+    const selectedModel = defaultModels[newService]
     settingsStore.setState({
       selectAIService: newService,
-      selectAIModel: defaultModels[newService],
+      selectAIModel: selectedModel,
     })
 
-    if (!multiModalAIServices.includes(newService as any)) {
+    if (!isMultiModalModel(newService, selectedModel)) {
       menuStore.setState({ showWebcam: false })
 
       settingsStore.setState({
@@ -151,7 +159,7 @@ const ModelProvider = () => {
     }
 
     if (newService === 'google') {
-      if (!googleSearchGroundingModels.includes(selectAIModel as any)) {
+      if (!googleSearchGroundingModels.includes(selectedModel as any)) {
         settingsStore.setState({ useSearchGrounding: false })
       }
     }
@@ -358,7 +366,8 @@ const ModelProvider = () => {
                     >
                       {getOpenAIRealtimeModels().map((model) => (
                         <option key={model} value={model}>
-                          {model}
+                          {model}{' '}
+                          {isMultiModalModel('openai', model) ? '📷' : ''}
                         </option>
                       ))}
                     </select>
@@ -425,7 +434,8 @@ const ModelProvider = () => {
                     >
                       {getOpenAIAudioModels().map((model) => (
                         <option key={model} value={model}>
-                          {model}
+                          {model}{' '}
+                          {isMultiModalModel('openai', model) ? '📷' : ''}
                         </option>
                       ))}
                     </select>
@@ -447,7 +457,7 @@ const ModelProvider = () => {
                   >
                     {getModels('openai').map((model) => (
                       <option key={model} value={model}>
-                        {model}
+                        {model} {isMultiModalModel('openai', model) ? '📷' : ''}
                       </option>
                     ))}
                   </select>
@@ -490,7 +500,8 @@ const ModelProvider = () => {
                 >
                   {getModels('anthropic').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{' '}
+                      {isMultiModalModel('anthropic', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -541,7 +552,7 @@ const ModelProvider = () => {
                 >
                   {getModels('google').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('google', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -567,6 +578,44 @@ const ModelProvider = () => {
                     {useSearchGrounding ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
                 </div>
+
+                {useSearchGrounding &&
+                  googleSearchGroundingModels.includes(
+                    selectAIModel as any
+                  ) && (
+                    <>
+                      <div className="mt-6 mb-4 text-xl font-bold">
+                        {t('DynamicRetrieval')}
+                      </div>
+                      <div className="my-4">
+                        {t('DynamicRetrievalDescription')}
+                      </div>
+
+                      <div className="my-4">
+                        <div className="mb-2 font-medium">
+                          {t('DynamicRetrievalThreshold')}:{' '}
+                          {dynamicRetrievalThreshold.toFixed(1)}
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            value={dynamicRetrievalThreshold}
+                            onChange={(e) => {
+                              settingsStore.setState({
+                                dynamicRetrievalThreshold: parseFloat(
+                                  e.target.value
+                                ),
+                              })
+                            }}
+                            className="mt-2 mb-4 input-range"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
               </div>
             </>
           )
@@ -689,6 +738,48 @@ const ModelProvider = () => {
               </div>
             </>
           )
+        } else if (selectAIService === 'xai') {
+          return (
+            <>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('XAIAPIKeyLabel')}
+                </div>
+                <div className="my-4">
+                  {t('APIKeyInstruction')}
+                  <br />
+                  <Link url="https://x.ai/api" label="xAI Dashboard" />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="text"
+                  placeholder="..."
+                  value={xaiKey}
+                  onChange={(e) =>
+                    settingsStore.setState({ xaiKey: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
+                <select
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                >
+                  {getModels('xai').map((model) => (
+                    <option key={model} value={model}>
+                      {model} {isMultiModalModel('xai', model) ? '📷' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )
         } else if (selectAIService === 'groq') {
           return (
             <>
@@ -727,7 +818,7 @@ const ModelProvider = () => {
                 >
                   {getModels('groq').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('groq', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -772,7 +863,7 @@ const ModelProvider = () => {
                 >
                   {getModels('cohere').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('cohere', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -817,7 +908,8 @@ const ModelProvider = () => {
                 >
                   {getModels('mistralai').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{' '}
+                      {isMultiModalModel('mistralai', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -862,7 +954,8 @@ const ModelProvider = () => {
                 >
                   {getModels('perplexity').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{' '}
+                      {isMultiModalModel('perplexity', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -907,7 +1000,8 @@ const ModelProvider = () => {
                 >
                   {getModels('fireworks').map((model) => (
                     <option key={model} value={model}>
-                      {model.replace('accounts/fireworks/models/', '')}
+                      {model.replace('accounts/fireworks/models/', '')}{' '}
+                      {isMultiModalModel('fireworks', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -1031,12 +1125,66 @@ const ModelProvider = () => {
                 >
                   {getModels('deepseek').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('deepseek', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
+          )
+        } else if (selectAIService === 'openrouter') {
+          return (
+            <>
+              {/* API Key Section */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('OpenRouterAPIKeyLabel')}
+                </div>
+                <div className="my-4">
+                  {t('APIKeyInstruction')}
+                  <br />
+                  <Link
+                    url="https://openrouter.ai/keys"
+                    label={t('OpenRouterDashboardLink', 'OpenRouter Dashboard')}
+                  />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="password"
+                  placeholder={t('APIKeyPlaceholder', 'sk-or-...')}
+                  value={openrouterKey}
+                  onChange={(e) =>
+                    settingsStore.setState({ openrouterKey: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Model Selection Section (LMStudio style) */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
+                <div className="my-4">
+                  {t('OpenRouterModelNameInstruction')}
+                  <br />
+                  <Link
+                    url="https://openrouter.ai/models"
+                    label={t('OpenRouterModelLink', 'OpenRouter Model')}
+                  />
+                </div>
+                <input
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  type="text"
+                  placeholder={t('ModelIdentifierPlaceholder', {
+                    defaultValue: 'openai/gpt-4o',
+                  })}
+                  value={selectAIModel}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      selectAIModel: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </>
           )
         } else if (selectAIService === 'custom-api') {
           return (

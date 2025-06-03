@@ -16,32 +16,18 @@ import {
   SpeechRecognitionMode,
   WhisperTranscriptionModel,
 } from '../constants/settings'
+import { googleSearchGroundingModels } from '../constants/aiModels'
+import { migrateOpenAIModelName } from '@/utils/modelMigration'
 
-export const multiModalAIServices = [
-  'openai',
-  'anthropic',
-  'google',
-  'azure',
-] as const
-export type multiModalAIServiceKey = (typeof multiModalAIServices)[number]
-
-export const googleSearchGroundingModels = [
-  'gemini-1.5-flash-latest',
-  'gemini-1.5-pro-latest',
-  'gemini-2.0-flash-001',
-] as const
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]
-
-type multiModalAPIKeys = {
-  [K in multiModalAIServiceKey as `${K}Key`]: string
-}
 
 interface APIKeys {
   openaiKey: string
   anthropicKey: string
   googleKey: string
   azureKey: string
+  xaiKey: string
   groqKey: string
   difyKey: string
   cohereKey: string
@@ -49,6 +35,9 @@ interface APIKeys {
   perplexityKey: string
   fireworksKey: string
   deepseekKey: string
+  openrouterKey: string
+  lmstudioKey: string
+  ollamaKey: string
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
@@ -147,6 +136,18 @@ interface Character {
   systemPrompt: string
   selectedVrmPath: string
   selectedLive2DPath: string
+  fixedCharacterPosition: boolean
+  characterPosition: {
+    x: number
+    y: number
+    z: number
+    scale: number
+  }
+  characterRotation: {
+    x: number
+    y: number
+    z: number
+  }
 }
 
 // Preset question type
@@ -173,6 +174,7 @@ interface General {
   messageReceiverEnabled: boolean
   clientId: string
   useSearchGrounding: boolean
+  dynamicRetrievalThreshold: number
   maxPastMessages: number
   useVideoAsBackground: boolean
   temperature: number
@@ -193,7 +195,6 @@ interface ModelType {
 }
 
 export type SettingsState = APIKeys &
-  multiModalAPIKeys &
   ModelProvider &
   Integrations &
   Character &
@@ -214,6 +215,7 @@ const settingsStore = create<SettingsState>()(
         process.env.NEXT_PUBLIC_AZURE_API_KEY ||
         process.env.NEXT_PUBLIC_AZURE_KEY ||
         '',
+      xaiKey: '',
       groqKey: '',
       cohereKey: '',
       mistralaiKey: '',
@@ -221,6 +223,9 @@ const settingsStore = create<SettingsState>()(
       fireworksKey: '',
       difyKey: '',
       deepseekKey: '',
+      openrouterKey: '',
+      lmstudioKey: '',
+      ollamaKey: '',
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
@@ -229,7 +234,9 @@ const settingsStore = create<SettingsState>()(
       // Model Provider
       selectAIService:
         (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai',
-      selectAIModel: process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4',
+      selectAIModel: migrateOpenAIModelName(
+        process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4.1'
+      ),
       localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
       selectVoice:
         (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
@@ -340,6 +347,18 @@ const settingsStore = create<SettingsState>()(
       selectedLive2DPath:
         process.env.NEXT_PUBLIC_SELECTED_LIVE2D_PATH ||
         '/live2d/nike01/nike01.model3.json',
+      fixedCharacterPosition: false,
+      characterPosition: {
+        x: 0,
+        y: 0,
+        z: 0,
+        scale: 1,
+      },
+      characterRotation: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
 
       // General
       selectLanguage:
@@ -380,6 +399,10 @@ const settingsStore = create<SettingsState>()(
       clientId: '',
       useSearchGrounding:
         process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
+      dynamicRetrievalThreshold:
+        parseFloat(
+          process.env.NEXT_PUBLIC_DYNAMIC_RETRIEVAL_THRESHOLD || '0.3'
+        ) || 0.3,
       maxPastMessages:
         parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
       useVideoAsBackground:
@@ -454,11 +477,25 @@ const settingsStore = create<SettingsState>()(
     }),
     {
       name: 'aitube-kit-settings',
+      onRehydrateStorage: () => (state) => {
+        // Migrate OpenAI model names when loading from storage
+        if (
+          state &&
+          state.selectAIService === 'openai' &&
+          state.selectAIModel
+        ) {
+          const migratedModel = migrateOpenAIModelName(state.selectAIModel)
+          if (migratedModel !== state.selectAIModel) {
+            state.selectAIModel = migratedModel
+          }
+        }
+      },
       partialize: (state) => ({
         openaiKey: state.openaiKey,
         anthropicKey: state.anthropicKey,
         googleKey: state.googleKey,
         azureKey: state.azureKey,
+        xaiKey: state.xaiKey,
         groqKey: state.groqKey,
         cohereKey: state.cohereKey,
         mistralaiKey: state.mistralaiKey,
@@ -466,6 +503,9 @@ const settingsStore = create<SettingsState>()(
         fireworksKey: state.fireworksKey,
         difyKey: state.difyKey,
         deepseekKey: state.deepseekKey,
+        openrouterKey: state.openrouterKey,
+        lmstudioKey: state.lmstudioKey,
+        ollamaKey: state.ollamaKey,
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
@@ -535,6 +575,9 @@ const settingsStore = create<SettingsState>()(
         azureTTSEndpoint: state.azureTTSEndpoint,
         selectedVrmPath: state.selectedVrmPath,
         selectedLive2DPath: state.selectedLive2DPath,
+        fixedCharacterPosition: state.fixedCharacterPosition,
+        characterPosition: state.characterPosition,
+        characterRotation: state.characterRotation,
         nijivoiceApiKey: state.nijivoiceApiKey,
         nijivoiceActorId: state.nijivoiceActorId,
         nijivoiceSpeed: state.nijivoiceSpeed,

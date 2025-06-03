@@ -3,6 +3,7 @@ import { Model } from './model'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import settingsStore from '@/features/stores/settings'
 
 /**
  * three.jsを使った3Dビューワー
@@ -102,11 +103,21 @@ export class Viewer {
     this._cameraControls.screenSpacePanning = true
     this._cameraControls.update()
 
+    // Listen for position lock changes
+    this._cameraControls.addEventListener('end', () => {
+      if (!settingsStore.getState().fixedCharacterPosition) {
+        this.saveCameraPosition()
+      }
+    })
+
     window.addEventListener('resize', () => {
       this.resize()
     })
     this.isReady = true
     this.update()
+
+    // Restore saved position if available
+    this.restoreCameraPosition()
   }
 
   /**
@@ -133,6 +144,13 @@ export class Viewer {
    * VRMのheadノードを参照してカメラ位置を調整する
    */
   public resetCamera() {
+    const { fixedCharacterPosition } = settingsStore.getState()
+    // If position is fixed, restore saved position instead of auto-adjusting
+    if (fixedCharacterPosition) {
+      this.restoreCameraPosition()
+      return
+    }
+
     const headNode = this.model?.vrm?.humanoid.getNormalizedBoneNode('head')
 
     if (headNode) {
@@ -158,5 +176,92 @@ export class Viewer {
     if (this._renderer && this._camera) {
       this._renderer.render(this._scene, this._camera)
     }
+  }
+
+  /**
+   * 現在のカメラ位置を設定に保存する
+   */
+  public saveCameraPosition() {
+    if (!this._camera || !this._cameraControls) return
+
+    const settings = settingsStore.getState()
+    settingsStore.setState({
+      characterPosition: {
+        x: this._camera.position.x,
+        y: this._camera.position.y,
+        z: this._camera.position.z,
+        scale: settings.characterPosition?.scale ?? 1,
+      },
+      characterRotation: {
+        x: this._cameraControls.target.x,
+        y: this._cameraControls.target.y,
+        z: this._cameraControls.target.z,
+      },
+    })
+  }
+
+  /**
+   * 保存されたカメラ位置を復元する
+   */
+  public restoreCameraPosition() {
+    if (!this._camera || !this._cameraControls) return
+
+    const { characterPosition, characterRotation, fixedCharacterPosition } =
+      settingsStore.getState()
+
+    if (
+      fixedCharacterPosition &&
+      (characterPosition.x !== 0 ||
+        characterPosition.y !== 0 ||
+        characterPosition.z !== 0)
+    ) {
+      this._camera.position.set(
+        characterPosition.x,
+        characterPosition.y,
+        characterPosition.z
+      )
+      this._cameraControls.target.set(
+        characterRotation.x,
+        characterRotation.y,
+        characterRotation.z
+      )
+      this._cameraControls.update()
+    }
+  }
+
+  /**
+   * カメラ位置を固定する
+   */
+  public fixCameraPosition() {
+    this.saveCameraPosition()
+    settingsStore.setState({ fixedCharacterPosition: true })
+    if (this._cameraControls) {
+      this._cameraControls.enabled = false
+    }
+  }
+
+  /**
+   * カメラ位置の固定を解除する
+   */
+  public unfixCameraPosition() {
+    settingsStore.setState({ fixedCharacterPosition: false })
+    if (this._cameraControls) {
+      this._cameraControls.enabled = true
+    }
+  }
+
+  /**
+   * カメラ位置をリセットする
+   */
+  public resetCameraPosition() {
+    settingsStore.setState({
+      fixedCharacterPosition: false,
+      characterPosition: { x: 0, y: 0, z: 0, scale: 1 },
+      characterRotation: { x: 0, y: 0, z: 0 },
+    })
+    if (this._cameraControls) {
+      this._cameraControls.enabled = true
+    }
+    this.resetCamera()
   }
 }
