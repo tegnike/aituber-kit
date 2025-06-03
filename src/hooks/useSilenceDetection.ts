@@ -70,11 +70,13 @@ export const useSilenceDetection = ({
           settingsStore.getState().noSpeechTimeout * 1000
 
         // 常に無音時間をログ表示
+        /*
         if (silenceDuration <= noSpeechTimeoutMs) {
           console.log(
             `🔊 無音経過時間: ${silenceDuration}ms / 閾値: ${noSpeechTimeoutMs}ms（${(silenceDuration / 1000).toFixed(1)}秒 / ${(noSpeechTimeoutMs / 1000).toFixed(1)}秒）`
           )
         }
+        */
 
         const initialSpeechTimeout =
           settingsStore.getState().initialSpeechTimeout
@@ -128,10 +130,12 @@ export const useSilenceDetection = ({
           !speechEndedRef.current
         ) {
           const trimmedTranscript = transcriptRef.current.trim()
+          /*
           console.log(
             `⏱️ ${silenceDuration}ms の無音を検出しました（閾値: ${noSpeechTimeoutMs}ms）。無音検出タイムアウトが0秒の場合は自動送信は無効です。`
           )
           console.log(`📝 認識テキスト: "${trimmedTranscript}"`)
+          */
 
           if (
             trimmedTranscript &&

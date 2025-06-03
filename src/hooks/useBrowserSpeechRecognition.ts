@@ -130,14 +130,17 @@ export const useBrowserSpeechRecognition = (
 
     if (!recognition) return
 
-    // 既に認識が開始されている場合は、一度停止してから再開する
-    if (isListeningRef.current) {
-      try {
-        recognition.stop()
-        // 停止完了を待つための短い遅延
-        await new Promise((resolve) => setTimeout(resolve, 100))
-      } catch (err) {
-        console.log('Recognition was not running, proceeding to start', err)
+    if (!settingsStore.getState().continuousMicListeningMode){
+
+      // 既に認識が開始されている場合は、一度停止してから再開する
+      if (isListeningRef.current) {
+        try {
+          recognition.stop()
+          // 停止完了を待つための短い遅延
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        } catch (err) {
+          console.log('Recognition was not running, proceeding to start', err)
+        }
       }
     }
 
@@ -180,7 +183,7 @@ export const useBrowserSpeechRecognition = (
                 console.log(
                   '🔇 音声未検出により常時マイク入力モードをOFFに設定します。'
                 )
-                settingsStore.setState({ continuousMicListeningMode: false })
+                //settingsStore.setState({ continuousMicListeningMode: false })
               }
 
               toastStore.getState().addToast({

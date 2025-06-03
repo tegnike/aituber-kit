@@ -13,8 +13,12 @@ export async function getDifyChatResponseStream(
   messages: Message[],
   apiKey: string,
   url: string,
-  conversationId: string
+  conversationId: string,
+  userId: string
 ): Promise<ReadableStream<string>> {
+  const ss = settingsStore.getState();
+  const userConversationId = ss.difyConversationMap[userId] || '';
+
   const response = await fetch('/api/difyChat', {
     method: 'POST',
     headers: {
@@ -24,10 +28,19 @@ export async function getDifyChatResponseStream(
       query: messages[messages.length - 1].content,
       apiKey,
       url,
-      conversationId,
+      // 会話IDをユーザー固有のものに、または新規の場合は空文字列を送信
+      conversationId: userConversationId || "",
       stream: true,
+      userId: userId, // ユーザーIDを必ず送信 org : "aituber-kit" + 
+      inputs: {}, // 必要に応じて追加の入力パラメータ
     }),
   })
+  // for debugging
+  console.log('difyChat request:', {
+    query: messages[messages.length - 1].content,
+    userConversationId,
+    userId
+  });
 
   try {
     if (!response.ok) {
@@ -73,6 +86,10 @@ export async function getDifyChatResponseStream(
                     controller.enqueue(data.answer)
                     settingsStore.setState({
                       difyConversationId: data.conversation_id,
+                      difyConversationMap: {
+                        ...ss.difyConversationMap,
+                        [userId]: data.conversation_id,
+                      },
                     })
                   }
                 } catch (error) {

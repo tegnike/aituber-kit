@@ -108,6 +108,7 @@ interface ModelProvider extends Live2DSettings {
 interface Integrations {
   difyUrl: string
   difyConversationId: string
+  difyConversationMap: { [userId: string]: string }  
   youtubeMode: boolean
   youtubeLiveId: string
   youtubePlaying: boolean
@@ -194,11 +195,20 @@ interface ModelType {
   modelType: 'vrm' | 'live2d'
 }
 
+// settings for multi user
+interface UserInfo {
+  userId: string
+  difyConversationMap: {
+    [userId: string]: string
+  }
+}
+
 export type SettingsState = APIKeys &
   ModelProvider &
   Integrations &
   Character &
   General &
+  UserInfo &
   ModelType
 
 const settingsStore = create<SettingsState>()(
@@ -301,6 +311,10 @@ const settingsStore = create<SettingsState>()(
       // Integrations
       difyUrl: '',
       difyConversationId: '',
+      difyConversationMap: {},
+      // User Info
+      userId: '',
+
       youtubeMode:
         process.env.NEXT_PUBLIC_YOUTUBE_MODE === 'true' ? true : false,
       youtubeLiveId: process.env.NEXT_PUBLIC_YOUTUBE_LIVE_ID || '',
@@ -539,6 +553,10 @@ const settingsStore = create<SettingsState>()(
         elevenlabsVoiceId: state.elevenlabsVoiceId,
         difyUrl: state.difyUrl,
         difyConversationId: state.difyConversationId,
+        //for multi user
+        difyConversationMap: state.difyConversationMap,
+        userId: state.userId,
+
         youtubeLiveId: state.youtubeLiveId,
         characterName: state.characterName,
         characterPreset1: state.characterPreset1,
