@@ -132,41 +132,38 @@ const ModelProvider = () => {
     { value: 'custom-api', label: 'Custom API' },
   ]
 
-  const handleAIServiceChange = useCallback(
-    (newService: AIService) => {
-      const selectedModel = defaultModels[newService]
+  const handleAIServiceChange = useCallback((newService: AIService) => {
+    const selectedModel = defaultModels[newService]
+    settingsStore.setState({
+      selectAIService: newService,
+      selectAIModel: selectedModel,
+    })
+
+    if (!isMultiModalModel(newService, selectedModel)) {
+      menuStore.setState({ showWebcam: false })
+
       settingsStore.setState({
-        selectAIService: newService,
-        selectAIModel: selectedModel,
+        conversationContinuityMode: false,
+        slideMode: false,
       })
+      slideStore.setState({
+        isPlaying: false,
+      })
+    }
 
-      if (!isMultiModalModel(newService, selectedModel)) {
-        menuStore.setState({ showWebcam: false })
+    if (newService !== 'openai' && newService !== 'azure') {
+      settingsStore.setState({
+        realtimeAPIMode: false,
+        audioMode: false,
+      })
+    }
 
-        settingsStore.setState({
-          conversationContinuityMode: false,
-          slideMode: false,
-        })
-        slideStore.setState({
-          isPlaying: false,
-        })
+    if (newService === 'google') {
+      if (!googleSearchGroundingModels.includes(selectedModel as any)) {
+        settingsStore.setState({ useSearchGrounding: false })
       }
-
-      if (newService !== 'openai' && newService !== 'azure') {
-        settingsStore.setState({
-          realtimeAPIMode: false,
-          audioMode: false,
-        })
-      }
-
-      if (newService === 'google') {
-        if (!googleSearchGroundingModels.includes(selectedModel as any)) {
-          settingsStore.setState({ useSearchGrounding: false })
-        }
-      }
-    },
-    [selectAIModel]
-  )
+    }
+  }, [])
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
     settingsStore.setState({

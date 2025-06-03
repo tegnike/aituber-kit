@@ -58,10 +58,10 @@ const Live2DComponent = (): JSX.Element => {
       characterPosition: {
         x: model.x,
         y: model.y,
-        z: settings.characterPosition.z, // Keep existing z for VRM compatibility
+        z: settings.characterPosition.z, // 既存のzを保持（VRM viewerで使用 → viewer.ts:216–221）
         scale: model.scale.x,
       },
-      characterRotation: settings.characterRotation, // Keep existing rotation for VRM compatibility
+      characterRotation: settings.characterRotation, // 既存のrotationを保持（VRM viewerで使用 → viewer.ts:224–226）
     })
   }, [model])
 
