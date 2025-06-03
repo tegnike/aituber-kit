@@ -14,11 +14,11 @@ import {
   RealtimeAPIModeVoice,
   RealtimeAPIModeAzureVoice,
 } from '@/features/constants/settings'
-import { isMultiModalModel } from '@/features/constants/aiModels'
 import {
   getModels,
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
+  isMultiModalModel,
   googleSearchGroundingModels,
   defaultModels,
 } from '@/features/constants/aiModels'
@@ -369,7 +369,8 @@ const ModelProvider = () => {
                     >
                       {getOpenAIRealtimeModels().map((model) => (
                         <option key={model} value={model}>
-                          {model}
+                          {model}{' '}
+                          {isMultiModalModel('openai', model) ? '📷' : ''}
                         </option>
                       ))}
                     </select>
@@ -436,7 +437,8 @@ const ModelProvider = () => {
                     >
                       {getOpenAIAudioModels().map((model) => (
                         <option key={model} value={model}>
-                          {model}
+                          {model}{' '}
+                          {isMultiModalModel('openai', model) ? '📷' : ''}
                         </option>
                       ))}
                     </select>
@@ -458,7 +460,7 @@ const ModelProvider = () => {
                   >
                     {getModels('openai').map((model) => (
                       <option key={model} value={model}>
-                        {model}
+                        {model} {isMultiModalModel('openai', model) ? '📷' : ''}
                       </option>
                     ))}
                   </select>
@@ -501,7 +503,8 @@ const ModelProvider = () => {
                 >
                   {getModels('anthropic').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{' '}
+                      {isMultiModalModel('anthropic', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -552,7 +555,7 @@ const ModelProvider = () => {
                 >
                   {getModels('google').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('google', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -773,7 +776,7 @@ const ModelProvider = () => {
                 >
                   {getModels('xai').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('xai', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -818,7 +821,7 @@ const ModelProvider = () => {
                 >
                   {getModels('groq').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('groq', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -863,7 +866,7 @@ const ModelProvider = () => {
                 >
                   {getModels('cohere').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('cohere', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -908,7 +911,8 @@ const ModelProvider = () => {
                 >
                   {getModels('mistralai').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{' '}
+                      {isMultiModalModel('mistralai', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -953,7 +957,8 @@ const ModelProvider = () => {
                 >
                   {getModels('perplexity').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model}{' '}
+                      {isMultiModalModel('perplexity', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -998,7 +1003,8 @@ const ModelProvider = () => {
                 >
                   {getModels('fireworks').map((model) => (
                     <option key={model} value={model}>
-                      {model.replace('accounts/fireworks/models/', '')}
+                      {model.replace('accounts/fireworks/models/', '')}{' '}
+                      {isMultiModalModel('fireworks', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
@@ -1122,7 +1128,7 @@ const ModelProvider = () => {
                 >
                   {getModels('deepseek').map((model) => (
                     <option key={model} value={model}>
-                      {model}
+                      {model} {isMultiModalModel('deepseek', model) ? '📷' : ''}
                     </option>
                   ))}
                 </select>
