@@ -95,7 +95,9 @@ const ModelProvider = () => {
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
-  const autoSendImagesInMultiModal = settingsStore((s) => s.autoSendImagesInMultiModal)
+  const autoSendImagesInMultiModal = settingsStore(
+    (s) => s.autoSendImagesInMultiModal
+  )
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -364,9 +366,11 @@ const ModelProvider = () => {
                       onChange={(e) => {
                         const model = e.target.value
                         settingsStore.setState({ selectAIModel: model })
-                        
+
                         if (!isMultiModalModel('openai', model)) {
-                          settingsStore.setState({ autoSendImagesInMultiModal: false })
+                          settingsStore.setState({
+                            autoSendImagesInMultiModal: false,
+                          })
                         }
                       }}
                     >
@@ -436,9 +440,11 @@ const ModelProvider = () => {
                       onChange={(e) => {
                         const model = e.target.value
                         settingsStore.setState({ selectAIModel: model })
-                        
+
                         if (!isMultiModalModel('openai', model)) {
-                          settingsStore.setState({ autoSendImagesInMultiModal: false })
+                          settingsStore.setState({
+                            autoSendImagesInMultiModal: false,
+                          })
                         }
                       }}
                     >
@@ -463,9 +469,11 @@ const ModelProvider = () => {
                     onChange={(e) => {
                       const model = e.target.value
                       settingsStore.setState({ selectAIModel: model })
-                      
+
                       if (!isMultiModalModel('openai', model)) {
-                        settingsStore.setState({ autoSendImagesInMultiModal: false })
+                        settingsStore.setState({
+                          autoSendImagesInMultiModal: false,
+                        })
                       }
                     }}
                   >
@@ -511,9 +519,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('anthropic', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -567,10 +577,12 @@ const ModelProvider = () => {
                     if (!googleSearchGroundingModels.includes(model as any)) {
                       settingsStore.setState({ useSearchGrounding: false })
                     }
-                    
+
                     // Auto-turn off toggle if non-multimodal model is selected
                     if (!isMultiModalModel('google', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -794,9 +806,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('xai', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -844,9 +858,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('groq', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -894,9 +910,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('cohere', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -944,9 +962,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('mistralai', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -995,9 +1015,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('perplexity', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -1046,9 +1068,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('fireworks', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -1106,7 +1130,7 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     // For local LLMs, we can't determine multimodal capability automatically
                     // So we don't auto-disable the toggle
                   }}
@@ -1180,9 +1204,11 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     if (!isMultiModalModel('deepseek', model)) {
-                      settingsStore.setState({ autoSendImagesInMultiModal: false })
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -1245,7 +1271,7 @@ const ModelProvider = () => {
                     settingsStore.setState({
                       selectAIModel: model,
                     })
-                    
+
                     // For OpenRouter, we can't determine multimodal capability automatically
                     // So we don't auto-disable the toggle
                   }}
@@ -1414,7 +1440,9 @@ const ModelProvider = () => {
             <div className="my-4 text-xl font-bold">
               {t('AutoSendImagesInMultiModal')}
             </div>
-            <div className="my-4 text-sm">{t('AutoSendImagesInMultiModalDescription')}</div>
+            <div className="my-4 text-sm">
+              {t('AutoSendImagesInMultiModalDescription')}
+            </div>
             <div className="my-2">
               <TextButton
                 onClick={() => {
