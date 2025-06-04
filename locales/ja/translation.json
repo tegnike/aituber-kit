@@ -224,6 +224,8 @@
   "RealtimeAPIModeContentType": "送信タイプ",
   "RealtimeAPIModeVoice": "ボイスタイプ",
   "AudioMode": "オーディオモード",
+  "AutoSendImagesInMultiModal": "マルチモーダルモデルで画像を自動送信",
+  "AutoSendImagesInMultiModalDescription": "画面共有やカメラが有効な場合、メッセージ送信時に自動的に画像をキャプチャして送信します。",
   "InputText": "テキスト",
   "InputAudio": "音声",
   "SearchGrounding": "検索機能を利用する",

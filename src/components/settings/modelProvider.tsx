@@ -95,6 +95,9 @@ const ModelProvider = () => {
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
+  const autoSendImagesInMultiModal = settingsStore(
+    (s) => s.autoSendImagesInMultiModal
+  )
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -145,6 +148,7 @@ const ModelProvider = () => {
       settingsStore.setState({
         conversationContinuityMode: false,
         slideMode: false,
+        autoSendImagesInMultiModal: false,
       })
       slideStore.setState({
         isPlaying: false,
@@ -362,6 +366,12 @@ const ModelProvider = () => {
                       onChange={(e) => {
                         const model = e.target.value
                         settingsStore.setState({ selectAIModel: model })
+
+                        if (!isMultiModalModel('openai', model)) {
+                          settingsStore.setState({
+                            autoSendImagesInMultiModal: false,
+                          })
+                        }
                       }}
                     >
                       {getOpenAIRealtimeModels().map((model) => (
@@ -430,6 +440,12 @@ const ModelProvider = () => {
                       onChange={(e) => {
                         const model = e.target.value
                         settingsStore.setState({ selectAIModel: model })
+
+                        if (!isMultiModalModel('openai', model)) {
+                          settingsStore.setState({
+                            autoSendImagesInMultiModal: false,
+                          })
+                        }
                       }}
                     >
                       {getOpenAIAudioModels().map((model) => (
@@ -453,6 +469,12 @@ const ModelProvider = () => {
                     onChange={(e) => {
                       const model = e.target.value
                       settingsStore.setState({ selectAIModel: model })
+
+                      if (!isMultiModalModel('openai', model)) {
+                        settingsStore.setState({
+                          autoSendImagesInMultiModal: false,
+                        })
+                      }
                     }}
                   >
                     {getModels('openai').map((model) => (
@@ -492,11 +514,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('anthropic', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('anthropic').map((model) => (
                     <option key={model} value={model}>
@@ -547,6 +576,13 @@ const ModelProvider = () => {
                     // Add check for search grounding compatibility
                     if (!googleSearchGroundingModels.includes(model as any)) {
                       settingsStore.setState({ useSearchGrounding: false })
+                    }
+
+                    // Auto-turn off toggle if non-multimodal model is selected
+                    if (!isMultiModalModel('google', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
                     }
                   }}
                 >
@@ -765,11 +801,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('xai', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('xai').map((model) => (
                     <option key={model} value={model}>
@@ -810,11 +853,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('groq', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('groq').map((model) => (
                     <option key={model} value={model}>
@@ -855,11 +905,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('cohere', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('cohere').map((model) => (
                     <option key={model} value={model}>
@@ -900,11 +957,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('mistralai', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('mistralai').map((model) => (
                     <option key={model} value={model}>
@@ -946,11 +1010,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('perplexity', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('perplexity').map((model) => (
                     <option key={model} value={model}>
@@ -992,11 +1063,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('fireworks', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('fireworks').map((model) => (
                     <option key={model} value={model}>
@@ -1047,11 +1125,15 @@ const ModelProvider = () => {
                   type="text"
                   placeholder="..."
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    // For local LLMs, we can't determine multimodal capability automatically
+                    // So we don't auto-disable the toggle
+                  }}
                 />
               </div>
             </>
@@ -1117,11 +1199,18 @@ const ModelProvider = () => {
                 <select
                   className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    if (!isMultiModalModel('deepseek', model)) {
+                      settingsStore.setState({
+                        autoSendImagesInMultiModal: false,
+                      })
+                    }
+                  }}
                 >
                   {getModels('deepseek').map((model) => (
                     <option key={model} value={model}>
@@ -1177,11 +1266,15 @@ const ModelProvider = () => {
                     defaultValue: 'openai/gpt-4o',
                   })}
                   value={selectAIModel}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const model = e.target.value
                     settingsStore.setState({
-                      selectAIModel: e.target.value,
+                      selectAIModel: model,
                     })
-                  }
+
+                    // For OpenRouter, we can't determine multimodal capability automatically
+                    // So we don't auto-disable the toggle
+                  }}
                 />
               </div>
             </>
@@ -1343,6 +1436,26 @@ const ModelProvider = () => {
                 </div>
               </>
             )}
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">
+              {t('AutoSendImagesInMultiModal')}
+            </div>
+            <div className="my-4 text-sm">
+              {t('AutoSendImagesInMultiModalDescription')}
+            </div>
+            <div className="my-2">
+              <TextButton
+                onClick={() => {
+                  settingsStore.setState({
+                    autoSendImagesInMultiModal: !autoSendImagesInMultiModal,
+                  })
+                }}
+                disabled={!isMultiModalModel(selectAIService, selectAIModel)}
+              >
+                {autoSendImagesInMultiModal ? t('StatusOn') : t('StatusOff')}
+              </TextButton>
+            </div>
+          </div>
           {(realtimeAPIMode || audioMode) && (
             <div className="my-6 p-4 bg-white rounded-lg text-sm ">
               {t('CannotUseParameters')}

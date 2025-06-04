@@ -188,6 +188,7 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
+  autoSendImagesInMultiModal: boolean
 }
 
 interface ModelType {
@@ -438,6 +439,8 @@ const settingsStore = create<SettingsState>()(
         5.0,
       chatLogWidth:
         parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
+      autoSendImagesInMultiModal:
+        process.env.NEXT_PUBLIC_AUTO_SEND_IMAGES_IN_MULTIMODAL !== 'false',
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -617,6 +620,7 @@ const settingsStore = create<SettingsState>()(
           state.includeSystemMessagesInCustomApi,
         initialSpeechTimeout: state.initialSpeechTimeout,
         chatLogWidth: state.chatLogWidth,
+        autoSendImagesInMultiModal: state.autoSendImagesInMultiModal,
       }),
     }
   )
