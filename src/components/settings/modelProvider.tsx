@@ -95,6 +95,7 @@ const ModelProvider = () => {
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
+  const autoSendImagesInMultiModal = settingsStore((s) => s.autoSendImagesInMultiModal)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -1343,6 +1344,23 @@ const ModelProvider = () => {
                 </div>
               </>
             )}
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">
+              {t('AutoSendImagesInMultiModal')}
+            </div>
+            <div className="my-4 text-sm">{t('AutoSendImagesInMultiModalDescription')}</div>
+            <div className="my-2">
+              <TextButton
+                onClick={() => {
+                  settingsStore.setState({
+                    autoSendImagesInMultiModal: !autoSendImagesInMultiModal,
+                  })
+                }}
+              >
+                {autoSendImagesInMultiModal ? t('StatusOn') : t('StatusOff')}
+              </TextButton>
+            </div>
+          </div>
           {(realtimeAPIMode || audioMode) && (
             <div className="my-6 p-4 bg-white rounded-lg text-sm ">
               {t('CannotUseParameters')}
