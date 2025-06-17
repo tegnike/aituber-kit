@@ -268,6 +268,12 @@ Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
   </a>
+  <a href="https://github.com/aituber-akari" title="aituber-akari">
+    <img src="https://github.com/aituber-akari.png" width="40" height="40" alt="aituber-akari">
+  </a>
+  <a href="https://github.com/harumeri" title="harumeri">
+    <img src="https://github.com/harumeri.png" width="40" height="40" alt="harumeri">
+  </a>
 </p>
 
 Plus kilku prywatnych sponsorów
