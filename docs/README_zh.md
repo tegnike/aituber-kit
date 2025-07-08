@@ -274,8 +274,8 @@ cp .env.example .env
   <a href="https://github.com/harumeri" title="harumeri">
     <img src="https://github.com/harumeri.png" width="40" height="40" alt="harumeri">
   </a>
-  <a href="https://github.com/spring-hh " title="spring-hh ">
-    <img src="https://github.com/spring-hh .png" width="40" height="40" alt="spring-hh ">
+  <a href="https://github.com/spring-hh" title="spring-hh">
+    <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
   </a>
 </p>
 
