@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
+import { isMultiModalModel } from '@/features/constants/aiModels'
 import { IconButton } from './iconButton'
 
 type Props = {
@@ -34,6 +35,9 @@ export const MessageInput = ({
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
   const slidePlaying = slideStore((s) => s.isPlaying)
+  const modalImage = homeStore((s) => s.modalImage)
+  const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
@@ -43,6 +47,9 @@ export const MessageInput = ({
   const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
 
   const { t } = useTranslation()
+
+  // マルチモーダル対応かどうかを判定
+  const isMultiModalSupported = isMultiModalModel(selectAIService, selectAIModel)
 
   useEffect(() => {
     if (chatProcessing) {
@@ -72,6 +79,41 @@ export const MessageInput = ({
       }
     }
   }, [chatProcessing])
+
+  // クリップボードからの画像ペースト処理
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      if (!isMultiModalSupported) {
+        return
+      }
+
+      const clipboardData = event.clipboardData
+      if (!clipboardData) return
+
+      const items = clipboardData.items
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          event.preventDefault()
+          const file = item.getAsFile()
+          if (file) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              const base64Image = e.target?.result as string
+              homeStore.setState({ modalImage: base64Image })
+            }
+            reader.readAsDataURL(file)
+          }
+          break
+        }
+      }
+    },
+    [isMultiModalSupported]
+  )
+
+  // 画像を削除する関数
+  const handleRemoveImage = useCallback(() => {
+    homeStore.setState({ modalImage: '' })
+  }, [])
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
@@ -148,6 +190,28 @@ export const MessageInput = ({
               ></div>
             </div>
           )}
+          {/* 画像プレビュー */}
+          {modalImage && (
+            <div className="mb-2 p-2 bg-gray-100 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">
+                  {t('PastedImage') || 'Pasted Image'}
+                </span>
+                <button
+                  onClick={handleRemoveImage}
+                  className="text-red-500 hover:text-red-700 text-sm font-medium"
+                >
+                  ×
+                </button>
+              </div>
+              <img
+                src={modalImage}
+                alt="Pasted image"
+                className="max-w-full max-h-32 rounded object-contain"
+              />
+            </div>
+          )}
+          
           <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
             <IconButton
               iconName="24/Microphone"
@@ -168,10 +232,13 @@ export const MessageInput = ({
                   ? `${t('AnswerGenerating')}${loadingDots}`
                   : continuousMicListeningMode && isMicRecording
                     ? t('ListeningContinuously')
-                    : t('EnterYourQuestion')
+                    : isMultiModalSupported
+                      ? `${t('EnterYourQuestion')} (${t('PasteImageSupported') || 'Paste image supported'})`
+                      : t('EnterYourQuestion')
               }
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
+              onPaste={handlePaste}
               disabled={chatProcessing || slidePlaying || realtimeAPIMode}
               className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
               value={userMessage}
