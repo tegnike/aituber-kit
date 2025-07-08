@@ -148,6 +148,7 @@ interface Character {
     y: number
     z: number
   }
+  lightingIntensity: number
 }
 
 // Preset question type
@@ -359,6 +360,7 @@ const settingsStore = create<SettingsState>()(
         y: 0,
         z: 0,
       },
+      lightingIntensity: 1.0,
 
       // General
       selectLanguage:
@@ -578,6 +580,7 @@ const settingsStore = create<SettingsState>()(
         fixedCharacterPosition: state.fixedCharacterPosition,
         characterPosition: state.characterPosition,
         characterRotation: state.characterRotation,
+        lightingIntensity: state.lightingIntensity,
         nijivoiceApiKey: state.nijivoiceApiKey,
         nijivoiceActorId: state.nijivoiceActorId,
         nijivoiceSpeed: state.nijivoiceSpeed,
