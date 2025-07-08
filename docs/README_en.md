@@ -268,6 +268,15 @@ Your support greatly contributes to the development and improvement of AITuberKi
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
   </a>
+  <a href="https://github.com/aituber-akari" title="aituber-akari">
+    <img src="https://github.com/aituber-akari.png" width="40" height="40" alt="aituber-akari">
+  </a>
+  <a href="https://github.com/harumeri" title="harumeri">
+    <img src="https://github.com/harumeri.png" width="40" height="40" alt="harumeri">
+  </a>
+  <a href="https://github.com/spring-hh" title="spring-hh">
+    <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
+  </a>
 </p>
 
 Plus multiple private sponsors
