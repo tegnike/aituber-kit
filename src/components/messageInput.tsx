@@ -73,6 +73,50 @@ export const MessageInput = ({
     }
   }, [chatProcessing])
 
+  // userMessageの変更に応じて行数を調整
+  useEffect(() => {
+    const newRows = calculateRows(userMessage)
+    setRows(newRows)
+  }, [userMessage])
+
+  // テキスト内容に基づいて適切な行数を計算
+  const calculateRows = (text: string): number => {
+    const minRows = 1
+    const maxRows = 10 // 最大行数を制限
+    const lines = text.split('\n')
+    
+    // 各行の幅を考慮してテキストの折り返しを計算
+    // 簡単な実装では改行文字の数 + 1を使用
+    const baseRows = Math.max(minRows, lines.length)
+    
+    // 長い行がある場合、追加の行を考慮（おおよその計算）
+    const extraRows = lines.reduce((acc, line) => {
+      const charsPerLine = 50 // 平均的な1行の文字数（概算）
+      const lineRows = Math.ceil(line.length / charsPerLine)
+      return acc + Math.max(0, lineRows - 1)
+    }, 0)
+    
+    return Math.min(maxRows, baseRows + extraRows)
+  }
+
+  // テキストエリアの内容変更時の処理
+  const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newText = event.target.value
+    const newRows = calculateRows(newText)
+    setRows(newRows)
+    onChangeUserMessage(event)
+  }
+
+  // ペーストイベントのハンドリング
+  const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    // ペースト後の内容を取得するため、少し遅延させて処理
+    setTimeout(() => {
+      const textarea = event.target as HTMLTextAreaElement
+      const newRows = calculateRows(textarea.value)
+      setRows(newRows)
+    }, 0)
+  }
+
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
       !event.nativeEvent.isComposing &&
@@ -88,13 +132,23 @@ export const MessageInput = ({
         setRows(1)
       }
     } else if (event.key === 'Enter' && event.shiftKey) {
-      setRows(rows + 1)
+      // Shift+Enterの場合、calculateRowsで自動計算されるため、手動で行数を増やす必要なし
+      setTimeout(() => {
+        const textarea = event.target as HTMLTextAreaElement
+        const newRows = calculateRows(textarea.value)
+        setRows(newRows)
+      }, 0)
     } else if (
       event.key === 'Backspace' &&
       rows > 1 &&
       userMessage.slice(-1) === '\n'
     ) {
-      setRows(rows - 1)
+      // Backspaceの場合も、calculateRowsで自動計算されるため、手動で行数を減らす必要なし
+      setTimeout(() => {
+        const textarea = event.target as HTMLTextAreaElement
+        const newRows = calculateRows(textarea.value)
+        setRows(newRows)
+      }, 0)
     }
   }
 
@@ -170,13 +224,14 @@ export const MessageInput = ({
                     ? t('ListeningContinuously')
                     : t('EnterYourQuestion')
               }
-              onChange={onChangeUserMessage}
+              onChange={handleTextChange}
+              onPaste={handlePaste}
               onKeyDown={handleKeyPress}
               disabled={chatProcessing || slidePlaying || realtimeAPIMode}
               className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
               value={userMessage}
               rows={rows}
-              style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none' }}
+              style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none', whiteSpace: 'pre-wrap' }}
             ></textarea>
 
             <IconButton
