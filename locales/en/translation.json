@@ -64,6 +64,7 @@
   "BackgroundSettingsDescription": "You can upload and select background images for the application.",
   "UploadBackground": "Upload Background Image",
   "DefaultBackground": "Default Background",
+  "GreenBackground": "Green Background",
   "CharacterSettingsPrompt": "Character Prompt",
   "CharacterSettingsInfo": "This value is set as the system prompt.\nReferring to the initial prompt, you can control the character's expressions and motions by specifying emotion tags. Example: [neutral]Good morning![happy]Thank you for your hard work today!",
   "CharacterpresetInfo": "Selecting a preset will change the character prompt.\nShortcuts are available with Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows).",

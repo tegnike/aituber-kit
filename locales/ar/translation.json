@@ -56,6 +56,7 @@
   "BackgroundSettingsDescription": "يمكنك تحميل واختيار صورة خلفية للتطبيق.",
   "UploadBackground": "تحميل صورة خلفية",
   "DefaultBackground": "الخلفية الافتراضية",
+  "GreenBackground": "الخلفية الخضراء",
   "CharacterSettingsPrompt": "موجه شخصية",
   "CharacterSettingsInfo": "سيتم تعيين هذه القيمة كموجه نظام.\nيمكنك التحكم في تعبيرات وحركات الشخصية باستخدام علامات المشاعر بالإشارة إلى الموجه الأولي. مثال: [neutral]صباح الخير![happy]أتمنى لك يومًا رائعًا!",
   "CharacterpresetInfo": "سيؤدي تحديد إعداد مسبق إلى تغيير موجه الشخصية.\nيمكنك استخدام الاختصارات Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows).",

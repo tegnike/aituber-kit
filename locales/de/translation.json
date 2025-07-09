@@ -56,6 +56,7 @@
   "BackgroundSettingsDescription": "Sie können ein Hintergrundbild für die Anwendung hochladen und auswählen.",
   "UploadBackground": "Hintergrundbild hochladen",
   "DefaultBackground": "Standard-Hintergrund",
+  "GreenBackground": "Grüner Hintergrund",
   "CharacterSettingsPrompt": "Charakterprompt",
   "CharacterSettingsInfo": "Dieser Wert wird als Systemprompt festgelegt.\nBasierend auf dem initialen Prompt können Sie Gefühlstags angeben, um die Ausdrücke und Bewegungen des Charakters zu steuern. Beispiel: [neutral]Guten Morgen![happy]Schön, Sie zu sehen!",
   "CharacterpresetInfo": "Durch Auswahl einer Voreinstellung wird der Charakterprompt geändert.\nKurzbefehle sind möglich mit Cmd + Shift + 1-5 (Mac) / Ctrl + Shift + 1-5 (Windows).",

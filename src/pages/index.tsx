@@ -26,6 +26,8 @@ const Home = () => {
   const bgUrl =
     (webcamStatus || captureStatus) && useVideoAsBackground
       ? ''
+      : backgroundImageUrl === 'green'
+      ? ''
       : `url(${buildUrl(backgroundImageUrl)})`
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
   const modelType = settingsStore((s) => s.modelType)
@@ -88,8 +90,14 @@ const Home = () => {
     }
   }, [])
 
+  const backgroundStyle = (webcamStatus || captureStatus) && useVideoAsBackground
+    ? {}
+    : backgroundImageUrl === 'green'
+    ? { backgroundColor: '#00FF00' }
+    : { backgroundImage: bgUrl }
+
   return (
-    <div className="h-[100svh] bg-cover" style={{ backgroundImage: bgUrl }}>
+    <div className="h-[100svh] bg-cover" style={backgroundStyle}>
       <Meta />
       <Introduction />
       {modelType === 'vrm' ? <VrmViewer /> : <Live2DViewer />}
