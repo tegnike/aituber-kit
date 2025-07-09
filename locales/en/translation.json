@@ -222,6 +222,8 @@
   "RealtimeAPIModeContentType": "Submission type",
   "RealtimeAPIModeVoice": "Voice type",
   "AudioMode": "Audio mode",
+  "AutoSendImagesInMultiModal": "Auto-send images in multimodal models",
+  "AutoSendImagesInMultiModalDescription": "Automatically capture and send images when screen sharing or camera is active during message sending.",
   "InputText": "Text",
   "InputAudio": "Audio",
   "SearchGrounding": "Use search function",
