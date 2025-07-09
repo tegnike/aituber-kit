@@ -82,20 +82,20 @@ export const MessageInput = ({
   // テキスト内容に基づいて適切な行数を計算
   const calculateRows = (text: string): number => {
     const minRows = 1
-    const maxRows = 10 // 最大行数を制限
+    const maxRows = 5 // 最大行数を制限（UIの見栄えを考慮して調整）
     const lines = text.split('\n')
-    
+
     // 各行の幅を考慮してテキストの折り返しを計算
     // 簡単な実装では改行文字の数 + 1を使用
     const baseRows = Math.max(minRows, lines.length)
-    
+
     // 長い行がある場合、追加の行を考慮（おおよその計算）
     const extraRows = lines.reduce((acc, line) => {
       const charsPerLine = 50 // 平均的な1行の文字数（概算）
       const lineRows = Math.ceil(line.length / charsPerLine)
       return acc + Math.max(0, lineRows - 1)
     }, 0)
-    
+
     return Math.min(maxRows, baseRows + extraRows)
   }
 
@@ -175,7 +175,7 @@ export const MessageInput = ({
         </div>
       )}
       <div className="bg-base-light text-black">
-        <div className="mx-auto max-w-4xl p-4">
+        <div className="mx-auto max-w-4xl p-4 pb-3">
           {/* プログレスバー - 設定に基づいて表示/非表示 */}
           {isMicRecording && showSilenceProgressBar && (
             <div className="w-full h-2 bg-gray-200 rounded-full mb-2 overflow-hidden">
@@ -202,52 +202,62 @@ export const MessageInput = ({
               ></div>
             </div>
           )}
-          <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
-            <IconButton
-              iconName="24/Microphone"
-              backgroundColor={
-                continuousMicListeningMode
-                  ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white'
-                  : undefined
-              }
-              isProcessing={isMicRecording}
-              isProcessingIcon={'24/PauseAlt'}
-              disabled={chatProcessing || isSpeaking}
-              onClick={handleMicClick}
-            />
-            <textarea
-              ref={textareaRef}
-              placeholder={
-                chatProcessing
-                  ? `${t('AnswerGenerating')}${loadingDots}`
-                  : continuousMicListeningMode && isMicRecording
-                    ? t('ListeningContinuously')
-                    : t('EnterYourQuestion')
-              }
-              onChange={handleTextChange}
-              onPaste={handlePaste}
-              onKeyDown={handleKeyPress}
-              disabled={chatProcessing || slidePlaying || realtimeAPIMode}
-              className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
-              value={userMessage}
-              rows={rows}
-              style={{ lineHeight: '1.5', padding: '8px 16px', resize: 'none', whiteSpace: 'pre-wrap' }}
-            ></textarea>
+          <div className="flex gap-2 items-end">
+            <div className="flex-shrink-0 pb-[0.3rem]">
+              <IconButton
+                iconName="24/Microphone"
+                backgroundColor={
+                  continuousMicListeningMode
+                    ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white'
+                    : undefined
+                }
+                isProcessing={isMicRecording}
+                isProcessingIcon={'24/PauseAlt'}
+                disabled={chatProcessing || isSpeaking}
+                onClick={handleMicClick}
+              />
+            </div>
+            <div className="flex-1">
+              <textarea
+                ref={textareaRef}
+                placeholder={
+                  chatProcessing
+                    ? `${t('AnswerGenerating')}${loadingDots}`
+                    : continuousMicListeningMode && isMicRecording
+                      ? t('ListeningContinuously')
+                      : t('EnterYourQuestion')
+                }
+                onChange={handleTextChange}
+                onPaste={handlePaste}
+                onKeyDown={handleKeyPress}
+                disabled={chatProcessing || slidePlaying || realtimeAPIMode}
+                className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
+                value={userMessage}
+                rows={rows}
+                style={{
+                  lineHeight: '1.5',
+                  padding: '8px 16px',
+                  resize: 'none',
+                  whiteSpace: 'pre-wrap',
+                }}
+              ></textarea>
+            </div>
+            <div className="flex gap-2 flex-shrink-0 pb-[0.3rem]">
+              <IconButton
+                iconName="24/Send"
+                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+                isProcessing={chatProcessing}
+                disabled={chatProcessing || !userMessage || realtimeAPIMode}
+                onClick={onClickSendButton}
+              />
 
-            <IconButton
-              iconName="24/Send"
-              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-              isProcessing={chatProcessing}
-              disabled={chatProcessing || !userMessage || realtimeAPIMode}
-              onClick={onClickSendButton}
-            />
-
-            <IconButton
-              iconName="stop"
-              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-              onClick={onClickStopButton}
-              isProcessing={false}
-            />
+              <IconButton
+                iconName="stop"
+                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+                onClick={onClickStopButton}
+                isProcessing={false}
+              />
+            </div>
           </div>
         </div>
       </div>

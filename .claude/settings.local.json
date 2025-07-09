@@ -12,7 +12,11 @@
       "Bash(npm rebuild:*)",
       "mcp__ide__getDiagnostics",
       "Bash(npm run dev:*)",
-      "Bash(npm run typecheck:*)"
+      "Bash(npm run typecheck:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_take_screenshot",
+      "Bash(cp:*)"
     ],
     "deny": []
   }
