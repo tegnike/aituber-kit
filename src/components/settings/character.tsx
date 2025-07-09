@@ -643,7 +643,9 @@ const Character = () => {
         {modelType === 'vrm' && (
           <div className="my-6">
             <div className="text-xl font-bold mb-4">照明の強度</div>
-            <div className="mb-4 text-base">VRMキャラクターの照明の明るさを調整します。</div>
+            <div className="mb-4 text-base">
+              VRMキャラクターの照明の明るさを調整します。
+            </div>
             <div className="font-bold">
               照明の強度: {settingsStore((s) => s.lightingIntensity.toFixed(1))}
             </div>
@@ -657,7 +659,10 @@ const Character = () => {
                 const intensity = parseFloat(e.target.value)
                 settingsStore.setState({ lightingIntensity: intensity })
                 const { viewer } = homeStore.getState()
-                if (viewer && typeof viewer.updateLightingIntensity === 'function') {
+                if (
+                  viewer &&
+                  typeof viewer.updateLightingIntensity === 'function'
+                ) {
                   viewer.updateLightingIntensity(intensity)
                 }
               }}

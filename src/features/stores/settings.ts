@@ -360,7 +360,8 @@ const settingsStore = create<SettingsState>()(
         y: 0,
         z: 0,
       },
-      lightingIntensity: 1.0,
+      lightingIntensity:
+        parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
 
       // General
       selectLanguage:

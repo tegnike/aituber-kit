@@ -31,11 +31,17 @@ export class Viewer {
 
     // light
     const lightingIntensity = settingsStore.getState().lightingIntensity
-    this._directionalLight = new THREE.DirectionalLight(0xffffff, 1.8 * lightingIntensity)
+    this._directionalLight = new THREE.DirectionalLight(
+      0xffffff,
+      1.8 * lightingIntensity
+    )
     this._directionalLight.position.set(1.0, 1.0, 1.0).normalize()
     scene.add(this._directionalLight)
 
-    this._ambientLight = new THREE.AmbientLight(0xffffff, 1.2 * lightingIntensity)
+    this._ambientLight = new THREE.AmbientLight(
+      0xffffff,
+      1.2 * lightingIntensity
+    )
     scene.add(this._ambientLight)
 
     // animate
