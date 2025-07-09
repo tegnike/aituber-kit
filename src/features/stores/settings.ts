@@ -188,6 +188,7 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
+  customModelNameInputEnabled: boolean
 }
 
 interface ModelType {
@@ -438,6 +439,7 @@ const settingsStore = create<SettingsState>()(
         5.0,
       chatLogWidth:
         parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
+      customModelNameInputEnabled: false,
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -617,6 +619,7 @@ const settingsStore = create<SettingsState>()(
           state.includeSystemMessagesInCustomApi,
         initialSpeechTimeout: state.initialSpeechTimeout,
         chatLogWidth: state.chatLogWidth,
+        customModelNameInputEnabled: state.customModelNameInputEnabled,
       }),
     }
   )
