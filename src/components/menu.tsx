@@ -14,6 +14,7 @@ import Slides from './slides'
 import Capture from './capture'
 import { isMultiModalModel } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
+import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 
 // モバイルデバイス検出用のカスタムフック
 const useIsMobile = () => {
@@ -44,7 +45,7 @@ export const Menu = () => {
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
-  const assistantMessage = homeStore((s) => s.assistantMessage)
+  const chatLog = homeStore((s) => s.chatLog)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
   const showCapture = menuStore((s) => s.showCapture)
@@ -310,9 +311,9 @@ export const Menu = () => {
       {showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {!showChatLog &&
-        assistantMessage &&
+        getLatestAssistantMessage(chatLog) &&
         (!slideMode || !slideVisible) &&
-        showAssistantText && <AssistantText message={assistantMessage} />}
+        showAssistantText && <AssistantText message={getLatestAssistantMessage(chatLog)} />}
       {showWebcam && navigator.mediaDevices && <Webcam />}
       {showCapture && <Capture />}
       {showPermissionModal && (

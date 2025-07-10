@@ -335,9 +335,7 @@ export const processAIResponse = async (messages: Message[]) => {
           }
         }
 
-        if (!isCodeBlock && currentMessageContent) {
-          homeStore.setState({ assistantMessage: currentMessageContent })
-        }
+        // assistantMessage is now derived from chatLog, no need to set it separately
 
         receivedChunksForSpeech += value
       }
@@ -765,15 +763,7 @@ export const handleReceiveTextFromWsFn =
               emotion: emotion,
             },
             () => {
-              const lastMessage = hs.chatLog[hs.chatLog.length - 1]
-              const content =
-                typeof lastMessage.content === 'string'
-                  ? lastMessage.content
-                  : ''
-
-              homeStore.setState({
-                assistantMessage: content,
-              })
+              // assistantMessage is now derived from chatLog, no need to set it separately
             },
             () => {
               // hs.decrementChatProcessingCount()
