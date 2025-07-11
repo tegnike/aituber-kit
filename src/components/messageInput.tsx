@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import Image from 'next/image'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -44,12 +45,14 @@ export const MessageInput = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
-  const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
 
   const { t } = useTranslation()
 
   // マルチモーダル対応かどうかを判定
-  const isMultiModalSupported = isMultiModalModel(selectAIService, selectAIModel)
+  const isMultiModalSupported = isMultiModalModel(
+    selectAIService,
+    selectAIModel
+  )
 
   useEffect(() => {
     if (chatProcessing) {
@@ -114,6 +117,42 @@ export const MessageInput = ({
   const handleRemoveImage = useCallback(() => {
     homeStore.setState({ modalImage: '' })
   }, [])
+
+  // ドラッグ＆ドロップ処理
+  const handleDragOver = useCallback(
+    (event: React.DragEvent) => {
+      if (!isMultiModalSupported) {
+        return
+      }
+      event.preventDefault()
+      event.stopPropagation()
+    },
+    [isMultiModalSupported]
+  )
+
+  const handleDrop = useCallback(
+    (event: React.DragEvent) => {
+      if (!isMultiModalSupported) {
+        return
+      }
+      event.preventDefault()
+      event.stopPropagation()
+
+      const files = event.dataTransfer.files
+      if (files.length > 0) {
+        const file = files[0]
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const base64Image = e.target?.result as string
+            homeStore.setState({ modalImage: base64Image })
+          }
+          reader.readAsDataURL(file)
+        }
+      }
+    },
+    [isMultiModalSupported]
+  )
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
@@ -192,26 +231,28 @@ export const MessageInput = ({
           )}
           {/* 画像プレビュー */}
           {modalImage && (
-            <div className="mb-2 p-2 bg-gray-100 rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">
-                  {t('PastedImage') || 'Pasted Image'}
-                </span>
-                <button
-                  onClick={handleRemoveImage}
-                  className="text-red-500 hover:text-red-700 text-sm font-medium"
-                >
-                  ×
-                </button>
-              </div>
-              <img
+            <div
+              className="mb-2 p-2 bg-gray-100 rounded-lg relative"
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <button
+                onClick={handleRemoveImage}
+                className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-sm font-medium w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50"
+              >
+                ×
+              </button>
+              <Image
                 src={modalImage}
                 alt="Pasted image"
-                className="max-w-full max-h-32 rounded object-contain"
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="max-w-full max-h-32 rounded object-contain w-auto h-auto"
               />
             </div>
           )}
-          
+
           <div className="grid grid-flow-col gap-[8px] grid-cols-[min-content_1fr_min-content]">
             <IconButton
               iconName="24/Microphone"
@@ -239,6 +280,8 @@ export const MessageInput = ({
               onChange={onChangeUserMessage}
               onKeyDown={handleKeyPress}
               onPaste={handlePaste}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
               disabled={chatProcessing || slidePlaying || realtimeAPIMode}
               className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
               value={userMessage}
