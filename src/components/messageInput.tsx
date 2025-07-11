@@ -39,6 +39,7 @@ export const MessageInput = ({
   const modalImage = homeStore((s) => s.modalImage)
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const imageDisplayPosition = settingsStore((s) => s.imageDisplayPosition)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
@@ -229,8 +230,8 @@ export const MessageInput = ({
               ></div>
             </div>
           )}
-          {/* 画像プレビュー */}
-          {modalImage && (
+          {/* 画像プレビュー - 入力欄表示設定の場合のみ */}
+          {modalImage && imageDisplayPosition === 'input' && (
             <div
               className="mb-2 p-2 bg-gray-100 rounded-lg relative"
               onDragOver={handleDragOver}

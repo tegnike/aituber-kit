@@ -2,11 +2,13 @@ import Image from 'next/image'
 
 import { IconButton } from '@/components/iconButton'
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 
 const ModalImage = () => {
   const modalImage = homeStore((s) => s.modalImage)
+  const imageDisplayPosition = settingsStore((s) => s.imageDisplayPosition)
 
-  if (!modalImage) return null
+  if (!modalImage || imageDisplayPosition !== 'side') return null
 
   return (
     <div
