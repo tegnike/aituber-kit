@@ -56,6 +56,7 @@
   "BackgroundSettingsDescription": "您可以上传并选择应用程序的背景图片。",
   "UploadBackground": "上传背景图片",
   "DefaultBackground": "默认背景",
+  "GreenBackground": "绿色背景",
   "CharacterSettingsPrompt": "角色提示",
   "CharacterSettingsInfo": "此值将设置为系统提示。\n参考初始提示，您可以通过指定情感标签来控制角色的表情和动作。例如：[neutral]早上好！[happy]今天辛苦了！",
   "CharacterpresetInfo": "选择预设将更改角色提示。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)可用作快捷键。",

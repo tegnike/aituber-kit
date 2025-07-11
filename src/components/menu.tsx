@@ -229,26 +229,26 @@ export const Menu = () => {
                   />
                 )}
               </div>
-              {!youtubeMode &&
-                isMultiModalModel(
-                  selectAIService as AIService,
-                  selectAIModel
-                ) && (
-                  <>
-                    <div className="order-3">
-                      <IconButton
-                        iconName="screen-share"
-                        isProcessing={false}
-                        onClick={toggleCapture}
-                      />
-                    </div>
-                    <div className="order-4">
-                      <IconButton
-                        iconName="24/Camera"
-                        isProcessing={false}
-                        onClick={toggleWebcam}
-                      />
-                    </div>
+              {!youtubeMode && (
+                <>
+                  <div className="order-3">
+                    <IconButton
+                      iconName="screen-share"
+                      isProcessing={false}
+                      onClick={toggleCapture}
+                    />
+                  </div>
+                  <div className="order-4">
+                    <IconButton
+                      iconName="24/Camera"
+                      isProcessing={false}
+                      onClick={toggleWebcam}
+                    />
+                  </div>
+                  {isMultiModalModel(
+                    selectAIService as AIService,
+                    selectAIModel
+                  ) && (
                     <div className="order-4">
                       <IconButton
                         iconName="24/AddImage"
@@ -273,8 +273,9 @@ export const Menu = () => {
                         }}
                       />
                     </div>
-                  </>
-                )}
+                  )}
+                </>
+              )}
               {youtubeMode && (
                 <div className="order-5">
                   <IconButton

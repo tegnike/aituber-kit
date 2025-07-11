@@ -56,6 +56,7 @@
   "BackgroundSettingsDescription": "Puoi caricare e selezionare un'immagine di sfondo per l'applicazione.",
   "UploadBackground": "Carica immagine di sfondo",
   "DefaultBackground": "Sfondo predefinito",
+  "GreenBackground": "Sfondo verde",
   "CharacterSettingsPrompt": "Prompt del personaggio",
   "CharacterSettingsInfo": "Questo valore sarà impostato come prompt di sistema.\nFacendo riferimento al prompt iniziale, puoi controllare le espressioni e i movimenti del personaggio specificando tag emotivi. Esempio: [neutral]Buongiorno![happy]Anche oggi hai lavorato duramente!",
   "CharacterpresetInfo": "Selezionando un preset, il prompt del personaggio verrà modificato.\nÈ possibile utilizzare scorciatoie Cmd + Shift + 1~5, (Mac) / Ctrl + Shift + 1~5 (Windows).",
