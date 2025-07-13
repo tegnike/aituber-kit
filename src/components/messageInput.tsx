@@ -207,13 +207,13 @@ export const MessageInput = ({
       if (files.length > 0) {
         let processedCount = 0
         let validImageCount = 0
-        
+
         // 複数ファイルの場合は最初の画像ファイルを処理
         for (let i = 0; i < files.length; i++) {
           const file = files[i]
           if (file.type.startsWith('image/')) {
             validImageCount++
-            
+
             // 画像サイズチェック（10MB制限）
             const maxSize = 10 * 1024 * 1024 // 10MB
             if (file.size > maxSize) {
@@ -234,10 +234,12 @@ export const MessageInput = ({
             break // 最初の有効な画像のみ処理
           }
         }
-        
+
         // 複数の画像がある場合にユーザーに通知
         if (validImageCount > 1) {
-          console.info(`${validImageCount} images detected, only the first one was processed`)
+          console.info(
+            `${validImageCount} images detected, only the first one was processed`
+          )
         }
       }
     },
