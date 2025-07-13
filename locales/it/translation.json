@@ -321,5 +321,12 @@
   "PositionFixed": "Bloccato",
   "OpenRouterAPIKeyLabel": "Chiave API OpenRouter",
   "CharacterPositionInfo": "È possibile fissare la posizione e l'orientamento del personaggio. Per VRM viene salvata la posizione della telecamera, per Live2D viene salvata la posizione del modello.",
-  "UnfixPosition": "Rimuovi blocco"
+  "UnfixPosition": "Rimuovi blocco",
+  "ImageDisplayPosition": "Posizione di visualizzazione immagine",
+  "ImageDisplayPositionDescription": "Seleziona dove visualizzare le immagini caricate",
+  "InputArea": "Area di input",
+  "SideArea": "Area laterale",
+  "PasteImageSupported": "Supporto incolla immagine",
+  "ImageSizeExceeded": "La dimensione dell'immagine supera il limite di 10MB",
+  "ImageReadError": "Errore nella lettura del file immagine"
 }

@@ -320,5 +320,12 @@
   "PositionFixed": "Đang cố định",
   "OpenRouterAPIKeyLabel": "Khóa API OpenRouter",
   "CharacterPositionInfo": "Bạn có thể cố định vị trí và hướng của nhân vật. Vị trí camera được lưu cho VRM, vị trí mô hình được lưu cho Live2D.",
-  "UnfixPosition": "Bỏ cố định"
+  "UnfixPosition": "Bỏ cố định",
+  "ImageDisplayPosition": "Vị trí hiển thị hình ảnh",
+  "ImageDisplayPositionDescription": "Chọn nơi hiển thị hình ảnh đã tải lên",
+  "InputArea": "Vùng nhập",
+  "SideArea": "Vùng bên",
+  "PasteImageSupported": "Hỗ trợ dán hình ảnh",
+  "ImageSizeExceeded": "Kích thước hình ảnh vượt quá giới hạn 10MB",
+  "ImageReadError": "Không thể đọc tệp hình ảnh"
 }

@@ -321,5 +321,12 @@
   "PositionFixed": "Закреплено",
   "OpenRouterAPIKeyLabel": "Ключ API OpenRouter",
   "CharacterPositionInfo": "Положение и ориентация персонажа могут быть зафиксированы. Для VRM сохраняется положение камеры, для Live2D — положение модели.",
-  "UnfixPosition": "Снять закрепление"
+  "UnfixPosition": "Снять закрепление",
+  "ImageDisplayPosition": "Позиция отображения изображения",
+  "ImageDisplayPositionDescription": "Выберите место отображения загруженных изображений",
+  "InputArea": "Область ввода",
+  "SideArea": "Боковая область",
+  "PasteImageSupported": "Поддержка вставки изображений",
+  "ImageSizeExceeded": "Размер изображения превышает лимит в 10МБ",
+  "ImageReadError": "Ошибка чтения файла изображения"
 }

@@ -328,5 +328,7 @@
   "ImageDisplayPositionDescription": "Select where to display uploaded images",
   "InputArea": "Input Area",
   "SideArea": "Side Area",
-  "PasteImageSupported": "Image paste supported"
+  "PasteImageSupported": "Image paste supported",
+  "ImageSizeExceeded": "Image size exceeds 10MB limit",
+  "ImageReadError": "Failed to read image file"
 }

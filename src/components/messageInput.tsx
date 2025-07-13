@@ -110,6 +110,14 @@ export const MessageInput = ({
     return Math.min(maxRows, baseRows + extraRows)
   }
 
+  // 共通の遅延行数更新処理
+  const updateRowsWithDelay = useCallback((target: HTMLTextAreaElement) => {
+    setTimeout(() => {
+      const newRows = calculateRows(target.value)
+      setRows(newRows)
+    }, 0)
+  }, [])
+
   // テキストエリアの内容変更時の処理
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = event.target.value
@@ -121,23 +129,14 @@ export const MessageInput = ({
   // クリップボードからの画像ペースト処理
   const handlePaste = useCallback(
     (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-      // 共通の遅延行数更新処理
-      const updateRowsWithDelay = () => {
-        setTimeout(() => {
-          const textarea = event.target as HTMLTextAreaElement
-          const newRows = calculateRows(textarea.value)
-          setRows(newRows)
-        }, 0)
-      }
-
       if (!isMultiModalSupported) {
-        updateRowsWithDelay()
+        updateRowsWithDelay(event.target as HTMLTextAreaElement)
         return
       }
 
       const clipboardData = event.clipboardData
       if (!clipboardData) {
-        updateRowsWithDelay()
+        updateRowsWithDelay(event.target as HTMLTextAreaElement)
         return
       }
 
@@ -152,8 +151,7 @@ export const MessageInput = ({
             // 画像サイズチェック（10MB制限）
             const maxSize = 10 * 1024 * 1024 // 10MB
             if (file.size > maxSize) {
-              console.error('Image size exceeds 10MB limit')
-              // アラートではなくコンソールエラーで通知（UX改善）
+              alert(t('ImageSizeExceeded') || 'Image size exceeds 10MB limit')
               return
             }
 
@@ -163,7 +161,7 @@ export const MessageInput = ({
               homeStore.setState({ modalImage: base64Image })
             }
             reader.onerror = () => {
-              console.error('Failed to read image file')
+              alert(t('ImageReadError') || 'Failed to read image file')
             }
             reader.readAsDataURL(file)
             hasImage = true
@@ -174,10 +172,10 @@ export const MessageInput = ({
 
       // 画像がない場合のみ通常のペースト処理を実行
       if (!hasImage) {
-        updateRowsWithDelay()
+        updateRowsWithDelay(event.target as HTMLTextAreaElement)
       }
     },
-    [isMultiModalSupported]
+    [isMultiModalSupported, updateRowsWithDelay, t]
   )
 
   // 画像を削除する関数
@@ -207,14 +205,19 @@ export const MessageInput = ({
 
       const files = event.dataTransfer.files
       if (files.length > 0) {
+        let processedCount = 0
+        let validImageCount = 0
+        
         // 複数ファイルの場合は最初の画像ファイルを処理
         for (let i = 0; i < files.length; i++) {
           const file = files[i]
           if (file.type.startsWith('image/')) {
+            validImageCount++
+            
             // 画像サイズチェック（10MB制限）
             const maxSize = 10 * 1024 * 1024 // 10MB
             if (file.size > maxSize) {
-              console.error('Image size exceeds 10MB limit')
+              alert(t('ImageSizeExceeded') || 'Image size exceeds 10MB limit')
               return
             }
 
@@ -224,27 +227,24 @@ export const MessageInput = ({
               homeStore.setState({ modalImage: base64Image })
             }
             reader.onerror = () => {
-              console.error('Failed to read image file')
+              alert(t('ImageReadError') || 'Failed to read image file')
             }
             reader.readAsDataURL(file)
+            processedCount++
             break // 最初の有効な画像のみ処理
           }
         }
+        
+        // 複数の画像がある場合にユーザーに通知
+        if (validImageCount > 1) {
+          console.info(`${validImageCount} images detected, only the first one was processed`)
+        }
       }
     },
-    [isMultiModalSupported]
+    [isMultiModalSupported, t]
   )
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // 共通の遅延行数更新処理
-    const updateRowsWithDelay = () => {
-      setTimeout(() => {
-        const textarea = event.target as HTMLTextAreaElement
-        const newRows = calculateRows(textarea.value)
-        setRows(newRows)
-      }, 0)
-    }
-
     if (
       !event.nativeEvent.isComposing &&
       event.keyCode !== 229 && // IME (Input Method Editor)
@@ -260,14 +260,14 @@ export const MessageInput = ({
       }
     } else if (event.key === 'Enter' && event.shiftKey) {
       // Shift+Enterの場合、calculateRowsで自動計算されるため、手動で行数を増やす必要なし
-      updateRowsWithDelay()
+      updateRowsWithDelay(event.target as HTMLTextAreaElement)
     } else if (
       event.key === 'Backspace' &&
       rows > 1 &&
       userMessage.slice(-1) === '\n'
     ) {
       // Backspaceの場合も、calculateRowsで自動計算されるため、手動で行数を減らす必要なし
-      updateRowsWithDelay()
+      updateRowsWithDelay(event.target as HTMLTextAreaElement)
     }
   }
 

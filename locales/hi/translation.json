@@ -320,5 +320,12 @@
   "PositionFixed": "फिक्स किया हुआ",
   "OpenRouterAPIKeyLabel": "OpenRouter API कुंजी",
   "CharacterPositionInfo": "कैरेक्टर की स्थिति और दिशा को स्थिर किया जा सकता है। VRM में कैमरा की स्थिति, Live2D में मॉडल की स्थिति सहेजी जाती है।",
-  "UnfixPosition": "फिक्स अनलॉक करें"
+  "UnfixPosition": "फिक्स अनलॉक करें",
+  "ImageDisplayPosition": "छवि प्रदर्शन स्थिति",
+  "ImageDisplayPositionDescription": "अपलोड की गई छवियों को कहाँ प्रदर्शित करना है चुनें",
+  "InputArea": "इनपुट क्षेत्र",
+  "SideArea": "साइड क्षेत्र",
+  "PasteImageSupported": "छवि पेस्ट समर्थित",
+  "ImageSizeExceeded": "छवि का आकार 10MB सीमा से अधिक है",
+  "ImageReadError": "छवि फ़ाइल पढ़ने में विफल"
 }

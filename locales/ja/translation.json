@@ -328,5 +328,7 @@
   "ImageDisplayPositionDescription": "アップロードした画像を表示する位置を選択してください",
   "InputArea": "入力エリア",
   "SideArea": "サイドエリア",
-  "PasteImageSupported": "画像ペースト対応"
+  "PasteImageSupported": "画像ペースト対応",
+  "ImageSizeExceeded": "画像サイズが10MBの制限を超えています",
+  "ImageReadError": "画像ファイルの読み込みに失敗しました"
 }
