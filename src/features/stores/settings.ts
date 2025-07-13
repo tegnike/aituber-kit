@@ -443,9 +443,13 @@ const settingsStore = create<SettingsState>()(
         5.0,
       chatLogWidth:
         parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
-      imageDisplayPosition:
-        (process.env.NEXT_PUBLIC_IMAGE_DISPLAY_POSITION as 'input' | 'side') ||
-        'input',
+      imageDisplayPosition: (() => {
+        const validPositions = ['input', 'side'] as const
+        const envPosition = process.env.NEXT_PUBLIC_IMAGE_DISPLAY_POSITION
+        return validPositions.includes(envPosition as any) 
+          ? (envPosition as 'input' | 'side') 
+          : 'input'
+      })(),
       autoSendImagesInMultiModal:
         process.env.NEXT_PUBLIC_AUTO_SEND_IMAGES_IN_MULTIMODAL !== 'false',
 
