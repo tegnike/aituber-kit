@@ -329,6 +329,10 @@
   "InputArea": "Input Area",
   "SideArea": "Side Area",
   "PasteImageSupported": "Image paste supported",
-  "ImageSizeExceeded": "Image size exceeds 10MB limit",
-  "ImageReadError": "Failed to read image file"
+  "FileSizeError": "File size exceeds the maximum limit of {{maxSize}}MB.",
+  "FileTypeError": "Unsupported file type. Only image files (PNG, JPEG, GIF, WebP) are allowed.",
+  "ImageDimensionError": "Image dimensions exceed the maximum size of {{maxWidth}}x{{maxHeight}} pixels.",
+  "ImageLoadError": "Failed to load the image.",
+  "FileReadError": "Failed to read the file.",
+  "FileProcessError": "An error occurred while processing the file."
 }

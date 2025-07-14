@@ -446,8 +446,8 @@ const settingsStore = create<SettingsState>()(
       imageDisplayPosition: (() => {
         const validPositions = ['input', 'side'] as const
         const envPosition = process.env.NEXT_PUBLIC_IMAGE_DISPLAY_POSITION
-        return validPositions.includes(envPosition as any) 
-          ? (envPosition as 'input' | 'side') 
+        return validPositions.includes(envPosition as any)
+          ? (envPosition as 'input' | 'side')
           : 'input'
       })(),
       autoSendImagesInMultiModal:

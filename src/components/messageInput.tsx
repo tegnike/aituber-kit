@@ -8,6 +8,19 @@ import slideStore from '@/features/stores/slide'
 import { isMultiModalModel } from '@/features/constants/aiModels'
 import { IconButton } from './iconButton'
 
+// ファイルバリデーションの設定
+const FILE_VALIDATION = {
+  maxSizeBytes: 10 * 1024 * 1024, // 10MB
+  allowedTypes: [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/gif',
+    'image/webp',
+  ],
+  maxImageDimensions: { width: 4096, height: 4096 },
+} as const
+
 type Props = {
   userMessage: string
   isMicRecording: boolean
@@ -43,6 +56,7 @@ export const MessageInput = ({
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
+  const [fileError, setFileError] = useState<string>('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
@@ -84,14 +98,8 @@ export const MessageInput = ({
     }
   }, [chatProcessing])
 
-  // userMessageの変更に応じて行数を調整
-  useEffect(() => {
-    const newRows = calculateRows(userMessage)
-    setRows(newRows)
-  }, [userMessage])
-
   // テキスト内容に基づいて適切な行数を計算
-  const calculateRows = (text: string): number => {
+  const calculateRows = useCallback((text: string): number => {
     const minRows = 1
     const maxRows = 5 // 最大行数を制限（UIの見栄えを考慮して調整）
     const lines = text.split('\n')
@@ -108,15 +116,24 @@ export const MessageInput = ({
     }, 0)
 
     return Math.min(maxRows, baseRows + extraRows)
-  }
+  }, [])
+
+  // userMessageの変更に応じて行数を調整
+  useEffect(() => {
+    const newRows = calculateRows(userMessage)
+    setRows(newRows)
+  }, [userMessage, calculateRows])
 
   // 共通の遅延行数更新処理
-  const updateRowsWithDelay = useCallback((target: HTMLTextAreaElement) => {
-    setTimeout(() => {
-      const newRows = calculateRows(target.value)
-      setRows(newRows)
-    }, 0)
-  }, [])
+  const updateRowsWithDelay = useCallback(
+    (target: HTMLTextAreaElement) => {
+      setTimeout(() => {
+        const newRows = calculateRows(target.value)
+        setRows(newRows)
+      }, 0)
+    },
+    [calculateRows]
+  )
 
   // テキストエリアの内容変更時の処理
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -126,9 +143,98 @@ export const MessageInput = ({
     onChangeUserMessage(event)
   }
 
+  // ファイルバリデーション関数
+  const validateFile = useCallback(
+    (file: File): { isValid: boolean; error?: string } => {
+      // ファイルサイズチェック
+      if (file.size > FILE_VALIDATION.maxSizeBytes) {
+        return {
+          isValid: false,
+          error: t('FileSizeError', {
+            maxSize: Math.round(FILE_VALIDATION.maxSizeBytes / (1024 * 1024)),
+          }),
+        }
+      }
+
+      // ファイルタイプチェック
+      if (!FILE_VALIDATION.allowedTypes.includes(file.type as any)) {
+        return {
+          isValid: false,
+          error: t('FileTypeError'),
+        }
+      }
+
+      return { isValid: true }
+    },
+    [t]
+  )
+
+  // 画像の寸法をチェックする関数
+  const validateImageDimensions = useCallback(
+    (imageElement: HTMLImageElement): boolean => {
+      return (
+        imageElement.naturalWidth <= FILE_VALIDATION.maxImageDimensions.width &&
+        imageElement.naturalHeight <= FILE_VALIDATION.maxImageDimensions.height
+      )
+    },
+    []
+  )
+
+  // 画像を処理する関数
+  const processImageFile = useCallback(
+    async (file: File): Promise<void> => {
+      setFileError('')
+
+      const validation = validateFile(file)
+      if (!validation.isValid) {
+        setFileError(validation.error || 'Unknown error')
+        return
+      }
+
+      try {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const base64Image = e.target?.result as string
+
+          // 画像の寸法チェック（オプション）
+          const img = document.createElement('img')
+          img.onload = () => {
+            if (!validateImageDimensions(img)) {
+              setFileError(
+                t('ImageDimensionError', {
+                  maxWidth: FILE_VALIDATION.maxImageDimensions.width,
+                  maxHeight: FILE_VALIDATION.maxImageDimensions.height,
+                })
+              )
+              return
+            }
+            homeStore.setState({ modalImage: base64Image })
+          }
+          img.onerror = () => {
+            setFileError(t('ImageLoadError'))
+          }
+          img.src = base64Image
+        }
+        reader.onerror = () => {
+          setFileError(t('FileReadError'))
+        }
+        reader.readAsDataURL(file)
+      } catch (error) {
+        setFileError(t('FileProcessError'))
+      }
+    },
+    [validateFile, validateImageDimensions, t]
+  )
+
+  // 画像を削除する関数
+  const handleRemoveImage = useCallback(() => {
+    homeStore.setState({ modalImage: '' })
+    setFileError('')
+  }, [])
+
   // クリップボードからの画像ペースト処理
   const handlePaste = useCallback(
-    (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       if (!isMultiModalSupported) {
         updateRowsWithDelay(event.target as HTMLTextAreaElement)
         return
@@ -148,22 +254,7 @@ export const MessageInput = ({
           event.preventDefault()
           const file = item.getAsFile()
           if (file) {
-            // 画像サイズチェック（10MB制限）
-            const maxSize = 10 * 1024 * 1024 // 10MB
-            if (file.size > maxSize) {
-              alert(t('ImageSizeExceeded') || 'Image size exceeds 10MB limit')
-              return
-            }
-
-            const reader = new FileReader()
-            reader.onload = (e) => {
-              const base64Image = e.target?.result as string
-              homeStore.setState({ modalImage: base64Image })
-            }
-            reader.onerror = () => {
-              alert(t('ImageReadError') || 'Failed to read image file')
-            }
-            reader.readAsDataURL(file)
+            await processImageFile(file)
             hasImage = true
           }
           break
@@ -175,13 +266,8 @@ export const MessageInput = ({
         updateRowsWithDelay(event.target as HTMLTextAreaElement)
       }
     },
-    [isMultiModalSupported, updateRowsWithDelay, t]
+    [isMultiModalSupported, processImageFile, updateRowsWithDelay]
   )
-
-  // 画像を削除する関数
-  const handleRemoveImage = useCallback(() => {
-    homeStore.setState({ modalImage: '' })
-  }, [])
 
   // ドラッグ＆ドロップ処理
   const handleDragOver = useCallback(
@@ -196,7 +282,7 @@ export const MessageInput = ({
   )
 
   const handleDrop = useCallback(
-    (event: React.DragEvent) => {
+    async (event: React.DragEvent) => {
       if (!isMultiModalSupported) {
         return
       }
@@ -205,51 +291,21 @@ export const MessageInput = ({
 
       const files = event.dataTransfer.files
       if (files.length > 0) {
-        let processedCount = 0
-        let validImageCount = 0
-
-        // 複数ファイルの場合は最初の画像ファイルを処理
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i]
-          if (file.type.startsWith('image/')) {
-            validImageCount++
-
-            // 画像サイズチェック（10MB制限）
-            const maxSize = 10 * 1024 * 1024 // 10MB
-            if (file.size > maxSize) {
-              alert(t('ImageSizeExceeded') || 'Image size exceeds 10MB limit')
-              return
-            }
-
-            const reader = new FileReader()
-            reader.onload = (e) => {
-              const base64Image = e.target?.result as string
-              homeStore.setState({ modalImage: base64Image })
-            }
-            reader.onerror = () => {
-              alert(t('ImageReadError') || 'Failed to read image file')
-            }
-            reader.readAsDataURL(file)
-            processedCount++
-            break // 最初の有効な画像のみ処理
-          }
-        }
-
-        // 複数の画像がある場合にユーザーに通知
-        if (validImageCount > 1) {
-          console.info(
-            `${validImageCount} images detected, only the first one was processed`
-          )
+        const file = files[0]
+        if (file.type.startsWith('image/')) {
+          await processImageFile(file)
+        } else {
+          setFileError(t('FileTypeError'))
         }
       }
     },
-    [isMultiModalSupported, t]
+    [isMultiModalSupported, processImageFile, t]
   )
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
       !event.nativeEvent.isComposing &&
-      event.keyCode !== 229 && // IME (Input Method Editor)
+      event.code !== 'Backquote' && // IME composition check
       event.key === 'Enter' &&
       !event.shiftKey
     ) {
@@ -321,6 +377,12 @@ export const MessageInput = ({
                       : '0%',
                 }}
               ></div>
+            </div>
+          )}
+          {/* エラーメッセージ表示 */}
+          {fileError && (
+            <div className="mb-2 p-2 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
+              {fileError}
             </div>
           )}
           {/* 画像プレビュー - 入力欄表示設定の場合のみ */}
