@@ -12,19 +12,18 @@ export const getLatestAssistantMessage = (
     return ''
   }
 
-  const assistantMessages = chatLog.filter((msg) => msg.role === 'assistant')
-
-  if (assistantMessages.length === 0) {
-    return ''
-  }
-
-  const lastMessage = assistantMessages[assistantMessages.length - 1]
-
-  if (typeof lastMessage.content === 'string') {
-    return lastMessage.content
-  } else if (Array.isArray(lastMessage.content)) {
-    const textContent = lastMessage.content.find((item) => item.type === 'text')
-    return textContent && 'text' in textContent ? textContent.text : ''
+  // 配列の末尾から逆順に検索してパフォーマンスを向上
+  for (let i = chatLog.length - 1; i >= 0; i--) {
+    const msg = chatLog[i]
+    if (msg.role === 'assistant') {
+      if (typeof msg.content === 'string') {
+        return msg.content
+      } else if (Array.isArray(msg.content)) {
+        const textContent = msg.content.find((item) => item.type === 'text')
+        return textContent && 'text' in textContent ? textContent.text : ''
+      }
+      return ''
+    }
   }
 
   return ''

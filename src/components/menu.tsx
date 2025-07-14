@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, useEffect, useMemo } from 'react'
+import React, { useCallback, useRef, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
@@ -98,11 +98,8 @@ export const Menu = () => {
       )
   }, [selectedSlideDocs])
 
-  // メモ化されたアシスタントメッセージ
-  const latestAssistantMessage = useMemo(
-    () => getLatestAssistantMessage(chatLog),
-    [chatLog]
-  )
+  // アシスタントメッセージ
+  const latestAssistantMessage = getLatestAssistantMessage(chatLog)
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
