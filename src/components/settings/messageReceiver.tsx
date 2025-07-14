@@ -9,12 +9,12 @@ import Link from 'next/link'
 const MessageReceiverSetting = () => {
   const { t } = useTranslation()
   const { messageReceiverEnabled, clientId } = settingsStore()
-  const [inputClientId, setInputClientId] = useState(clientId)
+  const [inputClientId, setInputClientId] = useState(clientId || '')
   const [isEditing, setIsEditing] = useState(false)
 
   // Update local state when store changes
   useEffect(() => {
-    setInputClientId(clientId)
+    setInputClientId(clientId || '')
   }, [clientId])
 
   const generateClientId = useCallback(() => {
@@ -36,7 +36,7 @@ const MessageReceiverSetting = () => {
   }
 
   const handleCancelEdit = () => {
-    setInputClientId(clientId)
+    setInputClientId(clientId || '')
     setIsEditing(false)
   }
 
@@ -84,6 +84,7 @@ const MessageReceiverSetting = () => {
                   onKeyDown={handleKeyDown}
                   className="flex-1 p-2 border border-gray-300 rounded-3xl"
                   placeholder={t('EnterClientID')}
+                  aria-label={t('ClientID')}
                   autoFocus
                 />
                 <TextButton
