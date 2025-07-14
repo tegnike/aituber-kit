@@ -328,5 +328,11 @@
   "SideArea": "Area laterale",
   "PasteImageSupported": "Supporto incolla immagine",
   "ImageSizeExceeded": "La dimensione dell'immagine supera il limite di 10MB",
-  "ImageReadError": "Errore nella lettura del file immagine"
+  "ImageReadError": "Errore nella lettura del file immagine",
+  "EnterClientID": "Inserisci ID Cliente",
+  "NoClientIDSet": "Nessun ID Cliente impostato",
+  "Edit": "Modifica",
+  "GenerateNew": "Genera Nuovo",
+  "Save": "Salva",
+  "Cancel": "Annulla"
 }

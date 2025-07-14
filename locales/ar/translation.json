@@ -328,5 +328,11 @@
   "SideArea": "المنطقة الجانبية",
   "PasteImageSupported": "يدعم لصق الصور",
   "ImageSizeExceeded": "يتجاوز حجم الصورة حد 10 ميجابايت",
-  "ImageReadError": "فشل في قراءة ملف الصورة"
+  "ImageReadError": "فشل في قراءة ملف الصورة",
+  "EnterClientID": "أدخل معرف العميل",
+  "NoClientIDSet": "لم يتم تعيين معرف العميل",
+  "Edit": "تحرير",
+  "GenerateNew": "إنشاء جديد",
+  "Save": "حفظ",
+  "Cancel": "إلغاء"
 }

@@ -328,5 +328,11 @@
   "SideArea": "Seitenbereich",
   "PasteImageSupported": "Bildeinsetzen unterstützt",
   "ImageSizeExceeded": "Bildgröße überschreitet 10MB-Grenze",
-  "ImageReadError": "Fehler beim Lesen der Bilddatei"
+  "ImageReadError": "Fehler beim Lesen der Bilddatei",
+  "EnterClientID": "Client-ID eingeben",
+  "NoClientIDSet": "Keine Client-ID festgelegt",
+  "Edit": "Bearbeiten",
+  "GenerateNew": "Neu generieren",
+  "Save": "Speichern",
+  "Cancel": "Abbrechen"
 }

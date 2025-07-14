@@ -328,5 +328,11 @@
   "SideArea": "Zone latérale",
   "PasteImageSupported": "Collage d'image pris en charge",
   "ImageSizeExceeded": "La taille de l'image dépasse la limite de 10 Mo",
-  "ImageReadError": "Échec de la lecture du fichier image"
+  "ImageReadError": "Échec de la lecture du fichier image",
+  "EnterClientID": "Entrez l'ID client",
+  "NoClientIDSet": "Aucun ID client défini",
+  "Edit": "Modifier",
+  "GenerateNew": "Générer nouveau",
+  "Save": "Enregistrer",
+  "Cancel": "Annuler"
 }

@@ -327,5 +327,11 @@
   "SideArea": "Vùng bên",
   "PasteImageSupported": "Hỗ trợ dán hình ảnh",
   "ImageSizeExceeded": "Kích thước hình ảnh vượt quá giới hạn 10MB",
-  "ImageReadError": "Không thể đọc tệp hình ảnh"
+  "ImageReadError": "Không thể đọc tệp hình ảnh",
+  "EnterClientID": "Nhập ID khách hàng",
+  "NoClientIDSet": "Chưa thiết lập ID khách hàng",
+  "Edit": "Chỉnh sửa",
+  "GenerateNew": "Tạo mới",
+  "Save": "Lưu",
+  "Cancel": "Hủy"
 }
