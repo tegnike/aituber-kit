@@ -639,6 +639,38 @@ const Character = () => {
           </div>
         </div>
 
+        {/* VRM Lighting Controls */}
+        {modelType === 'vrm' && (
+          <div className="my-6">
+            <div className="text-xl font-bold mb-4">照明の強度</div>
+            <div className="mb-4 text-base">
+              VRMキャラクターの照明の明るさを調整します。
+            </div>
+            <div className="font-bold">
+              照明の強度: {settingsStore((s) => s.lightingIntensity.toFixed(1))}
+            </div>
+            <input
+              type="range"
+              min="0.1"
+              max="3.0"
+              step="0.1"
+              value={settingsStore((s) => s.lightingIntensity)}
+              onChange={(e) => {
+                const intensity = parseFloat(e.target.value)
+                settingsStore.setState({ lightingIntensity: intensity })
+                const { viewer } = homeStore.getState()
+                if (
+                  viewer &&
+                  typeof viewer.updateLightingIntensity === 'function'
+                ) {
+                  viewer.updateLightingIntensity(intensity)
+                }
+              }}
+              className="mt-2 mb-4 input-range"
+            />
+          </div>
+        )}
+
         <div className="my-6 mb-2">
           <div className="my-4 text-xl font-bold">
             {t('CharacterSettingsPrompt')}

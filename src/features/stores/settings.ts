@@ -148,6 +148,7 @@ interface Character {
     y: number
     z: number
   }
+  lightingIntensity: number
 }
 
 // Preset question type
@@ -188,6 +189,8 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
+  imageDisplayPosition: 'input' | 'side'
+  autoSendImagesInMultiModal: boolean
 }
 
 interface ModelType {
@@ -359,6 +362,8 @@ const settingsStore = create<SettingsState>()(
         y: 0,
         z: 0,
       },
+      lightingIntensity:
+        parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
 
       // General
       selectLanguage:
@@ -438,6 +443,15 @@ const settingsStore = create<SettingsState>()(
         5.0,
       chatLogWidth:
         parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
+      imageDisplayPosition: (() => {
+        const validPositions = ['input', 'side'] as const
+        const envPosition = process.env.NEXT_PUBLIC_IMAGE_DISPLAY_POSITION
+        return validPositions.includes(envPosition as any)
+          ? (envPosition as 'input' | 'side')
+          : 'input'
+      })(),
+      autoSendImagesInMultiModal:
+        process.env.NEXT_PUBLIC_AUTO_SEND_IMAGES_IN_MULTIMODAL !== 'false',
 
       // NijiVoice settings
       nijivoiceApiKey: '',
@@ -578,6 +592,7 @@ const settingsStore = create<SettingsState>()(
         fixedCharacterPosition: state.fixedCharacterPosition,
         characterPosition: state.characterPosition,
         characterRotation: state.characterRotation,
+        lightingIntensity: state.lightingIntensity,
         nijivoiceApiKey: state.nijivoiceApiKey,
         nijivoiceActorId: state.nijivoiceActorId,
         nijivoiceSpeed: state.nijivoiceSpeed,
@@ -617,6 +632,8 @@ const settingsStore = create<SettingsState>()(
           state.includeSystemMessagesInCustomApi,
         initialSpeechTimeout: state.initialSpeechTimeout,
         chatLogWidth: state.chatLogWidth,
+        imageDisplayPosition: state.imageDisplayPosition,
+        autoSendImagesInMultiModal: state.autoSendImagesInMultiModal,
       }),
     }
   )

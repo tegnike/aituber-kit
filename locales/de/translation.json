@@ -56,6 +56,7 @@
   "BackgroundSettingsDescription": "Sie können ein Hintergrundbild für die Anwendung hochladen und auswählen.",
   "UploadBackground": "Hintergrundbild hochladen",
   "DefaultBackground": "Standard-Hintergrund",
+  "GreenBackground": "Grüner Hintergrund",
   "CharacterSettingsPrompt": "Charakterprompt",
   "CharacterSettingsInfo": "Dieser Wert wird als Systemprompt festgelegt.\nBasierend auf dem initialen Prompt können Sie Gefühlstags angeben, um die Ausdrücke und Bewegungen des Charakters zu steuern. Beispiel: [neutral]Guten Morgen![happy]Schön, Sie zu sehen!",
   "CharacterpresetInfo": "Durch Auswahl einer Voreinstellung wird der Charakterprompt geändert.\nKurzbefehle sind möglich mit Cmd + Shift + 1-5 (Mac) / Ctrl + Shift + 1-5 (Windows).",
@@ -320,5 +321,12 @@
   "PositionFixed": "Fixiert",
   "OpenRouterAPIKeyLabel": "OpenRouter API-Schlüssel",
   "CharacterPositionInfo": "Die Position und Ausrichtung der Charaktere kann fixiert werden. Bei VRM wird die Kameraposition gespeichert, bei Live2D die Modellposition.",
-  "UnfixPosition": "Fixierung aufheben"
+  "UnfixPosition": "Fixierung aufheben",
+  "ImageDisplayPosition": "Bildanzeigeposition",
+  "ImageDisplayPositionDescription": "Wählen Sie aus, wo hochgeladene Bilder angezeigt werden sollen",
+  "InputArea": "Eingabebereich",
+  "SideArea": "Seitenbereich",
+  "PasteImageSupported": "Bildeinsetzen unterstützt",
+  "ImageSizeExceeded": "Bildgröße überschreitet 10MB-Grenze",
+  "ImageReadError": "Fehler beim Lesen der Bilddatei"
 }

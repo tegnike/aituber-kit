@@ -19,6 +19,8 @@ export class Viewer {
   private _scene: THREE.Scene
   private _camera?: THREE.PerspectiveCamera
   private _cameraControls?: OrbitControls
+  private _directionalLight?: THREE.DirectionalLight
+  private _ambientLight?: THREE.AmbientLight
 
   constructor() {
     this.isReady = false
@@ -28,12 +30,19 @@ export class Viewer {
     this._scene = scene
 
     // light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8)
-    directionalLight.position.set(1.0, 1.0, 1.0).normalize()
-    scene.add(directionalLight)
+    const lightingIntensity = settingsStore.getState().lightingIntensity
+    this._directionalLight = new THREE.DirectionalLight(
+      0xffffff,
+      1.8 * lightingIntensity
+    )
+    this._directionalLight.position.set(1.0, 1.0, 1.0).normalize()
+    scene.add(this._directionalLight)
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2)
-    scene.add(ambientLight)
+    this._ambientLight = new THREE.AmbientLight(
+      0xffffff,
+      1.2 * lightingIntensity
+    )
+    scene.add(this._ambientLight)
 
     // animate
     this._clock = new THREE.Clock()
@@ -263,5 +272,17 @@ export class Viewer {
       this._cameraControls.enabled = true
     }
     this.resetCamera()
+  }
+
+  /**
+   * ライトの強度を更新する
+   */
+  public updateLightingIntensity(intensity: number) {
+    if (this._directionalLight) {
+      this._directionalLight.intensity = 1.8 * intensity
+    }
+    if (this._ambientLight) {
+      this._ambientLight.intensity = 1.2 * intensity
+    }
   }
 }

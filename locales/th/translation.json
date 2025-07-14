@@ -320,5 +320,12 @@
   "PositionFixed": "กำลังล็อกอยู่",
   "OpenRouterAPIKeyLabel": "คีย์ API ของ OpenRouter",
   "CharacterPositionInfo": "สามารถล็อกตำแหน่งและทิศทางของตัวละครได้ VRM จะบันทึกตำแหน่งกล้อง ส่วน Live2D จะบันทึกตำแหน่งโมเดล",
-  "UnfixPosition": "ปลดล็อกการตรึง"
+  "UnfixPosition": "ปลดล็อกการตรึง",
+  "ImageDisplayPosition": "ตำแหน่งการแสดงภาพ",
+  "ImageDisplayPositionDescription": "เลือกตำแหน่งที่จะแสดงภาพที่อัปโหลด",
+  "InputArea": "พื้นที่ป้อนข้อมูล",
+  "SideArea": "พื้นที่ด้านข้าง",
+  "PasteImageSupported": "รองรับการวางภาพ",
+  "ImageSizeExceeded": "ขนาดภาพเกินขีดจำกัด 10MB",
+  "ImageReadError": "ไม่สามารถอ่านไฟล์ภาพได้"
 }

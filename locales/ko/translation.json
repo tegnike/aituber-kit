@@ -56,6 +56,7 @@
   "BackgroundSettingsDescription": "애플리케이션의 배경 이미지를 업로드하고 선택할 수 있습니다.",
   "UploadBackground": "배경 이미지 업로드",
   "DefaultBackground": "기본 배경",
+  "GreenBackground": "녹색 배경",
   "CharacterSettingsPrompt": "캐릭터 프롬프트",
   "CharacterSettingsInfo": "이 값은 시스템 프롬프트로 설정됩니다.\n초기 프롬프트를 참고하여 감정 태그를 지정하면 캐릭터의 표정이나 모션을 제어할 수 있습니다. 예: [neutral]안녕하세요![happy]오늘도 수고하셨어요!",
   "CharacterpresetInfo": "프리셋을 선택하면 캐릭터 프롬프트가 변경됩니다.\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)로 단축키 사용이 가능합니다.",
@@ -320,5 +321,12 @@
   "PositionFixed": "고정 중",
   "OpenRouterAPIKeyLabel": "OpenRouter API 키",
   "CharacterPositionInfo": "캐릭터의 위치와 방향을 고정할 수 있습니다. VRM은 카메라 위치, Live2D는 모델 위치가 저장됩니다.",
-  "UnfixPosition": "고정 해제"
+  "UnfixPosition": "고정 해제",
+  "ImageDisplayPosition": "이미지 표시 위치",
+  "ImageDisplayPositionDescription": "업로드된 이미지를 표시할 위치를 선택하세요",
+  "InputArea": "입력 영역",
+  "SideArea": "사이드 영역",
+  "PasteImageSupported": "이미지 붙여넣기 지원",
+  "ImageSizeExceeded": "이미지 크기가 10MB 제한을 초과합니다",
+  "ImageReadError": "이미지 파일 읽기에 실패했습니다"
 }

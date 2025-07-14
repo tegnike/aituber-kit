@@ -56,6 +56,7 @@
   "BackgroundSettingsDescription": "يمكنك تحميل واختيار صورة خلفية للتطبيق.",
   "UploadBackground": "تحميل صورة خلفية",
   "DefaultBackground": "الخلفية الافتراضية",
+  "GreenBackground": "الخلفية الخضراء",
   "CharacterSettingsPrompt": "موجه شخصية",
   "CharacterSettingsInfo": "سيتم تعيين هذه القيمة كموجه نظام.\nيمكنك التحكم في تعبيرات وحركات الشخصية باستخدام علامات المشاعر بالإشارة إلى الموجه الأولي. مثال: [neutral]صباح الخير![happy]أتمنى لك يومًا رائعًا!",
   "CharacterpresetInfo": "سيؤدي تحديد إعداد مسبق إلى تغيير موجه الشخصية.\nيمكنك استخدام الاختصارات Cmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows).",
@@ -320,5 +321,12 @@
   "PositionFixed": "قيد التثبيت",
   "OpenRouterAPIKeyLabel": "مفتاح API الخاص بـ OpenRouter",
   "CharacterPositionInfo": "يمكنك تثبيت موقع واتجاه الشخصية. يتم حفظ موقع الكاميرا في VRM، وموقع النموذج في Live2D.",
-  "UnfixPosition": "إلغاء التثبيت"
+  "UnfixPosition": "إلغاء التثبيت",
+  "ImageDisplayPosition": "موقع عرض الصورة",
+  "ImageDisplayPositionDescription": "اختر المكان المراد عرض الصور المرفوعة فيه",
+  "InputArea": "منطقة الإدخال",
+  "SideArea": "المنطقة الجانبية",
+  "PasteImageSupported": "يدعم لصق الصور",
+  "ImageSizeExceeded": "يتجاوز حجم الصورة حد 10 ميجابايت",
+  "ImageReadError": "فشل في قراءة ملف الصورة"
 }
