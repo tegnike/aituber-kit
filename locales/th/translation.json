@@ -327,5 +327,11 @@
   "SideArea": "พื้นที่ด้านข้าง",
   "PasteImageSupported": "รองรับการวางภาพ",
   "ImageSizeExceeded": "ขนาดภาพเกินขีดจำกัด 10MB",
-  "ImageReadError": "ไม่สามารถอ่านไฟล์ภาพได้"
+  "ImageReadError": "ไม่สามารถอ่านไฟล์ภาพได้",
+  "EnterClientID": "ป้อน ID ลูกค้า",
+  "NoClientIDSet": "ไม่ได้ตั้งค่า ID ลูกค้า",
+  "Edit": "แก้ไข",
+  "GenerateNew": "สร้างใหม่",
+  "Save": "บันทึก",
+  "Cancel": "ยกเลิก"
 }

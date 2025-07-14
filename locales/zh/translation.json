@@ -328,5 +328,11 @@
   "SideArea": "侧边区域",
   "PasteImageSupported": "支持粘贴图像",
   "ImageSizeExceeded": "图像大小超过10MB限制",
-  "ImageReadError": "读取图像文件失败"
+  "ImageReadError": "读取图像文件失败",
+  "EnterClientID": "输入客户端ID",
+  "NoClientIDSet": "未设置客户端ID",
+  "Edit": "编辑",
+  "GenerateNew": "生成新的",
+  "Save": "保存",
+  "Cancel": "取消"
 }

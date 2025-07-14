@@ -327,5 +327,11 @@
   "SideArea": "Obszar boczny",
   "PasteImageSupported": "Wklejanie obrazów obsługiwane",
   "ImageSizeExceeded": "Rozmiar obrazu przekracza limit 10MB",
-  "ImageReadError": "Nie udało się odczytać pliku obrazu"
+  "ImageReadError": "Nie udało się odczytać pliku obrazu",
+  "EnterClientID": "Wprowadź ID klienta",
+  "NoClientIDSet": "Nie ustawiono ID klienta",
+  "Edit": "Edytuj",
+  "GenerateNew": "Generuj nowe",
+  "Save": "Zapisz",
+  "Cancel": "Anuluj"
 }

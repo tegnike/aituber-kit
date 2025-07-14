@@ -19,7 +19,7 @@ export const getLatestAssistantMessage = (
       if (typeof msg.content === 'string') {
         return msg.content
       } else if (Array.isArray(msg.content)) {
-        const textContent = msg.content.find((item) => item.type === 'text')
+        const textContent = msg.content.find((item: { type: string }) => item.type === 'text')
         return textContent && 'text' in textContent ? textContent.text : ''
       }
       return ''

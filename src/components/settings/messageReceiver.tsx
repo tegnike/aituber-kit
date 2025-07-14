@@ -82,40 +82,40 @@ const MessageReceiverSetting = () => {
                   value={inputClientId}
                   onChange={handleClientIdChange}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 p-2 border border-gray-300 rounded"
-                  placeholder="Enter client ID"
+                  className="flex-1 p-2 border border-gray-300 rounded-3xl"
+                  placeholder={t('EnterClientID')}
                   autoFocus
                 />
-                <button
+                <TextButton
                   onClick={handleSaveClientId}
-                  className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl font-bold"
                 >
-                  保存
-                </button>
-                <button
+                  {t('Save')}
+                </TextButton>
+                <TextButton
                   onClick={handleCancelEdit}
-                  className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                  className="px-3 py-2 text-sm bg-gray-500 hover:bg-gray-600 rounded-3xl font-bold"
                 >
-                  キャンセル
-                </button>
+                  {t('Cancel')}
+                </TextButton>
               </div>
             ) : (
               <div className="flex gap-2 mt-1">
-                <div className="flex-1 bg-gray-100 p-2 rounded">
-                  {clientId || 'No client ID set'}
+                <div className="flex-1 bg-gray-100 p-2 rounded-3xl">
+                  {clientId || t('NoClientIDSet')}
                 </div>
-                <button
+                <TextButton
                   onClick={() => setIsEditing(true)}
-                  className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl font-bold"
                 >
-                  編集
-                </button>
-                <button
+                  {t('Edit')}
+                </TextButton>
+                <TextButton
                   onClick={generateClientId}
-                  className="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  className="px-3 py-2 text-sm bg-secondary hover:bg-secondary-hover rounded-3xl font-bold"
                 >
-                  新規生成
-                </button>
+                  {t('GenerateNew')}
+                </TextButton>
               </div>
             )}
           </div>

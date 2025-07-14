@@ -55,6 +55,7 @@
   "FixPosition": "位置を固定",
   "UnfixPosition": "固定を解除",
   "ResetPosition": "位置をリセット",
+  "Save": "保存",
   "CurrentStatus": "現在の状態",
   "PositionFixed": "固定中",
   "PositionNotFixed": "未固定",
@@ -62,6 +63,7 @@
   "ChangeBackgroundImage": "背景画像を変える",
   "BackgroundSettings": "背景設定",
   "BackgroundSettingsDescription": "アプリケーションの背景画像をアップロードして選択できます。",
+  "Cancel": "キャンセル",
   "UploadBackground": "背景画像をアップロード",
   "DefaultBackground": "デフォルト背景",
   "GreenBackground": "グリーンバック",
@@ -96,6 +98,7 @@
   "NijiVoiceApiKey": "にじボイス API キー",
   "NijiVoiceActorId": "話者ID",
   "NijiVoiceSpeed": "話速",
+  "NoClientIDSet": "クライアントIDが設定されていません",
   "NijiVoiceEmotionalLevel": "感情レベル",
   "NijiVoiceSoundDuration": "音声の長さ",
   "UpdateSpeakerList": "話者リストを更新",
@@ -311,6 +314,8 @@
   "PresetQuestionsInfo": "複数の質問パターンを事前に作成・登録できます。登録された質問はユーザーUI上にボタン形式で表示され、クリックするとチャット入力欄にセットされます。",
   "EnterPresetQuestion": "質問を入力してください",
   "DragToReorder": "ドラッグして順番を変更",
+  "Edit": "編集",
+  "EnterClientID": "クライアントIDを入力してください",
   "CustomAPIEndpoint": "カスタムAPIエンドポイント",
   "CustomAPIEndpointInfo": "POSTリクエストを送信するAPIエンドポイントのURLを入力してください。",
   "CustomAPIStream": "ストリーミングモード",
@@ -334,5 +339,6 @@
   "ImageDimensionError": "画像のサイズが最大{{maxWidth}}x{{maxHeight}}ピクセルを超えています。",
   "ImageLoadError": "画像の読み込みに失敗しました。",
   "FileReadError": "ファイルの読み込みに失敗しました。",
-  "FileProcessError": "ファイルの処理中にエラーが発生しました。"
+  "FileProcessError": "ファイルの処理中にエラーが発生しました。",
+  "GenerateNew": "新規生成"
 }

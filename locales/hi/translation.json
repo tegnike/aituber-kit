@@ -327,5 +327,11 @@
   "SideArea": "साइड क्षेत्र",
   "PasteImageSupported": "छवि पेस्ट समर्थित",
   "ImageSizeExceeded": "छवि का आकार 10MB सीमा से अधिक है",
-  "ImageReadError": "छवि फ़ाइल पढ़ने में विफल"
+  "ImageReadError": "छवि फ़ाइल पढ़ने में विफल",
+  "EnterClientID": "क्लाइंट ID दर्ज करें",
+  "NoClientIDSet": "कोई क्लाइंट ID सेट नहीं है",
+  "Edit": "संपादित करें",
+  "GenerateNew": "नया जेनरेट करें",
+  "Save": "सेव करें",
+  "Cancel": "रद्द करें"
 }

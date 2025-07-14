@@ -328,5 +328,11 @@
   "SideArea": "Área lateral",
   "PasteImageSupported": "Suporte para colar imagem",
   "ImageSizeExceeded": "O tamanho da imagem excede o limite de 10MB",
-  "ImageReadError": "Falha ao ler o arquivo de imagem"
+  "ImageReadError": "Falha ao ler o arquivo de imagem",
+  "EnterClientID": "Digite o ID do Cliente",
+  "NoClientIDSet": "Nenhum ID do Cliente definido",
+  "Edit": "Editar",
+  "GenerateNew": "Gerar Novo",
+  "Save": "Salvar",
+  "Cancel": "Cancelar"
 }

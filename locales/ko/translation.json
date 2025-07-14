@@ -328,5 +328,11 @@
   "SideArea": "사이드 영역",
   "PasteImageSupported": "이미지 붙여넣기 지원",
   "ImageSizeExceeded": "이미지 크기가 10MB 제한을 초과합니다",
-  "ImageReadError": "이미지 파일 읽기에 실패했습니다"
+  "ImageReadError": "이미지 파일 읽기에 실패했습니다",
+  "EnterClientID": "클라이언트 ID를 입력하세요",
+  "NoClientIDSet": "클라이언트 ID가 설정되지 않았습니다",
+  "Edit": "편집",
+  "GenerateNew": "새로 생성",
+  "Save": "저장",
+  "Cancel": "취소"
 }
