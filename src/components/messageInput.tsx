@@ -304,8 +304,9 @@ export const MessageInput = ({
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
+      // IME 文字変換中を除外しつつ、半角/全角キー（Backquote）による IME トグルは無視
       !event.nativeEvent.isComposing &&
-      event.code !== 'Backquote' && // IME composition check
+      event.code !== 'Backquote' &&
       event.key === 'Enter' &&
       !event.shiftKey
     ) {
