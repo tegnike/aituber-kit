@@ -321,5 +321,12 @@
   "PositionFixed": "قيد التثبيت",
   "OpenRouterAPIKeyLabel": "مفتاح API الخاص بـ OpenRouter",
   "CharacterPositionInfo": "يمكنك تثبيت موقع واتجاه الشخصية. يتم حفظ موقع الكاميرا في VRM، وموقع النموذج في Live2D.",
-  "UnfixPosition": "إلغاء التثبيت"
+  "UnfixPosition": "إلغاء التثبيت",
+  "ImageDisplayPosition": "موقع عرض الصورة",
+  "ImageDisplayPositionDescription": "اختر المكان المراد عرض الصور المرفوعة فيه",
+  "InputArea": "منطقة الإدخال",
+  "SideArea": "المنطقة الجانبية",
+  "PasteImageSupported": "يدعم لصق الصور",
+  "ImageSizeExceeded": "يتجاوز حجم الصورة حد 10 ميجابايت",
+  "ImageReadError": "فشل في قراءة ملف الصورة"
 }

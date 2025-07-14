@@ -321,5 +321,12 @@
   "PositionFixed": "固定中",
   "OpenRouterAPIKeyLabel": "OpenRouter API密钥",
   "CharacterPositionInfo": "可以固定角色的位置和朝向。VRM保存摄像机位置，Live2D保存模型位置。",
-  "UnfixPosition": "取消固定"
+  "UnfixPosition": "取消固定",
+  "ImageDisplayPosition": "图像显示位置",
+  "ImageDisplayPositionDescription": "选择上传图像的显示位置",
+  "InputArea": "输入区域",
+  "SideArea": "侧边区域",
+  "PasteImageSupported": "支持粘贴图像",
+  "ImageSizeExceeded": "图像大小超过10MB限制",
+  "ImageReadError": "读取图像文件失败"
 }

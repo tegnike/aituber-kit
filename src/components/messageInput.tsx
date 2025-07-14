@@ -1,10 +1,25 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import Image from 'next/image'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
+import { isMultiModalModel } from '@/features/constants/aiModels'
 import { IconButton } from './iconButton'
+
+// ファイルバリデーションの設定
+const FILE_VALIDATION = {
+  maxSizeBytes: 10 * 1024 * 1024, // 10MB
+  allowedTypes: [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/gif',
+    'image/webp',
+  ],
+  maxImageDimensions: { width: 4096, height: 4096 },
+} as const
 
 type Props = {
   userMessage: string
@@ -34,15 +49,25 @@ export const MessageInput = ({
 }: Props) => {
   const chatProcessing = homeStore((s) => s.chatProcessing)
   const slidePlaying = slideStore((s) => s.isPlaying)
+  const modalImage = homeStore((s) => s.modalImage)
+  const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const imageDisplayPosition = settingsStore((s) => s.imageDisplayPosition)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
+  const [fileError, setFileError] = useState<string>('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
-  const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
 
   const { t } = useTranslation()
+
+  // マルチモーダル対応かどうかを判定
+  const isMultiModalSupported = isMultiModalModel(
+    selectAIService,
+    selectAIModel
+  )
 
   useEffect(() => {
     if (chatProcessing) {
@@ -73,14 +98,8 @@ export const MessageInput = ({
     }
   }, [chatProcessing])
 
-  // userMessageの変更に応じて行数を調整
-  useEffect(() => {
-    const newRows = calculateRows(userMessage)
-    setRows(newRows)
-  }, [userMessage])
-
   // テキスト内容に基づいて適切な行数を計算
-  const calculateRows = (text: string): number => {
+  const calculateRows = useCallback((text: string): number => {
     const minRows = 1
     const maxRows = 5 // 最大行数を制限（UIの見栄えを考慮して調整）
     const lines = text.split('\n')
@@ -97,7 +116,24 @@ export const MessageInput = ({
     }, 0)
 
     return Math.min(maxRows, baseRows + extraRows)
-  }
+  }, [])
+
+  // userMessageの変更に応じて行数を調整
+  useEffect(() => {
+    const newRows = calculateRows(userMessage)
+    setRows(newRows)
+  }, [userMessage, calculateRows])
+
+  // 共通の遅延行数更新処理
+  const updateRowsWithDelay = useCallback(
+    (target: HTMLTextAreaElement) => {
+      setTimeout(() => {
+        const newRows = calculateRows(target.value)
+        setRows(newRows)
+      }, 0)
+    },
+    [calculateRows]
+  )
 
   // テキストエリアの内容変更時の処理
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -107,20 +143,170 @@ export const MessageInput = ({
     onChangeUserMessage(event)
   }
 
-  // ペーストイベントのハンドリング
-  const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    // ペースト後の内容を取得するため、少し遅延させて処理
-    setTimeout(() => {
-      const textarea = event.target as HTMLTextAreaElement
-      const newRows = calculateRows(textarea.value)
-      setRows(newRows)
-    }, 0)
-  }
+  // ファイルバリデーション関数
+  const validateFile = useCallback(
+    (file: File): { isValid: boolean; error?: string } => {
+      // ファイルサイズチェック
+      if (file.size > FILE_VALIDATION.maxSizeBytes) {
+        return {
+          isValid: false,
+          error: t('FileSizeError', {
+            maxSize: Math.round(FILE_VALIDATION.maxSizeBytes / (1024 * 1024)),
+          }),
+        }
+      }
+
+      // ファイルタイプチェック
+      if (!FILE_VALIDATION.allowedTypes.includes(file.type as any)) {
+        return {
+          isValid: false,
+          error: t('FileTypeError'),
+        }
+      }
+
+      return { isValid: true }
+    },
+    [t]
+  )
+
+  // 画像の寸法をチェックする関数
+  const validateImageDimensions = useCallback(
+    (imageElement: HTMLImageElement): boolean => {
+      return (
+        imageElement.naturalWidth <= FILE_VALIDATION.maxImageDimensions.width &&
+        imageElement.naturalHeight <= FILE_VALIDATION.maxImageDimensions.height
+      )
+    },
+    []
+  )
+
+  // 画像を処理する関数
+  const processImageFile = useCallback(
+    async (file: File): Promise<void> => {
+      setFileError('')
+
+      const validation = validateFile(file)
+      if (!validation.isValid) {
+        setFileError(validation.error || 'Unknown error')
+        return
+      }
+
+      try {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const base64Image = e.target?.result as string
+
+          // 画像の寸法チェック（オプション）
+          const img = document.createElement('img')
+          img.onload = () => {
+            if (!validateImageDimensions(img)) {
+              setFileError(
+                t('ImageDimensionError', {
+                  maxWidth: FILE_VALIDATION.maxImageDimensions.width,
+                  maxHeight: FILE_VALIDATION.maxImageDimensions.height,
+                })
+              )
+              return
+            }
+            homeStore.setState({ modalImage: base64Image })
+          }
+          img.onerror = () => {
+            setFileError(t('ImageLoadError'))
+          }
+          img.src = base64Image
+        }
+        reader.onerror = () => {
+          setFileError(t('FileReadError'))
+        }
+        reader.readAsDataURL(file)
+      } catch (error) {
+        setFileError(t('FileProcessError'))
+      }
+    },
+    [validateFile, validateImageDimensions, t]
+  )
+
+  // 画像を削除する関数
+  const handleRemoveImage = useCallback(() => {
+    homeStore.setState({ modalImage: '' })
+    setFileError('')
+  }, [])
+
+  // クリップボードからの画像ペースト処理
+  const handlePaste = useCallback(
+    async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      if (!isMultiModalSupported) {
+        updateRowsWithDelay(event.target as HTMLTextAreaElement)
+        return
+      }
+
+      const clipboardData = event.clipboardData
+      if (!clipboardData) {
+        updateRowsWithDelay(event.target as HTMLTextAreaElement)
+        return
+      }
+
+      const items = clipboardData.items
+      let hasImage = false
+
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          event.preventDefault()
+          const file = item.getAsFile()
+          if (file) {
+            await processImageFile(file)
+            hasImage = true
+          }
+          break
+        }
+      }
+
+      // 画像がない場合のみ通常のペースト処理を実行
+      if (!hasImage) {
+        updateRowsWithDelay(event.target as HTMLTextAreaElement)
+      }
+    },
+    [isMultiModalSupported, processImageFile, updateRowsWithDelay]
+  )
+
+  // ドラッグ＆ドロップ処理
+  const handleDragOver = useCallback(
+    (event: React.DragEvent) => {
+      if (!isMultiModalSupported) {
+        return
+      }
+      event.preventDefault()
+      event.stopPropagation()
+    },
+    [isMultiModalSupported]
+  )
+
+  const handleDrop = useCallback(
+    async (event: React.DragEvent) => {
+      if (!isMultiModalSupported) {
+        return
+      }
+      event.preventDefault()
+      event.stopPropagation()
+
+      const files = event.dataTransfer.files
+      if (files.length > 0) {
+        const file = files[0]
+        if (file.type.startsWith('image/')) {
+          await processImageFile(file)
+        } else {
+          setFileError(t('FileTypeError'))
+        }
+      }
+    },
+    [isMultiModalSupported, processImageFile, t]
+  )
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
+      // IME 文字変換中を除外しつつ、半角/全角キー（Backquote）による IME トグルは無視
       !event.nativeEvent.isComposing &&
-      event.keyCode !== 229 && // IME (Input Method Editor)
+      event.code !== 'Backquote' &&
       event.key === 'Enter' &&
       !event.shiftKey
     ) {
@@ -133,22 +319,14 @@ export const MessageInput = ({
       }
     } else if (event.key === 'Enter' && event.shiftKey) {
       // Shift+Enterの場合、calculateRowsで自動計算されるため、手動で行数を増やす必要なし
-      setTimeout(() => {
-        const textarea = event.target as HTMLTextAreaElement
-        const newRows = calculateRows(textarea.value)
-        setRows(newRows)
-      }, 0)
+      updateRowsWithDelay(event.target as HTMLTextAreaElement)
     } else if (
       event.key === 'Backspace' &&
       rows > 1 &&
       userMessage.slice(-1) === '\n'
     ) {
       // Backspaceの場合も、calculateRowsで自動計算されるため、手動で行数を減らす必要なし
-      setTimeout(() => {
-        const textarea = event.target as HTMLTextAreaElement
-        const newRows = calculateRows(textarea.value)
-        setRows(newRows)
-      }, 0)
+      updateRowsWithDelay(event.target as HTMLTextAreaElement)
     }
   }
 
@@ -202,6 +380,36 @@ export const MessageInput = ({
               ></div>
             </div>
           )}
+          {/* エラーメッセージ表示 */}
+          {fileError && (
+            <div className="mb-2 p-2 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
+              {fileError}
+            </div>
+          )}
+          {/* 画像プレビュー - 入力欄表示設定の場合のみ */}
+          {modalImage && imageDisplayPosition === 'input' && (
+            <div
+              className="mb-2 p-2 bg-gray-100 rounded-lg relative"
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <button
+                onClick={handleRemoveImage}
+                className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-sm font-medium w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50"
+              >
+                ×
+              </button>
+              <Image
+                src={modalImage}
+                alt="Pasted image"
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="max-w-full max-h-32 rounded object-contain w-auto h-auto"
+              />
+            </div>
+          )}
+
           <div className="flex gap-2 items-end">
             <div className="flex-shrink-0 pb-[0.3rem]">
               <IconButton
@@ -225,11 +433,15 @@ export const MessageInput = ({
                     ? `${t('AnswerGenerating')}${loadingDots}`
                     : continuousMicListeningMode && isMicRecording
                       ? t('ListeningContinuously')
-                      : t('EnterYourQuestion')
+                      : isMultiModalSupported
+                        ? `${t('EnterYourQuestion')} (${t('PasteImageSupported') || 'Paste image supported'})`
+                        : t('EnterYourQuestion')
                 }
                 onChange={handleTextChange}
                 onPaste={handlePaste}
                 onKeyDown={handleKeyPress}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
                 disabled={chatProcessing || slidePlaying || realtimeAPIMode}
                 className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
                 value={userMessage}

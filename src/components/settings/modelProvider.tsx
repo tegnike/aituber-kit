@@ -102,6 +102,7 @@ const ModelProvider = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const localLlmUrl = settingsStore((s) => s.localLlmUrl)
+  const imageDisplayPosition = settingsStore((s) => s.imageDisplayPosition)
 
   const difyUrl = settingsStore((s) => s.difyUrl)
 
@@ -114,6 +115,12 @@ const ModelProvider = () => {
   )
 
   const { t } = useTranslation()
+
+  // マルチモーダル対応かどうかを判定
+  const isMultiModalSupported = isMultiModalModel(
+    selectAIService,
+    selectAIModel
+  )
 
   // AIサービスの選択肢を定義
   const aiServiceOptions = [
@@ -1462,6 +1469,31 @@ const ModelProvider = () => {
             </div>
           )}
         </>
+      )}
+      {/* 画像表示位置の設定 - マルチモーダル対応モデル使用時のみ表示 */}
+      {isMultiModalSupported && (
+        <div className="my-6">
+          <div className="my-4 text-xl font-bold">
+            {t('ImageDisplayPosition')}
+          </div>
+          <div className="my-4 text-sm">
+            {t('ImageDisplayPositionDescription')}
+          </div>
+          <div className="my-2">
+            <select
+              className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              value={imageDisplayPosition}
+              onChange={(e) =>
+                settingsStore.setState({
+                  imageDisplayPosition: e.target.value as 'input' | 'side',
+                })
+              }
+            >
+              <option value="input">{t('InputArea')}</option>
+              <option value="side">{t('SideArea')}</option>
+            </select>
+          </div>
+        </div>
       )}
     </div>
   )

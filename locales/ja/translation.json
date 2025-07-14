@@ -323,5 +323,16 @@
   "CustomAPIDescription": "注意: メッセージは自動的にリクエストボディに含まれます。ストリーミングモードでは、サーバーがtext/event-streamを返す必要があります。",
   "XAIAPIKeyLabel": "xAI APIキー",
   "OpenRouterAPIKeyLabel": "OpenRouter APIキー",
-  "OpenRouterModelNameInstruction": "OpenRouterからモデル識別子を入力してください（例： \"openai/gpt-4o\", \"mistralai/mistral-large-latest\"）。モデル識別子はOpenRouterモデルページで確認できます。"
+  "OpenRouterModelNameInstruction": "OpenRouterからモデル識別子を入力してください（例： \"openai/gpt-4o\", \"mistralai/mistral-large-latest\"）。モデル識別子はOpenRouterモデルページで確認できます。",
+  "ImageDisplayPosition": "画像表示位置",
+  "ImageDisplayPositionDescription": "アップロードした画像を表示する位置を選択してください",
+  "InputArea": "入力エリア",
+  "SideArea": "サイドエリア",
+  "PasteImageSupported": "画像ペースト対応",
+  "FileSizeError": "ファイルサイズが最大{{maxSize}}MBを超えています。",
+  "FileTypeError": "サポートされていないファイル形式です。画像ファイル（PNG、JPEG、GIF、WebP）のみアップロード可能です。",
+  "ImageDimensionError": "画像のサイズが最大{{maxWidth}}x{{maxHeight}}ピクセルを超えています。",
+  "ImageLoadError": "画像の読み込みに失敗しました。",
+  "FileReadError": "ファイルの読み込みに失敗しました。",
+  "FileProcessError": "ファイルの処理中にエラーが発生しました。"
 }
