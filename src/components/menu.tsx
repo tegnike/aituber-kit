@@ -314,7 +314,9 @@ export const Menu = () => {
       {!showChatLog &&
         getLatestAssistantMessage(chatLog) &&
         (!slideMode || !slideVisible) &&
-        showAssistantText && <AssistantText message={getLatestAssistantMessage(chatLog)} />}
+        showAssistantText && (
+          <AssistantText message={getLatestAssistantMessage(chatLog)} />
+        )}
       {showWebcam && navigator.mediaDevices && <Webcam />}
       {showCapture && <Capture />}
       {showPermissionModal && (
