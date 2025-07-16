@@ -7,7 +7,8 @@ export const AssistantText = ({ message }: { message: string }) => {
   const presetQuestions = settingsStore((s) => s.presetQuestions)
 
   // Check if preset questions should be shown AND there are actual questions
-  const shouldShowPresetQuestions = showPresetQuestions && presetQuestions.length > 0
+  const shouldShowPresetQuestions =
+    showPresetQuestions && presetQuestions.length > 0
 
   return (
     <div
