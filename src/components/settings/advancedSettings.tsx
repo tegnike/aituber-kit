@@ -10,9 +10,6 @@ const AdvancedSettings = () => {
   const showCharacterPresetMenu = settingsStore(
     (s) => s.showCharacterPresetMenu
   )
-  const alwaysOverrideWithEnvVariables = settingsStore(
-    (s) => s.alwaysOverrideWithEnvVariables
-  )
 
   const { t } = useTranslation()
 
@@ -78,25 +75,6 @@ const AdvancedSettings = () => {
             }
           >
             {includeTimestampInUserMessage ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
-        </div>
-      </div>
-      <div className="my-6">
-        <div className="my-4 text-xl font-bold">
-          {t('AlwaysOverrideWithEnvVariables')}
-        </div>
-        <div className="my-4 text-base whitespace-pre-line">
-          {t('AlwaysOverrideWithEnvVariablesInfo')}
-        </div>
-        <div className="my-2">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({
-                alwaysOverrideWithEnvVariables: !alwaysOverrideWithEnvVariables,
-              })
-            }
-          >
-            {alwaysOverrideWithEnvVariables ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>
       </div>
