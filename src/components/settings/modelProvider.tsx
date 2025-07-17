@@ -95,6 +95,8 @@ const ModelProvider = () => {
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
+  const presencePenalty = settingsStore((s) => s.presencePenalty)
+  const frequencyPenalty = settingsStore((s) => s.frequencyPenalty)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -1319,6 +1321,44 @@ const ModelProvider = () => {
                     onChange={(e) =>
                       settingsStore.setState({
                         temperature: parseFloat(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div className="my-6">
+                  <div className="my-4 text-xl font-bold">
+                    {t('PresencePenalty')}: {presencePenalty.toFixed(2)}
+                  </div>
+                  <div className="my-2 text-sm ">{t('PresencePenaltyInfo')}</div>
+                  <input
+                    type="range"
+                    min={-2.0}
+                    max={2.0}
+                    step={0.01}
+                    value={presencePenalty}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        presencePenalty: parseFloat(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div className="my-6">
+                  <div className="my-4 text-xl font-bold">
+                    {t('FrequencyPenalty')}: {frequencyPenalty.toFixed(2)}
+                  </div>
+                  <div className="my-2 text-sm ">{t('FrequencyPenaltyInfo')}</div>
+                  <input
+                    type="range"
+                    min={-2.0}
+                    max={2.0}
+                    step={0.01}
+                    value={frequencyPenalty}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        frequencyPenalty: parseFloat(e.target.value),
                       })
                     }
                   />

@@ -29,6 +29,8 @@ const getAIConfig = () => {
     useSearchGrounding: ss.useSearchGrounding,
     temperature: ss.temperature,
     maxTokens: ss.maxTokens,
+    presencePenalty: ss.presencePenalty,
+    frequencyPenalty: ss.frequencyPenalty,
     customApiUrl: ss.customApiUrl,
     customApiHeaders: ss.customApiHeaders,
     customApiBody: ss.customApiBody,
@@ -62,6 +64,8 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     useSearchGrounding,
     temperature,
     maxTokens,
+    presencePenalty,
+    frequencyPenalty,
     customApiUrl,
     customApiHeaders,
     customApiBody,
@@ -90,6 +94,8 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         customApiBody,
         temperature,
         maxTokens,
+        presencePenalty,
+        frequencyPenalty,
         messages: filteredMessages, // フィルタリングされたメッセージを使用
       })
     } else {
@@ -103,6 +109,8 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         useSearchGrounding,
         temperature,
         maxTokens,
+        presencePenalty,
+        frequencyPenalty,
       })
     }
 
@@ -145,6 +153,8 @@ export async function getVercelAIChatResponseStream(
     useSearchGrounding,
     temperature,
     maxTokens,
+    presencePenalty,
+    frequencyPenalty,
     customApiUrl,
     customApiHeaders,
     customApiBody,
@@ -172,6 +182,8 @@ export async function getVercelAIChatResponseStream(
       customApiBody,
       temperature,
       maxTokens,
+      presencePenalty,
+      frequencyPenalty,
       messages: filteredMessages, // フィルタリングされたメッセージを使用
     })
   } else {
@@ -185,6 +197,8 @@ export async function getVercelAIChatResponseStream(
       useSearchGrounding,
       temperature,
       maxTokens,
+      presencePenalty,
+      frequencyPenalty,
     })
   }
 

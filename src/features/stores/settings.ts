@@ -179,6 +179,8 @@ interface General {
   useVideoAsBackground: boolean
   temperature: number
   maxTokens: number
+  presencePenalty: number
+  frequencyPenalty: number
   noSpeechTimeout: number
   showSilenceProgressBar: boolean
   continuousMicListeningMode: boolean
@@ -410,6 +412,10 @@ const settingsStore = create<SettingsState>()(
       temperature:
         parseFloat(process.env.NEXT_PUBLIC_TEMPERATURE || '1.0') || 1.0,
       maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
+      presencePenalty:
+        parseFloat(process.env.NEXT_PUBLIC_PRESENCE_PENALTY || '0.0') || 0.0,
+      frequencyPenalty:
+        parseFloat(process.env.NEXT_PUBLIC_FREQUENCY_PENALTY || '0.0') || 0.0,
       noSpeechTimeout:
         parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
       showSilenceProgressBar:
