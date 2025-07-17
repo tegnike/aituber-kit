@@ -284,6 +284,31 @@ Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
 
 Plus kilku prywatnych sponsorów
 
+## Wkład
+
+Dziękujemy za zainteresowanie rozwojem AITuberKit. Witamy wkład od społeczności.
+
+### Zgłaszanie problemów
+
+Jeśli znalazłeś błąd lub masz pomysł na nową funkcję, poinformuj nas o tym na stronie [Issues](https://github.com/tegnike/aituber-kit/issues) na GitHub.
+
+Podczas tworzenia problemu, podanie następujących informacji pomoże nam w płynnej odpowiedzi:
+
+- Szczegółowy opis problemu lub nowej funkcji
+- Kroki reprodukcji (dla błędów)
+- Oczekiwane zachowanie vs. rzeczywiste zachowanie
+- Szczegóły środowiska (przeglądarka, system operacyjny, wersja Node.js, itp.)
+- Zrzuty ekranu lub wideo (jeśli to możliwe)
+
+### Pull Requests
+
+Jeśli chcesz poprawić kod lub dodać nowe funkcje, wprowadź zmiany w swoim sforkowanym repozytorium i stwórz pull request.
+
+- Skup się na jednej funkcji lub poprawce na pull request.
+- Opisz zmiany i powód ich wprowadzenia w opisie pull request.
+- Zawsze ustaw docelową gałąź na `develop`.
+- Nie martw się konfliktami - zespół programistów je rozwiąże.
+
 ## Warunki użytkowania
 
 ### Licencja
