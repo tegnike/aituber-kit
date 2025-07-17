@@ -61,9 +61,12 @@ export const Form = () => {
       // 画像キャプチャが必要な場合
       if (shouldCaptureImage) {
         // すでにmodalImageが存在する場合は、Webcamのキャプチャーをスキップ
-        if (!homeStore.getState().modalImage) {
-          homeStore.setState({ triggerShutter: true })
-        }
+        homeStore.setState((state) => {
+          if (!state.modalImage) {
+            return { ...state, triggerShutter: true }
+          }
+          return state
+        })
         // 画像が取得されるまで遅延させる
         setDelayedText(text)
       } else {

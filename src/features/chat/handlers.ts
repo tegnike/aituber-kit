@@ -62,8 +62,7 @@ const askAIForMultiModalDecision = async (
     ])
 
     if (!response) {
-      console.error('AI判断の取得に失敗しました')
-      return true // エラーの場合は安全側に倒して画像を使用
+      return false // エラーの場合は画像を使用しない
     }
 
     // ReadableStreamからテキストを取得
@@ -81,13 +80,24 @@ const askAIForMultiModalDecision = async (
     }
 
     const decision = result.trim().toLowerCase()
-    console.log('AI判断結果:', decision)
 
-    // 「はい」または「yes」が含まれている場合はtrue
-    return decision.includes('はい') || decision.includes('yes')
+    // 各言語の肯定的な回答をチェック
+    const affirmativeResponses = [
+      'はい',
+      'yes',
+      'oui',
+      'sí',
+      'ja',
+      '是',
+      '예',
+      'tak',
+      'da',
+      'sim',
+    ]
+    return affirmativeResponses.some((response) => decision.includes(response))
   } catch (error) {
     console.error('AI判断でエラーが発生しました:', error)
-    return true // エラーの場合は安全側に倒して画像を使用
+    return false // エラーの場合は画像を使用しない
   }
 }
 
