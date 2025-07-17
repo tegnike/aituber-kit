@@ -332,7 +332,7 @@
   "ImageDisplayPosition": "画像表示位置",
   "ImageDisplayPositionDescription": "アップロードした画像を表示する位置を選択してください",
   "InputArea": "入力エリア",
-  "SideArea": "サイドエリア",
+  "SideArea": "サイドパネル",
   "NoDisplay": "アイコンのみ表示",
   "RemoveImage": "画像を削除",
   "PasteImageSupported": "画像ペースト対応",
