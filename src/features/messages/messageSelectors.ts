@@ -70,6 +70,7 @@ export const messageSelectors = {
       .slice(-maxPastMessages)
   },
 
+  // メッセージを正規化して、連続する同一メッセージを統合
   normalizeMessages: (messages: Message[]): Message[] => {
     let lastImageUrl = ''
     return messages

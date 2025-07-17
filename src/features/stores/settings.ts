@@ -434,7 +434,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   })(),
   multiModalAiDecisionPrompt:
     process.env.NEXT_PUBLIC_MULTIMODAL_AI_DECISION_PROMPT ||
-    'この画像は現在の会話の文脈で重要ですか？重要な場合は「はい」、そうでない場合は「いいえ」で答えてください。',
+    'あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。',
   enableMultiModal: process.env.NEXT_PUBLIC_ENABLE_MULTIMODAL !== 'false',
 
   // NijiVoice settings

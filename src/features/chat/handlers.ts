@@ -32,7 +32,21 @@ const askAIForMultiModalDecision = async (
   decisionPrompt: string
 ): Promise<boolean> => {
   try {
-    const settings = settingsStore.getState()
+    // 直近の会話履歴を取得（最新3つまで）
+    const currentChatLog = homeStore.getState().chatLog
+    const recentMessages = currentChatLog.slice(-3)
+
+    // 会話履歴をテキストとして構築
+    let conversationHistory = ''
+    if (recentMessages.length > 0) {
+      conversationHistory = '\n\n直近の会話履歴:\n'
+      // cutImageMessage関数を使用して画像メッセージをテキストに変換
+      const textOnlyMessages = messageSelectors.cutImageMessage(recentMessages)
+      textOnlyMessages.forEach((msg, index) => {
+        const content = msg.content || ''
+        conversationHistory += `${index + 1}. ${msg.role === 'user' ? 'ユーザー' : 'アシスタント'}: ${content}\n`
+      })
+    }
 
     // AI判断用のメッセージを構築
     const decisionMessage: Message = {
@@ -40,7 +54,7 @@ const askAIForMultiModalDecision = async (
       content: [
         {
           type: 'text',
-          text: `${decisionPrompt}\n\nユーザーメッセージ: "${userMessage}"`,
+          text: `Conversation History:\n${conversationHistory}\n\nUser Message: "${userMessage}"`,
         },
         { type: 'image', image: image },
       ],
@@ -51,8 +65,7 @@ const askAIForMultiModalDecision = async (
     const systemMessage: Message = {
       role: 'system',
       content:
-        'あなたは画像がユーザーの質問に関連するかどうかを判断するアシスタントです。「はい」または「いいえ」のみで答えてください。',
-      timestamp: new Date().toISOString(),
+        'あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。',
     }
 
     // AIに判断を求める

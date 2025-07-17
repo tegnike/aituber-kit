@@ -228,8 +228,6 @@
   "RealtimeAPIModeContentType": "送信タイプ",
   "RealtimeAPIModeVoice": "ボイスタイプ",
   "AudioMode": "オーディオモード",
-  "AutoSendImagesInMultiModal": "マルチモーダルモデルで画像を自動送信",
-  "AutoSendImagesInMultiModalDescription": "画面共有やカメラが有効な場合、メッセージ送信時に自動的に画像をキャプチャして送信します。",
   "InputText": "テキスト",
   "InputAudio": "音声",
   "SearchGrounding": "検索機能を利用する",
@@ -346,9 +344,9 @@
   "MultiModalNotSupported": "選択されたモデルまたは設定では画像の送信がサポートされていません。マルチモーダル機能を有効にするか、対応モデルを選択してください。",
   "MultiModalMode": "マルチモーダル利用モード",
   "MultiModalModeDescription": "マルチモーダル機能をいつ使用するかを選択してください。",
-  "MultiModalModeAIDecide": "AIで判断する（推奨）",
+  "MultiModalModeAIDecide": "AIで判断する",
   "MultiModalModeAlways": "常に利用する",
   "MultiModalModeNever": "利用しない",
   "MultiModalAIDecisionPrompt": "AI判断用プロンプト",
-  "MultiModalAIDecisionPromptPlaceholder": "この画像は現在の会話の文脈で重要ですか？重要な場合は「はい」、そうでない場合は「いいえ」で答えてください。"
+  "MultiModalAIDecisionPromptPlaceholder": "あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。"
 }
