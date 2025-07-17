@@ -4,7 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import Image from 'next/image'
 import { Listbox } from '@headlessui/react'
 import {
@@ -96,8 +96,9 @@ const ModelProvider = () => {
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
-  const autoSendImagesInMultiModal = settingsStore(
-    (s) => s.autoSendImagesInMultiModal
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const multiModalAiDecisionPrompt = settingsStore(
+    (s) => s.multiModalAiDecisionPrompt
   )
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
 
@@ -118,11 +119,15 @@ const ModelProvider = () => {
 
   const { t } = useTranslation()
 
-  // マルチモーダル対応かどうかを判定
-  const isMultiModalSupported = isMultiModalModelWithToggle(
-    selectAIService,
-    selectAIModel,
-    enableMultiModal
+  // マルチモーダル対応かどうかを判定（メモ化して再計算を防ぐ）
+  const isMultiModalSupported = useMemo(
+    () =>
+      isMultiModalModelWithToggle(
+        selectAIService,
+        selectAIModel,
+        enableMultiModal
+      ),
+    [selectAIService, selectAIModel, enableMultiModal]
   )
 
   // AIサービスの選択肢を定義
@@ -158,7 +163,7 @@ const ModelProvider = () => {
       settingsStore.setState({
         conversationContinuityMode: false,
         slideMode: false,
-        autoSendImagesInMultiModal: false,
+        multiModalMode: 'never',
       })
       slideStore.setState({
         isPlaying: false,
@@ -291,7 +296,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="sk-..."
                   value={openaiKey}
                   onChange={(e) =>
@@ -379,7 +384,7 @@ const ModelProvider = () => {
 
                         if (!isMultiModalModel('openai', model)) {
                           settingsStore.setState({
-                            autoSendImagesInMultiModal: false,
+                            multiModalMode: 'never',
                           })
                         }
                       }}
@@ -453,7 +458,7 @@ const ModelProvider = () => {
 
                         if (!isMultiModalModel('openai', model)) {
                           settingsStore.setState({
-                            autoSendImagesInMultiModal: false,
+                            multiModalMode: 'never',
                           })
                         }
                       }}
@@ -482,7 +487,7 @@ const ModelProvider = () => {
 
                       if (!isMultiModalModel('openai', model)) {
                         settingsStore.setState({
-                          autoSendImagesInMultiModal: false,
+                          multiModalMode: 'never',
                         })
                       }
                     }}
@@ -511,7 +516,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={anthropicKey}
                   onChange={(e) =>
@@ -532,7 +537,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('anthropic', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -564,7 +569,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={googleKey}
                   onChange={(e) =>
@@ -591,7 +596,7 @@ const ModelProvider = () => {
                     // Auto-turn off toggle if non-multimodal model is selected
                     if (!isMultiModalModel('google', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -682,7 +687,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={azureKey}
                   onChange={(e) =>
@@ -818,7 +823,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={xaiKey}
                   onChange={(e) =>
@@ -839,7 +844,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('xai', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -870,7 +875,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={groqKey}
                   onChange={(e) =>
@@ -891,7 +896,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('groq', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -922,7 +927,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={cohereKey}
                   onChange={(e) =>
@@ -943,7 +948,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('cohere', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -974,7 +979,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={mistralaiKey}
                   onChange={(e) =>
@@ -995,7 +1000,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('mistralai', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -1027,7 +1032,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={perplexityKey}
                   onChange={(e) =>
@@ -1048,7 +1053,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('perplexity', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -1080,7 +1085,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={fireworksKey}
                   onChange={(e) =>
@@ -1101,7 +1106,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('fireworks', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -1198,7 +1203,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={difyKey}
                   onChange={(e) =>
@@ -1237,7 +1242,7 @@ const ModelProvider = () => {
               </div>
               <input
                 className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                type="text"
+                type="password"
                 placeholder="sk-..."
                 value={deepseekKey}
                 onChange={(e) =>
@@ -1257,7 +1262,7 @@ const ModelProvider = () => {
 
                     if (!isMultiModalModel('deepseek', model)) {
                       settingsStore.setState({
-                        autoSendImagesInMultiModal: false,
+                        multiModalMode: 'never',
                       })
                     }
                   }}
@@ -1527,24 +1532,88 @@ const ModelProvider = () => {
               </>
             )}
           <div className="my-6">
-            <div className="my-4 text-xl font-bold">
-              {t('AutoSendImagesInMultiModal')}
-            </div>
-            <div className="my-4 text-sm">
-              {t('AutoSendImagesInMultiModalDescription')}
-            </div>
+            <div className="my-4 text-xl font-bold">{t('MultiModalMode')}</div>
+            <div className="my-4 text-sm">{t('MultiModalModeDescription')}</div>
             <div className="my-2">
-              <TextButton
-                onClick={() => {
-                  settingsStore.setState({
-                    autoSendImagesInMultiModal: !autoSendImagesInMultiModal,
-                  })
-                }}
-                disabled={!isMultiModalSupported}
-              >
-                {autoSendImagesInMultiModal ? t('StatusOn') : t('StatusOff')}
-              </TextButton>
+              <div className="space-y-2">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="multiModalMode"
+                    value="ai-decide"
+                    checked={multiModalMode === 'ai-decide'}
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        multiModalMode: e.target.value as
+                          | 'ai-decide'
+                          | 'always'
+                          | 'never',
+                      })
+                    }}
+                    disabled={!isMultiModalSupported}
+                    className="mr-2"
+                  />
+                  <span>{t('MultiModalModeAIDecide')}</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="multiModalMode"
+                    value="always"
+                    checked={multiModalMode === 'always'}
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        multiModalMode: e.target.value as
+                          | 'ai-decide'
+                          | 'always'
+                          | 'never',
+                      })
+                    }}
+                    disabled={!isMultiModalSupported}
+                    className="mr-2"
+                  />
+                  <span>{t('MultiModalModeAlways')}</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="multiModalMode"
+                    value="never"
+                    checked={multiModalMode === 'never'}
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        multiModalMode: e.target.value as
+                          | 'ai-decide'
+                          | 'always'
+                          | 'never',
+                      })
+                    }}
+                    disabled={!isMultiModalSupported}
+                    className="mr-2"
+                  />
+                  <span>{t('MultiModalModeNever')}</span>
+                </label>
+              </div>
             </div>
+            {multiModalMode === 'ai-decide' && (
+              <div className="my-4">
+                <div className="my-2 text-sm font-medium">
+                  {t('MultiModalAIDecisionPrompt')}
+                </div>
+                <textarea
+                  className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg text-sm"
+                  rows={3}
+                  value={multiModalAiDecisionPrompt}
+                  onChange={(e) => {
+                    settingsStore.setState({
+                      multiModalAiDecisionPrompt: e.target.value,
+                    })
+                  }}
+                  disabled={!isMultiModalSupported}
+                  placeholder={t('MultiModalAIDecisionPromptPlaceholder')}
+                />
+              </div>
+            )}
           </div>
           {(realtimeAPIMode || audioMode) && (
             <div className="my-6 p-4 bg-white rounded-lg text-sm ">

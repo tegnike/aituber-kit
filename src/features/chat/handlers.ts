@@ -20,6 +20,101 @@ const generateSessionId = () => generateMessageId()
 const CODE_DELIMITER = '```'
 
 /**
+ * AI判断機能でマルチモーダルを使用するかどうかを決定する
+ * @param userMessage ユーザーメッセージ
+ * @param image 画像データ
+ * @param decisionPrompt AI判断用プロンプト
+ * @returns 画像を使用するかどうか
+ */
+const askAIForMultiModalDecision = async (
+  userMessage: string,
+  image: string,
+  decisionPrompt: string
+): Promise<boolean> => {
+  try {
+    // 直近の会話履歴を取得（最新3つまで）
+    const currentChatLog = homeStore.getState().chatLog
+    const recentMessages = currentChatLog.slice(-3)
+
+    // 会話履歴をテキストとして構築
+    let conversationHistory = ''
+    if (recentMessages.length > 0) {
+      conversationHistory = '\n\n直近の会話履歴:\n'
+      // cutImageMessage関数を使用して画像メッセージをテキストに変換
+      const textOnlyMessages = messageSelectors.cutImageMessage(recentMessages)
+      textOnlyMessages.forEach((msg, index) => {
+        const content = msg.content || ''
+        conversationHistory += `${index + 1}. ${msg.role === 'user' ? 'ユーザー' : 'アシスタント'}: ${content}\n`
+      })
+    }
+
+    // AI判断用のメッセージを構築
+    const decisionMessage: Message = {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: `Conversation History:\n${conversationHistory}\n\nUser Message: "${userMessage}"`,
+        },
+        { type: 'image', image: image },
+      ],
+      timestamp: new Date().toISOString(),
+    }
+
+    // AI判断用のシステムプロンプト
+    const systemMessage: Message = {
+      role: 'system',
+      content:
+        'あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。',
+    }
+
+    // AIに判断を求める
+    const response = await getAIChatResponseStream([
+      systemMessage,
+      decisionMessage,
+    ])
+
+    if (!response) {
+      return false // エラーの場合は画像を使用しない
+    }
+
+    // ReadableStreamからテキストを取得
+    const reader = response.getReader()
+    let result = ''
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        result += value
+      }
+    } finally {
+      reader.releaseLock()
+    }
+
+    const decision = result.trim().toLowerCase()
+
+    // 各言語の肯定的な回答をチェック
+    const affirmativeResponses = [
+      'はい',
+      'yes',
+      'oui',
+      'sí',
+      'ja',
+      '是',
+      '예',
+      'tak',
+      'da',
+      'sim',
+    ]
+    return affirmativeResponses.some((response) => decision.includes(response))
+  } catch (error) {
+    console.error('AI判断でエラーが発生しました:', error)
+    return false // エラーの場合は画像を使用しない
+  }
+}
+
+/**
  * テキストから感情タグ `[...]` を抽出する
  * @param text 入力テキスト
  * @returns 感情タグと残りのテキスト
@@ -681,12 +776,35 @@ export const handleSendChatFn = () => async (text: string) => {
       return
     }
 
-    const userMessageContent: Message['content'] = modalImage
-      ? [
+    // マルチモーダルモードに基づいてメッセージコンテンツを構築
+    let userMessageContent: Message['content'] = newMessage
+    let shouldUseImage = false
+
+    if (modalImage) {
+      switch (ss.multiModalMode) {
+        case 'always':
+          shouldUseImage = true
+          break
+        case 'never':
+          shouldUseImage = false
+          break
+        case 'ai-decide':
+          // AI判断モードの場合は、AIに判断を求める
+          shouldUseImage = await askAIForMultiModalDecision(
+            newMessage,
+            modalImage,
+            ss.multiModalAiDecisionPrompt
+          )
+          break
+      }
+
+      if (shouldUseImage) {
+        userMessageContent = [
           { type: 'text' as const, text: newMessage },
           { type: 'image' as const, image: modalImage },
         ]
-      : newMessage
+      }
+    }
 
     homeStore.getState().upsertMessage({
       role: 'user',
