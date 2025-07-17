@@ -340,5 +340,6 @@
   "ImageLoadError": "画像の読み込みに失敗しました。",
   "FileReadError": "ファイルの読み込みに失敗しました。",
   "FileProcessError": "ファイルの処理中にエラーが発生しました。",
-  "GenerateNew": "新規生成"
+  "GenerateNew": "新規生成",
+  "DeleteMessage": "削除"
 }

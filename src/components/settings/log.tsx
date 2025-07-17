@@ -23,6 +23,11 @@ const Log = () => {
     homeStore.setState({ chatLog: newChatLog })
   }
 
+  const handleDeleteMessage = (targetIndex: number) => {
+    const newChatLog = chatLog.filter((_, i) => i !== targetIndex)
+    homeStore.setState({ chatLog: newChatLog })
+  }
+
   return (
     <div className="">
       <div className="mb-2 grid-cols-2">
@@ -58,7 +63,7 @@ const Log = () => {
               value.content && (
                 <div
                   key={index}
-                  className="my-2 grid grid-flow-col grid-cols-[100px_1fr] gap-x-fixed"
+                  className="my-2 grid grid-flow-col grid-cols-[100px_1fr_auto] gap-x-fixed"
                 >
                   <div className="min-w-[100px] py-2 whitespace-nowrap">
                     {value.role === 'user' ? 'You' : 'Character'}
@@ -81,6 +86,12 @@ const Log = () => {
                       height={500}
                     />
                   )}
+                  <button
+                    onClick={() => handleDeleteMessage(index)}
+                    className="ml-2 px-2 py-1 text-red-500 hover:text-red-700 rounded"
+                  >
+                    {t('DeleteMessage')}
+                  </button>
                 </div>
               )
             )
