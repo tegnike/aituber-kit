@@ -340,7 +340,5 @@
   "ImageLoadError": "画像の読み込みに失敗しました。",
   "FileReadError": "ファイルの読み込みに失敗しました。",
   "FileProcessError": "ファイルの処理中にエラーが発生しました。",
-  "GenerateNew": "新規生成",
-  "AlwaysOverrideWithEnvVariables": "常に環境変数を優先する",
-  "AlwaysOverrideWithEnvVariablesInfo": "ONにすると、ページリロード時に常に環境変数の値でブラウザの設定を上書きします。\nOFFにすると、現在の仕様通りブラウザの設定値が維持されます。\n\n注意：この設定自体もブラウザに保存されるため、設定を変更した後はページをリロードしてください。"
+  "GenerateNew": "新規生成"
 }
