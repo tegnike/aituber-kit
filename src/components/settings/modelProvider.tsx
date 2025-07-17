@@ -4,7 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import Image from 'next/image'
 import { Listbox } from '@headlessui/react'
 import {
@@ -119,11 +119,15 @@ const ModelProvider = () => {
 
   const { t } = useTranslation()
 
-  // マルチモーダル対応かどうかを判定
-  const isMultiModalSupported = isMultiModalModelWithToggle(
-    selectAIService,
-    selectAIModel,
-    enableMultiModal
+  // マルチモーダル対応かどうかを判定（メモ化して再計算を防ぐ）
+  const isMultiModalSupported = useMemo(
+    () =>
+      isMultiModalModelWithToggle(
+        selectAIService,
+        selectAIModel,
+        enableMultiModal
+      ),
+    [selectAIService, selectAIModel, enableMultiModal]
   )
 
   // AIサービスの選択肢を定義
@@ -292,7 +296,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="sk-..."
                   value={openaiKey}
                   onChange={(e) =>
@@ -512,7 +516,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={anthropicKey}
                   onChange={(e) =>
@@ -565,7 +569,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={googleKey}
                   onChange={(e) =>
@@ -683,7 +687,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={azureKey}
                   onChange={(e) =>
@@ -819,7 +823,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={xaiKey}
                   onChange={(e) =>
@@ -871,7 +875,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={groqKey}
                   onChange={(e) =>
@@ -923,7 +927,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={cohereKey}
                   onChange={(e) =>
@@ -975,7 +979,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={mistralaiKey}
                   onChange={(e) =>
@@ -1028,7 +1032,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={perplexityKey}
                   onChange={(e) =>
@@ -1081,7 +1085,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={fireworksKey}
                   onChange={(e) =>
@@ -1199,7 +1203,7 @@ const ModelProvider = () => {
                 </div>
                 <input
                   className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
+                  type="password"
                   placeholder="..."
                   value={difyKey}
                   onChange={(e) =>
@@ -1238,7 +1242,7 @@ const ModelProvider = () => {
               </div>
               <input
                 className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                type="text"
+                type="password"
                 placeholder="sk-..."
                 value={deepseekKey}
                 onChange={(e) =>

@@ -30,6 +30,13 @@ export const Form = () => {
       handleSendChat(delayedText)
       setDelayedText('')
     }
+
+    // コンポーネントがアンマウントされる際にpending操作をクリーンアップ
+    return () => {
+      if (delayedText) {
+        setDelayedText('')
+      }
+    }
   }, [modalImage, delayedText, handleSendChat])
 
   const hookSendChat = useCallback(
