@@ -277,6 +277,9 @@ Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
   <a href="https://github.com/spring-hh" title="spring-hh">
     <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
   </a>
+  <a href="https://github.com/dotneet" title="dotneet">
+    <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
+  </a>
 </p>
 
 Plus kilku prywatnych sponsorów
