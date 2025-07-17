@@ -1568,12 +1568,16 @@ const ModelProvider = () => {
               value={imageDisplayPosition}
               onChange={(e) =>
                 settingsStore.setState({
-                  imageDisplayPosition: e.target.value as 'input' | 'side',
+                  imageDisplayPosition: e.target.value as
+                    | 'input'
+                    | 'side'
+                    | 'icon',
                 })
               }
             >
               <option value="input">{t('InputArea')}</option>
               <option value="side">{t('SideArea')}</option>
+              <option value="icon">{t('NoDisplay')}</option>
             </select>
           </div>
         </div>
