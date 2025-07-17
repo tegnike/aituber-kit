@@ -191,6 +191,7 @@ interface General {
   chatLogWidth: number
   imageDisplayPosition: 'input' | 'side'
   autoSendImagesInMultiModal: boolean
+  enableMultiModal: boolean
 }
 
 interface ModelType {
@@ -425,6 +426,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   })(),
   autoSendImagesInMultiModal:
     process.env.NEXT_PUBLIC_AUTO_SEND_IMAGES_IN_MULTIMODAL !== 'false',
+  enableMultiModal: process.env.NEXT_PUBLIC_ENABLE_MULTIMODAL !== 'false',
 
   // NijiVoice settings
   nijivoiceApiKey: '',
@@ -608,6 +610,7 @@ const settingsStore = create<SettingsState>()(
       chatLogWidth: state.chatLogWidth,
       imageDisplayPosition: state.imageDisplayPosition,
       autoSendImagesInMultiModal: state.autoSendImagesInMultiModal,
+      enableMultiModal: state.enableMultiModal,
     }),
   })
 )
