@@ -35,7 +35,10 @@ export const Form = () => {
   const hookSendChat = useCallback(
     (text: string) => {
       // マルチモーダル機能が対応しているかチェック
-      const isMultiModalSupported = isMultiModalModel(selectAIService as AIService, selectAIModel)
+      const isMultiModalSupported = isMultiModalModel(
+        selectAIService as AIService,
+        selectAIModel
+      )
 
       // モードに基づいて画像キャプチャの必要性を判定
       let shouldCaptureImage = false

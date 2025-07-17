@@ -1528,12 +1528,8 @@ const ModelProvider = () => {
               </>
             )}
           <div className="my-6">
-            <div className="my-4 text-xl font-bold">
-              {t('MultiModalMode')}
-            </div>
-            <div className="my-4 text-sm">
-              {t('MultiModalModeDescription')}
-            </div>
+            <div className="my-4 text-xl font-bold">{t('MultiModalMode')}</div>
+            <div className="my-4 text-sm">{t('MultiModalModeDescription')}</div>
             <div className="my-2">
               <div className="space-y-2">
                 <label className="flex items-center">
@@ -1544,7 +1540,10 @@ const ModelProvider = () => {
                     checked={multiModalMode === 'ai-decide'}
                     onChange={(e) => {
                       settingsStore.setState({
-                        multiModalMode: e.target.value as 'ai-decide' | 'always' | 'never',
+                        multiModalMode: e.target.value as
+                          | 'ai-decide'
+                          | 'always'
+                          | 'never',
                       })
                     }}
                     disabled={!isMultiModalSupported}
@@ -1560,7 +1559,10 @@ const ModelProvider = () => {
                     checked={multiModalMode === 'always'}
                     onChange={(e) => {
                       settingsStore.setState({
-                        multiModalMode: e.target.value as 'ai-decide' | 'always' | 'never',
+                        multiModalMode: e.target.value as
+                          | 'ai-decide'
+                          | 'always'
+                          | 'never',
                       })
                     }}
                     disabled={!isMultiModalSupported}
@@ -1576,7 +1578,10 @@ const ModelProvider = () => {
                     checked={multiModalMode === 'never'}
                     onChange={(e) => {
                       settingsStore.setState({
-                        multiModalMode: e.target.value as 'ai-decide' | 'always' | 'never',
+                        multiModalMode: e.target.value as
+                          | 'ai-decide'
+                          | 'always'
+                          | 'never',
                       })
                     }}
                     disabled={!isMultiModalSupported}

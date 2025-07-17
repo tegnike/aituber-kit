@@ -33,66 +33,56 @@ const askAIForMultiModalDecision = async (
 ): Promise<boolean> => {
   try {
     const settings = settingsStore.getState()
-    
+
     // AI判断用のメッセージを構築
     const decisionMessage: Message = {
       role: 'user',
       content: [
-        { type: 'text', text: `${decisionPrompt}\n\nユーザーメッセージ: "${userMessage}"` },
+        {
+          type: 'text',
+          text: `${decisionPrompt}\n\nユーザーメッセージ: "${userMessage}"`,
+        },
         { type: 'image', image: image },
       ],
       timestamp: new Date().toISOString(),
     }
-    
+
     // AI判断用のシステムプロンプト
     const systemMessage: Message = {
       role: 'system',
-      content: 'あなたは画像がユーザーの質問に関連するかどうかを判断するアシスタントです。「はい」または「いいえ」のみで答えてください。',
+      content:
+        'あなたは画像がユーザーの質問に関連するかどうかを判断するアシスタントです。「はい」または「いいえ」のみで答えてください。',
       timestamp: new Date().toISOString(),
     }
-    
+
     // AIに判断を求める
-    const response = await getAIChatResponseStream(
-      [systemMessage, decisionMessage],
-      settings.selectAIService,
-      settings.selectAIModel,
-      settings.openaiKey,
-      settings.anthropicKey,
-      settings.googleKey,
-      settings.azureKey,
-      settings.xaiKey,
-      settings.groqKey,
-      settings.cohereKey,
-      settings.mistralaiKey,
-      settings.perplexityKey,
-      settings.fireworksKey,
-      settings.difyKey,
-      settings.deepseekKey,
-      settings.openrouterKey,
-      settings.lmstudioKey,
-      settings.ollamaKey,
-      settings.localLlmUrl,
-      settings.azureEndpoint,
-      settings.customApiUrl,
-      settings.customApiHeaders,
-      settings.customApiBody,
-      settings.customApiStream,
-      settings.includeSystemMessagesInCustomApi,
-      settings.useSearchGrounding,
-      settings.dynamicRetrievalThreshold,
-      settings.temperature,
-      settings.maxTokens,
-      false // streamingなし
-    )
-    
-    if (!response.ok) {
+    const response = await getAIChatResponseStream([
+      systemMessage,
+      decisionMessage,
+    ])
+
+    if (!response) {
       console.error('AI判断の取得に失敗しました')
       return true // エラーの場合は安全側に倒して画像を使用
     }
-    
-    const result = await response.text()
+
+    // ReadableStreamからテキストを取得
+    const reader = response.getReader()
+    let result = ''
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        result += value
+      }
+    } finally {
+      reader.releaseLock()
+    }
+
     const decision = result.trim().toLowerCase()
-    
+    console.log('AI判断結果:', decision)
+
     // 「はい」または「yes」が含まれている場合はtrue
     return decision.includes('はい') || decision.includes('yes')
   } catch (error) {
