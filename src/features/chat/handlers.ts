@@ -20,6 +20,88 @@ const generateSessionId = () => generateMessageId()
 const CODE_DELIMITER = '```'
 
 /**
+ * AI判断機能でマルチモーダルを使用するかどうかを決定する
+ * @param userMessage ユーザーメッセージ
+ * @param image 画像データ
+ * @param decisionPrompt AI判断用プロンプト
+ * @returns 画像を使用するかどうか
+ */
+const askAIForMultiModalDecision = async (
+  userMessage: string,
+  image: string,
+  decisionPrompt: string
+): Promise<boolean> => {
+  try {
+    const settings = settingsStore.getState()
+    
+    // AI判断用のメッセージを構築
+    const decisionMessage: Message = {
+      role: 'user',
+      content: [
+        { type: 'text', text: `${decisionPrompt}\n\nユーザーメッセージ: "${userMessage}"` },
+        { type: 'image', image: image },
+      ],
+      timestamp: new Date().toISOString(),
+    }
+    
+    // AI判断用のシステムプロンプト
+    const systemMessage: Message = {
+      role: 'system',
+      content: 'あなたは画像がユーザーの質問に関連するかどうかを判断するアシスタントです。「はい」または「いいえ」のみで答えてください。',
+      timestamp: new Date().toISOString(),
+    }
+    
+    // AIに判断を求める
+    const response = await getAIChatResponseStream(
+      [systemMessage, decisionMessage],
+      settings.selectAIService,
+      settings.selectAIModel,
+      settings.openaiKey,
+      settings.anthropicKey,
+      settings.googleKey,
+      settings.azureKey,
+      settings.xaiKey,
+      settings.groqKey,
+      settings.cohereKey,
+      settings.mistralaiKey,
+      settings.perplexityKey,
+      settings.fireworksKey,
+      settings.difyKey,
+      settings.deepseekKey,
+      settings.openrouterKey,
+      settings.lmstudioKey,
+      settings.ollamaKey,
+      settings.localLlmUrl,
+      settings.azureEndpoint,
+      settings.customApiUrl,
+      settings.customApiHeaders,
+      settings.customApiBody,
+      settings.customApiStream,
+      settings.includeSystemMessagesInCustomApi,
+      settings.useSearchGrounding,
+      settings.dynamicRetrievalThreshold,
+      settings.temperature,
+      settings.maxTokens,
+      false // streamingなし
+    )
+    
+    if (!response.ok) {
+      console.error('AI判断の取得に失敗しました')
+      return true // エラーの場合は安全側に倒して画像を使用
+    }
+    
+    const result = await response.text()
+    const decision = result.trim().toLowerCase()
+    
+    // 「はい」または「yes」が含まれている場合はtrue
+    return decision.includes('はい') || decision.includes('yes')
+  } catch (error) {
+    console.error('AI判断でエラーが発生しました:', error)
+    return true // エラーの場合は安全側に倒して画像を使用
+  }
+}
+
+/**
  * テキストから感情タグ `[...]` を抽出する
  * @param text 入力テキスト
  * @returns 感情タグと残りのテキスト
@@ -681,12 +763,35 @@ export const handleSendChatFn = () => async (text: string) => {
       return
     }
 
-    const userMessageContent: Message['content'] = modalImage
-      ? [
+    // マルチモーダルモードに基づいてメッセージコンテンツを構築
+    let userMessageContent: Message['content'] = newMessage
+    let shouldUseImage = false
+
+    if (modalImage) {
+      switch (ss.multiModalMode) {
+        case 'always':
+          shouldUseImage = true
+          break
+        case 'never':
+          shouldUseImage = false
+          break
+        case 'ai-decide':
+          // AI判断モードの場合は、AIに判断を求める
+          shouldUseImage = await askAIForMultiModalDecision(
+            newMessage,
+            modalImage,
+            ss.multiModalAiDecisionPrompt
+          )
+          break
+      }
+
+      if (shouldUseImage) {
+        userMessageContent = [
           { type: 'text' as const, text: newMessage },
           { type: 'image' as const, image: modalImage },
         ]
-      : newMessage
+      }
+    }
 
     homeStore.getState().upsertMessage({
       role: 'user',

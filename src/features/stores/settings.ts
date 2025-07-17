@@ -190,7 +190,8 @@ interface General {
   initialSpeechTimeout: number
   chatLogWidth: number
   imageDisplayPosition: 'input' | 'side'
-  autoSendImagesInMultiModal: boolean
+  multiModalMode: 'ai-decide' | 'always' | 'never'
+  multiModalAiDecisionPrompt: string
   enableMultiModal: boolean
 }
 
@@ -424,8 +425,16 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       ? (envPosition as 'input' | 'side')
       : 'input'
   })(),
-  autoSendImagesInMultiModal:
-    process.env.NEXT_PUBLIC_AUTO_SEND_IMAGES_IN_MULTIMODAL !== 'false',
+  multiModalMode: (() => {
+    const validModes = ['ai-decide', 'always', 'never'] as const
+    const envMode = process.env.NEXT_PUBLIC_MULTIMODAL_MODE
+    return validModes.includes(envMode as any)
+      ? (envMode as 'ai-decide' | 'always' | 'never')
+      : 'ai-decide'
+  })(),
+  multiModalAiDecisionPrompt:
+    process.env.NEXT_PUBLIC_MULTIMODAL_AI_DECISION_PROMPT ||
+    'この画像は現在の会話の文脈で重要ですか？重要な場合は「はい」、そうでない場合は「いいえ」で答えてください。',
   enableMultiModal: process.env.NEXT_PUBLIC_ENABLE_MULTIMODAL !== 'false',
 
   // NijiVoice settings
@@ -609,7 +618,8 @@ const settingsStore = create<SettingsState>()(
       initialSpeechTimeout: state.initialSpeechTimeout,
       chatLogWidth: state.chatLogWidth,
       imageDisplayPosition: state.imageDisplayPosition,
-      autoSendImagesInMultiModal: state.autoSendImagesInMultiModal,
+      multiModalMode: state.multiModalMode,
+      multiModalAiDecisionPrompt: state.multiModalAiDecisionPrompt,
       enableMultiModal: state.enableMultiModal,
     }),
   })

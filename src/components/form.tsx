@@ -18,9 +18,7 @@ export const Form = () => {
   const slideVisible = menuStore((s) => s.slideVisible)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
-  const autoSendImagesInMultiModal = settingsStore(
-    (s) => s.autoSendImagesInMultiModal
-  )
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const [delayedText, setDelayedText] = useState('')
@@ -36,13 +34,29 @@ export const Form = () => {
 
   const hookSendChat = useCallback(
     (text: string) => {
-      // 画像を自動送信するかどうかの判定
-      const shouldAutoSendImages =
-        autoSendImagesInMultiModal &&
-        isMultiModalModel(selectAIService as AIService, selectAIModel)
+      // マルチモーダル機能が対応しているかチェック
+      const isMultiModalSupported = isMultiModalModel(selectAIService as AIService, selectAIModel)
 
-      // 自動送信が有効で、カメラ/画面共有がアクティブな場合のみ画像キャプチャ
-      if (shouldAutoSendImages && (webcamStatus || captureStatus)) {
+      // モードに基づいて画像キャプチャの必要性を判定
+      let shouldCaptureImage = false
+
+      if (isMultiModalSupported && (webcamStatus || captureStatus)) {
+        switch (multiModalMode) {
+          case 'always':
+            shouldCaptureImage = true
+            break
+          case 'never':
+            shouldCaptureImage = false
+            break
+          case 'ai-decide':
+            // AI判断モードの場合、とりあえず画像をキャプチャして、後でAIに判断させる
+            shouldCaptureImage = true
+            break
+        }
+      }
+
+      // 画像キャプチャが必要な場合
+      if (shouldCaptureImage) {
         // すでにmodalImageが存在する場合は、Webcamのキャプチャーをスキップ
         if (!homeStore.getState().modalImage) {
           homeStore.setState({ triggerShutter: true })
@@ -50,7 +64,7 @@ export const Form = () => {
         // 画像が取得されるまで遅延させる
         setDelayedText(text)
       } else {
-        // 自動送信が無効、またはカメラ/画面共有が無効な場合は直接送信
+        // 画像キャプチャが不要な場合は直接送信
         handleSendChat(text)
       }
     },
@@ -59,7 +73,7 @@ export const Form = () => {
       webcamStatus,
       captureStatus,
       setDelayedText,
-      autoSendImagesInMultiModal,
+      multiModalMode,
       selectAIService,
       selectAIModel,
     ]
