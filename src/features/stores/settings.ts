@@ -189,7 +189,7 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
-  imageDisplayPosition: 'input' | 'side'
+  imageDisplayPosition: 'input' | 'side' | 'icon'
   multiModalMode: 'ai-decide' | 'always' | 'never'
   multiModalAiDecisionPrompt: string
   enableMultiModal: boolean
@@ -419,10 +419,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   chatLogWidth:
     parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
   imageDisplayPosition: (() => {
-    const validPositions = ['input', 'side'] as const
+    const validPositions = ['input', 'side', 'icon'] as const
     const envPosition = process.env.NEXT_PUBLIC_IMAGE_DISPLAY_POSITION
     return validPositions.includes(envPosition as any)
-      ? (envPosition as 'input' | 'side')
+      ? (envPosition as 'input' | 'side' | 'icon')
       : 'input'
   })(),
   multiModalMode: (() => {

@@ -58,6 +58,7 @@ export const MessageInput = ({
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const [fileError, setFileError] = useState<string>('')
+  const [showImageActions, setShowImageActions] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
@@ -70,6 +71,9 @@ export const MessageInput = ({
     selectAIModel,
     enableMultiModal
   )
+
+  // アイコン表示の条件
+  const showIconDisplay = modalImage && imageDisplayPosition === 'icon'
 
   useEffect(() => {
     if (chatProcessing) {
@@ -427,7 +431,49 @@ export const MessageInput = ({
                 onClick={handleMicClick}
               />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 relative">
+              {/* 画像添付インジケーター - アイコンのみ表示設定の場合 */}
+              {showIconDisplay && (
+                <div className="absolute left-3 top-3 z-10">
+                  <div
+                    className="relative cursor-pointer"
+                    onMouseEnter={() => setShowImageActions(true)}
+                    onMouseLeave={() => setShowImageActions(false)}
+                    onFocus={() => setShowImageActions(true)}
+                    onBlur={() => setShowImageActions(false)}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={t('RemoveImage')}
+                  >
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                      />
+                    </svg>
+                    {showImageActions && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleRemoveImage()
+                          setShowImageActions(false)
+                        }}
+                        className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                        title={t('RemoveImage')}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
               <textarea
                 ref={textareaRef}
                 placeholder={
@@ -450,7 +496,7 @@ export const MessageInput = ({
                 rows={rows}
                 style={{
                   lineHeight: '1.5',
-                  padding: '8px 16px',
+                  padding: showIconDisplay ? '8px 16px 8px 32px' : '8px 16px',
                   resize: 'none',
                   whiteSpace: 'pre-wrap',
                 }}
