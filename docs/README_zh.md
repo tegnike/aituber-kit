@@ -277,9 +277,37 @@ cp .env.example .env
   <a href="https://github.com/spring-hh" title="spring-hh">
     <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
   </a>
+  <a href="https://github.com/dotneet" title="dotneet">
+    <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
+  </a>
 </p>
 
 此外还有多位私人赞助者
+
+## 贡献
+
+感谢您对AITuberKit开发的关注。我们欢迎来自社区的贡献。
+
+### 问题报告
+
+如果您发现了错误或有新功能的想法，请通过GitHub的[Issues](https://github.com/tegnike/aituber-kit/issues)页面告知我们。
+
+创建问题时，包含以下信息将有助于我们顺利响应：
+
+- 问题或新功能的详细描述
+- 重现步骤（对于错误）
+- 预期行为与实际行为
+- 使用环境（浏览器、操作系统、Node.js版本等）
+- 屏幕截图或视频（如果可能）
+
+### 拉取请求
+
+如果您想改进代码或添加新功能，请在您的fork仓库中进行更改并创建拉取请求。
+
+- 一个拉取请求应专注于一个功能或修复。
+- 请在拉取请求描述中说明更改内容和理由。
+- 合并目标分支必须设置为 `develop`。
+- 不要强行解决冲突。开发团队会处理这些问题。
 
 ## 使用条款
 
