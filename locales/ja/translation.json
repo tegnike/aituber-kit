@@ -340,5 +340,8 @@
   "ImageLoadError": "画像の読み込みに失敗しました。",
   "FileReadError": "ファイルの読み込みに失敗しました。",
   "FileProcessError": "ファイルの処理中にエラーが発生しました。",
-  "GenerateNew": "新規生成"
+  "GenerateNew": "新規生成",
+  "EnableMultiModal": "マルチモーダル機能を利用する",
+  "EnableMultiModalDescription": "画像アップロード機能を有効にします。非対応モデルの場合、画像は無視される可能性があります。",
+  "MultiModalNotSupported": "選択されたモデルまたは設定では画像の送信がサポートされていません。マルチモーダル機能を有効にするか、対応モデルを選択してください。"
 }

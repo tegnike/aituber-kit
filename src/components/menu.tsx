@@ -12,7 +12,7 @@ import Settings from './settings'
 import { Webcam } from './webcam'
 import Slides from './slides'
 import Capture from './capture'
-import { isMultiModalModel } from '@/features/constants/aiModels'
+import { isMultiModalModelWithToggle } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 
@@ -41,6 +41,7 @@ const useIsMobile = () => {
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
   const slideMode = settingsStore((s) => s.slideMode)
@@ -249,9 +250,10 @@ export const Menu = () => {
                       onClick={toggleWebcam}
                     />
                   </div>
-                  {isMultiModalModel(
+                  {isMultiModalModelWithToggle(
                     selectAIService as AIService,
-                    selectAIModel
+                    selectAIModel,
+                    enableMultiModal
                   ) && (
                     <div className="order-4">
                       <IconButton

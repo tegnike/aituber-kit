@@ -19,6 +19,7 @@ import {
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
   isMultiModalModel,
+  isMultiModalModelWithToggle,
   googleSearchGroundingModels,
   defaultModels,
 } from '@/features/constants/aiModels'
@@ -98,6 +99,7 @@ const ModelProvider = () => {
   const autoSendImagesInMultiModal = settingsStore(
     (s) => s.autoSendImagesInMultiModal
   )
+  const enableMultiModal = settingsStore((s) => s.enableMultiModal)
 
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -117,9 +119,10 @@ const ModelProvider = () => {
   const { t } = useTranslation()
 
   // マルチモーダル対応かどうかを判定
-  const isMultiModalSupported = isMultiModalModel(
+  const isMultiModalSupported = isMultiModalModelWithToggle(
     selectAIService,
-    selectAIModel
+    selectAIModel,
+    enableMultiModal
   )
 
   // AIサービスの選択肢を定義
@@ -779,6 +782,26 @@ const ModelProvider = () => {
                   </>
                 )}
               </div>
+              {/* Azure マルチモーダルトグル */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('EnableMultiModal')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        enableMultiModal: !enableMultiModal,
+                      })
+                    }}
+                  >
+                    {enableMultiModal ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
+                <div className="my-2 text-sm">
+                  {t('EnableMultiModalDescription')}
+                </div>
+              </div>
             </>
           )
         } else if (selectAIService === 'xai') {
@@ -1143,6 +1166,26 @@ const ModelProvider = () => {
                   }}
                 />
               </div>
+              {/* ローカルLLM マルチモーダルトグル */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('EnableMultiModal')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        enableMultiModal: !enableMultiModal,
+                      })
+                    }}
+                  >
+                    {enableMultiModal ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
+                <div className="my-2 text-sm">
+                  {t('EnableMultiModalDescription')}
+                </div>
+              </div>
             </>
           )
         } else if (selectAIService === 'dify') {
@@ -1284,6 +1327,26 @@ const ModelProvider = () => {
                   }}
                 />
               </div>
+              {/* OpenRouter マルチモーダルトグル */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('EnableMultiModal')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        enableMultiModal: !enableMultiModal,
+                      })
+                    }}
+                  >
+                    {enableMultiModal ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
+                <div className="my-2 text-sm">
+                  {t('EnableMultiModalDescription')}
+                </div>
+              </div>
             </>
           )
         } else if (selectAIService === 'custom-api') {
@@ -1373,6 +1436,26 @@ const ModelProvider = () => {
                   </TextButton>
                 </div>
               </div>
+              {/* Custom API マルチモーダルトグル */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('EnableMultiModal')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        enableMultiModal: !enableMultiModal,
+                      })
+                    }}
+                  >
+                    {enableMultiModal ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
+                <div className="my-2 text-sm">
+                  {t('EnableMultiModalDescription')}
+                </div>
+              </div>
             </>
           )
         }
@@ -1457,7 +1540,7 @@ const ModelProvider = () => {
                     autoSendImagesInMultiModal: !autoSendImagesInMultiModal,
                   })
                 }}
-                disabled={!isMultiModalModel(selectAIService, selectAIModel)}
+                disabled={!isMultiModalSupported}
               >
                 {autoSendImagesInMultiModal ? t('StatusOn') : t('StatusOff')}
               </TextButton>

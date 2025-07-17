@@ -265,6 +265,31 @@ export function isMultiModalModel(service: AIService, model: string): boolean {
   return multiModalModels[service]?.includes(model) || false
 }
 
+/**
+ * トグルボタンの状態を考慮してマルチモーダル機能が利用可能かどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @param enableMultiModal マルチモーダルトグルの状態
+ * @returns マルチモーダル機能が利用可能な場合はtrue
+ */
+export function isMultiModalModelWithToggle(
+  service: AIService,
+  model: string,
+  enableMultiModal: boolean
+): boolean {
+  // 一部のサービスではモデル単位での判定ができないため、トグルボタンの状態のみで判定
+  if (
+    ['azure', 'openrouter', 'lmstudio', 'ollama', 'custom-api'].includes(
+      service
+    )
+  ) {
+    return enableMultiModal
+  }
+
+  // その他のサービスは従来通りモデル定義に基づく判定
+  return isMultiModalModel(service, model)
+}
+
 export const googleSearchGroundingModels = [
   'gemini-1.5-flash-latest',
   'gemini-1.5-pro-latest',

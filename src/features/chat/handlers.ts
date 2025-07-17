@@ -11,6 +11,7 @@ import webSocketStore from '@/features/stores/websocketStore'
 import i18next from 'i18next'
 import toastStore from '@/features/stores/toast'
 import { generateMessageId } from '@/utils/messageUtils'
+import { isMultiModalModelWithToggle } from '@/features/constants/aiModels'
 
 // セッションIDを生成する関数
 const generateSessionId = () => generateMessageId()
@@ -658,6 +659,28 @@ export const handleSendChatFn = () => async (text: string) => {
     }
 
     homeStore.setState({ chatProcessing: true })
+
+    // マルチモーダル対応チェック
+    if (
+      modalImage &&
+      !isMultiModalModelWithToggle(
+        ss.selectAIService,
+        ss.selectAIModel,
+        ss.enableMultiModal
+      )
+    ) {
+      toastStore.getState().addToast({
+        message: i18next.t('MultiModalNotSupported'),
+        type: 'error',
+        tag: 'multimodal-not-supported',
+      })
+      homeStore.setState({
+        chatProcessing: false,
+        modalImage: '',
+      })
+      return
+    }
+
     const userMessageContent: Message['content'] = modalImage
       ? [
           { type: 'text' as const, text: newMessage },
