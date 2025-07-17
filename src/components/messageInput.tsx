@@ -72,6 +72,9 @@ export const MessageInput = ({
     enableMultiModal
   )
 
+  // アイコン表示の条件
+  const showIconDisplay = modalImage && imageDisplayPosition === 'icon'
+
   useEffect(() => {
     if (chatProcessing) {
       const interval = setInterval(() => {
@@ -430,13 +433,17 @@ export const MessageInput = ({
             </div>
             <div className="flex-1 relative">
               {/* 画像添付インジケーター - アイコンのみ表示設定の場合 */}
-              {modalImage && imageDisplayPosition === 'icon' && (
+              {showIconDisplay && (
                 <div className="absolute left-3 top-3 z-10">
                   <div
                     className="relative cursor-pointer"
-                    onClick={() => setShowImageActions(!showImageActions)}
                     onMouseEnter={() => setShowImageActions(true)}
                     onMouseLeave={() => setShowImageActions(false)}
+                    onFocus={() => setShowImageActions(true)}
+                    onBlur={() => setShowImageActions(false)}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={t('RemoveImage')}
                   >
                     <svg
                       className="w-4 h-4 text-gray-500"
@@ -459,7 +466,7 @@ export const MessageInput = ({
                           setShowImageActions(false)
                         }}
                         className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
-                        title="画像を削除"
+                        title={t('RemoveImage')}
                       >
                         ×
                       </button>
@@ -489,10 +496,7 @@ export const MessageInput = ({
                 rows={rows}
                 style={{
                   lineHeight: '1.5',
-                  padding:
-                    modalImage && imageDisplayPosition === 'icon'
-                      ? '8px 16px 8px 32px'
-                      : '8px 16px',
+                  padding: showIconDisplay ? '8px 16px 8px 32px' : '8px 16px',
                   resize: 'none',
                   whiteSpace: 'pre-wrap',
                 }}
