@@ -96,12 +96,14 @@ const Based = () => {
     <>
       <div className="mb-6">
         <div className="flex items-center mb-6">
-          <Image
-            src="/images/setting-icons/basic-settings.svg"
-            alt="Basic Settings"
-            width={24}
-            height={24}
-            className="mr-2"
+          <div
+            className="w-6 h-6 mr-2 icon-mask-default"
+            style={{
+              maskImage: 'url(/images/setting-icons/basic-settings.svg)',
+              maskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              maskPosition: 'center',
+            }}
           />
           <h2 className="text-2xl font-bold">{t('BasedSettings')}</h2>
         </div>
@@ -159,9 +161,7 @@ const Based = () => {
       </div>
       {selectLanguage === 'ja' && (
         <div className="my-6">
-          <div className="my-4 text-base font-bold">
-            {t('EnglishToJapanese')}
-          </div>
+          <div className="my-4 font-bold">{t('EnglishToJapanese')}</div>
           <div className="my-2">
             <TextButton
               onClick={() =>
@@ -184,7 +184,6 @@ const Based = () => {
         {uploadError && <div className="my-2 text-red-500">{uploadError}</div>}
 
         <div className="flex flex-col mb-4">
-          <label className="mb-2 text-base">{t('BackgroundImage')}</label>
           <select
             className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={backgroundImageUrl}
@@ -263,7 +262,7 @@ const Based = () => {
       {/* コントロールパネル表示設定 */}
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('ShowControlPanel')}</div>
-        <div className="my-4 text-base whitespace-pre-wrap">
+        <div className="my-4 whitespace-pre-wrap">
           {t('ShowControlPanelInfo')}
         </div>
 
@@ -302,9 +301,9 @@ const Based = () => {
               document.documentElement.setAttribute('data-theme', theme)
             }}
           >
-            <option value="warm">{t('ThemeWarm')}</option>
-            <option value="cool">{t('ThemeCool')}</option>
+            <option value="warm">{t('ThemeDefault')}</option>
             <option value="mono">{t('ThemeMono')}</option>
+            <option value="cool">{t('ThemeCool')}</option>
             <option value="ocean">{t('ThemeOcean')}</option>
             <option value="forest">{t('ThemeForest')}</option>
             <option value="sunset">{t('ThemeSunset')}</option>

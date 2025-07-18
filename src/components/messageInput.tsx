@@ -422,7 +422,7 @@ export const MessageInput = ({
                 iconName="24/Microphone"
                 backgroundColor={
                   continuousMicListeningMode
-                    ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white'
+                    ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-theme'
                     : undefined
                 }
                 isProcessing={isMicRecording}
@@ -465,7 +465,7 @@ export const MessageInput = ({
                           handleRemoveImage()
                           setShowImageActions(false)
                         }}
-                        className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                        className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-theme rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
                         title={t('RemoveImage')}
                       >
                         ×
@@ -491,7 +491,7 @@ export const MessageInput = ({
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 disabled={chatProcessing || slidePlaying || realtimeAPIMode}
-                className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-text-primary text-base font-bold disabled"
+                className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-theme font-bold disabled"
                 value={userMessage}
                 rows={rows}
                 style={{

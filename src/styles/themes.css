@@ -5,6 +5,35 @@
   color: var(--color-text-base);
 }
 
+/* アイコンマスククラス定義 */
+.icon-mask-active {
+  background-color: var(--color-text-base);
+}
+
+.icon-mask-inactive {
+  background-color: var(--color-primary);
+}
+
+.icon-mask-default {
+  background-color: var(--color-text-default);
+}
+
+
+/* ベースのbody要素の色設定 */
+body {
+  color: var(--color-text-default);
+}
+
+/* 主要な要素のデフォルト色設定 */
+html {
+  color: var(--color-text-default);
+}
+
+/* 見出しや段落などの基本要素 */
+h1, h2, h3, h4, h5, h6, p, span, div {
+  color: inherit;
+}
+
 /* Warm テーマ（デフォルト） */
 :root {
   --color-primary: #856292;
@@ -17,86 +46,92 @@
   --color-secondary-disabled: #FF617F4D;
   --color-text-primary: #514062;
   --color-text-base: #FFFFFF;
+  --color-text-default: #2D3748;
   --color-base-light: #FBE2CA;
   --color-base-dark: #332D2D;
 }
 
 /* Cool テーマ（寒色） */
 [data-theme="cool"] {
-  --color-primary: #7FA8D5;
-  --color-primary-hover: #8BB9E1;
-  --color-primary-press: #97CBED;
-  --color-primary-disabled: #7FA8D54D;
-  --color-secondary: #A8E6CF;
-  --color-secondary-hover: #B6EFD9;
-  --color-secondary-press: #C4F7E5;
-  --color-secondary-disabled: #A8E6CF4D;
-  --color-text-primary: #3A4F6B;
+  --color-primary: #60A5FA;
+  --color-primary-hover: #3B82F6;
+  --color-primary-press: #93C5FD;
+  --color-primary-disabled: #60A5FA4D;
+  --color-secondary: #0891B2;
+  --color-secondary-hover: #0E7490;
+  --color-secondary-press: #155E75;
+  --color-secondary-disabled: #0891B24D;
+  --color-text-primary: #1E3A8A;
   --color-text-base: #F8FAFC;
-  --color-base-light: #EAF4FC;
-  --color-base-dark: #2C3E50;
+  --color-text-default: #2D3748;
+  --color-base-light: #EFF6FF;
+  --color-base-dark: #0F172A;
 }
 
 /* Mono テーマ（モノクロ） */
 [data-theme="mono"] {
-  --color-primary: #A0A0A0;
-  --color-primary-hover: #B0B0B0;
-  --color-primary-press: #C0C0C0;
-  --color-primary-disabled: #A0A0A04D;
-  --color-secondary: #D0D0D0;
-  --color-secondary-hover: #E0E0E0;
-  --color-secondary-press: #F0F0F0;
-  --color-secondary-disabled: #D0D0D04D;
-  --color-text-primary: #333333;
-  --color-text-base: #1F2937;
-  --color-base-light: #F4F4F4;
-  --color-base-dark: #1A1A1A;
+  --color-primary: #6B7280;
+  --color-primary-hover: #9CA3AF;
+  --color-primary-press: #D1D5DB;
+  --color-primary-disabled: #6B72804D;
+  --color-secondary: #4B5563;
+  --color-secondary-hover: #6B7280;
+  --color-secondary-press: #9CA3AF;
+  --color-secondary-disabled: #4B55634D;
+  --color-text-primary: #1F2937;
+  --color-text-base: #F8FAFC;
+  --color-text-default: #374151;
+  --color-base-light: #d1d1d1;
+  --color-base-dark: #0F172A;
 }
 
 /* Ocean テーマ（海洋色） */
 [data-theme="ocean"] {
-  --color-primary: #75C9C8;
-  --color-primary-hover: #88D4D3;
-  --color-primary-press: #9BDFDE;
-  --color-primary-disabled: #75C9C84D;
-  --color-secondary: #B3E5E1;
-  --color-secondary-hover: #C2EDE8;
-  --color-secondary-press: #D1F5EE;
-  --color-secondary-disabled: #B3E5E14D;
-  --color-text-primary: #2A4F4E;
-  --color-text-base: #F0FDFC;
-  --color-base-light: #E2F7F6;
-  --color-base-dark: #2A2A2A;
+  --color-primary: #0EA5E9;
+  --color-primary-hover: #0284C7;
+  --color-primary-press: #0369A1;
+  --color-primary-disabled: #0EA5E94D;
+  --color-secondary: #06B6D4;
+  --color-secondary-hover: #0891B2;
+  --color-secondary-press: #0E7490;
+  --color-secondary-disabled: #06B6D44D;
+  --color-text-primary: #0F172A;
+  --color-text-base: #F0F9FF;
+  --color-text-default: #2D3748;
+  --color-base-light: #d7eaf7;
+  --color-base-dark: #0F172A;
 }
 
 /* Forest テーマ（森林色） */
 [data-theme="forest"] {
-  --color-primary: #A3CFA1;
-  --color-primary-hover: #B0D9AD;
-  --color-primary-press: #BEE5B9;
-  --color-primary-disabled: #A3CFA14D;
-  --color-secondary: #CDE6C4;
-  --color-secondary-hover: #DAEFD1;
-  --color-secondary-press: #E7F9DE;
-  --color-secondary-disabled: #CDE6C44D;
-  --color-text-primary: #2E3E2C;
-  --color-text-base: #F6FDF6;
-  --color-base-light: #EDF6ED;
-  --color-base-dark: #253023;
+  --color-primary: #10B981;
+  --color-primary-hover: #059669;
+  --color-primary-press: #047857;
+  --color-primary-disabled: #10B9814D;
+  --color-secondary: #77bc0f;
+  --color-secondary-hover: #65A30D;
+  --color-secondary-press: #4D7C0F;
+  --color-secondary-disabled: #84CC164D;
+  --color-text-primary: #1F2937;
+  --color-text-base: #F0FDF4;
+  --color-text-default: #2D3748;
+  --color-base-light: #c5fcd5;
+  --color-base-dark: #1F2937;
 }
 
 /* Sunset テーマ（夕焼け色） */
 [data-theme="sunset"] {
-  --color-primary: #F3A683;
-  --color-primary-hover: #F5B59C;
-  --color-primary-press: #F7C3B5;
-  --color-primary-disabled: #F3A6834D;
-  --color-secondary: #FFD3B6;
-  --color-secondary-hover: #FFE0C7;
-  --color-secondary-press: #FFEDDB;
-  --color-secondary-disabled: #FFD3B64D;
-  --color-text-primary: #5B3A29;
-  --color-text-base: #FFFBF7;
-  --color-base-light: #FFF2E8;
-  --color-base-dark: #3E2A24;
+  --color-primary: #F59E0B;
+  --color-primary-hover: #D97706;
+  --color-primary-press: #B45309;
+  --color-primary-disabled: #F59E0B4D;
+  --color-secondary: #ee6666;
+  --color-secondary-hover: #DC2626;
+  --color-secondary-press: #B91C1C;
+  --color-secondary-disabled: #EF44444D;
+  --color-text-primary: #1F2937;
+  --color-text-base: #FFFBEB;
+  --color-text-default: #48472d;
+  --color-base-light: #fff2be;
+  --color-base-dark: #1F2937;
 }

@@ -126,7 +126,7 @@ const MessageReceiverSetting = () => {
                 <a
                   target="_blank" // 新しいタブで開く
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl text-white font-bold transition-colors duration-200 whitespace-nowrap"
+                  className="inline-flex items-center px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl text-theme font-bold transition-colors duration-200 whitespace-nowrap"
                 >
                   {t('OpenSendMessagePage')}
                   <Image

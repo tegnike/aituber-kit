@@ -182,13 +182,13 @@ const Live2DSettingsForm = () => {
     <div className="space-y-8">
       <div className="mb-6">
         <div className="mb-4 text-xl font-bold">{t('Live2D.Emotions')}</div>
-        <div className="mb-6 text-base whitespace-pre-line">
+        <div className="mb-6 text-theme whitespace-pre-line">
           {t('Live2D.EmotionInfo')}
         </div>
         <div className="space-y-4 text-sm">
           {emotionFields.map((field) => (
             <div key={field.key}>
-              <label className="block mb-2 text-base font-bold">
+              <label className="block mb-2 text-theme font-bold">
                 {t(`Live2D.${field.key}`)}
               </label>
               <div className="relative">
@@ -272,7 +272,7 @@ const Live2DSettingsForm = () => {
                             )
                           }
                         />
-                        <span className="text-base">{expression}</span>
+                        <span className="text-theme">{expression}</span>
                       </label>
                     ))}
                   </div>
@@ -285,13 +285,13 @@ const Live2DSettingsForm = () => {
 
       <div className="">
         <div className="mb-4 text-xl font-bold">{t('Live2D.MotionGroups')}</div>
-        <div className="mb-6 text-base text-gray-500 whitespace-pre-line">
+        <div className="mb-6 text-theme whitespace-pre-line">
           {t('Live2D.MotionGroupsInfo')}
         </div>
         <div className="space-y-4">
           {motionFields.map((field) => (
             <div key={field.key}>
-              <label className="block mb-2 text-base font-bold">
+              <label className="block mb-2 text-theme font-bold">
                 {t(`Live2D.${field.key}`)}
               </label>
               <div className="relative">
@@ -309,7 +309,7 @@ const Live2DSettingsForm = () => {
                     <option
                       key={motion}
                       value={motion}
-                      className="py-4 px-8 hover:bg-primary hover:text-white"
+                      className="py-4 px-8 hover:bg-primary hover:text-theme"
                     >
                       {motion}
                     </option>
@@ -525,13 +525,13 @@ const Character = () => {
         <div className="mt-6 mb-4 text-xl font-bold">
           {t('CharacterModelLabel')}
         </div>
-        <div className="mb-4 text-base">{t('CharacterModelInfo')}</div>
+        <div className="mb-4">{t('CharacterModelInfo')}</div>
 
         <div className="flex mb-2">
           <button
             className={`px-4 py-2 rounded-lg mr-2 ${
               modelType === 'vrm'
-                ? 'bg-primary text-white'
+                ? 'bg-primary text-theme'
                 : 'bg-white hover:bg-white-hover'
             }`}
             onClick={() => settingsStore.setState({ modelType: 'vrm' })}
@@ -541,7 +541,7 @@ const Character = () => {
           <button
             className={`px-4 py-2 rounded-lg ${
               modelType === 'live2d'
-                ? 'bg-primary text-white'
+                ? 'bg-primary text-theme'
                 : 'bg-white hover:bg-white-hover'
             }`}
             onClick={() => settingsStore.setState({ modelType: 'live2d' })}
@@ -617,7 +617,7 @@ const Character = () => {
         {/* Character Position Controls */}
         <div className="my-6">
           <div className="text-xl font-bold mb-4">{t('CharacterPosition')}</div>
-          <div className="mb-4 text-base">{t('CharacterPositionInfo')}</div>
+          <div className="mb-4">{t('CharacterPositionInfo')}</div>
           <div className="mb-2 text-sm font-medium">
             {t('CurrentStatus')}:{' '}
             <span className="font-bold">
@@ -643,7 +643,7 @@ const Character = () => {
         {modelType === 'vrm' && (
           <div className="my-6">
             <div className="text-xl font-bold mb-4">照明の強度</div>
-            <div className="mb-4 text-base">
+            <div className="mb-4">
               VRMキャラクターの照明の明るさを調整します。
             </div>
             <div className="font-bold">
@@ -737,7 +737,7 @@ const Character = () => {
                   }}
                   className={`px-4 py-2 rounded-md text-sm ${
                     isSelected
-                      ? 'bg-primary text-white'
+                      ? 'bg-primary text-theme'
                       : 'bg-surface1 hover:bg-surface1-hover text-gray-800 bg-white'
                   }`}
                 >

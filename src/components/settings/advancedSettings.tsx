@@ -17,7 +17,7 @@ const AdvancedSettings = () => {
     <div className="mb-10">
       <div className="mb-6 grid-cols-2">
         <div className="mb-4 text-xl font-bold">{t('LocalStorageReset')}</div>
-        <div className="my-4 text-base">{t('LocalStorageResetInfo')}</div>
+        <div className="my-4">{t('LocalStorageResetInfo')}</div>
         <TextButton
           onClick={() => {
             settingsStore.persist.clearStorage()
@@ -63,7 +63,7 @@ const AdvancedSettings = () => {
         <div className="my-4 text-xl font-bold">
           {t('IncludeTimestampInUserMessage')}
         </div>
-        <div className="my-4 text-base whitespace-pre-line">
+        <div className="my-4 whitespace-pre-line">
           {t('IncludeTimestampInUserMessageInfo')}
         </div>
         <div className="my-2">
