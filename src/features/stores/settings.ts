@@ -193,6 +193,7 @@ interface General {
   multiModalMode: 'ai-decide' | 'always' | 'never'
   multiModalAiDecisionPrompt: string
   enableMultiModal: boolean
+  colorTheme: 'warm' | 'cool' | 'mono' | 'ocean' | 'forest' | 'sunset'
 }
 
 interface ModelType {
@@ -436,6 +437,14 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     process.env.NEXT_PUBLIC_MULTIMODAL_AI_DECISION_PROMPT ||
     'あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。',
   enableMultiModal: process.env.NEXT_PUBLIC_ENABLE_MULTIMODAL !== 'false',
+  colorTheme:
+    (process.env.NEXT_PUBLIC_COLOR_THEME as
+      | 'warm'
+      | 'cool'
+      | 'mono'
+      | 'ocean'
+      | 'forest'
+      | 'sunset') || 'warm',
 
   // NijiVoice settings
   nijivoiceApiKey: '',

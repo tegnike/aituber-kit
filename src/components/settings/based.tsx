@@ -18,6 +18,7 @@ const Based = () => {
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
   )
+  const colorTheme = settingsStore((s) => s.colorTheme)
   const [backgroundFiles, setBackgroundFiles] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -276,6 +277,40 @@ const Based = () => {
           >
             {showControlPanel ? t('StatusOn') : t('StatusOff')}
           </TextButton>
+        </div>
+      </div>
+
+      {/* カラーテーマ設定 */}
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">{t('ColorTheme')}</div>
+        <div className="my-4 text-theme whitespace-pre-wrap">
+          {t('ColorThemeInfo')}
+        </div>
+
+        <div className="flex flex-col mb-4">
+          <select
+            className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            value={colorTheme}
+            onChange={(e) => {
+              const theme = e.target.value as
+                | 'warm'
+                | 'cool'
+                | 'mono'
+                | 'ocean'
+                | 'forest'
+                | 'sunset'
+              settingsStore.setState({ colorTheme: theme })
+              // テーマをhtmlタグに適用
+              document.documentElement.setAttribute('data-theme', theme)
+            }}
+          >
+            <option value="warm">{t('ThemeWarm')}</option>
+            <option value="cool">{t('ThemeCool')}</option>
+            <option value="mono">{t('ThemeMono')}</option>
+            <option value="ocean">{t('ThemeOcean')}</option>
+            <option value="forest">{t('ThemeForest')}</option>
+            <option value="sunset">{t('ThemeSunset')}</option>
+          </select>
         </div>
       </div>
     </>
