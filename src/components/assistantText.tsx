@@ -17,12 +17,12 @@ export const AssistantText = ({ message }: { message: string }) => {
       <div className="mx-auto max-w-4xl w-full p-4">
         <div className="bg-white rounded-lg">
           {showCharacterName && (
-            <div className="px-6 py-2 bg-secondary rounded-t-lg text-white font-bold tracking-wider">
+            <div className="px-6 py-2 bg-secondary rounded-t-lg text-theme font-bold tracking-wider">
               {characterName}
             </div>
           )}
           <div className="px-6 py-4">
-            <div className="line-clamp-4 text-secondary text-base font-bold">
+            <div className="line-clamp-4 text-secondary font-bold">
               {message.replace(/\[([a-zA-Z]*?)\]/g, '')}
             </div>
           </div>

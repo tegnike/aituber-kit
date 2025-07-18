@@ -372,9 +372,7 @@ const ModelProvider = () => {
                     <option value="verse">verse</option>
                   </select>
                   <div className="my-6">
-                    <div className="my-4 text-base font-bold">
-                      {t('SelectModel')}
-                    </div>
+                    <div className="my-4 font-bold">{t('SelectModel')}</div>
                     <select
                       className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       value={selectAIModel}
@@ -446,9 +444,7 @@ const ModelProvider = () => {
                     <option value="shimmer">shimmer</option>
                   </select>
                   <div className="my-6">
-                    <div className="my-4 text-base font-bold">
-                      {t('SelectModel')}
-                    </div>
+                    <div className="my-4 font-bold">{t('SelectModel')}</div>
                     <select
                       className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       value={selectAIModel}

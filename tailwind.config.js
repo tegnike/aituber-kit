@@ -5,17 +5,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#856292',
-        'primary-hover': '#8E76A1',
-        'primary-press': '#988BB0',
-        'primary-disabled': '#6F48694D',
-        secondary: '#FF617F',
-        'secondary-hover': '#FF849B',
-        'secondary-press': '#FF9EB1',
-        'secondary-disabled': '#FF617F4D',
-        'text-primary': '#514062',
-        'base-light': '#FBE2CA',
-        'base-dark': '#332D2D',
+        // デフォルトテーマ
+        primary: 'var(--color-primary)',
+        'primary-hover': 'var(--color-primary-hover)',
+        'primary-press': 'var(--color-primary-press)',
+        'primary-disabled': 'var(--color-primary-disabled)',
+        secondary: 'var(--color-secondary)',
+        'secondary-hover': 'var(--color-secondary-hover)',
+        'secondary-press': 'var(--color-secondary-press)',
+        'secondary-disabled': 'var(--color-secondary-disabled)',
+        'text-primary': 'var(--color-text-primary)',
+        'base-light': 'var(--color-base-light)',
+        'base-dark': 'var(--color-base-dark)',
 
         // トースト用のより鮮明な色定義
         'toast-info': '#007BFF',

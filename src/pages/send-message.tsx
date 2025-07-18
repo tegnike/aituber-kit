@@ -293,7 +293,7 @@ const SendMessage = () => {
                 setMessages(newMessages)
               }}
               onKeyDown={(e) => handleKeyDown(e)}
-              className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-text-primary text-base font-medium transition-all duration-200"
+              className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-theme font-medium transition-all duration-200"
               rows={2}
               style={{
                 lineHeight: '1.5',
@@ -317,15 +317,15 @@ const SendMessage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center text-black min-h-screen bg-purple-50 py-8">
+    <div className="flex flex-col items-center text-theme-default min-h-screen bg-theme py-8">
       <div className="w-full max-w-4xl px-4 md:px-8">
-        <h1 className="text-text-primary text-3xl font-bold mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-8 text-center">
           {t('SendMessage.title')}
         </h1>
 
         {/* Client ID セクション */}
         <div className="mb-8 bg-white rounded-xl p-6 shadow-md">
-          <div className="text-text-primary font-bold mb-3 flex justify-between items-center">
+          <div className="font-bold mb-3 flex justify-between items-center">
             <span className="text-lg">Client ID</span>
             <button
               type="button"
@@ -339,7 +339,7 @@ const SendMessage = () => {
             type="text"
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="bg-slate-50 hover:bg-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-300 focus:outline-none rounded-xl w-full px-4 py-3 text-text-primary text-base font-medium transition-all duration-200"
+            className="bg-slate-50 hover:bg-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-300 focus:outline-none rounded-xl w-full px-4 py-3 font-medium transition-all duration-200"
             disabled={!!settingsStore.getState().clientId}
           />
         </div>
@@ -421,17 +421,13 @@ const SendMessage = () => {
             </button>
           </div>
 
-          <h2 className="text-text-primary text-xl font-bold mb-4">
-            {getTabTitle()}
-          </h2>
+          <h2 className="text-xl font-bold mb-4">{getTabTitle()}</h2>
 
-          <p className="text-base mb-6 text-gray-600 whitespace-pre-line">
-            {getTabDescription()}
-          </p>
+          <p className="mb-6 whitespace-pre-line">{getTabDescription()}</p>
 
           {/* CURL サンプル */}
           <div className="mb-6">
-            <div className="text-text-primary font-bold mb-2 flex justify-between items-center">
+            <div className="text-primary font-bold mb-2 flex justify-between items-center">
               <span className="text-sm text-gray-600">Curl Sample</span>
               <button
                 type="button"
@@ -449,9 +445,7 @@ const SendMessage = () => {
           {/* System Prompt (AI Generate タブのみ) */}
           {activeTab === 'ai_generate' && (
             <div className="mb-6">
-              <div className="text-text-primary font-bold mb-2">
-                System Prompt
-              </div>
+              <div className="font-bold mb-2">System Prompt</div>
               <textarea
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
@@ -459,7 +453,7 @@ const SendMessage = () => {
                   useCurrentSystemPrompt
                     ? 'bg-slate-100 text-gray-500 border-slate-200 cursor-not-allowed'
                     : 'bg-white border-indigo-200 hover:border-indigo-400 hover:bg-indigo-50'
-                } border rounded-xl w-full px-4 py-3 text-text-primary text-base font-medium transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white`}
+                } border rounded-xl w-full px-4 py-3 text-theme font-medium transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white`}
                 rows={2}
                 style={{
                   lineHeight: '1.5',
@@ -490,7 +484,7 @@ const SendMessage = () => {
           {/* メッセージフォーム */}
           <form onSubmit={(e) => handleSubmit(e, activeTab)}>
             <div className="mb-6">
-              <div className="text-text-primary font-bold mb-3">Messages</div>
+              <div className="font-bold mb-3">Messages</div>
               {renderMessageFields()}
               <div className="flex justify-between mt-4">
                 <IconButton
@@ -501,7 +495,7 @@ const SendMessage = () => {
                 />
                 <IconButton
                   iconName="24/Send"
-                  className="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:bg-indigo-300 w-[120px] flex items-center justify-center text-white rounded-xl transition-colors duration-200"
+                  className="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:bg-indigo-300 w-[120px] flex items-center justify-center text-theme rounded-xl transition-colors duration-200"
                   disabled={isSendButtonDisabled()}
                   type="submit"
                   isProcessing={false}
@@ -513,7 +507,7 @@ const SendMessage = () => {
           {/* レスポンス表示 */}
           {getActiveResponse() && (
             <div className="mt-6 w-full">
-              <div className="text-text-primary font-bold mb-3 flex justify-between items-center">
+              <div className="font-bold mb-3 flex justify-between items-center">
                 <span>Response</span>
                 <button
                   type="button"
@@ -536,7 +530,7 @@ const SendMessage = () => {
       {/* コピー成功ポップアップ */}
       {copySuccess && popupPosition && (
         <div
-          className="fixed bg-black text-white px-2 py-1 rounded-md text-sm shadow-lg z-50 opacity-90"
+          className="fixed bg-black text-theme px-2 py-1 rounded-md text-sm shadow-lg z-50 opacity-90"
           style={{
             left: `${popupPosition.x + 8}px`,
             top: `${popupPosition.y}px`,

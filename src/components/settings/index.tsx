@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import menuStore from '@/features/stores/menu'
-import Image from 'next/image'
 
 import { GitHubLink } from '../githubLink'
 import { IconButton } from '../iconButton'
+import Image from 'next/image'
 import Description from './description'
 import Based from './based'
 import Character from './character'
@@ -183,15 +183,21 @@ const Main = () => {
               {tabs.map((tab) => (
                 <li key={tab.key}>
                   <button
-                    className={`flex items-center py-2 px-4 rounded-lg w-full text-base text-left ${activeTab === tab.key && 'text-white bg-primary'}`}
+                    className={`flex items-center py-2 px-4 rounded-lg w-full text-left ${activeTab === tab.key ? 'text-theme bg-primary' : ''}`}
                     onClick={() => setActiveTab(tab.key)}
                   >
-                    <Image
-                      src={tabIconMapping[tab.key]}
-                      alt={`${tab.label} icon`}
-                      width={20}
-                      height={20}
-                      className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
+                    <div
+                      className={`w-5 h-5 mr-2 ${
+                        activeTab === tab.key
+                          ? 'icon-mask-active'
+                          : 'icon-mask-default'
+                      }`}
+                      style={{
+                        maskImage: `url(${tabIconMapping[tab.key]})`,
+                        maskSize: 'contain',
+                        maskRepeat: 'no-repeat',
+                        maskPosition: 'center',
+                      }}
                     />
                     {tab.label}
                   </button>
@@ -203,16 +209,18 @@ const Main = () => {
           {/* モバイル版ドロップダウンナビゲーション */}
           <div className="md:hidden mb-4 relative" ref={dropdownRef}>
             <button
-              className="flex items-center justify-between w-full py-3 px-4 text-base font-medium text-left bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="flex items-center justify-between w-full py-3 px-4 font-medium text-left bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <div className="flex items-center">
-                <Image
-                  src={tabIconMapping[activeTab]}
-                  alt={`${currentTab?.label} icon`}
-                  width={20}
-                  height={20}
-                  className="w-5 h-5 mr-2"
+                <div
+                  className="w-5 h-5 mr-2 icon-mask-default"
+                  style={{
+                    maskImage: `url(${tabIconMapping[activeTab]})`,
+                    maskSize: 'contain',
+                    maskRepeat: 'no-repeat',
+                    maskPosition: 'center',
+                  }}
                 />
                 {currentTab?.label}
               </div>
@@ -236,15 +244,21 @@ const Main = () => {
                 {tabs.map((tab) => (
                   <button
                     key={tab.key}
-                    className={`flex items-center w-full py-3 px-4 text-base text-left hover:bg-gray-50 ${activeTab === tab.key ? 'bg-primary text-white' : ''}`}
+                    className={`flex items-center w-full py-3 px-4 text-left hover:bg-gray-50 ${activeTab === tab.key ? 'bg-primary text-theme' : ''}`}
                     onClick={() => setActiveTab(tab.key)}
                   >
-                    <Image
-                      src={tabIconMapping[tab.key]}
-                      alt={`${tab.label} icon`}
-                      width={20}
-                      height={20}
-                      className={`w-5 h-5 mr-2 ${activeTab === tab.key ? 'brightness-0 invert' : ''}`}
+                    <div
+                      className={`w-5 h-5 mr-2 ${
+                        activeTab === tab.key
+                          ? 'icon-mask-active'
+                          : 'icon-mask-default'
+                      }`}
+                      style={{
+                        maskImage: `url(${tabIconMapping[tab.key]})`,
+                        maskSize: 'contain',
+                        maskRepeat: 'no-repeat',
+                        maskPosition: 'center',
+                      }}
                     />
                     {tab.label}
                   </button>
@@ -265,7 +279,7 @@ const Main = () => {
 
 const Footer = () => {
   return (
-    <footer className="absolute py-1 bg-[#413D43] text-center text-white font-Montserrat bottom-0 w-full">
+    <footer className="absolute py-1 bg-[#413D43] text-center text-theme font-Montserrat bottom-0 w-full">
       powered by ChatVRM from Pixiv / ver. 2.35.0
     </footer>
   )

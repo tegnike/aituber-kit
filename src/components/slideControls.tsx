@@ -30,14 +30,14 @@ const SlideControls: React.FC<SlideControlsProps> = ({
         disabled={currentSlide === 0 || (showPlayButton && isPlaying)} // isPlayingの無効化はshowPlayButtonがtrueの時のみ考慮
         onClick={prevSlide}
         isProcessing={false}
-        className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-2xl py-2 px-4 text-center" // mx-16削除
+        className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-theme rounded-2xl py-2 px-4 text-center" // mx-16削除
       />
       {showPlayButton && (
         <IconButton
           iconName={isPlaying ? '24/PauseAlt' : '24/Play'}
           onClick={toggleIsPlaying}
           isProcessing={false}
-          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-2xl py-2 px-4 text-center" // mx-16削除
+          className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-theme rounded-2xl py-2 px-4 text-center" // mx-16削除
         />
       )}
       <IconButton
@@ -47,7 +47,7 @@ const SlideControls: React.FC<SlideControlsProps> = ({
         } // isPlayingの無効化はshowPlayButtonがtrueの時のみ考慮
         onClick={nextSlide}
         isProcessing={false}
-        className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-white rounded-2xl py-2 px-4 text-center" // mx-16削除
+        className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-theme rounded-2xl py-2 px-4 text-center" // mx-16削除
       />
     </div>
   )
