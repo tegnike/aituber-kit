@@ -283,9 +283,7 @@ const Based = () => {
       {/* カラーテーマ設定 */}
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('ColorTheme')}</div>
-        <div className="my-4 text-theme whitespace-pre-wrap">
-          {t('ColorThemeInfo')}
-        </div>
+        <div className="my-4 whitespace-pre-wrap">{t('ColorThemeInfo')}</div>
 
         <div className="flex flex-col mb-4">
           <select
