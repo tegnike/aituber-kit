@@ -317,15 +317,15 @@ const SendMessage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center text-black min-h-screen bg-purple-50 py-8">
+    <div className="flex flex-col items-center text-theme-default min-h-screen bg-theme py-8">
       <div className="w-full max-w-4xl px-4 md:px-8">
-        <h1 className="text-primary text-3xl font-bold mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-8 text-center">
           {t('SendMessage.title')}
         </h1>
 
         {/* Client ID セクション */}
         <div className="mb-8 bg-white rounded-xl p-6 shadow-md">
-          <div className="text-primary font-bold mb-3 flex justify-between items-center">
+          <div className="font-bold mb-3 flex justify-between items-center">
             <span className="text-lg">Client ID</span>
             <button
               type="button"
@@ -421,9 +421,7 @@ const SendMessage = () => {
             </button>
           </div>
 
-          <h2 className="text-primary text-xl font-bold mb-4">
-            {getTabTitle()}
-          </h2>
+          <h2 className="text-xl font-bold mb-4">{getTabTitle()}</h2>
 
           <p className="mb-6 whitespace-pre-line">{getTabDescription()}</p>
 
@@ -447,7 +445,7 @@ const SendMessage = () => {
           {/* System Prompt (AI Generate タブのみ) */}
           {activeTab === 'ai_generate' && (
             <div className="mb-6">
-              <div className="text-primary font-bold mb-2">System Prompt</div>
+              <div className="font-bold mb-2">System Prompt</div>
               <textarea
                 value={systemPrompt}
                 onChange={(e) => setSystemPrompt(e.target.value)}
@@ -486,7 +484,7 @@ const SendMessage = () => {
           {/* メッセージフォーム */}
           <form onSubmit={(e) => handleSubmit(e, activeTab)}>
             <div className="mb-6">
-              <div className="text-primary font-bold mb-3">Messages</div>
+              <div className="font-bold mb-3">Messages</div>
               {renderMessageFields()}
               <div className="flex justify-between mt-4">
                 <IconButton
@@ -509,7 +507,7 @@ const SendMessage = () => {
           {/* レスポンス表示 */}
           {getActiveResponse() && (
             <div className="mt-6 w-full">
-              <div className="text-primary font-bold mb-3 flex justify-between items-center">
+              <div className="font-bold mb-3 flex justify-between items-center">
                 <span>Response</span>
                 <button
                   type="button"

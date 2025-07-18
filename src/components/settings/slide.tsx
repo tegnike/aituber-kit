@@ -72,7 +72,13 @@ const Slide = () => {
       <div className="my-2">
         <TextButton
           onClick={toggleSlideMode}
-          disabled={!isMultiModalModelWithToggle(selectAIService, selectAIModel, enableMultiModal)}
+          disabled={
+            !isMultiModalModelWithToggle(
+              selectAIService,
+              selectAIModel,
+              enableMultiModal
+            )
+          }
         >
           {slideMode ? t('StatusOn') : t('StatusOff')}
         </TextButton>
@@ -122,9 +128,11 @@ const Slide = () => {
               </Link>
             )}
           </div>
-          {isMultiModalModelWithToggle(selectAIService, selectAIModel, enableMultiModal) && (
-            <SlideConvert onFolderUpdate={handleFolderUpdate} />
-          )}
+          {isMultiModalModelWithToggle(
+            selectAIService,
+            selectAIModel,
+            enableMultiModal
+          ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
         </>
       )}
     </>

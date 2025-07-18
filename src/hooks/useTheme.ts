@@ -10,7 +10,7 @@ export const useTheme = () => {
   }, [colorTheme])
 
   const setTheme = (
-    theme: 'warm' | 'cool' | 'mono' | 'ocean' | 'forest' | 'sunset'
+    theme: 'default' | 'cool' | 'mono' | 'ocean' | 'forest' | 'sunset'
   ) => {
     settingsStore.setState({ colorTheme: theme })
     document.documentElement.setAttribute('data-theme', theme)

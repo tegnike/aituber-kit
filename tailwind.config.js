@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // デフォルト（warm）テーマ
+        // デフォルトテーマ
         primary: 'var(--color-primary)',
         'primary-hover': 'var(--color-primary-hover)',
         'primary-press': 'var(--color-primary-press)',

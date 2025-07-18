@@ -290,7 +290,7 @@ const Based = () => {
             value={colorTheme}
             onChange={(e) => {
               const theme = e.target.value as
-                | 'warm'
+                | 'default'
                 | 'cool'
                 | 'mono'
                 | 'ocean'
@@ -301,7 +301,7 @@ const Based = () => {
               document.documentElement.setAttribute('data-theme', theme)
             }}
           >
-            <option value="warm">{t('ThemeDefault')}</option>
+            <option value="default">{t('ThemeDefault')}</option>
             <option value="mono">{t('ThemeMono')}</option>
             <option value="cool">{t('ThemeCool')}</option>
             <option value="ocean">{t('ThemeOcean')}</option>
