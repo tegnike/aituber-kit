@@ -1469,15 +1469,15 @@ const ModelProvider = () => {
               <input
                 type="number"
                 min="1"
-                max="100"
-                className="px-4 py-2 w-16 bg-white hover:bg-white-hover rounded-lg"
+                max="9999"
+                className="px-4 py-2 w-24 bg-white hover:bg-white-hover rounded-lg"
                 value={maxPastMessages}
                 onChange={(e) => {
                   const value = parseInt(e.target.value)
                   if (
                     Number.isNaN(value) === false &&
                     value >= 1 &&
-                    value <= 100
+                    value <= 9999
                   ) {
                     settingsStore.setState({ maxPastMessages: value })
                   }
