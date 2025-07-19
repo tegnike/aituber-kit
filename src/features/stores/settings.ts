@@ -49,6 +49,7 @@ interface APIKeys {
   customApiBody: string
   customApiStream: boolean
   includeSystemMessagesInCustomApi: boolean
+  customApiIncludeMimeType: boolean
 }
 
 interface Live2DSettings {
@@ -295,6 +296,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   customApiStream: true,
   includeSystemMessagesInCustomApi:
     process.env.NEXT_PUBLIC_INCLUDE_SYSTEM_MESSAGES_IN_CUSTOM_API !== 'false',
+  customApiIncludeMimeType:
+    process.env.NEXT_PUBLIC_CUSTOM_API_INCLUDE_MIME_TYPE !== 'false',
 
   // Integrations
   difyUrl: '',
@@ -624,6 +627,7 @@ const settingsStore = create<SettingsState>()(
       customApiBody: state.customApiBody,
       customApiStream: state.customApiStream,
       includeSystemMessagesInCustomApi: state.includeSystemMessagesInCustomApi,
+      customApiIncludeMimeType: state.customApiIncludeMimeType,
       initialSpeechTimeout: state.initialSpeechTimeout,
       chatLogWidth: state.chatLogWidth,
       imageDisplayPosition: state.imageDisplayPosition,

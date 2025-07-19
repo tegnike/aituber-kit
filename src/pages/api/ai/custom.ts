@@ -26,6 +26,7 @@ export default async function handler(req: NextRequest) {
     customApiUrl = '',
     customApiHeaders = '{}',
     customApiBody = '{}',
+    customApiIncludeMimeType = false,
   } = await req.json()
 
   try {
@@ -34,7 +35,8 @@ export default async function handler(req: NextRequest) {
       customApiUrl,
       customApiHeaders === '' ? '{}' : customApiHeaders,
       customApiBody === '' ? '{}' : customApiBody,
-      stream
+      stream,
+      customApiIncludeMimeType
     )
   } catch (error) {
     console.error('Error in Custom API call:', error)

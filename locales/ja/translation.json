@@ -357,5 +357,7 @@
   "MultiModalModeAlways": "常に利用する",
   "MultiModalModeNever": "利用しない",
   "MultiModalAIDecisionPrompt": "AI判断用プロンプト",
-  "MultiModalAIDecisionPromptPlaceholder": "あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。"
+  "MultiModalAIDecisionPromptPlaceholder": "あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。",
+  "CustomApiIncludeMimeType": "画像にMIMEタイプを含める",
+  "CustomApiIncludeMimeTypeDescription": "カスタムAPIに送信する画像オブジェクトにmimeTypeプロパティを含めます。"
 }

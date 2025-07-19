@@ -2,19 +2,63 @@ import { Message } from '@/features/messages/messages'
 import { NextResponse } from 'next/server'
 
 /**
+ * base64データURLからMIMEタイプを抽出する
+ * @param dataUrl base64データURL (例: "data:image/png;base64,...")
+ * @returns MIMEタイプ (例: "image/png") または null
+ */
+function extractMimeTypeFromDataUrl(dataUrl: string): string | null {
+  const match = dataUrl.match(/^data:([^;]+);base64,/)
+  return match ? match[1] : null
+}
+
+/**
+ * メッセージ内の画像オブジェクトにmimeTypeを追加する
+ * @param messages 処理するメッセージ配列
+ * @returns mimeTypeが追加されたメッセージ配列
+ */
+function processMessagesWithMimeType(messages: Message[]): any[] {
+  return messages.map((message) => {
+    if (
+      message.content &&
+      Array.isArray(message.content) &&
+      message.content.some((content: any) => content.type === 'image')
+    ) {
+      return {
+        ...message,
+        content: message.content.map((content: any) => {
+          if (content.type === 'image' && content.image) {
+            const mimeType = extractMimeTypeFromDataUrl(content.image)
+            return mimeType
+              ? {
+                  ...content,
+                  mimeType,
+                }
+              : content
+          }
+          return content
+        }),
+      }
+    }
+    return message
+  })
+}
+
+/**
  * カスタムAPIを使用して応答を取得する
  * @param messages メッセージ
  * @param customApiUrl カスタムAPIのURL
  * @param customApiHeaders カスタムAPIのヘッダー (JSON文字列)
  * @param customApiBody カスタムAPIのボディ (JSON文字列)
  * @param stream ストリーミングするかどうか
+ * @param customApiIncludeMimeType 画像にmimeTypeを含めるかどうか
  */
 export async function handleCustomApi(
   messages: Message[],
   customApiUrl: string,
   customApiHeaders: string,
   customApiBody: string,
-  stream: boolean
+  stream: boolean,
+  customApiIncludeMimeType: boolean = false
 ) {
   // 強制的にストリーミングを有効にする
   stream = true
@@ -43,10 +87,15 @@ export async function handleCustomApi(
     ...parsedHeaders,
   }
 
+  // customApiIncludeMimeTypeが有効な場合は画像にmimeTypeを追加
+  const processedMessages = customApiIncludeMimeType
+    ? processMessagesWithMimeType(messages)
+    : messages
+
   // messagesをデフォルトでbodyに含める
   const apiBody = JSON.stringify({
     ...parsedBody,
-    messages: messages,
+    messages: processedMessages,
   })
 
   console.log('apiHeaders', apiHeaders)

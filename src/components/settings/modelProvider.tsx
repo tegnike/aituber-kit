@@ -116,6 +116,9 @@ const ModelProvider = () => {
   const includeSystemMessagesInCustomApi = settingsStore(
     (s) => s.includeSystemMessagesInCustomApi
   )
+  const customApiIncludeMimeType = settingsStore(
+    (s) => s.customApiIncludeMimeType
+  )
 
   const { t } = useTranslation()
 
@@ -1445,10 +1448,33 @@ const ModelProvider = () => {
                   </TextButton>
                 </div>
               </div>
+              {/* Custom API MimeType設定 */}
+              <div className="my-6">
+                <div className="my-4 text-xl font-bold">
+                  {t('CustomApiIncludeMimeType')}
+                </div>
+                <div className="my-2 text-sm">
+                  {t('CustomApiIncludeMimeTypeDescription')}
+                </div>
+                <div className="my-2">
+                  <TextButton
+                    onClick={() => {
+                      settingsStore.setState({
+                        customApiIncludeMimeType: !customApiIncludeMimeType,
+                      })
+                    }}
+                  >
+                    {customApiIncludeMimeType ? t('StatusOn') : t('StatusOff')}
+                  </TextButton>
+                </div>
+              </div>
               {/* Custom API マルチモーダルトグル */}
               <div className="my-6">
                 <div className="my-4 text-xl font-bold">
                   {t('EnableMultiModal')}
+                </div>
+                <div className="my-2 text-sm">
+                  {t('EnableMultiModalDescription')}
                 </div>
                 <div className="my-2">
                   <TextButton
@@ -1460,9 +1486,6 @@ const ModelProvider = () => {
                   >
                     {enableMultiModal ? t('StatusOn') : t('StatusOff')}
                   </TextButton>
-                </div>
-                <div className="my-2 text-sm">
-                  {t('EnableMultiModalDescription')}
                 </div>
               </div>
             </>
