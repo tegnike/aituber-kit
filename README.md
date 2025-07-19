@@ -280,6 +280,9 @@ cp .env.example .env
   <a href="https://github.com/dotneet" title="dotneet">
     <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
   </a>
+  <a href="https://github.com/schroneko" title="schroneko">
+    <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名

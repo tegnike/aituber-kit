@@ -280,6 +280,9 @@ Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
   <a href="https://github.com/dotneet" title="dotneet">
     <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
   </a>
+  <a href="https://github.com/schroneko" title="schroneko">
+    <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
+  </a>
 </p>
 
 Plus kilku prywatnych sponsorów

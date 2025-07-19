@@ -34,6 +34,7 @@ const getAIConfig = () => {
     customApiBody: ss.customApiBody,
     customApiStream: ss.customApiStream,
     includeSystemMessagesInCustomApi: ss.includeSystemMessagesInCustomApi,
+    customApiIncludeMimeType: ss.customApiIncludeMimeType,
   }
 }
 
@@ -65,6 +66,7 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     customApiUrl,
     customApiHeaders,
     customApiBody,
+    customApiIncludeMimeType,
   } = getAIConfig()
 
   // APIエンドポイントを決定
@@ -90,6 +92,7 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         customApiBody,
         temperature,
         maxTokens,
+        customApiIncludeMimeType,
         messages: filteredMessages, // フィルタリングされたメッセージを使用
       })
     } else {
@@ -148,6 +151,7 @@ export async function getVercelAIChatResponseStream(
     customApiUrl,
     customApiHeaders,
     customApiBody,
+    customApiIncludeMimeType,
   } = getAIConfig()
 
   // APIエンドポイントを決定
@@ -172,6 +176,7 @@ export async function getVercelAIChatResponseStream(
       customApiBody,
       temperature,
       maxTokens,
+      customApiIncludeMimeType,
       messages: filteredMessages, // フィルタリングされたメッセージを使用
     })
   } else {
