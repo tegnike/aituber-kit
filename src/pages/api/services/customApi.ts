@@ -8,7 +8,14 @@ import { NextResponse } from 'next/server'
  */
 function extractMimeTypeFromDataUrl(dataUrl: string): string | null {
   const match = dataUrl.match(/^data:([^;]+);base64,/)
-  return match ? match[1] : null
+  const mimeType = match ? match[1] : null
+
+  // MIMEタイプが画像形式であることを検証
+  if (mimeType && !mimeType.startsWith('image/')) {
+    return null
+  }
+
+  return mimeType
 }
 
 /**
@@ -97,9 +104,6 @@ export async function handleCustomApi(
     ...parsedBody,
     messages: processedMessages,
   })
-
-  console.log('apiHeaders', apiHeaders)
-  console.log('apiBody', apiBody)
 
   const apiResponse = await fetch(customApiUrl, {
     method: 'POST',
