@@ -717,7 +717,9 @@ const ModelProvider = () => {
                         })
 
                         // Add check for search grounding compatibility
-                        if (!googleSearchGroundingModels.includes(model as any)) {
+                        if (
+                          !googleSearchGroundingModels.includes(model as any)
+                        ) {
                           settingsStore.setState({ useSearchGrounding: false })
                         }
 

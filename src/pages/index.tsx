@@ -88,7 +88,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, [characterPresets, t])
 
   const backgroundStyle =
     (webcamStatus || captureStatus) && useVideoAsBackground

@@ -64,8 +64,7 @@ const askAIForMultiModalDecision = async (
     // AI判断用のシステムプロンプト
     const systemMessage: Message = {
       role: 'system',
-      content:
-        'あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。',
+      content: decisionPrompt,
     }
 
     // AIに判断を求める
