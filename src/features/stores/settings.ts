@@ -188,6 +188,16 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
+  customModelOpenAI: boolean
+  customModelAnthropic: boolean
+  customModelGoogle: boolean
+  customModelXAI: boolean
+  customModelGroq: boolean
+  customModelCohere: boolean
+  customModelMistralAI: boolean
+  customModelPerplexity: boolean
+  customModelFireworks: boolean
+  customModelDeepSeek: boolean
 }
 
 interface ModelType {
@@ -439,6 +449,18 @@ const settingsStore = create<SettingsState>()(
       chatLogWidth:
         parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
 
+      // Custom model toggles
+      customModelOpenAI: false,
+      customModelAnthropic: false,
+      customModelGoogle: false,
+      customModelXAI: false,
+      customModelGroq: false,
+      customModelCohere: false,
+      customModelMistralAI: false,
+      customModelPerplexity: false,
+      customModelFireworks: false,
+      customModelDeepSeek: false,
+
       // NijiVoice settings
       nijivoiceApiKey: '',
       nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
@@ -617,6 +639,16 @@ const settingsStore = create<SettingsState>()(
           state.includeSystemMessagesInCustomApi,
         initialSpeechTimeout: state.initialSpeechTimeout,
         chatLogWidth: state.chatLogWidth,
+        customModelOpenAI: state.customModelOpenAI,
+        customModelAnthropic: state.customModelAnthropic,
+        customModelGoogle: state.customModelGoogle,
+        customModelXAI: state.customModelXAI,
+        customModelGroq: state.customModelGroq,
+        customModelCohere: state.customModelCohere,
+        customModelMistralAI: state.customModelMistralAI,
+        customModelPerplexity: state.customModelPerplexity,
+        customModelFireworks: state.customModelFireworks,
+        customModelDeepSeek: state.customModelDeepSeek,
       }),
     }
   )
