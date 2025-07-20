@@ -100,16 +100,7 @@ const ModelProvider = () => {
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const localLlmUrl = settingsStore((s) => s.localLlmUrl)
 
-  const customModelOpenAI = settingsStore((s) => s.customModelOpenAI)
-  const customModelAnthropic = settingsStore((s) => s.customModelAnthropic)
-  const customModelGoogle = settingsStore((s) => s.customModelGoogle)
-  const customModelXAI = settingsStore((s) => s.customModelXAI)
-  const customModelGroq = settingsStore((s) => s.customModelGroq)
-  const customModelCohere = settingsStore((s) => s.customModelCohere)
-  const customModelMistralAI = settingsStore((s) => s.customModelMistralAI)
-  const customModelPerplexity = settingsStore((s) => s.customModelPerplexity)
-  const customModelFireworks = settingsStore((s) => s.customModelFireworks)
-  const customModelDeepSeek = settingsStore((s) => s.customModelDeepSeek)
+  const customModel = settingsStore((s) => s.customModel)
 
   const difyUrl = settingsStore((s) => s.difyUrl)
 
@@ -463,21 +454,23 @@ const ModelProvider = () => {
                       <TextButton
                         onClick={() => {
                           settingsStore.setState({
-                            customModelOpenAI: !customModelOpenAI,
+                            customModel: !customModel,
                           })
                         }}
                       >
-                        {customModelOpenAI ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                        {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                       </TextButton>
                     </div>
-                    {customModelOpenAI ? (
+                    {customModel ? (
                       <input
                         className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                         type="text"
-                        placeholder="カスタムモデル名を入力..."
+                        placeholder={t('CustomModelPlaceholder')}
                         value={selectAIModel}
                         onChange={(e) => {
-                          settingsStore.setState({ selectAIModel: e.target.value })
+                          settingsStore.setState({
+                            selectAIModel: e.target.value,
+                          })
                         }}
                       />
                     ) : (
@@ -491,7 +484,8 @@ const ModelProvider = () => {
                       >
                         {getModels('openai').map((model) => (
                           <option key={model} value={model}>
-                            {model} {isMultiModalModel('openai', model) ? '📷' : ''}
+                            {model}{' '}
+                            {isMultiModalModel('openai', model) ? '📷' : ''}
                           </option>
                         ))}
                       </select>
@@ -530,21 +524,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelAnthropic: !customModelAnthropic,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelAnthropic ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelAnthropic ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -601,21 +597,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelGoogle: !customModelGoogle,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelGoogle ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelGoogle ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -629,14 +627,17 @@ const ModelProvider = () => {
                         })
 
                         // Add check for search grounding compatibility
-                        if (!googleSearchGroundingModels.includes(model as any)) {
+                        if (
+                          !googleSearchGroundingModels.includes(model as any)
+                        ) {
                           settingsStore.setState({ useSearchGrounding: false })
                         }
                       }}
                     >
                       {getModels('google').map((model) => (
                         <option key={model} value={model}>
-                          {model} {isMultiModalModel('google', model) ? '📷' : ''}
+                          {model}{' '}
+                          {isMultiModalModel('google', model) ? '📷' : ''}
                         </option>
                       ))}
                     </select>
@@ -853,21 +854,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelXAI: !customModelXAI,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelXAI ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelXAI ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -923,21 +926,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelGroq: !customModelGroq,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelGroq ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelGroq ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -993,21 +998,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelCohere: !customModelCohere,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelCohere ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelCohere ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -1022,7 +1029,8 @@ const ModelProvider = () => {
                     >
                       {getModels('cohere').map((model) => (
                         <option key={model} value={model}>
-                          {model} {isMultiModalModel('cohere', model) ? '📷' : ''}
+                          {model}{' '}
+                          {isMultiModalModel('cohere', model) ? '📷' : ''}
                         </option>
                       ))}
                     </select>
@@ -1063,21 +1071,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelMistralAI: !customModelMistralAI,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelMistralAI ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelMistralAI ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -1134,21 +1144,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelPerplexity: !customModelPerplexity,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelPerplexity ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelPerplexity ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -1205,21 +1217,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelFireworks: !customModelFireworks,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelFireworks ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelFireworks ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -1355,21 +1369,23 @@ const ModelProvider = () => {
                     <TextButton
                       onClick={() => {
                         settingsStore.setState({
-                          customModelDeepSeek: !customModelDeepSeek,
+                          customModel: !customModel,
                         })
                       }}
                     >
-                      {customModelDeepSeek ? 'カスタムモデル: ON' : 'カスタムモデル: OFF'}
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
                     </TextButton>
                   </div>
-                  {customModelDeepSeek ? (
+                  {customModel ? (
                     <input
                       className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                       type="text"
-                      placeholder="カスタムモデル名を入力..."
+                      placeholder={t('CustomModelPlaceholder')}
                       value={selectAIModel}
                       onChange={(e) => {
-                        settingsStore.setState({ selectAIModel: e.target.value })
+                        settingsStore.setState({
+                          selectAIModel: e.target.value,
+                        })
                       }}
                     />
                   ) : (
@@ -1384,7 +1400,8 @@ const ModelProvider = () => {
                     >
                       {getModels('deepseek').map((model) => (
                         <option key={model} value={model}>
-                          {model} {isMultiModalModel('deepseek', model) ? '📷' : ''}
+                          {model}{' '}
+                          {isMultiModalModel('deepseek', model) ? '📷' : ''}
                         </option>
                       ))}
                     </select>
