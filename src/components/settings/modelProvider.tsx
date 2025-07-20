@@ -506,9 +506,22 @@ const ModelProvider = () => {
                         placeholder={t('CustomModelPlaceholder')}
                         value={selectAIModel}
                         onChange={(e) => {
+                          const value = e.target.value.trim()
                           settingsStore.setState({
-                            selectAIModel: e.target.value,
+                            selectAIModel: value,
                           })
+                        }}
+                        onBlur={(e) => {
+                          // Basic validation: ensure non-empty value
+                          const value = e.target.value.trim()
+                          if (!value) {
+                            // Fallback to a default model if empty
+                            const defaultModel = getModels('openai')[0]
+                            settingsStore.setState({
+                              selectAIModel: defaultModel,
+                              customModel: false,
+                            })
+                          }
                         }}
                       />
                     ) : (
@@ -563,29 +576,69 @@ const ModelProvider = () => {
               </div>
               <div className="my-6">
                 <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
-                <select
-                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  value={selectAIModel}
-                  onChange={(e) => {
-                    const model = e.target.value
-                    settingsStore.setState({
-                      selectAIModel: model,
-                    })
+                <div className="my-4">
+                  <div className="mb-2">
+                    <TextButton
+                      onClick={() => {
+                        settingsStore.setState({
+                          customModel: !customModel,
+                        })
+                      }}
+                    >
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
+                    </TextButton>
+                  </div>
+                  {customModel ? (
+                    <input
+                      className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                      type="text"
+                      placeholder={t('CustomModelPlaceholder')}
+                      value={selectAIModel}
+                      onChange={(e) => {
+                        const value = e.target.value.trim()
+                        settingsStore.setState({
+                          selectAIModel: value,
+                        })
+                      }}
+                      onBlur={(e) => {
+                        // Basic validation: ensure non-empty value
+                        const value = e.target.value.trim()
+                        if (!value) {
+                          // Fallback to a default model if empty
+                          const defaultModel = getModels('anthropic')[0]
+                          settingsStore.setState({
+                            selectAIModel: defaultModel,
+                            customModel: false,
+                          })
+                        }
+                      }}
+                    />
+                  ) : (
+                    <select
+                      className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                      value={selectAIModel}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          selectAIModel: model,
+                        })
 
-                    if (!isMultiModalModel('anthropic', model)) {
-                      settingsStore.setState({
-                        multiModalMode: 'never',
-                      })
-                    }
-                  }}
-                >
-                  {getModels('anthropic').map((model) => (
-                    <option key={model} value={model}>
-                      {model}{' '}
-                      {isMultiModalModel('anthropic', model) ? '📷' : ''}
-                    </option>
-                  ))}
-                </select>
+                        if (!isMultiModalModel('anthropic', model)) {
+                          settingsStore.setState({
+                            multiModalMode: 'never',
+                          })
+                        }
+                      }}
+                    >
+                      {getModels('anthropic').map((model) => (
+                        <option key={model} value={model}>
+                          {model}{' '}
+                          {isMultiModalModel('anthropic', model) ? '📷' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
               </div>
             </>
           )
@@ -616,34 +669,75 @@ const ModelProvider = () => {
               </div>
               <div className="my-6">
                 <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
-                <select
-                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  value={selectAIModel}
-                  onChange={(e) => {
-                    const model = e.target.value
-                    settingsStore.setState({
-                      selectAIModel: model,
-                    })
+                <div className="my-4">
+                  <div className="mb-2">
+                    <TextButton
+                      onClick={() => {
+                        settingsStore.setState({
+                          customModel: !customModel,
+                        })
+                      }}
+                    >
+                      {customModel ? t('CustomModelOn') : t('CustomModelOff')}
+                    </TextButton>
+                  </div>
+                  {customModel ? (
+                    <input
+                      className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                      type="text"
+                      placeholder={t('CustomModelPlaceholder')}
+                      value={selectAIModel}
+                      onChange={(e) => {
+                        const value = e.target.value.trim()
+                        settingsStore.setState({
+                          selectAIModel: value,
+                        })
+                      }}
+                      onBlur={(e) => {
+                        // Basic validation: ensure non-empty value
+                        const value = e.target.value.trim()
+                        if (!value) {
+                          // Fallback to a default model if empty
+                          const defaultModel = getModels('google')[0]
+                          settingsStore.setState({
+                            selectAIModel: defaultModel,
+                            customModel: false,
+                          })
+                        }
+                      }}
+                    />
+                  ) : (
+                    <select
+                      className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                      value={selectAIModel}
+                      onChange={(e) => {
+                        const model = e.target.value
+                        settingsStore.setState({
+                          selectAIModel: model,
+                        })
 
-                    // Add check for search grounding compatibility
-                    if (!googleSearchGroundingModels.includes(model as any)) {
-                      settingsStore.setState({ useSearchGrounding: false })
-                    }
+                        // Add check for search grounding compatibility
+                        if (!googleSearchGroundingModels.includes(model as any)) {
+                          settingsStore.setState({ useSearchGrounding: false })
+                        }
 
-                    // Auto-turn off toggle if non-multimodal model is selected
-                    if (!isMultiModalModel('google', model)) {
-                      settingsStore.setState({
-                        multiModalMode: 'never',
-                      })
-                    }
-                  }}
-                >
-                  {getModels('google').map((model) => (
-                    <option key={model} value={model}>
-                      {model} {isMultiModalModel('google', model) ? '📷' : ''}
-                    </option>
-                  ))}
-                </select>
+                        // Auto-turn off toggle if non-multimodal model is selected
+                        if (!isMultiModalModel('google', model)) {
+                          settingsStore.setState({
+                            multiModalMode: 'never',
+                          })
+                        }
+                      }}
+                    >
+                      {getModels('google').map((model) => (
+                        <option key={model} value={model}>
+                          {model}{' '}
+                          {isMultiModalModel('google', model) ? '📷' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
               </div>
               <div className="my-6">
                 <div className="my-4 text-xl font-bold">
