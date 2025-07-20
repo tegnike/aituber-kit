@@ -293,7 +293,7 @@ const SendMessage = () => {
                 setMessages(newMessages)
               }}
               onKeyDown={(e) => handleKeyDown(e)}
-              className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-theme font-medium transition-all duration-200"
+              className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200"
               rows={2}
               style={{
                 lineHeight: '1.5',
@@ -453,7 +453,7 @@ const SendMessage = () => {
                   useCurrentSystemPrompt
                     ? 'bg-slate-100 text-gray-500 border-slate-200 cursor-not-allowed'
                     : 'bg-white border-indigo-200 hover:border-indigo-400 hover:bg-indigo-50'
-                } border rounded-xl w-full px-4 py-3 text-theme font-medium transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white`}
+                } border rounded-xl w-full px-4 py-3 font-medium transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white`}
                 rows={2}
                 style={{
                   lineHeight: '1.5',

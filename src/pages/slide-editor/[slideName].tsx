@@ -533,7 +533,7 @@ const SlideEditorPage: React.FC = () => {
                 }}
                 // onBlur は不要になったので削除
                 rows={4}
-                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-theme font-medium transition-all duration-200"
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200"
                 style={{
                   lineHeight: '1.5',
                   padding: '12px 16px',
@@ -559,7 +559,7 @@ const SlideEditorPage: React.FC = () => {
                 }}
                 // onBlur は不要になったので削除
                 rows={3}
-                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-theme font-medium transition-all duration-200"
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200"
                 style={{
                   lineHeight: '1.5',
                   padding: '12px 16px',
@@ -577,7 +577,7 @@ const SlideEditorPage: React.FC = () => {
                 value={supplementContent}
                 onChange={handleSupplementChange}
                 rows={5}
-                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 text-theme font-medium transition-all duration-200"
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200"
                 style={{
                   lineHeight: '1.5',
                   padding: '12px 16px',
