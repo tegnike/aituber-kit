@@ -1684,94 +1684,57 @@ const ModelProvider = () => {
                 </div>
               </>
             )}
-          <div className="my-6">
-            <div className="my-4 text-xl font-bold">{t('MultiModalMode')}</div>
-            <div className="my-4 text-sm">{t('MultiModalModeDescription')}</div>
-            <div className="my-2">
-              <div className="space-y-2">
-                {/* カスタムAPIの場合はAI判断オプションを非表示 */}
-                {selectAIService !== 'custom-api' && (
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="multiModalMode"
-                      value="ai-decide"
-                      checked={multiModalMode === 'ai-decide'}
+          {isMultiModalSupported && (
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">
+                {t('MultiModalMode')}
+              </div>
+              <div className="my-4 text-sm">
+                {t('MultiModalModeDescription')}
+              </div>
+              <div className="my-2">
+                <select
+                  className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  value={multiModalMode}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      multiModalMode: e.target.value as
+                        | 'ai-decide'
+                        | 'always'
+                        | 'never',
+                    })
+                  }
+                >
+                  {selectAIService !== 'custom-api' && (
+                    <option value="ai-decide">
+                      {t('MultiModalModeAIDecide')}
+                    </option>
+                  )}
+                  <option value="always">{t('MultiModalModeAlways')}</option>
+                  <option value="never">{t('MultiModalModeNever')}</option>
+                </select>
+              </div>
+              {multiModalMode === 'ai-decide' &&
+                selectAIService !== 'custom-api' && (
+                  <div className="my-4">
+                    <div className="my-2 text-sm font-medium">
+                      {t('MultiModalAIDecisionPrompt')}
+                    </div>
+                    <textarea
+                      className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg text-sm"
+                      rows={3}
+                      value={multiModalAiDecisionPrompt}
                       onChange={(e) => {
                         settingsStore.setState({
-                          multiModalMode: e.target.value as
-                            | 'ai-decide'
-                            | 'always'
-                            | 'never',
+                          multiModalAiDecisionPrompt: e.target.value,
                         })
                       }}
-                      disabled={!isMultiModalSupported}
-                      className="mr-2"
+                      placeholder={t('MultiModalAIDecisionPromptPlaceholder')}
                     />
-                    <span>{t('MultiModalModeAIDecide')}</span>
-                  </label>
-                )}
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="multiModalMode"
-                    value="always"
-                    checked={multiModalMode === 'always'}
-                    onChange={(e) => {
-                      settingsStore.setState({
-                        multiModalMode: e.target.value as
-                          | 'ai-decide'
-                          | 'always'
-                          | 'never',
-                      })
-                    }}
-                    disabled={!isMultiModalSupported}
-                    className="mr-2"
-                  />
-                  <span>{t('MultiModalModeAlways')}</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="multiModalMode"
-                    value="never"
-                    checked={multiModalMode === 'never'}
-                    onChange={(e) => {
-                      settingsStore.setState({
-                        multiModalMode: e.target.value as
-                          | 'ai-decide'
-                          | 'always'
-                          | 'never',
-                      })
-                    }}
-                    disabled={!isMultiModalSupported}
-                    className="mr-2"
-                  />
-                  <span>{t('MultiModalModeNever')}</span>
-                </label>
-              </div>
-            </div>
-            {multiModalMode === 'ai-decide' &&
-              selectAIService !== 'custom-api' && (
-                <div className="my-4">
-                  <div className="my-2 text-sm font-medium">
-                    {t('MultiModalAIDecisionPrompt')}
                   </div>
-                  <textarea
-                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg text-sm"
-                    rows={3}
-                    value={multiModalAiDecisionPrompt}
-                    onChange={(e) => {
-                      settingsStore.setState({
-                        multiModalAiDecisionPrompt: e.target.value,
-                      })
-                    }}
-                    disabled={!isMultiModalSupported}
-                    placeholder={t('MultiModalAIDecisionPromptPlaceholder')}
-                  />
-                </div>
-              )}
-          </div>
+                )}
+            </div>
+          )}
           {(realtimeAPIMode || audioMode) && (
             <div className="my-6 p-4 bg-white rounded-lg text-sm ">
               {t('CannotUseParameters')}
