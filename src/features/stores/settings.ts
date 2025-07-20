@@ -195,6 +195,7 @@ interface General {
   multiModalAiDecisionPrompt: string
   enableMultiModal: boolean
   colorTheme: 'default' | 'cool' | 'mono' | 'ocean' | 'forest' | 'sunset'
+  customModel: boolean
 }
 
 interface ModelType {
@@ -449,6 +450,9 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       | 'forest'
       | 'sunset') || 'default',
 
+  // Custom model toggle
+  customModel: false,
+
   // NijiVoice settings
   nijivoiceApiKey: '',
   nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
@@ -635,6 +639,7 @@ const settingsStore = create<SettingsState>()(
       multiModalAiDecisionPrompt: state.multiModalAiDecisionPrompt,
       enableMultiModal: state.enableMultiModal,
       colorTheme: state.colorTheme,
+      customModel: state.customModel,
     }),
   })
 )

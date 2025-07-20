@@ -107,6 +107,8 @@ const ModelProvider = () => {
   const localLlmUrl = settingsStore((s) => s.localLlmUrl)
   const imageDisplayPosition = settingsStore((s) => s.imageDisplayPosition)
 
+  const customModel = settingsStore((s) => s.customModel)
+
   const difyUrl = settingsStore((s) => s.difyUrl)
 
   const customApiUrl = settingsStore((s) => s.customApiUrl)
@@ -485,26 +487,54 @@ const ModelProvider = () => {
                   <div className="my-4 text-xl font-bold">
                     {t('SelectModel')}
                   </div>
-                  <select
-                    className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                    value={selectAIModel}
-                    onChange={(e) => {
-                      const model = e.target.value
-                      settingsStore.setState({ selectAIModel: model })
+                  <div className="my-4">
+                    <div className="mb-2">
+                      <TextButton
+                        onClick={() => {
+                          settingsStore.setState({
+                            customModel: !customModel,
+                          })
+                        }}
+                      >
+                        {customModel ? t('CustomModelOn') : t('CustomModelOff')}
+                      </TextButton>
+                    </div>
+                    {customModel ? (
+                      <input
+                        className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                        type="text"
+                        placeholder={t('CustomModelPlaceholder')}
+                        value={selectAIModel}
+                        onChange={(e) => {
+                          settingsStore.setState({
+                            selectAIModel: e.target.value,
+                          })
+                        }}
+                      />
+                    ) : (
+                      <select
+                        className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                        value={selectAIModel}
+                        onChange={(e) => {
+                          const model = e.target.value
+                          settingsStore.setState({ selectAIModel: model })
 
-                      if (!isMultiModalModel('openai', model)) {
-                        settingsStore.setState({
-                          multiModalMode: 'never',
-                        })
-                      }
-                    }}
-                  >
-                    {getModels('openai').map((model) => (
-                      <option key={model} value={model}>
-                        {model} {isMultiModalModel('openai', model) ? '📷' : ''}
-                      </option>
-                    ))}
-                  </select>
+                          if (!isMultiModalModel('openai', model)) {
+                            settingsStore.setState({
+                              multiModalMode: 'never',
+                            })
+                          }
+                        }}
+                      >
+                        {getModels('openai').map((model) => (
+                          <option key={model} value={model}>
+                            {model}{' '}
+                            {isMultiModalModel('openai', model) ? '📷' : ''}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
                 </div>
               )}
             </>
