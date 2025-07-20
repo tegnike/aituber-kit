@@ -5,7 +5,7 @@ import Image from 'next/image'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
-import { isMultiModalModelWithToggle } from '@/features/constants/aiModels'
+import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { IconButton } from './iconButton'
 
 // ファイルバリデーションの設定
@@ -54,6 +54,7 @@ export const MessageInput = ({
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const imageDisplayPosition = settingsStore((s) => s.imageDisplayPosition)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
@@ -66,10 +67,11 @@ export const MessageInput = ({
   const { t } = useTranslation()
 
   // マルチモーダル対応かどうかを判定
-  const isMultiModalSupported = isMultiModalModelWithToggle(
+  const isMultiModalSupported = isMultiModalAvailable(
     selectAIService,
     selectAIModel,
-    enableMultiModal
+    enableMultiModal,
+    multiModalMode
   )
 
   // アイコン表示の条件

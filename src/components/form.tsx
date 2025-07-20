@@ -7,7 +7,7 @@ import { handleSendChatFn } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import { PresetQuestionButtons } from './presetQuestionButtons'
 import { SlideText } from './slideText'
-import { isMultiModalModel } from '@/features/constants/aiModels'
+import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 
 export const Form = () => {
@@ -21,6 +21,7 @@ export const Form = () => {
   const multiModalMode = settingsStore((s) => s.multiModalMode)
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const [delayedText, setDelayedText] = useState('')
   const handleSendChat = handleSendChatFn()
 
@@ -41,10 +42,12 @@ export const Form = () => {
 
   const hookSendChat = useCallback(
     (text: string) => {
-      // マルチモーダル機能が対応しているかチェック
-      const isMultiModalSupported = isMultiModalModel(
+      // マルチモーダル機能が使用可能かチェック
+      const isMultiModalSupported = isMultiModalAvailable(
         selectAIService as AIService,
-        selectAIModel
+        selectAIModel,
+        enableMultiModal,
+        multiModalMode
       )
 
       // モードに基づいて画像キャプチャの必要性を判定

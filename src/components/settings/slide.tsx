@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link' // Link をインポート
 import settingsStore from '@/features/stores/settings'
-import { isMultiModalModelWithToggle } from '@/features/constants/aiModels'
+import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import menuStore from '@/features/stores/menu'
 import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
@@ -14,6 +14,7 @@ const Slide = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
 
   const slideMode = settingsStore((s) => s.slideMode)
 
@@ -73,10 +74,11 @@ const Slide = () => {
         <TextButton
           onClick={toggleSlideMode}
           disabled={
-            !isMultiModalModelWithToggle(
+            !isMultiModalAvailable(
               selectAIService,
               selectAIModel,
-              enableMultiModal
+              enableMultiModal,
+              multiModalMode
             )
           }
         >
@@ -128,10 +130,11 @@ const Slide = () => {
               </Link>
             )}
           </div>
-          {isMultiModalModelWithToggle(
+          {isMultiModalAvailable(
             selectAIService,
             selectAIModel,
-            enableMultiModal
+            enableMultiModal,
+            multiModalMode
           ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
         </>
       )}

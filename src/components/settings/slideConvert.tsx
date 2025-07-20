@@ -4,7 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import {
   getDefaultModel,
   getMultiModalModels,
-  isMultiModalModel,
+  isMultiModalAvailable,
 } from '@/features/constants/aiModels'
 import { TextButton } from '../textButton'
 
@@ -18,6 +18,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const [folderName, setFolderName] = useState<string>('')
   const aiService = settingsStore((s) => s.selectAIService)
   const selectLanguage = settingsStore((s) => s.selectLanguage)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const enableMultiModal = settingsStore((s) => s.enableMultiModal)
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
 
   const [model, setModel] = useState<string>('')
 
@@ -40,8 +43,14 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    const currentModel = settingsStore.getState().selectAIModel
-    if (!isMultiModalModel(aiService, currentModel)) {
+    if (
+      !isMultiModalAvailable(
+        aiService,
+        selectAIModel,
+        enableMultiModal,
+        multiModalMode
+      )
+    ) {
       alert(t('InvalidAIService'))
       return
     }
