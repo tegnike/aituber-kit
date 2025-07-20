@@ -451,7 +451,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       | 'sunset') || 'default',
 
   // Custom model toggle
-  customModel: false,
+  customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
   // NijiVoice settings
   nijivoiceApiKey: '',
