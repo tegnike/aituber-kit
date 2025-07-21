@@ -385,7 +385,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   slideMode: process.env.NEXT_PUBLIC_SLIDE_MODE === 'true',
   messageReceiverEnabled:
     process.env.NEXT_PUBLIC_MESSAGE_RECEIVER_ENABLED === 'true',
-  clientId: '',
+  clientId: process.env.NEXT_PUBLIC_CLIENT_ID || '',
   useSearchGrounding: process.env.NEXT_PUBLIC_USE_SEARCH_GROUNDING === 'true',
   dynamicRetrievalThreshold:
     parseFloat(process.env.NEXT_PUBLIC_DYNAMIC_RETRIEVAL_THRESHOLD || '0.3') ||
