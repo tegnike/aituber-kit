@@ -182,13 +182,13 @@ const Live2DSettingsForm = () => {
     <div className="space-y-8">
       <div className="mb-6">
         <div className="mb-4 text-xl font-bold">{t('Live2D.Emotions')}</div>
-        <div className="mb-6 text-theme whitespace-pre-line">
+        <div className="mb-6 whitespace-pre-line">
           {t('Live2D.EmotionInfo')}
         </div>
         <div className="space-y-4 text-sm">
           {emotionFields.map((field) => (
             <div key={field.key}>
-              <label className="block mb-2 text-theme font-bold">
+              <label className="block mb-2 font-bold">
                 {t(`Live2D.${field.key}`)}
               </label>
               <div className="relative">
@@ -206,7 +206,7 @@ const Live2DSettingsForm = () => {
                       store[field.key].map((expression) => (
                         <span
                           key={expression}
-                          className="inline-flex items-center px-2 py-1 bg-primary/10 rounded-lg mr-1"
+                          className="inline-flex items-center px-2 py-1 bg-gray-100 rounded-lg mr-1"
                         >
                           {expression}
                           <button
@@ -272,7 +272,7 @@ const Live2DSettingsForm = () => {
                             )
                           }
                         />
-                        <span className="text-theme">{expression}</span>
+                        <span className="">{expression}</span>
                       </label>
                     ))}
                   </div>
@@ -285,13 +285,13 @@ const Live2DSettingsForm = () => {
 
       <div className="">
         <div className="mb-4 text-xl font-bold">{t('Live2D.MotionGroups')}</div>
-        <div className="mb-6 text-theme whitespace-pre-line">
+        <div className="mb-6 whitespace-pre-line">
           {t('Live2D.MotionGroupsInfo')}
         </div>
         <div className="space-y-4">
           {motionFields.map((field) => (
             <div key={field.key}>
-              <label className="block mb-2 text-theme font-bold">
+              <label className="block mb-2 font-bold">
                 {t(`Live2D.${field.key}`)}
               </label>
               <div className="relative">
@@ -315,7 +315,7 @@ const Live2DSettingsForm = () => {
                     </option>
                   ))}
                 </select>
-                <div className="absolute inset-y-0 right-16 flex items-center pointer-events-none">
+                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
                   <svg
                     className="h-4 w-4 "
                     viewBox="0 0 16 16"
@@ -347,65 +347,56 @@ const Character = () => {
     selectedLive2DPath,
     modelType,
     fixedCharacterPosition,
+    selectAIService,
+    systemPrompt,
+    characterPreset1,
+    characterPreset2,
+    characterPreset3,
+    characterPreset4,
+    characterPreset5,
+    customPresetName1,
+    customPresetName2,
+    customPresetName3,
+    customPresetName4,
+    customPresetName5,
+    selectedPresetIndex,
+    lightingIntensity,
   } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
     Array<{ path: string; name: string }>
   >([])
-  const selectAIService = settingsStore((s) => s.selectAIService)
-  const systemPrompt = settingsStore((s) => s.systemPrompt)
+
   const characterPresets = [
     {
       key: 'characterPreset1',
-      value: settingsStore((s) => s.characterPreset1),
+      value: characterPreset1,
     },
     {
       key: 'characterPreset2',
-      value: settingsStore((s) => s.characterPreset2),
+      value: characterPreset2,
     },
     {
       key: 'characterPreset3',
-      value: settingsStore((s) => s.characterPreset3),
+      value: characterPreset3,
     },
     {
       key: 'characterPreset4',
-      value: settingsStore((s) => s.characterPreset4),
+      value: characterPreset4,
     },
     {
       key: 'characterPreset5',
-      value: settingsStore((s) => s.characterPreset5),
+      value: characterPreset5,
     },
   ]
-  const [tooltipText, setTooltipText] = useState('')
 
-  const [tooltip, setTooltip] = useState<{
-    x: number
-    y: number
-    visible: boolean
-  }>({
-    x: 0,
-    y: 0,
-    visible: false,
-  })
-
-  // ツールチップの縦のサイズの上限を20vhに設定
-  const tooltipMaxHeight = '20vh'
-
-  // ツールチップの表示位置を調整するための定数
-  const tooltipOffsetX = 15
-  const tooltipOffsetY = 10
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setTooltip({
-      x: e.clientX + tooltipOffsetX,
-      y: e.clientY + tooltipOffsetY,
-      visible: true,
-    })
-  }
-
-  const handleMouseLeave = () => {
-    setTooltip((prev) => ({ ...prev, visible: false }))
-  }
+  const customPresetNames = [
+    customPresetName1,
+    customPresetName2,
+    customPresetName3,
+    customPresetName4,
+    customPresetName5,
+  ]
 
   useEffect(() => {
     fetch('/api/get-vrm-list')
@@ -626,16 +617,25 @@ const Character = () => {
                 : t('PositionNotFixed')}
             </span>
           </div>
-          <div className="flex gap-4">
-            <TextButton onClick={() => handlePositionAction('fix')}>
+          <div className="flex gap-4 md:flex-row flex-col">
+            <button
+              onClick={() => handlePositionAction('fix')}
+              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+            >
               {t('FixPosition')}
-            </TextButton>
-            <TextButton onClick={() => handlePositionAction('unfix')}>
+            </button>
+            <button
+              onClick={() => handlePositionAction('unfix')}
+              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+            >
               {t('UnfixPosition')}
-            </TextButton>
-            <TextButton onClick={() => handlePositionAction('reset')}>
+            </button>
+            <button
+              onClick={() => handlePositionAction('reset')}
+              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+            >
               {t('ResetPosition')}
-            </TextButton>
+            </button>
           </div>
         </div>
 
@@ -647,14 +647,14 @@ const Character = () => {
               VRMキャラクターの照明の明るさを調整します。
             </div>
             <div className="font-bold">
-              照明の強度: {settingsStore((s) => s.lightingIntensity.toFixed(1))}
+              照明の強度: {lightingIntensity.toFixed(1)}
             </div>
             <input
               type="range"
               min="0.1"
               max="3.0"
               step="0.1"
-              value={settingsStore((s) => s.lightingIntensity)}
+              value={lightingIntensity}
               onChange={(e) => {
                 const intensity = parseFloat(e.target.value)
                 settingsStore.setState({ lightingIntensity: intensity })
@@ -689,13 +689,8 @@ const Character = () => {
         <div className="my-6 mb-2">
           <div className="flex flex-wrap gap-2 mb-4" role="tablist">
             {characterPresets.map(({ key, value }, index) => {
-              const customNameKey =
-                `customPresetName${index + 1}` as keyof Character
-              const customName = settingsStore(
-                (s) => s[customNameKey] as string
-              )
-              const selectedIndex = settingsStore((s) => s.selectedPresetIndex)
-              const isSelected = selectedIndex === index
+              const customName = customPresetNames[index]
+              const isSelected = selectedPresetIndex === index
 
               return (
                 <button
@@ -747,12 +742,11 @@ const Character = () => {
             })}
           </div>
 
-          {characterPresets.map(({ key, value }, index) => {
+          {characterPresets.map(({ key }, index) => {
             const customNameKey =
               `customPresetName${index + 1}` as keyof Character
-            const customName = settingsStore((s) => s[customNameKey] as string)
-            const selectedIndex = settingsStore((s) => s.selectedPresetIndex)
-            const isSelected = selectedIndex === index
+            const customName = customPresetNames[index]
+            const isSelected = selectedPresetIndex === index
 
             if (!isSelected) return null
 

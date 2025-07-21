@@ -139,13 +139,13 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           value={folderName}
           onChange={(e) => setFolderName(e.target.value)}
           required
-          className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
         />
         <div className="my-4 font-bold">{t('PdfConvertModelSelect')}</div>
         <select
           value={model}
           onChange={(e) => setModel(e.target.value)}
-          className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
         >
           {aiService &&
             getMultiModalModels(aiService).map((model) => (
