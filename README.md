@@ -268,9 +268,49 @@ cp .env.example .env
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
   </a>
+  <a href="https://github.com/aituber-akari" title="aituber-akari">
+    <img src="https://github.com/aituber-akari.png" width="40" height="40" alt="aituber-akari">
+  </a>
+  <a href="https://github.com/harumeri" title="harumeri">
+    <img src="https://github.com/harumeri.png" width="40" height="40" alt="harumeri">
+  </a>
+  <a href="https://github.com/spring-hh" title="spring-hh">
+    <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
+  </a>
+  <a href="https://github.com/dotneet" title="dotneet">
+    <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
+  </a>
+  <a href="https://github.com/schroneko" title="schroneko">
+    <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名
+
+## 貢献
+
+AITuberKitの発展にご協力いただき、ありがとうございます。コミュニティからの貢献を歓迎しています。
+
+### イシューの報告
+
+バグを見つけたり、新機能のアイデアがある場合は、GitHubの[Issues](https://github.com/tegnike/aituber-kit/issues)ページからぜひ教えてください。
+
+イシューを作成する際に、以下の情報を含めていただけると対応がスムーズになります：
+
+- 問題や新機能の詳細な説明
+- 再現手順（バグの場合）
+- 期待される動作と実際の動作
+- 使用環境（ブラウザ、OS、Node.jsのバージョンなど）
+- スクリーンショットや動画（可能であれば）
+
+### プルリクエスト
+
+コードの改善や新機能の追加をしたい場合は、フォークしたリポジトリで変更を加え、プルリクエストを作成してください。
+
+- 1つのプルリクエストでは、1つの機能または修正に焦点を当てるようにしてください。
+- プルリクエストの説明には、変更内容と理由を書いてください。
+- マージ先のブランチは必ず `develop` に設定してください。
+- コンフリクトは無理に解消しなくても問題ありません。開発チームが対応します。
 
 ## 利用規約
 

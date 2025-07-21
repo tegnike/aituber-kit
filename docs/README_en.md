@@ -268,9 +268,49 @@ Your support greatly contributes to the development and improvement of AITuberKi
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
   </a>
+  <a href="https://github.com/aituber-akari" title="aituber-akari">
+    <img src="https://github.com/aituber-akari.png" width="40" height="40" alt="aituber-akari">
+  </a>
+  <a href="https://github.com/harumeri" title="harumeri">
+    <img src="https://github.com/harumeri.png" width="40" height="40" alt="harumeri">
+  </a>
+  <a href="https://github.com/spring-hh" title="spring-hh">
+    <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
+  </a>
+  <a href="https://github.com/dotneet" title="dotneet">
+    <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
+  </a>
+  <a href="https://github.com/schroneko" title="schroneko">
+    <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
+  </a>
 </p>
 
 Plus multiple private sponsors
+
+## Contributing
+
+Thank you for your interest in contributing to the development of AITuberKit. We welcome contributions from the community.
+
+### Reporting Issues
+
+If you find a bug or have an idea for a new feature, please let us know through the [Issues](https://github.com/tegnike/aituber-kit/issues) page on GitHub.
+
+When creating an issue, including the following information will help us respond smoothly:
+
+- Detailed description of the problem or new feature
+- Steps to reproduce (for bugs)
+- Expected behavior vs. actual behavior
+- Environment details (browser, OS, Node.js version, etc.)
+- Screenshots or videos (if possible)
+
+### Pull Requests
+
+If you want to improve code or add new features, please make changes in your forked repository and create a pull request.
+
+- Focus on one feature or fix per pull request.
+- Please describe the changes and the reason for them in the pull request description.
+- Always set the target branch to `develop`.
+- Don't worry about conflicts - the development team will handle them.
 
 ## Terms of Use
 

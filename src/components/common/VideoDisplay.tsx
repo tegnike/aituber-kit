@@ -199,7 +199,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
         )}
         <div
           ref={ref}
-          className={`fixed right-4 top-4 z-10 ${className}`}
+          className={`fixed right-4 top-4 z-10 ${className} ${useVideoAsBackground ? 'pointer-events-none' : ''}`}
           style={{
             ...dragStyle,
             width: isExpanded ? 'auto' : `${size.width}px`,
@@ -211,7 +211,11 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
           <div
             ref={containerRef}
             className="relative w-full h-full select-none"
-            onMouseDown={!isMobile && !isResizing ? handleMouseDown : undefined}
+            onMouseDown={
+              !isMobile && !isResizing && !useVideoAsBackground
+                ? handleMouseDown
+                : undefined
+            }
           >
             <video
               ref={videoRef}
@@ -225,81 +229,86 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
               }`}
             />
             {/* Resize handles */}
-            {!isExpanded && !isMobile && videoBounds.width > 0 && (
-              <>
-                {/* Corner handles */}
-                <div
-                  className="absolute w-3 h-3 cursor-nwse-resize"
-                  style={{
-                    left: `${videoBounds.x}px`,
-                    top: `${videoBounds.y}px`,
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'top-left')}
-                />
-                <div
-                  className="absolute w-3 h-3 cursor-nesw-resize"
-                  style={{
-                    left: `${videoBounds.x + videoBounds.width - 12}px`,
-                    top: `${videoBounds.y}px`,
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'top-right')}
-                />
-                <div
-                  className="absolute w-3 h-3 cursor-nesw-resize"
-                  style={{
-                    left: `${videoBounds.x}px`,
-                    top: `${videoBounds.y + videoBounds.height - 12}px`,
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'bottom-left')}
-                />
-                <div
-                  className="absolute w-3 h-3 cursor-nwse-resize"
-                  style={{
-                    left: `${videoBounds.x + videoBounds.width - 12}px`,
-                    top: `${videoBounds.y + videoBounds.height - 12}px`,
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}
-                />
-                {/* Edge handles */}
-                <div
-                  className="absolute w-1/3 h-2 cursor-ns-resize"
-                  style={{
-                    left: `${videoBounds.x + videoBounds.width / 2}px`,
-                    top: `${videoBounds.y}px`,
-                    transform: 'translateX(-50%)',
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'top')}
-                />
-                <div
-                  className="absolute w-1/3 h-2 cursor-ns-resize"
-                  style={{
-                    left: `${videoBounds.x + videoBounds.width / 2}px`,
-                    top: `${videoBounds.y + videoBounds.height - 8}px`,
-                    transform: 'translateX(-50%)',
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'bottom')}
-                />
-                <div
-                  className="absolute w-2 h-1/3 cursor-ew-resize"
-                  style={{
-                    left: `${videoBounds.x}px`,
-                    top: `${videoBounds.y + videoBounds.height / 2}px`,
-                    transform: 'translateY(-50%)',
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'left')}
-                />
-                <div
-                  className="absolute w-2 h-1/3 cursor-ew-resize"
-                  style={{
-                    left: `${videoBounds.x + videoBounds.width - 8}px`,
-                    top: `${videoBounds.y + videoBounds.height / 2}px`,
-                    transform: 'translateY(-50%)',
-                  }}
-                  onMouseDown={(e) => handleResizeStart(e, 'right')}
-                />
-              </>
-            )}
-            <div className="md:block absolute top-2 right-2">
+            {!isExpanded &&
+              !isMobile &&
+              !useVideoAsBackground &&
+              videoBounds.width > 0 && (
+                <>
+                  {/* Corner handles */}
+                  <div
+                    className="absolute w-3 h-3 cursor-nwse-resize"
+                    style={{
+                      left: `${videoBounds.x}px`,
+                      top: `${videoBounds.y}px`,
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'top-left')}
+                  />
+                  <div
+                    className="absolute w-3 h-3 cursor-nesw-resize"
+                    style={{
+                      left: `${videoBounds.x + videoBounds.width - 12}px`,
+                      top: `${videoBounds.y}px`,
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'top-right')}
+                  />
+                  <div
+                    className="absolute w-3 h-3 cursor-nesw-resize"
+                    style={{
+                      left: `${videoBounds.x}px`,
+                      top: `${videoBounds.y + videoBounds.height - 12}px`,
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'bottom-left')}
+                  />
+                  <div
+                    className="absolute w-3 h-3 cursor-nwse-resize"
+                    style={{
+                      left: `${videoBounds.x + videoBounds.width - 12}px`,
+                      top: `${videoBounds.y + videoBounds.height - 12}px`,
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}
+                  />
+                  {/* Edge handles */}
+                  <div
+                    className="absolute w-1/3 h-2 cursor-ns-resize"
+                    style={{
+                      left: `${videoBounds.x + videoBounds.width / 2}px`,
+                      top: `${videoBounds.y}px`,
+                      transform: 'translateX(-50%)',
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'top')}
+                  />
+                  <div
+                    className="absolute w-1/3 h-2 cursor-ns-resize"
+                    style={{
+                      left: `${videoBounds.x + videoBounds.width / 2}px`,
+                      top: `${videoBounds.y + videoBounds.height - 8}px`,
+                      transform: 'translateX(-50%)',
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'bottom')}
+                  />
+                  <div
+                    className="absolute w-2 h-1/3 cursor-ew-resize"
+                    style={{
+                      left: `${videoBounds.x}px`,
+                      top: `${videoBounds.y + videoBounds.height / 2}px`,
+                      transform: 'translateY(-50%)',
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'left')}
+                  />
+                  <div
+                    className="absolute w-2 h-1/3 cursor-ew-resize"
+                    style={{
+                      left: `${videoBounds.x + videoBounds.width - 8}px`,
+                      top: `${videoBounds.y + videoBounds.height / 2}px`,
+                      transform: 'translateY(-50%)',
+                    }}
+                    onMouseDown={(e) => handleResizeStart(e, 'right')}
+                  />
+                </>
+              )}
+            <div
+              className={`md:block absolute ${useVideoAsBackground ? 'fixed top-4 right-4 z-40 pointer-events-auto' : 'top-2 right-2'}`}
+            >
               {showToggleButton && (
                 <IconButton
                   iconName={toggleSourceIcon}

@@ -53,11 +53,11 @@ export const PresetQuestionButtons = ({ onSelectQuestion }: Props) => {
   const sortedQuestions = [...presetQuestions].sort((a, b) => a.order - b.order)
 
   return (
-    <div className="absolute bottom-[80px] z-20 w-full px-16">
-      <div className="mx-auto max-w-4xl" ref={containerRef}>
+    <div className="absolute bottom-[80px] z-20 w-full">
+      <div className="mx-auto max-w-4xl px-4" ref={containerRef}>
         <div
           ref={contentRef}
-          className={`flex overflow-x-auto pb-8 gap-4 scrollbar-thin scrollbar-thumb-secondary scrollbar-track-transparent ${
+          className={`flex overflow-x-auto pb-4 gap-4 preset-questions-scroll ${
             shouldCenter ? 'justify-center' : 'justify-start'
           }`}
         >

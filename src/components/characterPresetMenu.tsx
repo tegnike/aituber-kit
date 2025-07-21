@@ -88,7 +88,7 @@ const CharacterPresetMenu = () => {
       {/* メインボタン */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center"
+        className="w-12 h-12 rounded-full bg-primary text-theme shadow-lg flex items-center justify-center"
         aria-label={t('CharacterSettingsPrompt')}
         aria-expanded={isOpen}
         aria-controls="preset-menu"
@@ -153,7 +153,7 @@ const CharacterPresetMenu = () => {
                 aria-current={isSelected ? 'true' : 'false'}
                 className={`w-full text-left px-4 py-2 rounded-md mb-1 text-sm ${
                   isSelected
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-theme'
                     : 'hover:bg-gray-100 text-gray-800'
                 }`}
               >
