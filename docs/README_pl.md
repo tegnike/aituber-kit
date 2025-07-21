@@ -268,9 +268,49 @@ Twoje wsparcie znacząco przyczyni się do rozwoju i ulepszania AITuberKit.
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
   </a>
+  <a href="https://github.com/aituber-akari" title="aituber-akari">
+    <img src="https://github.com/aituber-akari.png" width="40" height="40" alt="aituber-akari">
+  </a>
+  <a href="https://github.com/harumeri" title="harumeri">
+    <img src="https://github.com/harumeri.png" width="40" height="40" alt="harumeri">
+  </a>
+  <a href="https://github.com/spring-hh" title="spring-hh">
+    <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
+  </a>
+  <a href="https://github.com/dotneet" title="dotneet">
+    <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
+  </a>
+  <a href="https://github.com/schroneko" title="schroneko">
+    <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
+  </a>
 </p>
 
 Plus kilku prywatnych sponsorów
+
+## Wkład
+
+Dziękujemy za zainteresowanie rozwojem AITuberKit. Witamy wkład od społeczności.
+
+### Zgłaszanie problemów
+
+Jeśli znalazłeś błąd lub masz pomysł na nową funkcję, poinformuj nas o tym na stronie [Issues](https://github.com/tegnike/aituber-kit/issues) na GitHub.
+
+Podczas tworzenia problemu, podanie następujących informacji pomoże nam w płynnej odpowiedzi:
+
+- Szczegółowy opis problemu lub nowej funkcji
+- Kroki reprodukcji (dla błędów)
+- Oczekiwane zachowanie vs. rzeczywiste zachowanie
+- Szczegóły środowiska (przeglądarka, system operacyjny, wersja Node.js, itp.)
+- Zrzuty ekranu lub wideo (jeśli to możliwe)
+
+### Pull Requests
+
+Jeśli chcesz poprawić kod lub dodać nowe funkcje, wprowadź zmiany w swoim sforkowanym repozytorium i stwórz pull request.
+
+- Skup się na jednej funkcji lub poprawce na pull request.
+- Opisz zmiany i powód ich wprowadzenia w opisie pull request.
+- Zawsze ustaw docelową gałąź na `develop`.
+- Nie martw się konfliktami - zespół programistów je rozwiąże.
 
 ## Warunki użytkowania
 

@@ -43,7 +43,7 @@ describe('vercelAIChat', () => {
     const mockSettings = {
       selectAIService: 'openai',
       openaiKey: 'test-openai-key',
-      selectAIModel: 'gpt-4',
+      selectAIModel: 'gpt-4.1',
       localLlmUrl: '',
       azureEndpoint: '',
       useSearchGrounding: false,
@@ -92,7 +92,7 @@ describe('vercelAIChat', () => {
           stream: false,
           apiKey: 'test-openai-key',
           aiService: 'openai',
-          model: 'gpt-4',
+          model: 'gpt-4.1',
           localLlmUrl: '',
           azureEndpoint: '',
           useSearchGrounding: false,

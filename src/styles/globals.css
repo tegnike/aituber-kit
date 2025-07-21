@@ -46,4 +46,26 @@ body {
   .scroll-hidden::-webkit-scrollbar {
     display: none;
   }
+
+  .preset-questions-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.secondary') transparent;
+  }
+
+  .preset-questions-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .preset-questions-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .preset-questions-scroll::-webkit-scrollbar-thumb {
+    background: theme('colors.secondary');
+    border-radius: 3px;
+  }
+
+  .preset-questions-scroll::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.secondary-hover');
+  }
 }

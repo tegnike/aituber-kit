@@ -1,6 +1,4 @@
 export class GLTFLoader {
-  constructor() {}
-
   load(url, onLoad, onProgress, onError) {
     setTimeout(() => {
       onLoad({

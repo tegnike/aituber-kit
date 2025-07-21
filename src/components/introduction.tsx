@@ -52,7 +52,7 @@ export const Introduction = () => {
             iconName="24/Close"
             isProcessing={false}
             onClick={handleClose}
-            className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
+            className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-theme"
           ></IconButton>
         </div>
         <div className="mb-6">
@@ -135,7 +135,7 @@ export const Introduction = () => {
         <div className="my-6">
           <button
             onClick={handleClose}
-            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-6 py-2 rounded-full"
+            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-theme px-6 py-2 rounded-full"
           >
             {t('Close')}
           </button>

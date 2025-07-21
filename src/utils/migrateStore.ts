@@ -1,7 +1,6 @@
 import { isLanguageSupported } from '@/features/constants/settings'
 import homeStore, { PersistedState } from '@/features/stores/home'
 import settingsStore, { SettingsState } from '@/features/stores/settings'
-import { migrateOpenAIModelName } from './modelMigration'
 
 const migrateStore = () => {
   const rawStore = window.localStorage.getItem('chatVRMParams')

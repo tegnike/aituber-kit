@@ -85,7 +85,7 @@ const PresetQuestions = () => {
     <div className="mb-10">
       <div className="mb-6">
         <div className="mb-4 text-xl font-bold">{t('PresetQuestions')}</div>
-        <div className="my-4 text-base">{t('PresetQuestionsInfo')}</div>
+        <div className="my-4">{t('PresetQuestionsInfo')}</div>
 
         <div className="my-4">
           <TextButton onClick={handleToggleShowPresetQuestions}>

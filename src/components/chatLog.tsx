@@ -131,14 +131,14 @@ const Chat = ({
   const processedMessage = message.replace(emotionPattern, '')
 
   const roleColor =
-    role !== 'user' ? 'bg-secondary text-white ' : 'bg-base-light text-primary'
+    role !== 'user' ? 'bg-secondary text-theme ' : 'bg-base-light text-primary'
   const roleText = role !== 'user' ? 'text-secondary' : 'text-primary'
   const offsetX = role === 'user' ? 'pl-10' : 'pr-10'
 
   return (
     <div className={`mx-auto ml-0 md:ml-10 lg:ml-20 my-4 ${offsetX}`}>
       {role === 'code' ? (
-        <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-white p-4 rounded-lg">
+        <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-theme p-4 rounded-lg">
           <code className="font-mono text-sm">{message}</code>
         </pre>
       ) : (
@@ -149,9 +149,7 @@ const Chat = ({
             {role !== 'user' ? characterName || 'CHARACTER' : 'YOU'}
           </div>
           <div className="px-6 py-4 bg-white rounded-b-lg">
-            <div className={`text-base font-bold ${roleText}`}>
-              {processedMessage}
-            </div>
+            <div className={`font-bold ${roleText}`}>{processedMessage}</div>
           </div>
         </>
       )}

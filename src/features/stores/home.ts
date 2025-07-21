@@ -16,7 +16,6 @@ export interface PersistedState {
 export interface TransientState {
   viewer: Viewer
   live2dViewer: any
-  assistantMessage: string
   slideMessages: string[]
   chatProcessing: boolean
   chatProcessingCount: number
@@ -61,7 +60,6 @@ const homeStore = create<HomeState>()(
       userOnboarded: false,
       chatLog: [],
       showIntroduction: process.env.NEXT_PUBLIC_SHOW_INTRODUCTION !== 'false',
-      assistantMessage: '',
 
       // transient states
       viewer: new Viewer(),

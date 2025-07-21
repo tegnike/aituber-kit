@@ -70,7 +70,7 @@ const SpeechInput = () => {
         <div className="my-4 text-xl font-bold">
           {t('SpeechRecognitionMode')}
         </div>
-        <div className="my-4 text-base whitespace-pre-line">
+        <div className="my-4 whitespace-pre-line">
           {t('SpeechRecognitionModeInfo')}
         </div>
         {isSpeechModeSwitchDisabled && (
@@ -122,7 +122,7 @@ const SpeechInput = () => {
             <div className="mb-4 text-xl font-bold">
               {t('WhisperTranscriptionModel')}
             </div>
-            <div className="mb-4 text-base whitespace-pre-line">
+            <div className="mb-4 whitespace-pre-line">
               {t('WhisperTranscriptionModelInfo')}
             </div>
             <select
@@ -151,7 +151,7 @@ const SpeechInput = () => {
             <div className="my-4 text-xl font-bold">
               {t('InitialSpeechTimeout')}
             </div>
-            <div className="my-4 text-base whitespace-pre-line">
+            <div className="my-4 whitespace-pre-line">
               {t('InitialSpeechTimeoutInfo')}
             </div>
             <div className="mt-6 font-bold">
@@ -175,7 +175,7 @@ const SpeechInput = () => {
           </div>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
-            <div className="my-4 text-base whitespace-pre-line">
+            <div className="my-4 whitespace-pre-line">
               {t('NoSpeechTimeoutInfo')}
             </div>
             <div className="mt-6 font-bold">
@@ -213,7 +213,7 @@ const SpeechInput = () => {
           </div>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">{t('ContinuousMic')}</div>
-            <div className="my-4 text-base whitespace-pre-line">
+            <div className="my-4 whitespace-pre-line">
               {t('ContinuousMicInfo')}
             </div>
             <TextButton
