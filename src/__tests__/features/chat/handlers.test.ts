@@ -141,7 +141,6 @@ describe('handlers', () => {
       const mockHomeStore = {
         chatLog: mockChatLog,
         chatProcessing: false,
-        assistantMessage: '',
         modalImage: '',
         setState: jest.fn(),
         upsertMessage: jest.fn((newMessage: Message) => {

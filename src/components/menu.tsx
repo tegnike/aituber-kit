@@ -12,8 +12,9 @@ import Settings from './settings'
 import { Webcam } from './webcam'
 import Slides from './slides'
 import Capture from './capture'
-import { isMultiModalModel } from '@/features/constants/aiModels'
+import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
+import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 
 // モバイルデバイス検出用のカスタムフック
 const useIsMobile = () => {
@@ -40,11 +41,13 @@ const useIsMobile = () => {
 export const Menu = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const enableMultiModal = settingsStore((s) => s.enableMultiModal)
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
-  const assistantMessage = homeStore((s) => s.assistantMessage)
+  const chatLog = homeStore((s) => s.chatLog)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
   const showCapture = menuStore((s) => s.showCapture)
@@ -96,6 +99,9 @@ export const Menu = () => {
         console.error('Failed to fetch markdown content:', error)
       )
   }, [selectedSlideDocs])
+
+  // アシスタントメッセージ
+  const latestAssistantMessage = getLatestAssistantMessage(chatLog)
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -229,26 +235,28 @@ export const Menu = () => {
                   />
                 )}
               </div>
-              {!youtubeMode &&
-                isMultiModalModel(
-                  selectAIService as AIService,
-                  selectAIModel
-                ) && (
-                  <>
-                    <div className="order-3">
-                      <IconButton
-                        iconName="screen-share"
-                        isProcessing={false}
-                        onClick={toggleCapture}
-                      />
-                    </div>
-                    <div className="order-4">
-                      <IconButton
-                        iconName="24/Camera"
-                        isProcessing={false}
-                        onClick={toggleWebcam}
-                      />
-                    </div>
+              {!youtubeMode && (
+                <>
+                  <div className="order-3">
+                    <IconButton
+                      iconName="screen-share"
+                      isProcessing={false}
+                      onClick={toggleCapture}
+                    />
+                  </div>
+                  <div className="order-4">
+                    <IconButton
+                      iconName="24/Camera"
+                      isProcessing={false}
+                      onClick={toggleWebcam}
+                    />
+                  </div>
+                  {isMultiModalAvailable(
+                    selectAIService as AIService,
+                    selectAIModel,
+                    enableMultiModal,
+                    multiModalMode
+                  ) && (
                     <div className="order-4">
                       <IconButton
                         iconName="24/AddImage"
@@ -273,8 +281,9 @@ export const Menu = () => {
                         }}
                       />
                     </div>
-                  </>
-                )}
+                  )}
+                </>
+              )}
               {youtubeMode && (
                 <div className="order-5">
                   <IconButton
@@ -310,9 +319,9 @@ export const Menu = () => {
       {showChatLog && <ChatLog />}
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {!showChatLog &&
-        assistantMessage &&
+        latestAssistantMessage &&
         (!slideMode || !slideVisible) &&
-        showAssistantText && <AssistantText message={assistantMessage} />}
+        showAssistantText && <AssistantText message={latestAssistantMessage} />}
       {showWebcam && navigator.mediaDevices && <Webcam />}
       {showCapture && <Capture />}
       {showPermissionModal && (

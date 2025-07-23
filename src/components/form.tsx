@@ -7,6 +7,8 @@ import { handleSendChatFn } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import { PresetQuestionButtons } from './presetQuestionButtons'
 import { SlideText } from './slideText'
+import { isMultiModalAvailable } from '@/features/constants/aiModels'
+import { AIService } from '@/features/constants/settings'
 
 export const Form = () => {
   const modalImage = homeStore((s) => s.modalImage)
@@ -16,6 +18,10 @@ export const Form = () => {
   const slideVisible = menuStore((s) => s.slideVisible)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const [delayedText, setDelayedText] = useState('')
   const handleSendChat = handleSendChatFn()
 
@@ -25,24 +31,68 @@ export const Form = () => {
       handleSendChat(delayedText)
       setDelayedText('')
     }
+
+    // コンポーネントがアンマウントされる際にpending操作をクリーンアップ
+    return () => {
+      if (delayedText) {
+        setDelayedText('')
+      }
+    }
   }, [modalImage, delayedText, handleSendChat])
 
   const hookSendChat = useCallback(
     (text: string) => {
-      // すでにmodalImageが存在する場合は、Webcamのキャプチャーをスキップ
-      if (!homeStore.getState().modalImage) {
-        homeStore.setState({ triggerShutter: true })
+      // マルチモーダル機能が使用可能かチェック
+      const isMultiModalSupported = isMultiModalAvailable(
+        selectAIService as AIService,
+        selectAIModel,
+        enableMultiModal,
+        multiModalMode
+      )
+
+      // モードに基づいて画像キャプチャの必要性を判定
+      let shouldCaptureImage = false
+
+      if (isMultiModalSupported && (webcamStatus || captureStatus)) {
+        switch (multiModalMode) {
+          case 'always':
+            shouldCaptureImage = true
+            break
+          case 'never':
+            shouldCaptureImage = false
+            break
+          case 'ai-decide':
+            // AI判断モードの場合、とりあえず画像をキャプチャして、後でAIに判断させる
+            shouldCaptureImage = true
+            break
+        }
       }
 
-      // MENUの中でshowCameraがtrueの場合、画像が取得されるまで待機
-      if (webcamStatus || captureStatus) {
-        // Webcamが開いている場合
-        setDelayedText(text) // 画像が取得されるまで遅延させる
+      // 画像キャプチャが必要な場合
+      if (shouldCaptureImage) {
+        // すでにmodalImageが存在する場合は、Webcamのキャプチャーをスキップ
+        homeStore.setState((state) => {
+          if (!state.modalImage) {
+            return { ...state, triggerShutter: true }
+          }
+          return state
+        })
+        // 画像が取得されるまで遅延させる
+        setDelayedText(text)
       } else {
+        // 画像キャプチャが不要な場合は直接送信
         handleSendChat(text)
       }
     },
-    [handleSendChat, webcamStatus, captureStatus, setDelayedText]
+    [
+      handleSendChat,
+      webcamStatus,
+      captureStatus,
+      setDelayedText,
+      multiModalMode,
+      selectAIService,
+      selectAIModel,
+    ]
   )
 
   return slideMode &&

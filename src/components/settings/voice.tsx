@@ -174,7 +174,7 @@ const Voice = () => {
           onChange={(e) =>
             settingsStore.setState({ selectVoice: e.target.value as AIVoice })
           }
-          className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+          className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
         >
           <option value="voicevox">{t('UsingVoiceVox')}</option>
           <option value="koeiromap">{t('UsingKoeiromap')}</option>
@@ -207,7 +207,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">API キー</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={koeiromapKey}
@@ -320,7 +320,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('VoicevoxServerUrl')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="http://localhost:50021"
                     value={voicevoxServerUrl}
@@ -340,7 +340,7 @@ const Voice = () => {
                         voicevoxSpeaker: e.target.value,
                       })
                     }
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="">{t('Select')}</option>
                     {speakers.map((speaker) => (
@@ -425,7 +425,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('LanguageChoice')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={googleTtsType}
@@ -454,7 +454,7 @@ const Voice = () => {
                 </div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={stylebertvits2ServerUrl}
@@ -470,7 +470,7 @@ const Voice = () => {
                 </div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={stylebertvits2ApiKey}
@@ -486,7 +486,7 @@ const Voice = () => {
                 </div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="number"
                     placeholder="..."
                     value={stylebertvits2ModelId}
@@ -500,7 +500,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('StyleBeatVITS2Style')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={stylebertvits2Style}
@@ -561,7 +561,7 @@ const Voice = () => {
                 </div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="http://localhost:10101"
                     value={aivisSpeechServerUrl}
@@ -573,7 +573,7 @@ const Voice = () => {
                   />
                 </div>
                 <div className="mt-4 font-bold">{t('AivisSpeechSpeaker')}</div>
-                <div className="flex items-center">
+                <div className="space-y-3">
                   <select
                     value={aivisSpeechSpeaker}
                     onChange={(e) =>
@@ -581,7 +581,7 @@ const Voice = () => {
                         aivisSpeechSpeaker: e.target.value,
                       })
                     }
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="">{t('Select')}</option>
                     {speakers_aivis.map((speaker) => (
@@ -591,7 +591,7 @@ const Voice = () => {
                     ))}
                   </select>
 
-                  <TextButton
+                  <button
                     onClick={async () => {
                       const response = await fetch(
                         '/api/update-aivis-speakers?serverUrl=' +
@@ -608,10 +608,23 @@ const Voice = () => {
                         setSpeakers_aivis(updatedSpeakers)
                       }
                     }}
-                    className="ml-4"
+                    className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                   >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
                     {t('UpdateSpeakerList')}
-                  </TextButton>
+                  </button>
                 </div>
                 <div className="mt-6 font-bold">
                   <div className="select-none">
@@ -672,7 +685,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('GSVITTSServerUrl')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={gsviTtsServerUrl}
@@ -686,7 +699,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('GSVITTSModelID')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={gsviTtsModelId}
@@ -698,7 +711,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('GSVITTSBatchSize')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="number"
                     step="1"
                     placeholder="..."
@@ -713,7 +726,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('GSVITTSSpeechRate')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="number"
                     step="0.1"
                     placeholder="..."
@@ -742,7 +755,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('ElevenLabsApiKey')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={elevenlabsApiKey}
@@ -765,7 +778,7 @@ const Voice = () => {
                 </div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={elevenlabsVoiceId}
@@ -836,7 +849,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('OpenAIAPIKeyLabel')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={openaiAPIKey}
@@ -856,7 +869,7 @@ const Voice = () => {
                         openaiTTSVoice: e.target.value as OpenAITTSVoice,
                       })
                     }
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="alloy">alloy</option>
                     <option value="ash">ash</option>
@@ -879,7 +892,7 @@ const Voice = () => {
                         openaiTTSModel: e.target.value as OpenAITTSModel,
                       })
                     }
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     {getOpenAITTSModels().map((model) => (
                       <option key={model} value={model}>
@@ -913,7 +926,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('AzureAPIKeyLabel')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={azureTTSKey}
@@ -927,7 +940,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('AzureEndpoint')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={azureTTSEndpoint}
@@ -947,7 +960,7 @@ const Voice = () => {
                         openaiTTSVoice: e.target.value as OpenAITTSVoice,
                       })
                     }
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="alloy">alloy</option>
                     <option value="echo">echo</option>
@@ -987,7 +1000,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('NijiVoiceApiKey')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={nijivoiceApiKey}
@@ -1007,7 +1020,7 @@ const Voice = () => {
                         nijivoiceActorId: e.target.value,
                       })
                     }}
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="">{t('Select')}</option>
                     {nijivoiceSpeakers.map((actor) => (
