@@ -6,6 +6,7 @@ import { Talk } from './messages'
 import { synthesizeStyleBertVITS2Api } from './synthesizeStyleBertVITS2'
 import { synthesizeVoiceKoeiromapApi } from './synthesizeVoiceKoeiromap'
 import { synthesizeVoiceElevenlabsApi } from './synthesizeVoiceElevenlabs'
+import { synthesizeVoiceCartesiaApi } from './synthesizeVoiceCartesia'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 import { synthesizeVoiceAivisSpeechApi } from './synthesizeVoiceAivisSpeech'
@@ -131,6 +132,13 @@ async function synthesizeVoice(
           talk,
           ss.elevenlabsApiKey,
           ss.elevenlabsVoiceId,
+          ss.selectLanguage
+        )
+      case 'cartesia':
+        return await synthesizeVoiceCartesiaApi(
+          talk,
+          ss.cartesiaApiKey,
+          ss.cartesiaVoiceId,
           ss.selectLanguage
         )
       case 'openai':
@@ -356,6 +364,7 @@ export const testVoice = async (voiceType: AIVoice, customText?: string) => {
     stylebertvits2: 'StyleBertVITS2を使用します',
     gsvitts: 'GSVI TTSを使用します',
     elevenlabs: 'ElevenLabsを使用します',
+    cartesia: 'Cartesiaを使用します',
     openai: 'OpenAI TTSを使用します',
     azure: 'Azure TTSを使用します',
     nijivoice: 'にじボイスを使用します',

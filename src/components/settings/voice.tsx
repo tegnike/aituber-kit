@@ -24,6 +24,7 @@ import speakers from '../speakers.json'
 const Voice = () => {
   const koeiromapKey = settingsStore((s) => s.koeiromapKey)
   const elevenlabsApiKey = settingsStore((s) => s.elevenlabsApiKey)
+  const cartesiaApiKey = settingsStore((s) => s.cartesiaApiKey)
 
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const audioMode = settingsStore((s) => s.audioMode)
@@ -54,6 +55,7 @@ const Voice = () => {
   const gsviTtsBatchSize = settingsStore((s) => s.gsviTtsBatchSize)
   const gsviTtsSpeechRate = settingsStore((s) => s.gsviTtsSpeechRate)
   const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId)
+  const cartesiaVoiceId = settingsStore((s) => s.cartesiaVoiceId)
   const openaiAPIKey = settingsStore((s) => s.openaiKey)
   const openaiTTSVoice = settingsStore((s) => s.openaiTTSVoice)
   const openaiTTSModel = settingsStore((s) => s.openaiTTSModel)
@@ -181,6 +183,7 @@ const Voice = () => {
           <option value="aivis_speech">{t('UsingAivisSpeech')}</option>
           <option value="gsvitts">{t('UsingGSVITTS')}</option>
           <option value="elevenlabs">{t('UsingElevenLabs')}</option>
+          <option value="cartesia">{t('UsingCartesia')}</option>
           <option value="openai">{t('UsingOpenAITTS')}</option>
           <option value="azure">{t('UsingAzureTTS')}</option>
           <option value="nijivoice">{t('UsingNijiVoice')}</option>
@@ -769,6 +772,57 @@ const Voice = () => {
                     onChange={(e) =>
                       settingsStore.setState({
                         elevenlabsVoiceId: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </>
+            )
+          } else if (selectVoice === 'cartesia') {
+            return (
+              <>
+                <div>
+                  {t('CartesiaInfo')}
+                  <br />
+                  <Link
+                    url="https://docs.cartesia.ai/api-reference/tts/bytes"
+                    label="https://docs.cartesia.ai/api-reference/tts/bytes"
+                  />
+                  <br />
+                </div>
+                <div className="mt-4 font-bold">{t('CartesiaApiKey')}</div>
+                <div className="mt-2">
+                  <input
+                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    type="text"
+                    placeholder="..."
+                    value={cartesiaApiKey}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        cartesiaApiKey: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-4 font-bold">{t('CartesiaVoiceId')}</div>
+                <div className="mt-2">
+                  {t('CartesiaVoiceIdInfo')}
+                  <br />
+                  <Link
+                    url="https://docs.cartesia.ai/api-reference/voices/list"
+                    label="https://docs.cartesia.ai/api-reference/voices/list"
+                  />
+                  <br />
+                </div>
+                <div className="mt-2">
+                  <input
+                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    type="text"
+                    placeholder="..."
+                    value={cartesiaVoiceId}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        cartesiaVoiceId: e.target.value,
                       })
                     }
                   />

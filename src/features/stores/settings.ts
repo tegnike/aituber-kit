@@ -41,6 +41,7 @@ interface APIKeys {
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
+  cartesiaApiKey: string
   azureEndpoint: string
   azureTTSKey: string
   azureTTSEndpoint: string
@@ -95,6 +96,7 @@ interface ModelProvider extends Live2DSettings {
   gsviTtsBatchSize: number
   gsviTtsSpeechRate: number
   elevenlabsVoiceId: string
+  cartesiaVoiceId: string
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
@@ -229,6 +231,7 @@ const settingsStore = create<SettingsState>()(
       koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
       youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
       elevenlabsApiKey: '',
+      cartesiaApiKey: '',
       azureEndpoint: process.env.NEXT_PUBLIC_AZURE_ENDPOINT || '',
 
       // Model Provider
@@ -281,6 +284,7 @@ const settingsStore = create<SettingsState>()(
         parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') ||
         1.0,
       elevenlabsVoiceId: '',
+      cartesiaVoiceId: '',
       openaiTTSVoice:
         (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) ||
         'shimmer',
