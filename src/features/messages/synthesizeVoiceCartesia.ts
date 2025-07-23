@@ -7,6 +7,15 @@ export async function synthesizeVoiceCartesiaApi(
   voiceId: string,
   language: Language
 ) {
+  if (!apiKey.trim()) {
+    throw new Error('CartesiaのAPIキーが設定されていません')
+  }
+  if (!voiceId.trim()) {
+    throw new Error('CartesiaのVoice IDが設定されていません')
+  }
+  if (!talk.message.trim()) {
+    throw new Error('合成するメッセージが空です')
+  }
   try {
     const body = {
       message: talk.message,
@@ -24,8 +33,11 @@ export async function synthesizeVoiceCartesiaApi(
     })
 
     if (!res.ok) {
+      const errorText = await res
+        .text()
+        .catch(() => 'エラー詳細を取得できませんでした')
       throw new Error(
-        `Cartesia APIからの応答が異常です。ステータスコード: ${res.status}`
+        `Cartesia APIからの応答が異常です。ステータスコード: ${res.status}, エラー詳細: ${errorText}`
       )
     }
 

@@ -283,8 +283,8 @@ const settingsStore = create<SettingsState>()(
       gsviTtsSpeechRate:
         parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') ||
         1.0,
-      elevenlabsVoiceId: '',
-      cartesiaVoiceId: '',
+      elevenlabsVoiceId: process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID || '',
+      cartesiaVoiceId: process.env.NEXT_PUBLIC_CARTESIA_VOICE_ID || '',
       openaiTTSVoice:
         (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) ||
         'shimmer',
@@ -513,6 +513,7 @@ const settingsStore = create<SettingsState>()(
         koeiromapKey: state.koeiromapKey,
         youtubeApiKey: state.youtubeApiKey,
         elevenlabsApiKey: state.elevenlabsApiKey,
+        cartesiaApiKey: state.cartesiaApiKey,
         azureEndpoint: state.azureEndpoint,
         selectAIService: state.selectAIService,
         selectAIModel: state.selectAIModel,
@@ -541,6 +542,7 @@ const settingsStore = create<SettingsState>()(
         gsviTtsBatchSize: state.gsviTtsBatchSize,
         gsviTtsSpeechRate: state.gsviTtsSpeechRate,
         elevenlabsVoiceId: state.elevenlabsVoiceId,
+        cartesiaVoiceId: state.cartesiaVoiceId,
         difyUrl: state.difyUrl,
         difyConversationId: state.difyConversationId,
         youtubeLiveId: state.youtubeLiveId,
