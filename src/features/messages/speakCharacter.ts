@@ -111,14 +111,37 @@ async function synthesizeVoice(
           ss.selectLanguage
         )
       case 'aivis_speech':
-        return await synthesizeVoiceAivisSpeechApi(
-          talk,
-          ss.aivisSpeechSpeaker,
-          ss.aivisSpeechSpeed,
-          ss.aivisSpeechPitch,
-          ss.aivisSpeechIntonation,
-          ss.aivisSpeechServerUrl
-        )
+        if (ss.aivisSpeechUseCloudApi) {
+          const { synthesizeVoiceAivisCloudApi } = await import(
+            './synthesizeVoiceAivisSpeech'
+          )
+          return await synthesizeVoiceAivisCloudApi(
+            talk,
+            ss.aivisCloudApiKey,
+            ss.aivisCloudModelUuid,
+            ss.aivisCloudStyleId,
+            ss.aivisCloudStyleName,
+            ss.aivisCloudUseStyleName,
+            ss.aivisSpeechSpeed, // 共通パラメータを使用
+            ss.aivisSpeechPitch, // 共通パラメータを使用
+            ss.aivisSpeechIntonationScale, // スタイル強さと感情表現強さは同じ値を使用
+            ss.aivisSpeechTempoDynamics, // 共通パラメータを使用
+            ss.aivisSpeechPrePhonemeLength, // 共通パラメータを使用
+            ss.aivisSpeechPostPhonemeLength // 共通パラメータを使用
+          )
+        } else {
+          return await synthesizeVoiceAivisSpeechApi(
+            talk,
+            ss.aivisSpeechSpeaker,
+            ss.aivisSpeechSpeed,
+            ss.aivisSpeechPitch,
+            ss.aivisSpeechIntonationScale,
+            ss.aivisSpeechServerUrl,
+            ss.aivisSpeechTempoDynamics,
+            ss.aivisSpeechPrePhonemeLength,
+            ss.aivisSpeechPostPhonemeLength
+          )
+        }
       case 'gsvitts':
         return await synthesizeVoiceGSVIApi(
           talk,
