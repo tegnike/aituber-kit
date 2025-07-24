@@ -84,8 +84,15 @@ interface ModelProvider extends Live2DSettings {
   aivisSpeechSpeaker: string
   aivisSpeechSpeed: number
   aivisSpeechPitch: number
-  aivisSpeechIntonation: number
+  aivisSpeechIntonationScale: number
   aivisSpeechServerUrl: string
+  aivisSpeechTempoDynamics: number
+  aivisSpeechPrePhonemeLength: number
+  aivisSpeechPostPhonemeLength: number
+  aivisSpeechUseCloudApi: boolean
+  aivisCloudApiKey: string
+  aivisCloudModelUuid: string
+  aivisCloudStyleId: number
   stylebertvits2ServerUrl: string
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
@@ -265,9 +272,27 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEED || '1.0') || 1.0,
   aivisSpeechPitch:
     parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_PITCH || '0.0') || 0.0,
-  aivisSpeechIntonation:
-    parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_INTONATION || '1.0') || 1.0,
+  aivisSpeechIntonationScale:
+    parseFloat(
+      process.env.NEXT_PUBLIC_AIVIS_SPEECH_INTONATION_SCALE || '1.0'
+    ) || 1.0,
   aivisSpeechServerUrl: '',
+  aivisSpeechTempoDynamics:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_TEMPO_DYNAMICS || '1.0') ||
+    1.0,
+  aivisSpeechPrePhonemeLength:
+    parseFloat(
+      process.env.NEXT_PUBLIC_AIVIS_SPEECH_PRE_PHONEME_LENGTH || '0.1'
+    ) || 0.1,
+  aivisSpeechPostPhonemeLength:
+    parseFloat(
+      process.env.NEXT_PUBLIC_AIVIS_SPEECH_POST_PHONEME_LENGTH || '0.1'
+    ) || 0.1,
+  aivisSpeechUseCloudApi: false,
+  aivisCloudApiKey: '',
+  aivisCloudModelUuid: process.env.NEXT_PUBLIC_AIVIS_CLOUD_MODEL_UUID || '',
+  aivisCloudStyleId:
+    parseInt(process.env.NEXT_PUBLIC_AIVIS_CLOUD_STYLE_ID || '0') || 0,
   stylebertvits2ServerUrl: '',
   stylebertvits2ModelId: process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
   stylebertvits2ApiKey: '',
@@ -544,7 +569,7 @@ const settingsStore = create<SettingsState>()(
       aivisSpeechSpeaker: state.aivisSpeechSpeaker,
       aivisSpeechSpeed: state.aivisSpeechSpeed,
       aivisSpeechPitch: state.aivisSpeechPitch,
-      aivisSpeechIntonation: state.aivisSpeechIntonation,
+      aivisSpeechIntonationScale: state.aivisSpeechIntonationScale,
       aivisSpeechServerUrl: state.aivisSpeechServerUrl,
       stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
       stylebertvits2ModelId: state.stylebertvits2ModelId,
