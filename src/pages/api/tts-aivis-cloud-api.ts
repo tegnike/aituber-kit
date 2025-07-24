@@ -20,6 +20,7 @@ interface AivisCloudRequestBody {
   output_sampling_rate: number
   output_audio_channels: string
   style_id?: number
+  style_name?: string
 }
 
 function isValidUUID(uuid: string): boolean {
@@ -41,6 +42,8 @@ export default async function handler(
     text,
     modelUuid,
     styleId,
+    styleName,
+    useStyleName = false,
     apiKey,
     speed = 1.0,
     pitch = 0.0,
@@ -94,8 +97,18 @@ export default async function handler(
       output_audio_channels: 'mono',
     }
 
-    // スタイルIDが指定されている場合は追加
-    if (styleId !== undefined && styleId !== null) {
+    // スタイルIDまたはスタイル名を追加（仕様上は併用不可）
+    if (useStyleName && styleName && styleName.trim() !== '') {
+      // スタイル名が指定されている場合
+      if (styleName.length > 20) {
+        return res.status(400).json({ error: 'Style name too long (max 20 characters)' })
+      }
+      requestBody.style_name = styleName.trim()
+    } else if (styleId !== undefined && styleId !== null) {
+      // スタイルIDが指定されている場合
+      if (styleId < 0 || styleId > 31) {
+        return res.status(400).json({ error: 'Style ID must be between 0 and 31' })
+      }
       requestBody.style_id = styleId
     }
 

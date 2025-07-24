@@ -93,6 +93,8 @@ interface ModelProvider extends Live2DSettings {
   aivisCloudApiKey: string
   aivisCloudModelUuid: string
   aivisCloudStyleId: number
+  aivisCloudStyleName: string
+  aivisCloudUseStyleName: boolean
   stylebertvits2ServerUrl: string
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
@@ -293,6 +295,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   aivisCloudModelUuid: process.env.NEXT_PUBLIC_AIVIS_CLOUD_MODEL_UUID || '',
   aivisCloudStyleId:
     parseInt(process.env.NEXT_PUBLIC_AIVIS_CLOUD_STYLE_ID || '0') || 0,
+  aivisCloudStyleName: process.env.NEXT_PUBLIC_AIVIS_CLOUD_STYLE_NAME || '',
+  aivisCloudUseStyleName: process.env.NEXT_PUBLIC_AIVIS_CLOUD_USE_STYLE_NAME === 'true',
   stylebertvits2ServerUrl: '',
   stylebertvits2ModelId: process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
   stylebertvits2ApiKey: '',
@@ -578,6 +582,8 @@ const settingsStore = create<SettingsState>()(
       aivisCloudApiKey: state.aivisCloudApiKey,
       aivisCloudModelUuid: state.aivisCloudModelUuid,
       aivisCloudStyleId: state.aivisCloudStyleId,
+      aivisCloudStyleName: state.aivisCloudStyleName,
+      aivisCloudUseStyleName: state.aivisCloudUseStyleName,
       stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
       stylebertvits2ModelId: state.stylebertvits2ModelId,
       stylebertvits2ApiKey: state.stylebertvits2ApiKey,

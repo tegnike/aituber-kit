@@ -57,6 +57,8 @@ const Voice = () => {
   const aivisCloudApiKey = settingsStore((s) => s.aivisCloudApiKey)
   const aivisCloudModelUuid = settingsStore((s) => s.aivisCloudModelUuid)
   const aivisCloudStyleId = settingsStore((s) => s.aivisCloudStyleId)
+  const aivisCloudStyleName = settingsStore((s) => s.aivisCloudStyleName)
+  const aivisCloudUseStyleName = settingsStore((s) => s.aivisCloudUseStyleName)
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
@@ -624,20 +626,61 @@ const Voice = () => {
                         }
                       />
                     </div>
-                    <div className="mt-4 font-bold">{t('StyleID')}</div>
-                    <div className="mt-2">
-                      <input
-                        className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                        type="number"
-                        min="0"
-                        max="31"
-                        value={aivisCloudStyleId}
-                        onChange={(e) =>
-                          settingsStore.setState({
-                            aivisCloudStyleId: Number(e.target.value),
-                          })
-                        }
-                      />
+                    <div className="mt-4 p-4 border rounded-lg bg-gray-50">
+                      <label className="flex items-center space-x-2 mb-4">
+                        <input
+                          type="checkbox"
+                          checked={aivisCloudUseStyleName}
+                          onChange={(e) =>
+                            settingsStore.setState({
+                              aivisCloudUseStyleName: e.target.checked,
+                            })
+                          }
+                          className="w-4 h-4"
+                        />
+                        <span className="font-medium">{t('UseStyleName')}</span>
+                      </label>
+                      <div className="text-sm text-gray-600 mb-4">
+                        {t('StyleSelectionDescription')}
+                      </div>
+                      
+                      {aivisCloudUseStyleName ? (
+                        <>
+                          <div className="font-bold">{t('StyleName')}</div>
+                          <div className="mt-2">
+                            <input
+                              className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                              type="text"
+                              maxLength={20}
+                              placeholder={t('StyleNamePlaceholder')}
+                              value={aivisCloudStyleName}
+                              onChange={(e) =>
+                                settingsStore.setState({
+                                  aivisCloudStyleName: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="font-bold">{t('StyleID')}</div>
+                          <div className="mt-2">
+                            <input
+                              className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                              type="number"
+                              min="0"
+                              max="31"
+                              value={aivisCloudStyleId}
+                              onChange={(e) =>
+                                settingsStore.setState({
+                                  aivisCloudStyleId: Number(e.target.value),
+                                })
+                              }
+                            />
+                          </div>
+                        </>
+                      )}
                     </div>
                   </>
                 ) : (

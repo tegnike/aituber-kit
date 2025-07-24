@@ -120,6 +120,8 @@ async function synthesizeVoice(
             ss.aivisCloudApiKey,
             ss.aivisCloudModelUuid,
             ss.aivisCloudStyleId,
+            ss.aivisCloudStyleName,
+            ss.aivisCloudUseStyleName,
             ss.aivisSpeechSpeed, // 共通パラメータを使用
             ss.aivisSpeechPitch, // 共通パラメータを使用
             ss.aivisSpeechIntonationScale, // スタイル強さと感情表現強さは同じ値を使用
