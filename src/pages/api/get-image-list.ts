@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const imagesDir = path.join(process.cwd(), 'public/images')
+    const imagesDir = path.join(process.cwd(), 'public/images/uploaded')
 
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true })
@@ -22,7 +22,7 @@ export default async function handler(
       })
       .map((filename) => ({
         filename,
-        path: `/images/${filename}`,
+        path: `/images/uploaded/${filename}`,
         uploadedAt: fs.statSync(path.join(imagesDir, filename)).mtime,
       }))
       .sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime()) // Sort by upload date, newest first

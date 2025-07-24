@@ -1,7 +1,9 @@
 import React, { useCallback } from 'react'
 import { useDraggable } from '@/hooks/useDraggable'
 import { useResizable } from '@/hooks/useResizable'
-import useImagesStore, { PlacedImage as PlacedImageType } from '@/features/stores/images'
+import useImagesStore, {
+  PlacedImage as PlacedImageType,
+} from '@/features/stores/images'
 
 interface PlacedImageProps {
   image: PlacedImageType
@@ -9,47 +11,62 @@ interface PlacedImageProps {
   onSizeChange?: (id: string, size: { width: number; height: number }) => void
 }
 
-const PlacedImage: React.FC<PlacedImageProps> = ({ 
-  image, 
+const PlacedImage: React.FC<PlacedImageProps> = ({
+  image,
   onPositionChange,
-  onSizeChange 
+  onSizeChange,
 }) => {
   const { updatePlacedImagePosition, updatePlacedImageSize } = useImagesStore()
 
-  const handlePositionChange = useCallback((position: { x: number; y: number }) => {
-    updatePlacedImagePosition(image.id, position)
-    onPositionChange?.(image.id, position)
-  }, [image.id, updatePlacedImagePosition, onPositionChange])
-
-  const handleSizeChange = useCallback((size: { width: number; height: number }) => {
-    updatePlacedImageSize(image.id, size)
-    onSizeChange?.(image.id, size)
-  }, [image.id, updatePlacedImageSize, onSizeChange])
-
-  const { position, isDragging, handleMouseDown, style: dragStyle } = useDraggable(
-    image.position
+  const handlePositionChange = useCallback(
+    (position: { x: number; y: number }) => {
+      updatePlacedImagePosition(image.id, position)
+      onPositionChange?.(image.id, position)
+    },
+    [image.id, updatePlacedImagePosition, onPositionChange]
   )
+
+  const handleSizeChange = useCallback(
+    (size: { width: number; height: number }) => {
+      updatePlacedImageSize(image.id, size)
+      onSizeChange?.(image.id, size)
+    },
+    [image.id, updatePlacedImageSize, onSizeChange]
+  )
+
+  const {
+    position,
+    isDragging,
+    handleMouseDown,
+    style: dragStyle,
+  } = useDraggable(image.position)
 
   const { size, isResizing, handleResizeStart } = useResizable({
     initialWidth: image.size.width,
     initialHeight: image.size.height,
     minWidth: 50,
     minHeight: 50,
-    maxWidth: 800,
-    maxHeight: 600,
+    maxWidth: 1920,
+    maxHeight: 1080,
     aspectRatio: false,
   })
 
   // Update position when dragging stops
   React.useEffect(() => {
-    if (!isDragging && (position.x !== image.position.x || position.y !== image.position.y)) {
+    if (
+      !isDragging &&
+      (position.x !== image.position.x || position.y !== image.position.y)
+    ) {
       handlePositionChange(position)
     }
   }, [isDragging, position, image.position, handlePositionChange])
 
   // Update size when resizing stops
   React.useEffect(() => {
-    if (!isResizing && (size.width !== image.size.width || size.height !== image.size.height)) {
+    if (
+      !isResizing &&
+      (size.width !== image.size.width || size.height !== image.size.height)
+    ) {
       handleSizeChange(size)
     }
   }, [isResizing, size, image.size, handleSizeChange])
@@ -61,7 +78,7 @@ const PlacedImage: React.FC<PlacedImageProps> = ({
         ...dragStyle,
         width: size.width,
         height: size.height,
-        zIndex: image.zIndex + 10,
+        zIndex: image.zIndex,
         transform: `translate(${position.x}px, ${position.y}px)`,
       }}
     >
@@ -69,7 +86,7 @@ const PlacedImage: React.FC<PlacedImageProps> = ({
       <img
         src={image.path}
         alt={image.filename}
-        className="w-full h-full object-contain rounded-lg shadow-lg"
+        className="w-full h-full object-contain"
         draggable={false}
         onMouseDown={handleMouseDown}
       />

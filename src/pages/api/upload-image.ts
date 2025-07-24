@@ -44,7 +44,7 @@ export default async function handler(
       })
     }
 
-    const imagesDir = path.join(process.cwd(), 'public/images')
+    const imagesDir = path.join(process.cwd(), 'public/images/uploaded')
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true })
     }
@@ -52,11 +52,11 @@ export default async function handler(
     const timestamp = Date.now()
     const filename = `${timestamp}_${file.originalFilename || 'image' + extension}`
     const newPath = path.join(imagesDir, filename)
-    
+
     await fs.promises.copyFile(file.filepath, newPath)
 
     res.status(200).json({
-      path: `/images/${filename}`,
+      path: `/images/uploaded/${filename}`,
       filename,
     })
   } catch (error) {

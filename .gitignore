@@ -67,4 +67,8 @@ public/scripts/*
 /public/backgrounds/*
 !/public/backgrounds/bg-c.png
 
+/public/images/uploaded/*
+!/public/images/placed/.keep
+
 .claude/settings.local.json
+

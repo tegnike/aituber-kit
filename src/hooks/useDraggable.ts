@@ -5,7 +5,10 @@ interface Position {
   y: number
 }
 
-export const useDraggable = (initialPosition?: Position, onPositionChange?: (position: Position) => void) => {
+export const useDraggable = (
+  initialPosition?: Position,
+  onPositionChange?: (position: Position) => void
+) => {
   const [position, setPosition] = useState<Position>(
     initialPosition || { x: 0, y: 0 }
   )
