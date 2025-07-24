@@ -93,6 +93,7 @@ export type AIVoice =
   | 'nijivoice'
   | 'gsvitts'
   | 'elevenlabs'
+  | 'cartesia'
   | 'openai'
   | 'azure'
 

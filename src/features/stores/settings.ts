@@ -41,6 +41,7 @@ interface APIKeys {
   koeiromapKey: string
   youtubeApiKey: string
   elevenlabsApiKey: string
+  cartesiaApiKey: string
   azureEndpoint: string
   azureTTSKey: string
   azureTTSEndpoint: string
@@ -83,8 +84,17 @@ interface ModelProvider extends Live2DSettings {
   aivisSpeechSpeaker: string
   aivisSpeechSpeed: number
   aivisSpeechPitch: number
-  aivisSpeechIntonation: number
+  aivisSpeechIntonationScale: number
   aivisSpeechServerUrl: string
+  aivisSpeechTempoDynamics: number
+  aivisSpeechPrePhonemeLength: number
+  aivisSpeechPostPhonemeLength: number
+  aivisSpeechUseCloudApi: boolean
+  aivisCloudApiKey: string
+  aivisCloudModelUuid: string
+  aivisCloudStyleId: number
+  aivisCloudStyleName: string
+  aivisCloudUseStyleName: boolean
   stylebertvits2ServerUrl: string
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
@@ -96,6 +106,7 @@ interface ModelProvider extends Live2DSettings {
   gsviTtsBatchSize: number
   gsviTtsSpeechRate: number
   elevenlabsVoiceId: string
+  cartesiaVoiceId: string
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
@@ -236,6 +247,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
   youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
   elevenlabsApiKey: '',
+  cartesiaApiKey: '',
   azureEndpoint: process.env.NEXT_PUBLIC_AZURE_ENDPOINT || '',
 
   // Model Provider
@@ -262,9 +274,30 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEED || '1.0') || 1.0,
   aivisSpeechPitch:
     parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_PITCH || '0.0') || 0.0,
-  aivisSpeechIntonation:
-    parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_INTONATION || '1.0') || 1.0,
+  aivisSpeechIntonationScale:
+    parseFloat(
+      process.env.NEXT_PUBLIC_AIVIS_SPEECH_INTONATION_SCALE || '1.0'
+    ) || 1.0,
   aivisSpeechServerUrl: '',
+  aivisSpeechTempoDynamics:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_TEMPO_DYNAMICS || '1.0') ||
+    1.0,
+  aivisSpeechPrePhonemeLength:
+    parseFloat(
+      process.env.NEXT_PUBLIC_AIVIS_SPEECH_PRE_PHONEME_LENGTH || '0.1'
+    ) || 0.1,
+  aivisSpeechPostPhonemeLength:
+    parseFloat(
+      process.env.NEXT_PUBLIC_AIVIS_SPEECH_POST_PHONEME_LENGTH || '0.1'
+    ) || 0.1,
+  aivisSpeechUseCloudApi: false,
+  aivisCloudApiKey: '',
+  aivisCloudModelUuid: process.env.NEXT_PUBLIC_AIVIS_CLOUD_MODEL_UUID || '',
+  aivisCloudStyleId:
+    parseInt(process.env.NEXT_PUBLIC_AIVIS_CLOUD_STYLE_ID || '0') || 0,
+  aivisCloudStyleName: process.env.NEXT_PUBLIC_AIVIS_CLOUD_STYLE_NAME || '',
+  aivisCloudUseStyleName:
+    process.env.NEXT_PUBLIC_AIVIS_CLOUD_USE_STYLE_NAME === 'true',
   stylebertvits2ServerUrl: '',
   stylebertvits2ModelId: process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
   stylebertvits2ApiKey: '',
@@ -282,7 +315,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseInt(process.env.NEXT_PUBLIC_GSVI_TTS_BATCH_SIZE || '2') || 2,
   gsviTtsSpeechRate:
     parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') || 1.0,
-  elevenlabsVoiceId: '',
+  elevenlabsVoiceId: process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID || '',
+  cartesiaVoiceId: process.env.NEXT_PUBLIC_CARTESIA_VOICE_ID || '',
   openaiTTSVoice:
     (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) || 'shimmer',
   openaiTTSModel:
@@ -540,8 +574,17 @@ const settingsStore = create<SettingsState>()(
       aivisSpeechSpeaker: state.aivisSpeechSpeaker,
       aivisSpeechSpeed: state.aivisSpeechSpeed,
       aivisSpeechPitch: state.aivisSpeechPitch,
-      aivisSpeechIntonation: state.aivisSpeechIntonation,
+      aivisSpeechIntonationScale: state.aivisSpeechIntonationScale,
       aivisSpeechServerUrl: state.aivisSpeechServerUrl,
+      aivisSpeechTempoDynamics: state.aivisSpeechTempoDynamics,
+      aivisSpeechPrePhonemeLength: state.aivisSpeechPrePhonemeLength,
+      aivisSpeechPostPhonemeLength: state.aivisSpeechPostPhonemeLength,
+      aivisSpeechUseCloudApi: state.aivisSpeechUseCloudApi,
+      aivisCloudApiKey: state.aivisCloudApiKey,
+      aivisCloudModelUuid: state.aivisCloudModelUuid,
+      aivisCloudStyleId: state.aivisCloudStyleId,
+      aivisCloudStyleName: state.aivisCloudStyleName,
+      aivisCloudUseStyleName: state.aivisCloudUseStyleName,
       stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
       stylebertvits2ModelId: state.stylebertvits2ModelId,
       stylebertvits2ApiKey: state.stylebertvits2ApiKey,
@@ -553,6 +596,7 @@ const settingsStore = create<SettingsState>()(
       gsviTtsBatchSize: state.gsviTtsBatchSize,
       gsviTtsSpeechRate: state.gsviTtsSpeechRate,
       elevenlabsVoiceId: state.elevenlabsVoiceId,
+      cartesiaVoiceId: state.cartesiaVoiceId,
       difyUrl: state.difyUrl,
       difyConversationId: state.difyConversationId,
       youtubeLiveId: state.youtubeLiveId,

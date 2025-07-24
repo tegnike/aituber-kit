@@ -10,7 +10,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { text, speaker, speed, pitch, intonation, serverUrl } = req.body
+  const {
+    text,
+    speaker,
+    speed,
+    pitch,
+    intonationScale,
+    serverUrl,
+    tempoDynamics = 1.0,
+    prePhonemeLength = 0.1,
+    postPhonemeLength = 0.1,
+  } = req.body
   const apiUrl =
     serverUrl || process.env.AIVIS_SPEECH_SERVER_URL || 'http://localhost:10101'
 
@@ -30,7 +40,10 @@ export default async function handler(
     const queryData = queryResponse.data
     queryData.speedScale = speed
     queryData.pitchScale = pitch
-    queryData.intonationScale = intonation
+    queryData.intonationScale = intonationScale
+    queryData.tempoDynamicsScale = tempoDynamics
+    queryData.prePhonemeLength = prePhonemeLength
+    queryData.postPhonemeLength = postPhonemeLength
 
     // 2. 音声合成
     const synthesisResponse = await axios.post(
