@@ -6,6 +6,33 @@ type Data = {
   error?: string
 }
 
+interface AivisCloudRequestBody {
+  model_uuid: string
+  text: string
+  use_ssml: boolean
+  speaking_rate: number
+  pitch: number
+  emotional_intensity: number
+  tempo_dynamics_scale: number
+  pre_phoneme_length: number
+  post_phoneme_length: number
+  output_format: string
+  output_sampling_rate: number
+  output_audio_channels: string
+  style_id?: number
+}
+
+function isValidUUID(uuid: string): boolean {
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  return uuidRegex.test(uuid)
+}
+
+function isValidApiKey(apiKey: string): boolean {
+  // Aivis API keys typically start with 'aivis_' and have a minimum length
+  return apiKey.startsWith('aivis_') && apiKey.length >= 20
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -29,16 +56,30 @@ export default async function handler(
     return res.status(400).json({ error: 'API key is required' })
   }
 
+  if (!isValidApiKey(aivisCloudApiKey)) {
+    return res.status(400).json({ error: 'Invalid API key format' })
+  }
+
   if (!modelUuid) {
     return res.status(400).json({ error: 'Model UUID is required' })
+  }
+
+  if (!isValidUUID(modelUuid)) {
+    return res.status(400).json({ error: 'Invalid model UUID format' })
   }
 
   if (!text) {
     return res.status(400).json({ error: 'Text is required' })
   }
 
+  if (text.length > 10000) {
+    return res
+      .status(400)
+      .json({ error: 'Text too long (max 10000 characters)' })
+  }
+
   try {
-    const requestBody: any = {
+    const requestBody: AivisCloudRequestBody = {
       model_uuid: modelUuid,
       text,
       use_ssml: true,
