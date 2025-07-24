@@ -643,7 +643,7 @@ const Voice = () => {
                       <div className="text-sm text-gray-600 mb-4">
                         {t('StyleSelectionDescription')}
                       </div>
-                      
+
                       {aivisCloudUseStyleName ? (
                         <>
                           <div className="font-bold">{t('StyleName')}</div>

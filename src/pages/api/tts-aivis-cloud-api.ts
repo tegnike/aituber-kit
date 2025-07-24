@@ -101,13 +101,17 @@ export default async function handler(
     if (useStyleName && styleName && styleName.trim() !== '') {
       // スタイル名が指定されている場合
       if (styleName.length > 20) {
-        return res.status(400).json({ error: 'Style name too long (max 20 characters)' })
+        return res
+          .status(400)
+          .json({ error: 'Style name too long (max 20 characters)' })
       }
       requestBody.style_name = styleName.trim()
     } else if (styleId !== undefined && styleId !== null) {
       // スタイルIDが指定されている場合
       if (styleId < 0 || styleId > 31) {
-        return res.status(400).json({ error: 'Style ID must be between 0 and 31' })
+        return res
+          .status(400)
+          .json({ error: 'Style ID must be between 0 and 31' })
       }
       requestBody.style_id = styleId
     }
