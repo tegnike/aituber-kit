@@ -39,6 +39,9 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'claude-3-5-haiku-20241022', multiModal: true },
   ],
   google: [
+    { name: 'gemini-2.5-pro', multiModal: true },
+    { name: 'gemini-2.5-flash', multiModal: true },
+    { name: 'gemini-2.5-flash-lite', multiModal: true },
     { name: 'gemini-2.5-pro-preview-05-06', multiModal: true },
     { name: 'gemini-2.5-flash-preview-04-17', multiModal: true },
     { name: 'gemini-2.5-pro-exp-03-25', multiModal: true },
