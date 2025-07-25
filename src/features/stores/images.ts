@@ -48,6 +48,7 @@ interface ImagesState {
   // Actions
   setUploadedImages: (images: UploadedImage[]) => void
   addUploadedImage: (image: UploadedImage) => void
+  removeUploadedImage: (filename: string) => void
   addPlacedImage: (filename: string, path: string) => void
   removePlacedImage: (id: string) => void
   updatePlacedImagePosition: (
@@ -77,6 +78,13 @@ const useImagesStore = create<ImagesState>()(
       addUploadedImage: (image) =>
         set((state) => ({
           uploadedImages: [image, ...state.uploadedImages],
+        })),
+
+      removeUploadedImage: (filename) =>
+        set((state) => ({
+          uploadedImages: state.uploadedImages.filter(
+            (img) => img.filename !== filename
+          ),
         })),
 
       addPlacedImage: (filename, path) => {

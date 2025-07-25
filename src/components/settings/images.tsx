@@ -20,6 +20,7 @@ const Images = () => {
     placedImages,
     setUploadedImages,
     addUploadedImage,
+    removeUploadedImage,
     addPlacedImage,
     removePlacedImage,
     updateImageLayerPosition,
@@ -123,6 +124,37 @@ const Images = () => {
 
   const handleRemoveFromDisplay = (id: string) => {
     removePlacedImage(id)
+  }
+
+  const handleDeleteUploadedImage = async (filename: string) => {
+    try {
+      const response = await fetch('/api/delete-image', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ filename }),
+      })
+
+      if (response.ok) {
+        // Remove from state
+        removeUploadedImage(filename)
+
+        // Also remove from display if it's currently placed
+        const placedImage = placedImages.find(
+          (img) => img.filename === filename
+        )
+        if (placedImage) {
+          removePlacedImage(placedImage.id)
+        }
+      } else {
+        const error = await response.json()
+        alert(t('DeleteFailed') + ': ' + error.message)
+      }
+    } catch (error) {
+      console.error('Delete failed:', error)
+      alert(t('DeleteFailed'))
+    }
   }
 
   const handleToggleLayerPosition = (
@@ -234,19 +266,30 @@ const Images = () => {
                       {image.filename}
                     </p>
 
-                    <button
-                      onClick={() => handleAddToDisplay(image)}
-                      disabled={isPlaced || placedImages.length >= 5}
-                      className={`mt-1 w-full text-xs py-1 px-2 rounded text-theme ${
-                        isPlaced
-                          ? 'bg-secondary bg-opacity-20 cursor-not-allowed'
-                          : placedImages.length >= 5
-                            ? 'bg-white bg-opacity-50 opacity-70 cursor-not-allowed'
-                            : 'bg-primary bg-opacity-20 hover:bg-primary hover:bg-opacity-30'
-                      }`}
-                    >
-                      {isPlaced ? t('AlreadyDisplayed') : t('AddToDisplay')}
-                    </button>
+                    <div className="space-y-1">
+                      <button
+                        onClick={() => handleAddToDisplay(image)}
+                        disabled={isPlaced || placedImages.length >= 5}
+                        className={`w-full text-xs py-1 px-2 rounded text-theme ${
+                          isPlaced
+                            ? 'bg-secondary bg-opacity-20 cursor-not-allowed'
+                            : placedImages.length >= 5
+                              ? 'bg-white bg-opacity-50 opacity-70 cursor-not-allowed'
+                              : 'bg-primary bg-opacity-20 hover:bg-primary hover:bg-opacity-30'
+                        }`}
+                      >
+                        {isPlaced ? t('AlreadyDisplayed') : t('AddToDisplay')}
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          handleDeleteUploadedImage(image.filename)
+                        }
+                        className="w-full text-xs py-1 px-2 rounded text-theme bg-secondary bg-opacity-20 hover:bg-secondary hover:bg-opacity-30"
+                      >
+                        {t('Delete')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )
@@ -297,7 +340,7 @@ const Images = () => {
           <div>
             {/* Top Label */}
             <div className="text-xs opacity-70 text-center mb-2 py-1 border-b border-dashed">
-              {t('TopLayer')}
+              {t('BottomLayer')}
             </div>
 
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -440,7 +483,7 @@ const Images = () => {
 
             {/* Bottom Label */}
             <div className="text-xs opacity-70 text-center mt-2 py-1 border-t border-dashed">
-              {t('BottomLayer')}
+              {t('TopLayer')}
             </div>
           </div>
         )}

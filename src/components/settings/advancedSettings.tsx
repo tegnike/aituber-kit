@@ -7,8 +7,8 @@ const AdvancedSettings = () => {
     (s) => s.includeTimestampInUserMessage
   )
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
-  const showCharacterPresetMenu = settingsStore(
-    (s) => s.showCharacterPresetMenu
+  const showQuickMenu = settingsStore(
+    (s) => s.showQuickMenu
   )
 
   const { t } = useTranslation()
@@ -45,17 +45,17 @@ const AdvancedSettings = () => {
       </div>
       <div className="my-6">
         <div className="my-4 text-xl font-bold">
-          {t('ShowCharacterPresetMenu')}
+          {t('ShowQuickMenu')}
         </div>
         <div className="my-2">
           <TextButton
             onClick={() =>
               settingsStore.setState((s) => ({
-                showCharacterPresetMenu: !s.showCharacterPresetMenu,
+                showQuickMenu: !s.showQuickMenu,
               }))
             }
           >
-            {showCharacterPresetMenu ? t('StatusOn') : t('StatusOff')}
+            {showQuickMenu ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>
       </div>
