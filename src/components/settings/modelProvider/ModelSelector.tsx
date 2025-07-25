@@ -1,6 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { TextButton } from '../../textButton'
-import { getModels, isMultiModalModel, isSearchGroundingModel } from '@/features/constants/aiModels'
+import {
+  getModels,
+  isMultiModalModel,
+  isSearchGroundingModel,
+} from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 
 interface ModelSelectorProps {
