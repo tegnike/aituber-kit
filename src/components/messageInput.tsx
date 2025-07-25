@@ -110,22 +110,22 @@ export const MessageInput = ({
 
   // テキスト内容に基づいて適切な行数を計算
   const calculateRows = useCallback((text: string): number => {
-    const minRows = 1
-    const maxRows = 5 // 最大行数を制限（UIの見栄えを考慮して調整）
+    const MIN_ROWS = 1
+    const MAX_ROWS = 5 // 最大行数を制限（UIの見栄えを考慮して調整）
+    const CHARS_PER_LINE = 50 // 平均的な1行の文字数（概算）
     const lines = text.split('\n')
 
     // 各行の幅を考慮してテキストの折り返しを計算
     // 簡単な実装では改行文字の数 + 1を使用
-    const baseRows = Math.max(minRows, lines.length)
+    const baseRows = Math.max(MIN_ROWS, lines.length)
 
     // 長い行がある場合、追加の行を考慮（おおよその計算）
     const extraRows = lines.reduce((acc, line) => {
-      const charsPerLine = 50 // 平均的な1行の文字数（概算）
-      const lineRows = Math.ceil(line.length / charsPerLine)
+      const lineRows = Math.ceil(line.length / CHARS_PER_LINE)
       return acc + Math.max(0, lineRows - 1)
     }, 0)
 
-    return Math.min(maxRows, baseRows + extraRows)
+    return Math.min(MAX_ROWS, baseRows + extraRows)
   }, [])
 
   // userMessageの変更に応じて行数を調整

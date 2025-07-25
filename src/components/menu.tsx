@@ -329,9 +329,9 @@ export const Menu = () => {
       {showPermissionModal && (
         <div className="modal">
           <div className="modal-content">
-            <p>カメラの使用を許可してください。</p>
+            <p>{t('Errors.CameraPermissionMessage')}</p>
             <button onClick={() => setShowPermissionModal(false)}>
-              閉じる
+              {t('Close')}
             </button>
           </div>
         </div>

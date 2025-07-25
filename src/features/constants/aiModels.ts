@@ -352,7 +352,7 @@ export function isSearchGroundingModel(
 ): boolean {
   // 現在はGoogleのみサポート
   if (service === 'google') {
-    return googleSearchGroundingModels.includes(model as any)
+    return (googleSearchGroundingModels as readonly string[]).includes(model)
   }
   return false
 }
