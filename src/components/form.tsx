@@ -22,6 +22,7 @@ export const Form = () => {
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
+  const customModel = settingsStore((s) => s.customModel)
   const [delayedText, setDelayedText] = useState('')
   const handleSendChat = handleSendChatFn()
 
@@ -47,7 +48,8 @@ export const Form = () => {
         selectAIService as AIService,
         selectAIModel,
         enableMultiModal,
-        multiModalMode
+        multiModalMode,
+        customModel
       )
 
       // モードに基づいて画像キャプチャの必要性を判定
@@ -92,6 +94,8 @@ export const Form = () => {
       multiModalMode,
       selectAIService,
       selectAIModel,
+      enableMultiModal,
+      customModel,
     ]
   )
 

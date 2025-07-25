@@ -43,6 +43,7 @@ export const Menu = () => {
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const customModel = settingsStore((s) => s.customModel)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
   const slideMode = settingsStore((s) => s.slideMode)
@@ -255,7 +256,8 @@ export const Menu = () => {
                     selectAIService as AIService,
                     selectAIModel,
                     enableMultiModal,
-                    multiModalMode
+                    multiModalMode,
+                    customModel
                   ) && (
                     <div className="order-4">
                       <IconButton
@@ -327,9 +329,9 @@ export const Menu = () => {
       {showPermissionModal && (
         <div className="modal">
           <div className="modal-content">
-            <p>カメラの使用を許可してください。</p>
+            <p>{t('Errors.CameraPermissionMessage')}</p>
             <button onClick={() => setShowPermissionModal(false)}>
-              閉じる
+              {t('Close')}
             </button>
           </div>
         </div>

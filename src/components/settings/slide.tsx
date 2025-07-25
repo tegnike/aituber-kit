@@ -15,6 +15,7 @@ const Slide = () => {
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const customModel = settingsStore((s) => s.customModel)
 
   const slideMode = settingsStore((s) => s.slideMode)
 
@@ -78,7 +79,8 @@ const Slide = () => {
               selectAIService,
               selectAIModel,
               enableMultiModal,
-              multiModalMode
+              multiModalMode,
+              customModel
             )
           }
         >
@@ -134,7 +136,8 @@ const Slide = () => {
             selectAIService,
             selectAIModel,
             enableMultiModal,
-            multiModalMode
+            multiModalMode,
+            customModel
           ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
         </>
       )}

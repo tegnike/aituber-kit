@@ -21,6 +21,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const customModel = settingsStore((s) => s.customModel)
 
   const [model, setModel] = useState<string>('')
 
@@ -48,7 +49,8 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
         aiService,
         selectAIModel,
         enableMultiModal,
-        multiModalMode
+        multiModalMode,
+        customModel
       )
     ) {
       alert(t('InvalidAIService'))
