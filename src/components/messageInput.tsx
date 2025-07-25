@@ -55,6 +55,7 @@ export const MessageInput = ({
   const imageDisplayPosition = settingsStore((s) => s.imageDisplayPosition)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const customModel = settingsStore((s) => s.customModel)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
@@ -71,7 +72,8 @@ export const MessageInput = ({
     selectAIService,
     selectAIModel,
     enableMultiModal,
-    multiModalMode
+    multiModalMode,
+    customModel
   )
 
   // アイコン表示の条件

@@ -761,7 +761,8 @@ export const handleSendChatFn = () => async (text: string) => {
         ss.selectAIService,
         ss.selectAIModel,
         ss.enableMultiModal,
-        ss.multiModalMode
+        ss.multiModalMode,
+        ss.customModel
       )
     ) {
       toastStore.getState().addToast({
