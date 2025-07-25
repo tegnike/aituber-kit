@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { TextButton } from '../../textButton'
-import { getModels, isMultiModalModel } from '@/features/constants/aiModels'
+import { getModels, isMultiModalModel, isSearchGroundingModel } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 
 interface ModelSelectorProps {
@@ -60,11 +60,18 @@ export const ModelSelector = ({
             value={selectedModel}
             onChange={(e) => onModelChange(e.target.value)}
           >
-            {getModels(aiService).map((model) => (
-              <option key={model} value={model}>
-                {model} {isMultiModalModel(aiService, model) ? '📷' : ''}
-              </option>
-            ))}
+            {getModels(aiService).map((model) => {
+              const isMultiModal = isMultiModalModel(aiService, model)
+              const isSearchEnabled = isSearchGroundingModel(aiService, model)
+              let icons = ''
+              if (isMultiModal) icons += '📷'
+              if (isSearchEnabled) icons += '🔍'
+              return (
+                <option key={model} value={model}>
+                  {model} {icons}
+                </option>
+              )
+            })}
           </select>
         )}
       </div>

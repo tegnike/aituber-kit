@@ -332,4 +332,24 @@ export const googleSearchGroundingModels = [
   'gemini-1.5-flash-latest',
   'gemini-1.5-pro-latest',
   'gemini-1.5-flash-8b-latest',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro',
+  'gemini-1.5-flash-8b',
 ] as const
+
+/**
+ * モデルが検索グラウンディング機能をサポートしているかどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @returns 検索グラウンディング機能をサポートしている場合はtrue
+ */
+export function isSearchGroundingModel(
+  service: AIService,
+  model: string
+): boolean {
+  // 現在はGoogleのみサポート
+  if (service === 'google') {
+    return googleSearchGroundingModels.includes(model as any)
+  }
+  return false
+}
