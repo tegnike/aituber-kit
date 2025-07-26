@@ -14,20 +14,23 @@ jest.mock('zustand', () => ({
     })
     const getState = jest.fn(() => state)
     const api = { setState, getState, subscribe: jest.fn(), destroy: jest.fn() }
-    
+
     // Handle persist wrapper
     if (typeof stateCreator === 'function') {
       state = stateCreator(setState, getState, api)
     } else {
       state = stateCreator
     }
-    
-    return Object.assign(jest.fn(() => state), {
-      getState: () => state,
-      setState,
-      subscribe: jest.fn(),
-      destroy: jest.fn(),
-    })
+
+    return Object.assign(
+      jest.fn(() => state),
+      {
+        getState: () => state,
+        setState,
+        subscribe: jest.fn(),
+        destroy: jest.fn(),
+      }
+    )
   }),
 }))
 
