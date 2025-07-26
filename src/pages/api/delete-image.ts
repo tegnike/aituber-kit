@@ -28,7 +28,7 @@ export default async function handler(
     // Security check: ensure the file is within the uploaded directory
     const normalizedFilePath = path.normalize(filePath)
     const normalizedImagesDir = path.normalize(imagesDir)
-    
+
     if (!normalizedFilePath.startsWith(normalizedImagesDir)) {
       return res.status(403).json({ error: 'Access denied' })
     }
@@ -36,10 +36,10 @@ export default async function handler(
     // Delete the file
     await fs.promises.unlink(filePath)
 
-    res.status(200).json({ 
-      success: true, 
+    res.status(200).json({
+      success: true,
       message: 'File deleted successfully',
-      filename 
+      filename,
     })
   } catch (error) {
     console.error('Failed to delete file:', error)

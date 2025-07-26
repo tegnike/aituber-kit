@@ -356,30 +356,24 @@ const Images = () => {
                         key={item.id}
                         draggableId={item.id}
                         index={index}
-                        isDragDisabled={item.type === 'character'}
+                        isDragDisabled={false}
                       >
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
-                              item.type === 'character'
-                                ? 'bg-gray-50 border-2 border-gray-300'
-                                : `bg-white bg-opacity-50 ${
-                                    snapshot.isDragging
-                                      ? 'shadow-lg bg-primary bg-opacity-10'
-                                      : 'hover:bg-white hover:bg-opacity-70'
-                                  }`
+                              snapshot.isDragging
+                                ? 'shadow-lg bg-primary bg-opacity-10'
+                                : item.type === 'character'
+                                  ? 'bg-gray-50 border-2 border-gray-300 hover:bg-gray-100'
+                                  : 'bg-white bg-opacity-50 hover:bg-white hover:bg-opacity-70'
                             }`}
                           >
                             {/* Drag Handle */}
                             <div
                               {...provided.dragHandleProps}
-                              className={`flex-shrink-0 p-1 transition-opacity ${
-                                item.type === 'character'
-                                  ? 'cursor-not-allowed text-gray-500 opacity-50'
-                                  : 'cursor-grab active:cursor-grabbing text-opacity-60 hover:text-opacity-100'
-                              }`}
+                              className="flex-shrink-0 p-1 transition-opacity cursor-grab active:cursor-grabbing text-opacity-60 hover:text-opacity-100"
                             >
                               <svg
                                 className="w-4 h-4"

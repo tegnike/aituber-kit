@@ -4,7 +4,6 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 
 export default function VrmViewer() {
-
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (canvas) {
       const { viewer } = homeStore.getState()

@@ -223,7 +223,7 @@ const CharacterPresetMenu = () => {
           {activeTab === 'layers' && (
             <div>
               <div className="text-sm font-bold mb-2 text-center text-gray-700">
-                {t('BottomLayer')} ({layerItems.length} {t('Items')})
+                {layerItems.length} {t('Items')}
               </div>
 
               {layerItems.length === 1 ? (
@@ -234,7 +234,7 @@ const CharacterPresetMenu = () => {
                 <div className="max-h-64 overflow-y-auto">
                   {/* 最前面ラベル */}
                   <div className="text-xs opacity-70 text-center mb-2 py-1 border-b border-dashed">
-                    {t('TopLayer')}
+                    {t('BottomLayer')}
                   </div>
 
                   <DragDropContext onDragEnd={handleDragEnd}>
@@ -250,30 +250,24 @@ const CharacterPresetMenu = () => {
                               key={item.id}
                               draggableId={item.id}
                               index={index}
-                              isDragDisabled={item.type === 'character'}
+                              isDragDisabled={false}
                             >
                               {(provided, snapshot) => (
                                 <div
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   className={`flex items-center space-x-2 p-2 rounded text-xs transition-all duration-200 ${
-                                    item.type === 'character'
-                                      ? 'bg-gray-50 border border-gray-300'
-                                      : `bg-white border ${
-                                          snapshot.isDragging
-                                            ? 'shadow-md bg-primary bg-opacity-10'
-                                            : 'hover:bg-gray-50'
-                                        }`
+                                    snapshot.isDragging
+                                      ? 'shadow-md bg-primary bg-opacity-10'
+                                      : item.type === 'character'
+                                        ? 'bg-gray-50 border border-gray-300 hover:bg-gray-100'
+                                        : 'bg-white border hover:bg-gray-50'
                                   }`}
                                 >
                                   {/* ドラッグハンドル */}
                                   <div
                                     {...provided.dragHandleProps}
-                                    className={`flex-shrink-0 ${
-                                      item.type === 'character'
-                                        ? 'cursor-not-allowed text-gray-400'
-                                        : 'cursor-grab active:cursor-grabbing text-gray-600'
-                                    }`}
+                                    className="flex-shrink-0 cursor-grab active:cursor-grabbing text-gray-600"
                                   >
                                     <svg
                                       className="w-3 h-3"
