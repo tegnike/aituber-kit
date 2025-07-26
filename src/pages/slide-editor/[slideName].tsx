@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import slideStore from '@/features/stores/slide'
 import SlideContent from '@/components/slideContent'
 import SlideControls from '@/components/slideControls'
+import toastStore from '@/features/stores/toast'
 
 // goToSlide関数はslides.tsxからインポートするか、ここで再定義
 export const goToSlide = (index: number) => {
@@ -14,6 +15,7 @@ export const goToSlide = (index: number) => {
 const SlideEditorPage: React.FC = () => {
   const router = useRouter()
   const { slideName } = router.query
+  const { addToast } = toastStore()
 
   const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
   const currentSlide = slideStore((state) => state.currentSlide)
@@ -367,13 +369,21 @@ const SlideEditorPage: React.FC = () => {
 
       await response.json()
       console.log('Save successful')
-      alert('Scripts and supplementary information have been saved.')
+      addToast({
+        message: 'Scripts and supplementary information have been saved.',
+        type: 'success',
+        duration: 5000,
+      })
 
       setInitialScripts(scripts)
       setInitialSupplementContent(supplementContent)
     } catch (error) {
       console.error('Error saving script:', error)
-      alert('Failed to save scripts and supplementary information.')
+      addToast({
+        message: 'Failed to save scripts and supplementary information.',
+        type: 'error',
+        duration: 5000,
+      })
     }
   }, [slideName, scripts, supplementContent])
 

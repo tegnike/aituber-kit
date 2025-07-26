@@ -44,6 +44,14 @@ export default async function handler(
       })
     }
 
+    // Additional MIME type validation for security
+    if (!IMAGE_CONSTANTS.VALID_MIME_TYPES.includes(file.mimetype as any)) {
+      return res.status(400).json({
+        error: 'Invalid MIME type',
+        message: 'File content does not match allowed image types',
+      })
+    }
+
     const imagesDir = path.join(process.cwd(), IMAGE_CONSTANTS.UPLOAD_DIRECTORY)
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true })

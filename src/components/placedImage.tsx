@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useDraggable } from '@/hooks/useDraggable'
 import { useResizable } from '@/hooks/useResizable'
 import useImagesStore, {
   PlacedImage as PlacedImageType,
 } from '@/features/stores/images'
+import { debounce } from '@/utils/debounce'
+import { IMAGE_CONSTANTS } from '@/constants/images'
 
 interface PlacedImageProps {
   image: PlacedImageType
@@ -18,20 +20,37 @@ const PlacedImage: React.FC<PlacedImageProps> = ({
 }) => {
   const { updatePlacedImagePosition, updatePlacedImageSize } = useImagesStore()
 
+  // Debounced update functions
+  const debouncedPositionUpdate = useMemo(
+    () =>
+      debounce((position: { x: number; y: number }) => {
+        updatePlacedImagePosition(image.id, position)
+        onPositionChange?.(image.id, position)
+      }, IMAGE_CONSTANTS.DEBOUNCE_DELAY),
+    [image.id, updatePlacedImagePosition, onPositionChange]
+  )
+
+  const debouncedSizeUpdate = useMemo(
+    () =>
+      debounce((size: { width: number; height: number }) => {
+        updatePlacedImageSize(image.id, size)
+        onSizeChange?.(image.id, size)
+      }, IMAGE_CONSTANTS.DEBOUNCE_DELAY),
+    [image.id, updatePlacedImageSize, onSizeChange]
+  )
+
   const handlePositionChange = useCallback(
     (position: { x: number; y: number }) => {
-      updatePlacedImagePosition(image.id, position)
-      onPositionChange?.(image.id, position)
+      debouncedPositionUpdate(position)
     },
-    [image.id, updatePlacedImagePosition, onPositionChange]
+    [debouncedPositionUpdate]
   )
 
   const handleSizeChange = useCallback(
     (size: { width: number; height: number }) => {
-      updatePlacedImageSize(image.id, size)
-      onSizeChange?.(image.id, size)
+      debouncedSizeUpdate(size)
     },
-    [image.id, updatePlacedImageSize, onSizeChange]
+    [debouncedSizeUpdate]
   )
 
   const {
@@ -44,10 +63,10 @@ const PlacedImage: React.FC<PlacedImageProps> = ({
   const { size, isResizing, handleResizeStart } = useResizable({
     initialWidth: image.size.width,
     initialHeight: image.size.height,
-    minWidth: 50,
-    minHeight: 50,
-    maxWidth: 1920,
-    maxHeight: 1080,
+    minWidth: IMAGE_CONSTANTS.DIMENSIONS.MIN_WIDTH,
+    minHeight: IMAGE_CONSTANTS.DIMENSIONS.MIN_HEIGHT,
+    maxWidth: IMAGE_CONSTANTS.DIMENSIONS.MAX_WIDTH,
+    maxHeight: IMAGE_CONSTANTS.DIMENSIONS.MAX_HEIGHT,
     aspectRatio: false,
   })
 

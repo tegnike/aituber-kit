@@ -11,6 +11,7 @@ import { TextButton } from '../textButton'
 import menuStore from '@/features/stores/menu'
 import toastStore from '@/features/stores/toast'
 import { IMAGE_CONSTANTS } from '@/constants/images'
+import { compressImageFile } from '@/utils/imageCompression'
 
 const Images = () => {
   const { t } = useTranslation()
@@ -87,8 +88,22 @@ const Images = () => {
     setUploadProgress(t('Uploading'))
 
     try {
+      // Compress image if needed
+      let fileToUpload = file
+      if (file.size > IMAGE_CONSTANTS.COMPRESSION.LARGE_FILE_THRESHOLD) {
+        setUploadProgress(t('Compressing'))
+        try {
+          fileToUpload = await compressImageFile(file)
+        } catch (compressionError) {
+          console.warn(
+            'Image compression failed, uploading original:',
+            compressionError
+          )
+        }
+      }
+
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', fileToUpload)
 
       const response = await fetch('/api/upload-image', {
         method: 'POST',

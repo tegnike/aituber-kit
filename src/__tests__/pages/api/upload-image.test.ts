@@ -70,6 +70,7 @@ describe('/api/upload-image', () => {
             {
               originalFilename: 'test.txt',
               filepath: '/tmp/test',
+              mimetype: 'text/plain',
             },
           ],
         },
@@ -90,6 +91,37 @@ describe('/api/upload-image', () => {
     })
   })
 
+  it('should reject invalid MIME types', async () => {
+    const formidable = require('formidable')
+    const mockForm = {
+      parse: jest.fn().mockResolvedValue([
+        {},
+        {
+          file: [
+            {
+              originalFilename: 'test.jpg',
+              filepath: '/tmp/test',
+              mimetype: 'text/plain', // Invalid MIME type for image
+            },
+          ],
+        },
+      ]),
+    }
+    formidable.default.mockReturnValue(mockForm)
+
+    const { req, res } = createMocks({
+      method: 'POST',
+    })
+
+    await uploadImage(req, res)
+
+    expect(res._getStatusCode()).toBe(400)
+    expect(JSON.parse(res._getData())).toEqual({
+      error: 'Invalid MIME type',
+      message: 'File content does not match allowed image types',
+    })
+  })
+
   it('should successfully upload valid image file', async () => {
     const formidable = require('formidable')
     const mockForm = {
@@ -100,6 +132,7 @@ describe('/api/upload-image', () => {
             {
               originalFilename: 'test.jpg',
               filepath: '/tmp/test',
+              mimetype: 'image/jpeg',
             },
           ],
         },
@@ -133,6 +166,7 @@ describe('/api/upload-image', () => {
             {
               originalFilename: '../../../etc/passwd.jpg',
               filepath: '/tmp/test',
+              mimetype: 'image/jpeg',
             },
           ],
         },
@@ -164,6 +198,7 @@ describe('/api/upload-image', () => {
             {
               originalFilename: 'test.jpg',
               filepath: '/tmp/test',
+              mimetype: 'image/jpeg',
             },
           ],
         },
