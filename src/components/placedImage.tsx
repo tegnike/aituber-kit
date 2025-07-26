@@ -73,7 +73,7 @@ const PlacedImage: React.FC<PlacedImageProps> = ({
 
   return (
     <div
-      className="absolute select-none"
+      className="absolute select-none group"
       style={{
         ...dragStyle,
         width: size.width,
@@ -141,13 +141,6 @@ const PlacedImage: React.FC<PlacedImageProps> = ({
       {isResizing && (
         <div className="absolute inset-0 border-2 border-green-500 border-dashed rounded-lg bg-green-500 bg-opacity-10" />
       )}
-
-      {/* Group hover class for handles */}
-      <style jsx>{`
-        .absolute:hover .opacity-0 {
-          opacity: 1;
-        }
-      `}</style>
     </div>
   )
 }

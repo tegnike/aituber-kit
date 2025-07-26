@@ -101,7 +101,7 @@ const useImagesStore = create<ImagesState>()(
         }
 
         const newImage: PlacedImage = {
-          id: `placed-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          id: `placed-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
           filename,
           path,
           position: {

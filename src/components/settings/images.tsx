@@ -9,6 +9,8 @@ import {
 import useImagesStore, { UploadedImage } from '@/features/stores/images'
 import { TextButton } from '../textButton'
 import menuStore from '@/features/stores/menu'
+import toastStore from '@/features/stores/toast'
+import { IMAGE_CONSTANTS } from '@/constants/images'
 
 const Images = () => {
   const { t } = useTranslation()
@@ -28,6 +30,8 @@ const Images = () => {
     reorderAllLayers,
     getAllLayerItems,
   } = useImagesStore()
+
+  const { addToast } = toastStore()
 
   // Fetch uploaded images on component mount
   const fetchUploadedImages = useCallback(async () => {
@@ -61,13 +65,21 @@ const Images = () => {
 
     // Check file type
     if (!file.type.startsWith('image/')) {
-      alert(t('OnlyImageFilesAllowed'))
+      addToast({
+        message: t('OnlyImageFilesAllowed'),
+        type: 'error',
+        duration: IMAGE_CONSTANTS.TOAST_DURATION.SHORT,
+      })
       return
     }
 
-    // Check file size (100MB limit)
-    if (file.size > 100 * 1024 * 1024) {
-      alert(t('FileSizeTooLarge'))
+    // Check file size
+    if (file.size > IMAGE_CONSTANTS.MAX_FILE_SIZE) {
+      addToast({
+        message: t('FileSizeTooLarge'),
+        type: 'error',
+        duration: IMAGE_CONSTANTS.TOAST_DURATION.SHORT,
+      })
       return
     }
 
@@ -97,11 +109,19 @@ const Images = () => {
         event.target.value = ''
       } else {
         const error = await response.json()
-        alert(t('UploadFailed') + ': ' + error.message)
+        addToast({
+          message: t('UploadFailed') + ': ' + error.message,
+          type: 'error',
+          duration: IMAGE_CONSTANTS.TOAST_DURATION.LONG,
+        })
       }
     } catch (error) {
       console.error('Upload failed:', error)
-      alert(t('UploadFailed'))
+      addToast({
+        message: t('UploadFailed'),
+        type: 'error',
+        duration: IMAGE_CONSTANTS.TOAST_DURATION.LONG,
+      })
     } finally {
       setIsUploading(false)
       setUploadProgress('')
@@ -109,13 +129,21 @@ const Images = () => {
   }
 
   const handleAddToDisplay = (image: UploadedImage) => {
-    if (placedImages.length >= 5) {
-      alert(t('MaximumFiveImagesAllowed'))
+    if (placedImages.length >= IMAGE_CONSTANTS.MAX_PLACED_IMAGES) {
+      addToast({
+        message: t('MaximumFiveImagesAllowed'),
+        type: 'error',
+        duration: IMAGE_CONSTANTS.TOAST_DURATION.SHORT,
+      })
       return
     }
 
     if (placedImages.some((placed) => placed.filename === image.filename)) {
-      alert(t('ImageAlreadyPlaced'))
+      addToast({
+        message: t('ImageAlreadyPlaced'),
+        type: 'error',
+        duration: IMAGE_CONSTANTS.TOAST_DURATION.SHORT,
+      })
       return
     }
 
@@ -149,11 +177,19 @@ const Images = () => {
         }
       } else {
         const error = await response.json()
-        alert(t('DeleteFailed') + ': ' + error.message)
+        addToast({
+          message: t('DeleteFailed') + ': ' + error.message,
+          type: 'error',
+          duration: IMAGE_CONSTANTS.TOAST_DURATION.LONG,
+        })
       }
     } catch (error) {
       console.error('Delete failed:', error)
-      alert(t('DeleteFailed'))
+      addToast({
+        message: t('DeleteFailed'),
+        type: 'error',
+        duration: IMAGE_CONSTANTS.TOAST_DURATION.LONG,
+      })
     }
   }
 
@@ -269,11 +305,16 @@ const Images = () => {
                     <div className="space-y-1">
                       <button
                         onClick={() => handleAddToDisplay(image)}
-                        disabled={isPlaced || placedImages.length >= 5}
+                        disabled={
+                          isPlaced ||
+                          placedImages.length >=
+                            IMAGE_CONSTANTS.MAX_PLACED_IMAGES
+                        }
                         className={`w-full text-xs py-1 px-2 rounded text-theme ${
                           isPlaced
                             ? 'bg-secondary bg-opacity-20 cursor-not-allowed'
-                            : placedImages.length >= 5
+                            : placedImages.length >=
+                                IMAGE_CONSTANTS.MAX_PLACED_IMAGES
                               ? 'bg-white bg-opacity-50 opacity-70 cursor-not-allowed'
                               : 'bg-primary bg-opacity-20 hover:bg-primary hover:bg-opacity-30'
                         }`}

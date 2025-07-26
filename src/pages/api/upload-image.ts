@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import formidable from 'formidable'
 import fs from 'fs'
 import path from 'path'
+import { IMAGE_CONSTANTS } from '@/constants/images'
 
 export const config = {
   api: {
@@ -10,7 +11,7 @@ export const config = {
 }
 
 const formOptions: formidable.Options = {
-  maxFileSize: 100 * 1024 * 1024, // 100MB
+  maxFileSize: IMAGE_CONSTANTS.MAX_FILE_SIZE,
   filter: (part) => {
     return part.mimetype?.startsWith('image/') || false
   },
@@ -34,24 +35,38 @@ export default async function handler(
       return res.status(400).json({ error: 'No file uploaded' })
     }
 
-    const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
     const extension = path.extname(file.originalFilename || '').toLowerCase()
 
-    if (!validExtensions.includes(extension)) {
+    if (!IMAGE_CONSTANTS.VALID_EXTENSIONS.includes(extension as any)) {
       return res.status(400).json({
         error: 'Invalid file type',
         message: 'Only JPG, PNG, GIF and WebP images can be uploaded',
       })
     }
 
-    const imagesDir = path.join(process.cwd(), 'public/images/uploaded')
+    const imagesDir = path.join(process.cwd(), IMAGE_CONSTANTS.UPLOAD_DIRECTORY)
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true })
     }
 
     const timestamp = Date.now()
-    const filename = `${timestamp}_${file.originalFilename || 'image' + extension}`
+
+    // Sanitize filename to prevent path traversal attacks
+    const sanitizedOriginalName = (file.originalFilename || 'image')
+      .replace(/[^a-zA-Z0-9._-]/g, '_')
+      .replace(/\.+/g, '.')
+      .substring(0, IMAGE_CONSTANTS.MAX_FILENAME_LENGTH)
+
+    const filename = `${timestamp}_${sanitizedOriginalName}${extension}`
     const newPath = path.join(imagesDir, filename)
+
+    // Ensure the resolved path is within the images directory
+    const normalizedNewPath = path.normalize(newPath)
+    const normalizedImagesDir = path.normalize(imagesDir)
+
+    if (!normalizedNewPath.startsWith(normalizedImagesDir)) {
+      return res.status(403).json({ error: 'Access denied: Invalid file path' })
+    }
 
     await fs.promises.copyFile(file.filepath, newPath)
 
