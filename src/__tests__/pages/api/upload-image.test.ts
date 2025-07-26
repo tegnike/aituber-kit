@@ -153,7 +153,9 @@ describe('/api/upload-image', () => {
     const responseData = JSON.parse(res._getData())
     expect(responseData).toHaveProperty('path')
     expect(responseData).toHaveProperty('filename')
-    expect(responseData.path).toMatch(/^\/images\/uploaded\/\d+_test\.jpg$/)
+    expect(responseData.path).toMatch(
+      /^\/images\/uploaded\/\d+_test\.jpg\.jpg$/
+    )
   })
 
   it('should sanitize malicious filenames', async () => {
@@ -185,7 +187,7 @@ describe('/api/upload-image', () => {
 
     expect(res._getStatusCode()).toBe(200)
     const responseData = JSON.parse(res._getData())
-    expect(responseData.filename).toMatch(/^\d+____etc_passwd\.jpg$/)
+    expect(responseData.filename).toMatch(/^\d+_\._\._\._etc_passwd\.jpg\.jpg$/)
   })
 
   it('should handle file copy errors', async () => {

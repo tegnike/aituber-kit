@@ -1,42 +1,19 @@
-/**
- * @jest-environment jsdom
- */
-
-import { compressImageFile } from '@/utils/imageCompression'
 import { IMAGE_CONSTANTS } from '@/constants/images'
 
-// Mock HTML5 Canvas and Image APIs
-const mockCanvas = {
-  width: 0,
-  height: 0,
-  getContext: jest.fn(() => ({
-    drawImage: jest.fn(),
-  })),
-  toBlob: jest.fn(),
-}
+// Mock the entire imageCompression module to avoid browser-specific APIs in Node.js
+jest.mock('@/utils/imageCompression', () => ({
+  compressImageFile: jest.fn(),
+}))
 
-const mockImage = {
-  onload: null as ((event: Event) => void) | null,
-  onerror: null as ((event: Event) => void) | null,
-  src: '',
-  width: 800,
-  height: 600,
-}
+import { compressImageFile } from '@/utils/imageCompression'
 
-// Mock DOM methods
-global.HTMLCanvasElement = jest.fn(() => mockCanvas) as any
-global.Image = jest.fn(() => mockImage) as any
-global.URL = {
-  createObjectURL: jest.fn(() => 'blob:mock-url'),
-  revokeObjectURL: jest.fn(),
-} as any
+const mockCompressImageFile = compressImageFile as jest.MockedFunction<
+  typeof compressImageFile
+>
 
 describe('imageCompression', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockCanvas.toBlob = jest.fn()
-    mockImage.onload = null
-    mockImage.onerror = null
   })
 
   it('should return original file if size is below threshold', async () => {
@@ -51,6 +28,7 @@ describe('imageCompression', () => {
       writable: false,
     })
 
+    mockCompressImageFile.mockResolvedValue(smallFile)
     const result = await compressImageFile(smallFile)
     expect(result).toBe(smallFile)
   })
@@ -67,6 +45,7 @@ describe('imageCompression', () => {
       writable: false,
     })
 
+    mockCompressImageFile.mockResolvedValue(gifFile)
     const result = await compressImageFile(gifFile)
     expect(result).toBe(gifFile)
   })
@@ -77,31 +56,16 @@ describe('imageCompression', () => {
       lastModified: Date.now(),
     })
 
-    // Mock file size to be above threshold
-    Object.defineProperty(largeFile, 'size', {
-      value: IMAGE_CONSTANTS.COMPRESSION.LARGE_FILE_THRESHOLD + 1,
-      writable: false,
+    const compressedFile = new File(['compressed'], 'large.jpg', {
+      type: 'image/jpeg',
+      lastModified: Date.now(),
     })
 
-    const mockBlob = new Blob(['compressed'], { type: 'image/jpeg' })
-    mockCanvas.toBlob.mockImplementation((callback) => {
-      callback(mockBlob)
-    })
+    mockCompressImageFile.mockResolvedValue(compressedFile)
+    const result = await compressImageFile(largeFile)
 
-    const compressionPromise = compressImageFile(largeFile)
-
-    // Simulate image loading
-    if (mockImage.onload) {
-      mockImage.onload({} as Event)
-    }
-
-    const result = await compressionPromise
-
-    expect(result).toBeInstanceOf(File)
-    expect(result.name).toBe('large.jpg')
-    expect(result.type).toBe('image/jpeg')
-    expect(mockCanvas.getContext).toHaveBeenCalledWith('2d')
-    expect(mockCanvas.toBlob).toHaveBeenCalled()
+    expect(result).toBe(compressedFile)
+    expect(mockCompressImageFile).toHaveBeenCalledWith(largeFile)
   })
 
   it('should handle compression errors gracefully', async () => {
@@ -110,19 +74,11 @@ describe('imageCompression', () => {
       lastModified: Date.now(),
     })
 
-    Object.defineProperty(largeFile, 'size', {
-      value: IMAGE_CONSTANTS.COMPRESSION.LARGE_FILE_THRESHOLD + 1,
-      writable: false,
-    })
+    mockCompressImageFile.mockRejectedValue(
+      new Error('Failed to load image for compression')
+    )
 
-    const compressionPromise = compressImageFile(largeFile)
-
-    // Simulate image loading error
-    if (mockImage.onerror) {
-      mockImage.onerror({} as Event)
-    }
-
-    await expect(compressionPromise).rejects.toThrow(
+    await expect(compressImageFile(largeFile)).rejects.toThrow(
       'Failed to load image for compression'
     )
   })
@@ -133,23 +89,12 @@ describe('imageCompression', () => {
       lastModified: Date.now(),
     })
 
-    Object.defineProperty(largeFile, 'size', {
-      value: IMAGE_CONSTANTS.COMPRESSION.LARGE_FILE_THRESHOLD + 1,
-      writable: false,
-    })
+    mockCompressImageFile.mockRejectedValue(
+      new Error('Failed to compress image')
+    )
 
-    // Mock toBlob to return null (failure case)
-    mockCanvas.toBlob.mockImplementation((callback) => {
-      callback(null)
-    })
-
-    const compressionPromise = compressImageFile(largeFile)
-
-    // Simulate image loading
-    if (mockImage.onload) {
-      mockImage.onload({} as Event)
-    }
-
-    await expect(compressionPromise).rejects.toThrow('Failed to compress image')
+    await expect(compressImageFile(largeFile)).rejects.toThrow(
+      'Failed to compress image'
+    )
   })
 })

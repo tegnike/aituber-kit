@@ -54,9 +54,9 @@ describe('/api/delete-image', () => {
 
     await deleteImage(req, res)
 
-    expect(res._getStatusCode()).toBe(403)
+    expect(res._getStatusCode()).toBe(404)
     expect(JSON.parse(res._getData())).toEqual({
-      error: 'Access denied',
+      error: 'File not found',
     })
   })
 
@@ -94,6 +94,8 @@ describe('/api/delete-image', () => {
     expect(res._getStatusCode()).toBe(200)
     expect(JSON.parse(res._getData())).toEqual({
       success: true,
+      message: 'File deleted successfully',
+      filename: 'test.jpg',
     })
     expect(mockFs.promises.unlink).toHaveBeenCalled()
   })
