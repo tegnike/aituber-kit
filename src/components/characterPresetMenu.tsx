@@ -222,10 +222,6 @@ const CharacterPresetMenu = () => {
           {/* レイヤータブの内容 */}
           {activeTab === 'layers' && (
             <div>
-              <div className="text-sm font-bold mb-2 text-center text-gray-700">
-                {layerItems.length} {t('Items')}
-              </div>
-
               {layerItems.length === 1 ? (
                 <div className="text-xs text-gray-500 text-center py-4">
                   {t('NoPlacedImages')}

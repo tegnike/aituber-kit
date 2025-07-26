@@ -300,9 +300,7 @@ const Images = () => {
 
       {/* Layer Order Management */}
       <div className="border border-white rounded-lg p-4">
-        <h4 className="font-semibold mb-4">
-          {t('LayerOrder')} ({placedImages.length + 1} {t('Items')})
-        </h4>
+        <h4 className="font-semibold mb-4">{t('LayerOrder')}</h4>
         <p className="text-s mb-4">{t('LayerOrderDescription')}</p>
 
         {layerItems.length === 1 ? (
@@ -481,21 +479,6 @@ const Images = () => {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Instructions */}
-      <div className="bg-primary bg-opacity-10 border border-primary border-opacity-30 rounded-lg p-4">
-        <h5 className="font-semibold mb-2 text-theme">{t('Instructions')}</h5>
-        <ul className="text-sm space-y-1 text-theme">
-          <li>• {t('InstructionUpload')}</li>
-          <li>• {t('InstructionSelect')}</li>
-          <li>• {t('InstructionDrag')}</li>
-          <li>• {t('InstructionResize')}</li>
-          <li>• {t('InstructionAutoSave')}</li>
-          <li>• {t('InstructionLayerControl')}</li>
-          <li>• {t('OrderDescription')}</li>
-          <li>• {t('CharacterPositionDescription')}</li>
-        </ul>
       </div>
     </div>
   )
