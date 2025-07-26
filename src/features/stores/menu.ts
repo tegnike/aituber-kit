@@ -9,6 +9,7 @@ type SettingsTabKey =
   | 'speechInput'
   | 'youtube'
   | 'slide'
+  | 'images'
   | 'log'
   | 'other'
 interface MenuState {

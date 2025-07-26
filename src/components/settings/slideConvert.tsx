@@ -7,6 +7,7 @@ import {
   isMultiModalAvailable,
 } from '@/features/constants/aiModels'
 import { TextButton } from '../textButton'
+import toastStore from '@/features/stores/toast'
 
 interface SlideConvertProps {
   onFolderUpdate: () => void // フォルダ更新のための関数
@@ -16,6 +17,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const { t } = useTranslation()
   const [file, setFile] = useState<File | null>(null)
   const [folderName, setFolderName] = useState<string>('')
+  const { addToast } = toastStore()
   const aiService = settingsStore((s) => s.selectAIService)
   const selectLanguage = settingsStore((s) => s.selectLanguage)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -53,7 +55,11 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
         customModel
       )
     ) {
-      alert(t('InvalidAIService'))
+      addToast({
+        message: t('InvalidAIService'),
+        type: 'error',
+        duration: 5000,
+      })
       return
     }
 
@@ -75,7 +81,11 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     else if (aiService === 'dify') apiKey = settings.difyKey
 
     if (!file || !folderName || !apiKey || !model) {
-      alert(t('PdfConvertSubmitError'))
+      addToast({
+        message: t('PdfConvertSubmitError'),
+        type: 'error',
+        duration: 5000,
+      })
       return
     }
 
@@ -98,9 +108,17 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     // フォルダ更新関数を呼び出す
     if (response.ok) {
       onFolderUpdate()
-      alert(t('PdfConvertSuccess'))
+      addToast({
+        message: t('PdfConvertSuccess'),
+        type: 'success',
+        duration: 5000,
+      })
     } else {
-      alert(t('PdfConvertError'))
+      addToast({
+        message: t('PdfConvertError'),
+        type: 'error',
+        duration: 5000,
+      })
     }
   }
 

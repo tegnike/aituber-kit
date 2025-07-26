@@ -15,6 +15,7 @@ import Slide from './slide'
 import Log from './log'
 import Other from './other'
 import SpeechInput from './speechInput'
+import Images from './images'
 
 type Props = {
   onClickClose: () => void
@@ -54,6 +55,7 @@ type TabKey =
   | 'voice'
   | 'youtube'
   | 'slide'
+  | 'images'
   | 'log'
   | 'other'
   | 'speechInput'
@@ -67,6 +69,7 @@ const tabIconMapping: Record<TabKey, string> = {
   voice: '/images/setting-icons/voice-settings.svg',
   youtube: '/images/setting-icons/youtube-settings.svg',
   slide: '/images/setting-icons/slide-settings.svg',
+  images: '/images/setting-icons/image-settings.svg',
   log: '/images/setting-icons/conversation-history.svg',
   other: '/images/setting-icons/other-settings.svg',
   speechInput: '/images/setting-icons/microphone-settings.svg',
@@ -137,6 +140,10 @@ const Main = () => {
       label: t('SlideSettings'),
     },
     {
+      key: 'images',
+      label: t('ImageSettings'),
+    },
+    {
       key: 'log',
       label: t('LogSettings'),
     },
@@ -162,6 +169,8 @@ const Main = () => {
         return <YouTube />
       case 'slide':
         return <Slide />
+      case 'images':
+        return <Images />
       case 'log':
         return <Log />
       case 'other':
