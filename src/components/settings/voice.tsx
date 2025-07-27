@@ -727,6 +727,23 @@ const Voice = () => {
                     }}
                   />
                   <div className="select-none">
+                    {t('AivisSpeechIntonationScale')}:{' '}
+                    {aivisSpeechIntonationScale}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.0}
+                    max={2.0}
+                    step={0.01}
+                    value={aivisSpeechIntonationScale}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisSpeechIntonationScale: Number(e.target.value),
+                      })
+                    }}
+                  />
+                  <div className="select-none">
                     {t('PreSilenceDuration')}:{' '}
                     {aivisSpeechPrePhonemeLength}{' '}
                   </div>
@@ -757,23 +774,6 @@ const Voice = () => {
                     onChange={(e) => {
                       settingsStore.setState({
                         aivisSpeechPostPhonemeLength: Number(e.target.value),
-                      })
-                    }}
-                  />
-                  <div className="select-none">
-                    {t('AivisSpeechIntonationScale')}:{' '}
-                    {aivisSpeechIntonationScale}
-                  </div>
-                  <input
-                    type="range"
-                    min={0.0}
-                    max={2.0}
-                    step={0.01}
-                    value={aivisSpeechIntonationScale}
-                    className="mt-2 mb-4 input-range"
-                    onChange={(e) => {
-                      settingsStore.setState({
-                        aivisSpeechIntonationScale: Number(e.target.value),
                       })
                     }}
                   />
@@ -925,6 +925,22 @@ const Voice = () => {
                     }}
                   />
                   <div className="select-none">
+                    {t('EmotionalIntensity')}: {aivisCloudIntonationScale}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.0}
+                    max={2.0}
+                    step={0.01}
+                    value={aivisCloudIntonationScale}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisCloudIntonationScale: Number(e.target.value),
+                      })
+                    }}
+                  />
+                  <div className="select-none">
                     {t('PreSilenceDuration')}: {aivisCloudPrePhonemeLength}{' '}
                   </div>
                   <input
@@ -954,22 +970,6 @@ const Voice = () => {
                     onChange={(e) => {
                       settingsStore.setState({
                         aivisCloudPostPhonemeLength: Number(e.target.value),
-                      })
-                    }}
-                  />
-                  <div className="select-none">
-                    {t('EmotionalIntensity')}: {aivisCloudIntonationScale}
-                  </div>
-                  <input
-                    type="range"
-                    min={0.0}
-                    max={2.0}
-                    step={0.01}
-                    value={aivisCloudIntonationScale}
-                    className="mt-2 mb-4 input-range"
-                    onChange={(e) => {
-                      settingsStore.setState({
-                        aivisCloudIntonationScale: Number(e.target.value),
                       })
                     }}
                   />
