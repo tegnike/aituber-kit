@@ -90,6 +90,7 @@ export type AIVoice =
   | 'voicevox'
   | 'stylebertvits2'
   | 'aivis_speech'
+  | 'aivis_cloud_api'
   | 'nijivoice'
   | 'gsvitts'
   | 'elevenlabs'

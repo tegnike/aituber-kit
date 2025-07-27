@@ -89,12 +89,17 @@ interface ModelProvider extends Live2DSettings {
   aivisSpeechTempoDynamics: number
   aivisSpeechPrePhonemeLength: number
   aivisSpeechPostPhonemeLength: number
-  aivisSpeechUseCloudApi: boolean
   aivisCloudApiKey: string
   aivisCloudModelUuid: string
   aivisCloudStyleId: number
   aivisCloudStyleName: string
   aivisCloudUseStyleName: boolean
+  aivisCloudSpeed: number
+  aivisCloudPitch: number
+  aivisCloudIntonationScale: number
+  aivisCloudTempoDynamics: number
+  aivisCloudPrePhonemeLength: number
+  aivisCloudPostPhonemeLength: number
   stylebertvits2ServerUrl: string
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
@@ -290,7 +295,6 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(
       process.env.NEXT_PUBLIC_AIVIS_SPEECH_POST_PHONEME_LENGTH || '0.1'
     ) || 0.1,
-  aivisSpeechUseCloudApi: false,
   aivisCloudApiKey: '',
   aivisCloudModelUuid: process.env.NEXT_PUBLIC_AIVIS_CLOUD_MODEL_UUID || '',
   aivisCloudStyleId:
@@ -298,6 +302,18 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   aivisCloudStyleName: process.env.NEXT_PUBLIC_AIVIS_CLOUD_STYLE_NAME || '',
   aivisCloudUseStyleName:
     process.env.NEXT_PUBLIC_AIVIS_CLOUD_USE_STYLE_NAME === 'true',
+  aivisCloudSpeed:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_CLOUD_SPEED || '1.0') || 1.0,
+  aivisCloudPitch:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_CLOUD_PITCH || '0.0') || 0.0,
+  aivisCloudIntonationScale:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_CLOUD_INTONATION_SCALE || '1.0') || 1.0,
+  aivisCloudTempoDynamics:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_CLOUD_TEMPO_DYNAMICS || '1.0') || 1.0,
+  aivisCloudPrePhonemeLength:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_CLOUD_PRE_PHONEME_LENGTH || '0.1') || 0.1,
+  aivisCloudPostPhonemeLength:
+    parseFloat(process.env.NEXT_PUBLIC_AIVIS_CLOUD_POST_PHONEME_LENGTH || '0.1') || 0.1,
   stylebertvits2ServerUrl: '',
   stylebertvits2ModelId: process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
   stylebertvits2ApiKey: '',
@@ -578,12 +594,17 @@ const settingsStore = create<SettingsState>()(
       aivisSpeechTempoDynamics: state.aivisSpeechTempoDynamics,
       aivisSpeechPrePhonemeLength: state.aivisSpeechPrePhonemeLength,
       aivisSpeechPostPhonemeLength: state.aivisSpeechPostPhonemeLength,
-      aivisSpeechUseCloudApi: state.aivisSpeechUseCloudApi,
       aivisCloudApiKey: state.aivisCloudApiKey,
       aivisCloudModelUuid: state.aivisCloudModelUuid,
       aivisCloudStyleId: state.aivisCloudStyleId,
       aivisCloudStyleName: state.aivisCloudStyleName,
       aivisCloudUseStyleName: state.aivisCloudUseStyleName,
+      aivisCloudSpeed: state.aivisCloudSpeed,
+      aivisCloudPitch: state.aivisCloudPitch,
+      aivisCloudIntonationScale: state.aivisCloudIntonationScale,
+      aivisCloudTempoDynamics: state.aivisCloudTempoDynamics,
+      aivisCloudPrePhonemeLength: state.aivisCloudPrePhonemeLength,
+      aivisCloudPostPhonemeLength: state.aivisCloudPostPhonemeLength,
       stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
       stylebertvits2ModelId: state.stylebertvits2ModelId,
       stylebertvits2ApiKey: state.stylebertvits2ApiKey,

@@ -53,12 +53,25 @@ const Voice = () => {
   const aivisSpeechPostPhonemeLength = settingsStore(
     (s) => s.aivisSpeechPostPhonemeLength
   )
-  const aivisSpeechUseCloudApi = settingsStore((s) => s.aivisSpeechUseCloudApi)
   const aivisCloudApiKey = settingsStore((s) => s.aivisCloudApiKey)
   const aivisCloudModelUuid = settingsStore((s) => s.aivisCloudModelUuid)
   const aivisCloudStyleId = settingsStore((s) => s.aivisCloudStyleId)
   const aivisCloudStyleName = settingsStore((s) => s.aivisCloudStyleName)
   const aivisCloudUseStyleName = settingsStore((s) => s.aivisCloudUseStyleName)
+  const aivisCloudSpeed = settingsStore((s) => s.aivisCloudSpeed)
+  const aivisCloudPitch = settingsStore((s) => s.aivisCloudPitch)
+  const aivisCloudIntonationScale = settingsStore(
+    (s) => s.aivisCloudIntonationScale
+  )
+  const aivisCloudTempoDynamics = settingsStore(
+    (s) => s.aivisCloudTempoDynamics
+  )
+  const aivisCloudPrePhonemeLength = settingsStore(
+    (s) => s.aivisCloudPrePhonemeLength
+  )
+  const aivisCloudPostPhonemeLength = settingsStore(
+    (s) => s.aivisCloudPostPhonemeLength
+  )
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
   )
@@ -200,6 +213,7 @@ const Voice = () => {
           <option value="google">{t('UsingGoogleTTS')}</option>
           <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
           <option value="aivis_speech">{t('UsingAivisSpeech')}</option>
+          <option value="aivis_cloud_api">{t('UsingAivisCloudAPI')}</option>
           <option value="gsvitts">{t('UsingGSVITTS')}</option>
           <option value="elevenlabs">{t('UsingElevenLabs')}</option>
           <option value="cartesia">{t('UsingCartesia')}</option>
@@ -575,216 +589,94 @@ const Voice = () => {
                     label="https://aivis-project.com/"
                   />
                 </div>
-                <div className="mt-4 p-4 border rounded-lg bg-gray-50">
-                  <label className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={aivisSpeechUseCloudApi}
-                      onChange={(e) =>
-                        settingsStore.setState({
-                          aivisSpeechUseCloudApi: e.target.checked,
-                        })
-                      }
-                      className="w-4 h-4"
-                    />
-                    <span className="font-medium">{t('UseAivisCloudAPI')}</span>
-                  </label>
-                  <div className="mt-2 text-sm text-gray-600">
-                    {t('AivisCloudAPIDescription')}
-                    <br />
-                    <Link
-                      url="https://hub.aivis-project.com/cloud-api/"
-                      label={t('AivisCloudAPIDashboard')}
-                    />
-                  </div>
+                <div className="mt-4 font-bold">
+                  {t('AivisSpeechServerUrl')}
                 </div>
-                {aivisSpeechUseCloudApi ? (
-                  <>
-                    <div className="mt-4 font-bold">{t('APIKey')}</div>
-                    <div className="mt-2">
-                      <input
-                        className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                        type="password"
-                        placeholder="Aivis Cloud API Key"
-                        value={aivisCloudApiKey}
-                        onChange={(e) =>
-                          settingsStore.setState({
-                            aivisCloudApiKey: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="mt-4 font-bold">{t('ModelUUID')}</div>
-                    <div className="mt-2">
-                      <input
-                        className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                        type="text"
-                        placeholder="a59cb814-0083-4369-8542-f51a29e72af7"
-                        value={aivisCloudModelUuid}
-                        onChange={(e) =>
-                          settingsStore.setState({
-                            aivisCloudModelUuid: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="mt-4 p-4 border rounded-lg bg-gray-50">
-                      <label className="flex items-center space-x-2 mb-4">
-                        <input
-                          type="checkbox"
-                          checked={aivisCloudUseStyleName}
-                          onChange={(e) =>
-                            settingsStore.setState({
-                              aivisCloudUseStyleName: e.target.checked,
-                            })
-                          }
-                          className="w-4 h-4"
-                        />
-                        <span className="font-medium">{t('UseStyleName')}</span>
-                      </label>
-                      <div className="text-sm text-gray-600 mb-4">
-                        {t('StyleSelectionDescription')}
-                      </div>
+                <div className="mt-2">
+                  <input
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                    type="text"
+                    placeholder="http://localhost:10101"
+                    value={aivisSpeechServerUrl}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        aivisSpeechServerUrl: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-4 font-bold">{t('AivisSpeechSpeaker')}</div>
+                <div className="space-y-3">
+                  <select
+                    value={aivisSpeechSpeaker}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        aivisSpeechSpeaker: e.target.value,
+                      })
+                    }
+                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                  >
+                    <option value="">{t('Select')}</option>
+                    {speakers_aivis.map((speaker) => (
+                      <option key={speaker.id} value={speaker.id}>
+                        {speaker.speaker}
+                      </option>
+                    ))}
+                  </select>
 
-                      {aivisCloudUseStyleName ? (
-                        <>
-                          <div className="font-bold">{t('StyleName')}</div>
-                          <div className="mt-2">
-                            <input
-                              className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                              type="text"
-                              maxLength={20}
-                              placeholder={t('StyleNamePlaceholder')}
-                              value={aivisCloudStyleName}
-                              onChange={(e) =>
-                                settingsStore.setState({
-                                  aivisCloudStyleName: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="font-bold">{t('StyleID')}</div>
-                          <div className="mt-2">
-                            <input
-                              className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                              type="number"
-                              min="0"
-                              max="31"
-                              value={aivisCloudStyleId}
-                              onChange={(e) =>
-                                settingsStore.setState({
-                                  aivisCloudStyleId: Number(e.target.value),
-                                })
-                              }
-                            />
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="mt-4 font-bold">
-                      {t('AivisSpeechServerUrl')}
-                    </div>
-                    <div className="mt-2">
-                      <input
-                        className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                        type="text"
-                        placeholder="http://localhost:10101"
-                        value={aivisSpeechServerUrl}
-                        onChange={(e) =>
-                          settingsStore.setState({
-                            aivisSpeechServerUrl: e.target.value,
-                          })
+                  <button
+                    onClick={async () => {
+                      setIsUpdatingSpeakers(true)
+                      setSpeakersUpdateError('')
+                      try {
+                        const response = await fetch(
+                          '/api/update-aivis-speakers?serverUrl=' +
+                            aivisSpeechServerUrl
+                        )
+                        if (response.ok) {
+                          const updatedSpeakersResponse = await fetch(
+                            '/speakers_aivis.json'
+                          )
+                          const updatedSpeakers =
+                            await updatedSpeakersResponse.json()
+                          setSpeakers_aivis(updatedSpeakers)
+                        } else {
+                          setSpeakersUpdateError(
+                            '話者リストの更新に失敗しました'
+                          )
                         }
+                      } catch (error) {
+                        setSpeakersUpdateError(
+                          'ネットワークエラーが発生しました'
+                        )
+                      } finally {
+                        setIsUpdatingSpeakers(false)
+                      }
+                    }}
+                    disabled={isUpdatingSpeakers}
+                    className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                       />
+                    </svg>
+                    {isUpdatingSpeakers ? '更新中...' : t('UpdateSpeakerList')}
+                  </button>
+                  {speakersUpdateError && (
+                    <div className="mt-2 text-red-600 text-sm">
+                      {speakersUpdateError}
                     </div>
-                    <div className="mt-4 font-bold">
-                      {t('AivisSpeechSpeaker')}
-                    </div>
-                    <div className="space-y-3">
-                      <select
-                        value={aivisSpeechSpeaker}
-                        onChange={(e) =>
-                          settingsStore.setState({
-                            aivisSpeechSpeaker: e.target.value,
-                          })
-                        }
-                        className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
-                      >
-                        <option value="">{t('Select')}</option>
-                        {speakers_aivis.map((speaker) => (
-                          <option key={speaker.id} value={speaker.id}>
-                            {speaker.speaker}
-                          </option>
-                        ))}
-                      </select>
-
-                      <button
-                        onClick={async () => {
-                          setIsUpdatingSpeakers(true)
-                          setSpeakersUpdateError('')
-                          try {
-                            const response = await fetch(
-                              '/api/update-aivis-speakers?serverUrl=' +
-                                aivisSpeechServerUrl
-                            )
-                            if (response.ok) {
-                              // 話者リストを再読み込み
-                              const updatedSpeakersResponse = await fetch(
-                                '/speakers_aivis.json'
-                              )
-                              const updatedSpeakers =
-                                await updatedSpeakersResponse.json()
-                              // speakers_aivisを更新
-                              setSpeakers_aivis(updatedSpeakers)
-                            } else {
-                              setSpeakersUpdateError(
-                                '話者リストの更新に失敗しました'
-                              )
-                            }
-                          } catch (error) {
-                            setSpeakersUpdateError(
-                              'ネットワークエラーが発生しました'
-                            )
-                          } finally {
-                            setIsUpdatingSpeakers(false)
-                          }
-                        }}
-                        disabled={isUpdatingSpeakers}
-                        className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                          />
-                        </svg>
-                        {isUpdatingSpeakers
-                          ? '更新中...'
-                          : t('UpdateSpeakerList')}
-                      </button>
-                      {speakersUpdateError && (
-                        <div className="mt-2 text-red-600 text-sm">
-                          {speakersUpdateError}
-                        </div>
-                      )}
-                    </div>
-                    {/* 共通APIパラメータは上部で設定済み - ここにはローカルAPI固有の設定のみ */}
-                  </>
-                )}
-                {/* 共通パラメータ */}
+                  )}
+                </div>
                 <div className="mt-6 font-bold">
                   <div className="select-none">
                     {t('SpeechSpeed')}: {aivisSpeechSpeed}
@@ -807,8 +699,8 @@ const Voice = () => {
                   </div>
                   <input
                     type="range"
-                    min={aivisSpeechUseCloudApi ? -1.0 : -0.15}
-                    max={aivisSpeechUseCloudApi ? 1.0 : 0.15}
+                    min={-0.15}
+                    max={0.15}
                     step={0.01}
                     value={aivisSpeechPitch}
                     className="mt-2 mb-4 input-range"
@@ -869,11 +761,8 @@ const Voice = () => {
                     }}
                   />
                   <div className="select-none">
-                    {aivisSpeechUseCloudApi
-                      ? `${t('EmotionalIntensity')}: ${aivisSpeechIntonationScale}`
-                      : `${t('AivisSpeechIntonationScale')}: ${
-                          aivisSpeechIntonationScale
-                        }`}
+                    {t('AivisSpeechIntonationScale')}:{' '}
+                    {aivisSpeechIntonationScale}
                   </div>
                   <input
                     type="range"
@@ -885,6 +774,202 @@ const Voice = () => {
                     onChange={(e) => {
                       settingsStore.setState({
                         aivisSpeechIntonationScale: Number(e.target.value),
+                      })
+                    }}
+                  />
+                </div>
+              </>
+            )
+          } else if (selectVoice === 'aivis_cloud_api') {
+            return (
+              <>
+                <div>
+                  {t('AivisCloudAPIInfo')}
+                  <br />
+                  <Link
+                    url="https://hub.aivis-project.com/cloud-api/"
+                    label={t('AivisCloudAPIDashboard')}
+                  />
+                </div>
+                <div className="mt-4 font-bold">{t('APIKey')}</div>
+                <div className="mt-2">
+                  <input
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                    type="password"
+                    placeholder="Aivis Cloud API Key"
+                    value={aivisCloudApiKey}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        aivisCloudApiKey: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-4 font-bold">{t('ModelUUID')}</div>
+                <div className="mt-2">
+                  <input
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                    type="text"
+                    placeholder="a59cb814-..."
+                    value={aivisCloudModelUuid}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        aivisCloudModelUuid: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-4 p-4 border rounded-lg bg-gray-50">
+                  <label className="flex items-center space-x-2 mb-4">
+                    <input
+                      type="checkbox"
+                      checked={aivisCloudUseStyleName}
+                      onChange={(e) =>
+                        settingsStore.setState({
+                          aivisCloudUseStyleName: e.target.checked,
+                        })
+                      }
+                      className="w-4 h-4"
+                    />
+                    <span className="font-medium">{t('UseStyleName')}</span>
+                  </label>
+                  <div className="text-sm text-gray-600 mb-4">
+                    {t('StyleSelectionDescription')}
+                  </div>
+
+                  {aivisCloudUseStyleName ? (
+                    <>
+                      <div className="font-bold">{t('StyleName')}</div>
+                      <div className="mt-2">
+                        <input
+                          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                          type="text"
+                          maxLength={20}
+                          placeholder={t('StyleNamePlaceholder')}
+                          value={aivisCloudStyleName}
+                          onChange={(e) =>
+                            settingsStore.setState({
+                              aivisCloudStyleName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-bold">{t('StyleID')}</div>
+                      <div className="mt-2">
+                        <input
+                          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                          type="number"
+                          min="0"
+                          max="31"
+                          value={aivisCloudStyleId}
+                          onChange={(e) =>
+                            settingsStore.setState({
+                              aivisCloudStyleId: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div className="mt-6 font-bold">
+                  <div className="select-none">
+                    {t('SpeechSpeed')}: {aivisCloudSpeed}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={2}
+                    step={0.01}
+                    value={aivisCloudSpeed}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisCloudSpeed: Number(e.target.value),
+                      })
+                    }}
+                  />
+                  <div className="select-none">
+                    {t('Pitch')}: {aivisCloudPitch}
+                  </div>
+                  <input
+                    type="range"
+                    min={-1.0}
+                    max={1.0}
+                    step={0.01}
+                    value={aivisCloudPitch}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisCloudPitch: Number(e.target.value),
+                      })
+                    }}
+                  />
+                  <div className="select-none">
+                    {t('TempoDynamics')}: {aivisCloudTempoDynamics}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={2.0}
+                    step={0.01}
+                    value={aivisCloudTempoDynamics}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisCloudTempoDynamics: Number(e.target.value),
+                      })
+                    }}
+                  />
+                  <div className="select-none">
+                    {t('PreSilenceDuration')}: {aivisCloudPrePhonemeLength}{' '}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.0}
+                    max={1.0}
+                    step={0.01}
+                    value={aivisCloudPrePhonemeLength}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisCloudPrePhonemeLength: Number(e.target.value),
+                      })
+                    }}
+                  />
+                  <div className="select-none">
+                    {t('PostSilenceDuration')}:{' '}
+                    {aivisCloudPostPhonemeLength}{' '}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.0}
+                    max={1.0}
+                    step={0.01}
+                    value={aivisCloudPostPhonemeLength}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisCloudPostPhonemeLength: Number(e.target.value),
+                      })
+                    }}
+                  />
+                  <div className="select-none">
+                    {t('EmotionalIntensity')}: {aivisCloudIntonationScale}
+                  </div>
+                  <input
+                    type="range"
+                    min={0.0}
+                    max={2.0}
+                    step={0.01}
+                    value={aivisCloudIntonationScale}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        aivisCloudIntonationScale: Number(e.target.value),
                       })
                     }}
                   />
