@@ -241,7 +241,7 @@
     "PositionUnfixed": "已解除角色位置的固定",
     "PositionReset": "已重置角色位置",
     "PositionActionFailed": "位置操作失败",
-    "MicrophonePermissionDenied": "已拒绝访问麦克风权限",
+    "MicrophonePermissionDenied": "麦克风访问权限被拒绝",
     "CameraPermissionMessage": "请允许使用相机。"
   },
   "ContinuousMic": "常时麦克风输入",
@@ -369,7 +369,7 @@
   "EnableMultiModalDescription": "启用图片上传功能。不支持的模型可能会忽略图片。",
   "ThemeDefault": "默认",
   "MultiModalModeDescription": "请选择何时使用多模态功能。",
-  "AivisCloudAPIDashboard": "Aivis Cloud API 仪表板",
+  "AivisCloudAPIDashboard": "Aivis Cloud API仪表板",
   "CharacterPositionFixed": "位置已固定",
   "Position": "位置",
   "NoDisplayedImages": "当前没有显示的图片",
@@ -398,7 +398,7 @@
   "LayerControlDescription": "可以控制图像和角色的重叠顺序",
   "NoUploadedImages": "没有已上传的图片",
   "AddToDisplay": "显示在屏幕上",
-  "Mature": "沉稳的",
+  "Mature": "沉稳",
   "LayerOrder": "图层顺序（最多5个）",
   "UseStyleName": "通过样式名指定",
   "UploadedImages": "已上传的图片",
@@ -419,7 +419,7 @@
   "Cool": "帅气",
   "ImageSettingsDescription": "您可以上传图片并将其放置在屏幕上。最多可以同时显示5张图片。",
   "DragCharacterToMove": "拖动角色进行移动",
-  "InFrontOfCharacter": "角色前方",
+  "InFrontOfCharacter": "角色前面",
   "StyleID": "样式ID",
   "ImageOrder": "图片顺序",
   "Presets": "预设",
@@ -439,5 +439,7 @@
   "CharacterPositionDescription": "可以拖动角色来调整位置",
   "ShowQuickMenu": "显示快速菜单按钮",
   "ImageSettings": "图像设置",
-  "Energetic": "元气"
+  "Energetic": "元气",
+  "UsingAivisCloudAPI": "使用Aivis Cloud API",
+  "AivisCloudAPIInfo": "Aivis Cloud API的设置"
 }

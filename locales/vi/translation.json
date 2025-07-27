@@ -231,7 +231,7 @@
     "PresetSwitching": "Đã chuyển sang {{presetName}}.",
     "WhisperError": "Đã xảy ra lỗi trong nhận dạng giọng nói bằng Whisper",
     "UsingTool": "Đang sử dụng {{toolName}}",
-    "PositionFixed": "Vị trí của nhân vật đã được cố định",
+    "PositionFixed": "Vị trí nhân vật đã được cố định",
     "PositionUnfixed": "Đã hủy cố định vị trí của nhân vật",
     "PositionReset": "Đã đặt lại vị trí của nhân vật",
     "PositionActionFailed": "Thao tác vị trí thất bại",
@@ -364,7 +364,7 @@
   "EnableMultiModalDescription": "Kích hoạt chức năng tải lên hình ảnh. Đối với các mẫu không hỗ trợ, hình ảnh có thể bị bỏ qua.",
   "ThemeDefault": "Mặc định",
   "MultiModalModeDescription": "Vui lòng chọn khi nào sử dụng chức năng đa phương thức.",
-  "AivisCloudAPIDashboard": "Bảng điều khiển API Aivis Cloud",
+  "AivisCloudAPIDashboard": "Bảng điều khiển API đám mây Aivis",
   "CharacterPositionFixed": "Vị trí đã được cố định",
   "Position": "Vị trí",
   "NoDisplayedImages": "Không có hình ảnh nào đang được hiển thị hiện tại",
@@ -374,8 +374,8 @@
   "MaximumFiveImagesAllowed": "Chỉ có thể hiển thị tối đa 5 hình ảnh.",
   "LayerControl": "Thứ tự chồng lên nhau",
   "ImageAlreadyPlaced": "Hình ảnh này đã được hiển thị.",
-  "MostVisible": "Dễ thấy nhất",
-  "BottomLayer": "Lớp dưới cùng nhất",
+  "MostVisible": "Hiển thị nhiều nhất",
+  "BottomLayer": "Phía sau cùng",
   "FixCharacterPosition": "Cố định vị trí",
   "UploadComplete": "Tải lên hoàn tất",
   "Cute": "dễ thương",
@@ -439,5 +439,7 @@
   "CharacterPositionDescription": "Bạn có thể kéo nhân vật để điều chỉnh vị trí",
   "ShowQuickMenu": "Hiển thị nút menu nhanh",
   "ImageSettings": "Cài đặt hình ảnh",
-  "Energetic": "Khỏe mạnh"
+  "Energetic": "Khỏe mạnh",
+  "UsingAivisCloudAPI": "Sử dụng Aivis Cloud API",
+  "AivisCloudAPIInfo": "Cài đặt Aivis Cloud API"
 }

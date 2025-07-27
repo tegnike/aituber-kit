@@ -231,7 +231,7 @@
     "PresetSwitching": "Przełączono na {{presetName}}.",
     "WhisperError": "Wystąpił błąd podczas rozpoznawania mowy za pomocą Whisper",
     "UsingTool": "Używanie {{toolName}}",
-    "PositionFixed": "Pozycja postaci została ustalona",
+    "PositionFixed": "Pozycja postaci została ustalona na stałe",
     "PositionUnfixed": "Odblokowano pozycję postaci",
     "PositionReset": "Pozycja postaci została zresetowana",
     "PositionActionFailed": "Nie udało się wykonać operacji na pozycji",
@@ -381,7 +381,7 @@
   "Cute": "słodki",
   "StyleNamePlaceholder": "Przykład: Normalny",
   "UploadFailed": "Nie udało się przesłać pliku",
-  "CartesiaVoiceIdInfo": "Wybierz identyfikator głosu z poniższego adresu URL.",
+  "CartesiaVoiceIdInfo": "Wybierz Voice ID z poniższego adresu URL.",
   "DeleteFailed": "Nie udało się usunąć",
   "TopLayer": "Na wierzchu",
   "AivisCloudAPIDescription": "Zaznaczenie spowoduje użycie wersji chmurowej Aivis Cloud API.",
@@ -439,5 +439,7 @@
   "CharacterPositionDescription": "Możesz przeciągnąć postać, aby dostosować jej pozycję",
   "ShowQuickMenu": "Pokaż przycisk szybkiego menu",
   "ImageSettings": "Ustawienia obrazu",
-  "Energetic": "zdrowy"
+  "Energetic": "zdrowy",
+  "UsingAivisCloudAPI": "Użyj Aivis Cloud API",
+  "AivisCloudAPIInfo": "Ustawienia Aivis Cloud API"
 }

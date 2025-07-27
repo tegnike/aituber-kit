@@ -382,9 +382,9 @@
   "StyleNamePlaceholder": "ตัวอย่าง: ปกติ",
   "UploadFailed": "การอัปโหลดล้มเหลว",
   "CartesiaVoiceIdInfo": "โปรดเลือก Voice ID จาก URL ด้านล่างนี้",
-  "DeleteFailed": "ล้มเหลวในการลบ",
+  "DeleteFailed": "ล้มเหลวในการลบข้อมูล",
   "TopLayer": "ด้านหน้า",
-  "AivisCloudAPIDescription": "เมื่อติ๊กถูก จะใช้ Aivis Cloud API เวอร์ชันคลาวด์",
+  "AivisCloudAPIDescription": "เมื่อติ๊กถูกจะใช้ Aivis Cloud API เวอร์ชันคลาวด์",
   "SpeechSpeed": "ความเร็วในการพูด",
   "DragToReorderLayers": "ลากเพื่อเปลี่ยนลำดับ",
   "MoveToBack": "ย้ายไปข้างหลัง",
@@ -393,7 +393,7 @@
   "OnlyImageFilesAllowed": "สามารถอัปโหลดได้เฉพาะไฟล์รูปภาพเท่านั้น",
   "ConfirmDeleteImage": "คุณต้องการลบรูปภาพนี้หรือไม่?",
   "LayerControlDescription": "คุณสามารถควบคุมลำดับการซ้อนทับของภาพและตัวละครได้",
-  "NoUploadedImages": "ไม่มีรูปภาพที่อัปโหลดแล้ว",
+  "NoUploadedImages": "ไม่มีภาพที่อัปโหลดแล้ว",
   "AddToDisplay": "แสดงบนหน้าจอ",
   "Mature": "เข้มขรึม",
   "LayerOrder": "ลำดับเลเยอร์ (สูงสุด 5 ชั้น)",
@@ -439,5 +439,7 @@
   "CharacterPositionDescription": "คุณสามารถลากตัวละครเพื่อปรับตำแหน่งได้",
   "ShowQuickMenu": "แสดงปุ่มเมนูด่วน",
   "ImageSettings": "การตั้งค่าภาพ",
-  "Energetic": "สุขภาพดี"
+  "Energetic": "สุขภาพดี",
+  "UsingAivisCloudAPI": "ใช้ Aivis Cloud API",
+  "AivisCloudAPIInfo": "การตั้งค่า Aivis Cloud API"
 }

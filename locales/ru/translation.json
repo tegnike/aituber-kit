@@ -370,7 +370,7 @@
   "ThemeDefault": "По умолчанию",
   "MultiModalModeDescription": "Выберите, когда использовать мультимодальные функции.",
   "AivisCloudAPIDashboard": "Панель управления Aivis Cloud API",
-  "CharacterPositionFixed": "Позиция зафиксирована",
+  "CharacterPositionFixed": "Положение зафиксировано",
   "Position": "Позиция",
   "NoDisplayedImages": "В настоящее время нет отображаемых изображений",
   "StyleName": "Имя стиля",
@@ -387,7 +387,7 @@
   "UploadFailed": "Не удалось загрузить файл",
   "DeleteFailed": "Не удалось удалить",
   "TopLayer": "На переднем плане",
-  "AivisCloudAPIDescription": "При установке флажка будет использоваться облачная версия Aivis Cloud API.",
+  "AivisCloudAPIDescription": "Если установить флажок, будет использоваться облачная версия Aivis Cloud API.",
   "SpeechSpeed": "скорость речи",
   "DragToReorderLayers": "Перетащите, чтобы изменить порядок",
   "MoveToBack": "Переместиться назад",
@@ -430,7 +430,7 @@
   "ResetCharacterPosition": "Сбросить позицию",
   "Delete": "Удалить",
   "LeastVisible": "Наименее заметный",
-  "StyleSelectionDescription": "Вы можете выбрать либо ID стиля, либо имя стиля. Обычно используется ID стиля (0–31).",
+  "StyleSelectionDescription": "Вы можете выбрать либо идентификатор стиля, либо имя стиля. Обычно используется идентификатор стиля (0–31).",
   "PostSilenceDuration": "Время тишины после звука",
   "EmotionalIntensity": "Сила выражения эмоций",
   "UploadImages": "Загрузить изображение",
@@ -439,5 +439,7 @@
   "CharacterPositionDescription": "Вы можете перетащить персонажа, чтобы настроить его положение",
   "ShowQuickMenu": "Показать кнопку быстрого меню",
   "ImageSettings": "Настройки изображения",
-  "Energetic": "здоровье"
+  "Energetic": "здоровье",
+  "UsingAivisCloudAPI": "Использовать Aivis Cloud API",
+  "AivisCloudAPIInfo": "Настройки Aivis Cloud API"
 }

@@ -166,7 +166,7 @@
   "CartesiaInfo": "Using the Cartesia API. Supports multiple languages. Please obtain the API key from the URL below.",
   "CartesiaApiKey": "Cartesia API Key",
   "CartesiaVoiceId": "Cartesia Voice ID",
-  "CartesiaVoiceIdInfo": "Please select your voice ID from the URL below.",
+  "CartesiaVoiceIdInfo": "Please select the Voice ID from the URL below.",
   "CharacterName": "Character Name",
   "ShowAssistantText": "Show answer field",
   "ShowCharacterName": "Show character name in answer field",
@@ -253,8 +253,8 @@
     "PositionUnfixed": "Character position lock has been released",
     "PositionReset": "Character position has been reset",
     "PositionActionFailed": "Failed to manipulate position",
-    "MicrophonePermissionDenied": "Access to the microphone was denied",
-    "CameraPermissionMessage": "Please allow access to the camera."
+    "MicrophonePermissionDenied": "Permission to access the microphone was denied",
+    "CameraPermissionMessage": "Please allow the use of the camera."
   },
   "ContinuousMic": "Continuous microphone input",
   "ContinuousMicActive": "Continuous microphone input active",
@@ -427,7 +427,7 @@
   "ImageOrder": "Image order",
   "Presets": "Preset",
   "Uploading": "Uploading...",
-  "UnfixCharacterPosition": "Unlock position fixation",
+  "UnfixCharacterPosition": "Unlock position fixed",
   "LayerOrderDescription": "You can adjust the layering order of images and characters by drag & drop.",
   "ResetCharacterPosition": "Reset position",
   "Delete": "Delete",
@@ -437,5 +437,7 @@
   "AlreadyDisplayed": "Displaying",
   "CharacterPositionDescription": "You can drag the character to adjust its position",
   "ShowQuickMenu": "Show quick menu button",
-  "ImageSettings": "Image Settings"
+  "ImageSettings": "Image Settings",
+  "UsingAivisCloudAPI": "Use Aivis Cloud API",
+  "AivisCloudAPIInfo": "Aivis Cloud API Settings"
 }
