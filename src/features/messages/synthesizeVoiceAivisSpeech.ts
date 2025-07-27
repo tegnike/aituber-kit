@@ -5,8 +5,11 @@ export async function synthesizeVoiceAivisSpeechApi(
   speaker: string,
   speed: number,
   pitch: number,
-  intonation: number,
-  serverUrl: string
+  intonationScale: number,
+  serverUrl: string,
+  tempoDynamics?: number,
+  prePhonemeLength?: number,
+  postPhonemeLength?: number
 ): Promise<ArrayBuffer> {
   try {
     const res = await fetch('/api/tts-aivisspeech', {
@@ -19,8 +22,11 @@ export async function synthesizeVoiceAivisSpeechApi(
         speaker,
         speed,
         pitch,
-        intonation,
+        intonationScale,
         serverUrl,
+        tempoDynamics,
+        prePhonemeLength,
+        postPhonemeLength,
       }),
     })
 

@@ -21,7 +21,7 @@ npm run desktop     # Electronデスクトップアプリとして実行
 
 ```bash
 npm test           # すべてのテストを実行
-npm run lint       # ESLintを実行
+npm run lint:fix && npm run format && npm run build  # lint修正+フォーマット+ビルドを一括実行
 ```
 
 ### セットアップ

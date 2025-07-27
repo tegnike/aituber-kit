@@ -17,6 +17,7 @@ const YouTube = () => {
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const customModel = settingsStore((s) => s.customModel)
 
   const conversationContinuityMode = settingsStore(
     (s) => s.conversationContinuityMode
@@ -120,7 +121,8 @@ const YouTube = () => {
                         selectAIService,
                         selectAIModel,
                         enableMultiModal,
-                        multiModalMode
+                        multiModalMode,
+                        customModel
                       ) ||
                       slideMode ||
                       externalLinkageMode

@@ -8,17 +8,23 @@ interface ResizableOptions {
   aspectRatio?: boolean
   initialWidth?: number
   initialHeight?: number
+  onSizeChange?: (size: { width: number; height: number }) => void
 }
 
 export const useResizable = (options: ResizableOptions = {}) => {
   const {
     minWidth = 200,
     minHeight = 150,
-    maxWidth = typeof window === 'undefined' ? 1024 : window.innerWidth * 0.8,
-    maxHeight = typeof window === 'undefined' ? 768 : window.innerHeight * 0.8,
+    maxWidth = typeof window === 'undefined'
+      ? 1920
+      : Math.max(1920, window.innerWidth * 0.9),
+    maxHeight = typeof window === 'undefined'
+      ? 1080
+      : Math.max(1080, window.innerHeight * 0.9),
     aspectRatio = true,
     initialWidth = 512,
     initialHeight = 384,
+    onSizeChange,
   } = options
 
   const [size, setSize] = useState({
@@ -97,7 +103,8 @@ export const useResizable = (options: ResizableOptions = {}) => {
   const handleResizeEnd = useCallback(() => {
     setIsResizing(false)
     resizeDirectionRef.current = null
-  }, [])
+    onSizeChange?.(size)
+  }, [size, onSizeChange])
 
   useEffect(() => {
     if (isResizing) {

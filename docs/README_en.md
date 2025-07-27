@@ -106,6 +106,8 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - Google Text-to-Speech
 - Style-Bert-VITS2
 - AivisSpeech
+- Aivis Cloud API
+- Cartesia
 - GSVI TTS
 - ElevenLabs
 - OpenAI

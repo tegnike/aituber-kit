@@ -106,6 +106,8 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - Google Text-to-Speech
 - Style-Bert-VITS2
 - AivisSpeech
+- Aivis Cloud API
+- Cartesia
 - GSVI TTS
 - ElevenLabs
 - OpenAI

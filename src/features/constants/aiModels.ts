@@ -39,6 +39,9 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'claude-3-5-haiku-20241022', multiModal: true },
   ],
   google: [
+    { name: 'gemini-2.5-pro', multiModal: true },
+    { name: 'gemini-2.5-flash', multiModal: true },
+    { name: 'gemini-2.5-flash-lite', multiModal: true },
     { name: 'gemini-2.5-pro-preview-05-06', multiModal: true },
     { name: 'gemini-2.5-flash-preview-04-17', multiModal: true },
     { name: 'gemini-2.5-pro-exp-03-25', multiModal: true },
@@ -332,4 +335,24 @@ export const googleSearchGroundingModels = [
   'gemini-1.5-flash-latest',
   'gemini-1.5-pro-latest',
   'gemini-1.5-flash-8b-latest',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro',
+  'gemini-1.5-flash-8b',
 ] as const
+
+/**
+ * モデルが検索グラウンディング機能をサポートしているかどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @returns 検索グラウンディング機能をサポートしている場合はtrue
+ */
+export function isSearchGroundingModel(
+  service: AIService,
+  model: string
+): boolean {
+  // 現在はGoogleのみサポート
+  if (service === 'google') {
+    return (googleSearchGroundingModels as readonly string[]).includes(model)
+  }
+  return false
+}
