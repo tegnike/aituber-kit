@@ -193,7 +193,7 @@ const Voice = () => {
           onChange={(e) =>
             settingsStore.setState({ selectVoice: e.target.value as AIVoice })
           }
-          className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+          className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
         >
           <option value="voicevox">{t('UsingVoiceVox')}</option>
           <option value="koeiromap">{t('UsingKoeiromap')}</option>
@@ -359,7 +359,7 @@ const Voice = () => {
                         voicevoxSpeaker: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="">{t('Select')}</option>
                     {speakers.map((speaker) => (
@@ -714,7 +714,7 @@ const Voice = () => {
                             aivisSpeechSpeaker: e.target.value,
                           })
                         }
-                        className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                        className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                       >
                         <option value="">{t('Select')}</option>
                         {speakers_aivis.map((speaker) => (
@@ -1082,7 +1082,7 @@ const Voice = () => {
                         openaiTTSVoice: e.target.value as OpenAITTSVoice,
                       })
                     }
-                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="alloy">alloy</option>
                     <option value="ash">ash</option>
@@ -1105,7 +1105,7 @@ const Voice = () => {
                         openaiTTSModel: e.target.value as OpenAITTSModel,
                       })
                     }
-                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     {getOpenAITTSModels().map((model) => (
                       <option key={model} value={model}>
@@ -1173,7 +1173,7 @@ const Voice = () => {
                         openaiTTSVoice: e.target.value as OpenAITTSVoice,
                       })
                     }
-                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="alloy">alloy</option>
                     <option value="echo">echo</option>
@@ -1233,7 +1233,7 @@ const Voice = () => {
                         nijivoiceActorId: e.target.value,
                       })
                     }}
-                    className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
+                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="">{t('Select')}</option>
                     {nijivoiceSpeakers.map((actor) => (
