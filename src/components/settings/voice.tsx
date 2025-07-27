@@ -92,6 +92,8 @@ const Voice = () => {
   const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
   const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
   const [customVoiceText, setCustomVoiceText] = useState<string>('')
+  const [isUpdatingSpeakers, setIsUpdatingSpeakers] = useState<boolean>(false)
+  const [speakersUpdateError, setSpeakersUpdateError] = useState<string>('')
 
   // にじボイスの話者一覧を取得する関数
   const fetchNijivoiceSpeakers = useCallback(async () => {
@@ -724,21 +726,36 @@ const Voice = () => {
 
                       <button
                         onClick={async () => {
-                          const response = await fetch(
-                            '/api/update-aivis-speakers?serverUrl=' +
-                              aivisSpeechServerUrl
-                          )
-                          if (response.ok) {
-                            // 話者リストを再読み込み
-                            const updatedSpeakersResponse = await fetch(
-                              '/speakers_aivis.json'
+                          setIsUpdatingSpeakers(true)
+                          setSpeakersUpdateError('')
+                          try {
+                            const response = await fetch(
+                              '/api/update-aivis-speakers?serverUrl=' +
+                                aivisSpeechServerUrl
                             )
-                            const updatedSpeakers =
-                              await updatedSpeakersResponse.json()
-                            // speakers_aivisを更新
-                            setSpeakers_aivis(updatedSpeakers)
+                            if (response.ok) {
+                              // 話者リストを再読み込み
+                              const updatedSpeakersResponse = await fetch(
+                                '/speakers_aivis.json'
+                              )
+                              const updatedSpeakers =
+                                await updatedSpeakersResponse.json()
+                              // speakers_aivisを更新
+                              setSpeakers_aivis(updatedSpeakers)
+                            } else {
+                              setSpeakersUpdateError(
+                                '話者リストの更新に失敗しました'
+                              )
+                            }
+                          } catch (error) {
+                            setSpeakersUpdateError(
+                              'ネットワークエラーが発生しました'
+                            )
+                          } finally {
+                            setIsUpdatingSpeakers(false)
                           }
                         }}
+                        disabled={isUpdatingSpeakers}
                         className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                       >
                         <svg
@@ -754,8 +771,15 @@ const Voice = () => {
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                           />
                         </svg>
-                        {t('UpdateSpeakerList')}
+                        {isUpdatingSpeakers
+                          ? '更新中...'
+                          : t('UpdateSpeakerList')}
                       </button>
+                      {speakersUpdateError && (
+                        <div className="mt-2 text-red-600 text-sm">
+                          {speakersUpdateError}
+                        </div>
+                      )}
                     </div>
                     {/* 共通APIパラメータは上部で設定済み - ここにはローカルAPI固有の設定のみ */}
                   </>
@@ -995,7 +1019,7 @@ const Voice = () => {
                 <div className="mt-4 font-bold">{t('CartesiaApiKey')}</div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={cartesiaApiKey}
@@ -1018,7 +1042,7 @@ const Voice = () => {
                 </div>
                 <div className="mt-2">
                   <input
-                    className="text-ellipsis px-4 py-2 w-col-span-4 bg-white hover:bg-white-hover rounded-lg"
+                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
                     type="text"
                     placeholder="..."
                     value={cartesiaVoiceId}
