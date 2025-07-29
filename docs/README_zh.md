@@ -106,6 +106,8 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 - Google Text-to-Speech
 - Style-Bert-VITS2
 - AivisSpeech
+- Aivis Cloud API
+- Cartesia
 - GSVI TTS
 - ElevenLabs
 - OpenAI

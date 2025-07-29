@@ -5,7 +5,10 @@ interface Position {
   y: number
 }
 
-export const useDraggable = (initialPosition?: Position) => {
+export const useDraggable = (
+  initialPosition?: Position,
+  onPositionChange?: (position: Position) => void
+) => {
   const [position, setPosition] = useState<Position>(
     initialPosition || { x: 0, y: 0 }
   )
@@ -50,10 +53,11 @@ export const useDraggable = (initialPosition?: Position) => {
       const deltaX = e.clientX - dragStartPos.current.x
       const deltaY = e.clientY - dragStartPos.current.y
 
-      setPosition({
+      const newPosition = {
         x: elementStartPos.current.x + deltaX,
         y: elementStartPos.current.y + deltaY,
-      })
+      }
+      setPosition(newPosition)
     },
     [isDragging, isMobile]
   )
@@ -61,7 +65,8 @@ export const useDraggable = (initialPosition?: Position) => {
   const handleMouseUp = useCallback(() => {
     if (isMobile) return
     setIsDragging(false)
-  }, [isMobile])
+    onPositionChange?.(position)
+  }, [isMobile, position, onPositionChange])
 
   useEffect(() => {
     if (isDragging && !isMobile) {

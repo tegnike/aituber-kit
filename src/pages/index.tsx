@@ -11,6 +11,7 @@ import Live2DViewer from '@/components/live2DViewer'
 import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import CharacterPresetMenu from '@/components/characterPresetMenu'
+import ImageOverlay from '@/components/ImageOverlay'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
@@ -110,6 +111,7 @@ const Home = () => {
       <WebSocketManager />
       <YoutubeManager />
       <CharacterPresetMenu />
+      <ImageOverlay />
     </div>
   )
 }

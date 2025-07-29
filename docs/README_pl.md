@@ -106,6 +106,8 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 - Google Text-to-Speech
 - Style-Bert-VITS2
 - AivisSpeech
+- Aivis Cloud API
+- Cartesia
 - GSVI TTS
 - ElevenLabs
 - OpenAI

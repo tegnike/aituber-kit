@@ -7,6 +7,7 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { IMAGE_CONSTANTS } from '@/constants/images'
 
 const Based = () => {
   const { t } = useTranslation()
@@ -51,7 +52,7 @@ const Based = () => {
     }
 
     // ファイルサイズの検証（例：5MB以下）
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > IMAGE_CONSTANTS.COMPRESSION.LARGE_FILE_THRESHOLD) {
       setUploadError(t('FileSizeLimitExceeded'))
       return
     }
