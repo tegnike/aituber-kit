@@ -11,7 +11,10 @@ import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlug
 import { LipSync } from '../lipSync/lipSync'
 import { EmoteController } from '../emoteController/emoteController'
 import { Talk } from '../messages/messages'
-import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
+import {
+  loadVRMAnimation,
+  loadVRMAnimationClip,
+} from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 
 /**
@@ -73,40 +76,89 @@ export class Model {
   }
 
   /**
-   * VRMアニメーションを読み込む
-   *
-   * https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm_animation-1.0/README.ja.md
+   * VRMアニメーションを読み込む（従来の方法）
    */
   public async loadAnimation(
     vrmAnimation: VRMAnimation,
-    animationName?: string // アニメーションを識別するための名前
+    animationName?: string
   ): Promise<THREE.AnimationAction | undefined> {
     if (this.vrm == null || this.mixer == null) {
       console.error('VRM or Mixer not initialized in loadAnimation')
       throw new Error('You have to load VRM first')
     }
 
-    // ミキサーをリセットする代わりに、新しいクリップからアクションを作成
-    // this.mixer = new THREE.AnimationMixer(this.vrm.scene) // reset animation mixer, otherwise funny merge
-
     const clip = vrmAnimation.createAnimationClip(this.vrm)
     const action = this.mixer.clipAction(clip)
 
-    // アニメーション名が指定されていれば、Mapに保存
     const name =
       animationName || clip.name || `animation_${this._animationActions.size}`
-    clip.name = name // Ensure the AnimationClip itself has the correct name
+    clip.name = name
     if (this._animationActions.has(name)) {
       console.warn(`Animation "${name}" already exists. Overwriting.`)
-      // 既存のアクションを停止、リセットなど検討
       this._animationActions.get(name)?.stop()
     }
     this._animationActions.set(name, action)
 
-    // デフォルトでは再生しない。再生は別途 playAnimation メソッドなどで行う
-    // action.play()
     console.log(`Animation "${name}" loaded.`)
     return action
+  }
+
+  /**
+   * VRMアニメーションを読み込む（ベストプラクティス準拠）
+   */
+  public async loadAnimationFromUrl(
+    url: string,
+    animationName?: string
+  ): Promise<THREE.AnimationAction | undefined> {
+    if (this.vrm == null || this.mixer == null) {
+      console.error('VRM or Mixer not initialized in loadAnimationFromUrl')
+      throw new Error('You have to load VRM first')
+    }
+
+    try {
+      const clip = await loadVRMAnimationClip(url, this.vrm)
+      if (!clip) {
+        console.warn(`Failed to load animation clip from ${url}`)
+        return undefined
+      }
+
+      // Translation除去処理（Hips以外）
+      this.removeUnnecessaryTranslationTracks(clip)
+
+      const action = this.mixer.clipAction(clip)
+      const name =
+        animationName || clip.name || `animation_${this._animationActions.size}`
+      clip.name = name
+
+      if (this._animationActions.has(name)) {
+        console.warn(`Animation "${name}" already exists. Overwriting.`)
+        this._animationActions.get(name)?.stop()
+      }
+      this._animationActions.set(name, action)
+
+      console.log(`Animation "${name}" loaded from URL with best practices.`)
+      return action
+    } catch (error) {
+      console.error(`Error loading animation from ${url}:`, error)
+      return undefined
+    }
+  }
+
+  /**
+   * 不要なTranslationトラックを除去（Hips以外）
+   */
+  private removeUnnecessaryTranslationTracks(clip: THREE.AnimationClip) {
+    clip.tracks = clip.tracks.filter((track) => {
+      // Hipsボーンの位置変化は保持、その他のTranslationは除去
+      if (
+        track.name.includes('.position') &&
+        !track.name.toLowerCase().includes('hips')
+      ) {
+        console.log(`Removing unnecessary translation track: ${track.name}`)
+        return false
+      }
+      return true
+    })
   }
 
   public async loadFbxAnimation(
@@ -280,15 +332,9 @@ export class Model {
     for (const [emotion, path] of this._emotionAnimationPaths) {
       try {
         // buildUrlを使用してパスを構築
-        const fullPath = buildUrl(path) // pathが絶対パスでないことを想定
-        const vrma = await loadVRMAnimation(fullPath)
-        if (vrma) {
-          await this.loadAnimation(vrma, emotion)
-        } else {
-          console.warn(
-            `Failed to load emotion animation for "${emotion}" from ${fullPath}`
-          )
-        }
+        const fullPath = buildUrl(path)
+        // ベストプラクティス準拠の新しいメソッドを使用
+        await this.loadAnimationFromUrl(fullPath, emotion)
       } catch (error) {
         console.error(
           `Error loading emotion animation for "${emotion}" from ${path}:`,
