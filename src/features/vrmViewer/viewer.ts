@@ -66,8 +66,8 @@ export class Viewer {
 
       this._scene.add(this.model.vrm.scene)
 
-      // const vrma = await loadVRMAnimation(buildUrl("/idle_loop.vrma"));
-      // if (vrma) this.model.loadAnimation(vrma);
+      const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
+      if (vrma) this.model.loadAnimation(vrma)
 
       // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
       requestAnimationFrame(() => {
@@ -174,49 +174,100 @@ export class Viewer {
     }
   }
 
-  private _breathingAmplitude: number = 0.005; // 呼吸の振幅（大きさ）
-  private _breathingFrequency: number = 0.2; // 呼吸の周波数（速さ）
-  private _breathingTime: number = 0; // 呼吸のタイマー
+  private _breathingAmplitude: number = 0.005 // 呼吸の振幅（大きさ）
+  private _breathingFrequency: number = 0.2 // 呼吸の周波数（速さ）
+  private _breathingTime: number = 0 // 呼吸のタイマー
 
   public update = () => {
-    requestAnimationFrame(this.update);
-    const delta = this._clock.getDelta();
+    requestAnimationFrame(this.update)
+    const delta = this._clock.getDelta()
 
     // VRMコンポーネントを更新
     if (this.model) {
-      this.model.update(delta);
-      this.updateBreathing(delta); // 呼吸運動を更新
-      this.lowerArms(); // 腕を下げる
+      this.model.update(delta)
+      this.updateBreathing(delta) // 呼吸運動を更新
+      this.lowerArms() // 腕を下げる
     }
 
     if (this._renderer && this._camera) {
       this._renderer.render(this._scene, this._camera)
     }
-  };
+  }
 
   private lowerArms() {
-    if (!this.model?.vrm) return;
+    if (!this.model?.vrm) return
 
-    const rightArm = this.model.vrm.humanoid.getRawBoneNode('rightUpperArm');
-    const leftArm = this.model.vrm.humanoid.getRawBoneNode('leftUpperArm');
+    const rightArm = this.model.vrm.humanoid.getRawBoneNode('rightUpperArm')
+    const leftArm = this.model.vrm.humanoid.getRawBoneNode('leftUpperArm')
 
-    if (rightArm) rightArm.rotation.z = Math.PI / 3;
-    if (leftArm) leftArm.rotation.z = -Math.PI / 3;
+    // より自然な腕の角度に調整（Tポーズから自然な立ち姿に）
+    if (rightArm) {
+      rightArm.rotation.z = -Math.PI / 2.5 // 右腕を下に60度
+    }
+    if (leftArm) {
+      leftArm.rotation.z = Math.PI / 2.5 // 左腕を下に60度
+    }
+
+    // // 拳を握らせる
+    // this.makeHandsFist()
+  }
+
+  private makeHandsFist() {
+    if (!this.model?.vrm) return
+
+    // 親指を曲げる（全関節）
+    const thumbParts = ['Proximal', 'Intermediate', 'Distal']
+    thumbParts.forEach((part) => {
+      const rightThumb = this.model?.vrm?.humanoid.getRawBoneNode(
+        `rightThumb${part}` as any
+      )
+      const leftThumb = this.model?.vrm?.humanoid.getRawBoneNode(
+        `leftThumb${part}` as any
+      )
+      if (rightThumb) {
+        rightThumb.rotation.x = -Math.PI / 6 // 右親指を内側に45度
+        rightThumb.rotation.z = -Math.PI / 6 // 関節も少し曲げる
+      }
+      if (leftThumb) {
+        leftThumb.rotation.x = -Math.PI / 6 // 左親指を内側に45度
+        leftThumb.rotation.z = Math.PI / 6 // 関節も少し曲げる
+      }
+    })
+
+    // 他の4本の指を曲げる（全関節）
+    const fingerParts = ['Proximal', 'Intermediate', 'Distal']
+    const fingerTypes = ['Index', 'Middle', 'Ring', 'Little']
+
+    fingerTypes.forEach((fingerType) => {
+      fingerParts.forEach((part) => {
+        const rightFinger = this.model?.vrm?.humanoid.getRawBoneNode(
+          `right${fingerType}${part}` as any
+        )
+        const leftFinger = this.model?.vrm?.humanoid.getRawBoneNode(
+          `left${fingerType}${part}` as any
+        )
+
+        if (rightFinger) rightFinger.rotation.z = -Math.PI / 6 // 右手の指を60度曲げる
+        if (leftFinger) leftFinger.rotation.z = Math.PI / 6 // 左手の指を60度曲げる
+      })
+    })
   }
 
   private updateBreathing(delta: number) {
-    if (!this.model?.vrm) return;
+    if (!this.model?.vrm) return
 
-    const chest = this.model.vrm.humanoid.getRawBoneNode('chest');
-    const spine = this.model.vrm.humanoid.getRawBoneNode('spine');
-    const upperChest = this.model.vrm.humanoid.getRawBoneNode('upperChest');
+    const chest = this.model.vrm.humanoid.getRawBoneNode('chest')
+    const spine = this.model.vrm.humanoid.getRawBoneNode('spine')
+    const upperChest = this.model.vrm.humanoid.getRawBoneNode('upperChest')
 
     if (chest && spine && upperChest) {
-      this._breathingTime += delta;
-      const swayAngle = Math.sin(this._breathingTime * Math.PI * 2 * this._breathingFrequency) * this._breathingAmplitude;
-      chest.rotation.z = swayAngle;
-      spine.rotation.z = swayAngle;
-      upperChest.rotation.z = swayAngle;
+      this._breathingTime += delta
+      const swayAngle =
+        Math.sin(this._breathingTime * Math.PI * 2 * this._breathingFrequency) *
+        this._breathingAmplitude
+      chest.rotation.z = swayAngle
+      spine.rotation.z = swayAngle
+      upperChest.rotation.z = swayAngle
     }
   }
 
