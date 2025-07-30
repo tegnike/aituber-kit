@@ -1,98 +1,59 @@
-import { MessageInput } from "@/components/messageInput";
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from 'react'
+import { MessageInput } from '@/components/messageInput'
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { useVoiceRecognition } from '@/hooks/useVoiceRecognition'
 
+// 無音検出用の状態と変数を追加
 type Props = {
-  isChatProcessing: boolean;
-  onChatProcessStart: (text: string) => void;
-  selectVoiceLanguage: string;
-};
+  onChatProcessStart: (text: string) => void
+}
 
-/**
- * テキスト入力と音声入力を提供する
- *
- * 音声認識の完了時は自動で送信し、返答文の生成中は入力を無効化する
- *
- */
-export const MessageInputContainer = ({
-  isChatProcessing,
-  onChatProcessStart,
-  selectVoiceLanguage
-}: Props) => {
-  const [userMessage, setUserMessage] = useState("");
-  const [speechRecognition, setSpeechRecognition] =
-    useState<SpeechRecognition>();
-  const [isMicRecording, setIsMicRecording] = useState(false);
+export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
+  const isSpeaking = homeStore((s) => s.isSpeaking)
+  const continuousMicListeningMode = settingsStore(
+    (s) => s.continuousMicListeningMode
+  )
+  const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
 
-  // 音声認識の結果を処理する
-  const handleRecognitionResult = useCallback(
-    (event: SpeechRecognitionEvent) => {
-      const text = event.results[0][0].transcript;
-      setUserMessage(text);
+  // 音声認識フックを使用
+  const {
+    userMessage,
+    isListening,
+    silenceTimeoutRemaining,
+    handleInputChange,
+    handleSendMessage,
+    toggleListening,
+    handleStopSpeaking,
+    startListening,
+    stopListening,
+  } = useVoiceRecognition({ onChatProcessStart })
 
-      // 発言の終了時
-      if (event.results[0].isFinal) {
-        setUserMessage(text);
-        // 返答文の生成を開始
-        onChatProcessStart(text);
-      }
-    },
-    [onChatProcessStart]
-  );
+  // 常時マイク入力モードの切り替え
+  const toggleContinuousMode = () => {
+    // Whisperモードの場合は常時マイク入力モードを使用できない
+    if (speechRecognitionMode === 'whisper') return
 
-  // 無音が続いた場合も終了する
-  const handleRecognitionEnd = useCallback(() => {
-    setIsMicRecording(false);
-  }, []);
-
-  const handleClickMicButton = useCallback(() => {
-    if (isMicRecording) {
-      speechRecognition?.abort();
-      setIsMicRecording(false);
-
-      return;
-    }
-
-    speechRecognition?.start();
-    setIsMicRecording(true);
-  }, [isMicRecording, speechRecognition]);
-
-  const handleClickSendButton = useCallback(() => {
-    onChatProcessStart(userMessage);
-  }, [onChatProcessStart, userMessage]);
-
-  useEffect(() => {
-    const SpeechRecognition =
-      window.webkitSpeechRecognition || window.SpeechRecognition;
-
-    // FirefoxなどSpeechRecognition非対応環境対策
-    if (!SpeechRecognition) {
-      return;
-    }
-    const recognition = new SpeechRecognition();
-    recognition.lang = selectVoiceLanguage;
-    recognition.interimResults = true; // 認識の途中結果を返す
-    recognition.continuous = false; // 発言の終了時に認識を終了する
-
-    recognition.addEventListener("result", handleRecognitionResult);
-    recognition.addEventListener("end", handleRecognitionEnd);
-
-    setSpeechRecognition(recognition);
-  }, [handleRecognitionResult, handleRecognitionEnd, selectVoiceLanguage]);
-
-  useEffect(() => {
-    if (!isChatProcessing) {
-      setUserMessage("");
-    }
-  }, [isChatProcessing]);
+    // 現在のモードを反転して設定
+    settingsStore.setState({
+      continuousMicListeningMode: !continuousMicListeningMode,
+    })
+  }
 
   return (
     <MessageInput
       userMessage={userMessage}
-      isChatProcessing={isChatProcessing}
-      isMicRecording={isMicRecording}
-      onChangeUserMessage={(e) => setUserMessage(e.target.value)}
-      onClickMicButton={handleClickMicButton}
-      onClickSendButton={handleClickSendButton}
+      isMicRecording={isListening}
+      onChangeUserMessage={handleInputChange}
+      onClickMicButton={toggleListening}
+      onClickSendButton={handleSendMessage}
+      onClickStopButton={handleStopSpeaking}
+      isSpeaking={isSpeaking}
+      silenceTimeoutRemaining={silenceTimeoutRemaining}
+      continuousMicListeningMode={
+        continuousMicListeningMode && speechRecognitionMode === 'browser'
+      }
+      onToggleContinuousMode={toggleContinuousMode}
     />
-  );
-};
+  )
+}

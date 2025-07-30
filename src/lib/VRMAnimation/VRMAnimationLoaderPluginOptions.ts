@@ -1,2 +1,1 @@
-export interface VRMAnimationLoaderPluginOptions {
-}
+export interface VRMAnimationLoaderPluginOptions {}

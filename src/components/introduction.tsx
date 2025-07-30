@@ -1,171 +1,155 @@
-import { useState, useCallback } from "react";
-import { Link } from "./link";
-import { IconButton } from "./iconButton";
+import i18n from 'i18next'
+import { useEffect, useState } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
 
-type Props = {
-  openAiKey: string;
-  koeiroMapKey: string;
-  onChangeAiKey: (openAiKey: string) => void;
-  onChangeKoeiromapKey: (koeiromapKey: string) => void;
-};
-export const Introduction = ({
-  openAiKey,
-  koeiroMapKey,
-  onChangeAiKey,
-  onChangeKoeiromapKey,
-}: Props) => {
-  const [opened, setOpened] = useState(true);
+import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { IconButton } from './iconButton'
+import { Link } from './link'
+import { isLanguageSupported } from '@/features/constants/settings'
 
-  const handleAiKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeAiKey(event.target.value);
-    },
-    [onChangeAiKey]
-  );
+export const Introduction = () => {
+  const showIntroduction = homeStore((s) => s.showIntroduction)
+  const selectLanguage = settingsStore((s) => s.selectLanguage)
 
-  const handleKoeiromapKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeKoeiromapKey(event.target.value);
-    },
-    [onChangeKoeiromapKey]
-  );
+  const [displayIntroduction, setDisplayIntroduction] = useState(false)
+  const [opened, setOpened] = useState(true)
+  const [dontShowAgain, setDontShowAgain] = useState(false)
 
-  return opened ? (
-    <div className="absolute z-40 w-full h-full px-24 py-40 bg-black/30 font-M_PLUS_2">
-      <div className="relative mx-auto my-auto max-w-3xl max-h-full p-24 overflow-auto bg-white rounded-16">
-      <IconButton
-          iconName="24/Close"
-          isProcessing={false}
-          onClick={() => setOpened(false)}
-          className="absolute top-8 right-8 bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white"
-        ></IconButton>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary ">
-            このアプリケーションについて
+  const { t } = useTranslation()
+
+  useEffect(() => {
+    setDisplayIntroduction(homeStore.getState().showIntroduction)
+  }, [showIntroduction])
+
+  const updateLanguage = () => {
+    console.log('i18n.language', i18n.language)
+
+    let languageCode = i18n.language
+
+    settingsStore.setState({
+      selectLanguage: isLanguageSupported(languageCode) ? languageCode : 'ja',
+    })
+  }
+
+  const handleClose = () => {
+    setOpened(false)
+    updateLanguage()
+
+    // Only update showIntroduction if "don't show again" is checked
+    if (dontShowAgain) {
+      homeStore.setState({
+        showIntroduction: false,
+      })
+    }
+  }
+
+  return displayIntroduction && opened ? (
+    <div className="absolute z-40 w-full h-full px-6 py-10 bg-black/30 font-M_PLUS_2">
+      <div className="relative mx-auto my-auto max-w-3xl max-h-full p-6 overflow-y-auto bg-white rounded-2xl">
+        <div className="sticky top-0 right-0 z-10 flex justify-end">
+          <IconButton
+            iconName="24/Close"
+            isProcessing={false}
+            onClick={handleClose}
+            className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-theme"
+          ></IconButton>
+        </div>
+        <div className="mb-6">
+          <div className="mb-2 font-bold text-xl text-secondary ">
+            {t('AboutThisApplication')}
           </div>
           <div>
-            Webブラウザだけで3Dキャラクターとの会話を、マイクやテキスト入力、音声合成を用いて楽しめます。キャラクター（VRM）の変更や性格設定、音声調整もできます。<br />
-            設定は左上のメニューボタンから変更できます。
+            <Trans i18nKey="AboutThisApplicationDescription2" />
           </div>
         </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary ">
-            About This Application
+        <div className="my-6">
+          <div className="my-2 font-bold text-xl text-secondary">
+            {t('TechnologyIntroduction')}
           </div>
           <div>
-            Enjoy conversations with a 3D character right in your web browser, using microphone or text input and voice synthesis. You can also change the character (VRM), adjust its personality, and modify its voice.<br />
-            Settings can be changed from the menu button in the top left.
-          </div>
-        </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            技術紹介
-          </div>
-          <div>
-            3Dモデルの表示や操作には
-            <Link
-              url={"https://github.com/pixiv/three-vrm"}
-              label={"@pixiv/three-vrm"}
+            <Trans
+              i18nKey="TechnologyIntroductionDescription1"
+              components={{ b: <b /> }}
             />
-            、 会話文生成には
+            <Link
+              url={'https://github.com/pixiv/ChatVRM'}
+              label={t('TechnologyIntroductionLink1')}
+            />
+            {t('TechnologyIntroductionDescription2')}
+          </div>
+          <div className="my-4">
+            {t('TechnologyIntroductionDescription3')}
+            <Link
+              url={'https://github.com/pixiv/three-vrm'}
+              label={'@pixiv/three-vrm'}
+            />
+            {t('TechnologyIntroductionDescription4')}
             <Link
               url={
-                "https://openai.com/blog/introducing-chatgpt-and-whisper-apis"
+                'https://openai.com/blog/introducing-chatgpt-and-whisper-apis'
               }
-              label={"ChatGPT API"}
+              label={'OpenAI API'}
             />
-            、 音声合成には
-            <Link url={"https://koemotion.rinna.co.jp/"} label={"Koemotion"} />
-            の
+            {t('TechnologyIntroductionDescription5')}
             <Link
               url={
-                "https://developers.rinna.co.jp/product/#product=koeiromap-free"
+                'https://developers.rinna.co.jp/product/#product=koeiromap-free'
               }
-              label={"Koeiromap API"}
+              label={'Koemotion'}
             />
-            を使用しています。 詳細はこちらの
+            {t('TechnologyIntroductionDescription6')}
             <Link
-              url={"https://inside.pixiv.blog/2023/04/28/160000"}
-              label={"技術解説記事"}
+              url={'https://note.com/nike_cha_n/n/ne98acb25e00f'}
+              label={t('TechnologyIntroductionLink2')}
             />
-            をご覧ください。
+            {t('TechnologyIntroductionDescription7')}
           </div>
-          <div className="my-16">
-            このデモはGitHubでソースコードを公開しています。自由に変更や改変をお試しください！
+          <div className="my-4">
+            {t('SourceCodeDescription1')}
             <br />
-            リポジトリ：
+            {t('RepositoryURL')}
+            <span> </span>
             <Link
-              url={"https://github.com/tegnike/nike-ChatVRM"}
-              label={"https://github.com/tegnike/nike-ChatVRM"}
+              url={'https://github.com/tegnike/aituber-kit'}
+              label={'https://github.com/tegnike/aituber-kit'}
             />
           </div>
+          <div className="my-4">{t('SourceCodeDescription2')}</div>
         </div>
 
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            利用上の注意
-          </div>
-          <div>
-            差別的または暴力的な発言、特定の人物を貶めるような発言を、意図的に誘導しないでください。また、VRMモデルを使ってキャラクターを差し替える際はモデルの利用条件に従ってください。
-          </div>
+        <div className="my-6">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={dontShowAgain}
+              onChange={(e) => {
+                setDontShowAgain(e.target.checked)
+              }}
+              className="mr-2"
+            />
+            <span>{t('DontShowIntroductionNextTime')}</span>
+          </label>
         </div>
 
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            Koeiromap APIキー
-          </div>
-          <input
-            type="text"
-            placeholder="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            value={koeiroMapKey}
-            onChange={handleKoeiromapKeyChange}
-            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-          ></input>
-          <div>
-            APIキーはrinna Developersから発行してください。
-            <Link
-              url="https://developers.rinna.co.jp/product/#product=koeiromap-free"
-              label="詳細はこちら"
-            />
-          </div>
-        </div>
-        <div className="my-24">
-          <div className="my-8 font-bold typography-20 text-secondary">
-            OpenAI APIキー
-          </div>
-          <input
-            type="text"
-            placeholder="sk-..."
-            value={openAiKey}
-            onChange={handleAiKeyChange}
-            className="my-4 px-16 py-8 w-full h-40 bg-surface3 hover:bg-surface3-hover rounded-4 text-ellipsis"
-          ></input>
-          <div>
-            APIキーは
-            <Link
-              url="https://platform.openai.com/account/api-keys"
-              label="OpenAIのサイト"
-            />
-            で取得できます。取得したAPIキーをフォームに入力してください。
-          </div>
-          <div className="my-16">
-            ChatGPT
-            APIはブラウザから直接アクセスしています。また、APIキーや会話内容はピクシブのサーバには保存されません。
-            <br />
-            ※利用しているモデルはChatGPT API (GPT-3.5)です。
-          </div>
-        </div>
-        <div className="my-24">
+        <div className="my-6">
           <button
-            onClick={() => {
-              setOpened(false);
-            }}
-            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-white px-24 py-8 rounded-oval"
+            onClick={handleClose}
+            className="font-bold bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled text-theme px-6 py-2 rounded-full"
           >
-           閉じる（CLOSE）
+            {t('Close')}
           </button>
         </div>
+
+        {selectLanguage === 'ja' && (
+          <div className="mt-6">
+            <p>
+              You can select the language from the settings. Japanese, English,
+              Traditional Chinese and Korean are available.
+            </p>
+          </div>
+        )}
       </div>
     </div>
-  ) : null;
-};
+  ) : null
+}

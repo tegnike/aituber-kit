@@ -1,0 +1,16 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "peacock.color": "#604669",
+  "workbench.colorCustomizations": {
+    "tab.activeBorder": "#7c5a88",
+    "statusBar.background": "#604669",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#7c5a88",
+    "statusBarItem.remoteBackground": "#604669",
+    "statusBarItem.remoteForeground": "#e7e7e7"
+  }
+}

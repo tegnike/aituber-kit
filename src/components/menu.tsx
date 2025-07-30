@@ -1,372 +1,380 @@
-import { IconButton } from "./iconButton";
-import { Message } from "@/features/messages/messages";
-import { KoeiroParam } from "@/features/constants/koeiroParam";
-import { ChatLog } from "./chatLog";
-import { CodeLog } from "./codeLog";
-import React, { useCallback, useContext, useRef, useState } from "react";
-import { Settings } from "./settings";
-import { ViewerContext } from "@/features/vrmViewer/viewerContext";
-import { AssistantText } from "./assistantText";
-import { useTranslation } from 'react-i18next';
-import { testVoice } from "@/features/messages/speakCharacter";
+import React, { useCallback, useRef, useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
-type Props = {
-  selectAIService: string;
-  setSelectAIService: (service: string) => void;
-  selectAIModel: string;
-  setSelectAIModel: (model: string) => void;
-  openAiKey: string;
-  onChangeOpenAiKey: (key: string) => void;
-  anthropicKey: string;
-  onChangeAnthropicKey: (key: string) => void;
-  groqKey: string;
-  onChangeGroqKey: (key: string) => void;
-  difyKey: string;
-  onChangeDifyKey: (key: string) => void;
-  difyUrl: string;
-  onChangeDifyUrl: (url: string) => void;
-  systemPrompt: string;
-  chatLog: Message[];
-  codeLog: Message[];
-  koeiroParam: KoeiroParam;
-  assistantMessage: string;
-  koeiromapKey: string;
-  voicevoxSpeaker: string;
-  googleTtsType: string;
-  stylebertvits2ServerUrl: string;
-  onChangeStyleBertVits2ServerUrl: (key: string) => void;
-  stylebertvits2ModelId: string;
-  onChangeStyleBertVits2ModelId: (key: string) => void;
-  stylebertvits2Style: string;
-  onChangeStyleBertVits2Style: (key: string) => void;
-  youtubeMode: boolean;
-  youtubeApiKey: string;
-  youtubeLiveId: string;
-  onChangeSystemPrompt: (systemPrompt: string) => void;
-  onChangeChatLog: (index: number, text: string) => void;
-  onChangeCodeLog: (index: number, text: string) => void;
-  onChangeKoeiromapParam: (param: KoeiroParam) => void;
-  handleClickResetChatLog: () => void;
-  handleClickResetCodeLog: () => void;
-  handleClickResetSystemPrompt: () => void;
-  onChangeKoeiromapKey: (key: string) => void;
-  onChangeVoicevoxSpeaker: (speaker: string) => void;
-  onChangeGoogleTtsType: (key: string) => void;
-  onChangeYoutubeMode: (mode: boolean) => void;
-  onChangeYoutubeApiKey: (key: string) => void;
-  onChangeYoutubeLiveId: (key: string) => void;
-  webSocketMode: boolean;
-  changeWebSocketMode: (show: boolean) => void;
-  selectVoice: string;
-  setSelectVoice: (show: string) => void;
-  selectLanguage: string;
-  setSelectLanguage: (show: string) => void;
-  setSelectVoiceLanguage: (show: string) => void;
-};
-export const Menu = ({
-  selectAIService,
-  setSelectAIService,
-  selectAIModel,
-  setSelectAIModel,
-  openAiKey,
-  onChangeOpenAiKey,
-  anthropicKey,
-  onChangeAnthropicKey,
-  groqKey,
-  onChangeGroqKey,
-  difyKey,
-  onChangeDifyKey,
-  difyUrl,
-  onChangeDifyUrl,
-  systemPrompt,
-  chatLog,
-  codeLog,
-  koeiroParam,
-  assistantMessage,
-  koeiromapKey,
-  voicevoxSpeaker,
-  googleTtsType,
-  stylebertvits2ServerUrl,
-  stylebertvits2ModelId,
-  stylebertvits2Style,
-  youtubeMode,
-  youtubeApiKey,
-  youtubeLiveId,
-  onChangeSystemPrompt,
-  onChangeChatLog,
-  onChangeCodeLog,
-  onChangeKoeiromapParam,
-  handleClickResetChatLog,
-  handleClickResetCodeLog,
-  handleClickResetSystemPrompt,
-  onChangeKoeiromapKey,
-  onChangeVoicevoxSpeaker,
-  onChangeGoogleTtsType,
-  onChangeStyleBertVits2ServerUrl,
-  onChangeStyleBertVits2ModelId,
-  onChangeStyleBertVits2Style,
-  onChangeYoutubeMode,
-  onChangeYoutubeApiKey,
-  onChangeYoutubeLiveId,
-  webSocketMode,
-  changeWebSocketMode,
-  selectVoice,
-  setSelectVoice,
-  selectLanguage,
-  setSelectLanguage,
-  setSelectVoiceLanguage,
-}: Props) => {
-  const [showSettings, setShowSettings] = useState(false);
-  const [showChatLog, setShowChatLog] = useState(false);
-  const { viewer } = useContext(ViewerContext);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { t } = useTranslation();
+import homeStore from '@/features/stores/home'
+import menuStore from '@/features/stores/menu'
+import settingsStore from '@/features/stores/settings'
+import slideStore from '@/features/stores/slide'
+import { AssistantText } from './assistantText'
+import { ChatLog } from './chatLog'
+import { IconButton } from './iconButton'
+import Settings from './settings'
+import { Webcam } from './webcam'
+import Slides from './slides'
+import Capture from './capture'
+import { isMultiModalAvailable } from '@/features/constants/aiModels'
+import { AIService } from '@/features/constants/settings'
+import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 
-  const handleChangeSystemPrompt = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onChangeSystemPrompt(event.target.value);
-    },
-    [onChangeSystemPrompt]
-  );
+// モバイルデバイス検出用のカスタムフック
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
 
-  const handleOpenAiKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeOpenAiKey(event.target.value);
-    },
-    [onChangeOpenAiKey]
-  );
+  useEffect(() => {
+    // モバイルデバイス検出用の関数
+    const checkMobile = () => {
+      setIsMobile(
+        window.innerWidth <= 768 ||
+          /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+      )
+    }
 
-  const handleAnthropicKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeAnthropicKey(event.target.value);
-    },
-    [onChangeAnthropicKey]
-  );
+    // 初回レンダリング時とウィンドウサイズ変更時に検出
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
-  const handleGroqKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGroqKey(event.target.value);
-    },
-    [onChangeGroqKey]
-  );
+  return isMobile
+}
 
-  const handleDifyKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeDifyKey(event.target.value);
-    },
-    [onChangeDifyKey]
-  );
+export const Menu = () => {
+  const selectAIService = settingsStore((s) => s.selectAIService)
+  const selectAIModel = settingsStore((s) => s.selectAIModel)
+  const enableMultiModal = settingsStore((s) => s.enableMultiModal)
+  const multiModalMode = settingsStore((s) => s.multiModalMode)
+  const customModel = settingsStore((s) => s.customModel)
+  const youtubeMode = settingsStore((s) => s.youtubeMode)
+  const youtubePlaying = settingsStore((s) => s.youtubePlaying)
+  const slideMode = settingsStore((s) => s.slideMode)
+  const slideVisible = menuStore((s) => s.slideVisible)
+  const chatLog = homeStore((s) => s.chatLog)
+  const showWebcam = menuStore((s) => s.showWebcam)
+  const showControlPanel = settingsStore((s) => s.showControlPanel)
+  const showCapture = menuStore((s) => s.showCapture)
+  const slidePlaying = slideStore((s) => s.isPlaying)
+  const showAssistantText = settingsStore((s) => s.showAssistantText)
 
-  const handleDifyUrlChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeDifyUrl(event.target.value);
-    },
-    [onChangeDifyUrl]
-  );
+  const [showSettings, setShowSettings] = useState(false)
+  // 会話ログ表示モード
+  const CHAT_LOG_MODE = {
+    HIDDEN: 0, // 非表示
+    ASSISTANT: 1, // アシスタントテキスト
+    CHAT_LOG: 2, // 会話ログ
+  } as const
 
-  const handleChangeKoeiromapKey = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeKoeiromapKey(event.target.value);
-    },
-    [onChangeKoeiromapKey]
-  );
+  const [chatLogMode, setChatLogMode] = useState<number>(
+    CHAT_LOG_MODE.ASSISTANT
+  )
+  const [showPermissionModal, setShowPermissionModal] = useState(false)
+  const imageFileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleVoicevoxSpeakerChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      onChangeVoicevoxSpeaker(event.target.value);
-    },
-    [onChangeVoicevoxSpeaker]
-  );
+  // ロングタップ用のステート
+  const [touchStartTime, setTouchStartTime] = useState<number | null>(null)
+  const [touchEndTime, setTouchEndTime] = useState<number | null>(null)
 
-  const handleChangeGoogleTtsType = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeGoogleTtsType(event.target.value);
-    },
-    [onChangeGoogleTtsType]
-  );
+  // モバイルデバイス検出
+  const isMobile = useIsMobile()
 
-  const handleChangeStyleBertVits2ServerUrl = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeStyleBertVits2ServerUrl(event.target.value);
-    },
-    [onChangeStyleBertVits2ServerUrl]
-  );
+  const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
+  const { t } = useTranslation()
 
-  const handleChangeStyleBertVits2ModelId = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeStyleBertVits2ModelId(event.target.value);
-    },
-    [onChangeStyleBertVits2ModelId]
-  );
+  const [markdownContent, setMarkdownContent] = useState('')
 
-  const handleChangeStyleBertVits2Style = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeStyleBertVits2Style(event.target.value);
-    },
-    [onChangeStyleBertVits2Style]
-  );
+  // ロングタップ処理用の関数
+  const handleTouchStart = () => {
+    setTouchStartTime(Date.now())
+  }
 
-  const handleYoutubeApiKeyChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeYoutubeApiKey(event.target.value);
-    },
-    [onChangeYoutubeApiKey]
-  );
+  const handleTouchEnd = () => {
+    setTouchEndTime(Date.now())
+    if (touchStartTime && Date.now() - touchStartTime >= 800) {
+      // 800ms以上押し続けるとロングタップと判定
+      setShowSettings(true)
+    }
+    setTouchStartTime(null)
+  }
 
-  const handleYoutubeLiveIdChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeYoutubeLiveId(event.target.value);
-    },
-    [onChangeYoutubeLiveId]
-  );
+  const handleTouchCancel = () => {
+    setTouchStartTime(null)
+  }
 
-  const handleChangeKoeiroParam = useCallback(
-    (x: number, y: number) => {
-      onChangeKoeiromapParam({
-        speakerX: x,
-        speakerY: y,
-      });
-    },
-    [onChangeKoeiromapParam]
-  );
+  useEffect(() => {
+    if (!selectedSlideDocs) return
 
-  const handleWebSocketMode = useCallback(
-    (show: boolean) => {
-      changeWebSocketMode(show);
-      if (webSocketMode) {
-        onChangeYoutubeMode(false);
-      }
-    },
-    [changeWebSocketMode, webSocketMode, onChangeYoutubeMode]
-  );
-  const handleClickOpenVrmFile = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
+    fetch(`/slides/${selectedSlideDocs}/slides.md`)
+      .then((response) => response.text())
+      .then((text) => setMarkdownContent(text))
+      .catch((error) =>
+        console.error('Failed to fetch markdown content:', error)
+      )
+  }, [selectedSlideDocs])
 
-  const handleClickTestVoice = (speaker: string) => {
-    testVoice(viewer, speaker);
-  };
+  // アシスタントメッセージ
+  const latestAssistantMessage = getLatestAssistantMessage(chatLog)
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      if (!files) return;
+      const files = event.target.files
+      if (!files) return
 
-      const file = files[0];
-      if (!file) return;
+      const file = files[0]
+      if (!file) return
 
-      const file_type = file.name.split(".").pop();
+      const file_type = file.name.split('.').pop()
 
-      if (file_type === "vrm") {
-        const blob = new Blob([file], { type: "application/octet-stream" });
-        const url = window.URL.createObjectURL(blob);
-        viewer.loadVrm(url);
+      if (file_type === 'vrm') {
+        const blob = new Blob([file], { type: 'application/octet-stream' })
+        const url = window.URL.createObjectURL(blob)
+
+        const hs = homeStore.getState()
+        hs.viewer.loadVrm(url)
       }
 
-      event.target.value = "";
+      event.target.value = ''
     },
-    [viewer]
-  );
+    []
+  )
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === '.') {
+        setShowSettings((prevState) => !prevState)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('onChangeWebcamStatus')
+    homeStore.setState({ webcamStatus: showWebcam })
+
+    if (showWebcam) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(() => {
+          setShowPermissionModal(false)
+        })
+        .catch(() => {
+          setShowPermissionModal(true)
+          homeStore.setState({ webcamStatus: false })
+          menuStore.setState({ showWebcam: false })
+        })
+    }
+  }, [showWebcam])
+
+  useEffect(() => {
+    console.log('onChangeCaptureStatus')
+    homeStore.setState({ captureStatus: showCapture })
+  }, [showCapture])
+
+  useEffect(() => {
+    if (!youtubePlaying) {
+      settingsStore.setState({
+        youtubeContinuationCount: 0,
+        youtubeNoCommentCount: 0,
+        youtubeSleepMode: false,
+      })
+    }
+  }, [youtubePlaying])
+
+  const toggleCapture = useCallback(() => {
+    menuStore.setState(({ showCapture }) => ({ showCapture: !showCapture }))
+    menuStore.setState({ showWebcam: false }) // Captureを表示するときWebcamを非表示にする
+    if (!showCapture) {
+      homeStore.setState({ webcamStatus: false }) // Ensure webcam status is false when enabling capture
+    }
+  }, [showCapture])
+
+  const toggleWebcam = useCallback(() => {
+    menuStore.setState(({ showWebcam }) => ({ showWebcam: !showWebcam }))
+    menuStore.setState({ showCapture: false }) // Webcamを表示するときCaptureを非表示にする
+    if (!showWebcam) {
+      homeStore.setState({ captureStatus: false }) // Ensure capture status is false when enabling webcam
+    }
+  }, [showWebcam])
 
   return (
     <>
-      <div className="absolute z-10 m-24">
-        <div className="grid grid-flow-col gap-[8px]">
-          <IconButton
-            iconName="24/Settings"
-            isProcessing={false}
-            onClick={() => setShowSettings(true)}
-          ></IconButton>
-          {showChatLog ? (
-            <IconButton
-              iconName="24/CommentOutline"
-              label={webSocketMode ? t('CodeLog') : t('ChatLog')}
-              isProcessing={false}
-              onClick={() => setShowChatLog(false)}
-            />
-          ) : (
-            <IconButton
-              iconName="24/CommentFill"
-              label={webSocketMode ? t('CodeLog') : t('ChatLog')}
-              isProcessing={false}
-              disabled={chatLog.length <= 0}
-              onClick={() => setShowChatLog(true)}
-            />
+      {/* ロングタップ用の透明な領域（モバイルでコントロールパネルが非表示の場合） */}
+      {isMobile === true && !showControlPanel && (
+        <div
+          className="absolute top-0 left-0 z-30 w-20 h-20"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchCancel}
+        >
+          <div className="w-full h-full opacity-0"></div>
+        </div>
+      )}
+
+      <div className="absolute z-15 m-6">
+        <div
+          className="grid md:grid-flow-col gap-[8px] mb-10"
+          style={{ width: 'max-content' }}
+        >
+          {showControlPanel && (
+            <>
+              <div className="md:order-1 order-2">
+                <IconButton
+                  iconName="24/Settings"
+                  isProcessing={false}
+                  onClick={() => setShowSettings(true)}
+                ></IconButton>
+              </div>
+              <div className="md:order-2 order-1">
+                <IconButton
+                  iconName={
+                    chatLogMode === CHAT_LOG_MODE.CHAT_LOG
+                      ? '24/CommentOutline'
+                      : chatLogMode === CHAT_LOG_MODE.ASSISTANT
+                        ? '24/CommentFill'
+                        : '24/Close'
+                  }
+                  label={t('ChatLog')}
+                  isProcessing={false}
+                  onClick={() => setChatLogMode((prev) => (prev + 1) % 3)}
+                />
+              </div>
+              {!youtubeMode && (
+                <>
+                  <div className="order-3">
+                    <IconButton
+                      iconName="screen-share"
+                      isProcessing={false}
+                      onClick={toggleCapture}
+                    />
+                  </div>
+                  <div className="order-4">
+                    <IconButton
+                      iconName="24/Camera"
+                      isProcessing={false}
+                      onClick={toggleWebcam}
+                    />
+                  </div>
+                  {isMultiModalAvailable(
+                    selectAIService as AIService,
+                    selectAIModel,
+                    enableMultiModal,
+                    multiModalMode,
+                    customModel
+                  ) && (
+                    <div className="order-4">
+                      <IconButton
+                        iconName="24/AddImage"
+                        isProcessing={false}
+                        onClick={() => imageFileInputRef.current?.click()}
+                      />
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        ref={imageFileInputRef}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            const reader = new FileReader()
+                            reader.onload = (e) => {
+                              const imageUrl = e.target?.result as string
+                              homeStore.setState({ modalImage: imageUrl })
+                            }
+                            reader.readAsDataURL(file)
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+              {youtubeMode && (
+                <div className="order-5">
+                  <IconButton
+                    iconName={youtubePlaying ? '24/PauseAlt' : '24/Video'}
+                    isProcessing={false}
+                    onClick={() =>
+                      settingsStore.setState({
+                        youtubePlaying: !youtubePlaying,
+                      })
+                    }
+                  />
+                </div>
+              )}
+              {slideMode && (
+                <div className="order-5">
+                  <IconButton
+                    iconName="24/FrameEffect"
+                    isProcessing={false}
+                    onClick={() =>
+                      menuStore.setState({ slideVisible: !slideVisible })
+                    }
+                    disabled={slidePlaying}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
-      {
-        webSocketMode ? 
-          (showChatLog && <CodeLog messages={codeLog} />) :
-          (showChatLog && <ChatLog messages={chatLog} />)
-      }
-      {showSettings && (
-        <Settings
-          selectAIService={selectAIService}
-          setSelectAIService={setSelectAIService}
-          selectAIModel={selectAIModel}
-          setSelectAIModel={setSelectAIModel}
-          openAiKey={openAiKey}
-          onChangeOpenAiKey={handleOpenAiKeyChange}
-          anthropicKey={anthropicKey}
-          onChangeAnthropicKey={handleAnthropicKeyChange}
-          groqKey={groqKey}
-          onChangeGroqKey={handleGroqKeyChange}
-          difyKey={difyKey}
-          onChangeDifyKey={handleDifyKeyChange}
-          difyUrl={difyUrl}
-          onChangeDifyUrl={handleDifyUrlChange}
-          chatLog={chatLog}
-          codeLog={codeLog}
-          systemPrompt={systemPrompt}
-          koeiroParam={koeiroParam}
-          koeiromapKey={koeiromapKey}
-          voicevoxSpeaker={voicevoxSpeaker}
-          googleTtsType={googleTtsType}
-          stylebertvits2ServerUrl={stylebertvits2ServerUrl}
-          stylebertvits2ModelId={stylebertvits2ModelId}
-          stylebertvits2Style={stylebertvits2Style}
-          youtubeMode={youtubeMode}
-          youtubeApiKey={youtubeApiKey}
-          youtubeLiveId={youtubeLiveId}
-          onClickClose={() => setShowSettings(false)}
-          onChangeSystemPrompt={handleChangeSystemPrompt}
-          onChangeChatLog={onChangeChatLog}
-          onChangeCodeLog={onChangeCodeLog}
-          onChangeKoeiroParam={handleChangeKoeiroParam}
-          onClickOpenVrmFile={handleClickOpenVrmFile}
-          onClickResetChatLog={handleClickResetChatLog}
-          onClickResetCodeLog={handleClickResetCodeLog}
-          onClickResetSystemPrompt={handleClickResetSystemPrompt}
-          onChangeKoeiromapKey={handleChangeKoeiromapKey}
-          onChangeVoicevoxSpeaker={handleVoicevoxSpeakerChange}
-          onChangeGoogleTtsType={handleChangeGoogleTtsType}
-          onChangeStyleBertVits2ServerUrl={handleChangeStyleBertVits2ServerUrl}
-          onChangeStyleBertVits2ModelId={handleChangeStyleBertVits2ModelId}
-          onChangeStyleBertVits2Style={handleChangeStyleBertVits2Style}
-          onChangeYoutubeMode={onChangeYoutubeMode}
-          onChangeYoutubeApiKey={handleYoutubeApiKeyChange}
-          onChangeYoutubeLiveId={handleYoutubeLiveIdChange}
-          webSocketMode={webSocketMode}
-          onChangeWebSocketMode={handleWebSocketMode}
-          selectVoice = {selectVoice}
-          setSelectVoice = {setSelectVoice}
-          selectLanguage = {selectLanguage}
-          setSelectLanguage = {setSelectLanguage}
-          setSelectVoiceLanguage = {setSelectVoiceLanguage}
-          onClickTestVoice={handleClickTestVoice}
-        />
-      )}
-      {!showChatLog && assistantMessage && (
-        <AssistantText message={assistantMessage} />
+      <div className="relative">
+        {slideMode && slideVisible && <Slides markdown={markdownContent} />}
+      </div>
+      {chatLogMode === CHAT_LOG_MODE.CHAT_LOG && <ChatLog />}
+      {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
+      {chatLogMode === CHAT_LOG_MODE.ASSISTANT &&
+        latestAssistantMessage &&
+        (!slideMode || !slideVisible) &&
+        showAssistantText && <AssistantText message={latestAssistantMessage} />}
+      {showWebcam && navigator.mediaDevices && <Webcam />}
+      {showCapture && <Capture />}
+      {showPermissionModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p>{t('Errors.CameraPermissionMessage')}</p>
+            <button onClick={() => setShowPermissionModal(false)}>
+              {t('Close')}
+            </button>
+          </div>
+        </div>
       )}
       <input
         type="file"
         className="hidden"
         accept=".vrm"
-        ref={fileInputRef}
+        ref={(fileInput) => {
+          if (!fileInput) {
+            menuStore.setState({ fileInput: null })
+            return
+          }
+
+          menuStore.setState({ fileInput })
+        }}
         onChange={handleChangeVrmFile}
       />
+      <input
+        type="file"
+        className="hidden"
+        accept="image/*"
+        ref={(bgFileInput) => {
+          if (!bgFileInput) {
+            menuStore.setState({ bgFileInput: null })
+            return
+          }
+
+          menuStore.setState({ bgFileInput })
+        }}
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) {
+            const imageUrl = URL.createObjectURL(file)
+            homeStore.setState({ backgroundImageUrl: imageUrl })
+          }
+        }}
+      />
     </>
-  );
-};
+  )
+}
