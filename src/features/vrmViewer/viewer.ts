@@ -4,7 +4,6 @@ import { Model } from './model'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { loadMixamoAnimation } from '@/lib/fbxAnimation/loadMixamoAnimation' // いったんコメントアウト
 import settingsStore from '@/features/stores/settings'
 
 /**
@@ -104,11 +103,6 @@ export class Viewer {
         } catch (error) {
           console.error('Error loading default VRMA animation:', error)
         }
-      } else {
-        // FBXアイドルの処理は変更されません。まだ実装されていません。
-        console.warn(
-          'Default FBX idle animation not implemented or path not set for VRMA.'
-        )
       }
 
       // HACK: アニメーションの原点に誤差があるため、後処理でカメラ位置を調整します。
@@ -157,42 +151,6 @@ export class Viewer {
       }
     } catch (error) {
       console.error(`Error loading VRMA animation from ${url}:`, error)
-    }
-  }
-
-  public async loadFbx(
-    url: string,
-    animationName?: string,
-    loop: boolean = true
-  ) {
-    if (!this.model?.vrm) {
-      console.warn('VRM model not loaded. Cannot load FBX animation.')
-      return
-    }
-    const nameToLoad = animationName || `fbx_${Date.now()}` // 適切な名前を生成
-    this._currentAnimationUrl = url
-    this._currentAnimationType = 'fbx'
-
-    console.warn(
-      'loadMixamoAnimation is not implemented yet. FBX animation loading skipped.'
-    )
-    try {
-      const clip = await loadMixamoAnimation(url, this.model.vrm) // loadMixamoAnimation が Promise を返すものとして想定
-      if (clip && this.model) {
-        await this.model.loadFbxAnimation(clip, nameToLoad)
-        this.model.crossFadeToAnimation(
-          nameToLoad,
-          0.5,
-          loop ? THREE.LoopRepeat : THREE.LoopOnce
-        )
-        console.log(
-          `FBX animation '${nameToLoad}' loaded and playing with crossfade (loop: ${loop}).`
-        )
-      } else {
-        console.warn(`Failed to load FBX from ${url} or model not ready.`)
-      }
-    } catch (error) {
-      console.error(`Error loading FBX animation from ${url}:`, error)
     }
   }
 
