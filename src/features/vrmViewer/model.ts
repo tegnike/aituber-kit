@@ -11,10 +11,7 @@ import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlug
 import { LipSync } from '../lipSync/lipSync'
 import { EmoteController } from '../emoteController/emoteController'
 import { Talk } from '../messages/messages'
-import {
-  loadVRMAnimation,
-  loadVRMAnimationClip,
-} from '@/lib/VRMAnimation/loadVRMAnimation'
+import { loadVRMAnimationClip } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 
 /**
@@ -30,7 +27,7 @@ export class Model {
 
   // 仮の感情アニメーションマッピング (パスはsettingsStoreなどから取得することを想定)
   private _emotionAnimationPaths: Map<string, string> = new Map([
-    ['neutral', '/idle_loop.vrma'], // デフォルトアイドルをneutralとする
+    ['neutral', '/neutral.vrma'], // デフォルトアイドルをneutralとする
     ['happy', '/vrma/happy.vrma'], // TODO: 実際のパスに置き換える
     ['sad', '/vrma/sad.vrma'], // TODO: 実際のパスに置き換える
     ['angry', '/vrma/angry.vrma'], // TODO: 実際のパスに置き換える
@@ -122,9 +119,6 @@ export class Model {
         return undefined
       }
 
-      // Translation除去処理（Hips以外）
-      this.removeUnnecessaryTranslationTracks(clip)
-
       const action = this.mixer.clipAction(clip)
       const name =
         animationName || clip.name || `animation_${this._animationActions.size}`
@@ -159,6 +153,43 @@ export class Model {
       }
       return true
     })
+  }
+
+  /**
+   * 足を地面に固定する処理
+   */
+  private constrainFeetToGround() {
+    if (!this.vrm?.humanoid) return
+
+    const leftFoot = this.vrm.humanoid.getNormalizedBoneNode('leftFoot')
+    const rightFoot = this.vrm.humanoid.getNormalizedBoneNode('rightFoot')
+
+    // 地面のY座標（通常は0）
+    const groundY = 0
+
+    if (leftFoot) {
+      const worldPosition = new THREE.Vector3()
+      leftFoot.getWorldPosition(worldPosition)
+
+      // 足が地面より下にある場合、地面の高さに調整
+      if (worldPosition.y < groundY) {
+        const localPosition = leftFoot.position.clone()
+        localPosition.y += groundY - worldPosition.y
+        leftFoot.position.copy(localPosition)
+      }
+    }
+
+    if (rightFoot) {
+      const worldPosition = new THREE.Vector3()
+      rightFoot.getWorldPosition(worldPosition)
+
+      // 足が地面より下にある場合、地面の高さに調整
+      if (worldPosition.y < groundY) {
+        const localPosition = rightFoot.position.clone()
+        localPosition.y += groundY - worldPosition.y
+        rightFoot.position.copy(localPosition)
+      }
+    }
   }
 
   public async loadFbxAnimation(
@@ -381,6 +412,12 @@ export class Model {
 
     this.emoteController?.update(delta)
     this.mixer?.update(delta)
+
+    // アニメーション更新後に足を地面に固定
+    if (this._currentAction && this._currentAction.isRunning()) {
+      this.constrainFeetToGround()
+    }
+
     this.vrm?.update(delta)
   }
 
