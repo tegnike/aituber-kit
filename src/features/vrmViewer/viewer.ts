@@ -66,13 +66,8 @@ export class Viewer {
 
       this._scene.add(this.model.vrm.scene)
 
-<<<<<<< HEAD
       // const vrma = await loadVRMAnimation(buildUrl("/idle_loop.vrma"));
       // if (vrma) this.model.loadAnimation(vrma);
-=======
-      const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
-      if (vrma) this.model.loadAnimation(vrma)
->>>>>>> develop
 
       // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
       requestAnimationFrame(() => {
@@ -184,7 +179,6 @@ export class Viewer {
   private _breathingTime: number = 0; // 呼吸のタイマー
 
   public update = () => {
-<<<<<<< HEAD
     requestAnimationFrame(this.update);
     const delta = this._clock.getDelta();
 
@@ -193,19 +187,11 @@ export class Viewer {
       this.model.update(delta);
       this.updateBreathing(delta); // 呼吸運動を更新
       this.lowerArms(); // 腕を下げる
-=======
-    requestAnimationFrame(this.update)
-    const delta = this._clock.getDelta()
-    // update vrm components
-    if (this.model) {
-      this.model.update(delta)
->>>>>>> develop
     }
 
     if (this._renderer && this._camera) {
       this._renderer.render(this._scene, this._camera)
     }
-<<<<<<< HEAD
   };
 
   private lowerArms() {
@@ -231,7 +217,7 @@ export class Viewer {
       chest.rotation.z = swayAngle;
       spine.rotation.z = swayAngle;
       upperChest.rotation.z = swayAngle;
-=======
+    }
   }
 
   /**
@@ -330,7 +316,6 @@ export class Viewer {
     }
     if (this._ambientLight) {
       this._ambientLight.intensity = 1.2 * intensity
->>>>>>> develop
     }
   }
 }
