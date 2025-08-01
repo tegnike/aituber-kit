@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { Model } from './model'
+import { PosePlayer } from './posePlayer'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
@@ -13,6 +14,7 @@ import settingsStore from '@/features/stores/settings'
 export class Viewer {
   public isReady: boolean
   public model?: Model
+  private posePlayer?: PosePlayer // ポーズプレイヤーを追加
 
   private _renderer?: THREE.WebGLRenderer
   private _clock: THREE.Clock
@@ -66,8 +68,24 @@ export class Viewer {
 
       this._scene.add(this.model.vrm.scene)
 
-      const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
-      if (vrma) this.model.loadAnimation(vrma)
+      // PosePlayerを初期化
+      this.posePlayer = new PosePlayer(this.model.vrm)
+
+      // JSONアイドリングアニメーションを試行
+      try {
+        await this.posePlayer.loadAnimationFromFile(
+          '/animations/idle_animation.json'
+        )
+        this.posePlayer.setLoop(true)
+        this.posePlayer.play()
+      } catch (error) {
+        console.warn(
+          'JSON idle animation not found, using default VRMA animation'
+        )
+        // フォールバック: 既存のVRMAアニメーション
+        const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
+        if (vrma) this.model.loadAnimation(vrma)
+      }
 
       // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
       requestAnimationFrame(() => {
@@ -81,10 +99,41 @@ export class Viewer {
       this._scene.remove(this.model.vrm.scene)
       this.model?.unLoadVrm()
     }
+    this.posePlayer = undefined
   }
 
   /**
-   * Reactで管理しているCanvasを後から設定する
+   * JSONアニメーションファイルを読み込み
+   */
+  public async loadPoseAnimation(filePath: string): Promise<void> {
+    if (!this.posePlayer) {
+      console.warn('PosePlayer not initialized')
+      return
+    }
+    await this.posePlayer.loadAnimationFromFile(filePath)
+  }
+
+  /**
+   * ポーズアニメーションの再生制御
+   */
+  public playPoseAnimation() {
+    this.posePlayer?.play()
+  }
+
+  public pausePoseAnimation() {
+    this.posePlayer?.pause()
+  }
+
+  public stopPoseAnimation() {
+    this.posePlayer?.stop()
+  }
+
+  public setPoseAnimationLoop(loop: boolean) {
+    this.posePlayer?.setLoop(loop)
+  }
+
+  /**
+   * ReactでManaging the Canvasを後から設定する
    */
   public setup(canvas: HTMLCanvasElement) {
     const parentElement = canvas.parentElement
@@ -174,10 +223,6 @@ export class Viewer {
     }
   }
 
-  private _breathingAmplitude: number = 0.005 // 呼吸の振幅（大きさ）
-  private _breathingFrequency: number = 0.2 // 呼吸の周波数（速さ）
-  private _breathingTime: number = 0 // 呼吸のタイマー
-
   public update = () => {
     requestAnimationFrame(this.update)
     const delta = this._clock.getDelta()
@@ -185,7 +230,15 @@ export class Viewer {
     // VRMコンポーネントを更新
     if (this.model) {
       this.model.update(delta)
-      this.updateBreathing(delta) // 呼吸運動を更新
+
+      // ポーズアニメーション更新（JSONベース）
+      if (this.posePlayer) {
+        this.posePlayer.update(delta)
+      } else {
+        // フォールバック: 従来の呼吸運動
+        this.updateBreathing(delta)
+      }
+
       this.lowerArms() // 腕を下げる
     }
 
@@ -270,6 +323,10 @@ export class Viewer {
       upperChest.rotation.z = swayAngle
     }
   }
+
+  private _breathingAmplitude: number = 0.005 // 呼吸の振幅（大きさ）
+  private _breathingFrequency: number = 0.2 // 呼吸の周波数（速さ）
+  private _breathingTime: number = 0 // 呼吸のタイマー
 
   /**
    * 現在のカメラ位置を設定に保存する
