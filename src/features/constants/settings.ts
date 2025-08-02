@@ -104,7 +104,8 @@ export const LANGUAGES = [
   'en',
   'ja',
   'ko',
-  'zh',
+  'zh-CN',
+  'zh-TW',
   'vi',
   'fr',
   'es',
@@ -125,6 +126,7 @@ export type VoiceLanguage =
   | 'en-US'
   | 'ja-JP'
   | 'ko-KR'
+  | 'zh-CN'
   | 'zh-TW'
   | 'vi-VN'
   | 'fr-FR'

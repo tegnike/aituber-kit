@@ -26,9 +26,12 @@ export default function App({ Component, pageProps }: AppProps) {
     migrateStore()
 
     const browserLanguage = navigator.language
-    const languageCode = browserLanguage.match(/^zh/i)
-      ? 'zh'
-      : browserLanguage.split('-')[0].toLowerCase()
+    const languageCode =
+      browserLanguage === 'zh-TW'
+        ? 'zh-TW'
+        : browserLanguage.match(/^zh/i)
+          ? 'zh-CN'
+          : browserLanguage.split('-')[0].toLowerCase()
 
     let language = ss.selectLanguage
     if (!language) {
