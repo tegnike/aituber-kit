@@ -39,7 +39,8 @@
 <h3 align="center">
    <a href="../README.md">日本語</a>｜
    <a href="./README_en.md">English</a>｜
-   <a href="./README_zh.md">中文</a>｜
+   <a href="./README_zh-CN.md">简体中文</a>｜
+   <a href="./README_zh-TW.md">繁體中文</a>｜
    <a href="./README_ko.md">한국어</a>
 </h3>
 
