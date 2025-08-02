@@ -332,8 +332,8 @@ cp .env.example .env
 
 ### 其他
 
-- [標誌使用條款](./logo_licence_zh.md)
-- [VRM 和 Live2D 模型使用條款](./character_model_licence_zh.md)
+- [標誌使用條款](./logo_licence_zh-TW.md)
+- [VRM 和 Live2D 模型使用條款](./character_model_licence_zh-TW.md)
 
 ## 優先實施
 
