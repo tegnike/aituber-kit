@@ -206,6 +206,7 @@ const createSpeakCharacter = () => {
   ) => {
     let called = false
     const ss = settingsStore.getState()
+    const hs = homeStore.getState()
     onStart?.()
 
     const initialToken = SpeakQueue.currentStopToken
@@ -327,6 +328,15 @@ const createSpeakCharacter = () => {
           isNeedDecode: result.isNeedDecode,
           onComplete: guardedOnComplete, // Pass the guarded function
         })
+
+        // VRMの場合、ここで感情アニメーションを再生
+        if (ss.modelType === 'vrm') {
+          if (hs.viewer && talk.emotion && talk.emotion !== 'neutral') {
+            // neutral は常時アイドルアニメーションが流れているため、個別に再生しない
+            hs.viewer.playEmotionAnimation(talk.emotion, 0.3)
+            console.log(`VRM emotion animation started: ${talk.emotion}`)
+          }
+        }
       })
       .catch((error) => {
         console.error('Error in processAndSynthesizePromise chain:', error)
