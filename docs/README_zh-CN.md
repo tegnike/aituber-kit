@@ -2,7 +2,7 @@
 
 <img style="max-width: 100%;" src="../public/ogp.png">
 
-**Notice: This project has adopted a custom license from version v2.0.0 onwards. If you are using it for commercial purposes, please check the [Terms of Use](#terms-of-use) section.**
+**通知：本项目从版本v2.0.0开始采用自定义许可证。如果您出于商业目的使用，请查看[使用条款](#使用条款)部分。**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
@@ -26,67 +26,67 @@
 
 <div align="center">
    <h3>
-      🌟 <a href="https://aituberkit.com">Demo Site</a> 🌟
+      🌟 <a href="https://aituberkit.com">演示网站</a> 🌟
    </h3>
 </div>
 
 <div align="center">
    <h3>
-      📚 <a href="https://docs.aituberkit.com/en/">Documentation Site</a> 📚
+      📚 <a href="https://docs.aituberkit.com/zh/">文档网站</a> 📚
    </h3>
 </div>
 
 <h3 align="center">
    <a href="../README.md">日本語</a>｜
-   <a href="./README_zh-CN.md">简体中文</a>｜
+   <a href="./README_en.md">English</a>｜
    <a href="./README_zh-TW.md">繁體中文</a>｜
    <a href="./README_ko.md">한국어</a>｜
    <a href="./README_pl.md">Polski</a>
 </h3>
 
-## Overview
+## 概述
 
-AITuberKit is an open-source toolkit that allows anyone to easily build a web application for chatting with AI characters. It features various extensions centered around interaction with AI characters and AITuber streaming functionality.
-It supports a wide range of AI services, character models, and voice synthesis engines, with high customization options centered around dialogue and AITuber streaming functionality.
+AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角色聊天的Web应用程序。<br>
+它支持丰富的AI服务、角色模型和语音合成引擎，提供高度可定制的对话功能和AITuber直播功能，以及各种扩展模式。
 
 <img src="./images/architecture_en.svg" alt="AITuberKit Architecture">
 
-For detailed usage and configuration instructions, please visit the [Documentation Site](https://docs.aituberkit.com/en/).
+有关详细使用方法和配置说明，请访问[文档网站](https://docs.aituberkit.com/zh/)。
 
-## Star History
+## Star历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
-## Main Features
+## 主要功能
 
-### 1. Interaction with AI Characters
+### 1. 与AI角色交互
 
-- Easy conversation with AI characters using API keys for various LLMs
-- Multimodal support for recognizing camera footage and uploaded images to generate responses
-- Retention of recent conversations as memory
+- 使用各种LLM的API密钥轻松与AI角色对话
+- 支持多模态，可识别摄像头画面和上传的图像生成回答
+- 保留最近的对话作为记忆
 
-### 2. AITuber Streaming
+### 2. AITuber直播
 
-- Retrieves YouTube stream comments for automatic responses from AI characters
-- Conversation continuation mode allows spontaneous speech even without comments
-- Feature to ignore comments starting with "#"
+- 获取YouTube直播评论，AI角色自动回应
+- 对话持续模式下即使没有评论也能自发发言
+- 以"#"开头的评论不会被读取的功能
 
-### 3. Other Features
+### 3. 其他功能
 
-- **External Integration Mode**: Connect with server applications via WebSocket for advanced functionality
-- **Slide Mode**: Mode where AI characters automatically present slides
-- **Realtime API**: Low-latency dialogue and function execution using OpenAI's Realtime API
-- **Audio Mode**: Natural voice dialogue utilizing OpenAI's Audio API features
-- **Message Reception Function**: Accept instructions from external sources through a dedicated API to make AI characters speak
+- **外部集成模式**：通过WebSocket与服务器应用程序连接，实现更高级的功能
+- **幻灯片模式**：AI角色自动展示幻灯片的模式
+- **实时API**：使用OpenAI的Realtime API实现低延迟对话和函数执行
+- **音频模式**：利用OpenAI的Audio API功能实现自然语音对话
+- **消息接收功能**：通过专用API接受外部指令，让AI角色发言
 
-## Supported Models & Services
+## 支持的模型和服务
 
-### Character Models
+### 角色模型
 
-- **3D Models**: VRM files
-- **2D Models**: Live2D files (Cubism 3 and later)
+- **3D模型**：VRM文件
+- **2D模型**：Live2D文件（Cubism 3及以后版本）
 
-### Supported LLMs
+### 支持的LLM
 
 - OpenAI
 - Anthropic
@@ -97,10 +97,10 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - Mistral AI
 - Perplexity
 - Fireworks
-- Local LLM
+- 本地LLM
 - Dify
 
-### Supported Voice Synthesis Engines
+### 支持的语音合成引擎
 
 - VOICEVOX
 - Koeiromap
@@ -115,73 +115,73 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - Azure OpenAI
 - Niji Voice
 
-## Quick Start
+## 快速开始
 
-### Development Environment
+### 开发环境
 
 - Node.js: ^20.0.0
 - npm: ^10.0.0
 
-### Installation Steps
+### 安装步骤
 
-1. Clone the repository locally.
+1. 将仓库克隆到本地。
 
 ```bash
 git clone https://github.com/tegnike/aituber-kit.git
 ```
 
-2. Open the folder.
+2. 打开文件夹。
 
 ```bash
 cd aituber-kit
 ```
 
-3. Install packages.
+3. 安装包。
 
 ```bash
 npm install
 ```
 
-4. Start the application in development mode.
+4. 在开发模式下启动应用程序。
 
 ```bash
 npm run dev
 ```
 
-5. Open the URL: [http://localhost:3000](http://localhost:3000)
+5. 打开URL：[http://localhost:3000](http://localhost:3000)
 
-6. Create a .env file as needed.
+6. 根据需要创建.env文件。
 
 ```bash
 cp .env.example .env
 ```
 
-For detailed configuration and usage instructions, please visit the [Documentation Site](https://docs.aituberkit.com/en/).
+有关详细配置和使用说明，请访问[文档网站](https://docs.aituberkit.com/zh/)。
 
-## ⚠️ Important Security Notice
+## ⚠️ 重要安全注意事项
 
-This repository is intended for personal use and development in local environments, as well as commercial use with appropriate security measures. However, please note the following when deploying to a web environment:
+本仓库适用于个人使用和本地环境开发，以及采取适当安全措施的商业用途。但是，在部署到Web环境时，请注意以下几点：
 
-- **API Key Handling**: The system is designed to call AI services (OpenAI, Anthropic, etc.) and TTS services via a backend server, so proper management of API keys is necessary.
+- **API密钥处理**：系统设计为通过后端服务器调用AI服务（OpenAI、Anthropic等）和TTS服务的API，因此需要妥善管理API密钥。
 
-### For Production Use
+### 生产环境使用
 
-When using in a production environment, we recommend one of the following approaches:
+在生产环境中使用时，我们建议采取以下方法之一：
 
-1. **Backend Server Implementation**: Manage API keys on the server side to avoid direct API access from clients
-2. **Appropriate Explanation to Users**: If users are using their own API keys, explain security considerations to them
-3. **Access Restriction Implementation**: Implement appropriate authentication and authorization mechanisms as needed
+1. **后端服务器实现**：在服务器端管理API密钥，避免客户端直接访问API
+2. **向用户适当说明**：如果用户使用自己的API密钥，向他们解释安全注意事项
+3. **访问限制实现**：根据需要实施适当的身份验证和授权机制
 
-## Sponsorship
+## 赞助
 
-We are seeking sponsors to continue development.<br>
-Your support greatly contributes to the development and improvement of AITuberKit.
+我们正在寻求赞助者以继续开发。<br>
+您的支持将极大地促进AITuberKit的开发和改进。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
-### Contributors (in order of support)
+### 贡献者（按支持顺序）
 
 <p>
   <a href="https://github.com/morioki3" title="morioki3">
@@ -288,59 +288,59 @@ Your support greatly contributes to the development and improvement of AITuberKi
   </a>
 </p>
 
-Plus multiple private sponsors
+此外还有多位私人赞助者
 
-## Contributing
+## 贡献
 
-Thank you for your interest in contributing to the development of AITuberKit. We welcome contributions from the community.
+感谢您对AITuberKit开发的关注。我们欢迎来自社区的贡献。
 
-### Reporting Issues
+### 问题报告
 
-If you find a bug or have an idea for a new feature, please let us know through the [Issues](https://github.com/tegnike/aituber-kit/issues) page on GitHub.
+如果您发现了错误或有新功能的想法，请通过GitHub的[Issues](https://github.com/tegnike/aituber-kit/issues)页面告知我们。
 
-When creating an issue, including the following information will help us respond smoothly:
+创建问题时，包含以下信息将有助于我们顺利响应：
 
-- Detailed description of the problem or new feature
-- Steps to reproduce (for bugs)
-- Expected behavior vs. actual behavior
-- Environment details (browser, OS, Node.js version, etc.)
-- Screenshots or videos (if possible)
+- 问题或新功能的详细描述
+- 重现步骤（对于错误）
+- 预期行为与实际行为
+- 使用环境（浏览器、操作系统、Node.js版本等）
+- 屏幕截图或视频（如果可能）
 
-### Pull Requests
+### 拉取请求
 
-If you want to improve code or add new features, please make changes in your forked repository and create a pull request.
+如果您想改进代码或添加新功能，请在您的fork仓库中进行更改并创建拉取请求。
 
-- Focus on one feature or fix per pull request.
-- Please describe the changes and the reason for them in the pull request description.
-- Always set the target branch to `develop`.
-- Don't worry about conflicts - the development team will handle them.
+- 一个拉取请求应专注于一个功能或修复。
+- 请在拉取请求描述中说明更改内容和理由。
+- 合并目标分支必须设置为 `develop`。
+- 不要强行解决冲突。开发团队会处理这些问题。
 
-## Terms of Use
+## 使用条款
 
-### License
+### 许可证
 
-This project has adopted a **custom license** from version v2.0.0 onwards.
+本项目从版本v2.0.0开始采用**自定义许可证**。
 
-- **Free Use**
+- **免费使用**
 
-  - Free for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
+  - 非商业目的的个人使用、教育目的和非营利目的的使用可以免费使用。
 
-- **Commercial License**
-  - A separate commercial license is required for commercial use.
-  - For details, please check [About the License](./license_en.md).
+- **商业许可证**
+  - 商业用途需要获取单独的商业许可证。
+  - 详情请查看[关于许可证](./license_en.md)。
 
-### Others
+### 其他
 
-- [Logo Usage Terms](./logo_licence_en.md)
-- [VRM and Live2D Model Usage Terms](./character_model_licence_en.md)
+- [标志使用条款](./logo_licence_zh-CN.md)
+- [VRM和Live2D模型使用条款](./character_model_licence_zh-CN.md)
 
-## Priority Implementation
+## 优先实施
 
-This project accepts paid priority implementation of features.
+本项目接受付费优先实施功能。
 
-- Features requested by companies or individuals can be implemented with priority.
-- Implemented features will be published as part of this OSS project.
-- Fees are individually quoted based on the complexity of the feature and the time required for implementation.
-- This priority implementation is separate from the commercial license. If you want to use the implemented features for commercial purposes, you need to obtain a commercial license separately.
+- 可以优先实施企业或个人要求的功能。
+- 实施的功能将作为本OSS项目的一部分发布。
+- 费用根据功能的复杂性和实施所需时间单独报价。
+- 这种优先实施与商业许可证是分开的。如果您想将实施的功能用于商业目的，需要单独获取商业许可证。
 
-For details, please contact support@aituberkit.com.
+详情请联系support@aituberkit.com。

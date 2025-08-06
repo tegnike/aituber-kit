@@ -65,7 +65,9 @@ function getGoogleTtsType(
       return 'en-US-Neural2-F'
     case 'ko':
       return 'ko-KR-Neural2-A'
-    case 'zh':
+    case 'zh-CN':
+      return 'cmn-CN-Standard-A'
+    case 'zh-TW':
       return 'cmn-TW-Standard-A'
     case 'vi':
       return 'vi-VN-Standard-A'
@@ -102,7 +104,9 @@ function getVoiceLanguageCode(selectLanguage: Language): VoiceLanguage {
       return 'en-US'
     case 'ko':
       return 'ko-KR'
-    case 'zh':
+    case 'zh-CN':
+      return 'zh-CN'
+    case 'zh-TW':
       return 'zh-TW'
     case 'vi':
       return 'vi-VN'

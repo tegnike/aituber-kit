@@ -37,7 +37,8 @@ headers = {
 # 翻訳対象の言語リスト (日本語を除く)
 TARGET_LANGUAGES = [
     "en",
-    "zh",
+    "zh-CN",
+    "zh-TW",
     "ko",
     "vi",
     "fr",
