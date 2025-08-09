@@ -136,6 +136,11 @@ async function synthesizeVoice(
         if (ss.aivisCloudStreamingEnabled) {
           console.log('🌊 ストリーミングモードで音声合成実行')
           
+          // ストリーミング音声の重複チェック
+          // この関数が呼ばれた時点でhandlersでの排他制御は通過しているため、
+          // ここではログ出力のみ行い、実際の重複は上位の handlers.ts で制御される
+          console.log('🎵 ストリーミング音声生成開始:', talk.message.substring(0, 30) + '...')
+          
           await synthesizeVoiceAivisCloudApiStreaming(
             talk,
             ss.aivisCloudApiKey,
@@ -303,6 +308,17 @@ const createSpeakCharacter = () => {
           isNeedDecode = false
         } else if (talk.message !== '') {
           buffer = await synthesizeVoice(talk, ss.selectVoice)
+          
+          // ストリーミング音声を使用した場合はnullが返されるので、後続処理をスキップ
+          if (buffer === null && ss.selectVoice === 'aivis_cloud_api' && ss.aivisCloudStreamingEnabled) {
+            console.log('🌊 ストリーミング音声実行済み - キューシステムをスキップ')
+            // onCompleteを呼び出して処理を完了
+            if (onComplete && !called) {
+              called = true
+              onComplete()
+            }
+            return null // 早期リターンで後続のキュー登録を防ぐ
+          }
         } else {
           buffer = null
         }

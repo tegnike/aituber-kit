@@ -2,6 +2,7 @@ import { Talk } from './messages'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { Live2DHandler } from './live2dHandler'
+import { isStreamingAudioActiveGlobal } from '@/features/chat/handlers'
 
 type SpeakTask = {
   sessionId: string
@@ -68,6 +69,20 @@ export class SpeakQueue {
   }
 
   async addTask(task: SpeakTask) {
+    // ストリーミング音声実行中の場合は通常の音声タスクを受け付けない
+    // handlers.tsからエクスポートされた安全な関数を使用
+    try {
+      const isStreamingActive = isStreamingAudioActiveGlobal()
+      if (isStreamingActive) {
+        console.log('🚫 ストリーミング音声実行中のため通常音声タスクをスキップ')
+        task.onComplete?.() // 完了コールバックは呼び出す
+        return
+      }
+    } catch (error) {
+      console.warn('⚠️ ストリーミング音声状態チェックエラー:', error)
+      // エラー時はタスクを通常通り処理する（安全側に倒す）
+    }
+    
     this.queue.push(task)
     // キューにタスクが追加された時点で発話中フラグを立てる
     homeStore.setState({ isSpeaking: true })

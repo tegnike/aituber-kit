@@ -92,18 +92,14 @@ export const MessageInput = ({
     } else {
       if (textareaRef.current) {
         textareaRef.current.value = ''
-        const isTouchDevice = () => {
-          if (typeof window === 'undefined') return false
-          return (
-            'ontouchstart' in window ||
-            navigator.maxTouchPoints > 0 ||
-            // @ts-expect-error: msMaxTouchPoints is IE-specific
-            navigator.msMaxTouchPoints > 0
-          )
-        }
-        if (!isTouchDevice()) {
-          textareaRef.current.focus()
-        }
+        // 回答生成が完了したら、少し遅延を入れてからフォーカスを設定
+        // これにより、モバイルでも不要にキーボードが表示されることを防ぎつつ、
+        // デスクトップでは確実にフォーカスが戻る
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.focus()
+          }
+        }, 200)
       }
     }
   }, [chatProcessing])
@@ -326,6 +322,10 @@ export const MessageInput = ({
           event as unknown as React.MouseEvent<HTMLButtonElement>
         )
         setRows(1)
+        // 送信後にフォーカスを維持
+        setTimeout(() => {
+          textareaRef.current?.focus()
+        }, 100)
       }
     } else if (event.key === 'Enter' && event.shiftKey) {
       // Shift+Enterの場合、calculateRowsで自動計算されるため、手動で行数を増やす必要なし
@@ -528,7 +528,13 @@ export const MessageInput = ({
                 className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled w-12 h-12 sm:w-10 sm:h-10 touch-manipulation"
                 isProcessing={chatProcessing}
                 disabled={chatProcessing || !userMessage || realtimeAPIMode}
-                onClick={onClickSendButton}
+                onClick={(e) => {
+                  onClickSendButton(e)
+                  // 送信ボタンクリック後にフォーカスを維持
+                  setTimeout(() => {
+                    textareaRef.current?.focus()
+                  }, 100)
+                }}
               />
 
               <IconButton

@@ -19,6 +19,150 @@ const generateSessionId = () => generateMessageId()
 // コードブロックのデリミネーター
 const CODE_DELIMITER = '```'
 
+// ストリーミング音声の排他制御用グローバル状態
+let isStreamingAudioActive = false
+let currentStreamingSessionId: string | null = null
+let pendingSpeechTasks: Array<() => Promise<void>> = []
+
+// グローバル変数をwindowオブジェクトに設定（SpeakQueueからアクセス用）
+const initializeWindowGlobals = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      (window as any).isStreamingAudioActive = false
+      (window as any).currentStreamingSessionId = null
+      console.log('🔧 Window グローバル変数初期化完了')
+    } catch (error) {
+      console.warn('⚠️ Window グローバル変数初期化エラー:', error)
+    }
+  }
+}
+
+// 安全に初期化を実行（Next.jsのSSR対応）
+if (typeof window !== 'undefined') {
+  initializeWindowGlobals()
+}
+
+/**
+ * ストリーミング音声の排他制御：新しいセッションが開始されたときの処理
+ */
+const handleStreamingAudioSessionStart = (sessionId: string) => {
+  console.log('🎵 ストリーミング音声セッション開始:', sessionId)
+  
+  // 前のセッションがある場合は停止
+  if (currentStreamingSessionId && currentStreamingSessionId !== sessionId) {
+    console.log('🛑 前のストリーミング音声セッションを停止:', currentStreamingSessionId)
+    // SpeakQueueの停止を呼び出し
+    const { SpeakQueue } = require('@/features/messages/speakQueue')
+    SpeakQueue.stopAll()
+    
+    // 現在再生中のストリーミング音声を停止
+    try {
+      // DOM内のストリーミング音声要素を検索して停止
+      const streamingAudioElements = document.querySelectorAll('audio[data-streaming-audio="true"]')
+      streamingAudioElements.forEach((audio: HTMLAudioElement) => {
+        if (!audio.paused && !audio.ended) {
+          console.log('🛑 ストリーミング音声要素を停止:', audio.src.substring(0, 50) + '...')
+          audio.pause()
+          audio.currentTime = 0
+          // MediaSourceをクリーンアップ（可能な場合）
+          if (audio.src.startsWith('blob:')) {
+            URL.revokeObjectURL(audio.src)
+          }
+        }
+      })
+    } catch (error) {
+      console.warn('⚠️ ストリーミング音声停止処理でエラー:', error)
+    }
+    
+    // ストリーミング音声の状態もリセット
+    isStreamingAudioActive = false
+    if (typeof window !== 'undefined') {
+      try {
+        (window as any).isStreamingAudioActive = false
+      } catch (error) {
+        console.warn('⚠️ window.isStreamingAudioActiveのリセットに失敗:', error)
+      }
+    }
+    pendingSpeechTasks = []
+    console.log('🧹 ストリーミング音声状態をリセット')
+  }
+  
+  currentStreamingSessionId = sessionId
+  if (typeof window !== 'undefined') {
+    try {
+      (window as any).currentStreamingSessionId = sessionId
+    } catch (error) {
+      console.warn('⚠️ window.currentStreamingSessionIdの設定に失敗:', error)
+    }
+  }
+  pendingSpeechTasks = [] // 保留中のタスクをクリア
+}
+
+/**
+ * ストリーミング音声の排他制御：音声生成の開始
+ */
+const handleStreamingAudioStart = () => {
+  isStreamingAudioActive = true
+  if (typeof window !== 'undefined') {
+    try {
+      (window as any).isStreamingAudioActive = true
+    } catch (error) {
+      console.warn('⚠️ window.isStreamingAudioActiveの設定に失敗:', error)
+    }
+  }
+  console.log('🔊 ストリーミング音声生成開始')
+}
+
+/**
+ * ストリーミング音声の排他制御：音声生成の完了
+ */
+const handleStreamingAudioEnd = () => {
+  isStreamingAudioActive = false
+  if (typeof window !== 'undefined') {
+    try {
+      (window as any).isStreamingAudioActive = false
+    } catch (error) {
+      console.warn('⚠️ window.isStreamingAudioActiveの更新に失敗:', error)
+    }
+  }
+  console.log('🔇 ストリーミング音声生成完了')
+  
+  // 保留中のタスクがあれば実行
+  if (pendingSpeechTasks.length > 0) {
+    console.log('📋 保留中の音声タスクを実行:', pendingSpeechTasks.length)
+    const nextTask = pendingSpeechTasks.shift()
+    if (nextTask) {
+      nextTask()
+    }
+  }
+}
+
+/**
+ * 外部からストリーミング音声の状態を取得する関数
+ */
+export const getStreamingAudioState = () => {
+  return {
+    isActive: isStreamingAudioActive,
+    sessionId: currentStreamingSessionId,
+    pendingTasks: pendingSpeechTasks.length
+  }
+}
+
+/**
+ * 外部からストリーミング音声の状態をチェックする関数
+ */
+export const isStreamingAudioActiveGlobal = (): boolean => {
+  try {
+    return isStreamingAudioActive || (
+      typeof window !== 'undefined' && 
+      (window as any).isStreamingAudioActive === true
+    )
+  } catch (error) {
+    console.warn('⚠️ ストリーミング音声状態の取得エラー:', error)
+    return false
+  }
+}
+
 /**
  * AI判断機能でマルチモーダルを使用するかどうかを決定する
  * @param userMessage ユーザーメッセージ
@@ -186,6 +330,35 @@ const handleSpeakAndStateUpdate = (
     return
   }
 
+  // ストリーミング音声の排他制御チェック
+  const ss = settingsStore.getState()
+  const isStreamingMode = ss.voiceEngine === 'aivis_cloud_api' && ss.aivisCloudStreamingEnabled
+  
+  if (isStreamingMode) {
+    // ストリーミング音声が既に生成中の場合は待機
+    if (isStreamingAudioActive) {
+      console.log('⏳ ストリーミング音声生成中のため待機:', sentence.substring(0, 20) + '...')
+      // 保留中のタスクに追加
+      pendingSpeechTasks.push(async () => {
+        console.log('▶️ 保留中タスク実行:', sentence.substring(0, 20) + '...')
+        handleStreamingAudioStart()
+        speakCharacter(
+          sessionId,
+          { message: sentence, emotion: emotion },
+          () => {
+            // assistantMessage is now derived from chatLog, no need to set it separately
+          },
+          () => {
+            handleStreamingAudioEnd()
+          }
+        )
+      })
+      return
+    } else {
+      handleStreamingAudioStart()
+    }
+  }
+
   speakCharacter(
     sessionId,
     { message: sentence, emotion: emotion },
@@ -202,6 +375,11 @@ const handleSpeakAndStateUpdate = (
       homeStore.setState({
         slideMessages: [...currentSlideMessagesRef.current],
       })
+      
+      // ストリーミング音声の場合は終了処理
+      if (isStreamingMode) {
+        handleStreamingAudioEnd()
+      }
     }
   )
 }
@@ -368,6 +546,10 @@ export const speakMessageHandler = async (receivedMessage: string) => {
 export const processAIResponse = async (messages: Message[]) => {
   const sessionId = generateSessionId()
   homeStore.setState({ chatProcessing: true })
+  
+  // ストリーミング音声のセッション制御を開始
+  handleStreamingAudioSessionStart(sessionId)
+  
   let stream
 
   const currentSlideMessagesRef = { current: [] as string[] }

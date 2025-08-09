@@ -2,6 +2,9 @@ import { LipSyncAnalyzeResult } from './lipSyncAnalyzeResult'
 
 const TIME_DOMAIN_DATA_LENGTH = 1024  // 2048から1024に変更（より頻繁な更新）
 
+// ストリーミング音声の重複防止用グローバル状態
+let currentStreamingAudio: HTMLAudioElement | null = null
+
 export class LipSync {
   public readonly audio: AudioContext
   public readonly analyser: AnalyserNode
@@ -257,7 +260,7 @@ export class LipSync {
     // デバッグログ（音量検出時のみ表示）
     if (volume > 0.01) {
       // 実際に音量が検出された時のみログ出力
-      console.log(`🎤 音量解析: Volume=${volume.toFixed(3)}, hasSource=${hasSource}, hasData=${hasData}`)
+      // console.log(`🎤 音量解析: Volume=${volume.toFixed(3)}, hasSource=${hasSource}, hasData=${hasData}`)
     }
     
     // MediaElementAudioSourceNode接続時のみアラート表示（新しいチャンク送信方式では正常）
@@ -489,13 +492,65 @@ export class LipSync {
   public connectAudioElement(audioElement: HTMLAudioElement): void {
     console.log('🔗 HTMLAudioElementをLipSyncに接続開始')
     
+    // 引数の型チェック（デバッグ用）
+    console.log('📊 connectAudioElement引数チェック:', {
+      exists: !!audioElement,
+      type: typeof audioElement,
+      constructor: audioElement?.constructor?.name,
+      isHTMLAudioElement: audioElement instanceof HTMLAudioElement
+    })
+    
+    // 引数が正しくない場合はエラー
+    if (!audioElement || !(audioElement instanceof HTMLAudioElement)) {
+      console.error('❌ connectAudioElement: 引数がHTMLAudioElementではありません', audioElement)
+      throw new TypeError('audioElement must be an instance of HTMLAudioElement')
+    }
+    
+    // 既に同じAudio要素が接続されている場合はスキップ
+    if (this.connectedAudioElement === audioElement) {
+      console.log('ℹ️ このAudio要素は既に接続済みです')
+      return
+    }
+
+    // グローバルなストリーミング音声重複チェック
+    if (currentStreamingAudio && currentStreamingAudio !== audioElement) {
+      // 現在再生中の他のストリーミング音声があり、異なる音声要素の場合
+      if (!currentStreamingAudio.paused && !currentStreamingAudio.ended) {
+        console.warn('⚠️ 既に他のストリーミング音声が再生中のため接続をスキップします')
+        return
+      }
+    }
+    
     try {
       // 既存の接続をクリーンアップ
       this.disconnectAudioElement()
       
+      // Audio要素が既にMediaElementSourceとして使用されているかチェック
+      // MediaElementSourceは一度しか作成できないため、重複作成を防ぐ
+      if ((audioElement as any)._lipSyncConnected) {
+        console.warn('⚠️ このAudio要素は既に他のLipSyncインスタンスに接続されています')
+        return
+      }
+      
       // MediaElementAudioSourceNodeを作成
+      console.log('📊 createMediaElementSource呼び出し前の状態:', {
+        audioElement,
+        audioElementType: typeof audioElement,
+        audioElementConstructor: audioElement?.constructor?.name,
+        audioContextType: typeof this.audio,
+        audioContextCreateMediaElementSource: typeof this.audio.createMediaElementSource
+      })
+      
       this.audioElementSource = this.audio.createMediaElementSource(audioElement)
       this.connectedAudioElement = audioElement
+      
+      // グローバル状態を更新（ストリーミング音声の場合）
+      if (audioElement.getAttribute('data-streaming-audio') === 'true') {
+        currentStreamingAudio = audioElement
+      }
+      
+      // 接続済みフラグを設定
+      (audioElement as any)._lipSyncConnected = true
       
       // オーディオグラフに接続: audioElement → mediaElementSource → gainNode → analyser → destination
       this.audioElementSource.connect(this.gainNode)
@@ -509,6 +564,14 @@ export class LipSync {
       
       const handleEnded = () => {
         console.log('🏁 HTMLAudioElement再生終了')
+        // 終了時にフラグをクリア
+        delete (audioElement as any)._lipSyncConnected
+        
+        // グローバル状態もクリア（ストリーミング音声の場合）
+        if (currentStreamingAudio === audioElement) {
+          currentStreamingAudio = null
+          console.log('🧹 ストリーミング音声グローバル状態クリア')
+        }
       }
       
       audioElement.addEventListener('play', handlePlay)
@@ -516,6 +579,12 @@ export class LipSync {
       audioElement.addEventListener('pause', handleEnded)
       
     } catch (error) {
+      // InvalidStateError は既にMediaElementSourceが作成済みの場合に発生
+      if (error instanceof DOMException && error.name === 'InvalidStateError') {
+        console.warn('⚠️ Audio要素は既にMediaElementSourceとして使用されています')
+        this.connectedAudioElement = audioElement
+        return
+      }
       console.error('❌ HTMLAudioElement接続エラー:', error)
       this.disconnectAudioElement()
       throw error // エラーを再スローして上位で処理
@@ -535,6 +604,18 @@ export class LipSync {
         console.warn('⚠️ HTMLAudioElement接続解除エラー:', error)
       }
     }
+    
+    // 接続済みフラグをクリア
+    if (this.connectedAudioElement) {
+      delete (this.connectedAudioElement as any)._lipSyncConnected
+      
+      // グローバル状態もクリア（ストリーミング音声の場合）
+      if (currentStreamingAudio === this.connectedAudioElement) {
+        currentStreamingAudio = null
+        console.log('🧹 disconnectAudioElement: ストリーミング音声グローバル状態クリア')
+      }
+    }
+    
     this.connectedAudioElement = null
   }
 
