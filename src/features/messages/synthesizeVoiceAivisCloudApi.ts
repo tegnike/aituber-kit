@@ -109,6 +109,23 @@ export async function synthesizeVoiceAivisCloudApiStreaming(
       document.body.appendChild(audio)
       console.log('🔗 Audio要素をDOMに追加（監視システム用）')
       
+      // ストリーミング音声開始時に表情を設定
+      try {
+        if (typeof window !== 'undefined') {
+          const homeStoreModule = await import('@/features/stores/home')
+          const homeStore = homeStoreModule.default
+          const model = homeStore.getState().viewer?.model
+          if (model && typeof model.setEmotion === 'function') {
+            model.setEmotion(talk.emotion)
+            console.log('✅ ストリーミング音声用表情設定完了')
+          } else {
+            console.warn('⚠️ model.setEmotionが利用できません')
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ ストリーミング音声用表情設定エラー:', error)
+      }
+      
       // MutationObserverは非同期なので、手動でスキャンもトリガー
       setTimeout(() => {
         try {
@@ -136,33 +153,9 @@ export async function synthesizeVoiceAivisCloudApiStreaming(
       let readerDone = false
       let chunkArrivedCallback: (() => void) | null = null
       
-      // LipSync用チャンク送信関数
-      const sendChunkToLipSync = async (chunk: Uint8Array) => {
-        if (!lipSyncContext) return
-        
-        try {
-          // MP3チャンクをArrayBufferに変換してデコード
-          const arrayBuffer = chunk.buffer.slice(chunk.byteOffset, chunk.byteOffset + chunk.byteLength)
-          
-          // AudioContextでデコードを試行
-          const audioBuffer = await lipSyncContext.decodeAudioData(arrayBuffer.slice())
-          
-          // homeStoreから現在のVRMモデルを取得してspeak
-          if (typeof window !== 'undefined') {
-            const homeStoreModule = await import('@/features/stores/home')
-            const homeStore = homeStoreModule.default
-            const model = homeStore.getState().viewer?.model
-            if (model && typeof model.speak === 'function') {
-              // チャンク単位でspeak実行（デコード済みなのでisNeedDecode=true）
-              await model.speak(arrayBuffer, talk, true)
-              console.log('✅ LipSync用チャンク送信完了')
-            }
-          }
-        } catch (error) {
-          // デコードエラーは正常（MP3の断片的なチャンクなので）
-          // ログ出力は不要（頻繁に発生するため）
-        }
-      }
+      // LipSync用チャンク送信関数（削除：音声ダブり防止のため）
+      // HTMLAudioElementの音声をLipSyncに接続するのみとし、
+      // AudioBufferとしての重複再生は行わない
 
       // 音声再生イベントの設定
       const handlePlayStart = () => {
@@ -257,10 +250,8 @@ export async function synthesizeVoiceAivisCloudApiStreaming(
 
             chunks.push(value)
             
-            // LipSync用にチャンクを送信（非同期、エラーを無視）
-            sendChunkToLipSync(value).catch(() => {
-              // チャンクデコード失敗は正常（MP3断片のため）
-            })
+            // LipSync用チャンク送信を削除（音声ダブり防止）
+            // HTMLAudioElementがLipSyncに接続されるため、別途送信は不要
 
             if (isFirstChunk) {
               isFirstChunk = false
@@ -316,25 +307,9 @@ export async function synthesizeVoiceAivisCloudApiStreaming(
                 offset += chunk.length
               }
               
-              // 完全な音声データをLipSyncに送信（バックアップ手段）
-              if (lipSyncContext && result.byteLength > 0) {
-                try {
-                  const completeArrayBuffer = result.buffer.slice(result.byteOffset, result.byteOffset + result.byteLength)
-                  
-                  // homeStoreから現在のVRMモデルを取得してspeak
-                  if (typeof window !== 'undefined') {
-                    const homeStoreModule = await import('@/features/stores/home')
-                    const homeStore = homeStoreModule.default
-                    const model = homeStore.getState().viewer?.model
-                    if (model && typeof model.speak === 'function') {
-                      await model.speak(completeArrayBuffer, talk, true)
-                      console.log('✅ ストリーミング音声のLipSync連携完了')
-                    }
-                  }
-                } catch (error) {
-                  console.log('ℹ️ 完全音声データのLipSync送信失敗:', error)
-                }
-              }
+              // 完全音声データのLipSync送信を削除（音声ダブり防止）
+              // HTMLAudioElementがLipSyncに自動接続されるため、別途送信は不要
+              console.log('✅ ストリーミング音声のLipSync連携完了（HTMLAudioElement経由）')
 
               // クリーンアップ関数
               const cleanup = () => {

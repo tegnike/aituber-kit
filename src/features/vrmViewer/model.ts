@@ -126,6 +126,20 @@ export class Model {
       hasLipSync: !!this._lipSync,
     })
 
+    // ストリーミング音声実行中の場合は音声バッファ再生をスキップ
+    if (typeof window !== 'undefined' && (window as any).isStreamingAudioActive) {
+      console.log('🚫 ストリーミング音声実行中のため音声バッファ再生をスキップ')
+      
+      // 表情のみ設定
+      if (this.emoteController) {
+        console.log(`🎭 表情設定のみ実行: ${talk.emotion}`)
+        this.emoteController.playEmotion(talk.emotion)
+      }
+      
+      console.log('✅ 音声再生スキップ完了')
+      return Promise.resolve()
+    }
+
     try {
       // 表情を設定
       if (this.emoteController) {
@@ -185,6 +199,29 @@ export class Model {
   public connectAudioForLipSync(audioElement: HTMLAudioElement, useExistingContext: boolean = false): boolean {
     console.log('🔗 Model: HTMLAudioElementをLipSync（AudioContext統一版）に接続')
     
+    // 引数の型チェック
+    if (!audioElement) {
+      console.error('❌ Model: audioElementがnullまたはundefinedです')
+      return false
+    }
+    
+    if (!(audioElement instanceof HTMLAudioElement)) {
+      console.error('❌ Model: audioElementがHTMLAudioElementではありません', {
+        type: typeof audioElement,
+        constructor: audioElement?.constructor?.name,
+        value: audioElement
+      })
+      return false
+    }
+    
+    console.log('📊 Audio要素の詳細:', {
+      src: audioElement.src,
+      readyState: audioElement.readyState,
+      paused: audioElement.paused,
+      duration: audioElement.duration,
+      hasAttributes: audioElement.hasAttribute('data-streaming-audio')
+    })
+    
     if (!this._lipSync) {
       console.warn('⚠️ Model: LipSyncが利用できません')
       return false
@@ -195,20 +232,64 @@ export class Model {
       console.log('🎯 同一AudioContextでの接続を実行')
       if (typeof (this._lipSync as any).connectAudioElement === 'function') {
         try {
+          console.log('📞 connectAudioElementを呼び出し中...')
           (this._lipSync as any).connectAudioElement(audioElement)
           console.log('✅ Model: 統一AudioContextでのLipSync連携開始')
           return true
         } catch (error) {
           console.error('❌ Model: 統一AudioContext接続エラー:', error)
+          
+          // エラーの詳細分析
+          if (error instanceof Error) {
+            console.error('エラーの詳細:', {
+              message: error.message,
+              name: error.name,
+              stack: error.stack?.split('\n').slice(0, 5)
+            })
+          }
+          
+          // DOMExceptionの場合は、Audio要素が既に使用されている可能性
+          if (error instanceof DOMException && error.name === 'InvalidStateError') {
+            console.warn('⚠️ Audio要素は既にMediaElementSourceとして使用されています。重複接続をスキップします。')
+          }
+          
           return false
         }
       }
     } else {
       // 従来の方法（デバッグ用）
       if (typeof (this._lipSync as any).connectAudioElement === 'function') {
-        (this._lipSync as any).connectAudioElement(audioElement)
-        console.log('✅ Model: ストリーミング音声のLipSync連携開始')
-        return true
+        try {
+          console.log('📞 connectAudioElementを呼び出し中（従来方式）...')
+          try {
+            (this._lipSync as any).connectAudioElement(audioElement)
+            console.log('✅ Model: ストリーミング音声のLipSync連携開始')
+            return true
+          } catch (innerError) {
+            console.error('❌ connectAudioElement呼び出しエラー:', innerError)
+            
+            // エラーの詳細分析
+            if (innerError instanceof Error) {
+              console.error('エラーの詳細:', {
+                message: innerError.message,
+                name: innerError.name,
+                stack: innerError.stack?.split('\n').slice(0, 5)
+              })
+            }
+            
+            // DOMExceptionの場合は、Audio要素が既に使用されている可能性
+            if (innerError instanceof DOMException && innerError.name === 'InvalidStateError') {
+              console.warn('⚠️ Audio要素は既にMediaElementSourceとして使用されています。重複接続をスキップします。')
+              return false
+            }
+            
+            // 重要なエラーの場合は再スロー、その他はfalseを返す
+            return false
+          }
+        } catch (error) {
+          console.error('❌ Model: connectAudioElement呼び出しエラー:', error)
+          return false
+        }
       }
     }
     
@@ -239,6 +320,20 @@ export class Model {
    */
   public async playEmotion(preset: VRMExpressionPresetName) {
     this.emoteController?.playEmotion(preset)
+  }
+
+  /**
+   * 表情のみを設定（音声再生なし）
+   * ストリーミング音声時の表情制御用
+   */
+  public setEmotion(emotion: string) {
+    console.log(`🎭 表情のみ設定: ${emotion}`)
+    if (this.emoteController) {
+      this.emoteController.playEmotion(emotion as VRMExpressionPresetName)
+      console.log('✅ 表情設定完了')
+    } else {
+      console.warn('⚠️ EmoteControllerが利用できません')
+    }
   }
 
   public update(delta: number): void {
@@ -343,16 +438,38 @@ export class Model {
     if (audioElements.length === 0) return
     
     let newConnectionCount = 0
+    let skippedCount = 0
+    let streamingSkippedCount = 0
     
     audioElements.forEach((audio, index) => {
-      // 既に接続済みの要素はスキップ
+      // ストリーミング音声用のAudio要素は自動接続から除外
+      if (audio.hasAttribute('data-streaming-audio') || 
+          audio.hasAttribute('data-aivis-streaming')) {
+        console.log(`🚫 Audio要素[${index}]はストリーミング音声用のため自動接続をスキップ`)
+        streamingSkippedCount++
+        return
+      }
+      
+      // 既に接続済みの要素はスキップ（メモリ内で追跡）
       if (this._audioElementWatcher!.connectedElements.has(audio)) {
+        skippedCount++
+        return
+      }
+      
+      // Audio要素自体に接続済みフラグがある場合もスキップ
+      if ((audio as any)._lipSyncConnected) {
+        console.log(`ℹ️ Audio要素[${index}]は既にLipSyncに接続済み（フラグ検出）`)
+        this._audioElementWatcher!.connectedElements.add(audio)
+        skippedCount++
         return
       }
       
       try {
         if (typeof (this._lipSync as any).connectAudioElement === 'function') {
+          // connectAudioElementは内部で重複チェックも行うようになった
           (this._lipSync as any).connectAudioElement(audio)
+          
+          // 接続成功したとみなして記録
           this._audioElementWatcher!.connectedElements.add(audio)
           newConnectionCount++
           console.log(`✅ Audio要素[${index}] のLipSync接続完了`)
@@ -361,6 +478,7 @@ export class Model {
           const handleRemoved = () => {
             if (this._audioElementWatcher?.connectedElements.has(audio)) {
               this._audioElementWatcher.connectedElements.delete(audio)
+              console.log(`🗑️ Audio要素[${index}]をウォッチリストから削除`)
             }
           }
           
@@ -382,12 +500,19 @@ export class Model {
           })
         }
       } catch (error) {
-        console.error(`❌ Audio要素[${index}]の自動接続エラー:`, error)
+        // InvalidStateErrorは既に接続済みの場合に発生する可能性がある
+        if (error instanceof DOMException && error.name === 'InvalidStateError') {
+          console.log(`ℹ️ Audio要素[${index}]は既に接続済み（エラーから検出）`)
+          this._audioElementWatcher!.connectedElements.add(audio)
+          skippedCount++
+        } else {
+          console.error(`❌ Audio要素[${index}]の自動接続エラー:`, error)
+        }
       }
     })
     
-    if (newConnectionCount > 0) {
-      console.log(`📊 ${newConnectionCount}個の新しいAudio要素を接続`)
+    if (newConnectionCount > 0 || skippedCount > 0 || streamingSkippedCount > 0) {
+      console.log(`📊 Audio要素スキャン結果: 新規接続=${newConnectionCount}, スキップ=${skippedCount}, ストリーミング除外=${streamingSkippedCount}`)
     }
   }
   
