@@ -38,6 +38,8 @@ const Voice = () => {
   const voicevoxIntonation = settingsStore((s) => s.voicevoxIntonation)
   const voicevoxServerUrl = settingsStore((s) => s.voicevoxServerUrl)
   const aivisSpeechSpeaker = settingsStore((s) => s.aivisSpeechSpeaker)
+  const aivisSpeechUseCustomId = settingsStore((s) => s.aivisSpeechUseCustomId)
+  const aivisSpeechCustomId = settingsStore((s) => s.aivisSpeechCustomId)
   const aivisSpeechSpeed = settingsStore((s) => s.aivisSpeechSpeed)
   const aivisSpeechPitch = settingsStore((s) => s.aivisSpeechPitch)
   const aivisSpeechIntonationScale = settingsStore(
@@ -71,6 +73,9 @@ const Voice = () => {
   )
   const aivisCloudPostPhonemeLength = settingsStore(
     (s) => s.aivisCloudPostPhonemeLength
+  )
+  const aivisCloudStreamingEnabled = settingsStore(
+    (s) => s.aivisCloudStreamingEnabled
   )
   const stylebertvits2ServerUrl = settingsStore(
     (s) => s.stylebertvits2ServerUrl
@@ -607,70 +612,136 @@ const Voice = () => {
                 </div>
                 <div className="mt-4 font-bold">{t('AivisSpeechSpeaker')}</div>
                 <div className="space-y-3">
-                  <select
-                    value={aivisSpeechSpeaker}
-                    onChange={(e) =>
-                      settingsStore.setState({
-                        aivisSpeechSpeaker: e.target.value,
-                      })
-                    }
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
-                  >
-                    <option value="">{t('Select')}</option>
-                    {speakers_aivis.map((speaker) => (
-                      <option key={speaker.id} value={speaker.id}>
-                        {speaker.speaker}
-                      </option>
-                    ))}
-                  </select>
-
-                  <button
-                    onClick={async () => {
-                      setIsUpdatingSpeakers(true)
-                      setSpeakersUpdateError('')
-                      try {
-                        const response = await fetch(
-                          '/api/update-aivis-speakers?serverUrl=' +
-                            aivisSpeechServerUrl
-                        )
-                        if (response.ok) {
-                          const updatedSpeakersResponse = await fetch(
-                            '/speakers_aivis.json'
-                          )
-                          const updatedSpeakers =
-                            await updatedSpeakersResponse.json()
-                          setSpeakers_aivis(updatedSpeakers)
-                        } else {
-                          setSpeakersUpdateError(
-                            '話者リストの更新に失敗しました'
-                          )
+                  <div className="p-4 border rounded-lg bg-gray-50">
+                    <label className="flex items-center space-x-2 mb-4">
+                      <input
+                        type="radio"
+                        name="aivisSpeakerMode"
+                        checked={!aivisSpeechUseCustomId}
+                        onChange={() =>
+                          settingsStore.setState({
+                            aivisSpeechUseCustomId: false,
+                          })
                         }
-                      } catch (error) {
-                        setSpeakersUpdateError(
-                          'ネットワークエラーが発生しました'
-                        )
-                      } finally {
-                        setIsUpdatingSpeakers(false)
-                      }
-                    }}
-                    disabled={isUpdatingSpeakers}
-                    className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        className="w-4 h-4"
                       />
-                    </svg>
-                    {isUpdatingSpeakers ? '更新中...' : t('UpdateSpeakerList')}
-                  </button>
+                      <span className="font-medium">リストから選択</span>
+                    </label>
+
+                    {!aivisSpeechUseCustomId && (
+                      <>
+                        <select
+                          value={aivisSpeechSpeaker}
+                          onChange={(e) =>
+                            settingsStore.setState({
+                              aivisSpeechSpeaker: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg mb-3"
+                        >
+                          <option value="">{t('Select')}</option>
+                          {speakers_aivis.map((speaker) => (
+                            <option key={speaker.id} value={speaker.id}>
+                              {speaker.speaker}
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          onClick={async () => {
+                            setIsUpdatingSpeakers(true)
+                            setSpeakersUpdateError('')
+                            try {
+                              const response = await fetch(
+                                '/api/update-aivis-speakers?serverUrl=' +
+                                  aivisSpeechServerUrl
+                              )
+                              if (response.ok) {
+                                const updatedSpeakersResponse = await fetch(
+                                  '/speakers_aivis.json'
+                                )
+                                const updatedSpeakers =
+                                  await updatedSpeakersResponse.json()
+                                setSpeakers_aivis(updatedSpeakers)
+                              } else {
+                                setSpeakersUpdateError(
+                                  '話者リストの更新に失敗しました'
+                                )
+                              }
+                            } catch (error) {
+                              setSpeakersUpdateError(
+                                'ネットワークエラーが発生しました'
+                              )
+                            } finally {
+                              setIsUpdatingSpeakers(false)
+                            }
+                          }}
+                          disabled={isUpdatingSpeakers}
+                          className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            />
+                          </svg>
+                          {isUpdatingSpeakers
+                            ? '更新中...'
+                            : t('UpdateSpeakerList')}
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="p-4 border rounded-lg bg-gray-50">
+                    <label className="flex items-center space-x-2 mb-4">
+                      <input
+                        type="radio"
+                        name="aivisSpeakerMode"
+                        checked={aivisSpeechUseCustomId}
+                        onChange={() =>
+                          settingsStore.setState({
+                            aivisSpeechUseCustomId: true,
+                            aivisSpeechCustomId:
+                              aivisSpeechCustomId || aivisSpeechSpeaker,
+                          })
+                        }
+                        className="w-4 h-4"
+                      />
+                      <span className="font-medium">話者IDを直接入力</span>
+                    </label>
+
+                    {aivisSpeechUseCustomId && (
+                      <>
+                        <input
+                          type="text"
+                          placeholder="例: 888753760"
+                          value={aivisSpeechCustomId}
+                          onChange={(e) => {
+                            const value = e.target.value
+                            if (value === '' || /^\d+$/.test(value)) {
+                              settingsStore.setState({
+                                aivisSpeechCustomId: value,
+                                aivisSpeechSpeaker: value,
+                              })
+                            }
+                          }}
+                          className="w-full px-4 py-2 bg-white hover:bg-white-hover rounded-lg mb-2"
+                        />
+                        <div className="text-sm text-gray-600">
+                          数値のみ入力可能です。AivisSpeechサーバーで利用可能な話者IDを入力してください。
+                        </div>
+                      </>
+                    )}
+                  </div>
+
                   {speakersUpdateError && (
                     <div className="mt-2 text-red-600 text-sm">
                       {speakersUpdateError}
@@ -973,6 +1044,28 @@ const Voice = () => {
                       })
                     }}
                   />
+
+                  <div className="mt-4 p-4 border rounded-lg bg-blue-50">
+                    <label className="flex items-center space-x-2 mb-2">
+                      <input
+                        type="checkbox"
+                        checked={aivisCloudStreamingEnabled}
+                        onChange={(e) =>
+                          settingsStore.setState({
+                            aivisCloudStreamingEnabled: e.target.checked,
+                          })
+                        }
+                        className="w-4 h-4"
+                      />
+                      <span className="font-medium">
+                        {t('EnableStreaming') || 'リアルタイムストリーミング'}
+                      </span>
+                    </label>
+                    <div className="text-sm text-gray-600">
+                      {t('StreamingDescription') ||
+                        'リアルタイム音声ストリーミングを有効にすると、音声生成と同時に再生が開始されます。遅延が大幅に改善されますが、ブラウザによっては対応していない場合があります。'}
+                    </div>
+                  </div>
                 </div>
               </>
             )

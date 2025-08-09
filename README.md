@@ -106,7 +106,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - Google Text-to-Speech
 - Style-Bert-VITS2
 - AivisSpeech
-- Aivis Cloud API
+- Aivis Cloud API（リアルタイムストリーミング対応、重複再生問題修正済み）
 - Cartesia
 - GSVI TTS
 - ElevenLabs
@@ -156,6 +156,12 @@ cp .env.example .env
 ```
 
 詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
+
+## 最近の更新
+
+### バグ修正・改善 (2025-08-08)
+
+- **Aivis Cloud API重複再生問題の修正**: ストリーミング機能使用時に同じ音声が2回再生される問題を解決しました。詳細は[CHANGELOG.md](./CHANGELOG.md)をご覧ください。
 
 ## ⚠️ セキュリティに関する重要な注意事項
 

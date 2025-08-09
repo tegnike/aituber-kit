@@ -50,30 +50,81 @@ export class Viewer {
   }
 
   public loadVrm(url: string) {
+    console.log('🎭 VRM読み込み開始:', {
+      url,
+      isReady: this.isReady,
+      hasCamera: !!this._camera,
+      hasRenderer: !!this._renderer,
+    })
+
     if (this.model?.vrm) {
+      console.log('🗑️ 既存のVRMをアンロード')
       this.unloadVRM()
     }
 
+    // Viewerが適切にセットアップされているか確認
+    if (!this.isReady) {
+      console.error(
+        '❌ Viewerがセットアップされていません。setup()メソッドを先に実行してください。'
+      )
+      return
+    }
+
+    if (!this._camera) {
+      console.error('❌ カメラが初期化されていません')
+      return
+    }
+
     // gltf and vrm
-    this.model = new Model(this._camera || new THREE.Object3D())
-    this.model.loadVRM(url).then(async () => {
-      if (!this.model?.vrm) return
+    console.log('🏗️ Modelインスタンス作成')
+    this.model = new Model(this._camera)
+    this.model
+      .loadVRM(url)
+      .then(async () => {
+        if (!this.model?.vrm) {
+          console.error('❌ VRM読み込み失敗')
+          return
+        }
 
-      // Disable frustum culling
-      this.model.vrm.scene.traverse((obj) => {
-        obj.frustumCulled = false
+        console.log('✅ VRM読み込み成功', {
+          name: this.model.vrm.scene.name,
+          hasExpressionManager: !!this.model.vrm.expressionManager,
+          hasLookAt: !!this.model.vrm.lookAt,
+          hasHumanoid: !!this.model.vrm.humanoid,
+        })
+
+        // Disable frustum culling
+        this.model.vrm.scene.traverse((obj) => {
+          obj.frustumCulled = false
+        })
+
+        this._scene.add(this.model.vrm.scene)
+        console.log('🎬 VRMをシーンに追加')
+
+        try {
+          const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
+          if (vrma) {
+            this.model.loadAnimation(vrma)
+            console.log('🎵 アイドルアニメーション読み込み完了')
+          } else {
+            console.log('ℹ️ アイドルアニメーションが見つかりません')
+          }
+        } catch (error) {
+          console.warn('⚠️ アニメーション読み込みエラー:', error)
+        }
+
+        // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
+        requestAnimationFrame(() => {
+          this.resetCamera()
+          console.log('📷 カメラ位置調整完了')
+
+          // VRM読み込み完了のログ出力
+          this.logVRMStatus()
+        })
       })
-
-      this._scene.add(this.model.vrm.scene)
-
-      const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
-      if (vrma) this.model.loadAnimation(vrma)
-
-      // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
-      requestAnimationFrame(() => {
-        this.resetCamera()
+      .catch((error) => {
+        console.error('❌ VRM読み込みエラー:', error)
       })
-    })
   }
 
   public unloadVRM(): void {
@@ -284,5 +335,97 @@ export class Viewer {
     if (this._ambientLight) {
       this._ambientLight.intensity = 1.2 * intensity
     }
+  }
+
+  /**
+   * VRMの状態をログ出力
+   */
+  public logVRMStatus() {
+    if (!this.model?.vrm) {
+      console.log('🤖 VRM: 未読み込み')
+      return
+    }
+
+    const vrm = this.model.vrm
+    const status = {
+      hasExpressionManager: !!vrm.expressionManager,
+      hasLookAt: !!vrm.lookAt,
+      hasHumanoid: !!vrm.humanoid,
+      expressionCount: Object.keys(
+        vrm.expressionManager?._blendShapeGroups || {}
+      ).length,
+      emoteControllerStatus: this.model.emoteController
+        ? 'available'
+        : 'unavailable',
+    }
+
+    console.log('🤖 VRM状態:', status)
+
+    // ExpressionControllerの状態も確認
+    if (
+      this.model.emoteController &&
+      typeof (this.model.emoteController as any).getStatus === 'function'
+    ) {
+      const emoteStatus = (this.model.emoteController as any).getStatus()
+      console.log('🎭 ExpressionController状態:', emoteStatus)
+    }
+
+    // LipSyncの状態も確認
+    if (
+      this.model._lipSync &&
+      typeof (this.model._lipSync as any).getStatus === 'function'
+    ) {
+      const lipSyncStatus = (this.model._lipSync as any).getStatus()
+      console.log('👄 LipSync状態:', lipSyncStatus)
+    }
+  }
+
+  /**
+   * システム全体の診断情報を出力
+   */
+  public performDiagnostics() {
+    console.log('🔍 === VRMビューア診断開始 ===')
+
+    console.log('📊 基本情報:', {
+      isReady: this.isReady,
+      hasRenderer: !!this._renderer,
+      hasCamera: !!this._camera,
+      hasCameraControls: !!this._cameraControls,
+      hasScene: !!this._scene,
+      hasModel: !!this.model,
+      hasVRM: !!this.model?.vrm,
+    })
+
+    if (this._renderer) {
+      console.log('🖼️ レンダラー情報:', {
+        domElementWidth: this._renderer.domElement.width,
+        domElementHeight: this._renderer.domElement.height,
+        pixelRatio: this._renderer.getPixelRatio(),
+      })
+    }
+
+    if (this._camera) {
+      console.log('📷 カメラ情報:', {
+        position: {
+          x: this._camera.position.x,
+          y: this._camera.position.y,
+          z: this._camera.position.z,
+        },
+        fov: this._camera.fov,
+        aspect: this._camera.aspect,
+      })
+    }
+
+    this.logVRMStatus()
+
+    // LipSyncの詳細診断
+    if (
+      this.model?._lipSync &&
+      typeof (this.model._lipSync as any).logDetailedStatus === 'function'
+    ) {
+      ;(this.model._lipSync as any).logDetailedStatus()
+    }
+
+    console.log('🔍 === 診断完了 ===')
   }
 }

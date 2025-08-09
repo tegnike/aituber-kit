@@ -347,14 +347,14 @@ export const MessageInput = ({
   return (
     <div className="absolute bottom-0 z-20 w-screen">
       {showPermissionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-2xl max-w-md w-full mx-4">
             <h3 className="text-xl font-bold mb-4">
               {t('MicrophonePermission')}
             </h3>
             <p className="mb-4">{t('MicrophonePermissionMessage')}</p>
             <button
-              className="bg-secondary hover:bg-secondary-hover px-4 py-2 rounded-lg"
+              className="bg-secondary hover:bg-secondary-hover px-4 py-2 rounded-lg w-full"
               onClick={() => setShowPermissionModal(false)}
             >
               {t('Close')}
@@ -363,10 +363,10 @@ export const MessageInput = ({
         </div>
       )}
       <div className="bg-base-light text-black">
-        <div className="mx-auto max-w-4xl p-4 pb-3">
+        <div className="mx-auto max-w-4xl p-3 pb-2 sm:p-4 sm:pb-3">
           {/* プログレスバー - 設定に基づいて表示/非表示 */}
           {isMicRecording && showSilenceProgressBar && (
-            <div className="w-full h-2 bg-gray-200 rounded-full mb-2 overflow-hidden">
+            <div className="w-full h-3 sm:h-2 bg-gray-200 rounded-full mb-3 sm:mb-2 overflow-hidden">
               <div
                 className="h-full bg-secondary transition-all duration-200 ease-linear"
                 style={{
@@ -392,20 +392,20 @@ export const MessageInput = ({
           )}
           {/* エラーメッセージ表示 */}
           {fileError && (
-            <div className="mb-2 p-2 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
+            <div className="mb-3 sm:mb-2 p-3 sm:p-2 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm font-medium">
               {fileError}
             </div>
           )}
           {/* 画像プレビュー - 入力欄表示設定の場合のみ */}
           {modalImage && imageDisplayPosition === 'input' && (
             <div
-              className="mb-2 p-2 bg-gray-100 rounded-lg relative"
+              className="mb-3 sm:mb-2 p-3 sm:p-2 bg-gray-100 rounded-lg relative"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
               <button
                 onClick={handleRemoveImage}
-                className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-sm font-medium w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50"
+                className="absolute top-2 right-2 sm:top-1 sm:right-1 text-red-500 hover:text-red-700 text-lg sm:text-sm font-medium w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center rounded-full hover:bg-red-50 touch-manipulation"
               >
                 ×
               </button>
@@ -415,13 +415,13 @@ export const MessageInput = ({
                 width={0}
                 height={0}
                 sizes="100vw"
-                className="max-w-full max-h-32 rounded object-contain w-auto h-auto"
+                className="max-w-full max-h-40 sm:max-h-32 rounded object-contain w-auto h-auto"
               />
             </div>
           )}
 
-          <div className="flex gap-2 items-end">
-            <div className="flex-shrink-0 pb-[0.3rem]">
+          <div className="flex gap-3 sm:gap-2 items-end">
+            <div className="flex-shrink-0 pb-[0.4rem] sm:pb-[0.3rem]">
               <IconButton
                 iconName="24/Microphone"
                 backgroundColor={
@@ -429,6 +429,7 @@ export const MessageInput = ({
                     ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-theme'
                     : undefined
                 }
+                className="w-12 h-12 sm:w-10 sm:h-10 touch-manipulation"
                 isProcessing={isMicRecording}
                 isProcessingIcon={'24/PauseAlt'}
                 disabled={chatProcessing || isSpeaking}
@@ -438,11 +439,12 @@ export const MessageInput = ({
             <div className="flex-1 relative">
               {/* 画像添付インジケーター - アイコンのみ表示設定の場合 */}
               {showIconDisplay && (
-                <div className="absolute left-3 top-3 z-10">
+                <div className="absolute left-4 sm:left-3 top-4 sm:top-3 z-10">
                   <div
                     className="relative cursor-pointer"
                     onMouseEnter={() => setShowImageActions(true)}
                     onMouseLeave={() => setShowImageActions(false)}
+                    onTouchStart={() => setShowImageActions(true)}
                     onFocus={() => setShowImageActions(true)}
                     onBlur={() => setShowImageActions(false)}
                     tabIndex={0}
@@ -450,7 +452,7 @@ export const MessageInput = ({
                     aria-label={t('RemoveImage')}
                   >
                     <svg
-                      className="w-4 h-4 text-gray-500"
+                      className="w-5 h-5 sm:w-4 sm:h-4 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -469,7 +471,7 @@ export const MessageInput = ({
                           handleRemoveImage()
                           setShowImageActions(false)
                         }}
-                        className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-theme rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                        className="absolute -top-1 -right-1 w-5 h-5 sm:w-4 sm:h-4 bg-red-500 text-theme rounded-full flex items-center justify-center text-sm sm:text-xs hover:bg-red-600 transition-colors touch-manipulation"
                         title={t('RemoveImage')}
                       >
                         ×
@@ -495,21 +497,35 @@ export const MessageInput = ({
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 disabled={chatProcessing || slidePlaying || realtimeAPIMode}
-                className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-theme-default font-bold disabled"
+                className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full text-theme-default font-bold disabled touch-manipulation"
                 value={userMessage}
                 rows={rows}
                 style={{
                   lineHeight: '1.5',
-                  padding: showIconDisplay ? '8px 16px 8px 32px' : '8px 16px',
+                  padding: showIconDisplay
+                    ? typeof window !== 'undefined' && window.innerWidth < 640
+                      ? '12px 20px 12px 44px'
+                      : '8px 16px 8px 32px'
+                    : typeof window !== 'undefined' && window.innerWidth < 640
+                      ? '12px 20px'
+                      : '8px 16px',
                   resize: 'none',
                   whiteSpace: 'pre-wrap',
+                  fontSize:
+                    typeof window !== 'undefined' && window.innerWidth < 640
+                      ? '16px'
+                      : 'inherit',
+                  minHeight:
+                    typeof window !== 'undefined' && window.innerWidth < 640
+                      ? '48px'
+                      : 'auto',
                 }}
               ></textarea>
             </div>
-            <div className="flex gap-2 flex-shrink-0 pb-[0.3rem]">
+            <div className="flex gap-3 sm:gap-2 flex-shrink-0 pb-[0.4rem] sm:pb-[0.3rem]">
               <IconButton
                 iconName="24/Send"
-                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled w-12 h-12 sm:w-10 sm:h-10 touch-manipulation"
                 isProcessing={chatProcessing}
                 disabled={chatProcessing || !userMessage || realtimeAPIMode}
                 onClick={onClickSendButton}
@@ -517,7 +533,7 @@ export const MessageInput = ({
 
               <IconButton
                 iconName="stop"
-                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled w-12 h-12 sm:w-10 sm:h-10 touch-manipulation"
                 onClick={onClickStopButton}
                 isProcessing={false}
               />

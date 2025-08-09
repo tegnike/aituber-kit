@@ -82,6 +82,8 @@ interface ModelProvider extends Live2DSettings {
   voicevoxIntonation: number
   voicevoxServerUrl: string
   aivisSpeechSpeaker: string
+  aivisSpeechUseCustomId: boolean
+  aivisSpeechCustomId: string
   aivisSpeechSpeed: number
   aivisSpeechPitch: number
   aivisSpeechIntonationScale: number
@@ -100,6 +102,7 @@ interface ModelProvider extends Live2DSettings {
   aivisCloudTempoDynamics: number
   aivisCloudPrePhonemeLength: number
   aivisCloudPostPhonemeLength: number
+  aivisCloudStreamingEnabled: boolean
   stylebertvits2ServerUrl: string
   stylebertvits2ApiKey: string
   stylebertvits2ModelId: string
@@ -275,6 +278,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   voicevoxServerUrl: '',
   aivisSpeechSpeaker:
     process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEAKER || '888753760',
+  aivisSpeechUseCustomId: false,
+  aivisSpeechCustomId: '',
   aivisSpeechSpeed:
     parseFloat(process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEED || '1.0') || 1.0,
   aivisSpeechPitch:
@@ -320,6 +325,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(
       process.env.NEXT_PUBLIC_AIVIS_CLOUD_POST_PHONEME_LENGTH || '0.1'
     ) || 0.1,
+  aivisCloudStreamingEnabled:
+    process.env.NEXT_PUBLIC_AIVIS_CLOUD_STREAMING_ENABLED === 'true' || true,
   stylebertvits2ServerUrl: '',
   stylebertvits2ModelId: process.env.NEXT_PUBLIC_STYLEBERTVITS2_MODEL_ID || '0',
   stylebertvits2ApiKey: '',
@@ -593,6 +600,8 @@ const settingsStore = create<SettingsState>()(
       voicevoxIntonation: state.voicevoxIntonation,
       voicevoxServerUrl: state.voicevoxServerUrl,
       aivisSpeechSpeaker: state.aivisSpeechSpeaker,
+      aivisSpeechUseCustomId: state.aivisSpeechUseCustomId,
+      aivisSpeechCustomId: state.aivisSpeechCustomId,
       aivisSpeechSpeed: state.aivisSpeechSpeed,
       aivisSpeechPitch: state.aivisSpeechPitch,
       aivisSpeechIntonationScale: state.aivisSpeechIntonationScale,
@@ -611,6 +620,7 @@ const settingsStore = create<SettingsState>()(
       aivisCloudTempoDynamics: state.aivisCloudTempoDynamics,
       aivisCloudPrePhonemeLength: state.aivisCloudPrePhonemeLength,
       aivisCloudPostPhonemeLength: state.aivisCloudPostPhonemeLength,
+      aivisCloudStreamingEnabled: state.aivisCloudStreamingEnabled,
       stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
       stylebertvits2ModelId: state.stylebertvits2ModelId,
       stylebertvits2ApiKey: state.stylebertvits2ApiKey,

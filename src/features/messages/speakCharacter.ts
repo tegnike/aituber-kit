@@ -10,7 +10,10 @@ import { synthesizeVoiceCartesiaApi } from './synthesizeVoiceCartesia'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 import { synthesizeVoiceAivisSpeechApi } from './synthesizeVoiceAivisSpeech'
-import { synthesizeVoiceAivisCloudApi } from './synthesizeVoiceAivisCloudApi'
+import {
+  synthesizeVoiceAivisCloudApi,
+  synthesizeVoiceAivisCloudApiStreaming,
+} from './synthesizeVoiceAivisCloudApi'
 import { synthesizeVoiceGSVIApi } from './synthesizeVoiceGSVI'
 import { synthesizeVoiceOpenAIApi } from './synthesizeVoiceOpenAI'
 import { synthesizeVoiceAzureOpenAIApi } from './synthesizeVoiceAzureOpenAI'
@@ -73,7 +76,10 @@ async function synthesizeVoice(
 ): Promise<ArrayBuffer | null> {
   const ss = settingsStore.getState()
 
+  console.log(`🎤 音声合成開始: ${voiceType}モード`)
+
   if (ss.audioMode) {
+    console.log('⚠️ AudioModeが有効のため音声合成をスキップ')
     return null
   }
 
@@ -124,20 +130,46 @@ async function synthesizeVoice(
           ss.aivisSpeechPostPhonemeLength
         )
       case 'aivis_cloud_api':
-        return await synthesizeVoiceAivisCloudApi(
-          talk,
-          ss.aivisCloudApiKey,
-          ss.aivisCloudModelUuid,
-          ss.aivisCloudStyleId,
-          ss.aivisCloudStyleName,
-          ss.aivisCloudUseStyleName,
-          ss.aivisCloudSpeed,
-          ss.aivisCloudPitch,
-          ss.aivisCloudIntonationScale,
-          ss.aivisCloudTempoDynamics,
-          ss.aivisCloudPrePhonemeLength,
-          ss.aivisCloudPostPhonemeLength
-        )
+        // ストリーミング対応版を使用するかどうか判定
+        console.log('🌊 Aivis Cloud API設定確認: ストリーミング=' + ss.aivisCloudStreamingEnabled)
+        
+        if (ss.aivisCloudStreamingEnabled) {
+          console.log('🌊 ストリーミングモードで音声合成実行')
+          
+          await synthesizeVoiceAivisCloudApiStreaming(
+            talk,
+            ss.aivisCloudApiKey,
+            ss.aivisCloudModelUuid,
+            ss.aivisCloudStyleId,
+            ss.aivisCloudStyleName,
+            ss.aivisCloudUseStyleName,
+            ss.aivisCloudSpeed,
+            ss.aivisCloudPitch,
+            ss.aivisCloudIntonationScale,
+            ss.aivisCloudTempoDynamics,
+            ss.aivisCloudPrePhonemeLength,
+            ss.aivisCloudPostPhonemeLength
+          )
+          
+          // ストリーミング時はnullを返してキューシステムをバイパス
+          return null
+        } else {
+          console.log('📦 非ストリーミングモードで音声合成実行')
+          return await synthesizeVoiceAivisCloudApi(
+            talk,
+            ss.aivisCloudApiKey,
+            ss.aivisCloudModelUuid,
+            ss.aivisCloudStyleId,
+            ss.aivisCloudStyleName,
+            ss.aivisCloudUseStyleName,
+            ss.aivisCloudSpeed,
+            ss.aivisCloudPitch,
+            ss.aivisCloudIntonationScale,
+            ss.aivisCloudTempoDynamics,
+            ss.aivisCloudPrePhonemeLength,
+            ss.aivisCloudPostPhonemeLength
+          )
+        }
       case 'gsvitts':
         return await synthesizeVoiceGSVIApi(
           talk,

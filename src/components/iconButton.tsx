@@ -23,9 +23,9 @@ export const IconButton = ({
   return (
     <button
       {...rest}
-      className={`${backgroundColor} rounded-2xl text-sm p-2 text-center inline-flex items-center
+      className={`${backgroundColor} rounded-2xl text-sm text-center inline-flex items-center
         ${iconColor || 'text-theme'}
-        ${rest.className}
+        ${rest.className || 'p-2'}
       `}
     >
       {isProcessing ? (
