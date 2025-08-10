@@ -1,0 +1,82 @@
+# マルチステージビルドによる本番用Dockerfile
+# ステージ1: 依存関係のインストール
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+# apk cacheクリア
+RUN apk update && apk add --no-cache \
+    libc6-compat \
+    cairo-dev \
+    pango-dev \
+    jpeg-dev \
+    giflib-dev \
+    librsvg-dev \
+    pixman-dev \
+    pkgconf \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/cache/apk/*
+
+# パッケージファイルをコピーして依存関係をインストール
+COPY package*.json ./
+RUN npm ci --only=production --omit=dev
+
+# ステージ2: アプリケーションのビルド
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# 依存関係をコピー
+COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json ./
+
+# 開発依存関係をインストール
+RUN npm ci
+
+# ソースコードをコピーしてビルド
+COPY . .
+RUN npm run build
+
+# ステージ3: 本番環境用の最終イメージ
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# セキュリティ: 非rootユーザーを作成
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# 必要な実行時ライブラリをインストール
+RUN apk update && apk add --no-cache \
+    cairo \
+    pango \
+    jpeg \
+    giflib \
+    librsvg \
+    pixman \
+    && rm -rf /var/cache/apk/*
+
+# 本番用ファイルをコピー
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package*.json ./
+
+# ビルド結果と依存関係をコピー
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# 環境変数設定
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# ポート設定
+EXPOSE 3000
+ENV PORT=3000
+
+# 非rootユーザーに変更
+USER nextjs
+
+# ヘルスチェックの追加
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
+
+# アプリケーション起動
+CMD ["npm", "start"]
