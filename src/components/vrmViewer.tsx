@@ -33,6 +33,28 @@ export default function VrmViewer() {
           const blob = new Blob([file], { type: 'application/octet-stream' })
           const url = window.URL.createObjectURL(blob)
           viewer.loadVrm(url)
+        } else if (
+          file.type.startsWith('audio/') ||
+          file.name.endsWith('.mp3')
+        ) {
+          // 音声ファイルを再生してVRMのリップシンクを有効化
+          // 既存の再生があれば停止
+          try {
+            const model = viewer.model
+            if (!model) return
+            model.stopSpeaking()
+            file
+              .arrayBuffer()
+              .then((buffer) => {
+                // ドロップ時はneutral感情で再生
+                const talk = { emotion: 'neutral', message: '' } as const
+                // mp3などはデコードが必要
+                void model.speak(buffer, talk, true)
+              })
+              .catch((e) => console.error('Failed to read audio file:', e))
+          } catch (e) {
+            console.error('Audio drop handling error:', e)
+          }
         } else if (file.type.startsWith('image/')) {
           const reader = new FileReader()
           reader.readAsDataURL(file)
