@@ -8,6 +8,7 @@ import { useSilenceDetection } from './useSilenceDetection'
 import { processAudio, base64EncodeAudio } from '@/utils/audioProcessing'
 import { useAudioProcessing } from './useAudioProcessing'
 import { SpeakQueue } from '@/features/messages/speakQueue'
+import { getVoiceLanguageCode } from '@/utils/voiceLanguage'
 
 /**
  * リアルタイムAPIを使用した音声認識のカスタムフック
@@ -347,12 +348,18 @@ export const useRealtimeVoiceAPI = (
       window.SpeechRecognition || window.webkitSpeechRecognition
 
     if (!SpeechRecognition) {
+      // 統一されたエラーハンドリングパターン (Requirement 8)
       console.error('Speech Recognition API is not supported in this browser')
+      toastStore.getState().addToast({
+        message: t('Toasts.SpeechRecognitionNotSupported'),
+        type: 'error',
+        tag: 'speech-recognition-not-supported',
+      })
       return
     }
 
     const newRecognition = new SpeechRecognition()
-    newRecognition.lang = 'ja-JP' // 日本語設定（必要に応じて変更）
+    newRecognition.lang = getVoiceLanguageCode(selectLanguage)
     newRecognition.continuous = true
     newRecognition.interimResults = true
 
@@ -401,7 +408,14 @@ export const useRealtimeVoiceAPI = (
       }
       clearSilenceDetection()
     }
-  }, [])
+  }, [
+    selectLanguage,
+    clearSilenceDetection,
+    startSilenceDetection,
+    stopListening,
+    updateSpeechTimestamp,
+    t,
+  ])
 
   // WebSocketの準備ができているかを確認
   const isWebSocketReady = useCallback(() => {

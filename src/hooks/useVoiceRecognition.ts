@@ -139,23 +139,28 @@ export const useVoiceRecognition = ({
       }
     }
 
-    const handleKeyUp = (e: KeyboardEvent) => {
+    const handleKeyUp = async (e: KeyboardEvent) => {
       if (e.key === 'Alt' && currentHook.isListening) {
         // Alt キーを離した時の処理
         // マイクボタンと同じ動作をさせるため、toggleListeningを使用せず
         // stopListeningを直接呼び出し、テキストが存在する場合は送信する
-        if (currentHook.userMessage.trim()) {
-          // chatProcessing を先に true に設定
+
+        // メッセージを先に変数に保存（stopListening後にuserMessageが変わる可能性があるため）
+        const message = currentHook.userMessage.trim()
+
+        // 先に音声認識を停止
+        await currentHook.stopListening()
+
+        // stopListening完了後にメッセージを送信
+        if (message) {
+          // chatProcessing を true に設定
           homeStore.setState({ chatProcessing: true })
           // メッセージを空にする
           currentHook.handleInputChange({
             target: { value: '' },
           } as React.ChangeEvent<HTMLTextAreaElement>)
           // 処理を開始
-          onChatProcessStart(currentHook.userMessage.trim())
-          currentHook.stopListening()
-        } else {
-          currentHook.stopListening()
+          onChatProcessStart(message)
         }
       }
     }
