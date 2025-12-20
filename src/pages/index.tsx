@@ -18,8 +18,13 @@ import '@/lib/i18n'
 import { buildUrl } from '@/utils/buildUrl'
 import { YoutubeManager } from '@/components/youtubeManager'
 import toastStore from '@/features/stores/toast'
+import { usePresetLoader } from '@/features/presets/usePresetLoader'
 
 const Home = () => {
+  // アプリ起動時にプリセットファイルを読み込み (Req 3.2)
+  // 読み込み中は既存のデフォルト値で表示、完了後にプリセットを反映
+  usePresetLoader()
+
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const captureStatus = homeStore((s) => s.captureStatus)
   const backgroundImageUrl = homeStore((s) => s.backgroundImageUrl)
