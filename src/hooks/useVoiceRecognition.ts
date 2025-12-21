@@ -42,6 +42,24 @@ export const useVoiceRecognition = ({
         : browserSpeech
       : whisperSpeech
 
+  // ----- currentHookの関数参照をrefで保持（依存配列からcurrentHookを除去するため） -----
+  const currentHookRef = useRef({
+    startListening: currentHook.startListening,
+    stopListening: currentHook.stopListening,
+    userMessage: currentHook.userMessage,
+    isListening: currentHook.isListening,
+    handleInputChange: currentHook.handleInputChange,
+  })
+
+  // 毎レンダリングでrefを更新
+  currentHookRef.current = {
+    startListening: currentHook.startListening,
+    stopListening: currentHook.stopListening,
+    userMessage: currentHook.userMessage,
+    isListening: currentHook.isListening,
+    handleInputChange: currentHook.handleInputChange,
+  }
+
   // ----- 音声停止 -----
   const handleStopSpeaking = useCallback(() => {
     // isSpeaking を false に設定し、発話キューを完全に停止
@@ -54,22 +72,22 @@ export const useVoiceRecognition = ({
     // 常時マイク入力モードがONで、現在マイク入力が行われていない場合のみ実行
     if (
       continuousMicListeningMode &&
-      // !currentHook.isListening &&
+      // !currentHookRef.current.isListening &&
       speechRecognitionMode === 'browser' &&
       !homeStore.getState().chatProcessing
     ) {
       console.log('🔄 AIの発話が完了しました。音声認識を自動的に再開します。')
       setTimeout(() => {
-        currentHook.startListening()
+        currentHookRef.current.startListening()
       }, 300) // マイク起動までに少し遅延を入れる
     }
-  }, [continuousMicListeningMode, speechRecognitionMode, currentHook])
+  }, [continuousMicListeningMode, speechRecognitionMode])
 
   // 常時マイク入力モードの変更を監視
   useEffect(() => {
     if (
       continuousMicListeningMode &&
-      !currentHook.isListening &&
+      !currentHookRef.current.isListening &&
       speechRecognitionMode === 'browser' &&
       !homeStore.getState().isSpeaking &&
       !homeStore.getState().chatProcessing
@@ -78,9 +96,9 @@ export const useVoiceRecognition = ({
       console.log(
         '🎤 常時マイク入力モードがONになりました。音声認識を開始します。'
       )
-      currentHook.startListening()
+      currentHookRef.current.startListening()
     }
-  }, [continuousMicListeningMode, speechRecognitionMode, currentHook])
+  }, [continuousMicListeningMode, speechRecognitionMode])
 
   // 発話完了時のコールバックを登録
   useEffect(() => {
@@ -97,10 +115,11 @@ export const useVoiceRecognition = ({
 
   // コンポーネントのマウント時に常時マイク入力モードがONの場合は自動的にマイク入力を開始
   useEffect(() => {
+    // マウント時の処理（settingsStore.getState()でstale closure回避）
     if (
-      continuousMicListeningMode &&
-      speechRecognitionMode === 'browser' &&
-      !currentHook.isListening &&
+      settingsStore.getState().continuousMicListeningMode &&
+      settingsStore.getState().speechRecognitionMode === 'browser' &&
+      !currentHookRef.current.isListening &&
       !homeStore.getState().isSpeaking &&
       !homeStore.getState().chatProcessing
     ) {
@@ -109,12 +128,12 @@ export const useVoiceRecognition = ({
         // コンポーネントマウント時に少し遅延させてから開始
         await new Promise((resolve) => setTimeout(resolve, 1000))
         if (
-          continuousMicListeningMode &&
-          !currentHook.isListening &&
+          settingsStore.getState().continuousMicListeningMode &&
+          !currentHookRef.current.isListening &&
           !homeStore.getState().isSpeaking &&
           !homeStore.getState().chatProcessing
         ) {
-          currentHook.startListening()
+          currentHookRef.current.startListening()
         }
       }
 
@@ -122,41 +141,41 @@ export const useVoiceRecognition = ({
     }
 
     return () => {
-      // コンポーネントのアンマウント時にマイク入力を停止
-      if (currentHook.isListening) {
-        currentHook.stopListening()
+      // コンポーネントのアンマウント時にマイク入力を停止（ref経由で最新関数を取得）
+      if (currentHookRef.current.isListening) {
+        currentHookRef.current.stopListening()
       }
     }
-  }, []) // マウント時のみ実行
+  }, []) // マウント時のみ実行（ref経由で最新値を取得）
 
   // ----- キーボードショートカットの設定 -----
   useEffect(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
-      if (e.key === 'Alt' && !currentHook.isListening) {
+      if (e.key === 'Alt' && !currentHookRef.current.isListening) {
         // Alt キーを押した時の処理
         handleStopSpeaking()
-        await currentHook.startListening()
+        await currentHookRef.current.startListening()
       }
     }
 
     const handleKeyUp = async (e: KeyboardEvent) => {
-      if (e.key === 'Alt' && currentHook.isListening) {
+      if (e.key === 'Alt' && currentHookRef.current.isListening) {
         // Alt キーを離した時の処理
         // マイクボタンと同じ動作をさせるため、toggleListeningを使用せず
         // stopListeningを直接呼び出し、テキストが存在する場合は送信する
 
         // メッセージを先に変数に保存（stopListening後にuserMessageが変わる可能性があるため）
-        const message = currentHook.userMessage.trim()
+        const message = currentHookRef.current.userMessage.trim()
 
         // 先に音声認識を停止
-        await currentHook.stopListening()
+        await currentHookRef.current.stopListening()
 
         // stopListening完了後にメッセージを送信
         if (message) {
           // chatProcessing を true に設定
           homeStore.setState({ chatProcessing: true })
           // メッセージを空にする
-          currentHook.handleInputChange({
+          currentHookRef.current.handleInputChange({
             target: { value: '' },
           } as React.ChangeEvent<HTMLTextAreaElement>)
           // 処理を開始
@@ -172,7 +191,7 @@ export const useVoiceRecognition = ({
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [currentHook, handleStopSpeaking, onChatProcessStart])
+  }, [handleStopSpeaking, onChatProcessStart])
 
   // 現在のモードに基づいて適切なフックのAPIを返す
   return {

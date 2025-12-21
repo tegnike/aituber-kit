@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
@@ -211,15 +211,30 @@ export const useWhisperRecognition = (
     []
   )
 
-  return {
-    userMessage,
-    isListening,
-    isProcessing,
-    silenceTimeoutRemaining: null, // Whisperモードでは使用しない
-    handleInputChange,
-    handleSendMessage,
-    toggleListening,
-    startListening,
-    stopListening,
-  }
+  // 戻り値オブジェクトをメモ化（Requirement 1.2, 1.4）
+  const returnValue = useMemo(
+    () => ({
+      userMessage,
+      isListening,
+      isProcessing,
+      silenceTimeoutRemaining: null, // Whisperモードでは使用しない
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    }),
+    [
+      userMessage,
+      isListening,
+      isProcessing,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    ]
+  )
+
+  return returnValue
 }

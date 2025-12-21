@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
@@ -31,6 +31,8 @@ export const useRealtimeVoiceAPI = (
   const transcriptRef = useRef('')
   const speechDetectedRef = useRef<boolean>(false)
   const initialSpeechCheckTimerRef = useRef<NodeJS.Timeout | null>(null)
+  // ----- stopListening関数の参照を保持（stale closure防止） -----
+  const stopListeningRef = useRef<() => Promise<void>>(() => Promise.resolve())
 
   // ----- オーディオ処理フックを使用 -----
   const {
@@ -48,25 +50,6 @@ export const useRealtimeVoiceAPI = (
   // ----- キーボードトリガー関連 -----
   const keyPressStartTime = useRef<number | null>(null)
   const isKeyboardTriggered = useRef(false)
-
-  // ----- 無音検出フックを使用 -----
-  const {
-    silenceTimeoutRemaining,
-    clearSilenceDetection,
-    startSilenceDetection,
-    updateSpeechTimestamp,
-    isSpeechEnded,
-  } = useSilenceDetection({
-    onTextDetected: (text: string) => {
-      // 検出されたテキストを元の onChatProcessStart に渡す前に、WebSocketで送信する処理を追加
-      sendTextToWebSocket(text)
-      // 元のコールバックも呼び出す
-      onChatProcessStart(text)
-    },
-    transcriptRef,
-    setUserMessage,
-    speechDetectedRef,
-  })
 
   // ----- テキストをWebSocketで送信する関数 -----
   const sendTextToWebSocket = useCallback((text: string) => {
@@ -106,6 +89,31 @@ export const useRealtimeVoiceAPI = (
       )
     }
   }, [])
+
+  // ----- 無音検出時のテキスト処理コールバック（メモ化して無限ループ防止） -----
+  const handleTextDetected = useCallback(
+    (text: string) => {
+      // 検出されたテキストを元の onChatProcessStart に渡す前に、WebSocketで送信する処理を追加
+      sendTextToWebSocket(text)
+      // 元のコールバックも呼び出す
+      onChatProcessStart(text)
+    },
+    [sendTextToWebSocket, onChatProcessStart]
+  )
+
+  // ----- 無音検出フックを使用 -----
+  const {
+    silenceTimeoutRemaining,
+    clearSilenceDetection,
+    startSilenceDetection,
+    updateSpeechTimestamp,
+    isSpeechEnded,
+  } = useSilenceDetection({
+    onTextDetected: handleTextDetected,
+    transcriptRef,
+    setUserMessage,
+    speechDetectedRef,
+  })
 
   // ----- 初期音声検出タイマーをクリアする関数 -----
   const clearInitialSpeechCheckTimer = useCallback(() => {
@@ -240,6 +248,9 @@ export const useRealtimeVoiceAPI = (
     onChatProcessStart,
   ])
 
+  // stopListeningRefを毎レンダリングで更新（stale closure防止）
+  stopListeningRef.current = stopListening
+
   // ----- 音声認識開始処理 -----
   const startListening = useCallback(async () => {
     const hasPermission = await checkMicrophonePermission()
@@ -369,10 +380,8 @@ export const useRealtimeVoiceAPI = (
     newRecognition.onstart = () => {
       console.log('Speech recognition started')
 
-      // 無音検出開始
-      if (stopListening) {
-        startSilenceDetection(stopListening)
-      }
+      // 無音検出開始（refを使用してstale closure防止）
+      startSilenceDetection(() => stopListeningRef.current())
     }
 
     // 音声認識結果が得られたとき
@@ -412,7 +421,7 @@ export const useRealtimeVoiceAPI = (
     selectLanguage,
     clearSilenceDetection,
     startSilenceDetection,
-    stopListening,
+    // stopListening, // 依存配列から除去（無限ループ防止）
     updateSpeechTimestamp,
     t,
   ])
@@ -423,15 +432,31 @@ export const useRealtimeVoiceAPI = (
     return wsManager?.websocket?.readyState === WebSocket.OPEN
   }, [])
 
-  return {
-    userMessage,
-    isListening,
-    silenceTimeoutRemaining,
-    handleInputChange,
-    handleSendMessage,
-    toggleListening,
-    startListening,
-    stopListening,
-    isWebSocketReady,
-  }
+  // 戻り値オブジェクトをメモ化（Requirement 1.3, 1.4）
+  const returnValue = useMemo(
+    () => ({
+      userMessage,
+      isListening,
+      silenceTimeoutRemaining,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+      isWebSocketReady,
+    }),
+    [
+      userMessage,
+      isListening,
+      silenceTimeoutRemaining,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+      isWebSocketReady,
+    ]
+  )
+
+  return returnValue
 }

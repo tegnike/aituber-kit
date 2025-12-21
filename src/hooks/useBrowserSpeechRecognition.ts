@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { getVoiceLanguageCode } from '@/utils/voiceLanguage'
 import settingsStore from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
@@ -521,14 +521,29 @@ export const useBrowserSpeechRecognition = (
     handleNoSpeechTimeout,
   ])
 
-  return {
-    userMessage,
-    isListening,
-    silenceTimeoutRemaining,
-    handleInputChange,
-    handleSendMessage,
-    toggleListening,
-    startListening,
-    stopListening,
-  }
+  // 戻り値オブジェクトをメモ化（Requirement 1.1, 1.4）
+  const returnValue = useMemo(
+    () => ({
+      userMessage,
+      isListening,
+      silenceTimeoutRemaining,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    }),
+    [
+      userMessage,
+      isListening,
+      silenceTimeoutRemaining,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    ]
+  )
+
+  return returnValue
 }
