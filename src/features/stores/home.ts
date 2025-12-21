@@ -6,6 +6,7 @@ import { Viewer } from '../vrmViewer/viewer'
 import { messageSelectors } from '../messages/messageSelectors'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 import { generateMessageId } from '@/utils/messageUtils'
+import { addEmbeddingsToMessages } from '@/features/memory/memoryStoreSync'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -160,7 +161,7 @@ homeStore.subscribe((state, prevState) => {
       clearTimeout(saveDebounceTimer)
     }
 
-    saveDebounceTimer = setTimeout(() => {
+    saveDebounceTimer = setTimeout(async () => {
       // 新規追加 or 更新があったメッセージだけを抽出
       const newMessagesToSave = state.chatLog.filter(
         (msg, idx) =>
@@ -174,7 +175,20 @@ homeStore.subscribe((state, prevState) => {
           messageSelectors.sanitizeMessageForStorage(msg)
         )
 
-        console.log(`Saving ${processedMessages.length} new messages...`)
+        // メモリ機能が有効な場合、Embeddingを付与してから保存
+        let messagesWithEmbedding: Message[]
+        try {
+          messagesWithEmbedding =
+            await addEmbeddingsToMessages(processedMessages)
+        } catch (error) {
+          console.warn(
+            'Failed to add embeddings, saving without embeddings:',
+            error
+          )
+          messagesWithEmbedding = processedMessages
+        }
+
+        console.log(`Saving ${messagesWithEmbedding.length} new messages...`)
 
         void fetch('/api/save-chat-log', {
           method: 'POST',
@@ -182,7 +196,7 @@ homeStore.subscribe((state, prevState) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            messages: processedMessages,
+            messages: messagesWithEmbedding,
             isNewFile: shouldCreateNewFile,
           }),
         })

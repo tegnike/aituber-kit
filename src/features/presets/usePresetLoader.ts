@@ -49,8 +49,7 @@ export function usePresetLoader(): PresetLoaderResult {
         }> = {}
 
         results.forEach((result) => {
-          const key =
-            `characterPreset${result.index}` as keyof typeof updates
+          const key = `characterPreset${result.index}` as keyof typeof updates
           // txtファイルの内容があれば優先、なければ現在の値（環境変数/デフォルト）を維持
           if (result.content !== null) {
             updates[key] = result.content

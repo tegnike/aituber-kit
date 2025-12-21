@@ -2,6 +2,10 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
+import {
+  MemoryConfig,
+  DEFAULT_MEMORY_CONFIG,
+} from '@/features/memory/memoryTypes'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
   AIService,
@@ -223,7 +227,8 @@ export type SettingsState = APIKeys &
   Integrations &
   Character &
   General &
-  ModelType
+  ModelType &
+  MemoryConfig
 
 // Function to get initial values from environment variables
 const getInitialValuesFromEnv = (): SettingsState => ({
@@ -538,6 +543,20 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   angryMotionGroup: process.env.NEXT_PUBLIC_ANGRY_MOTION_GROUP || '',
   relaxedMotionGroup: process.env.NEXT_PUBLIC_RELAXED_MOTION_GROUP || '',
   surprisedMotionGroup: process.env.NEXT_PUBLIC_SURPRISED_MOTION_GROUP || '',
+
+  // Memory settings
+  memoryEnabled:
+    process.env.NEXT_PUBLIC_MEMORY_ENABLED === 'true' ||
+    DEFAULT_MEMORY_CONFIG.memoryEnabled,
+  memorySimilarityThreshold:
+    parseFloat(process.env.NEXT_PUBLIC_MEMORY_SIMILARITY_THRESHOLD || '') ||
+    DEFAULT_MEMORY_CONFIG.memorySimilarityThreshold,
+  memorySearchLimit:
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_SEARCH_LIMIT || '') ||
+    DEFAULT_MEMORY_CONFIG.memorySearchLimit,
+  memoryMaxContextTokens:
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_MAX_CONTEXT_TOKENS || '') ||
+    DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
 })
 
 const settingsStore = create<SettingsState>()(
@@ -710,6 +729,10 @@ const settingsStore = create<SettingsState>()(
       enableMultiModal: state.enableMultiModal,
       colorTheme: state.colorTheme,
       customModel: state.customModel,
+      memoryEnabled: state.memoryEnabled,
+      memorySimilarityThreshold: state.memorySimilarityThreshold,
+      memorySearchLimit: state.memorySearchLimit,
+      memoryMaxContextTokens: state.memoryMaxContextTokens,
     }),
   })
 )

@@ -153,7 +153,9 @@ describe('useVoiceRecognition', () => {
 
       const { result, rerender } = renderHook(() => {
         renderCount++
-        return useVoiceRecognition({ onChatProcessStart: mockOnChatProcessStart })
+        return useVoiceRecognition({
+          onChatProcessStart: mockOnChatProcessStart,
+        })
       })
 
       await act(async () => {
@@ -384,7 +386,9 @@ describe('useVoiceRecognition', () => {
 
       const { rerender } = renderHook(() => {
         renderCount++
-        return useVoiceRecognition({ onChatProcessStart: mockOnChatProcessStart })
+        return useVoiceRecognition({
+          onChatProcessStart: mockOnChatProcessStart,
+        })
       })
 
       await act(async () => {
@@ -482,7 +486,9 @@ describe('useVoiceRecognition', () => {
 
       const { rerender } = renderHook(() => {
         renderCount++
-        return useVoiceRecognition({ onChatProcessStart: mockOnChatProcessStart })
+        return useVoiceRecognition({
+          onChatProcessStart: mockOnChatProcessStart,
+        })
       })
 
       await act(async () => {
@@ -710,7 +716,9 @@ describe('useVoiceRecognition', () => {
 
       const { rerender } = renderHook(() => {
         renderCount++
-        return useVoiceRecognition({ onChatProcessStart: mockOnChatProcessStart })
+        return useVoiceRecognition({
+          onChatProcessStart: mockOnChatProcessStart,
+        })
       })
 
       await act(async () => {
@@ -906,8 +914,7 @@ describe('useVoiceRecognition', () => {
       // これらの変更時のみeffectが再登録されることを確認
       const mockOnChatProcessStart1 = jest.fn()
       const { rerender } = renderHook(
-        ({ onChatProcessStart }) =>
-          useVoiceRecognition({ onChatProcessStart }),
+        ({ onChatProcessStart }) => useVoiceRecognition({ onChatProcessStart }),
         { initialProps: { onChatProcessStart: mockOnChatProcessStart1 } }
       )
 
