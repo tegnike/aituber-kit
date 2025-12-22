@@ -65,6 +65,19 @@ export const useVoiceRecognition = ({
     // isSpeaking を false に設定し、発話キューを完全に停止
     homeStore.setState({ isSpeaking: false })
     SpeakQueue.stopAll()
+
+    // 常時マイク入力モードの場合、ストップ後にマイクを再開
+    // （stopAllではコールバックが呼ばれないため、ここで再開処理を行う）
+    if (
+      settingsStore.getState().continuousMicListeningMode &&
+      settingsStore.getState().speechRecognitionMode === 'browser' &&
+      !homeStore.getState().chatProcessing
+    ) {
+      console.log('🔄 ストップボタンが押されました。音声認識を再開します。')
+      setTimeout(() => {
+        currentHookRef.current.startListening()
+      }, 300)
+    }
   }, [])
 
   // AIの発話完了後に音声認識を自動的に再開する処理

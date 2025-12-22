@@ -423,15 +423,23 @@ export const MessageInput = ({
           <div className="flex gap-2 items-end">
             <div className="flex-shrink-0 pb-[0.3rem]">
               <IconButton
-                iconName="24/Microphone"
+                iconName={
+                  continuousMicListeningMode ? '24/Close' : '24/Microphone'
+                }
                 backgroundColor={
                   continuousMicListeningMode
-                    ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-theme'
+                    ? isMicRecording
+                      ? 'bg-green-500 text-theme'
+                      : 'bg-green-600 text-theme'
                     : undefined
                 }
                 isProcessing={isMicRecording}
-                isProcessingIcon={'24/PauseAlt'}
-                disabled={chatProcessing || isSpeaking}
+                isProcessingIcon={
+                  continuousMicListeningMode ? '24/Microphone' : '24/PauseAlt'
+                }
+                disabled={
+                  continuousMicListeningMode || chatProcessing || isSpeaking
+                }
                 onClick={handleMicClick}
               />
             </div>

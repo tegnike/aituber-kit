@@ -278,15 +278,20 @@ export const useBrowserSpeechRecognition = (
   }, [startListening, stopListening])
 
   // ----- メッセージ送信 -----
-  const handleSendMessage = useCallback(() => {
-    if (userMessage.trim()) {
+  const handleSendMessage = useCallback(async () => {
+    const trimmedMessage = userMessage.trim()
+    if (trimmedMessage) {
       // AIの発話を停止
       homeStore.setState({ isSpeaking: false })
       SpeakQueue.stopAll()
-      onChatProcessStart(userMessage)
+
+      // マイク入力を停止（常時音声入力モード時も自動送信と同様に停止）
+      await stopListening()
+
+      onChatProcessStart(trimmedMessage)
       setUserMessage('')
     }
-  }, [userMessage, onChatProcessStart])
+  }, [userMessage, onChatProcessStart, stopListening])
 
   // ----- メッセージ入力 -----
   const handleInputChange = useCallback(
