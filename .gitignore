@@ -73,3 +73,6 @@ public/scripts/*
 .claude/settings.local.json
 
 .kiro/specs/*
+
+# Playwright reports
+/reports
