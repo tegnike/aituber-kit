@@ -182,12 +182,16 @@ export default async function handler(req: NextRequest) {
         maxTokens,
       })
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in AI API call:', error)
+
+    // エラーメッセージを抽出
+    const errorMessage =
+      error?.message || error?.toString() || 'Unknown error occurred'
 
     return new Response(
       JSON.stringify({
-        error: 'Unexpected Error',
+        error: errorMessage,
         errorCode: 'AIAPIError',
       }),
       {

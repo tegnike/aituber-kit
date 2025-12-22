@@ -38,10 +38,16 @@ const getAIConfig = () => {
   }
 }
 
-function handleApiError(errorCode: string): string {
+function handleApiError(errorCode: string, errorDetail?: string): string {
   const languageCode = settingsStore.getState().selectLanguage
   i18next.changeLanguage(languageCode)
-  return i18next.t(`Errors.${errorCode || 'AIAPIError'}`)
+  const baseMessage = i18next.t(`Errors.${errorCode || 'AIAPIError'}`)
+
+  // エラー詳細がある場合は追加
+  if (errorDetail && errorDetail !== 'Unknown error occurred') {
+    return `${baseMessage}: ${errorDetail}`
+  }
+  return baseMessage
 }
 
 // APIエンドポイントを決定する関数
@@ -121,7 +127,12 @@ export async function getVercelAIChatResponse(messages: Message[]) {
       const responseBody = await response.json()
       throw new Error(
         `API request to ${selectAIService} failed with status ${response.status} and body ${responseBody.error}`,
-        { cause: { errorCode: responseBody.errorCode } }
+        {
+          cause: {
+            errorCode: responseBody.errorCode,
+            errorDetail: responseBody.error,
+          },
+        }
       )
     }
 
@@ -129,10 +140,9 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     return { text: data.text }
   } catch (error: any) {
     console.error(`Error fetching ${selectAIService} API response:`, error)
-    const errorCode = error.cause
-      ? error.cause.errorCode || 'AIAPIError'
-      : 'AIAPIError'
-    return { text: handleApiError(errorCode) }
+    const errorCode = error.cause?.errorCode || 'AIAPIError'
+    const errorDetail = error.cause?.errorDetail || error.message
+    return { text: handleApiError(errorCode, errorDetail) }
   }
 }
 
@@ -206,7 +216,12 @@ export async function getVercelAIChatResponseStream(
       const responseBody = await response.json()
       throw new Error(
         `API request to ${selectAIService} failed with status ${response.status} and body ${responseBody.error}`,
-        { cause: { errorCode: responseBody.errorCode } }
+        {
+          cause: {
+            errorCode: responseBody.errorCode,
+            errorDetail: responseBody.error,
+          },
+        }
       )
     }
 
@@ -303,13 +318,14 @@ export async function getVercelAIChatResponseStream(
               }
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error(
             `Error fetching ${selectAIService} API response:`,
             error
           )
 
-          const errorMessage = handleApiError('AIAPIError')
+          const errorDetail = error?.message || String(error)
+          const errorMessage = handleApiError('AIAPIError', errorDetail)
           toastStore.getState().addToast({
             message: errorMessage,
             type: 'error',
@@ -322,9 +338,9 @@ export async function getVercelAIChatResponseStream(
       },
     })
   } catch (error: any) {
-    const errorMessage = handleApiError(
-      error.cause ? error.cause.errorCode : 'AIAPIError'
-    )
+    const errorCode = error.cause?.errorCode || 'AIAPIError'
+    const errorDetail = error.cause?.errorDetail || error.message
+    const errorMessage = handleApiError(errorCode, errorDetail)
     toastStore.getState().addToast({
       message: errorMessage,
       type: 'error',

@@ -38,12 +38,16 @@ export default async function handler(req: NextRequest) {
       stream,
       customApiIncludeMimeType
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in Custom API call:', error)
+
+    // エラーメッセージを抽出
+    const errorMessage =
+      error?.message || error?.toString() || 'Unknown error occurred'
 
     return new Response(
       JSON.stringify({
-        error: 'Unexpected Error',
+        error: errorMessage,
         errorCode: 'CustomAPIError',
       }),
       {
