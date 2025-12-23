@@ -68,7 +68,7 @@ const PresenceDebugPreview = ({
     <div className={`relative ${className}`}>
       {/* カメラプレビュー */}
       <video
-        ref={videoRef}
+        ref={videoRef as RefObject<HTMLVideoElement>}
         autoPlay
         playsInline
         muted

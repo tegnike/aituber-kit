@@ -96,7 +96,6 @@ describe('Task 5.1: システム統合テスト - メインページへのフッ
       writable: true,
       configurable: true,
     })
-
     ;(homeStore.setState as jest.Mock).mockClear()
   })
 

@@ -259,7 +259,10 @@ describe('usePresenceDetection - Task 3.2: 顔検出ループと状態遷移', (
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       // 検出ループを実行させる（300ms後に最初の検出）
       await act(async () => {
@@ -289,7 +292,10 @@ describe('usePresenceDetection - Task 3.2: 顔検出ループと状態遷移', (
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       // 検出ループを実行させる
       await act(async () => {
@@ -321,7 +327,10 @@ describe('usePresenceDetection - Task 3.2: 顔検出ループと状態遷移', (
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       // 顔検出
       await act(async () => {
@@ -380,7 +389,10 @@ describe('usePresenceDetection - Task 3.2: 顔検出ループと状態遷移', (
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       await act(async () => {
         jest.advanceTimersByTime(300)
@@ -429,7 +441,10 @@ describe('usePresenceDetection - Task 3.3: 挨拶開始と会話連携', () => {
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       await act(async () => {
         jest.advanceTimersByTime(300)
@@ -454,7 +469,10 @@ describe('usePresenceDetection - Task 3.3: 挨拶開始と会話連携', () => {
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       await act(async () => {
         jest.advanceTimersByTime(300)
@@ -480,7 +498,10 @@ describe('usePresenceDetection - Task 3.3: 挨拶開始と会話連携', () => {
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       await act(async () => {
         jest.advanceTimersByTime(300) // 最初の検出
@@ -513,7 +534,10 @@ describe('usePresenceDetection - Task 3.3: 挨拶開始と会話連携', () => {
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       await act(async () => {
         jest.advanceTimersByTime(300)
@@ -565,7 +589,10 @@ describe('usePresenceDetection - Task 3.4: 離脱処理とクールダウン', (
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       // 顔検出
       await act(async () => {
@@ -611,7 +638,10 @@ describe('usePresenceDetection - Task 3.4: 離脱処理とクールダウン', (
       })
 
       // Set videoRef to enable face detection
-      ;(result.current.videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = mockVideoElement
+      ;(
+        result.current
+          .videoRef as React.MutableRefObject<HTMLVideoElement | null>
+      ).current = mockVideoElement
 
       // 顔検出→greeting
       await act(async () => {

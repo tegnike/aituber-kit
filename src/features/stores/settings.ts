@@ -6,6 +6,10 @@ import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
 } from '@/features/memory/memoryTypes'
+import {
+  IdleModeSettings,
+  DEFAULT_IDLE_CONFIG,
+} from '@/features/idle/idleTypes'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
   AIService,
@@ -241,7 +245,8 @@ export type SettingsState = APIKeys &
   General &
   ModelType &
   MemoryConfig &
-  PresenceDetectionSettings
+  PresenceDetectionSettings &
+  IdleModeSettings
 
 // Function to get initial values from environment variables
 const getInitialValuesFromEnv = (): SettingsState => ({
@@ -586,6 +591,44 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       .NEXT_PUBLIC_PRESENCE_DETECTION_SENSITIVITY as PresenceDetectionSensitivity) ||
     'medium',
   presenceDebugMode: process.env.NEXT_PUBLIC_PRESENCE_DEBUG_MODE === 'true',
+
+  // Idle mode settings
+  idleModeEnabled:
+    process.env.NEXT_PUBLIC_IDLE_MODE_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleModeEnabled,
+  idlePhrases: DEFAULT_IDLE_CONFIG.idlePhrases,
+  idlePlaybackMode:
+    (process.env.NEXT_PUBLIC_IDLE_PLAYBACK_MODE as 'sequential' | 'random') ||
+    DEFAULT_IDLE_CONFIG.idlePlaybackMode,
+  idleInterval:
+    parseInt(process.env.NEXT_PUBLIC_IDLE_INTERVAL || '') ||
+    DEFAULT_IDLE_CONFIG.idleInterval,
+  idleDefaultEmotion:
+    (process.env.NEXT_PUBLIC_IDLE_DEFAULT_EMOTION as
+      | 'neutral'
+      | 'happy'
+      | 'sad'
+      | 'angry'
+      | 'relaxed'
+      | 'surprised') || DEFAULT_IDLE_CONFIG.idleDefaultEmotion,
+  idleTimePeriodEnabled:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEnabled,
+  idleTimePeriodMorning:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_MORNING ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodMorning,
+  idleTimePeriodAfternoon:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_AFTERNOON ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodAfternoon,
+  idleTimePeriodEvening:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_EVENING ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEvening,
+  idleAiGenerationEnabled:
+    process.env.NEXT_PUBLIC_IDLE_AI_GENERATION_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleAiGenerationEnabled,
+  idleAiPromptTemplate:
+    process.env.NEXT_PUBLIC_IDLE_AI_PROMPT_TEMPLATE ||
+    DEFAULT_IDLE_CONFIG.idleAiPromptTemplate,
 })
 
 const settingsStore = create<SettingsState>()(
@@ -768,6 +811,18 @@ const settingsStore = create<SettingsState>()(
       presenceCooldownTime: state.presenceCooldownTime,
       presenceDetectionSensitivity: state.presenceDetectionSensitivity,
       presenceDebugMode: state.presenceDebugMode,
+      // Idle mode settings
+      idleModeEnabled: state.idleModeEnabled,
+      idlePhrases: state.idlePhrases,
+      idlePlaybackMode: state.idlePlaybackMode,
+      idleInterval: state.idleInterval,
+      idleDefaultEmotion: state.idleDefaultEmotion,
+      idleTimePeriodEnabled: state.idleTimePeriodEnabled,
+      idleTimePeriodMorning: state.idleTimePeriodMorning,
+      idleTimePeriodAfternoon: state.idleTimePeriodAfternoon,
+      idleTimePeriodEvening: state.idleTimePeriodEvening,
+      idleAiGenerationEnabled: state.idleAiGenerationEnabled,
+      idleAiPromptTemplate: state.idleAiPromptTemplate,
     }),
   })
 )
