@@ -12,6 +12,7 @@ import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import CharacterPresetMenu from '@/components/characterPresetMenu'
 import ImageOverlay from '@/components/ImageOverlay'
+import PresenceManager from '@/components/presenceManager'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
@@ -117,6 +118,7 @@ const Home = () => {
       <YoutubeManager />
       <CharacterPresetMenu />
       <ImageOverlay />
+      <PresenceManager />
     </div>
   )
 }

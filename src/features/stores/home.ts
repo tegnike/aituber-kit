@@ -7,6 +7,7 @@ import { messageSelectors } from '../messages/messageSelectors'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 import { generateMessageId } from '@/utils/messageUtils'
 import { addEmbeddingsToMessages } from '@/features/memory/memoryStoreSync'
+import { PresenceState, PresenceError } from '@/features/presence/presenceTypes'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -33,6 +34,10 @@ export interface TransientState {
   isLive2dLoaded: boolean
   setIsLive2dLoaded: (loaded: boolean) => void
   isSpeaking: boolean
+  // Presence detection transient state
+  presenceState: PresenceState
+  presenceError: PresenceError | null
+  lastDetectionTime: number | null
 }
 
 export type HomeState = PersistedState & TransientState
@@ -133,6 +138,10 @@ const homeStore = create<HomeState>()(
       isLive2dLoaded: false,
       setIsLive2dLoaded: (loaded) => set(() => ({ isLive2dLoaded: loaded })),
       isSpeaking: false,
+      // Presence detection initial state
+      presenceState: 'idle',
+      presenceError: null,
+      lastDetectionTime: null,
     }),
     {
       name: 'aitube-kit-home',

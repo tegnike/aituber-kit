@@ -222,13 +222,26 @@ interface ModelType {
   modelType: 'vrm' | 'live2d'
 }
 
+// Presence detection sensitivity type
+export type PresenceDetectionSensitivity = 'low' | 'medium' | 'high'
+
+interface PresenceDetectionSettings {
+  presenceDetectionEnabled: boolean
+  presenceGreetingMessage: string
+  presenceDepartureTimeout: number
+  presenceCooldownTime: number
+  presenceDetectionSensitivity: PresenceDetectionSensitivity
+  presenceDebugMode: boolean
+}
+
 export type SettingsState = APIKeys &
   ModelProvider &
   Integrations &
   Character &
   General &
   ModelType &
-  MemoryConfig
+  MemoryConfig &
+  PresenceDetectionSettings
 
 // Function to get initial values from environment variables
 const getInitialValuesFromEnv = (): SettingsState => ({
@@ -557,6 +570,22 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   memoryMaxContextTokens:
     parseInt(process.env.NEXT_PUBLIC_MEMORY_MAX_CONTEXT_TOKENS || '') ||
     DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
+
+  // Presence detection settings
+  presenceDetectionEnabled:
+    process.env.NEXT_PUBLIC_PRESENCE_DETECTION_ENABLED === 'true',
+  presenceGreetingMessage:
+    process.env.NEXT_PUBLIC_PRESENCE_GREETING_MESSAGE ||
+    'いらっしゃいませ！何かお手伝いできることはありますか？',
+  presenceDepartureTimeout:
+    parseInt(process.env.NEXT_PUBLIC_PRESENCE_DEPARTURE_TIMEOUT || '') || 3,
+  presenceCooldownTime:
+    parseInt(process.env.NEXT_PUBLIC_PRESENCE_COOLDOWN_TIME || '') || 5,
+  presenceDetectionSensitivity:
+    (process.env
+      .NEXT_PUBLIC_PRESENCE_DETECTION_SENSITIVITY as PresenceDetectionSensitivity) ||
+    'medium',
+  presenceDebugMode: process.env.NEXT_PUBLIC_PRESENCE_DEBUG_MODE === 'true',
 })
 
 const settingsStore = create<SettingsState>()(
@@ -733,6 +762,12 @@ const settingsStore = create<SettingsState>()(
       memorySimilarityThreshold: state.memorySimilarityThreshold,
       memorySearchLimit: state.memorySearchLimit,
       memoryMaxContextTokens: state.memoryMaxContextTokens,
+      presenceDetectionEnabled: state.presenceDetectionEnabled,
+      presenceGreetingMessage: state.presenceGreetingMessage,
+      presenceDepartureTimeout: state.presenceDepartureTimeout,
+      presenceCooldownTime: state.presenceCooldownTime,
+      presenceDetectionSensitivity: state.presenceDetectionSensitivity,
+      presenceDebugMode: state.presenceDebugMode,
     }),
   })
 )

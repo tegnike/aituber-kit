@@ -17,6 +17,7 @@ import Other from './other'
 import SpeechInput from './speechInput'
 import Images from './images'
 import MemorySettings from './memorySettings'
+import PresenceSettings from './presenceSettings'
 
 type Props = {
   onClickClose: () => void
@@ -59,6 +60,7 @@ type TabKey =
   | 'images'
   | 'log'
   | 'memory'
+  | 'presence'
   | 'other'
   | 'speechInput'
 
@@ -74,6 +76,7 @@ const tabIconMapping: Record<TabKey, string> = {
   images: '/images/setting-icons/image-settings.svg',
   log: '/images/setting-icons/conversation-history.svg',
   memory: '/images/setting-icons/other-settings.svg',
+  presence: '/images/setting-icons/other-settings.svg',
   other: '/images/setting-icons/other-settings.svg',
   speechInput: '/images/setting-icons/microphone-settings.svg',
 }
@@ -155,6 +158,10 @@ const Main = () => {
       label: t('MemorySettings'),
     },
     {
+      key: 'presence',
+      label: t('PresenceSettings'),
+    },
+    {
       key: 'other',
       label: t('OtherSettings'),
     },
@@ -182,6 +189,8 @@ const Main = () => {
         return <Log />
       case 'memory':
         return <MemorySettings />
+      case 'presence':
+        return <PresenceSettings />
       case 'other':
         return <Other />
       case 'speechInput':

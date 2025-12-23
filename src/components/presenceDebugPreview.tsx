@@ -1,0 +1,105 @@
+/**
+ * PresenceDebugPreview Component
+ *
+ * デバッグ用のカメラ映像プレビューと検出枠表示
+ * Requirements: 5.3
+ */
+
+import React, { RefObject, useState, useEffect } from 'react'
+import settingsStore from '@/features/stores/settings'
+import { DetectionResult } from '@/features/presence/presenceTypes'
+import { useTranslation } from 'react-i18next'
+
+interface PresenceDebugPreviewProps {
+  videoRef: RefObject<HTMLVideoElement | null>
+  detectionResult: DetectionResult | null
+  className?: string
+}
+
+const PresenceDebugPreview = ({
+  videoRef,
+  detectionResult,
+  className = '',
+}: PresenceDebugPreviewProps) => {
+  const { t } = useTranslation()
+  const presenceDebugMode = settingsStore((s) => s.presenceDebugMode)
+  const [scale, setScale] = useState(1)
+
+  // ビデオサイズ変更時にスケール係数を計算
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const updateScale = () => {
+      if (video.videoWidth > 0 && video.clientWidth > 0) {
+        setScale(video.clientWidth / video.videoWidth)
+      }
+    }
+
+    video.addEventListener('loadedmetadata', updateScale)
+    video.addEventListener('resize', updateScale)
+    updateScale()
+
+    return () => {
+      video.removeEventListener('loadedmetadata', updateScale)
+      video.removeEventListener('resize', updateScale)
+    }
+  }, [videoRef])
+
+  const shouldShowBoundingBox =
+    detectionResult?.faceDetected && detectionResult?.boundingBox
+
+  // バウンディングボックスの位置を計算（ミラー表示対応）
+  const getBoxStyle = () => {
+    if (!detectionResult?.boundingBox || !videoRef.current) return {}
+    const box = detectionResult.boundingBox
+    const videoWidth = videoRef.current.videoWidth || 640
+    // ミラー表示なのでx座標を反転
+    const mirroredX = videoWidth - box.x - box.width
+    return {
+      left: `${mirroredX * scale}px`,
+      top: `${box.y * scale}px`,
+      width: `${box.width * scale}px`,
+      height: `${box.height * scale}px`,
+    }
+  }
+
+  return (
+    <div className={`relative ${className}`}>
+      {/* カメラプレビュー */}
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        className="w-full h-auto rounded-lg bg-black"
+        style={{ transform: 'scaleX(-1)' }}
+      />
+
+      {/* 検出枠（デバッグモード時のみ） */}
+      {presenceDebugMode && shouldShowBoundingBox && (
+        <div
+          data-testid="bounding-box"
+          className="absolute border-2 border-green-500 rounded"
+          style={getBoxStyle()}
+        />
+      )}
+
+      {/* 検出情報（デバッグモード時のみ） */}
+      {presenceDebugMode && (
+        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+          {detectionResult?.faceDetected ? (
+            <span className="text-green-400">
+              {t('PresenceDebugFaceDetected')} (
+              {(detectionResult.confidence * 100).toFixed(1)}%)
+            </span>
+          ) : (
+            <span className="text-gray-400">{t('PresenceDebugNoFace')}</span>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default PresenceDebugPreview
