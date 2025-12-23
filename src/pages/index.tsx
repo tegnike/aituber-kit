@@ -14,6 +14,7 @@ import CharacterPresetMenu from '@/components/characterPresetMenu'
 import ImageOverlay from '@/components/ImageOverlay'
 import PresenceManager from '@/components/presenceManager'
 import IdleManager from '@/components/idleManager'
+import { KioskOverlay } from '@/features/kiosk/kioskOverlay'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
@@ -123,6 +124,7 @@ const Home = () => {
       <div className="absolute top-4 left-4 z-30">
         <IdleManager />
       </div>
+      <KioskOverlay />
     </div>
   )
 }

@@ -523,5 +523,30 @@
   "Idle": {
     "Speaking": "発話中",
     "WaitingPrefix": "待機"
-  }
+  },
+  "Kiosk": {
+    "PasscodeTitle": "パスコード入力",
+    "PasscodeIncorrect": "パスコードが正しくありません",
+    "PasscodeLocked": "一時的にロックされました",
+    "PasscodeRemainingAttempts": "残り{{count}}回",
+    "Cancel": "キャンセル",
+    "Unlock": "解除",
+    "FullscreenPrompt": "タップしてフルスクリーンで開始",
+    "ReturnToFullscreen": "フルスクリーンに戻る",
+    "InputInvalid": "入力が無効です"
+  },
+  "KioskSettings": "キオスクモード設定",
+  "KioskModeEnabled": "キオスクモード",
+  "KioskModeEnabledInfo": "展示会やデジタルサイネージでの無人運用に便利なモードです。有効にすると設定画面へのアクセスが制限され、フルスクリーン表示になります。",
+  "KioskPasscode": "パスコード",
+  "KioskPasscodeInfo": "キオスクモードを一時解除するためのパスコードを設定します。Escキー長押しでパスコード入力画面が表示されます。",
+  "KioskPasscodeValidation": "4桁以上の英数字で設定してください",
+  "KioskMaxInputLength": "最大入力文字数",
+  "KioskMaxInputLengthInfo": "テキスト入力の最大文字数を制限します（{{min}}〜{{max}}文字）。",
+  "KioskNgWordEnabled": "NGワードフィルター",
+  "KioskNgWordEnabledInfo": "不適切な入力をブロックするNGワードフィルターを有効にします。",
+  "KioskNgWords": "NGワードリスト",
+  "KioskNgWordsInfo": "カンマ区切りでNGワードを入力してください。",
+  "KioskNgWordsPlaceholder": "例: 暴力, 差別, 不適切",
+  "Characters": "文字"
 }

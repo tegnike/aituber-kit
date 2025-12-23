@@ -523,5 +523,30 @@
   "Idle": {
     "Speaking": "Speaking",
     "WaitingPrefix": "Waiting"
-  }
+  },
+  "Kiosk": {
+    "PasscodeTitle": "Enter Passcode",
+    "PasscodeIncorrect": "Incorrect passcode",
+    "PasscodeLocked": "Temporarily locked",
+    "PasscodeRemainingAttempts": "{{count}} attempts remaining",
+    "Cancel": "Cancel",
+    "Unlock": "Unlock",
+    "FullscreenPrompt": "Tap to start fullscreen",
+    "ReturnToFullscreen": "Return to fullscreen",
+    "InputInvalid": "Invalid input"
+  },
+  "KioskSettings": "Kiosk Mode Settings",
+  "KioskModeEnabled": "Kiosk Mode",
+  "KioskModeEnabledInfo": "A convenient mode for unmanned operation at exhibitions and digital signage. When enabled, access to settings is restricted and the display switches to fullscreen.",
+  "KioskPasscode": "Passcode",
+  "KioskPasscodeInfo": "Set the passcode to temporarily unlock kiosk mode. Long press the Esc key to display the passcode input screen.",
+  "KioskPasscodeValidation": "Use at least 4 alphanumeric characters",
+  "KioskMaxInputLength": "Max Input Length",
+  "KioskMaxInputLengthInfo": "Limit the maximum number of characters for text input ({{min}}-{{max}} characters).",
+  "KioskNgWordEnabled": "NG Word Filter",
+  "KioskNgWordEnabledInfo": "Enable NG word filter to block inappropriate input.",
+  "KioskNgWords": "NG Word List",
+  "KioskNgWordsInfo": "Enter NG words separated by commas.",
+  "KioskNgWordsPlaceholder": "Example: violence, discrimination, inappropriate",
+  "Characters": "characters"
 }

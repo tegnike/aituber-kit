@@ -10,6 +10,10 @@ import {
   IdleModeSettings,
   DEFAULT_IDLE_CONFIG,
 } from '@/features/idle/idleTypes'
+import {
+  KioskModeSettings,
+  DEFAULT_KIOSK_CONFIG,
+} from '@/features/kiosk/kioskTypes'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
   AIService,
@@ -246,7 +250,8 @@ export type SettingsState = APIKeys &
   ModelType &
   MemoryConfig &
   PresenceDetectionSettings &
-  IdleModeSettings
+  IdleModeSettings &
+  KioskModeSettings
 
 // Function to get initial values from environment variables
 const getInitialValuesFromEnv = (): SettingsState => ({
@@ -629,6 +634,24 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   idleAiPromptTemplate:
     process.env.NEXT_PUBLIC_IDLE_AI_PROMPT_TEMPLATE ||
     DEFAULT_IDLE_CONFIG.idleAiPromptTemplate,
+
+  // Kiosk mode settings
+  kioskModeEnabled:
+    process.env.NEXT_PUBLIC_KIOSK_MODE_ENABLED === 'true' ||
+    DEFAULT_KIOSK_CONFIG.kioskModeEnabled,
+  kioskPasscode:
+    process.env.NEXT_PUBLIC_KIOSK_PASSCODE ||
+    DEFAULT_KIOSK_CONFIG.kioskPasscode,
+  kioskMaxInputLength:
+    parseInt(process.env.NEXT_PUBLIC_KIOSK_MAX_INPUT_LENGTH || '') ||
+    DEFAULT_KIOSK_CONFIG.kioskMaxInputLength,
+  kioskNgWords: process.env.NEXT_PUBLIC_KIOSK_NG_WORDS
+    ? process.env.NEXT_PUBLIC_KIOSK_NG_WORDS.split(',').map((w) => w.trim())
+    : DEFAULT_KIOSK_CONFIG.kioskNgWords,
+  kioskNgWordEnabled:
+    process.env.NEXT_PUBLIC_KIOSK_NG_WORD_ENABLED === 'true' ||
+    DEFAULT_KIOSK_CONFIG.kioskNgWordEnabled,
+  kioskTemporaryUnlock: DEFAULT_KIOSK_CONFIG.kioskTemporaryUnlock,
 })
 
 const settingsStore = create<SettingsState>()(
@@ -823,6 +846,12 @@ const settingsStore = create<SettingsState>()(
       idleTimePeriodEvening: state.idleTimePeriodEvening,
       idleAiGenerationEnabled: state.idleAiGenerationEnabled,
       idleAiPromptTemplate: state.idleAiPromptTemplate,
+      // Kiosk mode settings (kioskTemporaryUnlock is NOT persisted)
+      kioskModeEnabled: state.kioskModeEnabled,
+      kioskPasscode: state.kioskPasscode,
+      kioskMaxInputLength: state.kioskMaxInputLength,
+      kioskNgWords: state.kioskNgWords,
+      kioskNgWordEnabled: state.kioskNgWordEnabled,
     }),
   })
 )
