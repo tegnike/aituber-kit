@@ -12,9 +12,12 @@ import menuStore from '@/features/stores/menu'
 import toastStore from '@/features/stores/toast'
 import { IMAGE_CONSTANTS } from '@/constants/images'
 import { compressImageFile } from '@/utils/imageCompression'
+import { useDemoMode } from '@/hooks/useDemoMode'
+import { DemoModeNotice } from '../demoModeNotice'
 
 const Images = () => {
   const { t } = useTranslation()
+  const { isDemoMode } = useDemoMode()
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<string>('')
 
@@ -238,7 +241,9 @@ const Images = () => {
       </div>
 
       {/* Upload Section */}
-      <div className="rounded-lg my-4 space-y-4">
+      <div
+        className={`rounded-lg my-4 space-y-4 ${isDemoMode ? 'opacity-50' : ''}`}
+      >
         <div className="my-4">
           <TextButton
             onClick={() => {
@@ -269,10 +274,11 @@ const Images = () => {
                 fileInput.click()
               }
             }}
-            disabled={isUploading}
+            disabled={isUploading || isDemoMode}
           >
             {t('UploadImages')}
           </TextButton>
+          <DemoModeNotice />
         </div>
 
         {isUploading && (
@@ -341,7 +347,12 @@ const Images = () => {
                         onClick={() =>
                           handleDeleteUploadedImage(image.filename)
                         }
-                        className="w-full text-xs py-1 px-2 rounded text-theme bg-secondary bg-opacity-20 hover:bg-secondary hover:bg-opacity-30"
+                        disabled={isDemoMode}
+                        className={`w-full text-xs py-1 px-2 rounded text-theme ${
+                          isDemoMode
+                            ? 'bg-gray-300 cursor-not-allowed opacity-50'
+                            : 'bg-secondary bg-opacity-20 hover:bg-secondary hover:bg-opacity-30'
+                        }`}
                       >
                         {t('Delete')}
                       </button>

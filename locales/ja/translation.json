@@ -548,5 +548,7 @@
   "KioskNgWords": "NGワードリスト",
   "KioskNgWordsInfo": "カンマ区切りでNGワードを入力してください。",
   "KioskNgWordsPlaceholder": "例: 暴力, 差別, 不適切",
-  "Characters": "文字"
+  "Characters": "文字",
+  "DemoModeNotice": "デモ版ではこの機能は利用できません",
+  "DemoModeLocalTTSNotice": "デモ版ではローカルサーバーを使用するTTSは利用できません"
 }

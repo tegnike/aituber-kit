@@ -12,6 +12,14 @@ import MemorySettings from '@/components/settings/memorySettings'
 import settingsStore from '@/features/stores/settings'
 import { DEFAULT_MEMORY_CONFIG } from '@/features/memory/memoryTypes'
 import { getMemoryService } from '@/features/memory/memoryService'
+import { useDemoMode } from '@/hooks/useDemoMode'
+
+// Mock useDemoMode hook
+jest.mock('@/hooks/useDemoMode', () => ({
+  useDemoMode: jest.fn(),
+}))
+
+const mockUseDemoMode = useDemoMode as jest.MockedFunction<typeof useDemoMode>
 
 // Mock i18next
 jest.mock('react-i18next', () => ({
@@ -41,6 +49,7 @@ jest.mock('react-i18next', () => ({
         MemoryRestoreSelect: 'ファイルを選択',
         StatusOn: '状態：ON',
         StatusOff: '状態：OFF',
+        DemoModeNotice: 'デモモードでは利用できません',
       }
       return translations[key] || key
     },
@@ -69,6 +78,9 @@ describe('MemorySettings Component', () => {
       memoryMaxContextTokens: DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
       openaiKey: 'test-api-key', // APIキーを設定
     })
+
+    // デフォルトは通常モード
+    mockUseDemoMode.mockReturnValue({ isDemoMode: false })
 
     // Reset mocks
     jest.clearAllMocks()
@@ -263,6 +275,73 @@ describe('MemorySettings Component', () => {
     it('should render file select button', () => {
       render(<MemorySettings />)
       expect(screen.getByText('ファイルを選択')).toBeInTheDocument()
+    })
+  })
+
+  describe('Requirement 6.1: Demo Mode Support', () => {
+    beforeEach(() => {
+      mockUseDemoMode.mockReturnValue({ isDemoMode: true })
+    })
+
+    it('should display demo mode notice when demo mode is enabled', () => {
+      render(<MemorySettings />)
+      expect(
+        screen.getByText('デモモードでは利用できません')
+      ).toBeInTheDocument()
+    })
+
+    it('should disable memory toggle when demo mode is enabled', () => {
+      settingsStore.setState({ memoryEnabled: false })
+      render(<MemorySettings />)
+
+      const toggleButton = screen.getByText('状態：OFF')
+      expect(toggleButton.closest('button')).toBeDisabled()
+    })
+
+    it('should disable similarity threshold slider when demo mode is enabled', () => {
+      render(<MemorySettings />)
+
+      const slider = screen.getByRole('slider', { name: /類似度閾値/i })
+      expect(slider).toBeDisabled()
+    })
+
+    it('should disable search limit input when demo mode is enabled', () => {
+      render(<MemorySettings />)
+
+      const input = screen.getByRole('spinbutton', { name: /検索結果上限/i })
+      expect(input).toBeDisabled()
+    })
+
+    it('should disable max context tokens input when demo mode is enabled', () => {
+      render(<MemorySettings />)
+
+      const input = screen.getByRole('spinbutton', {
+        name: /最大コンテキストトークン数/i,
+      })
+      expect(input).toBeDisabled()
+    })
+
+    it('should disable clear memory button when demo mode is enabled', () => {
+      render(<MemorySettings />)
+
+      const clearButton = screen.getByText('記憶をクリア')
+      expect(clearButton.closest('button')).toBeDisabled()
+    })
+
+    it('should disable file restore button when demo mode is enabled', () => {
+      render(<MemorySettings />)
+
+      const restoreButton = screen.getByText('ファイルを選択')
+      expect(restoreButton.closest('button')).toBeDisabled()
+    })
+
+    it('should not display demo mode notice in normal mode', () => {
+      mockUseDemoMode.mockReturnValue({ isDemoMode: false })
+      render(<MemorySettings />)
+
+      expect(
+        screen.queryByText('デモモードでは利用できません')
+      ).not.toBeInTheDocument()
     })
   })
 })

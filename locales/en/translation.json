@@ -548,5 +548,7 @@
   "KioskNgWords": "NG Word List",
   "KioskNgWordsInfo": "Enter NG words separated by commas.",
   "KioskNgWordsPlaceholder": "Example: violence, discrimination, inappropriate",
-  "Characters": "characters"
+  "Characters": "characters",
+  "DemoModeNotice": "This feature is not available in demo mode",
+  "DemoModeLocalTTSNotice": "Local server TTS is not available in demo mode"
 }

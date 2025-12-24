@@ -8,6 +8,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
 
 interface MemoryFileInfo {
   filename: string
@@ -22,6 +23,11 @@ export default async function handler(
 ) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' })
+  }
+
+  // デモモード時はメモリファイル一覧取得を拒否
+  if (isDemoMode()) {
+    return res.status(403).json(createDemoModeErrorResponse('memory-files'))
   }
 
   try {

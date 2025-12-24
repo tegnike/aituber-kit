@@ -1,11 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (isDemoMode()) {
+    return res.status(403).json(createDemoModeErrorResponse('delete-image'))
+  }
+
   if (req.method !== 'DELETE') {
     return res.status(405).json({ error: 'Method not allowed' })
   }

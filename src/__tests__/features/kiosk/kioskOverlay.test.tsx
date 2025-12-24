@@ -256,5 +256,4 @@ describe('KioskOverlay', () => {
       expect(mockUseKioskMode.temporaryUnlock).toHaveBeenCalled()
     })
   })
-
 })

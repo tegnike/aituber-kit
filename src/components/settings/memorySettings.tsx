@@ -13,6 +13,8 @@ import { getMemoryService } from '@/features/memory/memoryService'
 import { extractTextContent } from '@/features/memory/memoryStoreSync'
 import homeStore from '@/features/stores/home'
 import { Message } from '@/features/messages/messages'
+import { useDemoMode } from '@/hooks/useDemoMode'
+import { DemoModeNotice } from '../demoModeNotice'
 
 const MemorySettings = () => {
   const { t } = useTranslation()
@@ -35,6 +37,12 @@ const MemorySettings = () => {
 
   // APIキーが設定されているか
   const hasApiKey = Boolean(openaiKey)
+
+  // デモモード判定
+  const { isDemoMode } = useDemoMode()
+
+  // 機能が利用可能かどうか（APIキーがあり、デモモードでない）
+  const isDisabled = !hasApiKey || isDemoMode
 
   // メモリ件数を取得
   const fetchMemoryCount = useCallback(async () => {
@@ -172,6 +180,9 @@ const MemorySettings = () => {
           </div>
         )}
 
+        {/* デモモード通知 */}
+        <DemoModeNotice />
+
         {/* メモリ機能ON/OFF */}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">{t('MemoryEnabled')}</div>
@@ -185,7 +196,7 @@ const MemorySettings = () => {
                   memoryEnabled: !s.memoryEnabled,
                 }))
               }
-              disabled={!hasApiKey}
+              disabled={isDisabled}
             >
               {memoryEnabled ? t('StatusOn') : t('StatusOff')}
             </TextButton>
@@ -210,7 +221,7 @@ const MemorySettings = () => {
               onChange={handleThresholdChange}
               aria-label={t('MemorySimilarityThreshold')}
               className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-              disabled={!hasApiKey}
+              disabled={isDisabled}
             />
             <span className="w-12 text-center font-mono">
               {memorySimilarityThreshold.toFixed(2)}
@@ -233,7 +244,7 @@ const MemorySettings = () => {
               onChange={handleSearchLimitChange}
               aria-label={t('MemorySearchLimit')}
               className="w-24 px-4 py-2 bg-white border border-gray-300 rounded-lg"
-              disabled={!hasApiKey}
+              disabled={isDisabled}
             />
           </div>
         </div>
@@ -256,7 +267,7 @@ const MemorySettings = () => {
               onChange={handleMaxTokensChange}
               aria-label={t('MemoryMaxContextTokens')}
               className="w-32 px-4 py-2 bg-white border border-gray-300 rounded-lg"
-              disabled={!hasApiKey}
+              disabled={isDisabled}
             />
           </div>
         </div>
@@ -271,7 +282,10 @@ const MemorySettings = () => {
 
         {/* 記憶をクリア */}
         <div className="my-6">
-          <TextButton onClick={handleClearMemories} disabled={isClearing}>
+          <TextButton
+            onClick={handleClearMemories}
+            disabled={isClearing || isDisabled}
+          >
             {isClearing ? '...' : t('MemoryClear')}
           </TextButton>
         </div>
@@ -292,7 +306,7 @@ const MemorySettings = () => {
             />
             <TextButton
               onClick={handleFileSelectClick}
-              disabled={isRestoring || !hasApiKey}
+              disabled={isRestoring || isDisabled}
             >
               {isRestoring ? '...' : t('MemoryRestoreSelect')}
             </TextButton>
