@@ -29,14 +29,26 @@ const mockSettingsStore = settingsStore as jest.MockedFunction<
 >
 
 describe('PresenceDebugPreview', () => {
-  const mockVideoRef = { current: document.createElement('video') }
+  let mockVideoElement: HTMLVideoElement
+  let mockVideoRef: { current: HTMLVideoElement }
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockVideoElement = document.createElement('video')
+    // Mock videoWidth property
+    Object.defineProperty(mockVideoElement, 'videoWidth', {
+      value: 640,
+      writable: true,
+    })
+    Object.defineProperty(mockVideoElement, 'clientWidth', {
+      value: 640,
+      writable: true,
+    })
+    mockVideoRef = { current: mockVideoElement }
   })
 
   describe('visibility', () => {
-    it('should not render when debug mode is disabled', () => {
+    it('should render video even when debug mode is disabled', () => {
       mockSettingsStore.mockImplementation((selector) => {
         const state = { presenceDebugMode: false }
         return selector(state as any)
@@ -45,7 +57,10 @@ describe('PresenceDebugPreview', () => {
       const { container } = render(
         <PresenceDebugPreview videoRef={mockVideoRef} detectionResult={null} />
       )
-      expect(container.firstChild).toBeNull()
+      // Video element is always rendered for camera preview
+      expect(container.querySelector('video')).toBeInTheDocument()
+      // But debug overlay should not be rendered
+      expect(container.querySelector('[data-testid="bounding-box"]')).not.toBeInTheDocument()
     })
 
     it('should render when debug mode is enabled', () => {
@@ -139,8 +154,9 @@ describe('PresenceDebugPreview', () => {
       const boundingBox = container.querySelector(
         '[data-testid="bounding-box"]'
       )
+      // Mirrored x coordinate: videoWidth(640) - x(10) - width(100) = 530
       expect(boundingBox).toHaveStyle({
-        left: '10px',
+        left: '530px',
         top: '20px',
         width: '100px',
         height: '150px',

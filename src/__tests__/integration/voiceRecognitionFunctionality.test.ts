@@ -273,9 +273,10 @@ describe('音声認識機能 統合テスト', () => {
         } as React.ChangeEvent<HTMLTextAreaElement>)
       })
 
-      // メッセージ送信
-      act(() => {
-        result.current.handleSendMessage()
+      // メッセージ送信（async関数なのでawaitが必要）
+      await act(async () => {
+        await result.current.handleSendMessage()
+        jest.runAllTimers()
       })
 
       expect(mockOnChatProcessStart).toHaveBeenCalledWith('テストメッセージ')

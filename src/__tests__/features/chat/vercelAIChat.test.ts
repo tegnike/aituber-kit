@@ -119,7 +119,7 @@ describe('vercelAIChat', () => {
       expect(i18next.changeLanguage).toHaveBeenCalledWith('ja')
       expect(i18next.t).toHaveBeenCalledWith('Errors.InvalidAPIKey')
 
-      expect(result.text).toBe('Errors.InvalidAPIKey')
+      expect(result.text).toBe('Errors.InvalidAPIKey: Bad Request')
     })
 
     it('カスタムAPIモードでシステムメッセージをフィルタリングする', async () => {
@@ -229,7 +229,7 @@ describe('vercelAIChat', () => {
 
       expect(i18next.t).toHaveBeenCalledWith('Errors.AIAPIError')
       expect(mockAddToast).toHaveBeenCalledWith({
-        message: 'Errors.AIAPIError',
+        message: 'Errors.AIAPIError: Stream error',
         type: 'error',
         tag: 'vercel-api-error',
       })
@@ -276,7 +276,7 @@ describe('vercelAIChat', () => {
 
       expect(i18next.t).toHaveBeenCalledWith('Errors.InvalidAPIKey')
       expect(mockAddToast).toHaveBeenCalledWith({
-        message: 'Errors.InvalidAPIKey',
+        message: 'Errors.InvalidAPIKey: Unauthorized',
         type: 'error',
         tag: 'vercel-api-error',
       })

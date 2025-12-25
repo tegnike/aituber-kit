@@ -303,9 +303,14 @@ describe('PasscodeDialog Component', () => {
       })
     })
 
-    it('should close dialog when pressing Escape', () => {
+    it('should close dialog when pressing Escape', async () => {
       const onClose = jest.fn()
       render(<PasscodeDialog {...defaultProps} onClose={onClose} />)
+
+      // Wait for 500ms delay before Escape is allowed
+      act(() => {
+        jest.advanceTimersByTime(500)
+      })
 
       fireEvent.keyDown(document, { key: 'Escape' })
 
