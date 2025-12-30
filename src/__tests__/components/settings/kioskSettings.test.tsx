@@ -61,7 +61,7 @@ describe('KioskSettings Component', () => {
     })
   })
 
-  describe('Requirement 1.1, 1.2: キオスクモードON/OFF', () => {
+  describe('Requirement 1.1, 1.2: デモ端末モードON/OFF', () => {
     it('should render the enable/disable toggle', () => {
       render(<KioskSettings />)
       expect(screen.getByText('KioskModeEnabled')).toBeInTheDocument()

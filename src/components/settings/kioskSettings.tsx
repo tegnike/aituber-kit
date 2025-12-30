@@ -1,7 +1,7 @@
 /**
  * KioskSettings Component
  *
- * キオスクモード機能の設定UIを提供
+ * デモ端末モード機能の設定UIを提供
  * Requirements: 1.1, 1.2, 3.4, 6.3, 7.1, 7.3
  */
 
@@ -90,7 +90,7 @@ const KioskSettings = () => {
           <h2 className="text-2xl font-bold">{t('KioskSettings')}</h2>
         </div>
 
-        {/* キオスクモードON/OFF */}
+        {/* デモ端末モードON/OFF */}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">{t('KioskModeEnabled')}</div>
           <div className="my-2 text-sm whitespace-pre-wrap">

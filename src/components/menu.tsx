@@ -56,10 +56,10 @@ export const Menu = () => {
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
 
-  // キオスクモード関連
+  // デモ端末モード関連
   const { isKioskMode, isTemporaryUnlocked, canAccessSettings } = useKioskMode()
 
-  // キオスクモード時はコントロールパネルを非表示（一時解除時は除く）
+  // デモ端末モード時はコントロールパネルを非表示（一時解除時は除く）
   const effectiveShowControlPanel =
     showControlPanel && (!isKioskMode || isTemporaryUnlocked)
 
@@ -91,13 +91,13 @@ export const Menu = () => {
 
   // ロングタップ処理用の関数
   const handleTouchStart = () => {
-    // キオスクモードで設定アクセス不可の場合はロングタップを無効化
+    // デモ端末モードで設定アクセス不可の場合はロングタップを無効化
     if (!canAccessSettings) return
     setTouchStartTime(Date.now())
   }
 
   const handleTouchEnd = () => {
-    // キオスクモードで設定アクセス不可の場合はロングタップを無効化
+    // デモ端末モードで設定アクセス不可の場合はロングタップを無効化
     if (!canAccessSettings) return
     setTouchEndTime(Date.now())
     if (touchStartTime && Date.now() - touchStartTime >= 800) {
@@ -151,7 +151,7 @@ export const Menu = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === '.') {
-        // キオスクモードで設定アクセス不可の場合はショートカットを無効化
+        // デモ端末モードで設定アクセス不可の場合はショートカットを無効化
         if (!canAccessSettings) return
         setShowSettings((prevState) => !prevState)
       }
