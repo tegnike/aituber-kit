@@ -1,10 +1,68 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import slideStore from '@/features/stores/slide'
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import { SpeakQueue } from '@/features/messages/speakQueue'
+import { Live2DHandler } from '@/features/messages/live2dHandler'
+import { EmotionType } from '@/features/messages/messages'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
+
+// 感情タグを解析して最初の感情を取得
+const parseFirstEmotion = (line: string): EmotionType => {
+  const match = line.match(/\[(neutral|happy|sad|angry|surprised|relaxed)\]/)
+  return (match ? match[1] : 'neutral') as EmotionType
+}
+
+// 事前生成音声ファイルのパスを取得
+const getPreGeneratedAudioPath = (slideDocs: string, page: number): string => {
+  return `/slides/${slideDocs}/audio/page${page}.mp3`
+}
+
+// 事前生成音声ファイルが存在するかチェック
+const checkAudioExists = async (path: string): Promise<boolean> => {
+  try {
+    const response = await fetch(path, { method: 'HEAD' })
+    return response.ok
+  } catch {
+    return false
+  }
+}
+
+// 事前生成音声を再生
+const playPreGeneratedAudio = async (
+  audioPath: string,
+  emotion: EmotionType
+): Promise<void> => {
+  const ss = settingsStore.getState()
+  const hs = homeStore.getState()
+
+  try {
+    const response = await fetch(audioPath)
+    if (!response.ok) throw new Error('Audio file not found')
+
+    const audioBuffer = await response.arrayBuffer()
+
+    homeStore.setState({ isSpeaking: true })
+
+    // VRM/Live2D に音声を再生させる
+    if (ss.modelType === 'live2d') {
+      await Live2DHandler.speak(
+        audioBuffer,
+        { message: '', emotion },
+        false // MP3はデコード不要
+      )
+    } else if (hs.viewer.model) {
+      await hs.viewer.model.speak(audioBuffer, { message: '', emotion }, false)
+    }
+
+    homeStore.setState({ isSpeaking: false })
+  } catch (error) {
+    console.error('Failed to play pre-generated audio:', error)
+    throw error
+  }
+}
 
 interface SlidesProps {
   markdown: string
@@ -110,7 +168,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   }, [])
 
   const readSlide = useCallback(
-    (slideIndex: number) => {
+    async (slideIndex: number) => {
       const getCurrentLines = () => {
         const scripts = require(
           `../../public/slides/${selectedSlideDocs}/scripts.json`
@@ -123,7 +181,27 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
 
       const currentLines = getCurrentLines()
       console.log(currentLines)
-      speakMessageHandler(currentLines)
+
+      // 事前生成音声ファイルのパスをチェック
+      const audioPath = getPreGeneratedAudioPath(selectedSlideDocs, slideIndex)
+      const audioExists = await checkAudioExists(audioPath)
+
+      if (audioExists) {
+        // 事前生成音声があれば再生
+        console.log(`🎵 Playing pre-generated audio: ${audioPath}`)
+        const emotion = parseFirstEmotion(currentLines)
+        try {
+          await playPreGeneratedAudio(audioPath, emotion)
+        } catch {
+          // 音声再生に失敗した場合は TTS にフォールバック
+          console.log('⚠️ Fallback to TTS')
+          speakMessageHandler(currentLines)
+        }
+      } else {
+        // なければ TTS API を使用
+        console.log('🔊 Using TTS API')
+        speakMessageHandler(currentLines)
+      }
     },
     [selectedSlideDocs]
   )

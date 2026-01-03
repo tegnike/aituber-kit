@@ -1039,8 +1039,6 @@ http://localhost:3000
 
 # 初期デプロイ（Vercel）
 
-**スライド制作中**
-
 1. 環境変数を設定したら
 2. **Deploy** ボタンをクリック
 3. ビルドが始まる（2-3分）
@@ -1054,7 +1052,7 @@ https://your-project.vercel.app
 
 # デプロイ完了！
 
-**スライド制作中**
+[public/slides/DHGSVR25-3/nike.png]
 
 🎉 **Congratulations!**
 
