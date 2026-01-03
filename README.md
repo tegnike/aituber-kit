@@ -11,6 +11,7 @@
 - **デモサイト**: https://aituberkit.shirai.as/
 - **開発ブログ**: http://j.aicu.ai/s260103
 - **GitHub**: https://github.com/kaitas/aituber-kit
+- 動画版（上のデモの録画）: https://youtu.be/NiWHolT5HVI
 
 ## 概要
 
