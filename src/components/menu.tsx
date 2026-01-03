@@ -99,6 +99,15 @@ export const Menu = () => {
     setTouchStartTime(null)
   }
 
+  // セッション開始時にスライドモードが有効なら自動でプレゼン開始
+  useEffect(() => {
+    if (slideMode && selectedSlideDocs && !slideVisible) {
+      console.log('🚀 Auto-starting slide mode')
+      menuStore.setState({ slideVisible: true })
+      slideStore.setState({ autoPlay: true, currentSlide: 0 })
+    }
+  }, [slideMode, selectedSlideDocs, slideVisible])
+
   useEffect(() => {
     if (!selectedSlideDocs) return
 
@@ -339,7 +348,6 @@ export const Menu = () => {
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {chatLogMode === CHAT_LOG_MODE.ASSISTANT &&
         latestAssistantMessage &&
-        (!slideMode || !slideVisible) &&
         showAssistantText && <AssistantText message={latestAssistantMessage} />}
       {showWebcam && navigator.mediaDevices && <Webcam />}
       {showCapture && <Capture />}

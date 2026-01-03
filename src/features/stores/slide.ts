@@ -17,13 +17,16 @@ interface SlideState {
   audioPreload: AudioPreloadState
 }
 
+const defaultSlideDocs =
+  process.env.NEXT_PUBLIC_DEFAULT_SLIDE_DOCS || 'DHGSVR25-3'
+
 const slideStore = create<SlideState>()(
   persist(
     (): SlideState => ({
       isPlaying: false,
       isReverse: false,
       currentSlide: 0,
-      selectedSlideDocs: '',
+      selectedSlideDocs: defaultSlideDocs,
       autoPlay: true,
       audioPreload: {
         isLoading: false,
@@ -35,6 +38,14 @@ const slideStore = create<SlideState>()(
     {
       name: 'aitube-kit-slide',
       partialize: (state) => ({ selectedSlideDocs: state.selectedSlideDocs }),
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<SlideState>
+        return {
+          ...currentState,
+          // 空の場合はデフォルト値を使用
+          selectedSlideDocs: persisted?.selectedSlideDocs || defaultSlideDocs,
+        }
+      },
     }
   )
 )

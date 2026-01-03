@@ -165,8 +165,10 @@ const Slides: React.FC<SlidesProps> = () => {
   const autoPlay = slideStore((state) => state.autoPlay)
   const audioPreload = slideStore((state) => state.audioPreload)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
+  const showControlPanel = settingsStore((s) => s.showControlPanel)
   const [slideCount, setSlideCount] = useState(0)
   const [autoPlayTriggered, setAutoPlayTriggered] = useState(false)
+  const [waitingForUserGesture, setWaitingForUserGesture] = useState(false)
   const prevChatProcessingCountRef = useRef(chatProcessingCount)
 
   useEffect(() => {
@@ -185,7 +187,14 @@ const Slides: React.FC<SlidesProps> = () => {
   }, [currentSlide, marpitContainer])
 
   useEffect(() => {
+    // selectedSlideDocsが空の場合はスキップ
+    if (!selectedSlideDocs) {
+      console.log('⏳ Waiting for slide selection...')
+      return
+    }
+
     const convertMarkdown = async () => {
+      console.log(`📑 Loading slides: ${selectedSlideDocs}`)
       const response = await fetch('/api/convertMarkdown', {
         method: 'POST',
         headers: {
@@ -193,6 +202,12 @@ const Slides: React.FC<SlidesProps> = () => {
         },
         body: JSON.stringify({ slideName: selectedSlideDocs }),
       })
+
+      if (!response.ok) {
+        console.error(`❌ Failed to load slides: ${response.status}`)
+        return
+      }
+
       const data = await response.json()
 
       // HTMLをパースしてmarpit要素を取得
@@ -205,6 +220,7 @@ const Slides: React.FC<SlidesProps> = () => {
       if (marpitElement) {
         const slides = marpitElement.querySelectorAll(':scope > svg')
         setSlideCount(slides.length)
+        console.log(`✅ Slides loaded: ${slides.length} pages`)
 
         // 初期状態で最初のスライドを表示
         slides.forEach((slide, i) => {
@@ -278,6 +294,16 @@ const Slides: React.FC<SlidesProps> = () => {
           'color: #4ade80; font-weight: bold'
         )
         const emotion = parseFirstEmotion(currentLines)
+
+        // 感情タグを除去して字幕を設定
+        const subtitleText = currentLines.replace(
+          /\[(neutral|happy|sad|angry|surprised|relaxed)\]/g,
+          ''
+        )
+        homeStore.getState().upsertMessage({
+          role: 'assistant',
+          content: subtitleText,
+        })
 
         // chatProcessingCount を増やして再生開始
         homeStore.getState().incrementChatProcessingCount()
@@ -396,20 +422,30 @@ const Slides: React.FC<SlidesProps> = () => {
     readSlide,
   ])
 
-  // 自動再生：スライドロード完了後に自動的にプレゼンテーションを開始
+  // autoPlayがtrueになったらautoPlayTriggeredをリセット
+  useEffect(() => {
+    if (autoPlay) {
+      setAutoPlayTriggered(false)
+    }
+  }, [autoPlay])
+
+  // 自動再生：スライドロード完了後にユーザージェスチャーを待つ
   useEffect(() => {
     if (slideCount > 0 && autoPlay && !autoPlayTriggered && !isPlaying) {
-      console.log('🚀 Auto-play: Starting presentation')
+      console.log('🚀 Auto-play: Waiting for user gesture')
       setAutoPlayTriggered(true)
       slideStore.setState({ autoPlay: false, currentSlide: 0 })
-      // 少し遅延させてからスタート（モデルの読み込み待ち）
-      const timer = setTimeout(() => {
-        slideStore.setState({ isPlaying: true })
-        readSlide(0)
-      }, 1500)
-      return () => clearTimeout(timer)
+      setWaitingForUserGesture(true)
     }
-  }, [slideCount, autoPlay, autoPlayTriggered, isPlaying, readSlide])
+  }, [slideCount, autoPlay, autoPlayTriggered, isPlaying])
+
+  // ユーザージェスチャーで再生開始
+  const handleStartPresentation = useCallback(() => {
+    console.log('▶️ User gesture received, starting presentation')
+    setWaitingForUserGesture(false)
+    slideStore.setState({ isPlaying: true })
+    readSlide(0)
+  }, [readSlide])
 
   // 音声ファイルの先読み（現在のスライド + 次のスライドのみ）
   useEffect(() => {
@@ -468,49 +504,86 @@ const Slides: React.FC<SlidesProps> = () => {
       >
         <SlideContent marpitContainer={marpitContainer} />
       </div>
-      <div
-        style={{
-          width: slideSize.width,
-          marginLeft: '2%',
-          marginTop: '10px',
-          position: 'relative',
-          zIndex: 10,
-        }}
-      >
-        <SlideControls
-          currentSlide={currentSlide}
-          slideCount={slideCount}
-          isPlaying={isPlaying}
-          isReverse={isReverse}
-          prevSlide={prevSlide}
-          nextSlide={nextSlide}
-          toggleIsPlaying={toggleIsPlaying}
-          toggleReverse={toggleReverse}
-          goToLastSlide={goToLastSlide}
-        />
-        {/* 音声プリロード進捗表示 */}
-        {audioPreload.isLoading && (
-          <div
-            style={{
-              marginTop: '8px',
-              width: '100%',
-              height: '4px',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              borderRadius: '2px',
-              overflow: 'hidden',
-            }}
-          >
+      {showControlPanel && (
+        <div
+          style={{
+            width: slideSize.width,
+            marginLeft: '2%',
+            marginTop: '10px',
+            position: 'relative',
+            zIndex: 10,
+          }}
+        >
+          <SlideControls
+            currentSlide={currentSlide}
+            slideCount={slideCount}
+            isPlaying={isPlaying}
+            isReverse={isReverse}
+            prevSlide={prevSlide}
+            nextSlide={nextSlide}
+            toggleIsPlaying={toggleIsPlaying}
+            toggleReverse={toggleReverse}
+            goToLastSlide={goToLastSlide}
+          />
+          {/* 音声プリロード進捗表示 */}
+          {audioPreload.isLoading && (
             <div
               style={{
-                width: `${audioPreload.progress}%`,
-                height: '100%',
-                backgroundColor: '#4ade80',
-                transition: 'width 0.2s ease',
+                marginTop: '8px',
+                width: '100%',
+                height: '4px',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                borderRadius: '2px',
+                overflow: 'hidden',
               }}
-            />
+            >
+              <div
+                style={{
+                  width: `${audioPreload.progress}%`,
+                  height: '100%',
+                  backgroundColor: '#4ade80',
+                  transition: 'width 0.2s ease',
+                }}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* クリックして開始モーダル */}
+      {waitingForUserGesture && (
+        <div
+          onClick={handleStartPresentation}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            cursor: 'pointer',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#4ade80',
+              color: '#000',
+              padding: '24px 48px',
+              borderRadius: '16px',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              textAlign: 'center',
+            }}
+          >
+            ▶ クリックして開始
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
