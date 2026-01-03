@@ -1,9 +1,35 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 
 export default function VrmViewer() {
+  // Ctrl+S でカメラ位置を保存してコンソールに出力
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault()
+        const { viewer } = homeStore.getState()
+        viewer.saveCameraPosition()
+        const { characterPosition, characterRotation } =
+          settingsStore.getState()
+        console.log('📍 Camera Position Saved:')
+        console.log(JSON.stringify({ characterPosition, characterRotation }, null, 2))
+        console.log(`
+// .env に追加:
+NEXT_PUBLIC_CHARACTER_POSITION_X=${characterPosition.x}
+NEXT_PUBLIC_CHARACTER_POSITION_Y=${characterPosition.y}
+NEXT_PUBLIC_CHARACTER_POSITION_Z=${characterPosition.z}
+NEXT_PUBLIC_CHARACTER_ROTATION_X=${characterRotation.x}
+NEXT_PUBLIC_CHARACTER_ROTATION_Y=${characterRotation.y}
+NEXT_PUBLIC_CHARACTER_ROTATION_Z=${characterRotation.z}
+`)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (canvas) {
       const { viewer } = homeStore.getState()
