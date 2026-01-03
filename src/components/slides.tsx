@@ -300,9 +300,10 @@ const Slides: React.FC<SlidesProps> = () => {
           /\[(neutral|happy|sad|angry|surprised|relaxed)\]/g,
           ''
         )
-        homeStore.getState().upsertMessage({
-          role: 'assistant',
-          content: subtitleText,
+
+        // slideMessages に追加（字幕表示用）
+        homeStore.setState({
+          slideMessages: [subtitleText],
         })
 
         // chatProcessingCount を増やして再生開始
@@ -316,6 +317,8 @@ const Slides: React.FC<SlidesProps> = () => {
             `%c⚠️ [MP3→API] Fallback to TTS API: ${error}`,
             'color: #fbbf24; font-weight: bold'
           )
+          // slideMessages をクリア
+          homeStore.setState({ slideMessages: [] })
           // プリ生成音声の処理が終わったのでカウントを減らす
           homeStore.getState().decrementChatProcessingCount()
           // TTS は自身で chatProcessingCount を管理する
@@ -323,6 +326,8 @@ const Slides: React.FC<SlidesProps> = () => {
           return
         }
 
+        // 再生完了後に字幕をクリア
+        homeStore.setState({ slideMessages: [] })
         // 再生完了後にカウントを減らす
         console.log(`%c✅ [MP3] Slide ${slideIndex} finished`, 'color: #4ade80')
         homeStore.getState().decrementChatProcessingCount()
