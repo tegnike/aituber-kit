@@ -68,6 +68,7 @@ public/scripts/*
 # Background files
 /public/backgrounds/*
 !/public/backgrounds/bg-c.png
+!/public/backgrounds/AITuber.png
 
 /public/images/uploaded/*
 !/public/images/placed/.keep
