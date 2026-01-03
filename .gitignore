@@ -72,5 +72,5 @@ public/scripts/*
 /public/images/uploaded/*
 !/public/images/placed/.keep
 
-.claude/settings.local.json
+.claude/
 
