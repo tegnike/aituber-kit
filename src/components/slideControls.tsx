@@ -72,7 +72,11 @@ const SlideControls: React.FC<SlideControlsProps> = ({
           onClick={toggleReverse}
           isProcessing={false}
           disabled={isPlaying}
-          backgroundColor={isReverse ? 'bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled' : 'bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled'}
+          backgroundColor={
+            isReverse
+              ? 'bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled'
+              : 'bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled'
+          }
         />
       )}
     </div>

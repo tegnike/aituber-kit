@@ -196,7 +196,15 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
         }
       }
     }
-  }, [chatProcessingCount, isPlaying, isReverse, nextSlide, prevSlide, currentSlide, slideCount])
+  }, [
+    chatProcessingCount,
+    isPlaying,
+    isReverse,
+    nextSlide,
+    prevSlide,
+    currentSlide,
+    slideCount,
+  ])
 
   // スライドの縦のサイズを70%に制限し、アスペクト比を維持
   const calculateSlideSize = () => {
