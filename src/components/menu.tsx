@@ -141,6 +141,13 @@ export const Menu = () => {
       if ((event.metaKey || event.ctrlKey) && event.key === '.') {
         setShowSettings((prevState) => !prevState)
       }
+      // Ctrl+H: コントロールパネルの表示/非表示切り替え
+      if ((event.metaKey || event.ctrlKey) && event.key === 'h') {
+        event.preventDefault()
+        settingsStore.setState((state) => ({
+          showControlPanel: !state.showControlPanel,
+        }))
+      }
     }
 
     window.addEventListener('keydown', handleKeyDown)

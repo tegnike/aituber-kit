@@ -19,6 +19,7 @@ export const goToSlide = (index: number) => {
 const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
   const isPlaying = slideStore((state) => state.isPlaying)
+  const isReverse = slideStore((state) => state.isReverse)
   const currentSlide = slideStore((state) => state.currentSlide)
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
@@ -90,6 +91,13 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       div.marpit > svg > foreignObject > section {
         padding: 2em;
       }
+      /* 背景画像を右上に配置 */
+      div.marpit > svg > foreignObject > section figure[data-marpit-advanced-background-container] {
+        align-items: flex-start !important;
+      }
+      div.marpit > svg > foreignObject > section figure img {
+        object-position: top !important;
+      }
     `
     const styleElement = document.createElement('style')
     styleElement.textContent = customStyle
@@ -131,17 +139,27 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   }, [isPlaying, readSlide, slideCount])
 
   useEffect(() => {
-    // 最後のスライドに達した場合、isPlayingをfalseに設定
-    if (currentSlide === slideCount - 1 && chatProcessingCount === 0) {
-      slideStore.setState({ isPlaying: false })
+    // 最後/最初のスライドに達した場合、isPlayingをfalseに設定
+    if (isReverse) {
+      if (currentSlide === 0 && chatProcessingCount === 0) {
+        slideStore.setState({ isPlaying: false })
+      }
+    } else {
+      if (currentSlide === slideCount - 1 && chatProcessingCount === 0) {
+        slideStore.setState({ isPlaying: false })
+      }
     }
-  }, [currentSlide, slideCount, chatProcessingCount])
+  }, [currentSlide, slideCount, chatProcessingCount, isReverse])
 
   const prevSlide = useCallback(() => {
-    slideStore.setState((state) => ({
-      currentSlide: Math.max(state.currentSlide - 1, 0),
-    }))
-  }, [])
+    slideStore.setState((state) => {
+      const newSlide = Math.max(state.currentSlide - 1, 0)
+      if (isPlaying && isReverse) {
+        readSlide(newSlide)
+      }
+      return { currentSlide: newSlide }
+    })
+  }, [isPlaying, isReverse, readSlide])
 
   const toggleIsPlaying = () => {
     const newIsPlaying = !isPlaying
@@ -156,15 +174,29 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     }
   }
 
+  const toggleReverse = () => {
+    slideStore.setState((state) => ({
+      isReverse: !state.isReverse,
+    }))
+  }
+
+  const goToLastSlide = useCallback(() => {
+    slideStore.setState({ currentSlide: slideCount - 1 })
+  }, [slideCount])
+
   useEffect(() => {
-    if (
-      chatProcessingCount === 0 &&
-      isPlaying &&
-      currentSlide < slideCount - 1
-    ) {
-      nextSlide()
+    if (chatProcessingCount === 0 && isPlaying) {
+      if (isReverse) {
+        if (currentSlide > 0) {
+          prevSlide()
+        }
+      } else {
+        if (currentSlide < slideCount - 1) {
+          nextSlide()
+        }
+      }
     }
-  }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slideCount])
+  }, [chatProcessingCount, isPlaying, isReverse, nextSlide, prevSlide, currentSlide, slideCount])
 
   // スライドの縦のサイズを70%に制限し、アスペクト比を維持
   const calculateSlideSize = () => {
@@ -185,7 +217,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center"
+      className="flex flex-col justify-center"
       style={{
         height: '100vh',
         padding: '10px 0',
@@ -197,7 +229,7 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
         style={{
           width: slideSize.width,
           height: slideSize.height,
-          margin: '0 auto',
+          marginLeft: '2%',
           position: 'relative',
         }}
       >
@@ -206,7 +238,8 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       <div
         style={{
           width: slideSize.width,
-          margin: '10px auto 0',
+          marginLeft: '2%',
+          marginTop: '10px',
           position: 'relative',
           zIndex: 10,
         }}
@@ -215,9 +248,12 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
           currentSlide={currentSlide}
           slideCount={slideCount}
           isPlaying={isPlaying}
+          isReverse={isReverse}
           prevSlide={prevSlide}
           nextSlide={nextSlide}
           toggleIsPlaying={toggleIsPlaying}
+          toggleReverse={toggleReverse}
+          goToLastSlide={goToLastSlide}
         />
       </div>
     </div>

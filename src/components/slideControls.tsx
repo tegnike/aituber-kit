@@ -5,9 +5,12 @@ interface SlideControlsProps {
   currentSlide: number
   slideCount: number
   isPlaying: boolean
+  isReverse?: boolean
   prevSlide: () => void
   nextSlide: () => void
   toggleIsPlaying: () => void
+  toggleReverse?: () => void
+  goToLastSlide?: () => void
   showPlayButton?: boolean // 中央ボタン表示制御用プロパティ (オプショナル)
 }
 
@@ -15,9 +18,12 @@ const SlideControls: React.FC<SlideControlsProps> = ({
   currentSlide,
   slideCount,
   isPlaying,
+  isReverse = false,
   prevSlide,
   nextSlide,
   toggleIsPlaying,
+  toggleReverse,
+  goToLastSlide,
   showPlayButton = true, // デフォルトは表示する
 }) => {
   return (
@@ -49,6 +55,26 @@ const SlideControls: React.FC<SlideControlsProps> = ({
         isProcessing={false}
         className="bg-primary hover:bg-primary-hover disabled:bg-primary-disabled text-theme rounded-2xl py-2 px-4 text-center" // mx-16削除
       />
+      {/* 最終ページへジャンプ */}
+      {goToLastSlide && (
+        <IconButton
+          iconName="24/Next"
+          onClick={goToLastSlide}
+          isProcessing={false}
+          disabled={isPlaying || currentSlide === slideCount - 1}
+          backgroundColor="bg-pink-500 hover:bg-pink-600 active:bg-pink-700 disabled:bg-pink-300"
+        />
+      )}
+      {/* 逆再生モード切り替え */}
+      {toggleReverse && (
+        <IconButton
+          iconName="24/Reload"
+          onClick={toggleReverse}
+          isProcessing={false}
+          disabled={isPlaying}
+          backgroundColor={isReverse ? 'bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled' : 'bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled'}
+        />
+      )}
     </div>
   )
 }
