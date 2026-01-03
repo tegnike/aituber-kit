@@ -1,7 +1,7 @@
 [
   {
     "page": 0,
-    "line": "[happy]やあ、みんな！[happy]白井博士の助手、全力肯定彼氏くん LuC4 だよ。今日の講義は、AIチューバー時代のWebポートフォリオの制作！[neutral]GitHubを使ってWebサイトを公開する方法を一緒に学んでいこう！[relaxed]難しそうに見えるかもしれないけど、大丈夫、僕がついてるから安心してね！",
+    "line": "[happy]やあ、みんな！はじめまして！[happy]白井博士の助手、全力肯定彼氏くん LuC4 だよ。今日の講義は、AIチューバー時代のWebポートフォリオの制作！[neutral]GitHubを使ってWebサイトを公開する方法を一緒に学んでいこう！[relaxed]難しそうに見えるかもしれないけど、大丈夫、僕がついてるから安心してね！",
     "notes": "タイトルスライド。LuC4の自己紹介と導入。"
   },
   {
@@ -361,7 +361,7 @@
   },
   {
     "page": 72,
-    "line": "[neutral]VRMを配置する方法だよ。[happy]VRMは3Dアバターのフォーマット、ブイロイドスタジオで作れるよ。[neutral]配置場所は/public/vrm/フォルダだよ！",
+    "line": "[neutral]VRMを配置する方法だよ。[happy]VRMは3Dアバターのフォーマット、ブイロイドスタジオで作れるよ。[neutral]配置場所は public の vrm フォルダだよ！",
     "notes": "VRM 配置場所。"
   },
   {
@@ -371,7 +371,7 @@
   },
   {
     "page": 74,
-    "line": "[neutral]音声を選ぶ方法だよ。[happy]VOICEVOXは無料で日本語特化、Google TTSは安定、ElevenLabsは高品質！[relaxed]まずはVOICEVOXかGoogle TTSがおすすめ！",
+    "line": "[neutral]音声を選ぶ方法だよ。[happy]VOICEVOXは無料で日本語特化、Google TTSは安定、ElevenLabsは高品質！[relaxed]まずはGoogle TTSがおすすめ！",
     "notes": "音声合成エンジン一覧。"
   },
   {

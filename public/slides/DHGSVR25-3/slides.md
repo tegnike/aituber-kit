@@ -997,8 +997,6 @@ Cloud TTS には **別のキー** が必要
 
 # Google TTS の設定（2/2）
 
-![bg right:50% top contain](/slides/DHGSVR25-3/TTS-API.png)
-
 ## .env の設定
 
 ```env
@@ -1052,12 +1050,12 @@ https://your-project.vercel.app
 
 # デプロイ完了！
 
-[public/slides/DHGSVR25-3/nike.png]
+![bg right:50% top contain](public/slides/DHGSVR25-3/nike.png)
 
 🎉 **Congratulations!**
 
 URLにアクセスして
-AIキャラクターが表示されたら成功！
+デフォルトのAIキャラクターが表示されたら成功！
 
 ---
 
@@ -1114,6 +1112,8 @@ VRM・音声・性格を設定しよう！
 3. **VRM** タブを選択
 4. アップロードまたはURL指定
 
+> ブラウザのウインドウにドロップでもOK
+
 > VRoid Hub のURLも使えるよ！
 
 ---
@@ -1130,11 +1130,13 @@ VRM・音声・性格を設定しよう！
 - **Google TTS** → 安定、多言語
 - **OpenAI TTS** → 自然な発話
 
-> まずは **VOICEVOX** がおすすめ！
+> まずは **Google TTS** がおすすめ！
 
 ---
 
 # 音声の設定方法
+
+![bg right:50% top contain](public/slides/DHGSVR25-3/TTS.png)
 
 ## 設定画面から選択
 
@@ -1142,6 +1144,14 @@ VRM・音声・性格を設定しよう！
 2. **音声合成** セクション
 3. エンジンを選択
 4. 声のスタイルを選択
+
+**Google TTS　の場合**
+Google Text-to-Speech を選択
+たくさんありますので検索してみて
+
+- ja-JP-Chirp3-HD-Puck
+
+> GCPコンソールでAPIの使用を許可する必要があります(有料)
 
 **VOICEVOX の場合：**
 
