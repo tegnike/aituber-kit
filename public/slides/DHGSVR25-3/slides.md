@@ -499,6 +499,7 @@ VS Code と同じ操作感：
 
 ## どっちを使えばいい？
 
+(自分のPCで試すだけでなく...)
 公開するためのサーバーを選ぼう
 
 - **静的サイト（HTML/CSS/JS）** → GitHub Pages
@@ -514,7 +515,7 @@ VS Code と同じ操作感：
 
 **AITuber Kit の技術構成：**
 
-1. **Next.js** フレームワーク
+1. **Next.js** Node.js上で動作するReactベースのフレームワーク
 2. **API Routes** でサーバー処理
    - `/api/chat` - AI会話
    - `/api/tts` - 音声合成

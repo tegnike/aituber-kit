@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import slideStore from '@/features/stores/slide'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -30,7 +30,82 @@ const checkAudioExists = async (path: string): Promise<boolean> => {
   }
 }
 
-// 事前生成音声を再生
+// 音声ファイルのプリロードキャッシュ
+const audioCache = new Map<string, ArrayBuffer>()
+
+// 音声ファイルをプリロード（1ページ先まで）
+const preloadAudio = async (
+  slideDocs: string,
+  currentPage: number,
+  totalPages: number
+): Promise<void> => {
+  const pagesToPreload = [currentPage, currentPage + 1].filter(
+    (p) => p >= 0 && p < totalPages
+  )
+
+  slideStore.setState({
+    audioPreload: {
+      isLoading: true,
+      progress: 0,
+      loadedPages: new Set<number>(),
+      error: null,
+    },
+  })
+
+  const loadedPages = new Set<number>()
+
+  for (let i = 0; i < pagesToPreload.length; i++) {
+    const page = pagesToPreload[i]
+    const audioPath = getPreGeneratedAudioPath(slideDocs, page)
+
+    try {
+      // キャッシュにあればスキップ
+      if (audioCache.has(audioPath)) {
+        loadedPages.add(page)
+        continue
+      }
+
+      const exists = await checkAudioExists(audioPath)
+      if (exists) {
+        const response = await fetch(audioPath)
+        if (response.ok) {
+          const buffer = await response.arrayBuffer()
+          audioCache.set(audioPath, buffer)
+          loadedPages.add(page)
+        }
+      }
+    } catch (error) {
+      console.warn(`Failed to preload audio for page ${page}:`, error)
+      // エラーでも続行（先読み失敗は致命的ではない）
+    }
+
+    // プログレス更新
+    slideStore.setState({
+      audioPreload: {
+        isLoading: true,
+        progress: Math.round(((i + 1) / pagesToPreload.length) * 100),
+        loadedPages,
+        error: null,
+      },
+    })
+  }
+
+  slideStore.setState({
+    audioPreload: {
+      isLoading: false,
+      progress: 100,
+      loadedPages,
+      error: null,
+    },
+  })
+}
+
+// キャッシュから音声を取得
+const getCachedAudio = (audioPath: string): ArrayBuffer | undefined => {
+  return audioCache.get(audioPath)
+}
+
+// 事前生成音声を再生（キャッシュ優先）
 const playPreGeneratedAudio = async (
   audioPath: string,
   emotion: EmotionType
@@ -39,10 +114,17 @@ const playPreGeneratedAudio = async (
   const hs = homeStore.getState()
 
   try {
-    const response = await fetch(audioPath)
-    if (!response.ok) throw new Error('Audio file not found')
+    // キャッシュから取得を試みる
+    let audioBuffer = getCachedAudio(audioPath)
 
-    const audioBuffer = await response.arrayBuffer()
+    if (!audioBuffer) {
+      // キャッシュになければfetch
+      const response = await fetch(audioPath)
+      if (!response.ok) throw new Error('Audio file not found')
+      audioBuffer = await response.arrayBuffer()
+      // キャッシュに保存
+      audioCache.set(audioPath, audioBuffer)
+    }
 
     homeStore.setState({ isSpeaking: true })
 
@@ -51,10 +133,10 @@ const playPreGeneratedAudio = async (
       await Live2DHandler.speak(
         audioBuffer,
         { message: '', emotion },
-        false // MP3はデコード不要
+        true // MP3はデコードが必要
       )
     } else if (hs.viewer.model) {
-      await hs.viewer.model.speak(audioBuffer, { message: '', emotion }, false)
+      await hs.viewer.model.speak(audioBuffer, { message: '', emotion }, true)
     }
 
     homeStore.setState({ isSpeaking: false })
@@ -74,16 +156,18 @@ export const goToSlide = (index: number) => {
   })
 }
 
-const Slides: React.FC<SlidesProps> = ({ markdown }) => {
+const Slides: React.FC<SlidesProps> = () => {
   const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
   const isPlaying = slideStore((state) => state.isPlaying)
   const isReverse = slideStore((state) => state.isReverse)
   const currentSlide = slideStore((state) => state.currentSlide)
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const autoPlay = slideStore((state) => state.autoPlay)
+  const audioPreload = slideStore((state) => state.audioPreload)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
   const [slideCount, setSlideCount] = useState(0)
   const [autoPlayTriggered, setAutoPlayTriggered] = useState(false)
+  const prevChatProcessingCountRef = useRef(chatProcessingCount)
 
   useEffect(() => {
     const currentMarpitContainer = document.querySelector('.marpit')
@@ -182,7 +266,6 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       }
 
       const currentLines = getCurrentLines()
-      console.log(currentLines)
 
       // 事前生成音声ファイルのパスをチェック
       const audioPath = getPreGeneratedAudioPath(selectedSlideDocs, slideIndex)
@@ -190,18 +273,43 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
 
       if (audioExists) {
         // 事前生成音声があれば再生
-        console.log(`🎵 Playing pre-generated audio: ${audioPath}`)
+        console.log(
+          `%c🎵 [MP3] Slide ${slideIndex}: ${audioPath}`,
+          'color: #4ade80; font-weight: bold'
+        )
         const emotion = parseFirstEmotion(currentLines)
+
+        // chatProcessingCount を増やして再生開始
+        homeStore.getState().incrementChatProcessingCount()
+
         try {
           await playPreGeneratedAudio(audioPath, emotion)
-        } catch {
+        } catch (error) {
           // 音声再生に失敗した場合は TTS にフォールバック
-          console.log('⚠️ Fallback to TTS')
+          console.log(
+            `%c⚠️ [MP3→API] Fallback to TTS API: ${error}`,
+            'color: #fbbf24; font-weight: bold'
+          )
+          // プリ生成音声の処理が終わったのでカウントを減らす
+          homeStore.getState().decrementChatProcessingCount()
+          // TTS は自身で chatProcessingCount を管理する
           speakMessageHandler(currentLines)
+          return
         }
+
+        // 再生完了後にカウントを減らす
+        console.log(`%c✅ [MP3] Slide ${slideIndex} finished`, 'color: #4ade80')
+        homeStore.getState().decrementChatProcessingCount()
       } else {
         // なければ TTS API を使用
-        console.log('🔊 Using TTS API')
+        console.log(
+          `%c🔊 [API] Slide ${slideIndex}: Using TTS API`,
+          'color: #60a5fa; font-weight: bold'
+        )
+        console.log(
+          `%c📝 [API] Text: ${currentLines.substring(0, 50)}...`,
+          'color: #60a5fa'
+        )
         speakMessageHandler(currentLines)
       }
     },
@@ -209,14 +317,11 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   )
 
   const nextSlide = useCallback(() => {
-    slideStore.setState((state) => {
-      const newSlide = Math.min(state.currentSlide + 1, slideCount - 1)
-      if (isPlaying) {
-        readSlide(newSlide)
-      }
-      return { currentSlide: newSlide }
-    })
-  }, [isPlaying, readSlide, slideCount])
+    const state = slideStore.getState()
+    const newSlide = Math.min(state.currentSlide + 1, slideCount - 1)
+    slideStore.setState({ currentSlide: newSlide })
+    return newSlide
+  }, [slideCount])
 
   useEffect(() => {
     // 最後/最初のスライドに達した場合、isPlayingをfalseに設定
@@ -232,14 +337,11 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   }, [currentSlide, slideCount, chatProcessingCount, isReverse])
 
   const prevSlide = useCallback(() => {
-    slideStore.setState((state) => {
-      const newSlide = Math.max(state.currentSlide - 1, 0)
-      if (isPlaying && isReverse) {
-        readSlide(newSlide)
-      }
-      return { currentSlide: newSlide }
-    })
-  }, [isPlaying, isReverse, readSlide])
+    const state = slideStore.getState()
+    const newSlide = Math.max(state.currentSlide - 1, 0)
+    slideStore.setState({ currentSlide: newSlide })
+    return newSlide
+  }, [])
 
   const toggleIsPlaying = () => {
     const newIsPlaying = !isPlaying
@@ -264,15 +366,22 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     slideStore.setState({ currentSlide: slideCount - 1 })
   }, [slideCount])
 
+  // chatProcessingCount が 0 に変化したときのみ次/前のスライドに進む
   useEffect(() => {
-    if (chatProcessingCount === 0 && isPlaying) {
+    const prevCount = prevChatProcessingCountRef.current
+    prevChatProcessingCountRef.current = chatProcessingCount
+
+    // 0 に変化したときのみ処理（無限ループ防止）
+    if (prevCount > 0 && chatProcessingCount === 0 && isPlaying) {
       if (isReverse) {
         if (currentSlide > 0) {
-          prevSlide()
+          const newSlide = prevSlide()
+          readSlide(newSlide)
         }
       } else {
         if (currentSlide < slideCount - 1) {
-          nextSlide()
+          const newSlide = nextSlide()
+          readSlide(newSlide)
         }
       }
     }
@@ -280,10 +389,11 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     chatProcessingCount,
     isPlaying,
     isReverse,
-    nextSlide,
-    prevSlide,
     currentSlide,
     slideCount,
+    nextSlide,
+    prevSlide,
+    readSlide,
   ])
 
   // 自動再生：スライドロード完了後に自動的にプレゼンテーションを開始
@@ -300,6 +410,26 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
       return () => clearTimeout(timer)
     }
   }, [slideCount, autoPlay, autoPlayTriggered, isPlaying, readSlide])
+
+  // 音声ファイルの先読み（現在のスライド + 次のスライドのみ）
+  useEffect(() => {
+    if (slideCount > 0 && selectedSlideDocs) {
+      // 非同期でプリロード（try-catch でエラーハンドリング済み）
+      preloadAudio(selectedSlideDocs, currentSlide, slideCount).catch(
+        (error) => {
+          console.error('Audio preload failed:', error)
+          slideStore.setState({
+            audioPreload: {
+              isLoading: false,
+              progress: 0,
+              loadedPages: new Set<number>(),
+              error: String(error),
+            },
+          })
+        }
+      )
+    }
+  }, [currentSlide, slideCount, selectedSlideDocs])
 
   // スライドの縦のサイズを70%に制限し、アスペクト比を維持
   const calculateSlideSize = () => {
@@ -358,6 +488,28 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
           toggleReverse={toggleReverse}
           goToLastSlide={goToLastSlide}
         />
+        {/* 音声プリロード進捗表示 */}
+        {audioPreload.isLoading && (
+          <div
+            style={{
+              marginTop: '8px',
+              width: '100%',
+              height: '4px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '2px',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                width: `${audioPreload.progress}%`,
+                height: '100%',
+                backgroundColor: '#4ade80',
+                transition: 'width 0.2s ease',
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   )

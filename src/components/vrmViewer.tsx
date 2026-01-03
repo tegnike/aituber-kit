@@ -4,7 +4,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 
 export default function VrmViewer() {
-  // Ctrl+S でカメラ位置を保存してコンソールに出力
+  // Ctrl+S でカメラ位置を保存してログ出力
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -13,17 +13,19 @@ export default function VrmViewer() {
         viewer.saveCameraPosition()
         const { characterPosition, characterRotation } =
           settingsStore.getState()
-        console.log('📍 Camera Position Saved:')
-        console.log(JSON.stringify({ characterPosition, characterRotation }, null, 2))
-        console.log(`
-// .env に追加:
-NEXT_PUBLIC_CHARACTER_POSITION_X=${characterPosition.x}
-NEXT_PUBLIC_CHARACTER_POSITION_Y=${characterPosition.y}
-NEXT_PUBLIC_CHARACTER_POSITION_Z=${characterPosition.z}
-NEXT_PUBLIC_CHARACTER_ROTATION_X=${characterRotation.x}
-NEXT_PUBLIC_CHARACTER_ROTATION_Y=${characterRotation.y}
-NEXT_PUBLIC_CHARACTER_ROTATION_Z=${characterRotation.z}
-`)
+
+        // 環境変数用の文字列を生成
+        const envConfig = `NEXT_PUBLIC_CHARACTER_POSITION_X=${characterPosition.x.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_POSITION_Y=${characterPosition.y.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_POSITION_Z=${characterPosition.z.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_SCALE=${characterPosition.scale.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_ROTATION_X=${characterRotation.x.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_ROTATION_Y=${characterRotation.y.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_ROTATION_Z=${characterRotation.z.toFixed(3)}`
+
+        // コンソールに出力
+        console.log('📍 Character Position Saved:')
+        console.log(envConfig)
       }
     }
     window.addEventListener('keydown', handleKeyDown)

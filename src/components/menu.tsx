@@ -316,9 +316,14 @@ export const Menu = () => {
                   <IconButton
                     iconName="24/FrameEffect"
                     isProcessing={false}
-                    onClick={() =>
-                      menuStore.setState({ slideVisible: !slideVisible })
-                    }
+                    onClick={() => {
+                      const newVisible = !slideVisible
+                      menuStore.setState({ slideVisible: newVisible })
+                      // スライドモード開始時にautoPlayをリセット
+                      if (newVisible) {
+                        slideStore.setState({ autoPlay: true, currentSlide: 0 })
+                      }
+                    }}
                     disabled={slidePlaying}
                   />
                 </div>

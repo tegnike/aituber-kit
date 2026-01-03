@@ -171,7 +171,7 @@
   },
   {
     "page": 34,
-    "line": "[neutral]なぜVercelが必要なのか説明するね。[happy]AITuber KitはNext.jsで、サーバー処理を使ってるんだ。[neutral]AI会話と音声合成にサーバーが必要だから、GitHub Pagesでは動かないんだよ。",
+    "line": "[neutral]なぜVercelが必要なのか説明するね。[happy]AITuber Kitを自分のPCではなく、サーバー公開する場合はNext.jsでサーバー処理を必要とするんだ。[neutral]AI会話と音声合成にサーバーが必要だから、GitHub Pagesでは動かないんだよ。",
     "notes": "AITuber Kit が Vercel を必要とする技術的理由。"
   },
   {
