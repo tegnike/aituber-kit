@@ -662,6 +662,34 @@ NextJS使いなら絶対おすすめ
 
 ---
 
+# デプロイ成功！
+
+![bg right:50% top contain](/slides/DHGSVR25-3/Vercel3.png)
+
+## Production Deployment
+
+- **Status**: Ready ✅
+- **Domain**: your-project.vercel.app
+- ブラウザでアクセスして確認！
+
+> まだ設定が足りないから
+> 画面は真っ白かも？
+
+---
+
+# 環境変数を設定しよう
+
+## Deploy 前に Environment Variables
+
+1. **Project Settings** をクリック
+2. **Environment Variables** を選択
+3. **Key** と **Value** を入力
+4. **Add** をクリック
+
+> 最低限 **GOOGLE_API_KEY** だけでOK！
+
+---
+
 # 環境変数（.env）とは？
 
 **アプリの設定値を外部ファイルで管理する仕組み**
