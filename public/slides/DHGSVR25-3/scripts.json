@@ -281,7 +281,7 @@
   },
   {
     "page": 56,
-    "line": "[neutral]Node.jsをインストールしよう！[happy]nodejs.orgにアクセスして、LTS版をダウンロードしてね。[neutral]必要なバージョンは、Node.js 20.0.0以上、npm 10.0.0以上だよ。",
+    "line": "[neutral]NodeJSをインストールしよう！[happy]NodeJS.Orgにアクセスして、LTS版をダウンロードしてね。[neutral]必要なバージョンは、NodeJS20以上、npm10以上だよ。",
     "notes": "Node.js インストール概要。"
   },
   {
@@ -291,7 +291,7 @@
   },
   {
     "page": 58,
-    "line": "[neutral]Windowsでのインストール方法だよ。[happy]nodejs.orgからダウンロードして.msiを実行！[angry]「Add to PATH」のチェックを忘れずに！[neutral]node --versionで確認してね。",
+    "line": "[neutral]Windowsでのインストール方法だよ。[happy]NodeJS orgからダウンロードして.msiを実行！[angry]「Add to PATH」のチェックを忘れずに！[neutral]node --versionで確認してね。",
     "notes": "Windows での Node.js インストール。"
   },
   {

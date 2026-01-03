@@ -826,6 +826,8 @@ Vercelなら暗号化されて安全！
 
 # Node.js のインストール
 
+ローカルでのカスタマイズ結果を確認するために、ローカル環境にNode.jsをインストールしよう。
+
 ## https://nodejs.org/
 
 **LTS版（推奨）** をダウンロード
@@ -884,16 +886,12 @@ npm --version
 ```bash
 # 1. クローン
 git clone https://github.com/YOUR_NAME/aituber-kit.git
-
 # 2. ディレクトリ移動
 cd aituber-kit
-
 # 3. 環境変数ファイル作成
 cp .env.example .env  # Mac/Linux
 copy .env.example .env  # Windows
-
 # 4. .env を編集してAPIキーを設定
-
 # 5. パッケージインストール
 npm install
 ```
