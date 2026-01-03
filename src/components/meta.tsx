@@ -4,7 +4,7 @@ export const Meta = () => {
   const title = 'AITuberKit'
   const description =
     'Webブラウザだけで誰でも簡単にAIキャラと会話したり、Youtubeで配信したりできます。'
-  const imageUrl = '/ogp.png'
+  const imageUrl = '/backgrounds/AITuber.png'
   return (
     <Head>
       <title>{title}</title>
