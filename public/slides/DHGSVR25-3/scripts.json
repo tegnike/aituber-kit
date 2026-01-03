@@ -266,12 +266,12 @@
   },
   {
     "page": 53,
-    "line": "[neutral]どこに置けば安全？[happy]Vercel環境変数と.envファイルが安全！[neutral].gitignoreで除外されるからね。[angry]ソースコード内やスクショは絶対ダメだよ！",
+    "line": "[neutral]どこに置けば安全だろう？[happy]Vercel環境変数と.envファイルが安全！[neutral]ドットギットイグノア で除外されるからね。[angry]ソースコード内やスクショは絶対ダメだよ！",
     "notes": "安全な場所と危険な場所。"
   },
   {
     "page": 54,
-    "line": "[neutral].gitignoreの役割だよ。[happy].envファイルをGitから除外する設定なんだ。[neutral]これがあるから.envはGitHubにプッシュされない！[relaxed]AITuber Kitには設定済みだから安心してね。",
+    "line": "[neutral]ドットギットイグノアの役割だよ。[happy].envファイルをGitから除外する設定なんだ。[neutral]これがあるから.envはGitHubにプッシュされない！[relaxed]AITuber Kitには設定済みだから安心してね。",
     "notes": ".gitignore の役割。"
   },
   {
@@ -306,7 +306,7 @@
   },
   {
     "page": 61,
-    "line": "[neutral]次は.envファイルを編集するよ！[happy]VS Codeでcode .envって打つと開けるよ。[neutral]安心して、.envファイルは.gitignoreに書かれてるから、GitHubにはアップロードされないんだ。[relaxed]APIキーを書いても大丈夫だよ！",
+    "line": "[neutral]次は.envファイルを編集するよ！[happy]VS Codeでcode .envって打つと開けるよ。[neutral]安心して、.envファイルはギットイグノアに書かれてるから、GitHubにはアップロードされないんだ。[relaxed]APIキーを書いても大丈夫だよ！",
     "notes": ".env ファイル編集の導入。.gitignoreで保護されている。"
   },
   {

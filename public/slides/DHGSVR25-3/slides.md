@@ -803,18 +803,24 @@ ANTHROPIC_API_KEY=sk-ant-xxxxx
 
 > AITuber Kit には最初から設定済みだよ！
 
+> ★ (.)ドットで始まるファイル名は「見えないファイル」だけど VS Code や GitHub では見れるはずだよ
+
 ---
 
 # Vercel で環境変数を設定
 
+![bg right:50% top contain](/slides/DHGSVR25-3/Vercel4.png)
+
 ## Project Settings → Environment Variables
 
 1. **Key** に変数名を入力
-   例：`OPENAI_API_KEY`
+   例：`GOOGLE_API_KEY`
 2. **Value** にAPIキーを入力
 3. **Add** をクリック
 
 Vercelなら暗号化されて安全！
+
+> 慣れたらローカルの.envファイルをアップロードして全項目を反映できるよ
 
 ---
 
