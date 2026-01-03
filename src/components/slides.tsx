@@ -21,7 +21,11 @@ declare global {
 }
 
 // Google Analytics イベント送信
-const trackSlideView = (slideDocs: string, page: number, totalPages: number) => {
+const trackSlideView = (
+  slideDocs: string,
+  page: number,
+  totalPages: number
+) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'slide_view', {
       slide_docs: slideDocs,
