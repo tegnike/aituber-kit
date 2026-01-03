@@ -21,15 +21,6 @@ const getDeviceType = (userAgent: string): string => {
   return '🖥️ Unknown'
 }
 
-// ブラウザを判定
-const getBrowser = (userAgent: string): string => {
-  if (/Chrome/i.test(userAgent) && !/Edg/i.test(userAgent)) return 'Chrome'
-  if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent)) return 'Safari'
-  if (/Firefox/i.test(userAgent)) return 'Firefox'
-  if (/Edg/i.test(userAgent)) return 'Edge'
-  return 'Other'
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -45,7 +36,7 @@ export default async function handler(
   }
 
   try {
-    const { slideDocs, totalPages, userAgent, startTime, endTime, duration } =
+    const { slideDocs, userMessage, assistantMessage, userAgent, timestamp } =
       req.body
 
     // IPアドレスを取得（Vercel/プロキシ対応）
@@ -57,19 +48,18 @@ export default async function handler(
       req.socket?.remoteAddress ||
       'Unknown'
 
-    // デバイス・ブラウザ情報
+    // デバイス情報
     const deviceType = getDeviceType(userAgent || '')
-    const browser = getBrowser(userAgent || '')
     const isMobile = isMobileDevice(userAgent || '')
 
     const message = {
-      text: `🎉 プレゼンテーション完了通知`,
+      text: `💬 自由会話モード - Q&A`,
       blocks: [
         {
           type: 'header',
           text: {
             type: 'plain_text',
-            text: '🎉 プレゼンテーション完了',
+            text: '💬 自由会話モード - 質問と回答',
             emoji: true,
           },
         },
@@ -82,55 +72,33 @@ export default async function handler(
             },
             {
               type: 'mrkdwn',
-              text: `*総ページ数:*\n${totalPages}ページ`,
+              text: `*時刻:*\n${timestamp}`,
             },
           ],
         },
         {
-          type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `*開始時刻:*\n${startTime}`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `*終了時刻:*\n${endTime}`,
-            },
-          ],
+          type: 'divider',
         },
         {
           type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `*視聴時間:*\n⏱️ ${duration}`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `*デバイス:*\n${deviceType}`,
-            },
-          ],
+          text: {
+            type: 'mrkdwn',
+            text: `*🙋 ユーザー質問:*\n>${userMessage.replace(/\n/g, '\n>')}`,
+          },
         },
         {
           type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `*ブラウザ:*\n${browser}`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `*IPアドレス:*\n\`${ip}\``,
-            },
-          ],
+          text: {
+            type: 'mrkdwn',
+            text: `*🤖 AI回答:*\n${assistantMessage.substring(0, 500)}${assistantMessage.length > 500 ? '...' : ''}`,
+          },
         },
         {
           type: 'context',
           elements: [
             {
               type: 'mrkdwn',
-              text: `_${isMobile ? '📱 モバイル' : '💻 デスクトップ'} | ${userAgent?.substring(0, 80) || 'Unknown'}..._`,
+              text: `${deviceType} | ${isMobile ? '📱 モバイル' : '💻 デスクトップ'} | IP: \`${ip}\``,
             },
           ],
         },
@@ -151,7 +119,7 @@ export default async function handler(
 
     res.status(200).json({ success: true })
   } catch (error) {
-    console.error('Slack notification error:', error)
+    console.error('Slack conversation notification error:', error)
     res.status(500).json({ error: 'Failed to send notification' })
   }
 }

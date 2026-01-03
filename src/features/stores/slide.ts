@@ -15,6 +15,7 @@ interface SlideState {
   selectedSlideDocs: string
   autoPlay: boolean
   audioPreload: AudioPreloadState
+  freeConversationMode: boolean // プレゼン終了後の自由会話モード
 }
 
 const defaultSlideDocs =
@@ -34,6 +35,7 @@ const slideStore = create<SlideState>()(
         loadedPages: new Set<number>(),
         error: null,
       },
+      freeConversationMode: false,
     }),
     {
       name: 'aitube-kit-slide',

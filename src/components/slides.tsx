@@ -39,9 +39,27 @@ const trackSlideView = (
 // 最終ページ到達時のSlack通知
 const notifySlideCompletion = async (
   slideDocs: string,
-  totalPages: number
+  totalPages: number,
+  startTime: Date | null
 ): Promise<void> => {
   try {
+    const endTime = new Date()
+    const startTimeStr = startTime
+      ? startTime.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
+      : '不明'
+    const endTimeStr = endTime.toLocaleString('ja-JP', {
+      timeZone: 'Asia/Tokyo',
+    })
+
+    // 経過時間を計算
+    let durationStr = '不明'
+    if (startTime) {
+      const durationMs = endTime.getTime() - startTime.getTime()
+      const minutes = Math.floor(durationMs / 60000)
+      const seconds = Math.floor((durationMs % 60000) / 1000)
+      durationStr = `${minutes}分${seconds}秒`
+    }
+
     await fetch('/api/slack-notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -49,9 +67,9 @@ const notifySlideCompletion = async (
         slideDocs,
         totalPages,
         userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-        timestamp: new Date().toLocaleString('ja-JP', {
-          timeZone: 'Asia/Tokyo',
-        }),
+        startTime: startTimeStr,
+        endTime: endTimeStr,
+        duration: durationStr,
       }),
     })
     console.log('%c📨 Slack notification sent', 'color: #e01e5a')
@@ -255,6 +273,8 @@ const Slides: React.FC<SlidesProps> = () => {
   const [autoPlayTriggered, setAutoPlayTriggered] = useState(false)
   const [waitingForUserGesture, setWaitingForUserGesture] = useState(false)
   const [completionNotified, setCompletionNotified] = useState(false)
+  const [presentationStartTime, setPresentationStartTime] =
+    useState<Date | null>(null)
   const prevChatProcessingCountRef = useRef(chatProcessingCount)
 
   useEffect(() => {
@@ -496,7 +516,11 @@ const Slides: React.FC<SlidesProps> = () => {
         // 最終ページ到達時にSlack通知（1回のみ）
         if (!completionNotified && slideCount > 0) {
           setCompletionNotified(true)
-          notifySlideCompletion(selectedSlideDocs, slideCount)
+          notifySlideCompletion(
+            selectedSlideDocs,
+            slideCount,
+            presentationStartTime
+          )
           // gtag で完了イベントも送信
           if (typeof window !== 'undefined' && window.gtag) {
             window.gtag('event', 'slide_completed', {
@@ -504,6 +528,10 @@ const Slides: React.FC<SlidesProps> = () => {
               total_pages: slideCount,
             })
           }
+          // 終了時にコントロールパネルを表示して自由会話モードへ
+          settingsStore.setState({ showControlPanel: true })
+          slideStore.setState({ freeConversationMode: true })
+          console.log('🎤 Free conversation mode enabled')
         }
       }
     }
@@ -514,6 +542,7 @@ const Slides: React.FC<SlidesProps> = () => {
     isReverse,
     completionNotified,
     selectedSlideDocs,
+    presentationStartTime,
   ])
 
   const prevSlide = useCallback(() => {
@@ -597,6 +626,7 @@ const Slides: React.FC<SlidesProps> = () => {
   const handleStartPresentation = useCallback(() => {
     console.log('▶️ User gesture received, starting presentation')
     setWaitingForUserGesture(false)
+    setPresentationStartTime(new Date())
     slideStore.setState({ isPlaying: true })
     readSlide(0)
   }, [readSlide])

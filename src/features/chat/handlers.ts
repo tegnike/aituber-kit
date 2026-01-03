@@ -13,6 +13,36 @@ import toastStore from '@/features/stores/toast'
 import { generateMessageId } from '@/utils/messageUtils'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 
+// 自由会話モードの会話をSlackに報告
+const reportConversationToSlack = async (
+  userMessage: string,
+  assistantMessage: string
+): Promise<void> => {
+  const sls = slideStore.getState()
+
+  // 自由会話モードでなければスキップ
+  if (!sls.freeConversationMode) return
+
+  try {
+    await fetch('/api/slack-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slideDocs: sls.selectedSlideDocs,
+        userMessage,
+        assistantMessage,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        timestamp: new Date().toLocaleString('ja-JP', {
+          timeZone: 'Asia/Tokyo',
+        }),
+      }),
+    })
+    console.log('%c📨 Slack conversation reported', 'color: #e01e5a')
+  } catch (error) {
+    console.error('Failed to report conversation to Slack:', error)
+  }
+}
+
 // セッションIDを生成する関数
 const generateSessionId = () => generateMessageId()
 
@@ -832,6 +862,24 @@ export const handleSendChatFn = () => async (text: string) => {
 
     try {
       await processAIResponse(messages)
+
+      // 自由会話モードの場合、会話をSlackに報告
+      const sls = slideStore.getState()
+      if (sls.freeConversationMode) {
+        const currentChatLog2 = homeStore.getState().chatLog
+        // 最後のassistantメッセージを取得
+        const lastAssistantMessage = currentChatLog2
+          .slice()
+          .reverse()
+          .find((msg) => msg.role === 'assistant')
+        if (lastAssistantMessage) {
+          const assistantContent =
+            typeof lastAssistantMessage.content === 'string'
+              ? lastAssistantMessage.content
+              : ''
+          reportConversationToSlack(newMessage, assistantContent)
+        }
+      }
     } catch (e) {
       console.error(e)
       homeStore.setState({ chatProcessing: false })
