@@ -348,7 +348,10 @@ export const Menu = () => {
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {chatLogMode === CHAT_LOG_MODE.ASSISTANT &&
         latestAssistantMessage &&
-        showAssistantText && <AssistantText message={latestAssistantMessage} />}
+        showAssistantText &&
+        !(slideMode && slideVisible && slidePlaying) && (
+          <AssistantText message={latestAssistantMessage} />
+        )}
       {showWebcam && navigator.mediaDevices && <Webcam />}
       {showCapture && <Capture />}
       {showPermissionModal && (

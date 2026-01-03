@@ -105,11 +105,41 @@ const getCachedAudio = (audioPath: string): ArrayBuffer | undefined => {
   return audioCache.get(audioPath)
 }
 
-// 事前生成音声を再生（キャッシュ優先）
+// 音声の長さを取得（秒）
+const getAudioDuration = async (audioBuffer: ArrayBuffer): Promise<number> => {
+  const audioContext = new AudioContext()
+  const decodedBuffer = await audioContext.decodeAudioData(audioBuffer.slice(0))
+  const duration = decodedBuffer.duration
+  await audioContext.close()
+  return duration
+}
+
+// テキストを句読点で分割
+const splitTextByPunctuation = (text: string): string[] => {
+  // 句読点で分割（。！？、で区切るが、区切り文字は含める）
+  const segments = text.split(/(?<=[。！？、])/g).filter((s) => s.trim())
+  // 短すぎるセグメントは次と結合
+  const result: string[] = []
+  let current = ''
+  for (const segment of segments) {
+    current += segment
+    // 10文字以上、または最後の句点(。！？)で区切る
+    if (current.length >= 10 || /[。！？]$/.test(current)) {
+      result.push(current.trim())
+      current = ''
+    }
+  }
+  if (current.trim()) {
+    result.push(current.trim())
+  }
+  return result.length > 0 ? result : [text]
+}
+
+// 事前生成音声を再生（キャッシュ優先）- 音声長を返す
 const playPreGeneratedAudio = async (
   audioPath: string,
   emotion: EmotionType
-): Promise<void> => {
+): Promise<number> => {
   const ss = settingsStore.getState()
   const hs = homeStore.getState()
 
@@ -126,6 +156,9 @@ const playPreGeneratedAudio = async (
       audioCache.set(audioPath, audioBuffer)
     }
 
+    // 音声の長さを取得
+    const duration = await getAudioDuration(audioBuffer)
+
     homeStore.setState({ isSpeaking: true })
 
     // VRM/Live2D に音声を再生させる
@@ -140,6 +173,7 @@ const playPreGeneratedAudio = async (
     }
 
     homeStore.setState({ isSpeaking: false })
+    return duration
   } catch (error) {
     console.error('Failed to play pre-generated audio:', error)
     throw error
@@ -301,24 +335,61 @@ const Slides: React.FC<SlidesProps> = () => {
           ''
         )
 
-        // slideMessages に追加（字幕表示用）
-        homeStore.setState({
-          slideMessages: [subtitleText],
-        })
+        // テキストを句読点で分割
+        const subtitleSegments = splitTextByPunctuation(subtitleText)
+        console.log(
+          `%c📝 [MP3] Segments: ${subtitleSegments.length}`,
+          'color: #4ade80'
+        )
 
         // chatProcessingCount を増やして再生開始
         homeStore.getState().incrementChatProcessingCount()
 
+        // 字幕タイマーのIDを保持
+        const subtitleTimers: NodeJS.Timeout[] = []
+        let subtitleCleanedUp = false
+
+        // 字幕クリーンアップ関数
+        const cleanupSubtitles = () => {
+          if (subtitleCleanedUp) return
+          subtitleCleanedUp = true
+          subtitleTimers.forEach((timer) => clearTimeout(timer))
+          homeStore.setState({ slideMessages: [] })
+        }
+
         try {
-          await playPreGeneratedAudio(audioPath, emotion)
+          // 最初の字幕を表示
+          homeStore.setState({ slideMessages: [subtitleSegments[0]] })
+
+          // 音声再生開始（durationを取得）
+          const audioPromise = playPreGeneratedAudio(audioPath, emotion)
+
+          // 音声の長さを先に取得してタイマーをセット
+          const audioBuffer = getCachedAudio(audioPath)
+          if (audioBuffer && subtitleSegments.length > 1) {
+            const duration = await getAudioDuration(audioBuffer)
+            const segmentDuration = (duration * 1000) / subtitleSegments.length
+
+            // 各セグメントの表示タイミングをスケジュール
+            for (let i = 1; i < subtitleSegments.length; i++) {
+              const timer = setTimeout(() => {
+                if (!subtitleCleanedUp) {
+                  homeStore.setState({ slideMessages: [subtitleSegments[i]] })
+                }
+              }, segmentDuration * i)
+              subtitleTimers.push(timer)
+            }
+          }
+
+          // 音声再生完了を待つ
+          await audioPromise
         } catch (error) {
           // 音声再生に失敗した場合は TTS にフォールバック
           console.log(
             `%c⚠️ [MP3→API] Fallback to TTS API: ${error}`,
             'color: #fbbf24; font-weight: bold'
           )
-          // slideMessages をクリア
-          homeStore.setState({ slideMessages: [] })
+          cleanupSubtitles()
           // プリ生成音声の処理が終わったのでカウントを減らす
           homeStore.getState().decrementChatProcessingCount()
           // TTS は自身で chatProcessingCount を管理する
@@ -327,7 +398,7 @@ const Slides: React.FC<SlidesProps> = () => {
         }
 
         // 再生完了後に字幕をクリア
-        homeStore.setState({ slideMessages: [] })
+        cleanupSubtitles()
         // 再生完了後にカウントを減らす
         console.log(`%c✅ [MP3] Slide ${slideIndex} finished`, 'color: #4ade80')
         homeStore.getState().decrementChatProcessingCount()
@@ -509,51 +580,52 @@ const Slides: React.FC<SlidesProps> = () => {
       >
         <SlideContent marpitContainer={marpitContainer} />
       </div>
-      {showControlPanel && (
-        <div
-          style={{
-            width: slideSize.width,
-            marginLeft: '2%',
-            marginTop: '10px',
-            position: 'relative',
-            zIndex: 10,
-          }}
-        >
-          <SlideControls
-            currentSlide={currentSlide}
-            slideCount={slideCount}
-            isPlaying={isPlaying}
-            isReverse={isReverse}
-            prevSlide={prevSlide}
-            nextSlide={nextSlide}
-            toggleIsPlaying={toggleIsPlaying}
-            toggleReverse={toggleReverse}
-            goToLastSlide={goToLastSlide}
-          />
-          {/* 音声プリロード進捗表示 */}
-          {audioPreload.isLoading && (
+      <div
+        style={{
+          width: slideSize.width,
+          marginLeft: '2%',
+          marginTop: '10px',
+          position: 'relative',
+          zIndex: 10,
+          visibility: showControlPanel ? 'visible' : 'hidden',
+          opacity: showControlPanel ? 1 : 0,
+          transition: 'opacity 0.2s ease',
+        }}
+      >
+        <SlideControls
+          currentSlide={currentSlide}
+          slideCount={slideCount}
+          isPlaying={isPlaying}
+          isReverse={isReverse}
+          prevSlide={prevSlide}
+          nextSlide={nextSlide}
+          toggleIsPlaying={toggleIsPlaying}
+          toggleReverse={toggleReverse}
+          goToLastSlide={goToLastSlide}
+        />
+        {/* 音声プリロード進捗表示 */}
+        {audioPreload.isLoading && (
+          <div
+            style={{
+              marginTop: '8px',
+              width: '100%',
+              height: '4px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '2px',
+              overflow: 'hidden',
+            }}
+          >
             <div
               style={{
-                marginTop: '8px',
-                width: '100%',
-                height: '4px',
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                borderRadius: '2px',
-                overflow: 'hidden',
+                width: `${audioPreload.progress}%`,
+                height: '100%',
+                backgroundColor: '#4ade80',
+                transition: 'width 0.2s ease',
               }}
-            >
-              <div
-                style={{
-                  width: `${audioPreload.progress}%`,
-                  height: '100%',
-                  backgroundColor: '#4ade80',
-                  transition: 'width 0.2s ease',
-                }}
-              />
-            </div>
-          )}
-        </div>
-      )}
+            />
+          </div>
+        )}
+      </div>
 
       {/* クリックして開始モーダル */}
       {waitingForUserGesture && (
