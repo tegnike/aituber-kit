@@ -9,6 +9,53 @@ import { EmotionType } from '@/features/messages/messages'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
 
+// gtag型定義
+declare global {
+  interface Window {
+    gtag?: (
+      command: string,
+      action: string,
+      params?: Record<string, unknown>
+    ) => void
+  }
+}
+
+// Google Analytics イベント送信
+const trackSlideView = (slideDocs: string, page: number, totalPages: number) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'slide_view', {
+      slide_docs: slideDocs,
+      page_number: page,
+      total_pages: totalPages,
+      progress_percent: Math.round((page / totalPages) * 100),
+    })
+  }
+}
+
+// 最終ページ到達時のSlack通知
+const notifySlideCompletion = async (
+  slideDocs: string,
+  totalPages: number
+): Promise<void> => {
+  try {
+    await fetch('/api/slack-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slideDocs,
+        totalPages,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        timestamp: new Date().toLocaleString('ja-JP', {
+          timeZone: 'Asia/Tokyo',
+        }),
+      }),
+    })
+    console.log('%c📨 Slack notification sent', 'color: #e01e5a')
+  } catch (error) {
+    console.error('Failed to send Slack notification:', error)
+  }
+}
+
 // 感情タグを解析して最初の感情を取得
 const parseFirstEmotion = (line: string): EmotionType => {
   const match = line.match(/\[(neutral|happy|sad|angry|surprised|relaxed)\]/)
@@ -203,6 +250,7 @@ const Slides: React.FC<SlidesProps> = () => {
   const [slideCount, setSlideCount] = useState(0)
   const [autoPlayTriggered, setAutoPlayTriggered] = useState(false)
   const [waitingForUserGesture, setWaitingForUserGesture] = useState(false)
+  const [completionNotified, setCompletionNotified] = useState(false)
   const prevChatProcessingCountRef = useRef(chatProcessingCount)
 
   useEffect(() => {
@@ -425,6 +473,13 @@ const Slides: React.FC<SlidesProps> = () => {
     return newSlide
   }, [slideCount])
 
+  // スライド変更時にgtagでトラッキング
+  useEffect(() => {
+    if (slideCount > 0 && selectedSlideDocs) {
+      trackSlideView(selectedSlideDocs, currentSlide, slideCount)
+    }
+  }, [currentSlide, slideCount, selectedSlideDocs])
+
   useEffect(() => {
     // 最後/最初のスライドに達した場合、isPlayingをfalseに設定
     if (isReverse) {
@@ -434,9 +489,28 @@ const Slides: React.FC<SlidesProps> = () => {
     } else {
       if (currentSlide === slideCount - 1 && chatProcessingCount === 0) {
         slideStore.setState({ isPlaying: false })
+        // 最終ページ到達時にSlack通知（1回のみ）
+        if (!completionNotified && slideCount > 0) {
+          setCompletionNotified(true)
+          notifySlideCompletion(selectedSlideDocs, slideCount)
+          // gtag で完了イベントも送信
+          if (typeof window !== 'undefined' && window.gtag) {
+            window.gtag('event', 'slide_completed', {
+              slide_docs: selectedSlideDocs,
+              total_pages: slideCount,
+            })
+          }
+        }
       }
     }
-  }, [currentSlide, slideCount, chatProcessingCount, isReverse])
+  }, [
+    currentSlide,
+    slideCount,
+    chatProcessingCount,
+    isReverse,
+    completionNotified,
+    selectedSlideDocs,
+  ])
 
   const prevSlide = useCallback(() => {
     const state = slideStore.getState()
