@@ -13,8 +13,8 @@
 - **GitHub**: https://github.com/kaitas/aituber-kit
 - 動画版（上のデモの録画）: https://youtu.be/NiWHolT5HVI
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=NiWHolT5HVI" target="_blank">
- <img src="http://img.youtube.com/vi/NiWHolT5HVI/mqdefault.jpg" alt="Watch the video" width="240" height="180" border="10" />
+<a href="https://www.youtube.com/watch?feature=player_embedded&v=NiWHolT5HVI" target="_blank">
+ <img src="https://img.youtube.com/vi/NiWHolT5HVI/mqdefault.jpg" alt="Watch the video" width="240" height="180" border="10" />
 </a>
 
 ## 概要
