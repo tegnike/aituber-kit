@@ -45,6 +45,7 @@ certificates
 
 /public/slides/*
 !/public/slides/demo/
+!/public/slides/DHGSVR25-3/
 
 /logs/*
 
