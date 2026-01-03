@@ -6,6 +6,7 @@ interface SlideState {
   isReverse: boolean
   currentSlide: number
   selectedSlideDocs: string
+  autoPlay: boolean
 }
 
 const slideStore = create<SlideState>()(
@@ -15,6 +16,7 @@ const slideStore = create<SlideState>()(
       isReverse: false,
       currentSlide: 0,
       selectedSlideDocs: '',
+      autoPlay: true,
     }),
     {
       name: 'aitube-kit-slide',

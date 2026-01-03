@@ -80,8 +80,10 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
   const isReverse = slideStore((state) => state.isReverse)
   const currentSlide = slideStore((state) => state.currentSlide)
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
+  const autoPlay = slideStore((state) => state.autoPlay)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
   const [slideCount, setSlideCount] = useState(0)
+  const [autoPlayTriggered, setAutoPlayTriggered] = useState(false)
 
   useEffect(() => {
     const currentMarpitContainer = document.querySelector('.marpit')
@@ -283,6 +285,21 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
     currentSlide,
     slideCount,
   ])
+
+  // 自動再生：スライドロード完了後に自動的にプレゼンテーションを開始
+  useEffect(() => {
+    if (slideCount > 0 && autoPlay && !autoPlayTriggered && !isPlaying) {
+      console.log('🚀 Auto-play: Starting presentation')
+      setAutoPlayTriggered(true)
+      slideStore.setState({ autoPlay: false, currentSlide: 0 })
+      // 少し遅延させてからスタート（モデルの読み込み待ち）
+      const timer = setTimeout(() => {
+        slideStore.setState({ isPlaying: true })
+        readSlide(0)
+      }, 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [slideCount, autoPlay, autoPlayTriggered, isPlaying, readSlide])
 
   // スライドの縦のサイズを70%に制限し、アスペクト比を維持
   const calculateSlideSize = () => {
