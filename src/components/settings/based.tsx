@@ -8,9 +8,12 @@ import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { IMAGE_CONSTANTS } from '@/constants/images'
+import { useDemoMode } from '@/hooks/useDemoMode'
+import { DemoModeNotice } from '../demoModeNotice'
 
 const Based = () => {
   const { t } = useTranslation()
+  const { isDemoMode } = useDemoMode()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
@@ -206,7 +209,7 @@ const Based = () => {
           </select>
         </div>
 
-        <div className="my-4">
+        <div className={`my-4 ${isDemoMode ? 'opacity-50' : ''}`}>
           <TextButton
             onClick={() => {
               const { fileInput } = menuStore.getState()
@@ -221,10 +224,11 @@ const Based = () => {
                 fileInput.click()
               }
             }}
-            disabled={isLoading || isUploading}
+            disabled={isLoading || isUploading || isDemoMode}
           >
             {isUploading ? t('Uploading') : t('UploadBackground')}
           </TextButton>
+          <DemoModeNotice />
         </div>
       </div>
 

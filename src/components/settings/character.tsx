@@ -7,6 +7,8 @@ import menuStore from '@/features/stores/menu'
 import settingsStore, { SettingsState } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
+import { useDemoMode } from '@/hooks/useDemoMode'
+import { DemoModeNotice } from '../demoModeNotice'
 
 // Character型の定義
 type Character = Pick<
@@ -341,6 +343,7 @@ const Live2DSettingsForm = () => {
 
 const Character = () => {
   const { t } = useTranslation()
+  const { isDemoMode } = useDemoMode()
   const {
     characterName,
     selectedVrmPath,
@@ -560,7 +563,7 @@ const Character = () => {
               ))}
             </select>
 
-            <div className="my-4">
+            <div className={`my-4 ${isDemoMode ? 'opacity-50' : ''}`}>
               <TextButton
                 onClick={() => {
                   const { fileInput } = menuStore.getState()
@@ -575,9 +578,11 @@ const Character = () => {
                     fileInput.click()
                   }
                 }}
+                disabled={isDemoMode}
               >
                 {t('OpenVRM')}
               </TextButton>
+              <DemoModeNotice />
             </div>
           </>
         ) : (

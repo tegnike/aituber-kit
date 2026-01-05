@@ -8,6 +8,8 @@ import {
 } from '@/features/constants/aiModels'
 import { TextButton } from '../textButton'
 import toastStore from '@/features/stores/toast'
+import { useDemoMode } from '@/hooks/useDemoMode'
+import { DemoModeNotice } from '@/components/demoModeNotice'
 
 interface SlideConvertProps {
   onFolderUpdate: () => void // フォルダ更新のための関数
@@ -15,6 +17,7 @@ interface SlideConvertProps {
 
 const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const { t } = useTranslation()
+  const { isDemoMode } = useDemoMode()
   const [file, setFile] = useState<File | null>(null)
   const [folderName, setFolderName] = useState<string>('')
   const { addToast } = toastStore()
@@ -123,7 +126,10 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   }
 
   return (
-    <div className="mt-6">
+    <div
+      className={`mt-6 ${isDemoMode ? 'opacity-50 pointer-events-none' : ''}`}
+    >
+      {isDemoMode && <DemoModeNotice />}
       <form onSubmit={handleFormSubmit}>
         <div className="my-4 mb-4 text-xl font-bold">
           {t('PdfConvertLabel')}
@@ -136,13 +142,17 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
             className="hidden"
             id="fileInput"
             accept=".pdf"
+            disabled={isDemoMode}
           />
           <TextButton
             onClick={(e) => {
               e.preventDefault()
-              document.getElementById('fileInput')?.click()
+              if (!isDemoMode) {
+                document.getElementById('fileInput')?.click()
+              }
             }}
             type="button"
+            disabled={isDemoMode}
           >
             {t('PdfConvertFileUpload')}
           </TextButton>
@@ -159,13 +169,15 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           value={folderName}
           onChange={(e) => setFolderName(e.target.value)}
           required
-          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+          disabled={isDemoMode}
+          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg disabled:opacity-50"
         />
         <div className="my-4 font-bold">{t('PdfConvertModelSelect')}</div>
         <select
           value={model}
           onChange={(e) => setModel(e.target.value)}
-          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+          disabled={isDemoMode}
+          className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg disabled:opacity-50"
         >
           {aiService &&
             getMultiModalModels(aiService).map((model) => (
@@ -175,7 +187,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
             ))}
         </select>
         <div className="mt-4">
-          <TextButton type="submit" disabled={isLoading}>
+          <TextButton type="submit" disabled={isLoading || isDemoMode}>
             {isLoading ? t('PdfConvertLoading') : t('PdfConvertButton')}
           </TextButton>
         </div>

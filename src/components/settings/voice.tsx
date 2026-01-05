@@ -19,7 +19,16 @@ import settingsStore from '@/features/stores/settings'
 import { Link } from '../link'
 import { TextButton } from '../textButton'
 import speakers from '../speakers.json'
+import { useDemoMode } from '@/hooks/useDemoMode'
 // import speakers_aivis from '../speakers_aivis.json'
+
+// ローカルサーバーを使用するTTSオプション（デモモードで非活性化）
+const LOCAL_TTS_OPTIONS: AIVoice[] = [
+  'voicevox',
+  'aivis_speech',
+  'stylebertvits2',
+  'gsvitts',
+]
 
 const Voice = () => {
   const koeiromapKey = settingsStore((s) => s.koeiromapKey)
@@ -101,6 +110,7 @@ const Voice = () => {
   const nijivoiceSoundDuration = settingsStore((s) => s.nijivoiceSoundDuration)
 
   const { t } = useTranslation()
+  const { isDemoMode } = useDemoMode()
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
   const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
   const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
@@ -200,6 +210,11 @@ const Voice = () => {
         {t('SyntheticVoiceEngineChoice')}
       </div>
       <div>{t('VoiceEngineInstruction')}</div>
+      {isDemoMode && (
+        <div className="text-gray-500 text-sm mt-1 mb-2">
+          {t('DemoModeLocalTTSNotice')}
+        </div>
+      )}
       <div className="my-2">
         <select
           value={selectVoice}
@@ -208,13 +223,21 @@ const Voice = () => {
           }
           className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
         >
-          <option value="voicevox">{t('UsingVoiceVox')}</option>
+          <option value="voicevox" disabled={isDemoMode}>
+            {t('UsingVoiceVox')}
+          </option>
           <option value="koeiromap">{t('UsingKoeiromap')}</option>
           <option value="google">{t('UsingGoogleTTS')}</option>
-          <option value="stylebertvits2">{t('UsingStyleBertVITS2')}</option>
-          <option value="aivis_speech">{t('UsingAivisSpeech')}</option>
+          <option value="stylebertvits2" disabled={isDemoMode}>
+            {t('UsingStyleBertVITS2')}
+          </option>
+          <option value="aivis_speech" disabled={isDemoMode}>
+            {t('UsingAivisSpeech')}
+          </option>
           <option value="aivis_cloud_api">{t('UsingAivisCloudAPI')}</option>
-          <option value="gsvitts">{t('UsingGSVITTS')}</option>
+          <option value="gsvitts" disabled={isDemoMode}>
+            {t('UsingGSVITTS')}
+          </option>
           <option value="elevenlabs">{t('UsingElevenLabs')}</option>
           <option value="cartesia">{t('UsingCartesia')}</option>
           <option value="openai">{t('UsingOpenAITTS')}</option>

@@ -2,6 +2,15 @@ import { createMocks } from 'node-mocks-http'
 import deleteImage from '@/pages/api/delete-image'
 import fs from 'fs'
 import path from 'path'
+import * as demoMode from '@/utils/demoMode'
+
+jest.mock('@/utils/demoMode', () => ({
+  isDemoMode: jest.fn(),
+  createDemoModeErrorResponse: jest.fn((featureName: string) => ({
+    error: 'feature_disabled_in_demo_mode',
+    message: `The feature "${featureName}" is disabled in demo mode.`,
+  })),
+}))
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
@@ -11,10 +20,33 @@ jest.mock('fs', () => ({
 }))
 
 const mockFs = fs as jest.Mocked<typeof fs>
+const mockIsDemoMode = demoMode.isDemoMode as jest.MockedFunction<
+  typeof demoMode.isDemoMode
+>
 
 describe('/api/delete-image', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockIsDemoMode.mockReturnValue(false)
+  })
+
+  describe('demo mode', () => {
+    it('should reject with 403 when demo mode is enabled', async () => {
+      mockIsDemoMode.mockReturnValue(true)
+
+      const { req, res } = createMocks({
+        method: 'DELETE',
+        body: { filename: 'test.jpg' },
+      })
+
+      await deleteImage(req, res)
+
+      expect(res._getStatusCode()).toBe(403)
+      expect(JSON.parse(res._getData())).toEqual({
+        error: 'feature_disabled_in_demo_mode',
+        message: expect.stringContaining('delete-image'),
+      })
+    })
   })
 
   it('should reject non-DELETE requests', async () => {

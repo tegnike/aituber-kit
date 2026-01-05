@@ -12,14 +12,22 @@ import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import CharacterPresetMenu from '@/components/characterPresetMenu'
 import ImageOverlay from '@/components/ImageOverlay'
+import PresenceManager from '@/components/presenceManager'
+import IdleManager from '@/components/idleManager'
+import { KioskOverlay } from '@/features/kiosk/kioskOverlay'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
 import { buildUrl } from '@/utils/buildUrl'
 import { YoutubeManager } from '@/components/youtubeManager'
 import toastStore from '@/features/stores/toast'
+import { usePresetLoader } from '@/features/presets/usePresetLoader'
 
 const Home = () => {
+  // アプリ起動時にプリセットファイルを読み込み (Req 3.2)
+  // 読み込み中は既存のデフォルト値で表示、完了後にプリセットを反映
+  usePresetLoader()
+
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const captureStatus = homeStore((s) => s.captureStatus)
   const backgroundImageUrl = homeStore((s) => s.backgroundImageUrl)
@@ -112,6 +120,11 @@ const Home = () => {
       <YoutubeManager />
       <CharacterPresetMenu />
       <ImageOverlay />
+      <PresenceManager />
+      <div className="absolute top-4 left-4 z-30">
+        <IdleManager />
+      </div>
+      <KioskOverlay />
     </div>
   )
 }

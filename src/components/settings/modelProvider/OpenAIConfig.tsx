@@ -22,6 +22,8 @@ import {
   OpenAITTSVoice,
   AIService,
 } from '@/features/constants/settings'
+import { useDemoMode } from '@/hooks/useDemoMode'
+import { DemoModeNotice } from '@/components/demoModeNotice'
 
 interface OpenAIConfigProps {
   openaiKey: string
@@ -53,6 +55,7 @@ export const OpenAIConfig = ({
   updateMultiModalModeForModel,
 }: OpenAIConfigProps) => {
   const { t } = useTranslation()
+  const { isDemoMode } = useDemoMode()
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
     settingsStore.setState({
@@ -126,21 +129,26 @@ export const OpenAIConfig = ({
         linkLabel="OpenAI"
       />
 
-      <div className="my-6">
+      <div className={`my-6 ${isDemoMode ? 'opacity-50' : ''}`}>
         <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
         <div className="my-2">
           <TextButton
             onClick={() => handleRealtimeAPIModeChange(!realtimeAPIMode)}
+            disabled={isDemoMode}
           >
             {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>
+        {isDemoMode && <DemoModeNotice />}
       </div>
 
-      <div className="my-6">
+      <div className={`my-6 ${isDemoMode ? 'opacity-50' : ''}`}>
         <div className="my-4 text-xl font-bold">{t('AudioMode')}</div>
         <div className="my-2">
-          <TextButton onClick={() => handleAudioModeChange(!audioMode)}>
+          <TextButton
+            onClick={() => handleAudioModeChange(!audioMode)}
+            disabled={isDemoMode}
+          >
             {audioMode ? t('StatusOn') : t('StatusOff')}
           </TextButton>
         </div>

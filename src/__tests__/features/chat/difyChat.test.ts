@@ -254,7 +254,7 @@ describe('difyChat', () => {
 
       expect(i18next.t).toHaveBeenCalledWith('Errors.AIAPIError')
       expect(mockAddToast).toHaveBeenCalledWith({
-        message: 'Errors.AIAPIError',
+        message: 'Errors.AIAPIError: Stream error',
         type: 'error',
         tag: 'dify-api-error',
       })
@@ -314,7 +314,7 @@ describe('difyChat', () => {
       // toast のアサーションはそのまま残す
       expect(i18next.t).toHaveBeenCalledWith('Errors.InvalidAPIKey')
       expect(mockAddToast).toHaveBeenCalledWith({
-        message: 'Errors.InvalidAPIKey',
+        message: 'Errors.InvalidAPIKey: Unauthorized',
         tag: 'dify-api-error',
         type: 'error',
       })

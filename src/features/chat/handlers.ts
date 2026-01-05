@@ -12,6 +12,10 @@ import i18next from 'i18next'
 import toastStore from '@/features/stores/toast'
 import { generateMessageId } from '@/utils/messageUtils'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
+import {
+  saveMessageToMemory,
+  searchMemoryContext,
+} from '@/features/memory/memoryStoreSync'
 
 // セッションIDを生成する関数
 const generateSessionId = () => generateMessageId()
@@ -807,14 +811,35 @@ export const handleSendChatFn = () => async (text: string) => {
       }
     }
 
-    homeStore.getState().upsertMessage({
+    // ユーザーメッセージをchatLogに保存
+    const userMessage: Message = {
       role: 'user',
       content: userMessageContent,
       timestamp: timestamp,
+    }
+
+    homeStore.getState().upsertMessage(userMessage)
+
+    // メモリ機能：ユーザーメッセージを保存（非同期、エラーがあっても会話は継続）
+    saveMessageToMemory(userMessage).catch((error) => {
+      console.warn('Failed to save user message to memory:', error)
     })
 
     if (modalImage) {
       homeStore.setState({ modalImage: '' })
+    }
+
+    // メモリ機能：関連する過去の記憶を検索してコンテキストに追加
+    let memoryContext = ''
+    try {
+      memoryContext = await searchMemoryContext(newMessage)
+    } catch (error) {
+      console.warn('Failed to search memory context:', error)
+    }
+
+    // システムプロンプトにメモリコンテキストを追加
+    if (memoryContext) {
+      systemPrompt = systemPrompt + '\n\n' + memoryContext
     }
 
     const currentChatLog = homeStore.getState().chatLog
@@ -832,6 +857,15 @@ export const handleSendChatFn = () => async (text: string) => {
 
     try {
       await processAIResponse(messages)
+
+      // メモリ機能：AIの応答をメモリに保存
+      const updatedChatLog = homeStore.getState().chatLog
+      const lastMessage = updatedChatLog[updatedChatLog.length - 1]
+      if (lastMessage && lastMessage.role === 'assistant') {
+        saveMessageToMemory(lastMessage).catch((error) => {
+          console.warn('Failed to save assistant message to memory:', error)
+        })
+      }
     } catch (e) {
       console.error(e)
       homeStore.setState({ chatProcessing: false })

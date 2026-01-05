@@ -16,6 +16,10 @@ import Log from './log'
 import Other from './other'
 import SpeechInput from './speechInput'
 import Images from './images'
+import MemorySettings from './memorySettings'
+import PresenceSettings from './presenceSettings'
+import IdleSettings from './idleSettings'
+import KioskSettings from './kioskSettings'
 
 type Props = {
   onClickClose: () => void
@@ -57,6 +61,10 @@ type TabKey =
   | 'slide'
   | 'images'
   | 'log'
+  | 'memory'
+  | 'presence'
+  | 'idle'
+  | 'kiosk'
   | 'other'
   | 'speechInput'
 
@@ -71,6 +79,10 @@ const tabIconMapping: Record<TabKey, string> = {
   slide: '/images/setting-icons/slide-settings.svg',
   images: '/images/setting-icons/image-settings.svg',
   log: '/images/setting-icons/conversation-history.svg',
+  memory: '/images/setting-icons/memory-settings.svg',
+  presence: '/images/setting-icons/presence-settings.svg',
+  idle: '/images/setting-icons/idle-settings.svg',
+  kiosk: '/images/setting-icons/kiosk-settings.svg',
   other: '/images/setting-icons/other-settings.svg',
   speechInput: '/images/setting-icons/microphone-settings.svg',
 }
@@ -148,6 +160,22 @@ const Main = () => {
       label: t('LogSettings'),
     },
     {
+      key: 'memory',
+      label: t('MemorySettings'),
+    },
+    {
+      key: 'presence',
+      label: t('PresenceSettings'),
+    },
+    {
+      key: 'idle',
+      label: t('IdleSettings'),
+    },
+    {
+      key: 'kiosk',
+      label: t('KioskSettings'),
+    },
+    {
       key: 'other',
       label: t('OtherSettings'),
     },
@@ -173,6 +201,14 @@ const Main = () => {
         return <Images />
       case 'log':
         return <Log />
+      case 'memory':
+        return <MemorySettings />
+      case 'presence':
+        return <PresenceSettings />
+      case 'idle':
+        return <IdleSettings />
+      case 'kiosk':
+        return <KioskSettings />
       case 'other':
         return <Other />
       case 'speechInput':

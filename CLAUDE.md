@@ -1,98 +1,137 @@
-# CLAUDE.md
+# AITuber Kit
 
-このファイルは、Claude Code (claude.ai/code) がこのリポジトリのコードを扱う際のガイダンスを提供します。
+AIキャラクターとの会話を楽しめるWebアプリケーション。VRM/Live2Dアバター、複数のAIサービス（OpenAI、Anthropic、Google等）、音声認識・合成に対応。
 
-## プロジェクト概要
+## Technology Stack
 
-AITuberKitは、インタラクティブなAIキャラクターをVTuber機能付きで作成するためのWebアプリケーションツールキットです。複数のAIプロバイダー、キャラクターモデル（VRM/Live2D）、音声合成エンジンをサポートしています。
+- **Framework**: Next.js 14 / React 18 / TypeScript 5
+- **State**: Zustand
+- **Styling**: Tailwind CSS / SASS
+- **3D/2D**: Three.js / PixiJS / @pixiv/three-vrm / pixi-live2d-display
+- **AI SDK**: Vercel AI SDK (ai) + 各社SDK
+- **Testing**: Jest / React Testing Library
+- **Electron**: デスクトップアプリ対応
 
-## よく使うコマンド
+## Project Structure
 
-### 開発
-
-```bash
-npm run dev         # 開発サーバーを起動 (http://localhost:3000)
-npm run build       # 本番用ビルド
-npm run start       # 本番サーバーを起動
-npm run desktop     # Electronデスクトップアプリとして実行
+```
+src/
+├── components/     # UIコンポーネント
+├── features/       # 機能別モジュール
+│   ├── chat/       # チャット機能
+│   ├── memory/     # メモリ機能（RAG）
+│   ├── messages/   # メッセージ処理
+│   ├── stores/     # Zustandストア
+│   └── ...
+├── hooks/          # カスタムフック
+├── pages/          # Next.jsページ / APIルート
+├── lib/            # ユーティリティライブラリ
+└── utils/          # ヘルパー関数
 ```
 
-### テスト・品質
+## Commands
 
 ```bash
-npm test           # すべてのテストを実行
-npm run lint:fix && npm run format && npm run build  # lint修正+フォーマット+ビルドを一括実行
+npm run dev          # 開発サーバー起動
+npm run build        # プロダクションビルド
+npm run lint         # ESLint実行
+npm run lint:fix     # ESLint自動修正
+npm run format       # Prettier実行
+npm test             # テスト実行
+npm run test:watch   # テストウォッチモード
+npm run desktop      # Electronアプリ起動
 ```
 
-### セットアップ
+---
 
-```bash
-npm install        # 依存関係をインストール（Node.js 20.0.0+、npm 10.0.0+が必要）
-cp .env.example .env  # 環境変数を設定
-```
+# AI-DLC and Spec-Driven Development
 
-## アーキテクチャ
+Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life Cycle)
 
-### 技術スタック
+## Project Context
 
-- **フレームワーク**: Next.js 14.2.5 + React 18.3.1
-- **言語**: TypeScript 5.0.2（strictモード）
-- **スタイリング**: Tailwind CSS 3.4.14
-- **状態管理**: Zustand 4.5.4
-- **テスト**: Jest + React Testing Library
+### Paths
 
-### 主なディレクトリ
+- Steering: `.kiro/steering/`
+- Specs: `.kiro/specs/`
 
-- `/src/components/` - Reactコンポーネント（VRMビューア、Live2D、チャットUI）
-- `/src/features/` - コアロジック（チャット、音声合成、メッセージ）
-- `/src/pages/api/` - Next.js APIルート
-- `/src/stores/` - Zustandによる状態管理
-- `/public/` - 静的アセット（モデル、背景など）
+### Steering vs Specification
 
-### AI連携ポイント
+**Steering** (`.kiro/steering/`) - Guide AI with project-wide rules and context
+**Specs** (`.kiro/specs/`) - Formalize development process for individual features
 
-- **チャット**: `/src/features/chat/` - 複数プロバイダー対応のファクトリーパターン
-- **音声**: `/src/features/messages/synthesizeVoice*.ts` - 13種類のTTSエンジン
-- **モデル**: VRM（3D）は`/src/features/vrmViewer/`、Live2D（2D）もサポート
+## Development Guidelines
 
-### 重要なパターン
+- Think in English, generate responses in Japanese. All Markdown content written to project files (e.g., requirements.md, design.md, tasks.md, research.md, validation reports) MUST be written in the target language configured for this specification (see spec.json.language).
 
-1. **AIプロバイダーファクトリー**: `aiChatFactory.ts`が各LLMプロバイダーを管理し、`/src/features/constants/aiModels.ts`で動的な属性ベースのモデル管理を実現
-2. **メッセージキュー**: `speakQueue.ts`がTTS再生を順次処理し、マルチモーダル対応のため動的なモデル属性チェックを実施
-3. **WebSocket**: `/src/utils/WebSocketManager.ts`でリアルタイム機能を提供
-4. **i18n**: `next-i18next`による多言語対応
+## Minimal Workflow
 
-## 開発ガイドライン
+- Phase 0 (optional): `/kiro:steering`, `/kiro:steering-custom`
+- Phase 1 (Specification):
+  - `/kiro:spec-init "description"`
+  - `/kiro:spec-requirements {feature}`
+  - `/kiro:validate-gap {feature}` (optional: for existing codebase)
+  - `/kiro:spec-design {feature} [-y]`
+  - `/kiro:validate-design {feature}` (optional: design review)
+  - `/kiro:spec-tasks {feature} [-y]`
+- Phase 2 (Implementation): `/kiro:spec-impl {feature} [tasks]`
+  - `/kiro:validate-impl {feature}` (optional: after implementation)
+- Progress check: `/kiro:spec-status {feature}` (use anytime)
 
-### .cursorrulesより
+## Development Rules
 
-- 既存のUI/UXデザインを無断で変更しない
-- 明示的な許可なくパッケージバージョンをアップグレードしない
-- 機能追加前に重複実装がないか確認する
-- 既存のディレクトリ構成に従う
-- APIクライアントは`app/lib/api/client.ts`に集約すること
+- 3-phase approval workflow: Requirements → Design → Tasks → Implementation
+- Human review required each phase; use `-y` only for intentional fast-track
+- Keep steering current and verify alignment with `/kiro:spec-status`
+- Follow the user's instructions precisely, and within that scope act autonomously: gather the necessary context and complete the requested work end-to-end in this run, asking questions only when essential information is missing or the instructions are critically ambiguous.
 
-### 言語ファイル更新ルール
+## Steering Configuration
 
-- **言語ファイルの更新は日本語（`/locales/ja/`）のみ行う**
-- 他の言語ファイル（en、ko、zh等）は手動で更新しない
-- 翻訳は別途専用のプロセスで管理される
+- Load entire `.kiro/steering/` as project memory
+- Default files: `product.md`, `tech.md`, `structure.md`
+- Custom files are supported (managed via `/kiro:steering-custom`)
+
+## Custom Subagents
+
+### playwright-reporter
+
+Playwrightを使用したブラウザ自動化・テスト実行時は、必ず`playwright-reporter`サブエージェントを使用すること。
+
+**使用方法**: Task toolで `subagent_type: "playwright-reporter"` を指定
+
+**機能**:
+
+- ブラウザ自動化とテスト実行
+- 詳細な実行レポートを`reports/playwright/`に自動生成
+- スクリーンショットの保存と管理
+
+**注意**: `reports/`フォルダはgitignore対象のため、レポートはローカルのみに保存されます。
+
+---
+
+## Coding Conventions
+
+### TypeScript / React
+
+- 関数コンポーネント + hooksを使用
+- 型定義は明示的に（`any`は避ける）
+- Zustandでグローバル状態管理（`src/features/stores/`）
+
+### ファイル命名
+
+- コンポーネント: `camelCase.tsx` (例: `messageInput.tsx`)
+- フック: `use*.ts` (例: `useVoiceRecognition.ts`)
+- ストア: `*.ts` (例: `settings.ts`, `home.ts`)
 
 ### テスト
 
-- テストは`__tests__`ディレクトリに配置
-- Node.js環境用にcanvasをモック化済み
-- Jestのパターンマッチで特定テストを実行可能
+- テストファイル: `src/__tests__/` 配下に配置
+- 命名: `*.test.ts` または `*.test.tsx`
+- モック: `src/__mocks__/` 配下
 
-### 環境変数
+### 重要なファイル
 
-必要なAPIキーは利用機能によって異なります（OpenAI、Google、Azure等）。全てのオプションは`.env.example`を参照してください。
-
-**設定画面の項目を追加・更新した場合は、必要に応じて新しい環境変数を`.env.example`の適切な項目に追加してください。**
-
-## ライセンスについて
-
-- v2.0.0以降は独自ライセンス
-- 非商用利用は無料
-- 商用利用には別途ライセンスが必要
-- キャラクターモデルの利用には個別のライセンスが必要
+- `src/features/stores/settings.ts` - アプリ設定のストア
+- `src/features/stores/home.ts` - ホーム画面の状態
+- `src/pages/api/` - APIエンドポイント
+- `locales/` - i18n翻訳ファイル（ja/en）

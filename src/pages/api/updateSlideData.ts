@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs/promises'
 import path from 'path'
+import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
 
 type ScriptEntry = {
   page: number
@@ -23,6 +24,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+  if (isDemoMode()) {
+    return res.status(403).json(createDemoModeErrorResponse('updateSlideData'))
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' })
   }

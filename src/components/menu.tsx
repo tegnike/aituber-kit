@@ -15,6 +15,7 @@ import Capture from './capture'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
+import { useKioskMode } from '@/hooks/useKioskMode'
 
 // モバイルデバイス検出用のカスタムフック
 const useIsMobile = () => {
@@ -55,6 +56,13 @@ export const Menu = () => {
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
 
+  // デモ端末モード関連
+  const { isKioskMode, isTemporaryUnlocked, canAccessSettings } = useKioskMode()
+
+  // デモ端末モード時はコントロールパネルを非表示（一時解除時は除く）
+  const effectiveShowControlPanel =
+    showControlPanel && (!isKioskMode || isTemporaryUnlocked)
+
   const [showSettings, setShowSettings] = useState(false)
   // 会話ログ表示モード
   const CHAT_LOG_MODE = {
@@ -83,10 +91,14 @@ export const Menu = () => {
 
   // ロングタップ処理用の関数
   const handleTouchStart = () => {
+    // デモ端末モードで設定アクセス不可の場合はロングタップを無効化
+    if (!canAccessSettings) return
     setTouchStartTime(Date.now())
   }
 
   const handleTouchEnd = () => {
+    // デモ端末モードで設定アクセス不可の場合はロングタップを無効化
+    if (!canAccessSettings) return
     setTouchEndTime(Date.now())
     if (touchStartTime && Date.now() - touchStartTime >= 800) {
       // 800ms以上押し続けるとロングタップと判定
@@ -139,6 +151,8 @@ export const Menu = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === '.') {
+        // デモ端末モードで設定アクセス不可の場合はショートカットを無効化
+        if (!canAccessSettings) return
         setShowSettings((prevState) => !prevState)
       }
     }
@@ -148,7 +162,7 @@ export const Menu = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, [canAccessSettings])
 
   useEffect(() => {
     console.log('onChangeWebcamStatus')
@@ -202,7 +216,7 @@ export const Menu = () => {
   return (
     <>
       {/* ロングタップ用の透明な領域（モバイルでコントロールパネルが非表示の場合） */}
-      {isMobile === true && !showControlPanel && (
+      {isMobile === true && !effectiveShowControlPanel && (
         <div
           className="absolute top-0 left-0 z-30 w-20 h-20"
           onTouchStart={handleTouchStart}
@@ -218,15 +232,17 @@ export const Menu = () => {
           className="grid md:grid-flow-col gap-[8px] mb-10"
           style={{ width: 'max-content' }}
         >
-          {showControlPanel && (
+          {effectiveShowControlPanel && (
             <>
-              <div className="md:order-1 order-2">
-                <IconButton
-                  iconName="24/Settings"
-                  isProcessing={false}
-                  onClick={() => setShowSettings(true)}
-                ></IconButton>
-              </div>
+              {canAccessSettings && (
+                <div className="md:order-1 order-2">
+                  <IconButton
+                    iconName="24/Settings"
+                    isProcessing={false}
+                    onClick={() => setShowSettings(true)}
+                  ></IconButton>
+                </div>
+              )}
               <div className="md:order-2 order-1">
                 <IconButton
                   iconName={
@@ -324,7 +340,9 @@ export const Menu = () => {
         {slideMode && slideVisible && <Slides markdown={markdownContent} />}
       </div>
       {chatLogMode === CHAT_LOG_MODE.CHAT_LOG && <ChatLog />}
-      {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
+      {showSettings && canAccessSettings && (
+        <Settings onClickClose={() => setShowSettings(false)} />
+      )}
       {chatLogMode === CHAT_LOG_MODE.ASSISTANT &&
         latestAssistantMessage &&
         (!slideMode || !slideVisible) &&

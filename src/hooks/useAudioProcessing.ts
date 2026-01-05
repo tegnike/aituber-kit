@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
+import toastStore from '@/features/stores/toast'
+import { useTranslation } from 'react-i18next'
 
 // AudioContext の型定義を拡張
 type AudioContextType = typeof AudioContext
@@ -8,23 +10,30 @@ type AudioContextType = typeof AudioContext
  * 録音機能とオーディオバッファの管理を担当
  */
 export const useAudioProcessing = () => {
+  const { t } = useTranslation()
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
 
-  // AudioContextの初期化
+  // AudioContextの初期化（マウント時のみ）
   useEffect(() => {
     const AudioContextClass = (window.AudioContext ||
       (window as any).webkitAudioContext) as AudioContextType
     const context = new AudioContextClass()
     setAudioContext(context)
 
-    // クリーンアップ関数
+    // クリーンアップ関数（アンマウント時のみ）
+    return () => {
+      context.close().catch(console.error)
+    }
+  }, []) // 空の依存配列でマウント時のみ実行
+
+  // MediaRecorderのクリーンアップ（mediaRecorderの状態変化時）
+  useEffect(() => {
     return () => {
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop()
       }
-      context.close().catch(console.error)
     }
   }, [mediaRecorder])
 
@@ -37,7 +46,13 @@ export const useAudioProcessing = () => {
       stream.getTracks().forEach((track) => track.stop())
       return true
     } catch (error) {
+      // 統一されたエラーハンドリングパターン (Requirement 8)
       console.error('Microphone permission error:', error)
+      toastStore.getState().addToast({
+        message: t('Toasts.MicrophonePermissionDenied'),
+        type: 'error',
+        tag: 'microphone-permission-error',
+      })
       return false
     }
   }
@@ -71,24 +86,22 @@ export const useAudioProcessing = () => {
         })
 
         // MediaRecorderでサポートされているmimeTypeを確認
+        // Whisper APIがサポートする形式を考慮し、実際にブラウザでサポートされる形式を優先
         const mimeTypes = [
-          'audio/mp3',
-          'audio/mp4',
+          'audio/webm;codecs=opus', // Chrome/Edge で広くサポート
+          'audio/webm', // Chrome/Edge フォールバック
+          'audio/mp4', // Safari
+          'audio/ogg', // Firefox
+          'audio/wav', // 汎用
           'audio/mpeg',
-          'audio/ogg',
-          'audio/wav',
-          'audio/webm',
-          'audio/webm;codecs=opus',
+          'audio/mp3', // フォールバック（ほぼサポートされない）
         ]
 
         let selectedMimeType = 'audio/webm'
         for (const type of mimeTypes) {
           if (MediaRecorder.isTypeSupported(type)) {
             selectedMimeType = type
-            // mp3とoggを優先
-            if (type === 'audio/mp3' || type === 'audio/ogg') {
-              break
-            }
+            break // 優先順位順なので最初に見つかったものを使用
           }
         }
 
@@ -120,11 +133,17 @@ export const useAudioProcessing = () => {
         recorder.start(100) // 100msごとにデータ収集
         return true
       } catch (error) {
+        // 統一されたエラーハンドリングパターン (Requirement 8)
         console.error('Error starting recording:', error)
+        toastStore.getState().addToast({
+          message: t('Toasts.SpeechRecognitionError'),
+          type: 'error',
+          tag: 'speech-recognition-error',
+        })
         return false
       }
     },
-    [mediaRecorder]
+    [mediaRecorder, t]
   )
 
   /**

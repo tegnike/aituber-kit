@@ -3,6 +3,7 @@ import formidable from 'formidable'
 import fs from 'fs'
 import path from 'path'
 import { IMAGE_CONSTANTS } from '@/constants/images'
+import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
 
 export const config = {
   api: {
@@ -21,6 +22,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (isDemoMode()) {
+    return res.status(403).json(createDemoModeErrorResponse('upload-image'))
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }

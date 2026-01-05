@@ -3,6 +3,15 @@ import uploadImage from '@/pages/api/upload-image'
 import { IMAGE_CONSTANTS } from '@/constants/images'
 import fs from 'fs'
 import path from 'path'
+import * as demoMode from '@/utils/demoMode'
+
+jest.mock('@/utils/demoMode', () => ({
+  isDemoMode: jest.fn(),
+  createDemoModeErrorResponse: jest.fn((featureName: string) => ({
+    error: 'feature_disabled_in_demo_mode',
+    message: `The feature "${featureName}" is disabled in demo mode.`,
+  })),
+}))
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
@@ -22,10 +31,64 @@ jest.mock('formidable', () => {
 })
 
 const mockFs = fs as jest.Mocked<typeof fs>
+const mockIsDemoMode = demoMode.isDemoMode as jest.MockedFunction<
+  typeof demoMode.isDemoMode
+>
 
 describe('/api/upload-image', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockIsDemoMode.mockReturnValue(false)
+  })
+
+  describe('demo mode', () => {
+    it('should reject with 403 when demo mode is enabled', async () => {
+      mockIsDemoMode.mockReturnValue(true)
+
+      const { req, res } = createMocks({
+        method: 'POST',
+      })
+
+      await uploadImage(req, res)
+
+      expect(res._getStatusCode()).toBe(403)
+      expect(JSON.parse(res._getData())).toEqual({
+        error: 'feature_disabled_in_demo_mode',
+        message: expect.stringContaining('upload-image'),
+      })
+    })
+
+    it('should allow upload when demo mode is disabled', async () => {
+      mockIsDemoMode.mockReturnValue(false)
+
+      const formidable = require('formidable')
+      const mockForm = {
+        parse: jest.fn().mockResolvedValue([
+          {},
+          {
+            file: [
+              {
+                originalFilename: 'test.jpg',
+                filepath: '/tmp/test',
+                mimetype: 'image/jpeg',
+              },
+            ],
+          },
+        ]),
+      }
+      formidable.default.mockReturnValue(mockForm)
+
+      mockFs.existsSync.mockReturnValue(true)
+      mockFs.promises.copyFile = jest.fn().mockResolvedValue(undefined)
+
+      const { req, res } = createMocks({
+        method: 'POST',
+      })
+
+      await uploadImage(req, res)
+
+      expect(res._getStatusCode()).toBe(200)
+    })
   })
 
   it('should reject non-POST requests', async () => {

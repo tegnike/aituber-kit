@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { getVoiceLanguageCode } from '@/utils/voiceLanguage'
 import settingsStore from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
@@ -28,6 +28,8 @@ export const useBrowserSpeechRecognition = (
   const speechDetectedRef = useRef<boolean>(false)
   const recognitionStartTimeRef = useRef<number>(0)
   const initialSpeechCheckTimerRef = useRef<NodeJS.Timeout | null>(null)
+  // ----- 競合状態防止: 再起動タイマーの追跡 -----
+  const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // ----- キーボードトリガー関連 -----
   const keyPressStartTime = useRef<number | null>(null)
@@ -55,8 +57,56 @@ export const useBrowserSpeechRecognition = (
     }
   }, [])
 
+  // ----- 音声未検出時の停止処理を実行する共通関数 (Requirement 5.1) -----
+  const handleNoSpeechTimeout = useCallback(
+    (stopListeningFn: () => Promise<void>) => {
+      console.log(
+        `⏱️ ${initialSpeechTimeout}秒間音声が検出されませんでした。音声認識を停止します。`
+      )
+      stopListeningFn()
+
+      // 常時マイク入力モードをオフに設定
+      if (settingsStore.getState().continuousMicListeningMode) {
+        console.log(
+          '🔇 音声未検出により常時マイク入力モードをOFFに設定します。'
+        )
+        settingsStore.setState({ continuousMicListeningMode: false })
+      }
+
+      toastStore.getState().addToast({
+        message: t('Toasts.NoSpeechDetected'),
+        type: 'info',
+        tag: 'no-speech-detected',
+      })
+    },
+    [initialSpeechTimeout, t]
+  )
+
+  // ----- 初期音声検出タイマーをセットアップする共通関数 (Requirement 5.1) -----
+  const setupInitialSpeechTimer = useCallback(
+    (stopListeningFn: () => Promise<void>) => {
+      // 既存のタイマーをクリアしてから新しいタイマーを設定 (Requirement 5.2)
+      clearInitialSpeechCheckTimer()
+
+      if (initialSpeechTimeout > 0) {
+        initialSpeechCheckTimerRef.current = setTimeout(() => {
+          if (!speechDetectedRef.current && isListeningRef.current) {
+            handleNoSpeechTimeout(stopListeningFn)
+          }
+        }, initialSpeechTimeout * 1000)
+      }
+    },
+    [initialSpeechTimeout, clearInitialSpeechCheckTimer, handleNoSpeechTimeout]
+  )
+
   // ----- 音声認識停止処理 -----
   const stopListening = useCallback(async () => {
+    // 保留中の再起動タイマーをキャンセル (競合状態防止)
+    if (restartTimeoutRef.current) {
+      clearTimeout(restartTimeoutRef.current)
+      restartTimeoutRef.current = null
+    }
+
     // 各種タイマーをクリア
     clearSilenceDetection()
     clearInitialSpeechCheckTimer()
@@ -166,31 +216,8 @@ export const useBrowserSpeechRecognition = (
         recognitionStartTimeRef.current = Date.now()
         speechDetectedRef.current = false
 
-        // 初期音声検出タイマー設定
-        if (initialSpeechTimeout > 0) {
-          initialSpeechCheckTimerRef.current = setTimeout(() => {
-            if (!speechDetectedRef.current && isListeningRef.current) {
-              console.log(
-                `⏱️ ${initialSpeechTimeout}秒間音声が検出されませんでした。音声認識を停止します。`
-              )
-              stopListening()
-
-              // 常時マイク入力モードをオフに設定
-              if (settingsStore.getState().continuousMicListeningMode) {
-                console.log(
-                  '🔇 音声未検出により常時マイク入力モードをOFFに設定します。'
-                )
-                settingsStore.setState({ continuousMicListeningMode: false })
-              }
-
-              toastStore.getState().addToast({
-                message: t('Toasts.NoSpeechDetected'),
-                type: 'info',
-                tag: 'no-speech-detected',
-              })
-            }
-          }, initialSpeechTimeout * 1000)
-        }
+        // 初期音声検出タイマー設定 (Requirement 5.2: 共通関数を使用)
+        setupInitialSpeechTimer(stopListening)
 
         // 無音検出開始
         startSilenceDetection(stopListening)
@@ -251,15 +278,20 @@ export const useBrowserSpeechRecognition = (
   }, [startListening, stopListening])
 
   // ----- メッセージ送信 -----
-  const handleSendMessage = useCallback(() => {
-    if (userMessage.trim()) {
+  const handleSendMessage = useCallback(async () => {
+    const trimmedMessage = userMessage.trim()
+    if (trimmedMessage) {
       // AIの発話を停止
       homeStore.setState({ isSpeaking: false })
       SpeakQueue.stopAll()
-      onChatProcessStart(userMessage)
+
+      // マイク入力を停止（常時音声入力モード時も自動送信と同様に停止）
+      await stopListening()
+
+      onChatProcessStart(trimmedMessage)
       setUserMessage('')
     }
-  }, [userMessage, onChatProcessStart])
+  }, [userMessage, onChatProcessStart, stopListening])
 
   // ----- メッセージ入力 -----
   const handleInputChange = useCallback(
@@ -297,31 +329,8 @@ export const useBrowserSpeechRecognition = (
       recognitionStartTimeRef.current = Date.now()
       speechDetectedRef.current = false
 
-      // 初期音声検出タイマー設定
-      if (initialSpeechTimeout > 0) {
-        initialSpeechCheckTimerRef.current = setTimeout(() => {
-          if (!speechDetectedRef.current && isListeningRef.current) {
-            console.log(
-              `⏱️ ${initialSpeechTimeout}秒間音声が検出されませんでした。音声認識を停止します。`
-            )
-            stopListening()
-
-            // 常時マイク入力モードをオフに設定
-            if (settingsStore.getState().continuousMicListeningMode) {
-              console.log(
-                '🔇 音声未検出により常時マイク入力モードをOFFに設定します。'
-              )
-              settingsStore.setState({ continuousMicListeningMode: false })
-            }
-
-            toastStore.getState().addToast({
-              message: t('Toasts.NoSpeechDetected'),
-              type: 'info',
-              tag: 'no-speech-detected',
-            })
-          }
-        }, initialSpeechTimeout * 1000)
-      }
+      // 初期音声検出タイマー設定 (Requirement 5.2: 共通関数を使用)
+      setupInitialSpeechTimer(stopListening)
 
       // 無音検出開始
       startSilenceDetection(stopListening)
@@ -380,8 +389,13 @@ export const useBrowserSpeechRecognition = (
       // isListeningRef.currentがtrueの場合は再開
       if (isListeningRef.current) {
         console.log('Restarting speech recognition...')
-        setTimeout(() => {
-          startListening()
+        // 再起動タイマーをrefに保存して追跡 (競合状態防止)
+        restartTimeoutRef.current = setTimeout(() => {
+          // setTimeout実行時に再度状態を確認 (競合状態防止)
+          if (isListeningRef.current) {
+            startListening()
+          }
+          restartTimeoutRef.current = null
         }, 1000)
       }
     }
@@ -403,26 +417,10 @@ export const useBrowserSpeechRecognition = (
 
           // 設定された初期音声タイムアウトを超えた場合は、再起動せずに終了
           if (elapsedTime >= initialSpeechTimeout) {
-            console.log(
-              `⏱️ ${initialSpeechTimeout}秒間音声が検出されませんでした。音声認識を停止します。`
-            )
             clearSilenceDetection()
             clearInitialSpeechCheckTimer()
-            stopListening()
-
-            // 常時マイク入力モードをオフに設定
-            if (settingsStore.getState().continuousMicListeningMode) {
-              console.log(
-                '🔇 音声未検出により常時マイク入力モードをOFFに設定します。'
-              )
-              settingsStore.setState({ continuousMicListeningMode: false })
-            }
-
-            toastStore.getState().addToast({
-              message: t('Toasts.NoSpeechDetected'),
-              type: 'info',
-              tag: 'no-speech-detected',
-            })
+            // 共通関数を使用 (Requirement 5.3)
+            handleNoSpeechTimeout(stopListening)
             return
           }
         }
@@ -494,6 +492,11 @@ export const useBrowserSpeechRecognition = (
 
     // クリーンアップ関数
     return () => {
+      // 保留中の再起動タイマーをクリア
+      if (restartTimeoutRef.current) {
+        clearTimeout(restartTimeoutRef.current)
+        restartTimeoutRef.current = null
+      }
       try {
         if (newRecognition) {
           newRecognition.onstart = null
@@ -519,16 +522,33 @@ export const useBrowserSpeechRecognition = (
     clearInitialSpeechCheckTimer,
     startSilenceDetection,
     updateSpeechTimestamp,
+    setupInitialSpeechTimer,
+    handleNoSpeechTimeout,
   ])
 
-  return {
-    userMessage,
-    isListening,
-    silenceTimeoutRemaining,
-    handleInputChange,
-    handleSendMessage,
-    toggleListening,
-    startListening,
-    stopListening,
-  }
+  // 戻り値オブジェクトをメモ化（Requirement 1.1, 1.4）
+  const returnValue = useMemo(
+    () => ({
+      userMessage,
+      isListening,
+      silenceTimeoutRemaining,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    }),
+    [
+      userMessage,
+      isListening,
+      silenceTimeoutRemaining,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    ]
+  )
+
+  return returnValue
 }
