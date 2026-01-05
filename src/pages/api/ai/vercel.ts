@@ -5,12 +5,12 @@ import {
   isVercelCloudAIService,
   isVercelLocalAIService,
 } from '@/features/constants/settings'
-import { modifyMessages } from '../services/utils'
+import { modifyMessages } from '@/lib/api-services/utils'
 import {
   aiServiceConfig,
   streamAiText,
   generateAiText,
-} from '../services/vercelAi'
+} from '@/lib/api-services/vercelAi'
 import { googleSearchGroundingModels } from '@/features/constants/aiModels'
 
 export const config = {
