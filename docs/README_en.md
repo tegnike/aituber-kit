@@ -118,8 +118,8 @@ For detailed usage and configuration instructions, please visit the [Documentati
 
 ### Development Environment
 
-- Node.js: ^20.0.0
-- npm: ^10.0.0
+- Node.js: ^25.2.1
+- npm: ^11.6.2
 
 ### Installation Steps
 

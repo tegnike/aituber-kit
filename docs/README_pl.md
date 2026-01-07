@@ -118,8 +118,8 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 
 ### Środowisko programistyczne
 
-- Node.js: ^20.0.0
-- npm: ^10.0.0
+- Node.js: ^25.2.1
+- npm: ^11.6.2
 
 ### Instrukcje instalacji
 
