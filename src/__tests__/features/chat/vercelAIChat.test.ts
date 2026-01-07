@@ -39,6 +39,7 @@ global.TextDecoder = jest.fn().mockImplementation(() => ({
 describe('vercelAIChat', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockDecode.mockReset()
 
     const mockSettings = {
       selectAIService: 'openai',
@@ -174,6 +175,9 @@ describe('vercelAIChat', () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         status: 200,
+        headers: {
+          get: () => 'text/event-stream',
+        },
         body: {
           getReader: () => mockReader,
         },
@@ -195,6 +199,55 @@ describe('vercelAIChat', () => {
       expect(result).toBe('こんにちは')
     })
 
+    it('OpenAIのtext/plainレスポンスをチャンクごとに処理する', async () => {
+      const mockReader = {
+        read: jest.fn(),
+        releaseLock: jest.fn(),
+      }
+
+      const openAiChunks = ['こんにちは', ' (', 'K', 'onn', 'ich', 'iwa', ')!']
+
+      openAiChunks.forEach(() => {
+        mockReader.read.mockResolvedValueOnce({
+          done: false,
+          value: new Uint8Array([1]),
+        })
+      })
+      mockReader.read.mockResolvedValueOnce({
+        done: true,
+        value: undefined,
+      })
+
+      openAiChunks.forEach((chunk) => {
+        mockDecode.mockReturnValueOnce(chunk)
+      })
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: {
+          get: () => 'text/plain; charset=utf-8',
+        },
+        body: {
+          getReader: () => mockReader,
+        },
+      })
+
+      const stream = await getVercelAIChatResponseStream(testMessages)
+
+      const reader = (stream as ReadableStream<string>).getReader()
+      let result = ''
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
+        if (value) {
+          result += value
+        }
+      }
+
+      expect(result).toBe('こんにちは (Konnichiwa)!')
+    })
+
     it('ストリーミング中のエラーを適切に処理する', async () => {
       const mockReader = {
         read: jest.fn().mockRejectedValue(new Error('Stream error')),
@@ -204,6 +257,9 @@ describe('vercelAIChat', () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         status: 200,
+        headers: {
+          get: () => 'text/event-stream',
+        },
         body: {
           getReader: () => mockReader,
         },
@@ -239,6 +295,9 @@ describe('vercelAIChat', () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         status: 200,
+        headers: {
+          get: () => 'text/event-stream',
+        },
         body: null,
       })
 
@@ -259,6 +318,9 @@ describe('vercelAIChat', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
+        headers: {
+          get: () => 'text/event-stream',
+        },
         json: jest.fn().mockResolvedValue({
           error: 'Unauthorized',
           errorCode: 'InvalidAPIKey',

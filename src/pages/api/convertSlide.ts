@@ -149,7 +149,7 @@ interface SlideLineResponse {
   page?: number
 }
 
-async function createSlideLine(
+export async function createSlideLine(
   imageBase64: string,
   apiKey: string,
   aiService: string,
