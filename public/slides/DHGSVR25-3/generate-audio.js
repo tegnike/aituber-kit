@@ -35,18 +35,20 @@ const API_ENDPOINT = 'texttospeech.googleapis.com'
 const TTS_CONFIG = {
   voice: {
     languageCode: 'ja-JP',
-    name: 'ja-JP-Chirp3-HD-Puck' // 男性声 (Kore は女性)
+    name: 'ja-JP-Chirp3-HD-Puck', // 男性声 (Kore は女性)
   },
   audioConfig: {
     audioEncoding: 'MP3',
     speakingRate: 1.0,
-    pitch: 0
-  }
+    pitch: 0,
+  },
 }
 
 // 感情タグを除去してテキストのみ抽出
 function extractText(line) {
-  return line.replace(/\[(neutral|happy|sad|angry|surprised|relaxed)\]/g, '').trim()
+  return line
+    .replace(/\[(neutral|happy|sad|angry|surprised|relaxed)\]/g, '')
+    .trim()
 }
 
 // Google TTS API を呼び出して音声を生成
@@ -54,7 +56,7 @@ async function synthesizeSpeech(text, apiKey) {
   const requestBody = JSON.stringify({
     input: { text },
     voice: TTS_CONFIG.voice,
-    audioConfig: TTS_CONFIG.audioConfig
+    audioConfig: TTS_CONFIG.audioConfig,
   })
 
   return new Promise((resolve, reject) => {
@@ -65,8 +67,8 @@ async function synthesizeSpeech(text, apiKey) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(requestBody)
-      }
+        'Content-Length': Buffer.byteLength(requestBody),
+      },
     }
 
     const req = https.request(options, (res) => {
@@ -122,13 +124,18 @@ async function main() {
       case '--range':
         mode = 'range'
         const [start, end] = args[++i].split('-').map(Number)
-        targetPages = Array.from({ length: end - start + 1 }, (_, i) => start + i)
+        targetPages = Array.from(
+          { length: end - start + 1 },
+          (_, i) => start + i
+        )
         break
       case '--dry-run':
         dryRun = true
         break
       case '--help':
-        console.log(fs.readFileSync(__filename, 'utf8').match(/\/\*\*([\s\S]*?)\*\//)[1])
+        console.log(
+          fs.readFileSync(__filename, 'utf8').match(/\/\*\*([\s\S]*?)\*\//)[1]
+        )
         process.exit(0)
     }
   }

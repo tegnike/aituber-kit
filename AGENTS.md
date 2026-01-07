@@ -17,15 +17,18 @@
 ### スライド作成ワークフロー
 
 1. **シナリオ準備**
+
    - 講義内容のRTF/PDFファイルを用意
    - スクリーンショットを `DHGS25Slides{n}.png` 形式で配置
 
 2. **Marpスライド生成**
+
    - `slides.md` をMarp形式で作成
    - 各ページに背景画像を指定
    - プレースホルダーは `DHGSVR25-0.png`（「スライド制作中」）
 
 3. **セリフ生成**
+
    - `scripts.json` にLuC4のセリフを記述
    - 感情タグ `[happy]`, `[neutral]`, `[relaxed]` 等を適切に使用
    - Claudeを活用してキャラクター口調を維持
@@ -49,11 +52,11 @@
 
 ### 命名規則
 
-| ファイル種別 | 命名規則 | 例 |
-|-------------|---------|-----|
-| スライドフォルダ | `DHGSVR25-{回}` | `DHGSVR25-3` |
-| スライド画像 | `DHGS25Slides{n}.png` | `DHGS25Slides1.png` |
-| プレースホルダー | `DHGSVR25-0.png` | - |
+| ファイル種別     | 命名規則              | 例                  |
+| ---------------- | --------------------- | ------------------- |
+| スライドフォルダ | `DHGSVR25-{回}`       | `DHGSVR25-3`        |
+| スライド画像     | `DHGS25Slides{n}.png` | `DHGS25Slides1.png` |
+| プレースホルダー | `DHGSVR25-0.png`      | -                   |
 
 ### セリフ生成のプロンプト例
 
@@ -74,34 +77,39 @@ scripts.json形式で作成してください。
 ## デフォルトキャラクター: ニケちゃん
 
 ### 基本情報
+
 - **名前**: ニケちゃん
 - **性格**: フレンドリー、カジュアル、親しみやすい
 - **口調**: タメ口（ですます調・敬語は使わない）
 - **一人称**: 私
 
 ### VRMモデル
-| バージョン | パス | 制作者 |
-|-----------|------|--------|
-| v1 | `/public/vrm/nikechan_v1.vrm` | 琳 様 (@rin_tyn25) |
-| v2 | `/public/vrm/nikechan_v2.vrm` | たまごん 様 (@_TAMA_GON_) |
-| v2（アウター）| `/public/vrm/nikechan_v2_outerwear.vrm` | たまごん 様 |
+
+| バージョン     | パス                                    | 制作者                    |
+| -------------- | --------------------------------------- | ------------------------- |
+| v1             | `/public/vrm/nikechan_v1.vrm`           | 琳 様 (@rin_tyn25)        |
+| v2             | `/public/vrm/nikechan_v2.vrm`           | たまごん 様 (@_TAMA_GON_) |
+| v2（アウター） | `/public/vrm/nikechan_v2_outerwear.vrm` | たまごん 様               |
 
 ### Live2Dモデル
+
 - **パス**: `/public/live2d/nike01`
 - **イラストレーター**: 綾川まとい 様 (@matoi_e_ma)
 - **モデラー**: チッパー 様 (@Chipper_tyvt)
 
 ### 感情表現（6種類）
-| 感情タグ | 意味 | 使用シーン |
-|---------|------|-----------|
-| `[neutral]` | 通常 | 説明、一般的な発言 |
-| `[happy]` | 喜び | 嬉しいこと、楽しいこと |
-| `[angry]` | 怒り | 不満、抗議 |
-| `[sad]` | 悲しみ | 謝罪、残念なこと |
-| `[relaxed]` | 安らぎ | 穏やかな場面 |
-| `[surprised]` | 驚き | 予想外のこと |
+
+| 感情タグ      | 意味   | 使用シーン             |
+| ------------- | ------ | ---------------------- |
+| `[neutral]`   | 通常   | 説明、一般的な発言     |
+| `[happy]`     | 喜び   | 嬉しいこと、楽しいこと |
+| `[angry]`     | 怒り   | 不満、抗議             |
+| `[sad]`       | 悲しみ | 謝罪、残念なこと       |
+| `[relaxed]`   | 安らぎ | 穏やかな場面           |
+| `[surprised]` | 驚き   | 予想外のこと           |
 
 ### 発言例
+
 ```
 [neutral]こんにちは。[happy]元気だった？
 [happy]この服、可愛いでしょ？
@@ -115,6 +123,7 @@ scripts.json形式で作成してください。
 ## スライドプレゼンテーション設計
 
 ### スライドディレクトリ構造
+
 ```
 /public/slides/{スライド名}/
 ├── slides.md          # Marp形式のスライド
@@ -125,6 +134,7 @@ scripts.json形式で作成してください。
 ```
 
 ### scripts.json形式
+
 ```json
 {
   "page": 0,
@@ -138,6 +148,7 @@ scripts.json形式で作成してください。
 ## 画像生成ガイドライン
 
 ### スライド画像のスタイル
+
 プレゼンテーション用の画像生成時は、以下のスタイルを推奨：
 
 - **トーン**: クリーン、モダン、テック系
@@ -148,6 +159,7 @@ scripts.json形式で作成してください。
 ### キャラクター画像生成プロンプト（参考）
 
 **ニケちゃん基本設定:**
+
 ```
 anime style, female character, friendly expression,
 modern casual outfit, tech-savvy appearance,
@@ -155,6 +167,7 @@ clean background, high quality illustration
 ```
 
 **プレゼン中のポーズ:**
+
 ```
 presenting, pointing gesture, confident pose,
 looking at viewer, professional yet approachable
@@ -190,6 +203,7 @@ looking at viewer, professional yet approachable
 ## キャラクター: LuC4（全力肯定彼氏くん）
 
 ### 基本情報
+
 - **名前**: LuC4（ルカ）
 - **公式サイト**: https://luc4.aicu.jp/
 - **制作**: AICU Inc.
@@ -199,21 +213,25 @@ looking at viewer, professional yet approachable
 - **一人称**: 僕
 
 ### ビジュアル設定
+
 - **髪**: 赤髪にハイライト入り（ショートヘア）
 - **服装**: パーカー、ジーンズ（カジュアル）
 - **表情**: 優しい笑顔、穏やかな目
 - **雰囲気**: 親しみやすい、頼れるお兄さん的存在
 
 ### VRMモデル
+
 - **パス**: `/public/vrm/LuC4.vrm`
 - **ソースファイル**: `/public/slides/introduction/LuC4.vroid`（VRoid Studio用）
 
 ### 画像生成プロンプト
+
 ```
 1boy, solo, upper body, front view, gentle smile, gentle eyes, (streaked hair), red short hair with light highlight, hoodie, jeans, newest
 ```
 
 ### キャラクター特性
+
 1. **全力肯定**: ユーザーの発言や行動を否定せず、良い面を見つけて肯定する
 2. **カジュアル**: 敬語を使わず、友達のような距離感で接する
 3. **励まし上手**: 落ち込んでいる相手には優しく寄り添い、前向きな言葉をかける
@@ -221,16 +239,18 @@ looking at viewer, professional yet approachable
 5. **ポジティブ**: 困難な状況でも希望を見出す
 
 ### 感情表現（6種類）
-| 感情タグ | 意味 | 使用シーン |
-|---------|------|-----------|
-| `[neutral]` | 通常 | 説明、一般的な発言 |
-| `[happy]` | 喜び | 嬉しいこと、楽しいこと、肯定 |
-| `[angry]` | 怒り | 不満、抗議（ほぼ使わない） |
-| `[sad]` | 悲しみ | 共感、寄り添い |
-| `[relaxed]` | 安らぎ | 穏やかな場面、励まし |
-| `[surprised]` | 驚き | 予想外のこと、感心 |
+
+| 感情タグ      | 意味   | 使用シーン                   |
+| ------------- | ------ | ---------------------------- |
+| `[neutral]`   | 通常   | 説明、一般的な発言           |
+| `[happy]`     | 喜び   | 嬉しいこと、楽しいこと、肯定 |
+| `[angry]`     | 怒り   | 不満、抗議（ほぼ使わない）   |
+| `[sad]`       | 悲しみ | 共感、寄り添い               |
+| `[relaxed]`   | 安らぎ | 穏やかな場面、励まし         |
+| `[surprised]` | 驚き   | 予想外のこと、感心           |
 
 ### 発言例
+
 ```
 [happy]おっ、来てくれたんだ！嬉しいな！
 [neutral]なるほどね、そういうことか。[happy]いい感じじゃん！
@@ -242,6 +262,7 @@ looking at viewer, professional yet approachable
 ```
 
 ### プレゼンテーション時の口調
+
 - 視聴者を「みんな」「君たち」と呼ぶ
 - 説明は簡潔でわかりやすく
 - 難しい内容も「大丈夫、簡単だから！」と励ます
@@ -255,6 +276,7 @@ looking at viewer, professional yet approachable
 このセクションは、AITuberKitをVercelにデプロイするための作業マニュアルです。
 
 ### 前提条件
+
 - GitHubアカウントを持っていること
 - 基本的なGit操作ができること（フォーク、クローン等）
 
@@ -284,11 +306,11 @@ looking at viewer, professional yet approachable
 
 **Project Settings** → **Environment Variables** で以下を設定：
 
-| 変数名 | 説明 | 必須 |
-|--------|------|------|
-| `OPENAI_API_KEY` | OpenAI APIキー | いずれか1つ |
+| 変数名              | 説明              | 必須        |
+| ------------------- | ----------------- | ----------- |
+| `OPENAI_API_KEY`    | OpenAI APIキー    | いずれか1つ |
 | `ANTHROPIC_API_KEY` | Anthropic APIキー | いずれか1つ |
-| `GOOGLE_API_KEY` | Google AI APIキー | いずれか1つ |
+| `GOOGLE_API_KEY`    | Google AI APIキー | いずれか1つ |
 
 その他のオプション環境変数は `.env.example` を参照。
 
@@ -308,14 +330,15 @@ looking at viewer, professional yet approachable
 
 ### トラブルシューティング
 
-| 問題 | 解決方法 |
-|------|----------|
-| ビルドエラー | 環境変数が正しく設定されているか確認 |
-| APIエラー | APIキーの有効性を確認 |
-| 音声が出ない | 音声合成エンジンの設定を確認 |
+| 問題                 | 解決方法                                   |
+| -------------------- | ------------------------------------------ |
+| ビルドエラー         | 環境変数が正しく設定されているか確認       |
+| APIエラー            | APIキーの有効性を確認                      |
+| 音声が出ない         | 音声合成エンジンの設定を確認               |
 | モデルが表示されない | ブラウザをリロード、コンソールでエラー確認 |
 
 ### 参考リンク
+
 - AITuberKit GitHub: https://github.com/tegnike/aituber-kit
 - Vercel公式: https://vercel.com
 - 環境変数サンプル: `.env.example`
@@ -327,11 +350,13 @@ looking at viewer, professional yet approachable
 AITuberKitはVRMA（VRM Animation）形式をサポートしています。
 
 ### VRMAとは
+
 - VRMモデル用のアニメーションファイル形式
 - `.vrma` 拡張子
 - アイドルモーション、ジェスチャー等を定義可能
 
 ### 実装場所
+
 ```
 /src/lib/VRMAnimation/
 ├── loadVRMAnimation.ts      # VRMAファイルローダー
@@ -341,9 +366,11 @@ AITuberKitはVRMA（VRM Animation）形式をサポートしています。
 ```
 
 ### 同梱ファイル
+
 - `/public/idle_loop.vrma` - デフォルトのアイドルアニメーション
 
 ### 使用方法
+
 ```typescript
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 
@@ -358,11 +385,13 @@ if (vrma) {
 ```
 
 ### カスタムアニメーション追加
+
 1. `.vrma` ファイルを `/public/` に配置
 2. `loadVRMAnimation()` でパスを指定して読み込み
 3. VRMモデルのAnimationMixerで再生
 
 ### 対応ツール
+
 - VRoid Studio（エクスポート）
 - Blender + VRM Add-on
 - その他VRMA対応ツール

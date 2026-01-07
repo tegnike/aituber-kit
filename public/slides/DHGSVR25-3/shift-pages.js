@@ -36,9 +36,13 @@ function shiftPages(startPage, shiftAmount = 1) {
   // 書き込み
   fs.writeFileSync(scriptsPath, JSON.stringify(scripts, null, 2) + '\n', 'utf8')
 
-  console.log(`✅ page ${startPage} 以降を ${shiftAmount > 0 ? '+' : ''}${shiftAmount} シフトしました`)
+  console.log(
+    `✅ page ${startPage} 以降を ${shiftAmount > 0 ? '+' : ''}${shiftAmount} シフトしました`
+  )
   console.log(`   ${shiftedCount} 件のエントリを更新`)
-  console.log(`   総ページ数: ${scripts.length} (0-${scripts[scripts.length - 1].page})`)
+  console.log(
+    `   総ページ数: ${scripts.length} (0-${scripts[scripts.length - 1].page})`
+  )
 }
 
 // コマンドライン引数の処理

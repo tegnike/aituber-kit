@@ -70,67 +70,67 @@ Vercel などにデプロイする際の推奨設定です（APIキー除く）�
 
 ### 基本設定
 
-| 環境変数名 | 値 | 説明 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_SELECT_LANGUAGE` | `ja` | 言語設定 |
-| `NEXT_PUBLIC_SHOW_INTRODUCTION` | `false` | 初回ダイアログ非表示 |
-| `NEXT_PUBLIC_SHOW_CONTROL_PANEL` | `false` | コントロールパネル非表示 |
-| `NEXT_PUBLIC_SHOW_ASSISTANT_TEXT` | `true` | 字幕表示 |
+| 環境変数名                        | 値      | 説明                     |
+| --------------------------------- | ------- | ------------------------ |
+| `NEXT_PUBLIC_SELECT_LANGUAGE`     | `ja`    | 言語設定                 |
+| `NEXT_PUBLIC_SHOW_INTRODUCTION`   | `false` | 初回ダイアログ非表示     |
+| `NEXT_PUBLIC_SHOW_CONTROL_PANEL`  | `false` | コントロールパネル非表示 |
+| `NEXT_PUBLIC_SHOW_ASSISTANT_TEXT` | `true`  | 字幕表示                 |
 
 ### キャラクター設定
 
-| 環境変数名 | 値 | 説明 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_CHARACTER_NAME` | `全力肯定彼氏くん[LuC4]` | キャラクター名 |
-| `NEXT_PUBLIC_MODEL_TYPE` | `vrm` | モデルタイプ |
-| `NEXT_PUBLIC_SELECTED_VRM_PATH` | `/vrm/LuC4.vrm` | VRMファイルパス |
-| `NEXT_PUBLIC_FIXED_CHARACTER_POSITION` | `true` | 位置固定 |
-| `NEXT_PUBLIC_CHARACTER_POSITION_X` | `0.200` | X座標 |
-| `NEXT_PUBLIC_CHARACTER_POSITION_Y` | `1.616` | Y座標 |
-| `NEXT_PUBLIC_CHARACTER_POSITION_Z` | `1.455` | Z座標 |
-| `NEXT_PUBLIC_CHARACTER_SCALE` | `1.000` | スケール |
+| 環境変数名                             | 値                       | 説明            |
+| -------------------------------------- | ------------------------ | --------------- |
+| `NEXT_PUBLIC_CHARACTER_NAME`           | `全力肯定彼氏くん[LuC4]` | キャラクター名  |
+| `NEXT_PUBLIC_MODEL_TYPE`               | `vrm`                    | モデルタイプ    |
+| `NEXT_PUBLIC_SELECTED_VRM_PATH`        | `/vrm/LuC4.vrm`          | VRMファイルパス |
+| `NEXT_PUBLIC_FIXED_CHARACTER_POSITION` | `true`                   | 位置固定        |
+| `NEXT_PUBLIC_CHARACTER_POSITION_X`     | `0.200`                  | X座標           |
+| `NEXT_PUBLIC_CHARACTER_POSITION_Y`     | `1.616`                  | Y座標           |
+| `NEXT_PUBLIC_CHARACTER_POSITION_Z`     | `1.455`                  | Z座標           |
+| `NEXT_PUBLIC_CHARACTER_SCALE`          | `1.000`                  | スケール        |
 
 ### AI設定
 
-| 環境変数名 | 値 | 説明 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_SELECT_AI_SERVICE` | `google` | AIサービス |
-| `NEXT_PUBLIC_SELECT_AI_MODEL` | `gemini-2.0-flash` | AIモデル |
-| `NEXT_PUBLIC_MAX_PAST_MESSAGES` | `10` | 会話履歴保持数 |
-| `NEXT_PUBLIC_TEMPERATURE` | `0.7` | 応答のランダム性 |
+| 環境変数名                      | 値                 | 説明             |
+| ------------------------------- | ------------------ | ---------------- |
+| `NEXT_PUBLIC_SELECT_AI_SERVICE` | `google`           | AIサービス       |
+| `NEXT_PUBLIC_SELECT_AI_MODEL`   | `gemini-2.0-flash` | AIモデル         |
+| `NEXT_PUBLIC_MAX_PAST_MESSAGES` | `10`               | 会話履歴保持数   |
+| `NEXT_PUBLIC_TEMPERATURE`       | `0.7`              | 応答のランダム性 |
 
 ### 音声設定
 
-| 環境変数名 | 値 | 説明 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_SELECT_VOICE` | `google` | 音声合成エンジン |
-| `NEXT_PUBLIC_GOOGLE_TTS_TYPE` | `ja-JP-Neural2-B` | 音声タイプ |
+| 環境変数名                    | 値                | 説明             |
+| ----------------------------- | ----------------- | ---------------- |
+| `NEXT_PUBLIC_SELECT_VOICE`    | `google`          | 音声合成エンジン |
+| `NEXT_PUBLIC_GOOGLE_TTS_TYPE` | `ja-JP-Neural2-B` | 音声タイプ       |
 
 ### スライドモード設定
 
-| 環境変数名 | 値 | 説明 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_SLIDE_MODE` | `true` | スライドモード有効 |
+| 環境変数名                       | 値           | 説明               |
+| -------------------------------- | ------------ | ------------------ |
+| `NEXT_PUBLIC_SLIDE_MODE`         | `true`       | スライドモード有効 |
 | `NEXT_PUBLIC_DEFAULT_SLIDE_DOCS` | `DHGSVR25-3` | デフォルトスライド |
 
 ### アナリティクス・通知
 
-| 環境変数名 | 値 | 説明 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | `G-XXXXXXXXXX` | Google Analytics ID |
-| `SLACK_WEBHOOK_URL` | `https://hooks.slack.com/...` | Slack通知URL |
+| 環境変数名                      | 値                            | 説明                |
+| ------------------------------- | ----------------------------- | ------------------- |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | `G-XXXXXXXXXX`                | Google Analytics ID |
+| `SLACK_WEBHOOK_URL`             | `https://hooks.slack.com/...` | Slack通知URL        |
 
 ### その他
 
-| 環境変数名 | 値 | 説明 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES` | `true` | 環境変数優先 |
-| `NEXT_PUBLIC_BACKGROUND_IMAGE_PATH` | `/backgrounds/AITuber.png` | 背景画像 |
+| 環境変数名                                       | 値                         | 説明         |
+| ------------------------------------------------ | -------------------------- | ------------ |
+| `NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES` | `true`                     | 環境変数優先 |
+| `NEXT_PUBLIC_BACKGROUND_IMAGE_PATH`              | `/backgrounds/AITuber.png` | 背景画像     |
 
 ## 講義スライド
 
-| 回 | タイトル | フォルダ |
-|----|---------|---------|
+| 回    | タイトル                | フォルダ                     |
+| ----- | ----------------------- | ---------------------------- |
 | 第3回 | Webポートフォリオの制作 | `/public/slides/DHGSVR25-3/` |
 
 ### スライド構成

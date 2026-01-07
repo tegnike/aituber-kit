@@ -13,8 +13,7 @@ export const Introduction = () => {
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 
   // 環境変数で明示的に非表示が設定されている場合
-  const envDisabled =
-    process.env.NEXT_PUBLIC_SHOW_INTRODUCTION === 'false'
+  const envDisabled = process.env.NEXT_PUBLIC_SHOW_INTRODUCTION === 'false'
 
   const [displayIntroduction, setDisplayIntroduction] = useState(false)
   const [opened, setOpened] = useState(true)
