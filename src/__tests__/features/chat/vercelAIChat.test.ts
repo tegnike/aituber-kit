@@ -169,7 +169,7 @@ describe('vercelAIChat', () => {
         })
 
       mockDecode.mockReturnValueOnce(
-        'data: {"choices":[{"delta":{"content":"こんにちは"}}]}\n\n'
+        'data: {"type":"text-delta","delta":"こんにちは"}\n'
       )
 
       mockFetch.mockResolvedValueOnce({
