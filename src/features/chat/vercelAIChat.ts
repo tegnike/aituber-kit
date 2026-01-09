@@ -202,7 +202,8 @@ export async function getVercelAIChatResponseStream(
   })
 
   const contentType = response.headers.get('content-type') || ''
-  const isPlainTextStream = contentType.includes('text/plain')
+  const isDataStream = response.headers.get('x-vercel-ai-data-stream') === 'v1'
+  const isPlainTextStream = contentType.includes('text/plain') && !isDataStream
 
   try {
     if (!response.ok) {
