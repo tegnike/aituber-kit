@@ -30,7 +30,6 @@ Conduct comprehensive research and analysis to ensure the technical design is ba
 **Investigate Best Practices and Solutions**:
 
 - **Use WebSearch** to find:
-
   - Latest architectural patterns for similar problems
   - Industry best practices for the technology stack
   - Recent updates or changes in relevant technologies

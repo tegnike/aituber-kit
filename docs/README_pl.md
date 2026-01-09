@@ -321,7 +321,6 @@ Jeśli chcesz poprawić kod lub dodać nowe funkcje, wprowadź zmiany w swoim sf
 Od wersji v2.0.0 projekt ten przyjął **niestandardową licencję**.
 
 - **Bezpłatne użytkowanie**
-
   - Dozwolone jest bezpłatne użytkowanie do celów osobistych (niekomercyjnych), edukacyjnych i non-profit.
 
 - **Licencja komercyjna**

@@ -161,7 +161,6 @@ fetched_at: '2025-12-19T21:01:27.520248+00:00'
 From here you can start designing and building your own voice agent. Voice agents include a lot of the same features as regular agents, but have some of their own unique features.
 
 - Learn how to give your voice agent:
-
   - [Tools](https://openai.github.io/openai-agents-js/guides/voice-agents/build.html#tools)
   - [Handoffs](https://openai.github.io/openai-agents-js/guides/voice-agents/build.html#handoffs)
   - [Guardrails](https://openai.github.io/openai-agents-js/guides/voice-agents/build.html#guardrails)
@@ -169,7 +168,6 @@ From here you can start designing and building your own voice agent. Voice agent
   - [Manage session history](https://openai.github.io/openai-agents-js/guides/voice-agents/build.html#session-history)
 
 - Learn more about the different transport layers.
-
   - [WebRTC](https://openai.github.io/openai-agents-js/guides/voice-agents/transport.html#connecting-over-webrtc)
   - [WebSocket](https://openai.github.io/openai-agents-js/guides/voice-agents/transport.html#connecting-over-websocket)
   - [Building your own transport mechanism](https://openai.github.io/openai-agents-js/guides/voice-agents/transport.html#building-your-own-transport-mechanism)

@@ -42,7 +42,6 @@ Generate technical design document for feature **$1** based on approved requirem
 **Critical: This phase ensures design is based on complete, accurate information.**
 
 1. **Classify Feature Type**:
-
    - **New Feature** (greenfield) → Full discovery required
    - **Extension** (existing system) → Integration-focused discovery
    - **Simple Addition** (CRUD/UI) → Minimal or no discovery
@@ -51,7 +50,6 @@ Generate technical design document for feature **$1** based on approved requirem
 2. **Execute Appropriate Discovery Process**:
 
    **For Complex/New Features**:
-
    - Read and execute `.kiro/settings/rules/design-discovery-full.md`
    - Conduct thorough research using WebSearch/WebFetch:
      - Latest architectural patterns and best practices
@@ -60,13 +58,11 @@ Generate technical design document for feature **$1** based on approved requirem
      - Performance benchmarks and security considerations
 
    **For Extensions**:
-
    - Read and execute `.kiro/settings/rules/design-discovery-light.md`
    - Focus on integration points, existing patterns, compatibility
    - Use Grep to analyze existing codebase patterns
 
    **For Simple Additions**:
-
    - Skip formal discovery, quick pattern check only
 
 3. **Retain Discovery Findings for Step 3**:
