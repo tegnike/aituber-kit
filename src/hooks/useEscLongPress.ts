@@ -19,10 +19,10 @@ interface UseEscLongPressReturn {
 
 const DEFAULT_DURATION = 2000 // 2 seconds
 
-export const useEscLongPress = (
+export function useEscLongPress(
   onLongPress: () => void,
   options: UseEscLongPressOptions = {}
-): UseEscLongPressReturn => {
+): UseEscLongPressReturn {
   const { duration = DEFAULT_DURATION, enabled = true } = options
 
   const [isHolding, setIsHolding] = useState(false)

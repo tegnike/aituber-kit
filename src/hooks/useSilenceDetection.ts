@@ -10,12 +10,12 @@ type UseSilenceDetectionProps = {
   speechDetectedRef: MutableRefObject<boolean>
 }
 
-export const useSilenceDetection = ({
+export function useSilenceDetection({
   onTextDetected,
   transcriptRef,
   setUserMessage,
   speechDetectedRef,
-}: UseSilenceDetectionProps) => {
+}: UseSilenceDetectionProps) {
   // 無音タイムアウト残り時間のステート
   const [silenceTimeoutRemaining, setSilenceTimeoutRemaining] = useState<
     number | null

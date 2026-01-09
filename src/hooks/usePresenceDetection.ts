@@ -40,13 +40,13 @@ interface UsePresenceDetectionReturn {
  * 人感検知フック
  * Webカメラで顔を検出し、来場者の存在を管理する
  */
-export const usePresenceDetection = ({
+export function usePresenceDetection({
   onPersonDetected,
   onPersonDeparted,
   onGreetingStart,
   onGreetingComplete,
   onInterruptGreeting,
-}: UsePresenceDetectionProps): UsePresenceDetectionReturn => {
+}: UsePresenceDetectionProps): UsePresenceDetectionReturn {
   // ----- 設定の取得 -----
   const presenceGreetingMessage = settingsStore(
     (s) => s.presenceGreetingMessage

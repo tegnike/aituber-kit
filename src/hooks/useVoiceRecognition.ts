@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import { SpeakQueue } from '@/features/messages/speakQueue'
@@ -14,9 +14,9 @@ type UseVoiceRecognitionProps = {
  * 音声認識フックのメインインターフェース
  * 各モード（ブラウザ、Whisper、リアルタイムAPI）に応じて適切なフックを使用
  */
-export const useVoiceRecognition = ({
+export function useVoiceRecognition({
   onChatProcessStart,
-}: UseVoiceRecognitionProps) => {
+}: UseVoiceRecognitionProps) {
   // ----- 設定の取得 -----
   const speechRecognitionMode = settingsStore((s) => s.speechRecognitionMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)

@@ -31,7 +31,7 @@ export interface UseKioskModeReturn {
 /**
  * Kiosk mode state management hook
  */
-export const useKioskMode = (): UseKioskModeReturn => {
+export function useKioskMode(): UseKioskModeReturn {
   // Get settings from store
   const kioskModeEnabled = settingsStore((s) => s.kioskModeEnabled)
   const kioskTemporaryUnlock = settingsStore((s) => s.kioskTemporaryUnlock)
@@ -40,11 +40,7 @@ export const useKioskMode = (): UseKioskModeReturn => {
   const kioskNgWordEnabled = settingsStore((s) => s.kioskNgWordEnabled)
 
   // Derived state
-  const isKioskMode = kioskModeEnabled
-  const isTemporaryUnlocked = kioskTemporaryUnlock
   const canAccessSettings = !kioskModeEnabled || kioskTemporaryUnlock
-
-  // Max input length (only applies in kiosk mode)
   const maxInputLength = kioskModeEnabled ? kioskMaxInputLength : undefined
 
   // Temporary unlock action
@@ -100,8 +96,8 @@ export const useKioskMode = (): UseKioskModeReturn => {
 
   return useMemo(
     () => ({
-      isKioskMode,
-      isTemporaryUnlocked,
+      isKioskMode: kioskModeEnabled,
+      isTemporaryUnlocked: kioskTemporaryUnlock,
       canAccessSettings,
       temporaryUnlock,
       lockAgain,
@@ -109,8 +105,8 @@ export const useKioskMode = (): UseKioskModeReturn => {
       maxInputLength,
     }),
     [
-      isKioskMode,
-      isTemporaryUnlocked,
+      kioskModeEnabled,
+      kioskTemporaryUnlock,
       canAccessSettings,
       temporaryUnlock,
       lockAgain,

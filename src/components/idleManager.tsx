@@ -6,12 +6,10 @@
  */
 
 import { useIdleMode } from '@/hooks/useIdleMode'
-import settingsStore from '@/features/stores/settings'
 import { useTranslation } from 'react-i18next'
 
-const IdleManager = () => {
+function IdleManager(): JSX.Element | null {
   const { t } = useTranslation()
-  const idleModeEnabled = settingsStore((s) => s.idleModeEnabled)
 
   const { isIdleActive, idleState, secondsUntilNextSpeech } = useIdleMode({
     onIdleSpeechStart: (phrase) => {
@@ -30,22 +28,14 @@ const IdleManager = () => {
     return null
   }
 
-  // 状態に応じた色を取得
-  const getIndicatorColor = () => {
-    switch (idleState) {
-      case 'speaking':
-        return 'bg-green-500'
-      case 'waiting':
-        return 'bg-yellow-500'
-      default:
-        return 'bg-gray-400'
-    }
-  }
+  const indicatorColor =
+    idleState === 'speaking'
+      ? 'bg-green-500'
+      : idleState === 'waiting'
+        ? 'bg-yellow-500'
+        : 'bg-gray-400'
 
-  // 状態に応じたアニメーションを取得
-  const getAnimation = () => {
-    return idleState === 'speaking' ? 'animate-pulse' : ''
-  }
+  const animation = idleState === 'speaking' ? 'animate-pulse' : ''
 
   return (
     <div
@@ -54,7 +44,7 @@ const IdleManager = () => {
     >
       <div
         data-testid="idle-indicator-dot"
-        className={`w-2.5 h-2.5 rounded-full ${getIndicatorColor()} ${getAnimation()}`}
+        className={`w-2.5 h-2.5 rounded-full ${indicatorColor} ${animation}`}
       />
       <span className="text-xs text-white/90 font-medium">
         {idleState === 'speaking'

@@ -37,7 +37,7 @@ function getFullscreenState(): boolean {
 /**
  * Fullscreen API wrapper hook
  */
-export const useFullscreen = (): UseFullscreenReturn => {
+export function useFullscreen(): UseFullscreenReturn {
   const [isFullscreen, setIsFullscreen] = useState(() => getFullscreenState())
   const isSupported = useMemo(() => checkFullscreenSupport(), [])
 

@@ -9,9 +9,9 @@ import { SpeakQueue } from '@/features/messages/speakQueue'
 /**
  * Whisper APIを使用した音声認識のカスタムフック
  */
-export const useWhisperRecognition = (
+export function useWhisperRecognition(
   onChatProcessStart: (text: string) => void
-) => {
+) {
   const { t } = useTranslation()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 

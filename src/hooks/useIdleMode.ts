@@ -59,11 +59,11 @@ function getTimePeriod(): 'morning' | 'afternoon' | 'evening' {
  * @param props - コールバック群
  * @returns アイドルモードの状態と制御関数
  */
-export const useIdleMode = ({
+export function useIdleMode({
   onIdleSpeechStart,
   onIdleSpeechComplete,
   onIdleSpeechInterrupted,
-}: UseIdleModeProps): UseIdleModeReturn => {
+}: UseIdleModeProps): UseIdleModeReturn {
   // ----- 設定の取得 -----
   const idleModeEnabled = settingsStore((s) => s.idleModeEnabled)
   const idlePhrases = settingsStore((s) => s.idlePhrases)

@@ -10,9 +10,9 @@ import { SpeakQueue } from '@/features/messages/speakQueue'
 /**
  * ブラウザの音声認識APIを使用するためのカスタムフック
  */
-export const useBrowserSpeechRecognition = (
+export function useBrowserSpeechRecognition(
   onChatProcessStart: (text: string) => void
-) => {
+) {
   const { t } = useTranslation()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
   const initialSpeechTimeout = settingsStore((s) => s.initialSpeechTimeout)

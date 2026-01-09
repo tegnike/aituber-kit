@@ -9,7 +9,7 @@ type AudioContextType = typeof AudioContext
  * オーディオ処理のためのカスタムフック
  * 録音機能とオーディオバッファの管理を担当
  */
-export const useAudioProcessing = () => {
+export function useAudioProcessing() {
   const { t } = useTranslation()
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)

@@ -13,13 +13,11 @@ import { getVoiceLanguageCode } from '@/utils/voiceLanguage'
 /**
  * リアルタイムAPIを使用した音声認識のカスタムフック
  */
-export const useRealtimeVoiceAPI = (
+export function useRealtimeVoiceAPI(
   onChatProcessStart: (text: string) => void
-) => {
+) {
   const { t } = useTranslation()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
-  const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
-  const initialSpeechTimeout = settingsStore((s) => s.initialSpeechTimeout)
 
   // ----- 状態管理 -----
   const [userMessage, setUserMessage] = useState('')
@@ -37,11 +35,9 @@ export const useRealtimeVoiceAPI = (
   // ----- オーディオ処理フックを使用 -----
   const {
     audioContext,
-    mediaRecorder,
     checkMicrophonePermission,
     startRecording,
     stopRecording,
-    audioChunksRef,
   } = useAudioProcessing()
 
   // ----- オーディオバッファ用 -----

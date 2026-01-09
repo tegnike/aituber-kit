@@ -11,11 +11,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import settingsStore from '@/features/stores/settings'
-import {
-  loadAllPresets,
-  getPresetWithFallback,
-  PresetLoaderResult,
-} from './presetLoader'
+import { loadAllPresets, PresetLoaderResult } from './presetLoader'
 
 /**
  * プリセットファイルを読み込むカスタムフック
@@ -24,7 +20,7 @@ import {
  */
 export function usePresetLoader(): PresetLoaderResult {
   const [loaded, setLoaded] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const [error] = useState<Error | null>(null)
   const loadedRef = useRef(false)
 
   useEffect(() => {
@@ -37,7 +33,6 @@ export function usePresetLoader(): PresetLoaderResult {
     const loadPresets = async () => {
       try {
         const results = await loadAllPresets()
-        const state = settingsStore.getState()
 
         // 各プリセットを更新 (Req 3.1)
         const updates: Partial<{
@@ -48,13 +43,13 @@ export function usePresetLoader(): PresetLoaderResult {
           characterPreset5: string
         }> = {}
 
-        results.forEach((result) => {
+        for (const result of results) {
           const key = `characterPreset${result.index}` as keyof typeof updates
           // txtファイルの内容があれば優先、なければ現在の値（環境変数/デフォルト）を維持
           if (result.content !== null) {
             updates[key] = result.content
           }
-        })
+        }
 
         // storeを更新
         if (Object.keys(updates).length > 0) {

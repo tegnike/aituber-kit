@@ -15,39 +15,24 @@ interface PresenceIndicatorProps {
 }
 
 /**
- * 状態に応じた色を取得
+ * 状態ごとの色とラベルキーのマッピング
  */
-const getStateColor = (state: PresenceState): string => {
-  switch (state) {
-    case 'idle':
-      return 'bg-gray-400'
-    case 'detected':
-      return 'bg-green-500'
-    case 'greeting':
-      return 'bg-blue-500'
-    case 'conversation-ready':
-      return 'bg-green-500'
-    default:
-      return 'bg-gray-400'
+const STATE_CONFIG: Record<PresenceState, { color: string; labelKey: string }> =
+  {
+    idle: { color: 'bg-gray-400', labelKey: 'PresenceStateIdle' },
+    detected: { color: 'bg-green-500', labelKey: 'PresenceStateDetected' },
+    greeting: { color: 'bg-blue-500', labelKey: 'PresenceStateGreeting' },
+    'conversation-ready': {
+      color: 'bg-green-500',
+      labelKey: 'PresenceStateConversationReady',
+    },
   }
-}
 
-/**
- * 状態に応じたラベルキーを取得
- */
-const getStateLabelKey = (state: PresenceState): string => {
-  switch (state) {
-    case 'idle':
-      return 'PresenceStateIdle'
-    case 'detected':
-      return 'PresenceStateDetected'
-    case 'greeting':
-      return 'PresenceStateGreeting'
-    case 'conversation-ready':
-      return 'PresenceStateConversationReady'
-    default:
-      return 'PresenceStateIdle'
-  }
+function getStateConfig(state: PresenceState): {
+  color: string
+  labelKey: string
+} {
+  return STATE_CONFIG[state] ?? STATE_CONFIG.idle
 }
 
 const PresenceIndicator = ({ className = '' }: PresenceIndicatorProps) => {
@@ -62,21 +47,19 @@ const PresenceIndicator = ({ className = '' }: PresenceIndicatorProps) => {
     return null
   }
 
-  const colorClass = getStateColor(presenceState)
+  const { color, labelKey } = getStateConfig(presenceState)
   const shouldPulse = presenceState === 'detected'
 
   return (
     <div
       className={`flex items-center gap-2 ${className}`}
-      title={t(getStateLabelKey(presenceState))}
+      title={t(labelKey)}
     >
       <div
         data-testid="presence-indicator-dot"
-        className={`w-3 h-3 rounded-full ${colorClass} ${shouldPulse ? 'animate-pulse' : ''}`}
+        className={`w-3 h-3 rounded-full ${color} ${shouldPulse ? 'animate-pulse' : ''}`}
       />
-      <span className="text-xs text-gray-600">
-        {t(getStateLabelKey(presenceState))}
-      </span>
+      <span className="text-xs text-gray-600">{t(labelKey)}</span>
     </div>
   )
 }
