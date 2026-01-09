@@ -1016,6 +1016,9 @@ describe.skip('useVoiceRecognition', () => {
         jest.runAllTimers()
       })
 
+      // KeyDownイベント後にstartが呼ばれることを確認
+      expect(mockSpeechRecognition.start).toHaveBeenCalled()
+
       // KeyUpイベントを発火
       const keyUpEvent = new KeyboardEvent('keyup', { key: 'Alt' })
       await act(async () => {
@@ -1023,8 +1026,8 @@ describe.skip('useVoiceRecognition', () => {
         jest.runAllTimers()
       })
 
-      // テスト完了（非同期ハンドラがエラーなく動作すること）
-      expect(true).toBe(true)
+      // KeyUpイベント後にstopが呼ばれることを確認
+      expect(mockSpeechRecognition.stop).toHaveBeenCalled()
     })
 
     it('6.2: stopListeningがメッセージ送信前に呼び出される', async () => {
