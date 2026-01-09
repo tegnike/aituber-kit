@@ -1,3 +1,4 @@
+const defaultAnimationUrl = buildUrl('/idle_loop.vrma')
 import * as THREE from 'three'
 import { Model } from './model'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
@@ -6,13 +7,15 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import settingsStore from '@/features/stores/settings'
 
 /**
- * three.jsを使った3Dビューワー
+ * three.js を使用した 3D ビューア
  *
- * setup()でcanvasを渡してから使う
+ * setup() で canvas を渡してから使用
  */
 export class Viewer {
   public isReady: boolean
   public model?: Model
+  private readonly idleAnimationName = 'idle_default' // アイドルアニメーションのデフォルト名
+  private readonly defaultIdleAnimationPath = '/idle_loop.vrma' // デフォルトアイドルアニメーションのパス
 
   private _renderer?: THREE.WebGLRenderer
   private _clock: THREE.Clock
@@ -22,7 +25,14 @@ export class Viewer {
   private _directionalLight?: THREE.DirectionalLight
   private _ambientLight?: THREE.AmbientLight
 
+  private _currentAnimationUrl: string
+  private _currentAnimationType: string
+
   constructor() {
+    // current animation
+    this._currentAnimationUrl = defaultAnimationUrl
+    this._currentAnimationType = 'vrma'
+
     this.isReady = false
 
     // scene
@@ -65,11 +75,37 @@ export class Viewer {
       })
 
       this._scene.add(this.model.vrm.scene)
+      this.model.setIdleAnimationName(this.idleAnimationName) // アイドルアニメーション名を設定
 
-      const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
-      if (vrma) this.model.loadAnimation(vrma)
+      // Load and play default idle animation
+      // _currentAnimationUrl と _currentAnimationType はデフォルトアイドルアニメーションのパスとタイプとして解釈
+      // 将来的には settingsStore などから取得するのが良いと想定
+      this._currentAnimationUrl = buildUrl(this.defaultIdleAnimationPath)
+      this._currentAnimationType = 'vrma'
 
-      // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
+      if (this._currentAnimationUrl && this._currentAnimationType === 'vrma') {
+        try {
+          const vrma = await loadVRMAnimation(this._currentAnimationUrl) // buildUrl で処理されたパスを使用
+          if (vrma && this.model) {
+            await this.model.loadAnimation(vrma, this.idleAnimationName)
+            this.model.playAnimation(this.idleAnimationName, THREE.LoopRepeat)
+            console.log(
+              `Default animation '${this.idleAnimationName}' loaded and playing.`
+            )
+
+            // アイドルアニメーションをロードした後、他の感情アニメーションもロード
+            await this.model.loadAllEmotionAnimations()
+          } else {
+            console.warn(
+              'Failed to load default VRMA animation or model not ready.'
+            )
+          }
+        } catch (error) {
+          console.error('Error loading default VRMA animation:', error)
+        }
+      }
+
+      // HACK: アニメーションの原点に誤差があるため、後処理でカメラ位置を調整します。
       requestAnimationFrame(() => {
         this.resetCamera()
       })
@@ -79,12 +115,63 @@ export class Viewer {
   public unloadVRM(): void {
     if (this.model?.vrm) {
       this._scene.remove(this.model.vrm.scene)
+      this.model?.resetAnimations() // Unload時にアニメーションもリセット
       this.model?.unLoadVrm()
+      this.model = undefined
+    }
+  }
+
+  public async loadVrma(
+    url: string,
+    animationName?: string,
+    loop: boolean = true
+  ) {
+    if (!this.model?.vrm) {
+      console.warn('VRM model not loaded. Cannot load VRMA animation.')
+      return
+    }
+    const nameToLoad = animationName || `vrma_${Date.now()}` // 適切な名前を生成
+    // this._currentAnimationUrl = url // 最後にロードしたURLを維持する必要性は減りました。
+    // this._currentAnimationType = 'vrma'
+
+    try {
+      const vrma = await loadVRMAnimation(url)
+      if (vrma && this.model) {
+        await this.model.loadAnimation(vrma, nameToLoad)
+        this.model.crossFadeToAnimation(
+          nameToLoad,
+          0.5,
+          loop ? THREE.LoopRepeat : THREE.LoopOnce
+        )
+        console.log(
+          `VRMA animation '${nameToLoad}' loaded and playing with crossfade (loop: ${loop}).`
+        )
+      } else {
+        console.warn(`Failed to load VRMA from ${url} or model not ready.`)
+      }
+    } catch (error) {
+      console.error(`Error loading VRMA animation from ${url}:`, error)
     }
   }
 
   /**
-   * Reactで管理しているCanvasを後から設定する
+   * 指定された感情のアニメーションを再生します。
+   * @param emotionName 再生する感情の名前 (例: "happy", "sad")
+   * @param crossFadeDuration フェード時間 (秒)
+   */
+  public playEmotionAnimation(
+    emotionName: string,
+    crossFadeDuration: number = 0.3
+  ) {
+    if (this.model) {
+      this.model.playEmotionAnimation(emotionName, crossFadeDuration)
+    } else {
+      console.warn('Model not loaded. Cannot play emotion animation.')
+    }
+  }
+
+  /**
+   * React で管理する Canvas を後で設定する
    */
   public setup(canvas: HTMLCanvasElement) {
     const parentElement = canvas.parentElement
@@ -130,7 +217,7 @@ export class Viewer {
   }
 
   /**
-   * canvasの親要素を参照してサイズを変更する
+   * canvas の親要素を参照してサイズを変更します。
    */
   public resize() {
     if (!this._renderer) return
@@ -150,7 +237,7 @@ export class Viewer {
   }
 
   /**
-   * VRMのheadノードを参照してカメラ位置を調整する
+   * VRM の head ノードを参照してカメラ位置を調整します。
    */
   public resetCamera() {
     const { fixedCharacterPosition } = settingsStore.getState()
@@ -184,6 +271,18 @@ export class Viewer {
 
     if (this._renderer && this._camera) {
       this._renderer.render(this._scene, this._camera)
+    }
+  }
+
+  /**
+   * アイドルアニメーションに切り替える
+   * @param crossFadeDuration クロスフェード時間 (秒)
+   */
+  public switchToIdleAnimation(crossFadeDuration: number = 0.3) {
+    if (this.model) {
+      this.model.returnToIdleAnimation(crossFadeDuration)
+    } else {
+      console.warn('Model not loaded. Cannot switch to idle animation.')
     }
   }
 

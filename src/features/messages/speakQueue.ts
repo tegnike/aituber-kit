@@ -12,7 +12,6 @@ type SpeakTask = {
 }
 
 export class SpeakQueue {
-  private static readonly QUEUE_CHECK_DELAY = 1500
   private queue: SpeakTask[] = []
   private isProcessing = false
   private currentSessionId: string | null = null
@@ -148,8 +147,9 @@ export class SpeakQueue {
 
   private async scheduleNeutralExpression() {
     const initialLength = this.queue.length
+    const ss = settingsStore.getState()
     await new Promise((resolve) =>
-      setTimeout(resolve, SpeakQueue.QUEUE_CHECK_DELAY)
+      setTimeout(resolve, ss.queueCheckDelay * 1000)
     )
 
     if (this.shouldResetToNeutral(initialLength)) {
@@ -159,6 +159,7 @@ export class SpeakQueue {
         await Live2DHandler.resetToIdle()
       } else {
         await hs.viewer.model?.playEmotion('neutral')
+        hs.viewer.switchToIdleAnimation()
       }
     }
   }

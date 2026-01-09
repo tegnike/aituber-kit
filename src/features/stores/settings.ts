@@ -206,6 +206,7 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
+  queueCheckDelay: number
   imageDisplayPosition: 'input' | 'side' | 'icon'
   multiModalMode: 'ai-decide' | 'always' | 'never'
   multiModalAiDecisionPrompt: string
@@ -538,6 +539,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   angryMotionGroup: process.env.NEXT_PUBLIC_ANGRY_MOTION_GROUP || '',
   relaxedMotionGroup: process.env.NEXT_PUBLIC_RELAXED_MOTION_GROUP || '',
   surprisedMotionGroup: process.env.NEXT_PUBLIC_SURPRISED_MOTION_GROUP || '',
+  queueCheckDelay:
+    parseFloat(process.env.NEXT_PUBLIC_QUEUE_CHECK_DELAY || '1.5') || 1.5,
 })
 
 const settingsStore = create<SettingsState>()(
@@ -710,6 +713,7 @@ const settingsStore = create<SettingsState>()(
       enableMultiModal: state.enableMultiModal,
       colorTheme: state.colorTheme,
       customModel: state.customModel,
+      queueCheckDelay: state.queueCheckDelay,
     }),
   })
 )
