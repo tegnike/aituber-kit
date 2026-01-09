@@ -1,11 +1,5 @@
-import {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useCallback,
-  useRef,
-  useMemo,
-} from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
@@ -252,7 +246,7 @@ export function useRealtimeVoiceAPI(
   ])
 
   // stopListeningRef更新はeffectで（render中refアクセス禁止lint対策）
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     stopListeningRef.current = stopListening
   }, [stopListening])
 

@@ -33,6 +33,8 @@ export function useBrowserSpeechRecognition(
   // ----- 音声認識が実際に動作中かどうかを追跡 -----
   // true: onstart発火済み（動作中）, false: onend発火済み（停止中）
   const recognitionActiveRef = useRef<boolean>(false)
+  // ----- 開始処理中かどうかを追跡（排他制御用） -----
+  const isStartingRef = useRef<boolean>(false)
 
   // ----- キーボードトリガー関連 -----
   const keyPressStartTime = useRef<number | null>(null)
@@ -178,20 +180,43 @@ export function useBrowserSpeechRecognition(
 
   // ----- 音声認識開始処理 -----
   const startListening = useCallback(async () => {
-    const hasPermission = await checkMicrophonePermission()
-    if (!hasPermission) return
+    // 排他制御: 既に開始処理中の場合は何もしない
+    if (isStartingRef.current) {
+      console.log('Recognition start already in progress, skipping')
+      return
+    }
+    isStartingRef.current = true
 
-    if (!recognition) return
-
-    // 既に認識が開始されている場合は、一度停止してから再開する
-    if (isListeningRef.current) {
-      try {
-        recognition.stop()
-        // 停止完了を待つための短い遅延
-        await new Promise((resolve) => setTimeout(resolve, 100))
-      } catch (err) {
-        console.log('Recognition was not running, proceeding to start', err)
+    try {
+      const hasPermission = await checkMicrophonePermission()
+      if (!hasPermission) {
+        isStartingRef.current = false
+        return
       }
+
+      if (!recognition) {
+        isStartingRef.current = false
+        return
+      }
+
+      // 既に認識が開始されている場合は、onendイベントを待って停止を確認
+      if (isListeningRef.current) {
+      await new Promise<void>((resolve) => {
+        const onEndHandler = () => {
+          recognition.removeEventListener('end', onEndHandler)
+          resolve()
+        }
+        recognition.addEventListener('end', onEndHandler)
+        try {
+          recognition.stop()
+        } catch (err) {
+          recognition.removeEventListener('end', onEndHandler)
+          resolve()
+        }
+      })
+      // 状態をリセット
+      isListeningRef.current = false
+      setIsListening(false)
     }
 
     // トランスクリプトをリセット
@@ -264,6 +289,10 @@ export function useBrowserSpeechRecognition(
           }
         }, 300)
       }
+    }
+    } finally {
+      // 排他制御を解除
+      isStartingRef.current = false
     }
   }, [recognition, checkMicrophonePermission])
 

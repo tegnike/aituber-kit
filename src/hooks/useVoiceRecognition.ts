@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import { SpeakQueue } from '@/features/messages/speakQueue'
@@ -56,7 +57,7 @@ export function useVoiceRecognition({
   })
 
   // ref更新はeffectで（render中アクセス禁止lint対策）
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     currentHookRef.current = {
       startListening: currentHook.startListening,
       stopListening: currentHook.stopListening,
