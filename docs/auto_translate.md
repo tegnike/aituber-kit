@@ -18,23 +18,18 @@
 現在、以下のファイルが自動翻訳の対象となっています：
 
 1. 元ファイル: `README.md`
-
    - 翻訳先: `docs/README_*.md`（各言語版）
 
 2. 元ファイル: `docs/logo_license.md`
-
    - 翻訳先: `docs/logo_license_*.md`（各言語版）
 
 3. 元ファイル: `docs/license-faq.md`
-
    - 翻訳先: `docs/license-faq_*.md`（各言語版）
 
 4. 元ファイル: `docs/license.md`
-
    - 翻訳先: `docs/license_*.md`（各言語版）
 
 5. 元ファイル: `docs/character_model_licence.md`
-
    - 翻訳先: `docs/character_model_licence_*.md`（各言語版）
 
 6. 元ファイル: `locales/ja/translation.json`

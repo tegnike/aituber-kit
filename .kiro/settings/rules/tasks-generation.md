@@ -114,18 +114,15 @@ Focus on capabilities and outcomes, not code structure.
 ```markdown
 - [ ] 1. Major task description
 - [ ] 1.1 Sub-task description
-
   - Detail item 1
   - Detail item 2
   - _Requirements: X.X_
 
 - [ ] 1.2 Sub-task description
-
   - Detail items...
   - _Requirements: Y.Y_
 
 - [ ] 1.3 Sub-task description
-
   - Detail items...
   - _Requirements: Z.Z, W.W_
 

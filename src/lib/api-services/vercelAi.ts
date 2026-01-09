@@ -10,12 +10,7 @@ import { createDeepSeek } from '@ai-sdk/deepseek'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createOllama } from 'ollama-ai-provider'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
-import {
-  streamText,
-  generateText,
-  ModelMessage,
-  createTextStreamResponse,
-} from 'ai'
+import { streamText, generateText, ModelMessage } from 'ai'
 import { VercelAIService } from '@/features/constants/settings'
 
 type AIServiceConfig = Record<VercelAIService, (params: any) => any>
@@ -24,7 +19,7 @@ type AIServiceConfig = Record<VercelAIService, (params: any) => any>
  * Vercel AI SDKを使用したAIサービス設定
  */
 export const aiServiceConfig: AIServiceConfig = {
-  openai: ({ apiKey }) => createOpenAI({ apiKey }).responses,
+  openai: ({ apiKey }) => createOpenAI({ apiKey }),
   anthropic: ({ apiKey }) => createAnthropic({ apiKey }),
   google: ({ apiKey }) => createGoogleGenerativeAI({ apiKey }),
   azure: ({ resourceName, apiKey }) =>
@@ -81,7 +76,7 @@ export async function streamAiText({
       maxOutputTokens: maxTokens,
     })
 
-    return createTextStreamResponse({ textStream: result.textStream })
+    return result.toUIMessageStreamResponse()
   } catch (error: any) {
     console.error(`Vercel AI Stream Error: ${error.message || 'Unknown error'}`)
     console.error(`Model: ${model}, Temperature: ${temperature}`)

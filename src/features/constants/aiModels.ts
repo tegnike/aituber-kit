@@ -17,18 +17,23 @@ interface ModelInfo {
  */
 const modelDefinitions: Record<AIService, ModelInfo[]> = {
   openai: [
-    { name: 'gpt-4.1', multiModal: true, isDefault: true },
-    { name: 'gpt-4.1-mini', multiModal: true },
+    { name: 'gpt-5.2-pro', multiModal: true },
+    { name: 'gpt-5.2-chat-latest', multiModal: true },
+    { name: 'gpt-5.2', multiModal: true },
+    { name: 'gpt-5.1-codex-mini', multiModal: true },
+    { name: 'gpt-5.1-codex', multiModal: true },
+    { name: 'gpt-5.1-chat-latest', multiModal: true },
+    { name: 'gpt-5.1', multiModal: true },
+    { name: 'gpt-5-pro', multiModal: true },
+    { name: 'gpt-5', multiModal: true },
+    { name: 'gpt-5-mini', multiModal: true },
+    { name: 'gpt-5-nano', multiModal: true },
+    { name: 'gpt-5-codex', multiModal: true },
+    { name: 'gpt-4.1', multiModal: true },
+    { name: 'gpt-4.1-mini', multiModal: true, isDefault: true },
     { name: 'gpt-4.1-nano', multiModal: true },
     { name: 'gpt-4o', multiModal: true },
     { name: 'gpt-4o-mini', multiModal: true },
-    { name: 'o1', multiModal: true },
-    { name: 'o1-mini', multiModal: true },
-    { name: 'o1-preview' },
-    { name: 'o3-mini' },
-    { name: 'o3', multiModal: true },
-    { name: 'o4-mini', multiModal: true },
-    { name: 'chatgpt-4o-latest', multiModal: true },
   ],
   anthropic: [
     { name: 'claude-opus-4-1-20250805', multiModal: true },
@@ -145,8 +150,8 @@ export const defaultModels: Record<
       models.find((model) => model.isDefault)?.name || '',
     ])
   ),
-  openaiAudio: 'gpt-4o-audio-preview-2024-10-01',
-  openaiRealtime: 'gpt-4o-realtime-preview-2024-10-01',
+  openaiAudio: 'tts-1',
+  openaiRealtime: 'gpt-realtime',
 } as Record<AIService | 'openaiAudio' | 'openaiRealtime', string>
 
 /**
@@ -201,18 +206,17 @@ export function getMultiModalModels(service: AIService): string[] {
  * OpenAIのリアルタイムAPIモードで使用するモデル一覧
  */
 export const openAIRealtimeModels = [
-  'gpt-4o-realtime-preview-2024-10-01',
-  'gpt-4o-realtime-preview-2024-12-17',
-  'gpt-4o-mini-realtime-preview-2024-12-17',
+  'gpt-realtime',
+  'gpt-realtime-mini',
 ] as const
 
 /**
  * OpenAIのオーディオAPIモードで使用するモデル一覧
  */
 export const openAIAudioModels = [
-  'gpt-4o-audio-preview-2024-10-01',
-  'gpt-4o-audio-preview-2024-12-17',
-  'gpt-4o-mini-audio-preview-2024-12-17',
+  'tts-1',
+  'tts-1-hd',
+  'gpt-4o-mini-tts',
 ] as const
 
 /**

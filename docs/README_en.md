@@ -321,7 +321,6 @@ If you want to improve code or add new features, please make changes in your for
 This project has adopted a **custom license** from version v2.0.0 onwards.
 
 - **Free Use**
-
   - Free for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
 
 - **Commercial License**

@@ -32,7 +32,6 @@ Note that trial internal use during pre-implementation or evaluation phase is ex
 A5: The commercial license has the following plans:
 
 1. **Standard License**
-
    - Price: **¥100,000 including tax**
    - Usage scope:
      - Use within your own company (unlimited number of locations and users)
@@ -40,14 +39,12 @@ A5: The commercial license has the following plans:
      - **Redistribution/resale is possible to one company**
 
 2. **Developer License**
-
    - Price: **¥300,000 including tax**
    - Usage scope:
      - Software modification and **redistribution is possible (up to 5 companies)**
      - Unlimited number of locations and users at redistribution destinations
 
 3. **Enterprise License**
-
    - Price: **¥1,000,000 including tax**
    - Usage scope:
      - Software modification and **unlimited redistribution is possible**
@@ -108,23 +105,18 @@ A15: Here are specific examples. If you have any questions, please contact us in
 **Examples requiring a commercial license:**
 
 1. **When a company uses the software as part of its internal system**
-
    - **Applicable License**: Standard License
 
 2. **When modifying the software and providing it to one client**
-
    - **Applicable License**: Standard License
 
 3. **When modifying the software and providing it to multiple clients (up to 5 companies)**
-
    - **Applicable License**: Developer License
 
 4. **When selling a product that incorporates the software to many clients**
-
    - **Applicable License**: Enterprise License
 
 5. **When integrating software features into a paid mobile app**
-
    - **Applicable License**: Enterprise License
 
 6. **When a freelancer uses it in a client project and provides it to multiple clients**
@@ -145,7 +137,6 @@ A15: Here are specific examples. If you have any questions, please contact us in
 A16: The license terms apply to forked projects as well.
 
 1. **Forking under a custom license:**
-
    - If used for commercial purposes, an appropriate commercial license must be obtained.
 
 2. **Redistribution or resale:**

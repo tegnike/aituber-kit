@@ -16,7 +16,6 @@ paginate: true
 
 - AITuberKitで会話できる状態にしておく
 - 対応AI:
-
   - OpenAI
   - Anthropic Claude
   - Google Gemini

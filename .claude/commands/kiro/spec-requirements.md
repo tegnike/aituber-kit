@@ -23,7 +23,6 @@ Generate complete requirements for feature **$1** based on the project descripti
 ## Execution Steps
 
 1. **Load Context**:
-
    - Read `.kiro/specs/$1/spec.json` for language and metadata
    - Read `.kiro/specs/$1/requirements.md` for project description
    - **Load ALL steering context**: Read entire `.kiro/steering/` directory including:
@@ -32,12 +31,10 @@ Generate complete requirements for feature **$1** based on the project descripti
      - This provides complete project memory and context
 
 2. **Read Guidelines**:
-
    - Read `.kiro/settings/rules/ears-format.md` for EARS syntax rules
    - Read `.kiro/settings/templates/specs/requirements.md` for document structure
 
 3. **Generate Requirements**:
-
    - Create initial requirements based on project description
    - Group related functionality into logical requirement areas
    - Apply EARS format to all acceptance criteria

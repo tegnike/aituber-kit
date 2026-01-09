@@ -9,13 +9,11 @@ Analyze the gap between requirements and existing codebase to inform implementat
 ### 1. Current State Investigation
 
 - Scan for domain-related assets:
-
   - Key files/modules and directory layout
   - Reusable components/services/utilities
   - Dominant architecture patterns and constraints
 
 - Extract conventions:
-
   - Naming, layering, dependency direction
   - Import/export patterns and dependency hotspots
   - Testing placement and approach
@@ -26,13 +24,11 @@ Analyze the gap between requirements and existing codebase to inform implementat
 ### 2. Requirements Feasibility Analysis
 
 - From EARS requirements, list technical needs:
-
   - Data models, APIs/services, UI/components
   - Business rules/validation
   - Non-functionals: security, performance, scalability, reliability
 
 - Identify gaps and constraints:
-
   - Missing capabilities in current codebase
   - Unknowns to be researched later (mark as "Research Needed")
   - Constraints from existing architecture and patterns
@@ -47,13 +43,11 @@ Analyze the gap between requirements and existing codebase to inform implementat
 **When to consider**: Feature fits naturally into existing structure
 
 - **Which files/modules to extend**:
-
   - Identify specific files requiring changes
   - Assess impact on existing functionality
   - Evaluate backward compatibility concerns
 
 - **Compatibility assessment**:
-
   - Check if extension respects existing interfaces
   - Verify no breaking changes to consumers
   - Assess test coverage impact
@@ -75,13 +69,11 @@ Analyze the gap between requirements and existing codebase to inform implementat
 **When to consider**: Feature has distinct responsibility or existing components are already complex
 
 - **Rationale for new creation**:
-
   - Clear separation of concerns justifies new file
   - Existing components are already complex
   - Feature has distinct lifecycle or dependencies
 
 - **Integration points**:
-
   - How new components connect to existing system
   - APIs or interfaces exposed
   - Dependencies on existing components
@@ -104,13 +96,11 @@ Analyze the gap between requirements and existing codebase to inform implementat
 **When to consider**: Complex features requiring both extension and new creation
 
 - **Combination strategy**:
-
   - Which parts extend existing components
   - Which parts warrant new components
   - How they interact
 
 - **Phased implementation**:
-
   - Initial phase: minimal viable changes
   - Subsequent phases: refactoring or new components
   - Migration strategy if needed
