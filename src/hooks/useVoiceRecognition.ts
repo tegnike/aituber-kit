@@ -49,6 +49,10 @@ export function useVoiceRecognition({
     userMessage: currentHook.userMessage,
     isListening: currentHook.isListening,
     handleInputChange: currentHook.handleInputChange,
+    checkRecognitionActive:
+      'checkRecognitionActive' in currentHook
+        ? (currentHook as any).checkRecognitionActive
+        : null,
   })
 
   // ref更新はeffectで（render中アクセス禁止lint対策）
@@ -59,6 +63,10 @@ export function useVoiceRecognition({
       userMessage: currentHook.userMessage,
       isListening: currentHook.isListening,
       handleInputChange: currentHook.handleInputChange,
+      checkRecognitionActive:
+        'checkRecognitionActive' in currentHook
+          ? (currentHook as any).checkRecognitionActive
+          : null,
     }
   }, [currentHook])
 
@@ -112,6 +120,57 @@ export function useVoiceRecognition({
         '🎤 常時マイク入力モードがONになりました。音声認識を開始します。'
       )
       currentHookRef.current.startListening()
+    }
+  }, [continuousMicListeningMode, speechRecognitionMode])
+
+  // ----- 常時マイク入力モードの定期チェック -----
+  // マイクがOFFになっていたら自動でONに戻す
+  useEffect(() => {
+    // 常時マイク入力モードがOFF、またはブラウザモード以外の場合は何もしない
+    if (!continuousMicListeningMode || speechRecognitionMode !== 'browser') {
+      return
+    }
+
+    const checkAndRestartMic = () => {
+      const isSpeaking = homeStore.getState().isSpeaking
+      const chatProcessing = homeStore.getState().chatProcessing
+      const isListening = currentHookRef.current.isListening
+      const checkRecognitionActive =
+        currentHookRef.current.checkRecognitionActive
+
+      // マイクがOFFで、発話中でも処理中でもない場合は再開
+      if (!isListening && !isSpeaking && !chatProcessing) {
+        console.log(
+          '🔄 常時マイク入力モード: マイクがOFFになっていたため、自動で再開します。'
+        )
+        currentHookRef.current.startListening()
+        return
+      }
+
+      // isListeningがtrueでも、実際にアクティブでない場合は再起動
+      if (
+        isListening &&
+        !isSpeaking &&
+        !chatProcessing &&
+        checkRecognitionActive
+      ) {
+        if (!checkRecognitionActive()) {
+          console.log(
+            '🔄 常時マイク入力モード: 音声認識が非アクティブのため再起動します。'
+          )
+          currentHookRef.current.stopListening()
+          setTimeout(() => {
+            currentHookRef.current.startListening()
+          }, 100)
+        }
+      }
+    }
+
+    // 1秒ごとにチェック
+    const intervalId = setInterval(checkAndRestartMic, 1000)
+
+    return () => {
+      clearInterval(intervalId)
     }
   }, [continuousMicListeningMode, speechRecognitionMode])
 

@@ -59,6 +59,7 @@ export const OpenAIConfig = ({
       realtimeAPIMode: newMode,
     })
     if (newMode) {
+      // リアルタイムAPIモードをONにした場合
       settingsStore.setState({
         audioMode: false,
         speechRecognitionMode: 'browser',
@@ -67,6 +68,11 @@ export const OpenAIConfig = ({
         noSpeechTimeout: 0,
         showSilenceProgressBar: false,
         continuousMicListeningMode: false,
+      })
+    } else {
+      // リアルタイムAPIモードをOFFにした場合、通常のOpenAIモデルに戻す
+      settingsStore.setState({
+        selectAIModel: defaultModels.openai,
       })
     }
   }, [])

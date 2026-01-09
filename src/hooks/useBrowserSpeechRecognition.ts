@@ -30,6 +30,9 @@ export function useBrowserSpeechRecognition(
   const initialSpeechCheckTimerRef = useRef<NodeJS.Timeout | null>(null)
   // ----- 競合状態防止: 再起動タイマーの追跡 -----
   const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  // ----- 音声認識が実際に動作中かどうかを追跡 -----
+  // true: onstart発火済み（動作中）, false: onend発火済み（停止中）
+  const recognitionActiveRef = useRef<boolean>(false)
 
   // ----- キーボードトリガー関連 -----
   const keyPressStartTime = useRef<number | null>(null)
@@ -328,6 +331,8 @@ export function useBrowserSpeechRecognition(
       console.log('Speech recognition started')
       recognitionStartTimeRef.current = Date.now()
       speechDetectedRef.current = false
+      // 音声認識が実際に動作中であることを記録
+      recognitionActiveRef.current = true
 
       // 初期音声検出タイマー設定 (Requirement 5.2: 共通関数を使用)
       setupInitialSpeechTimer(stopListening)
@@ -383,6 +388,8 @@ export function useBrowserSpeechRecognition(
     // 音声認識終了時
     newRecognition.onend = () => {
       console.log('Recognition ended')
+      // 音声認識が停止したことを記録
+      recognitionActiveRef.current = false
       clearSilenceDetection()
       clearInitialSpeechCheckTimer()
 
@@ -526,6 +533,12 @@ export function useBrowserSpeechRecognition(
     handleNoSpeechTimeout,
   ])
 
+  // ----- 音声認識が実際にアクティブかチェックする関数 -----
+  const checkRecognitionActive = useCallback(() => {
+    // onstart発火済みでonend未発火なら動作中
+    return recognitionActiveRef.current
+  }, [])
+
   // 戻り値オブジェクトをメモ化（Requirement 1.1, 1.4）
   const returnValue = useMemo(
     () => ({
@@ -537,6 +550,7 @@ export function useBrowserSpeechRecognition(
       toggleListening,
       startListening,
       stopListening,
+      checkRecognitionActive,
     }),
     [
       userMessage,
@@ -547,6 +561,7 @@ export function useBrowserSpeechRecognition(
       toggleListening,
       startListening,
       stopListening,
+      checkRecognitionActive,
     ]
   )
 
