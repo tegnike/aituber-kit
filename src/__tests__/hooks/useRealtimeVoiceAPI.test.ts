@@ -62,6 +62,14 @@ const MockSpeechRecognitionClass = jest.fn().mockImplementation(() => {
   return { ...mockSpeechRecognition }
 })
 
+// グローバル変数のオリジナルを保存（副作用防止）
+const originalSpeechRecognition = (
+  window as unknown as { SpeechRecognition: unknown }
+).SpeechRecognition
+const originalWebkitSpeechRecognition = (
+  window as unknown as { webkitSpeechRecognition: unknown }
+).webkitSpeechRecognition
+
 // Setup global SpeechRecognition
 Object.defineProperty(window, 'SpeechRecognition', {
   writable: true,
@@ -77,6 +85,20 @@ describe('useRealtimeVoiceAPI - 言語設定の動的反映', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockSpeechRecognition.lang = ''
+  })
+
+  afterAll(() => {
+    // グローバル変数を復元（他スイートへの副作用防止）
+    Object.defineProperty(window, 'SpeechRecognition', {
+      writable: true,
+      configurable: true,
+      value: originalSpeechRecognition,
+    })
+    Object.defineProperty(window, 'webkitSpeechRecognition', {
+      writable: true,
+      configurable: true,
+      value: originalWebkitSpeechRecognition,
+    })
   })
 
   describe('getVoiceLanguageCode', () => {

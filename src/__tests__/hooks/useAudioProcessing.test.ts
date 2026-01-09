@@ -214,10 +214,9 @@ describe('useAudioProcessing', () => {
 
       // mp3がサポートされている場合は選択される（フォールバック）
       const calls = MockMediaRecorder.mock.calls
-      if (calls.length > 0) {
-        const options = calls[calls.length - 1][1]
-        expect(options.mimeType).toBe('audio/mp3')
-      }
+      expect(calls.length).toBeGreaterThan(0)
+      const options = calls[calls.length - 1][1]
+      expect(options.mimeType).toBe('audio/mp3')
     })
 
     it('Safari環境ではaudio/mp4が選択される', async () => {
@@ -242,10 +241,9 @@ describe('useAudioProcessing', () => {
 
       // Safari環境ではaudio/mp4が選択される
       const calls = MockMediaRecorder.mock.calls
-      if (calls.length > 0) {
-        const options = calls[calls.length - 1][1]
-        expect(options.mimeType).toBe('audio/mp4')
-      }
+      expect(calls.length).toBeGreaterThan(0)
+      const options = calls[calls.length - 1][1]
+      expect(options.mimeType).toBe('audio/mp4')
     })
   })
 })

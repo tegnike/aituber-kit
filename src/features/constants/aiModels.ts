@@ -146,7 +146,7 @@ export const defaultModels: Record<
     ])
   ),
   openaiAudio: 'gpt-4o-audio-preview-2024-10-01',
-  openaiRealtime: 'gpt-4o-realtime-preview-2024-10-01',
+  openaiRealtime: 'gpt-realtime',
 } as Record<AIService | 'openaiAudio' | 'openaiRealtime', string>
 
 /**

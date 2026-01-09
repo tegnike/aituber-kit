@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useLayoutEffect, useCallback, useRef } from 'react'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import { SpeakQueue } from '@/features/messages/speakQueue'
@@ -51,14 +51,16 @@ export function useVoiceRecognition({
     handleInputChange: currentHook.handleInputChange,
   })
 
-  // 毎レンダリングでrefを更新
-  currentHookRef.current = {
-    startListening: currentHook.startListening,
-    stopListening: currentHook.stopListening,
-    userMessage: currentHook.userMessage,
-    isListening: currentHook.isListening,
-    handleInputChange: currentHook.handleInputChange,
-  }
+  // ref更新はeffectで（render中アクセス禁止lint対策）
+  useLayoutEffect(() => {
+    currentHookRef.current = {
+      startListening: currentHook.startListening,
+      stopListening: currentHook.stopListening,
+      userMessage: currentHook.userMessage,
+      isListening: currentHook.isListening,
+      handleInputChange: currentHook.handleInputChange,
+    }
+  }, [currentHook])
 
   // ----- 音声停止 -----
   const handleStopSpeaking = useCallback(() => {

@@ -1,4 +1,11 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
@@ -244,8 +251,10 @@ export function useRealtimeVoiceAPI(
     onChatProcessStart,
   ])
 
-  // stopListeningRefを毎レンダリングで更新（stale closure防止）
-  stopListeningRef.current = stopListening
+  // stopListeningRef更新はeffectで（render中refアクセス禁止lint対策）
+  useLayoutEffect(() => {
+    stopListeningRef.current = stopListening
+  }, [stopListening])
 
   // ----- 音声認識開始処理 -----
   const startListening = useCallback(async () => {

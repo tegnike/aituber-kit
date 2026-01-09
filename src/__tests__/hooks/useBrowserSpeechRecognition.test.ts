@@ -100,6 +100,16 @@ const mockGetUserMedia = jest.fn().mockResolvedValue({
 })
 
 describe('useBrowserSpeechRecognition', () => {
+  // グローバル変数のオリジナルを保存（副作用防止）
+  const originalSpeechRecognition = (
+    window as unknown as { SpeechRecognition: unknown }
+  ).SpeechRecognition
+  const originalWebkitSpeechRecognition = (
+    window as unknown as { webkitSpeechRecognition: unknown }
+  ).webkitSpeechRecognition
+  const originalMediaDevices = navigator.mediaDevices
+  const originalUserAgent = navigator.userAgent
+
   let mockSpeechRecognition: MockSpeechRecognition
   let mockAddToast: jest.Mock
 
@@ -134,6 +144,30 @@ describe('useBrowserSpeechRecognition', () => {
 
   afterEach(() => {
     jest.useRealTimers()
+  })
+
+  afterAll(() => {
+    // グローバル変数を復元（他スイートへの副作用防止）
+    Object.defineProperty(window, 'SpeechRecognition', {
+      writable: true,
+      configurable: true,
+      value: originalSpeechRecognition,
+    })
+    Object.defineProperty(window, 'webkitSpeechRecognition', {
+      writable: true,
+      configurable: true,
+      value: originalWebkitSpeechRecognition,
+    })
+    Object.defineProperty(navigator, 'mediaDevices', {
+      writable: true,
+      configurable: true,
+      value: originalMediaDevices,
+    })
+    Object.defineProperty(navigator, 'userAgent', {
+      writable: true,
+      configurable: true,
+      value: originalUserAgent,
+    })
   })
 
   describe('タイムアウト処理の一元化 (Requirement 5)', () => {
