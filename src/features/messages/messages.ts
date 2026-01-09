@@ -6,6 +6,7 @@ export type Message = {
     | [{ type: 'text'; text: string }, { type: 'image'; image: string }] // マルチモーダル拡張
   audio?: { id: string }
   timestamp?: string
+  embedding?: number[] // メモリ機能用のembedding
 }
 
 export const EMOTIONS = [
