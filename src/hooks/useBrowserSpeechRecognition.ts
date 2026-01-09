@@ -201,23 +201,34 @@ export function useBrowserSpeechRecognition(
 
       // 既に認識が開始されている場合は、onendイベントを待って停止を確認
       if (isListeningRef.current) {
-      await new Promise<void>((resolve) => {
-        const onEndHandler = () => {
-          recognition.removeEventListener('end', onEndHandler)
-          resolve()
-        }
-        recognition.addEventListener('end', onEndHandler)
-        try {
-          recognition.stop()
-        } catch (err) {
-          recognition.removeEventListener('end', onEndHandler)
-          resolve()
-        }
-      })
-      // 状態をリセット
-      isListeningRef.current = false
-      setIsListening(false)
-    }
+        await new Promise<void>((resolve) => {
+          let timeoutId: NodeJS.Timeout
+
+          const onEndHandler = () => {
+            clearTimeout(timeoutId)
+            recognition.removeEventListener('end', onEndHandler)
+            resolve()
+          }
+
+          timeoutId = setTimeout(() => {
+            recognition.removeEventListener('end', onEndHandler)
+            console.log('Recognition stop timeout, forcing resolve')
+            resolve()
+          }, 500) // 500ms でタイムアウト
+
+          recognition.addEventListener('end', onEndHandler)
+          try {
+            recognition.stop()
+          } catch (err) {
+            clearTimeout(timeoutId)
+            recognition.removeEventListener('end', onEndHandler)
+            resolve()
+          }
+        })
+        // 状態をリセット
+        isListeningRef.current = false
+        setIsListening(false)
+      }
 
     // トランスクリプトをリセット
     transcriptRef.current = ''
