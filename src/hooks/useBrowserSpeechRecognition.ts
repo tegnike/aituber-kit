@@ -230,77 +230,80 @@ export function useBrowserSpeechRecognition(
         setIsListening(false)
       }
 
-    // トランスクリプトをリセット
-    transcriptRef.current = ''
-    setUserMessage('')
+      // トランスクリプトをリセット
+      transcriptRef.current = ''
+      setUserMessage('')
 
-    try {
-      recognition.start()
-      console.log('Recognition started successfully')
-      // リスニング状態を更新
-      isListeningRef.current = true
-      setIsListening(true)
-    } catch (error) {
-      console.error('Error starting recognition:', error)
-
-      // InvalidStateErrorの場合は、既に開始されているとみなす
-      if (error instanceof DOMException && error.name === 'InvalidStateError') {
-        console.log('Recognition is already running, skipping retry')
-        // 既に実行中なので、リスニング状態を更新する
+      try {
+        recognition.start()
+        console.log('Recognition started successfully')
+        // リスニング状態を更新
         isListeningRef.current = true
         setIsListening(true)
+      } catch (error) {
+        console.error('Error starting recognition:', error)
 
-        // onstart イベントハンドラと同様の処理を手動で実行
-        console.log('Speech recognition started (manually triggered)')
-        recognitionStartTimeRef.current = Date.now()
-        speechDetectedRef.current = false
+        // InvalidStateErrorの場合は、既に開始されているとみなす
+        if (
+          error instanceof DOMException &&
+          error.name === 'InvalidStateError'
+        ) {
+          console.log('Recognition is already running, skipping retry')
+          // 既に実行中なので、リスニング状態を更新する
+          isListeningRef.current = true
+          setIsListening(true)
 
-        // 初期音声検出タイマー設定 (Requirement 5.2: 共通関数を使用)
-        setupInitialSpeechTimer(stopListening)
+          // onstart イベントハンドラと同様の処理を手動で実行
+          console.log('Speech recognition started (manually triggered)')
+          recognitionStartTimeRef.current = Date.now()
+          speechDetectedRef.current = false
 
-        // 無音検出開始
-        startSilenceDetection(stopListening)
-      } else {
-        // その他のエラーの場合のみ再試行
-        setTimeout(() => {
-          try {
-            if (recognition) {
-              // 一度確実に停止を試みる
-              try {
-                recognition.stop()
-                // 停止後に短い遅延
-                setTimeout(() => {
-                  recognition.start()
-                  console.log('Recognition started on retry')
-                  isListeningRef.current = true
-                  setIsListening(true)
-                }, 100)
-              } catch (stopError) {
-                // 停止できなかった場合は直接スタート
+          // 初期音声検出タイマー設定 (Requirement 5.2: 共通関数を使用)
+          setupInitialSpeechTimer(stopListening)
+
+          // 無音検出開始
+          startSilenceDetection(stopListening)
+        } else {
+          // その他のエラーの場合のみ再試行
+          setTimeout(() => {
+            try {
+              if (recognition) {
+                // 一度確実に停止を試みる
                 try {
-                  recognition.start()
-                  console.log('Recognition started on retry without stopping')
-                  isListeningRef.current = true
-                  setIsListening(true)
-                } catch (startError) {
-                  console.error(
-                    'Failed to start recognition on retry:',
-                    startError
-                  )
-                  isListeningRef.current = false
-                  setIsListening(false)
+                  recognition.stop()
+                  // 停止後に短い遅延
+                  setTimeout(() => {
+                    recognition.start()
+                    console.log('Recognition started on retry')
+                    isListeningRef.current = true
+                    setIsListening(true)
+                  }, 100)
+                } catch (stopError) {
+                  // 停止できなかった場合は直接スタート
+                  try {
+                    recognition.start()
+                    console.log('Recognition started on retry without stopping')
+                    isListeningRef.current = true
+                    setIsListening(true)
+                  } catch (startError) {
+                    console.error(
+                      'Failed to start recognition on retry:',
+                      startError
+                    )
+                    isListeningRef.current = false
+                    setIsListening(false)
+                  }
                 }
               }
+            } catch (retryError) {
+              console.error('Failed to start recognition on retry:', retryError)
+              isListeningRef.current = false
+              setIsListening(false)
+              return
             }
-          } catch (retryError) {
-            console.error('Failed to start recognition on retry:', retryError)
-            isListeningRef.current = false
-            setIsListening(false)
-            return
-          }
-        }, 300)
+          }, 300)
+        }
       }
-    }
     } finally {
       // 排他制御を解除
       isStartingRef.current = false
