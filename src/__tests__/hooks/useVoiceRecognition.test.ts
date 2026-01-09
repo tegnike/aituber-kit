@@ -652,7 +652,7 @@ describe.skip('useVoiceRecognition', () => {
       })
 
       const mockOnChatProcessStart = jest.fn()
-      const { rerender } = renderHook(() =>
+      const { result, rerender } = renderHook(() =>
         useVoiceRecognition({ onChatProcessStart: mockOnChatProcessStart })
       )
 
@@ -679,8 +679,8 @@ describe.skip('useVoiceRecognition', () => {
         jest.runAllTimers()
       })
 
-      // エラーなくモード変更が完了すること
-      expect(true).toBe(true)
+      // whisperモードに変更されたことを確認（関連する状態のチェック）
+      expect(result.current.isListening).toBeDefined()
 
       // 設定を元に戻す
       mockSettingsStore.mockImplementation((selector) => {
@@ -738,10 +738,9 @@ describe.skip('useVoiceRecognition', () => {
         jest.runAllTimers()
       })
 
-      // continuousMicListeningModeがfalseの場合、startListeningは自動で呼ばれない
-      // (ただしマウント時のeffectがあるため、完全には検証しづらい)
-      // 少なくともエラーなく動作することを確認
-      expect(true).toBe(true)
+      // continuousMicListeningModeがfalseの場合、マウント時に自動でstartは呼ばれない
+      // jest.clearAllMocks()後なのでstartが呼ばれていないことを確認
+      expect(mockSpeechRecognition.start).not.toHaveBeenCalled()
     })
   })
 
@@ -1056,9 +1055,6 @@ describe.skip('useVoiceRecognition', () => {
         mockSpeechRecognition.onstart?.()
       })
 
-      // stopListeningの呼び出しを監視
-      const stopListeningSpy = jest.spyOn(result.current, 'stopListening')
-
       // KeyUpイベントを発火
       const keyUpEvent = new KeyboardEvent('keyup', { key: 'Alt' })
       await act(async () => {
@@ -1066,22 +1062,12 @@ describe.skip('useVoiceRecognition', () => {
         jest.runAllTimers()
       })
 
-      // 注: handleKeyUpはイベントリスナー内で定義されているため、
-      // 直接的なspyは難しい。代わりに全体的な動作を検証する
-      // stopListeningが定義されていることを確認
-      expect(result.current.stopListening).toBeDefined()
+      // stopListeningが呼ばれた結果、SpeechRecognition.stop()が呼ばれることを確認
+      expect(mockSpeechRecognition.stop).toHaveBeenCalled()
     })
 
     it('6.3: メッセージがstopListening完了後に送信される（タイミング保証）', async () => {
-      const callOrder: string[] = []
-
-      // stopListeningの呼び出し順序を検証するためのモック
-      // 注: 設計書に基づく期待動作:
-      // 1. await stopListening() を先に呼び出す
-      // 2. stopListening完了後にonChatProcessStartを呼び出す
-      const mockOnChatProcessStart = jest.fn().mockImplementation(() => {
-        callOrder.push('onChatProcessStart')
-      })
+      const mockOnChatProcessStart = jest.fn()
 
       const { result } = renderHook(() =>
         useVoiceRecognition({ onChatProcessStart: mockOnChatProcessStart })
@@ -1116,13 +1102,6 @@ describe.skip('useVoiceRecognition', () => {
         jest.runAllTimers()
       })
 
-      // stopListeningをスパイして呼び出し順序を記録
-      const originalStopListening = result.current.stopListening
-      const stopListeningSpy = jest.fn().mockImplementation(async () => {
-        callOrder.push('stopListening')
-        return originalStopListening()
-      })
-
       // KeyUpイベントを発火
       const keyUpEvent = new KeyboardEvent('keyup', { key: 'Alt' })
       await act(async () => {
@@ -1133,10 +1112,10 @@ describe.skip('useVoiceRecognition', () => {
         jest.runAllTimers()
       })
 
-      // メッセージがある場合の動作検証:
-      // 修正後のコードでは必ずstopListening → onChatProcessStartの順で呼ばれる
-      // isListeningがtrueの状態でテストする
-      expect(result.current.stopListening).toBeDefined()
+      // メッセージがある場合、onChatProcessStartが呼ばれることを確認
+      expect(mockOnChatProcessStart).toHaveBeenCalledWith('テストメッセージ')
+      // stopが呼ばれたことを確認
+      expect(mockSpeechRecognition.stop).toHaveBeenCalled()
     })
 
     it('6.4: 空メッセージの場合はstopListeningのみ実行される', async () => {
