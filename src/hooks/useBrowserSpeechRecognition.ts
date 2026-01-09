@@ -62,11 +62,11 @@ export function useBrowserSpeechRecognition(
 
   // ----- 音声未検出時の停止処理を実行する共通関数 (Requirement 5.1) -----
   const handleNoSpeechTimeout = useCallback(
-    (stopListeningFn: () => Promise<void>) => {
+    async (stopListeningFn: () => Promise<void>) => {
       console.log(
         `⏱️ ${initialSpeechTimeout}秒間音声が検出されませんでした。音声認識を停止します。`
       )
-      stopListeningFn()
+      await stopListeningFn()
 
       // 常時マイク入力モードをオフに設定
       if (settingsStore.getState().continuousMicListeningMode) {

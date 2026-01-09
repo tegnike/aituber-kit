@@ -70,10 +70,13 @@ describe('vercelAi service helpers', () => {
   })
 
   describe('streamAiText', () => {
-    it('wraps streamText result with createTextStreamResponse', async () => {
-      mockStreamText.mockResolvedValue({ textStream: 'text-stream' } as any)
+    it('wraps streamText result with toUIMessageStreamResponse', async () => {
       const response = new Response('stream-body')
-      mockCreateTextStreamResponse.mockReturnValue(response)
+      const mockToUIMessageStreamResponse = jest.fn().mockReturnValue(response)
+      mockStreamText.mockResolvedValue({
+        textStream: 'text-stream',
+        toUIMessageStreamResponse: mockToUIMessageStreamResponse,
+      } as any)
 
       const result = await streamAiText({
         model: 'gpt-4o-mini',
@@ -93,9 +96,7 @@ describe('vercelAi service helpers', () => {
         temperature: 0.2,
         maxOutputTokens: 150,
       })
-      expect(mockCreateTextStreamResponse).toHaveBeenCalledWith({
-        textStream: 'text-stream',
-      })
+      expect(mockToUIMessageStreamResponse).toHaveBeenCalled()
       expect(result).toBe(response)
     })
 

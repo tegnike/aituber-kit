@@ -4,11 +4,7 @@ import prettierPlugin from 'eslint-plugin-prettier'
 
 const eslintConfig = [
   {
-    ignores: [
-      'public/scripts/*',
-      'scripts/**',
-      '.mypy_cache/**',
-    ],
+    ignores: ['public/scripts/*', 'scripts/**', '.mypy_cache/**'],
   },
   ...nextConfig,
   prettierConfig,

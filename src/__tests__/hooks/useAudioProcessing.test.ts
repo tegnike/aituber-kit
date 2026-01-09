@@ -4,6 +4,12 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useAudioProcessing } from '@/hooks/useAudioProcessing'
 
+// Store original values for cleanup
+const originalAudioContext = (window as any).AudioContext
+const originalWebkitAudioContext = (window as any).webkitAudioContext
+const originalMediaRecorder = (window as any).MediaRecorder
+const originalMediaDevices = (navigator as any).mediaDevices
+
 // Mock AudioContext
 const mockAudioContextClose = jest.fn().mockResolvedValue(undefined)
 const mockDecodeAudioData = jest.fn().mockResolvedValue({
@@ -74,6 +80,14 @@ Object.defineProperty(navigator, 'mediaDevices', {
 })
 
 describe('useAudioProcessing', () => {
+  afterAll(() => {
+    // Restore original values
+    ;(window as any).AudioContext = originalAudioContext
+    ;(window as any).webkitAudioContext = originalWebkitAudioContext
+    ;(window as any).MediaRecorder = originalMediaRecorder
+    ;(navigator as any).mediaDevices = originalMediaDevices
+  })
+
   beforeEach(() => {
     jest.clearAllMocks()
     MockAudioContext.mockClear()
@@ -180,16 +194,12 @@ describe('useAudioProcessing', () => {
       })
 
       // MediaRecorderがaudio/webm;codecs=opusで作成されていることを確認
-      // 修正後の実装では、audio/webm;codecs=opusが優先される
       const calls = MockMediaRecorder.mock.calls
       expect(calls.length).toBeGreaterThan(0)
 
       const options = calls[calls.length - 1][1]
-      // 修正後は audio/webm;codecs=opus が優先されるべき
-      expect(
-        options.mimeType === 'audio/webm;codecs=opus' ||
-          options.mimeType === 'audio/webm'
-      ).toBe(true)
+      // audio/webm;codecs=opusが優先的に選択されることを確認
+      expect(options.mimeType).toBe('audio/webm;codecs=opus')
     })
 
     it('audio/mp3は低優先度として扱われる', async () => {

@@ -426,7 +426,7 @@ export function useRealtimeVoiceAPI(
     selectLanguage,
     clearSilenceDetection,
     startSilenceDetection,
-    // stopListening, // 依存配列から除去（無限ループ防止）
+    // stopListeningは依存配列から除去（無限ループ防止、stopListeningRefを使用）
     updateSpeechTimestamp,
     t,
   ])

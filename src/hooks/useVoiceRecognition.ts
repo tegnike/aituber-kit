@@ -95,7 +95,6 @@ export function useVoiceRecognition({
     // 常時マイク入力モードがONで、現在マイク入力が行われていない場合のみ実行
     if (
       continuousMicListeningMode &&
-      // !currentHookRef.current.isListening &&
       speechRecognitionMode === 'browser' &&
       !homeStore.getState().chatProcessing
     ) {

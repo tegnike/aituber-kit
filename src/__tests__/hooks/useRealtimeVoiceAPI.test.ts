@@ -89,16 +89,22 @@ describe('useRealtimeVoiceAPI - 言語設定の動的反映', () => {
 
   afterAll(() => {
     // グローバル変数を復元（他スイートへの副作用防止）
-    Object.defineProperty(window, 'SpeechRecognition', {
-      writable: true,
-      configurable: true,
-      value: originalSpeechRecognition,
-    })
-    Object.defineProperty(window, 'webkitSpeechRecognition', {
-      writable: true,
-      configurable: true,
-      value: originalWebkitSpeechRecognition,
-    })
+    if (originalSpeechRecognition !== undefined) {
+      delete (window as any).SpeechRecognition
+      Object.defineProperty(window, 'SpeechRecognition', {
+        writable: true,
+        configurable: true,
+        value: originalSpeechRecognition,
+      })
+    }
+    if (originalWebkitSpeechRecognition !== undefined) {
+      delete (window as any).webkitSpeechRecognition
+      Object.defineProperty(window, 'webkitSpeechRecognition', {
+        writable: true,
+        configurable: true,
+        value: originalWebkitSpeechRecognition,
+      })
+    }
   })
 
   describe('getVoiceLanguageCode', () => {
