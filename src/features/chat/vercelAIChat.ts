@@ -201,6 +201,9 @@ export async function getVercelAIChatResponseStream(
     body: JSON.stringify(requestData),
   })
 
+  const contentType = response.headers.get('content-type') || ''
+  const isPlainTextStream = contentType.includes('text/plain')
+
   try {
     if (!response.ok) {
       const responseBody = await response.json()
@@ -228,7 +231,16 @@ export async function getVercelAIChatResponseStream(
             const { done, value } = await reader.read()
             if (done) break
 
-            buffer += decoder.decode(value, { stream: true })
+            const decodedChunk = decoder.decode(value, { stream: true })
+
+            if (isPlainTextStream) {
+              if (decodedChunk) {
+                controller.enqueue(decodedChunk)
+              }
+              continue
+            }
+
+            buffer += decodedChunk
             const lines = buffer.split('\n')
             buffer = lines.pop() || ''
 
@@ -302,6 +314,10 @@ export async function getVercelAIChatResponseStream(
                 }
               }
             }
+          }
+
+          if (isPlainTextStream && buffer) {
+            controller.enqueue(buffer)
           }
         } catch (error) {
           console.error(
