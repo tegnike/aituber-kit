@@ -79,9 +79,7 @@ export class MemoryService {
    * IndexedDBを開き、利用可能な状態にする
    */
   async initialize(): Promise<void> {
-    if (this.initialized) {
-      return
-    }
+    if (this.initialized) return
 
     if (!isIndexedDBSupported()) {
       console.warn('MemoryService: IndexedDB is not supported in this browser')
@@ -163,68 +161,46 @@ export class MemoryService {
     query: string,
     options: SearchOptions = {}
   ): Promise<MemorySearchResult[]> {
-    if (!this.initialized) {
-      return []
-    }
+    if (!this.initialized) return []
 
     const { threshold = 0.7, limit = 5 } = options
 
     // クエリのEmbeddingを取得
-    let queryEmbedding: number[] | null = null
-    try {
-      queryEmbedding = await this.getEmbedding(query)
-    } catch (error) {
+    const queryEmbedding = await this.getEmbedding(query).catch((error) => {
       console.warn('MemoryService: Failed to get query embedding', error)
-      return []
-    }
+      return null
+    })
 
-    if (!queryEmbedding) {
-      return []
-    }
+    if (!queryEmbedding) return []
 
-    // 全メモリを取得
+    // 全メモリを取得して類似度計算
     const allMemories = await this.store.getAll()
-
-    // 類似度を計算してフィルタリング
     const results: MemorySearchResult[] = []
 
     for (const memory of allMemories) {
-      // Embeddingがないメモリはスキップ
-      if (!memory.embedding) {
-        continue
-      }
+      if (!memory.embedding) continue
 
       try {
         const similarity = cosineSimilarity(queryEmbedding, memory.embedding)
-
-        // 閾値以上のメモリのみ追加
         if (similarity >= threshold) {
-          results.push({
-            ...memory,
-            similarity,
-          })
+          results.push({ ...memory, similarity })
         }
       } catch (error) {
-        // 類似度計算エラーはスキップ
         console.warn('MemoryService: Similarity calculation failed', error)
       }
     }
 
-    // 類似度の降順でソート
-    results.sort((a, b) => (b.similarity || 0) - (a.similarity || 0))
-
-    // 件数上限を適用
-    return results.slice(0, limit)
+    // 類似度の降順でソートして件数上限を適用
+    return results
+      .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0))
+      .slice(0, limit)
   }
 
   /**
    * 全メモリを削除する
    */
   async clearAllMemories(): Promise<void> {
-    if (!this.initialized) {
-      return
-    }
-
+    if (!this.initialized) return
     await this.store.clear()
   }
 
@@ -280,11 +256,8 @@ export class MemoryService {
    * @returns メモリ件数
    */
   async getMemoryCount(): Promise<number> {
-    if (!this.initialized) {
-      return 0
-    }
-
-    return await this.store.count()
+    if (!this.initialized) return 0
+    return this.store.count()
   }
 
   /**

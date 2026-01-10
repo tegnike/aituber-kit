@@ -2,7 +2,6 @@
  * MemorySettings Component
  *
  * 記憶設定UIコンポーネント（会話履歴・長期記憶）
- * Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8
  */
 
 import { useEffect, useState, useCallback, useRef } from 'react'
@@ -19,6 +18,27 @@ import { getMemoryService } from '@/features/memory/memoryService'
 import { extractTextContent } from '@/features/memory/memoryStoreSync'
 import { Message } from '@/features/messages/messages'
 import { messageSelectors } from '@/features/messages/messageSelectors'
+
+/** Close icon SVG component */
+function CloseIcon(): JSX.Element {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 4L4 12M4 4L12 12"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 const MemorySettings = () => {
   const { t } = useTranslation()
@@ -88,27 +108,23 @@ const MemorySettings = () => {
     }
   }
 
-  // 類似度閾値の変更
-  const handleThresholdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value)
-    settingsStore.setState({ memorySimilarityThreshold: value })
-  }
-
-  // 検索上限の変更
-  const handleSearchLimitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10)
-    if (!isNaN(value)) {
-      settingsStore.setState({ memorySearchLimit: value })
+  // 数値設定の変更ハンドラーを生成
+  const createNumberHandler =
+    (
+      key:
+        | 'memorySimilarityThreshold'
+        | 'memorySearchLimit'
+        | 'memoryMaxContextTokens',
+      isFloat = false
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = isFloat
+        ? parseFloat(e.target.value)
+        : parseInt(e.target.value, 10)
+      if (!isNaN(value)) {
+        settingsStore.setState({ [key]: value })
+      }
     }
-  }
-
-  // 最大コンテキストトークンの変更
-  const handleMaxTokensChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10)
-    if (!isNaN(value)) {
-      settingsStore.setState({ memoryMaxContextTokens: value })
-    }
-  }
 
   // ファイル選択ボタンのクリック
   const handleFileSelectClick = () => {
@@ -339,7 +355,10 @@ const MemorySettings = () => {
                     max="0.9"
                     step="0.05"
                     value={memorySimilarityThreshold}
-                    onChange={handleThresholdChange}
+                    onChange={createNumberHandler(
+                      'memorySimilarityThreshold',
+                      true
+                    )}
                     aria-label={t('MemorySimilarityThreshold')}
                     className="mt-2 mb-4 input-range"
                     disabled={isDisabled}
@@ -361,7 +380,7 @@ const MemorySettings = () => {
                     min="1"
                     max="10"
                     value={memorySearchLimit}
-                    onChange={handleSearchLimitChange}
+                    onChange={createNumberHandler('memorySearchLimit')}
                     aria-label={t('MemorySearchLimit')}
                     className="w-24 px-4 py-2 bg-white border border-gray-300 rounded-lg"
                     disabled={isDisabled}
@@ -384,7 +403,7 @@ const MemorySettings = () => {
                     max="5000"
                     step="100"
                     value={memoryMaxContextTokens}
-                    onChange={handleMaxTokensChange}
+                    onChange={createNumberHandler('memoryMaxContextTokens')}
                     aria-label={t('MemoryMaxContextTokens')}
                     className="w-32 px-4 py-2 bg-white border border-gray-300 rounded-lg"
                     disabled={isDisabled}
@@ -459,21 +478,7 @@ const MemorySettings = () => {
                     className="p-1 text-gray-500 hover:text-gray-700 rounded"
                     title={t('Clear')}
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12 4L4 12M4 4L12 12"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <CloseIcon />
                   </button>
                 </div>
               )}
@@ -591,21 +596,7 @@ const MemorySettings = () => {
                         className="ml-2 p-1 text-red-500 hover:text-red-700 rounded"
                         title={t('DeleteMessage')}
                       >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12 4L4 12M4 4L12 12"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                        <CloseIcon />
                       </button>
                     </div>
                   )

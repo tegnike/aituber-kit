@@ -24,17 +24,7 @@ export const STORE_NAME = 'memories'
  */
 export function isIndexedDBSupported(): boolean {
   try {
-    // SSR環境ではwindowが存在しない
-    if (typeof window === 'undefined') {
-      return false
-    }
-
-    // IndexedDBの存在確認
-    if (!window.indexedDB) {
-      return false
-    }
-
-    return true
+    return typeof window !== 'undefined' && Boolean(window.indexedDB)
   } catch {
     return false
   }
@@ -71,9 +61,7 @@ export class MemoryStore {
    * @throws IndexedDBが利用できない場合にエラー
    */
   async open(): Promise<void> {
-    if (this.db) {
-      return
-    }
+    if (this.db) return
 
     this.db = await openDB<MemoryDB>(DB_NAME, DB_VERSION, {
       upgrade(db) {

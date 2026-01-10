@@ -82,13 +82,7 @@ export class MemoryContextBuilder {
     const header = '## 過去の記憶\n以下はユーザーとの過去の会話の記録です。\n\n'
 
     // トークン上限を超えないよう調整（古い記憶から削除）
-    const result = this.truncateToTokenLimit(
-      header,
-      formattedMemories,
-      maxTokens
-    )
-
-    return result
+    return this.truncateToTokenLimit(header, formattedMemories, maxTokens)
   }
 
   /**
@@ -102,19 +96,14 @@ export class MemoryContextBuilder {
    * @returns 推定トークン数
    */
   estimateTokens(text: string): number {
-    if (!text) {
-      return 0
-    }
+    if (!text) return 0
 
     // 日本語文字のカウント（ひらがな、カタカナ、漢字）
-    const japaneseChars = text.match(
-      /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/g
-    )
-    const japaneseCount = japaneseChars ? japaneseChars.length : 0
+    const japaneseCount =
+      text.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/g)?.length ?? 0
 
     // ASCII文字のカウント
-    const asciiChars = text.match(/[\x00-\x7F]/g)
-    const asciiCount = asciiChars ? asciiChars.length : 0
+    const asciiCount = text.match(/[\x00-\x7F]/g)?.length ?? 0
 
     // その他の文字（絵文字など）
     const otherCount = text.length - japaneseCount - asciiCount

@@ -19,30 +19,17 @@ import settingsStore from '@/features/stores/settings'
  * @param message - 保存するメッセージ
  */
 export async function saveMessageToMemory(message: Message): Promise<void> {
-  const ss = settingsStore.getState()
-
-  // メモリ機能が無効な場合は何もしない (Requirement 6.5)
-  if (!ss.memoryEnabled) {
-    return
-  }
+  const { memoryEnabled } = settingsStore.getState()
+  if (!memoryEnabled) return
 
   const memoryService = getMemoryService()
-
-  // サービスが利用可能でない場合は何もしない
-  if (!memoryService.isAvailable()) {
-    return
-  }
+  if (!memoryService.isAvailable()) return
 
   // roleがuserまたはassistantの場合のみ保存
-  if (message.role !== 'user' && message.role !== 'assistant') {
-    return
-  }
+  if (message.role !== 'user' && message.role !== 'assistant') return
 
-  // contentが文字列でない場合はテキスト部分を抽出
   const content = extractTextContent(message.content)
-  if (!content) {
-    return
-  }
+  if (!content) return
 
   try {
     await memoryService.saveMemory({
@@ -50,7 +37,6 @@ export async function saveMessageToMemory(message: Message): Promise<void> {
       content,
     })
   } catch (error) {
-    // エラーをログに記録し、会話は継続 (Requirement 1.4)
     console.warn('MemoryStoreSync: Failed to save message to memory', error)
   }
 }
@@ -63,18 +49,10 @@ export async function saveMessageToMemory(message: Message): Promise<void> {
  */
 export async function searchMemoryContext(query: string): Promise<string> {
   const ss = settingsStore.getState()
-
-  // メモリ機能が無効な場合は空文字列を返す
-  if (!ss.memoryEnabled) {
-    return ''
-  }
+  if (!ss.memoryEnabled) return ''
 
   const memoryService = getMemoryService()
-
-  // サービスが利用可能でない場合は空文字列を返す
-  if (!memoryService.isAvailable()) {
-    return ''
-  }
+  if (!memoryService.isAvailable()) return ''
 
   try {
     const memories = await memoryService.searchMemories(query, {
@@ -82,16 +60,13 @@ export async function searchMemoryContext(query: string): Promise<string> {
       limit: ss.memorySearchLimit,
     })
 
-    if (memories.length === 0) {
-      return ''
-    }
+    if (memories.length === 0) return ''
 
     const builder = new MemoryContextBuilder()
     return builder.buildContext(memories, {
       maxTokens: ss.memoryMaxContextTokens,
     })
   } catch (error) {
-    // エラーをログに記録し、空のコンテキストを返す
     console.warn('MemoryStoreSync: Failed to search memory context', error)
     return ''
   }
@@ -103,10 +78,8 @@ export async function searchMemoryContext(query: string): Promise<string> {
  * アプリケーション起動時に呼び出す
  */
 export async function initializeMemoryService(): Promise<void> {
-  const ss = settingsStore.getState()
-
-  // メモリ機能が無効な場合は初期化をスキップ
-  if (!ss.memoryEnabled) {
+  const { memoryEnabled } = settingsStore.getState()
+  if (!memoryEnabled) {
     console.log('MemoryStoreSync: Memory feature is disabled')
     return
   }
@@ -158,33 +131,18 @@ export function extractTextContent(content: Message['content']): string {
 export async function addEmbeddingToMessage(
   message: Message
 ): Promise<Message> {
-  const ss = settingsStore.getState()
+  const { memoryEnabled } = settingsStore.getState()
+  if (!memoryEnabled) return message
+  if (message.role !== 'user' && message.role !== 'assistant') return message
 
-  // メモリ機能が無効な場合は元のメッセージを返す
-  if (!ss.memoryEnabled) {
-    return message
-  }
-
-  // roleがuserまたはassistantでない場合は元のメッセージを返す
-  if (message.role !== 'user' && message.role !== 'assistant') {
-    return message
-  }
-
-  // コンテンツからテキストを抽出
   const content = extractTextContent(message.content)
-  if (!content) {
-    return message
-  }
+  if (!content) return message
 
   try {
     const memoryService = getMemoryService()
     const embedding = await memoryService.fetchEmbedding(content)
-
     if (embedding) {
-      return {
-        ...message,
-        embedding,
-      }
+      return { ...message, embedding }
     }
   } catch (error) {
     console.warn('Failed to fetch embedding for message:', error)
@@ -202,14 +160,9 @@ export async function addEmbeddingToMessage(
 export async function addEmbeddingsToMessages(
   messages: Message[]
 ): Promise<Message[]> {
-  const ss = settingsStore.getState()
-
-  // メモリ機能が無効な場合は元のメッセージを返す
-  if (!ss.memoryEnabled) {
-    return messages
-  }
-
-  return Promise.all(messages.map((msg) => addEmbeddingToMessage(msg)))
+  const { memoryEnabled } = settingsStore.getState()
+  if (!memoryEnabled) return messages
+  return Promise.all(messages.map(addEmbeddingToMessage))
 }
 
 /**
@@ -244,6 +197,9 @@ export async function getMemoryFiles(): Promise<MemoryFileInfo[]> {
   }
 }
 
+/** 復元失敗時のデフォルト結果 */
+const RESTORE_FAILURE = { success: false, restoredCount: 0, embeddingCount: 0 }
+
 /**
  * ローカルファイルからメモリを復元する
  *
@@ -255,26 +211,19 @@ export async function restoreMemoryFromFile(filename: string): Promise<{
   restoredCount: number
   embeddingCount: number
 }> {
-  const ss = settingsStore.getState()
-
-  // メモリ機能が無効な場合は失敗
-  if (!ss.memoryEnabled) {
-    return { success: false, restoredCount: 0, embeddingCount: 0 }
-  }
+  const { memoryEnabled } = settingsStore.getState()
+  if (!memoryEnabled) return RESTORE_FAILURE
 
   try {
-    // APIからメッセージを取得
     const response = await fetch('/api/memory-restore', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename }),
     })
 
     if (!response.ok) {
       console.error('Failed to restore memory:', response.statusText)
-      return { success: false, restoredCount: 0, embeddingCount: 0 }
+      return RESTORE_FAILURE
     }
 
     const data = (await response.json()) as {
@@ -283,36 +232,27 @@ export async function restoreMemoryFromFile(filename: string): Promise<{
       embeddingCount: number
     }
 
-    // MemoryServiceを初期化
     const memoryService = getMemoryService()
     if (!memoryService.isAvailable()) {
       await memoryService.initialize()
     }
 
-    // メッセージをMemoryRecordに変換してIndexedDBに保存
     let actualRestoredCount = 0
 
     for (const message of data.messages) {
-      // user/assistantメッセージのみを復元
-      if (message.role !== 'user' && message.role !== 'assistant') {
-        continue
-      }
+      if (message.role !== 'user' && message.role !== 'assistant') continue
 
       const content = extractTextContent(message.content)
-      if (!content) {
-        continue
-      }
+      if (!content) continue
 
-      const record = {
+      await memoryService.restoreMemory({
         id: `restored-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         sessionId: 'restored',
         role: message.role as 'user' | 'assistant',
         content,
         timestamp: message.timestamp || new Date().toISOString(),
         embedding: message.embedding || null,
-      }
-
-      await memoryService.restoreMemory(record)
+      })
       actualRestoredCount++
     }
 
@@ -327,6 +267,6 @@ export async function restoreMemoryFromFile(filename: string): Promise<{
     }
   } catch (error) {
     console.error('Error restoring memory from file:', error)
-    return { success: false, restoredCount: 0, embeddingCount: 0 }
+    return RESTORE_FAILURE
   }
 }

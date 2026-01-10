@@ -46,49 +46,18 @@ export default async function handler(
       fs.mkdirSync(logsDir)
     }
 
-    // ファイル名の決定優先順位:
-    // 1. isNewFile が true → 新規ファイル作成
-    // 2. targetFileName が指定されている → そのファイルを使用
-    // 3. それ以外 → 最新のログファイルまたは新規作成
-    let fileName: string
-    if (isNewFile) {
-      fileName = `log_${currentTime.replace(/[:.]/g, '-')}.json`
-    } else if (targetFileName) {
-      fileName = targetFileName
-    } else {
-      fileName =
-        getLatestLogFile(logsDir) ||
-        `log_${currentTime.replace(/[:.]/g, '-')}.json`
-    }
+    // ファイル名の決定: isNewFile → targetFileName → 最新ファイル → 新規作成
+    const newFileName = `log_${currentTime.replace(/[:.]/g, '-')}.json`
+    const fileName = isNewFile
+      ? newFileName
+      : targetFileName || getLatestLogFile(logsDir) || newFileName
 
     const filePath = path.join(logsDir, fileName)
 
-    let allMessages: Message[]
-
-    if (overwrite) {
-      // 上書きモード: 既存のファイルを読み込まずに直接上書き
-      allMessages = newMessages
-    } else {
-      // 追記モード: 既存のファイルを読み込んで追加
-      let existingMessages: Message[] = []
-      if (fs.existsSync(filePath)) {
-        try {
-          const fileContent = fs.readFileSync(filePath, 'utf-8')
-          existingMessages = JSON.parse(fileContent)
-          if (!Array.isArray(existingMessages)) {
-            console.warn(`Invalid format in ${fileName}, resetting file.`)
-            existingMessages = []
-          }
-        } catch (parseError) {
-          console.error(
-            `Error parsing ${fileName}, resetting file.`,
-            parseError
-          )
-          existingMessages = []
-        }
-      }
-      allMessages = [...existingMessages, ...newMessages]
-    }
+    // 上書きモードでなければ既存メッセージを読み込んで追記
+    const allMessages = overwrite
+      ? newMessages
+      : [...readExistingMessages(filePath, fileName), ...newMessages]
 
     // メッセージ配列を保存
     fs.writeFileSync(filePath, JSON.stringify(allMessages, null, 2))
@@ -153,9 +122,25 @@ function getLatestLogFile(dir: string): string | null {
       .filter((f) => f.startsWith('log_') && f.endsWith('.json'))
       .sort()
       .reverse()
-    return files.length > 0 ? files[0] : null
+    return files[0] ?? null
   } catch (error) {
     console.error('Error reading log directory:', error)
     return null
+  }
+}
+
+function readExistingMessages(filePath: string, fileName: string): Message[] {
+  if (!fs.existsSync(filePath)) return []
+
+  try {
+    const messages = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
+    if (!Array.isArray(messages)) {
+      console.warn(`Invalid format in ${fileName}, resetting file.`)
+      return []
+    }
+    return messages
+  } catch (error) {
+    console.error(`Error parsing ${fileName}, resetting file.`, error)
+    return []
   }
 }

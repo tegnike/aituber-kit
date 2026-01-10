@@ -40,43 +40,39 @@ export default async function handler(
       .reverse()
 
     // 各ファイルの情報を取得
-    const fileInfos: MemoryFileInfo[] = []
+    const fileInfos: MemoryFileInfo[] = files
+      .map((filename) => {
+        try {
+          const filePath = path.join(logsDir, filename)
+          const messages = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
 
-    for (const filename of files) {
-      try {
-        const filePath = path.join(logsDir, filename)
-        const content = fs.readFileSync(filePath, 'utf-8')
-        const messages = JSON.parse(content)
+          if (!Array.isArray(messages)) return null
 
-        if (!Array.isArray(messages)) {
-          continue
+          const hasEmbeddings = messages.some(
+            (msg: { embedding?: number[] }) =>
+              msg.embedding && Array.isArray(msg.embedding)
+          )
+
+          // ファイル名から日時を抽出（時刻部分のハイフンをコロンに戻す）
+          const match = filename.match(
+            /log_(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})/
+          )
+          const createdAt = match
+            ? match[1].replace(/-(\d{2})-(\d{2})-(\d{2})$/, ':$1:$2:$3')
+            : new Date().toISOString()
+
+          return {
+            filename,
+            createdAt,
+            messageCount: messages.length,
+            hasEmbeddings,
+          }
+        } catch (error) {
+          console.error(`Error reading file ${filename}:`, error)
+          return null
         }
-
-        // Embeddingを持つメッセージがあるかチェック
-        const hasEmbeddings = messages.some(
-          (msg: { embedding?: number[] }) =>
-            msg.embedding && Array.isArray(msg.embedding)
-        )
-
-        // ファイル名から日時を抽出
-        const match = filename.match(
-          /log_(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})/
-        )
-        const createdAt = match
-          ? match[1].replace(/-(\d{2})-(\d{2})-(\d{2})$/, ':$1:$2:$3') // 時刻部分のハイフンをコロンに戻す
-          : new Date().toISOString()
-
-        fileInfos.push({
-          filename,
-          createdAt,
-          messageCount: messages.length,
-          hasEmbeddings,
-        })
-      } catch (error) {
-        console.error(`Error reading file ${filename}:`, error)
-        // エラーがあってもスキップして続行
-      }
-    }
+      })
+      .filter((info): info is MemoryFileInfo => info !== null)
 
     res.status(200).json({ files: fileInfos })
   } catch (error) {
