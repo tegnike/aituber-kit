@@ -39,6 +39,13 @@ export default async function handler(
       return res.status(400).json({ message: 'Invalid messages data' })
     }
 
+    // overwrite=trueの場合はtargetFileNameが必須
+    if (overwrite && !targetFileName) {
+      return res.status(400).json({
+        message: 'targetFileName is required when overwrite is true',
+      })
+    }
+
     const logsDir = path.join(process.cwd(), 'logs')
 
     // logsディレクトリが存在しない場合は作成
