@@ -33,13 +33,13 @@ jest.mock('react-i18next', () => ({
         MemoryClearConfirm: '本当にすべての記憶を削除しますか？',
         MemoryCount: '保存済み記憶件数',
         MemoryCountValue: '{{count}}件',
-        MemoryAPIKeyWarning:
-          'OpenAI APIキーが設定されていないため、メモリ機能は利用できません。',
         MemoryRestore: '記憶を復元',
         MemoryRestoreInfo: 'ローカルファイルから記憶を復元します。',
         MemoryRestoreSelect: 'ファイルを選択',
         StatusOn: '状態：ON',
         StatusOff: '状態：OFF',
+        OpenAIAPIKeyLabel: 'OpenAI APIキー',
+        APIKeyInstruction: 'APIキーを入力してください。',
       }
       return translations[key] || key
     },
@@ -102,13 +102,17 @@ describe('MemorySettings Component', () => {
 
   describe('Requirement 5.2: Similarity Threshold Slider', () => {
     it('should render similarity threshold slider', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
       expect(screen.getByText('類似度閾値')).toBeInTheDocument()
     })
 
     it('should display current threshold value', () => {
-      settingsStore.setState({ memorySimilarityThreshold: 0.7 })
+      settingsStore.setState({
+        memoryEnabled: true,
+        memorySimilarityThreshold: 0.7,
+      })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -117,6 +121,7 @@ describe('MemorySettings Component', () => {
     })
 
     it('should update threshold on slider change', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -127,6 +132,7 @@ describe('MemorySettings Component', () => {
     })
 
     it('should enforce min/max range (0.5-0.9)', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -138,13 +144,14 @@ describe('MemorySettings Component', () => {
 
   describe('Requirement 5.3: Search Limit Setting', () => {
     it('should render search limit input', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
       expect(screen.getByText('検索結果上限')).toBeInTheDocument()
     })
 
     it('should display current search limit value', () => {
-      settingsStore.setState({ memorySearchLimit: 5 })
+      settingsStore.setState({ memoryEnabled: true, memorySearchLimit: 5 })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -153,6 +160,7 @@ describe('MemorySettings Component', () => {
     })
 
     it('should update search limit on change', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -163,6 +171,7 @@ describe('MemorySettings Component', () => {
     })
 
     it('should enforce min/max range (1-10)', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -174,12 +183,14 @@ describe('MemorySettings Component', () => {
 
   describe('Requirement 5.4: Memory Clear Button', () => {
     it('should render clear memory button', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
       expect(screen.getByText('記憶をクリア')).toBeInTheDocument()
     })
 
     it('should call clearAllMemories when confirmed', async () => {
+      settingsStore.setState({ memoryEnabled: true })
       // Mock window.confirm
       const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true)
 
@@ -197,6 +208,7 @@ describe('MemorySettings Component', () => {
     })
 
     it('should not call clearAllMemories when cancelled', async () => {
+      settingsStore.setState({ memoryEnabled: true })
       const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false)
 
       const element = React.createElement(MemorySettings)
@@ -213,6 +225,7 @@ describe('MemorySettings Component', () => {
 
   describe('Requirement 5.5: Memory Count Display', () => {
     it('should display current memory count', async () => {
+      settingsStore.setState({ memoryEnabled: true })
       mockMemoryService.getMemoryCount.mockResolvedValue(42)
 
       const element = React.createElement(MemorySettings)
@@ -224,42 +237,48 @@ describe('MemorySettings Component', () => {
     })
   })
 
-  describe('Requirement 5.6: API Key Warning', () => {
-    it('should show warning when OpenAI API key is not set', () => {
+  describe('Requirement 5.6: API Key Input', () => {
+    it('should render OpenAI API key input field', () => {
+      const element = React.createElement(MemorySettings)
+      render(element)
+
+      expect(screen.getByText('OpenAI APIキー')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('sk-...')).toBeInTheDocument()
+    })
+
+    it('should update OpenAI API key on change', () => {
       settingsStore.setState({ openaiKey: '' })
 
       const element = React.createElement(MemorySettings)
       render(element)
 
-      expect(
-        screen.getByText(
-          'OpenAI APIキーが設定されていないため、メモリ機能は利用できません。'
-        )
-      ).toBeInTheDocument()
+      const input = screen.getByPlaceholderText('sk-...')
+      fireEvent.change(input, { target: { value: 'sk-test-key' } })
+
+      expect(settingsStore.getState().openaiKey).toBe('sk-test-key')
     })
 
-    it('should not show warning when OpenAI API key is set', () => {
-      settingsStore.setState({ openaiKey: 'test-api-key' })
+    it('should disable memory toggle when API key is not set', () => {
+      settingsStore.setState({ openaiKey: '' })
 
       const element = React.createElement(MemorySettings)
       render(element)
 
-      expect(
-        screen.queryByText(
-          'OpenAI APIキーが設定されていないため、メモリ機能は利用できません。'
-        )
-      ).not.toBeInTheDocument()
+      const toggleButton = screen.getByText('状態：OFF')
+      expect(toggleButton).toBeDisabled()
     })
   })
 
   describe('Max Context Tokens Setting', () => {
     it('should render max context tokens input', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
       expect(screen.getByText('最大コンテキストトークン数')).toBeInTheDocument()
     })
 
     it('should update max context tokens on change', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -274,15 +293,53 @@ describe('MemorySettings Component', () => {
 
   describe('Requirement 5.7: Memory Restore UI', () => {
     it('should render restore memory section', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
       expect(screen.getByText('記憶を復元')).toBeInTheDocument()
     })
 
     it('should render file select button', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
       expect(screen.getByText('ファイルを選択')).toBeInTheDocument()
+    })
+  })
+
+  describe('Memory OFF state', () => {
+    it('should hide detailed settings when memory is disabled', () => {
+      settingsStore.setState({ memoryEnabled: false })
+      const element = React.createElement(MemorySettings)
+      render(element)
+
+      // ON/OFFトグルは表示されるべき
+      expect(screen.getByText('メモリ機能を有効にする')).toBeInTheDocument()
+      expect(screen.getByText('状態：OFF')).toBeInTheDocument()
+
+      // 詳細設定は非表示
+      expect(screen.queryByText('類似度閾値')).not.toBeInTheDocument()
+      expect(screen.queryByText('検索結果上限')).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('最大コンテキストトークン数')
+      ).not.toBeInTheDocument()
+      expect(screen.queryByText('保存済み記憶件数')).not.toBeInTheDocument()
+      expect(screen.queryByText('記憶をクリア')).not.toBeInTheDocument()
+      expect(screen.queryByText('記憶を復元')).not.toBeInTheDocument()
+    })
+
+    it('should show detailed settings when memory is enabled', () => {
+      settingsStore.setState({ memoryEnabled: true })
+      const element = React.createElement(MemorySettings)
+      render(element)
+
+      // 詳細設定が表示されるべき
+      expect(screen.getByText('類似度閾値')).toBeInTheDocument()
+      expect(screen.getByText('検索結果上限')).toBeInTheDocument()
+      expect(screen.getByText('最大コンテキストトークン数')).toBeInTheDocument()
+      expect(screen.getByText('保存済み記憶件数')).toBeInTheDocument()
+      expect(screen.getByText('記憶をクリア')).toBeInTheDocument()
+      expect(screen.getByText('記憶を復元')).toBeInTheDocument()
     })
   })
 })

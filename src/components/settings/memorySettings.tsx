@@ -9,6 +9,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ApiKeyInput } from './modelProvider/ApiKeyInput'
 import { getMemoryService } from '@/features/memory/memoryService'
 import { extractTextContent } from '@/features/memory/memoryStoreSync'
 import { Message } from '@/features/messages/messages'
@@ -167,12 +168,15 @@ const MemorySettings = () => {
           <h2 className="text-2xl font-bold">{t('MemorySettings')}</h2>
         </div>
 
-        {/* APIキー未設定警告 */}
-        {!hasApiKey && (
-          <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg">
-            {t('MemoryAPIKeyWarning')}
-          </div>
-        )}
+        {/* OpenAI APIキー設定 */}
+        <ApiKeyInput
+          label={t('OpenAIAPIKeyLabel')}
+          value={openaiKey}
+          onChange={(value) => settingsStore.setState({ openaiKey: value })}
+          placeholder="sk-..."
+          linkUrl="https://platform.openai.com/account/api-keys"
+          linkLabel="OpenAI"
+        />
 
         {/* メモリ機能ON/OFF */}
         <div className="my-6">
@@ -194,122 +198,130 @@ const MemorySettings = () => {
           </div>
         </div>
 
-        {/* 類似度閾値スライダー */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">
-            {t('MemorySimilarityThreshold')}
-          </div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('MemorySimilarityThresholdInfo')}
-          </div>
-          <div className="my-4 flex items-center gap-4">
-            <input
-              type="range"
-              min="0.5"
-              max="0.9"
-              step="0.05"
-              value={memorySimilarityThreshold}
-              onChange={handleThresholdChange}
-              aria-label={t('MemorySimilarityThreshold')}
-              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-              disabled={isDisabled}
-            />
-            <span className="w-12 text-center font-mono">
-              {memorySimilarityThreshold.toFixed(2)}
-            </span>
-          </div>
-        </div>
+        {/* メモリ機能がONの場合のみ詳細設定を表示 */}
+        {memoryEnabled && (
+          <>
+            {/* 類似度閾値スライダー */}
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">
+                {t('MemorySimilarityThreshold')}
+              </div>
+              <div className="my-4 whitespace-pre-line">
+                {t('MemorySimilarityThresholdInfo')}
+              </div>
+              <div className="mt-6 font-bold">
+                <div className="select-none">
+                  {t('MemorySimilarityThreshold')}:{' '}
+                  {memorySimilarityThreshold.toFixed(2)}
+                </div>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="0.9"
+                  step="0.05"
+                  value={memorySimilarityThreshold}
+                  onChange={handleThresholdChange}
+                  aria-label={t('MemorySimilarityThreshold')}
+                  className="mt-2 mb-4 input-range"
+                  disabled={isDisabled}
+                />
+              </div>
+            </div>
 
-        {/* 検索結果上限 */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">{t('MemorySearchLimit')}</div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('MemorySearchLimitInfo')}
-          </div>
-          <div className="my-4">
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={memorySearchLimit}
-              onChange={handleSearchLimitChange}
-              aria-label={t('MemorySearchLimit')}
-              className="w-24 px-4 py-2 bg-white border border-gray-300 rounded-lg"
-              disabled={isDisabled}
-            />
-          </div>
-        </div>
+            {/* 検索結果上限 */}
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">
+                {t('MemorySearchLimit')}
+              </div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('MemorySearchLimitInfo')}
+              </div>
+              <div className="my-4">
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={memorySearchLimit}
+                  onChange={handleSearchLimitChange}
+                  aria-label={t('MemorySearchLimit')}
+                  className="w-24 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                  disabled={isDisabled}
+                />
+              </div>
+            </div>
 
-        {/* 最大コンテキストトークン数 */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">
-            {t('MemoryMaxContextTokens')}
-          </div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('MemoryMaxContextTokensInfo')}
-          </div>
-          <div className="my-4">
-            <input
-              type="number"
-              min="100"
-              max="5000"
-              step="100"
-              value={memoryMaxContextTokens}
-              onChange={handleMaxTokensChange}
-              aria-label={t('MemoryMaxContextTokens')}
-              className="w-32 px-4 py-2 bg-white border border-gray-300 rounded-lg"
-              disabled={isDisabled}
-            />
-          </div>
-        </div>
+            {/* 最大コンテキストトークン数 */}
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">
+                {t('MemoryMaxContextTokens')}
+              </div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('MemoryMaxContextTokensInfo')}
+              </div>
+              <div className="my-4">
+                <input
+                  type="number"
+                  min="100"
+                  max="5000"
+                  step="100"
+                  value={memoryMaxContextTokens}
+                  onChange={handleMaxTokensChange}
+                  aria-label={t('MemoryMaxContextTokens')}
+                  className="w-32 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                  disabled={isDisabled}
+                />
+              </div>
+            </div>
 
-        {/* 保存済み記憶件数 */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">{t('MemoryCount')}</div>
-          <div className="my-2 text-lg">
-            {t('MemoryCountValue', { count: memoryCount })}
-          </div>
-        </div>
+            {/* 保存済み記憶件数 */}
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">{t('MemoryCount')}</div>
+              <div className="my-2 text-lg">
+                {t('MemoryCountValue', { count: memoryCount })}
+              </div>
+            </div>
 
-        {/* 記憶をクリア */}
-        <div className="my-6">
-          <TextButton
-            onClick={handleClearMemories}
-            disabled={isClearing || isDisabled}
-          >
-            {isClearing ? '...' : t('MemoryClear')}
-          </TextButton>
-        </div>
-
-        {/* 記憶を復元 */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">{t('MemoryRestore')}</div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('MemoryRestoreInfo')}
-          </div>
-          <div className="my-4 flex items-center gap-4">
-            <input
-              type="file"
-              accept=".json"
-              ref={fileInputRef}
-              onChange={handleFileRestore}
-              className="hidden"
-            />
-            <TextButton
-              onClick={handleFileSelectClick}
-              disabled={isRestoring || isDisabled}
-            >
-              {isRestoring ? '...' : t('MemoryRestoreSelect')}
-            </TextButton>
-            {restoreMessage && (
-              <span
-                className={`text-sm ${restoreMessage.includes('成功') || restoreMessage.includes('Success') ? 'text-green-600' : 'text-red-600'}`}
+            {/* 記憶をクリア */}
+            <div className="my-6">
+              <TextButton
+                onClick={handleClearMemories}
+                disabled={isClearing || isDisabled}
               >
-                {restoreMessage}
-              </span>
-            )}
-          </div>
-        </div>
+                {isClearing ? '...' : t('MemoryClear')}
+              </TextButton>
+            </div>
+
+            {/* 記憶を復元 */}
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">{t('MemoryRestore')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('MemoryRestoreInfo')}
+              </div>
+              <div className="my-4 flex items-center gap-4">
+                <input
+                  type="file"
+                  accept=".json"
+                  ref={fileInputRef}
+                  onChange={handleFileRestore}
+                  className="hidden"
+                />
+                <TextButton
+                  onClick={handleFileSelectClick}
+                  disabled={isRestoring || isDisabled}
+                >
+                  {isRestoring ? '...' : t('MemoryRestoreSelect')}
+                </TextButton>
+                {restoreMessage && (
+                  <span
+                    className={`text-sm ${restoreMessage.includes('成功') || restoreMessage.includes('Success') ? 'text-green-600' : 'text-red-600'}`}
+                  >
+                    {restoreMessage}
+                  </span>
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   )
