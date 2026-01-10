@@ -2,10 +2,19 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
+import { isDemoMode } from '@/utils/demoMode'
 import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
 } from '@/features/memory/memoryTypes'
+import {
+  IdleModeSettings,
+  DEFAULT_IDLE_CONFIG,
+} from '@/features/idle/idleTypes'
+import {
+  KioskModeSettings,
+  DEFAULT_KIOSK_CONFIG,
+} from '@/features/kiosk/kioskTypes'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
   AIService,
@@ -222,13 +231,28 @@ interface ModelType {
   modelType: 'vrm' | 'live2d'
 }
 
+// Presence detection sensitivity type
+export type PresenceDetectionSensitivity = 'low' | 'medium' | 'high'
+
+interface PresenceDetectionSettings {
+  presenceDetectionEnabled: boolean
+  presenceGreetingMessage: string
+  presenceDepartureTimeout: number
+  presenceCooldownTime: number
+  presenceDetectionSensitivity: PresenceDetectionSensitivity
+  presenceDebugMode: boolean
+}
+
 export type SettingsState = APIKeys &
   ModelProvider &
   Integrations &
   Character &
   General &
   ModelType &
-  MemoryConfig
+  MemoryConfig &
+  PresenceDetectionSettings &
+  IdleModeSettings &
+  KioskModeSettings
 
 // Function to get initial values from environment variables
 const getInitialValuesFromEnv = (): SettingsState => ({
@@ -424,11 +448,12 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   showQuickMenu: process.env.NEXT_PUBLIC_SHOW_QUICK_MENU === 'true',
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   realtimeAPIMode:
-    (process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
+    !isDemoMode() &&
+    ((process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
       ['openai', 'azure'].includes(
         process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
       )) ||
-    false,
+      false),
   realtimeAPIModeContentType:
     (process.env
       .NEXT_PUBLIC_REALTIME_API_MODE_CONTENT_TYPE as RealtimeAPIModeContentType) ||
@@ -436,7 +461,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   realtimeAPIModeVoice:
     (process.env.NEXT_PUBLIC_REALTIME_API_MODE_VOICE as RealtimeAPIModeVoice) ||
     'shimmer',
-  audioMode: process.env.NEXT_PUBLIC_AUDIO_MODE === 'true',
+  audioMode: !isDemoMode() && process.env.NEXT_PUBLIC_AUDIO_MODE === 'true',
   audioModeInputType:
     (process.env.NEXT_PUBLIC_AUDIO_MODE_INPUT_TYPE as AudioModeInputType) ||
     'input_text',
@@ -529,10 +554,90 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   modelType: (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
 
   // Memory settings
-  memoryEnabled: DEFAULT_MEMORY_CONFIG.memoryEnabled,
-  memorySimilarityThreshold: DEFAULT_MEMORY_CONFIG.memorySimilarityThreshold,
-  memorySearchLimit: DEFAULT_MEMORY_CONFIG.memorySearchLimit,
-  memoryMaxContextTokens: DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
+  memoryEnabled:
+    process.env.NEXT_PUBLIC_MEMORY_ENABLED === 'true' ||
+    DEFAULT_MEMORY_CONFIG.memoryEnabled,
+  memorySimilarityThreshold:
+    parseFloat(process.env.NEXT_PUBLIC_MEMORY_SIMILARITY_THRESHOLD || '') ||
+    DEFAULT_MEMORY_CONFIG.memorySimilarityThreshold,
+  memorySearchLimit:
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_SEARCH_LIMIT || '') ||
+    DEFAULT_MEMORY_CONFIG.memorySearchLimit,
+  memoryMaxContextTokens:
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_MAX_CONTEXT_TOKENS || '') ||
+    DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
+
+  // Presence detection settings
+  presenceDetectionEnabled:
+    process.env.NEXT_PUBLIC_PRESENCE_DETECTION_ENABLED === 'true',
+  presenceGreetingMessage:
+    process.env.NEXT_PUBLIC_PRESENCE_GREETING_MESSAGE ||
+    'いらっしゃいませ！何かお手伝いできることはありますか？',
+  presenceDepartureTimeout:
+    parseInt(process.env.NEXT_PUBLIC_PRESENCE_DEPARTURE_TIMEOUT || '') || 3,
+  presenceCooldownTime:
+    parseInt(process.env.NEXT_PUBLIC_PRESENCE_COOLDOWN_TIME || '') || 5,
+  presenceDetectionSensitivity:
+    (process.env
+      .NEXT_PUBLIC_PRESENCE_DETECTION_SENSITIVITY as PresenceDetectionSensitivity) ||
+    'medium',
+  presenceDebugMode: process.env.NEXT_PUBLIC_PRESENCE_DEBUG_MODE === 'true',
+
+  // Idle mode settings
+  idleModeEnabled:
+    process.env.NEXT_PUBLIC_IDLE_MODE_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleModeEnabled,
+  idlePhrases: DEFAULT_IDLE_CONFIG.idlePhrases,
+  idlePlaybackMode:
+    (process.env.NEXT_PUBLIC_IDLE_PLAYBACK_MODE as 'sequential' | 'random') ||
+    DEFAULT_IDLE_CONFIG.idlePlaybackMode,
+  idleInterval:
+    parseInt(process.env.NEXT_PUBLIC_IDLE_INTERVAL || '') ||
+    DEFAULT_IDLE_CONFIG.idleInterval,
+  idleDefaultEmotion:
+    (process.env.NEXT_PUBLIC_IDLE_DEFAULT_EMOTION as
+      | 'neutral'
+      | 'happy'
+      | 'sad'
+      | 'angry'
+      | 'relaxed'
+      | 'surprised') || DEFAULT_IDLE_CONFIG.idleDefaultEmotion,
+  idleTimePeriodEnabled:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEnabled,
+  idleTimePeriodMorning:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_MORNING ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodMorning,
+  idleTimePeriodAfternoon:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_AFTERNOON ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodAfternoon,
+  idleTimePeriodEvening:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_EVENING ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEvening,
+  idleAiGenerationEnabled:
+    process.env.NEXT_PUBLIC_IDLE_AI_GENERATION_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleAiGenerationEnabled,
+  idleAiPromptTemplate:
+    process.env.NEXT_PUBLIC_IDLE_AI_PROMPT_TEMPLATE ||
+    DEFAULT_IDLE_CONFIG.idleAiPromptTemplate,
+
+  // Kiosk mode settings
+  kioskModeEnabled:
+    process.env.NEXT_PUBLIC_KIOSK_MODE_ENABLED === 'true' ||
+    DEFAULT_KIOSK_CONFIG.kioskModeEnabled,
+  kioskPasscode:
+    process.env.NEXT_PUBLIC_KIOSK_PASSCODE ||
+    DEFAULT_KIOSK_CONFIG.kioskPasscode,
+  kioskMaxInputLength:
+    parseInt(process.env.NEXT_PUBLIC_KIOSK_MAX_INPUT_LENGTH || '') ||
+    DEFAULT_KIOSK_CONFIG.kioskMaxInputLength,
+  kioskNgWords: process.env.NEXT_PUBLIC_KIOSK_NG_WORDS
+    ? process.env.NEXT_PUBLIC_KIOSK_NG_WORDS.split(',').map((w) => w.trim())
+    : DEFAULT_KIOSK_CONFIG.kioskNgWords,
+  kioskNgWordEnabled:
+    process.env.NEXT_PUBLIC_KIOSK_NG_WORD_ENABLED === 'true' ||
+    DEFAULT_KIOSK_CONFIG.kioskNgWordEnabled,
+  kioskTemporaryUnlock: DEFAULT_KIOSK_CONFIG.kioskTemporaryUnlock,
 
   // Live2D settings
   neutralEmotions: process.env.NEXT_PUBLIC_NEUTRAL_EMOTIONS?.split(',') || [],
@@ -561,6 +666,12 @@ const settingsStore = create<SettingsState>()(
         if (migratedModel !== state.selectAIModel) {
           state.selectAIModel = migratedModel
         }
+      }
+
+      // Force disable WebSocket-related features in demo mode
+      if (state && isDemoMode()) {
+        state.realtimeAPIMode = false
+        state.audioMode = false
       }
 
       // Override with environment variables if the option is enabled
@@ -725,6 +836,30 @@ const settingsStore = create<SettingsState>()(
       memorySimilarityThreshold: state.memorySimilarityThreshold,
       memorySearchLimit: state.memorySearchLimit,
       memoryMaxContextTokens: state.memoryMaxContextTokens,
+      presenceDetectionEnabled: state.presenceDetectionEnabled,
+      presenceGreetingMessage: state.presenceGreetingMessage,
+      presenceDepartureTimeout: state.presenceDepartureTimeout,
+      presenceCooldownTime: state.presenceCooldownTime,
+      presenceDetectionSensitivity: state.presenceDetectionSensitivity,
+      presenceDebugMode: state.presenceDebugMode,
+      // Idle mode settings
+      idleModeEnabled: state.idleModeEnabled,
+      idlePhrases: state.idlePhrases,
+      idlePlaybackMode: state.idlePlaybackMode,
+      idleInterval: state.idleInterval,
+      idleDefaultEmotion: state.idleDefaultEmotion,
+      idleTimePeriodEnabled: state.idleTimePeriodEnabled,
+      idleTimePeriodMorning: state.idleTimePeriodMorning,
+      idleTimePeriodAfternoon: state.idleTimePeriodAfternoon,
+      idleTimePeriodEvening: state.idleTimePeriodEvening,
+      idleAiGenerationEnabled: state.idleAiGenerationEnabled,
+      idleAiPromptTemplate: state.idleAiPromptTemplate,
+      // Kiosk mode settings (kioskTemporaryUnlock is NOT persisted)
+      kioskModeEnabled: state.kioskModeEnabled,
+      kioskPasscode: state.kioskPasscode,
+      kioskMaxInputLength: state.kioskMaxInputLength,
+      kioskNgWords: state.kioskNgWords,
+      kioskNgWordEnabled: state.kioskNgWordEnabled,
     }),
   })
 )

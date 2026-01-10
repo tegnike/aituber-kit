@@ -7,6 +7,7 @@ import { messageSelectors } from '../messages/messageSelectors'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 import { generateMessageId } from '@/utils/messageUtils'
 import { addEmbeddingsToMessages } from '@/features/memory/memoryStoreSync'
+import { PresenceState, PresenceError } from '@/features/presence/presenceTypes'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -33,6 +34,10 @@ export interface TransientState {
   isLive2dLoaded: boolean
   setIsLive2dLoaded: (loaded: boolean) => void
   isSpeaking: boolean
+  // Presence detection transient state
+  presenceState: PresenceState
+  presenceError: PresenceError | null
+  lastDetectionTime: number | null
 }
 
 export type HomeState = PersistedState & TransientState
@@ -43,46 +48,12 @@ const SAVE_DEBOUNCE_DELAY = 2000 // 2秒
 let lastSavedLogLength = 0 // 最後に保存したログの長さを記録
 // 履歴削除後に次回保存で新規ファイルを作成するかどうかを示すフラグ
 let shouldCreateNewFile = false
-// 復元中はembedding取得をスキップするためのフラグ
-let isRestoringChatLog = false
-// 復元したログファイル名（復元後はこのファイルに追記する）
-let targetLogFileName: string | null = null
-
-/**
- * 復元中フラグを設定する
- * 復元中はembedding取得とファイル保存をスキップする
- */
-export const setRestoringChatLog = (restoring: boolean) => {
-  isRestoringChatLog = restoring
-  if (restoring) {
-    // 復元開始時はlastSavedLogLengthをリセットして
-    // 復元後のメッセージが新規として認識されないようにする
-    lastSavedLogLength = 0
-  }
-}
-
-/**
- * ターゲットログファイル名を設定する
- * 復元時に呼び出して、以降の保存をこのファイルに行う
- */
-export const setTargetLogFileName = (fileName: string | null) => {
-  targetLogFileName = fileName
-  console.log('Target log file set to:', fileName)
-}
-
-/**
- * 現在のターゲットログファイル名を取得する
- */
-export const getTargetLogFileName = (): string | null => {
-  return targetLogFileName
-}
 
 // ログ保存状態をリセットする共通関数
 const resetSaveState = () => {
   console.log('Chat log was cleared, resetting save state.')
   lastSavedLogLength = 0
   shouldCreateNewFile = true
-  targetLogFileName = null // ターゲットファイルもリセット
   if (saveDebounceTimer) {
     clearTimeout(saveDebounceTimer)
   }
@@ -167,6 +138,10 @@ const homeStore = create<HomeState>()(
       isLive2dLoaded: false,
       setIsLive2dLoaded: (loaded) => set(() => ({ isLive2dLoaded: loaded })),
       isSpeaking: false,
+      // Presence detection initial state
+      presenceState: 'idle',
+      presenceError: null,
+      lastDetectionTime: null,
     }),
     {
       name: 'aitube-kit-home',
@@ -187,12 +162,6 @@ const homeStore = create<HomeState>()(
 // chatLogの変更を監視して差分を保存
 homeStore.subscribe((state, prevState) => {
   if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
-    // 復元中はスキップ
-    if (isRestoringChatLog) {
-      lastSavedLogLength = state.chatLog.length
-      return
-    }
-
     if (lastSavedLogLength > state.chatLog.length) {
       resetSaveState()
     }
@@ -202,11 +171,6 @@ homeStore.subscribe((state, prevState) => {
     }
 
     saveDebounceTimer = setTimeout(async () => {
-      // 復元中はスキップ（タイムアウト中に復元が開始された場合）
-      if (isRestoringChatLog) {
-        return
-      }
-
       // 新規追加 or 更新があったメッセージだけを抽出
       const newMessagesToSave = state.chatLog.filter(
         (msg, idx) =>
@@ -243,7 +207,6 @@ homeStore.subscribe((state, prevState) => {
           body: JSON.stringify({
             messages: messagesWithEmbedding,
             isNewFile: shouldCreateNewFile,
-            targetFileName: targetLogFileName,
           }),
         })
           .then((response) => {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Idle Mode Settings Icon (Clock) -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" style="width: 48px; height: 48px; opacity: 1;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#4B4B4B;}
+</style>
+<g>
+	<!-- Clock outer circle -->
+	<path class="st0" d="M256,0C114.6,0,0,114.6,0,256s114.6,256,256,256s256-114.6,256-256S397.4,0,256,0z M256,464c-114.9,0-208-93.1-208-208S141.1,48,256,48s208,93.1,208,208S370.9,464,256,464z"/>
+	<!-- Hour hand -->
+	<rect class="st0" x="232" y="128" width="48" height="152"/>
+	<!-- Minute hand -->
+	<rect class="st0" x="232" y="232" width="128" height="48"/>
+</g>
+</svg>
