@@ -25,7 +25,7 @@ export const ApiKeyInput = ({
   return (
     <div className="my-6">
       <div className="my-4 text-xl font-bold">{label}</div>
-      <div className="my-4">
+      <div className="my-2 text-sm whitespace-pre-wrap">
         {description || t('APIKeyInstruction')}
         {linkUrl && linkLabel && (
           <>

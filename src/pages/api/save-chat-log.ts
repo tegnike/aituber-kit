@@ -22,9 +22,16 @@ export default async function handler(
   }
 
   try {
-    const { messages: newMessages, isNewFile } = req.body as {
+    const {
+      messages: newMessages,
+      isNewFile,
+      targetFileName,
+      overwrite,
+    } = req.body as {
       messages: Message[]
       isNewFile?: boolean
+      targetFileName?: string | null
+      overwrite?: boolean
     }
     const currentTime = new Date().toISOString()
 
@@ -39,34 +46,51 @@ export default async function handler(
       fs.mkdirSync(logsDir)
     }
 
-    // isNewFile が true の場合は強制的に新しいファイルを作成
-    const fileName = isNewFile
-      ? `log_${currentTime.replace(/[:.]/g, '-')}.json`
-      : getLatestLogFile(logsDir) ||
+    // ファイル名の決定優先順位:
+    // 1. isNewFile が true → 新規ファイル作成
+    // 2. targetFileName が指定されている → そのファイルを使用
+    // 3. それ以外 → 最新のログファイルまたは新規作成
+    let fileName: string
+    if (isNewFile) {
+      fileName = `log_${currentTime.replace(/[:.]/g, '-')}.json`
+    } else if (targetFileName) {
+      fileName = targetFileName
+    } else {
+      fileName =
+        getLatestLogFile(logsDir) ||
         `log_${currentTime.replace(/[:.]/g, '-')}.json`
+    }
 
     const filePath = path.join(logsDir, fileName)
 
-    // ファイルの読み込みと更新
-    let existingMessages: Message[] = []
-    if (fs.existsSync(filePath)) {
-      try {
-        const fileContent = fs.readFileSync(filePath, 'utf-8')
-        existingMessages = JSON.parse(fileContent)
-        if (!Array.isArray(existingMessages)) {
-          console.warn(`Invalid format in ${fileName}, resetting file.`)
+    let allMessages: Message[]
+
+    if (overwrite) {
+      // 上書きモード: 既存のファイルを読み込まずに直接上書き
+      allMessages = newMessages
+    } else {
+      // 追記モード: 既存のファイルを読み込んで追加
+      let existingMessages: Message[] = []
+      if (fs.existsSync(filePath)) {
+        try {
+          const fileContent = fs.readFileSync(filePath, 'utf-8')
+          existingMessages = JSON.parse(fileContent)
+          if (!Array.isArray(existingMessages)) {
+            console.warn(`Invalid format in ${fileName}, resetting file.`)
+            existingMessages = []
+          }
+        } catch (parseError) {
+          console.error(
+            `Error parsing ${fileName}, resetting file.`,
+            parseError
+          )
           existingMessages = []
         }
-      } catch (parseError) {
-        console.error(`Error parsing ${fileName}, resetting file.`, parseError)
-        existingMessages = []
       }
+      allMessages = [...existingMessages, ...newMessages]
     }
 
-    // 新しいメッセージを既存のメッセージに追加
-    const allMessages = [...existingMessages, ...newMessages]
-
-    // 更新されたメッセージ配列を保存
+    // メッセージ配列を保存
     fs.writeFileSync(filePath, JSON.stringify(allMessages, null, 2))
 
     if (supabase) {

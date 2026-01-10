@@ -85,7 +85,9 @@ describe('MemorySettings Component', () => {
       settingsStore.setState({ memoryEnabled: false })
       const element = React.createElement(MemorySettings)
       render(element)
-      expect(screen.getByText('状態：OFF')).toBeInTheDocument()
+      // 「長期記憶にも保存する」もOFFなので、2つの「状態：OFF」がある
+      const offButtons = screen.getAllByText('状態：OFF')
+      expect(offButtons.length).toBeGreaterThanOrEqual(1)
     })
 
     it('should toggle memory enabled state on click', () => {
@@ -93,8 +95,9 @@ describe('MemorySettings Component', () => {
       const element = React.createElement(MemorySettings)
       render(element)
 
-      const toggleButton = screen.getByText('状態：OFF')
-      fireEvent.click(toggleButton)
+      // 最初の「状態：OFF」ボタン（長期記憶のトグル）をクリック
+      const toggleButtons = screen.getAllByText('状態：OFF')
+      fireEvent.click(toggleButtons[0])
 
       expect(settingsStore.getState().memoryEnabled).toBe(true)
     })
@@ -238,7 +241,8 @@ describe('MemorySettings Component', () => {
   })
 
   describe('Requirement 5.6: API Key Input', () => {
-    it('should render OpenAI API key input field', () => {
+    it('should render OpenAI API key input field when memory is enabled', () => {
+      settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
@@ -247,7 +251,7 @@ describe('MemorySettings Component', () => {
     })
 
     it('should update OpenAI API key on change', () => {
-      settingsStore.setState({ openaiKey: '' })
+      settingsStore.setState({ memoryEnabled: true, openaiKey: '' })
 
       const element = React.createElement(MemorySettings)
       render(element)
@@ -258,14 +262,14 @@ describe('MemorySettings Component', () => {
       expect(settingsStore.getState().openaiKey).toBe('sk-test-key')
     })
 
-    it('should disable memory toggle when API key is not set', () => {
-      settingsStore.setState({ openaiKey: '' })
+    it('should hide API key input when memory is disabled', () => {
+      settingsStore.setState({ memoryEnabled: false, openaiKey: '' })
 
       const element = React.createElement(MemorySettings)
       render(element)
 
-      const toggleButton = screen.getByText('状態：OFF')
-      expect(toggleButton).toBeDisabled()
+      expect(screen.queryByText('OpenAI APIキー')).not.toBeInTheDocument()
+      expect(screen.queryByPlaceholderText('sk-...')).not.toBeInTheDocument()
     })
   })
 
@@ -315,9 +319,11 @@ describe('MemorySettings Component', () => {
 
       // ON/OFFトグルは表示されるべき
       expect(screen.getByText('メモリ機能を有効にする')).toBeInTheDocument()
-      expect(screen.getByText('状態：OFF')).toBeInTheDocument()
+      // 「長期記憶にも保存する」もOFFなので、複数の「状態：OFF」がある
+      const offButtons = screen.getAllByText('状態：OFF')
+      expect(offButtons.length).toBeGreaterThanOrEqual(1)
 
-      // 詳細設定は非表示
+      // 長期記憶の詳細設定は非表示
       expect(screen.queryByText('類似度閾値')).not.toBeInTheDocument()
       expect(screen.queryByText('検索結果上限')).not.toBeInTheDocument()
       expect(
@@ -325,7 +331,9 @@ describe('MemorySettings Component', () => {
       ).not.toBeInTheDocument()
       expect(screen.queryByText('保存済み記憶件数')).not.toBeInTheDocument()
       expect(screen.queryByText('記憶をクリア')).not.toBeInTheDocument()
-      expect(screen.queryByText('記憶を復元')).not.toBeInTheDocument()
+
+      // 記憶を復元は常に表示される
+      expect(screen.getByText('記憶を復元')).toBeInTheDocument()
     })
 
     it('should show detailed settings when memory is enabled', () => {

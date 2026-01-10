@@ -12,7 +12,6 @@ import AI from './ai'
 import Voice from './voice'
 import YouTube from './youtube'
 import Slide from './slide'
-import Log from './log'
 import Other from './other'
 import SpeechInput from './speechInput'
 import Images from './images'
@@ -57,7 +56,6 @@ type TabKey =
   | 'youtube'
   | 'slide'
   | 'images'
-  | 'log'
   | 'other'
   | 'speechInput'
   | 'memory'
@@ -72,7 +70,6 @@ const tabIconMapping: Record<TabKey, string> = {
   youtube: '/images/setting-icons/youtube-settings.svg',
   slide: '/images/setting-icons/slide-settings.svg',
   images: '/images/setting-icons/image-settings.svg',
-  log: '/images/setting-icons/conversation-history.svg',
   other: '/images/setting-icons/other-settings.svg',
   speechInput: '/images/setting-icons/microphone-settings.svg',
   memory: '/images/setting-icons/memory-settings.svg',
@@ -147,10 +144,6 @@ const Main = () => {
       label: t('ImageSettings'),
     },
     {
-      key: 'log',
-      label: t('LogSettings'),
-    },
-    {
       key: 'memory',
       label: t('MemorySettings'),
     },
@@ -178,8 +171,6 @@ const Main = () => {
         return <Slide />
       case 'images':
         return <Images />
-      case 'log':
-        return <Log />
       case 'memory':
         return <MemorySettings />
       case 'other':

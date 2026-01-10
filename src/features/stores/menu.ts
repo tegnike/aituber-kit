@@ -10,7 +10,6 @@ type SettingsTabKey =
   | 'youtube'
   | 'slide'
   | 'images'
-  | 'log'
   | 'memory'
   | 'other'
 interface MenuState {
