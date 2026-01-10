@@ -284,10 +284,10 @@ export async function getVercelAIChatResponseStream(
                   } else if (data.type === 'error') {
                     console.error(
                       `Error fetching ${selectAIService} API response:`,
-                      data.message || data
+                      data.errorText || data
                     )
                     toastStore.getState().addToast({
-                      message: data.message || 'Unknown error',
+                      message: data.errorText || 'Unknown error',
                       type: 'error',
                       tag: 'vercel-api-error',
                     })

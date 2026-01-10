@@ -2,6 +2,10 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
+import {
+  MemoryConfig,
+  DEFAULT_MEMORY_CONFIG,
+} from '@/features/memory/memoryTypes'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
   AIService,
@@ -223,7 +227,8 @@ export type SettingsState = APIKeys &
   Integrations &
   Character &
   General &
-  ModelType
+  ModelType &
+  MemoryConfig
 
 // Function to get initial values from environment variables
 const getInitialValuesFromEnv = (): SettingsState => ({
@@ -523,6 +528,12 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Settings
   modelType: (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
 
+  // Memory settings
+  memoryEnabled: DEFAULT_MEMORY_CONFIG.memoryEnabled,
+  memorySimilarityThreshold: DEFAULT_MEMORY_CONFIG.memorySimilarityThreshold,
+  memorySearchLimit: DEFAULT_MEMORY_CONFIG.memorySearchLimit,
+  memoryMaxContextTokens: DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
+
   // Live2D settings
   neutralEmotions: process.env.NEXT_PUBLIC_NEUTRAL_EMOTIONS?.split(',') || [],
   happyEmotions: process.env.NEXT_PUBLIC_HAPPY_EMOTIONS?.split(',') || [],
@@ -710,6 +721,10 @@ const settingsStore = create<SettingsState>()(
       enableMultiModal: state.enableMultiModal,
       colorTheme: state.colorTheme,
       customModel: state.customModel,
+      memoryEnabled: state.memoryEnabled,
+      memorySimilarityThreshold: state.memorySimilarityThreshold,
+      memorySearchLimit: state.memorySearchLimit,
+      memoryMaxContextTokens: state.memoryMaxContextTokens,
     }),
   })
 )

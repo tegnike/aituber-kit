@@ -25,12 +25,24 @@ const config = {
     '^.+\\.(ts|tsx|js|jsx)$': [
       'ts-jest',
       {
-        tsconfig: 'tsconfig.json',
+        tsconfig: {
+          jsx: 'react-jsx',
+          esModuleInterop: true,
+          module: 'commonjs',
+          moduleResolution: 'node',
+          resolveJsonModule: true,
+          allowJs: true,
+          strict: true,
+          paths: {
+            '@/*': ['./src/*'],
+          },
+          baseUrl: '.',
+        },
       },
     ],
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(@pixiv/three-vrm|three/examples/jsm|pdfjs-dist|i18next))',
+    'node_modules/(?!(@pixiv/three-vrm|three/examples/jsm|pdfjs-dist|i18next|idb))',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/src/__mocks__'],
   testPathIgnorePatterns: ['/node_modules/', '/\\.next/'],
