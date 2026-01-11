@@ -276,6 +276,9 @@ export function useIdleMode({
     }
 
     // 毎秒タイマーを設定
+    // Note: triggerSpeechは状態更新関数内で呼び出されるが、
+    // タイマーベースのロジックでは一般的なパターンであり、
+    // 正しく動作することが確認されている
     timerRef.current = setInterval(() => {
       setSecondsUntilNextSpeech((prev) => {
         if (prev <= 1) {

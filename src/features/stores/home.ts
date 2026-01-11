@@ -48,6 +48,30 @@ const SAVE_DEBOUNCE_DELAY = 2000 // 2秒
 let lastSavedLogLength = 0 // 最後に保存したログの長さを記録
 // 履歴削除後に次回保存で新規ファイルを作成するかどうかを示すフラグ
 let shouldCreateNewFile = false
+// チャットログ復元中フラグ（embedding取得をスキップするため）
+let isRestoringChatLog = false
+// 保存先ログファイル名
+let targetLogFileName: string | null = null
+
+// チャットログ復元中フラグを設定
+export const setRestoringChatLog = (value: boolean): void => {
+  isRestoringChatLog = value
+}
+
+// チャットログ復元中かどうかを取得
+export const getRestoringChatLog = (): boolean => {
+  return isRestoringChatLog
+}
+
+// 保存先ログファイル名を設定
+export const setTargetLogFileName = (fileName: string | null): void => {
+  targetLogFileName = fileName
+}
+
+// 保存先ログファイル名を取得
+export const getTargetLogFileName = (): string | null => {
+  return targetLogFileName
+}
 
 // ログ保存状態をリセットする共通関数
 const resetSaveState = () => {

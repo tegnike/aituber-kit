@@ -137,9 +137,9 @@ const IdleSettings = () => {
       newPhrases[swapIndex],
       newPhrases[index],
     ]
-    // Update order values
-    newPhrases.forEach((p, i) => (p.order = i))
-    settingsStore.setState({ idlePhrases: newPhrases })
+    // Update order values with new phrase objects to maintain immutability
+    const updatedPhrases = newPhrases.map((p, i) => ({ ...p, order: i }))
+    settingsStore.setState({ idlePhrases: updatedPhrases })
   }
 
   const handleToggleTimePeriod = () => {

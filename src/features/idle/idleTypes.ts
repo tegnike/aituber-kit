@@ -43,7 +43,7 @@ export function createIdlePhrase(
     id:
       typeof crypto !== 'undefined' && crypto.randomUUID
         ? crypto.randomUUID()
-        : `phrase-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        : `phrase-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
     text,
     emotion,
     order,

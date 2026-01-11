@@ -5,7 +5,7 @@
  * Requirements: 5.3
  */
 
-import React, { RefObject, useState, useEffect } from 'react'
+import React, { RefObject, useState, useEffect, useMemo } from 'react'
 import settingsStore from '@/features/stores/settings'
 import { DetectionResult } from '@/features/presence/presenceTypes'
 import { useTranslation } from 'react-i18next'
@@ -24,25 +24,27 @@ const PresenceDebugPreview = ({
   const { t } = useTranslation()
   const presenceDebugMode = settingsStore((s) => s.presenceDebugMode)
   const [scale, setScale] = useState(1)
+  const [videoWidth, setVideoWidth] = useState(640)
 
-  // ビデオサイズ変更時にスケール係数を計算
+  // ビデオサイズ変更時にスケール係数とビデオ幅を計算
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
-    const updateScale = () => {
+    const updateDimensions = () => {
       if (video.videoWidth > 0 && video.clientWidth > 0) {
         setScale(video.clientWidth / video.videoWidth)
+        setVideoWidth(video.videoWidth)
       }
     }
 
-    video.addEventListener('loadedmetadata', updateScale)
-    video.addEventListener('resize', updateScale)
-    updateScale()
+    video.addEventListener('loadedmetadata', updateDimensions)
+    video.addEventListener('resize', updateDimensions)
+    updateDimensions()
 
     return () => {
-      video.removeEventListener('loadedmetadata', updateScale)
-      video.removeEventListener('resize', updateScale)
+      video.removeEventListener('loadedmetadata', updateDimensions)
+      video.removeEventListener('resize', updateDimensions)
     }
   }, [videoRef])
 
@@ -50,10 +52,10 @@ const PresenceDebugPreview = ({
     detectionResult?.faceDetected && detectionResult?.boundingBox
 
   // バウンディングボックスの位置を計算（ミラー表示対応）
-  const getBoxStyle = () => {
-    if (!detectionResult?.boundingBox || !videoRef.current) return {}
+  // 状態を使用してレンダー中のref参照を回避
+  const boxStyle = useMemo(() => {
+    if (!detectionResult?.boundingBox) return {}
     const box = detectionResult.boundingBox
-    const videoWidth = videoRef.current.videoWidth || 640
     // ミラー表示なのでx座標を反転
     const mirroredX = videoWidth - box.x - box.width
     return {
@@ -62,7 +64,7 @@ const PresenceDebugPreview = ({
       width: `${box.width * scale}px`,
       height: `${box.height * scale}px`,
     }
-  }
+  }, [detectionResult?.boundingBox, videoWidth, scale])
 
   return (
     <div className={`relative ${className}`}>
@@ -81,7 +83,7 @@ const PresenceDebugPreview = ({
         <div
           data-testid="bounding-box"
           className="absolute border-2 border-green-500 rounded"
-          style={getBoxStyle()}
+          style={boxStyle}
         />
       )}
 

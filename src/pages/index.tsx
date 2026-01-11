@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Form } from '@/components/form'
 import MessageReceiver from '@/components/messageReceiver'
@@ -35,29 +35,28 @@ const Home = () => {
         : `url(${buildUrl(backgroundImageUrl)})`
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
   const modelType = settingsStore((s) => s.modelType)
+  const characterPreset1 = settingsStore((s) => s.characterPreset1)
+  const characterPreset2 = settingsStore((s) => s.characterPreset2)
+  const characterPreset3 = settingsStore((s) => s.characterPreset3)
+  const characterPreset4 = settingsStore((s) => s.characterPreset4)
+  const characterPreset5 = settingsStore((s) => s.characterPreset5)
   const { t } = useTranslation()
-  const characterPresets = [
-    {
-      key: 'characterPreset1',
-      value: settingsStore((s) => s.characterPreset1),
-    },
-    {
-      key: 'characterPreset2',
-      value: settingsStore((s) => s.characterPreset2),
-    },
-    {
-      key: 'characterPreset3',
-      value: settingsStore((s) => s.characterPreset3),
-    },
-    {
-      key: 'characterPreset4',
-      value: settingsStore((s) => s.characterPreset4),
-    },
-    {
-      key: 'characterPreset5',
-      value: settingsStore((s) => s.characterPreset5),
-    },
-  ]
+  const characterPresets = useMemo(
+    () => [
+      { key: 'characterPreset1', value: characterPreset1 },
+      { key: 'characterPreset2', value: characterPreset2 },
+      { key: 'characterPreset3', value: characterPreset3 },
+      { key: 'characterPreset4', value: characterPreset4 },
+      { key: 'characterPreset5', value: characterPreset5 },
+    ],
+    [
+      characterPreset1,
+      characterPreset2,
+      characterPreset3,
+      characterPreset4,
+      characterPreset5,
+    ]
+  )
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

@@ -49,8 +49,13 @@ const KioskSettings = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = parseInt(e.target.value, 10)
-    if (!isNaN(value)) {
+    if (!isNaN(value) && value > 0) {
       settingsStore.setState({ kioskMaxInputLength: value })
+    } else if (e.target.value === '') {
+      // Handle empty input by resetting to minimum value
+      settingsStore.setState({
+        kioskMaxInputLength: KIOSK_MAX_INPUT_LENGTH_MIN,
+      })
     }
   }
 

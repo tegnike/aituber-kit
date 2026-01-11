@@ -43,6 +43,6 @@ describe('useDemoMode', () => {
     const firstResult = result.current
 
     rerender()
-    expect(result.current).toEqual(firstResult)
+    expect(result.current).toBe(firstResult)
   })
 })

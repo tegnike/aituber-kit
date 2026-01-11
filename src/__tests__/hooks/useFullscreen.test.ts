@@ -17,6 +17,7 @@ describe('useFullscreen', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockFullscreenElement = null
+    fullscreenChangeHandler = null
 
     // Mock document.documentElement.requestFullscreen
     Object.defineProperty(document.documentElement, 'requestFullscreen', {

@@ -7,9 +7,7 @@ import { useMemo } from 'react'
 export function useDemoMode(): {
   isDemoMode: boolean
 } {
-  const isDemoMode = useMemo(() => {
-    return process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+  return useMemo(() => {
+    return { isDemoMode: process.env.NEXT_PUBLIC_DEMO_MODE === 'true' }
   }, [])
-
-  return { isDemoMode }
 }

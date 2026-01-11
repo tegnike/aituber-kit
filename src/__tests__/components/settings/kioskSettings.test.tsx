@@ -14,19 +14,28 @@ import settingsStore from '@/features/stores/settings'
 // Mock stores
 const mockSetState = jest.fn()
 
+const defaultState = {
+  kioskModeEnabled: false,
+  kioskPasscode: '0000',
+  kioskMaxInputLength: 200,
+  kioskNgWords: [] as string[],
+  kioskNgWordEnabled: false,
+  kioskTemporaryUnlock: false,
+}
+
 jest.mock('@/features/stores/settings', () => {
   return {
     __esModule: true,
     default: Object.assign(jest.fn(), {
-      setState: (arg: any) => mockSetState(arg),
-      getState: () => ({
-        kioskModeEnabled: false,
-        kioskPasscode: '0000',
-        kioskMaxInputLength: 200,
-        kioskNgWords: [],
-        kioskNgWordEnabled: false,
-        kioskTemporaryUnlock: false,
-      }),
+      setState: (arg: any) => {
+        // Handle both partial objects and function updaters
+        if (typeof arg === 'function') {
+          mockSetState(arg(defaultState))
+        } else {
+          mockSetState(arg)
+        }
+      },
+      getState: () => defaultState,
     }),
   }
 })
