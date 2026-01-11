@@ -7,6 +7,7 @@ import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 
 // FIXME: このテストはワーカープロセスがタイムアウトするため一時的にスキップ
+// 原因: SpeechRecognition/mediaDevicesのモック環境での無限ループまたはハング
 
 // Mock stores
 jest.mock('@/features/stores/settings', () => ({

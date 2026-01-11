@@ -38,6 +38,7 @@ jest.mock('zustand/middleware', () => ({
   persist: jest.fn((stateCreator: any) => stateCreator),
 }))
 
+// TODO: Zustandモックの修正が必要 - storeメソッドが正しく動作していない
 describe.skip('Images Store', () => {
   let store: any
 
