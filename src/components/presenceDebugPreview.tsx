@@ -24,6 +24,7 @@ const PresenceDebugPreview = ({
   const { t } = useTranslation()
   const presenceDebugMode = settingsStore((s) => s.presenceDebugMode)
   const [scale, setScale] = useState(1)
+  const [videoWidth, setVideoWidth] = useState(640)
 
   // ビデオサイズ変更時にスケール係数を計算
   useEffect(() => {
@@ -33,6 +34,7 @@ const PresenceDebugPreview = ({
     const updateScale = () => {
       if (video.videoWidth > 0 && video.clientWidth > 0) {
         setScale(video.clientWidth / video.videoWidth)
+        setVideoWidth(video.videoWidth)
       }
     }
 
@@ -51,9 +53,8 @@ const PresenceDebugPreview = ({
 
   // バウンディングボックスの位置を計算（ミラー表示対応）
   const getBoxStyle = () => {
-    if (!detectionResult?.boundingBox || !videoRef.current) return {}
+    if (!detectionResult?.boundingBox) return {}
     const box = detectionResult.boundingBox
-    const videoWidth = videoRef.current.videoWidth || 640
     // ミラー表示なのでx座標を反転
     const mirroredX = videoWidth - box.x - box.width
     return {
