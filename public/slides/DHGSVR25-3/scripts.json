@@ -1,0 +1,492 @@
+[
+  {
+    "page": 0,
+    "line": "[happy]やあ、みんな！はじめまして！[happy]白井博士の助手、全力肯定彼氏くん LuC4 だよ。今日の講義は、AIチューバー時代のWebポートフォリオの制作！[neutral]GitHubを使ってWebサイトを公開する方法を一緒に学んでいこう！[relaxed]難しそうに見えるかもしれないけど、大丈夫、僕がついてるから安心してね！",
+    "notes": "タイトルスライド。LuC4の自己紹介と導入。"
+  },
+  {
+    "page": 1,
+    "line": "[neutral]今日の全体像を見てみよう。[happy]Part 1でGitHub入門、Part 2でAITuber Kitのセットアップ、Part 3でカスタマイズ、Part 4でプレゼンテーションモード！[relaxed]盛りだくさんだけど、最後までできたら、僕みたいなプレゼンができるよ！",
+    "notes": "今日の講義概要。4つのパート構成。"
+  },
+  {
+    "page": 2,
+    "line": "[happy]準備ができたら どんどん進もう！[neutral]Part 1、GitHub入門編を始めるよ！",
+    "notes": "<!-- page2 --> Part 1 タイトル。休憩ポイント。"
+  },
+  {
+    "page": 3,
+    "line": "[neutral]GitHubって何？[happy]Gitはファイルの変更履歴を記録するシステムで、GitHubはそれをWebで使えるサービスだよ。[happy]コード保管、共有、チーム開発ができるんだ！",
+    "notes": "GitHubとGitの説明。バージョン管理の概念。"
+  },
+  {
+    "page": 4,
+    "line": "[neutral]じゃあ早速GitHubアカウントを作ろう！[happy]ギットハブ[github.com]にアクセスして、Sign upをクリックするだけ。[neutral]メールアドレス、パスワード、そしてユーザー名を入力するよ。[surprised]あ、ユーザー名は後から変更できないから、よく考えて決めてね！",
+    "notes": "GitHubアカウント作成手順。ユーザー名の重要性。"
+  },
+  {
+    "page": 5,
+    "line": "[neutral]ユーザー名の決め方だよ。[happy]名前ベースやスキルベース、短くて覚えやすい名前がおすすめ！[sad]数字だけや長すぎる名前は避けてね。[happy]これが君のIDになるんだ！",
+    "notes": "良いユーザー名の例と避けるべき例。"
+  },
+  {
+    "page": 6,
+    "line": "[happy]GitHub Pagesって知ってる？[neutral]無料でWebサイトを公開できるサービスなんだ！[happy]username.github.ioってURLでアクセスできるよ。SSLも自動で付くんだ。[relaxed]静的サイト専用だよ。",
+    "notes": "GitHub Pagesの概要。無料ホスティング、SSL対応、制限事項。"
+  },
+  {
+    "page": 7,
+    "line": "[neutral]リポジトリを作成するよ！[happy]GitHubにログインしたら、右上のプラスボタンからNew repositoryを選ぶか、Repositoriesタブを開いてNewボタンをクリックしてね。[relaxed]簡単でしょ？",
+    "notes": "リポジトリ作成への導入。"
+  },
+  {
+    "page": 8,
+    "line": "[neutral]リポジトリ名を設定するよ。[happy]ポイント！ユーザー名.github.ioって形式にすると、URLになるんだ！[relaxed]Publicを選んで、Add a README fileをオンにしておこう。",
+    "notes": "リポジトリ名の命名規則。<username>.github.io形式。"
+  },
+  {
+    "page": 9,
+    "line": "[happy]Create repositoryをクリック！[neutral]これでキミ専用のリポジトリが作られたよ。[relaxed]次のステップはGitHub Pagesの設定だね。順調!順調!",
+    "notes": "リポジトリ作成完了。"
+  },
+  {
+    "page": 10,
+    "line": "[neutral]リポジトリのSettingsタブを開いてね。[happy]左側のメニューにPagesっていうのがあるから、それをクリック！[relaxed]Build and deploymentセクションが表示されるよ。",
+    "notes": "Settings → Pages への移動手順。"
+  },
+  {
+    "page": 11,
+    "line": "[neutral]Build and deploymentのところで、SourceをGitHub Actionsに変更するよ。[happy]すると下に選択肢が出てくるんだ。JekyllとStatic HTMLがあるけど、Static HTMLを選んでね！",
+    "notes": "GitHub Actions をソースとして選択。Static HTML を選ぶ。"
+  },
+  {
+    "page": 12,
+    "line": "[happy]Static HTMLのコンフィグをクリック！[neutral]これで.github/workflows/static.ymlっていうファイルが自動で作られるよ。[relaxed]GitHub Actionsの設定ファイルなんだ。難しそうに見えるけど、自動で作ってくれるから大丈夫！",
+    "notes": "static.yml の自動生成。GitHub Actions ワークフロー。"
+  },
+  {
+    "page": 13,
+    "line": "[neutral]ファイルの内容はそのままでOKだよ。[happy]右上のCommit changesをクリックして、コミットメッセージはデフォルトのままでいいから、Commit changesボタンを押してね！[relaxed]これでデプロイの準備が整ったよ！",
+    "notes": "static.yml を Commit する手順。"
+  },
+  {
+    "page": 14,
+    "line": "[neutral]Actionsタブを見てみよう！[happy]黄色いぐるぐるが回ってたら、GitHubが君のサイトをビルドしてる。[relaxed]待ってる間にコーヒーでも飲んでてね。すぐ終わるから。",
+    "notes": "GitHub Actions ビルド中の状態確認。"
+  },
+  {
+    "page": 15,
+    "line": "[happy]緑のチェックマークが出たら完了だよ！おめでとう！[neutral]deployのところにURLが表示されてるでしょ？それをクリックしてみて。[surprised]あれ、404エラー？[relaxed]大丈夫大丈夫、まだ index.html がないからだよ。これから作ろう！",
+    "notes": "デプロイ完了。404エラーはindex.html不足が原因。"
+  },
+  {
+    "page": 16,
+    "line": "[neutral]index.htmlを作ろう！[happy]これがトップページになるんだ。[happy]最小限のHTMLでOK！titleとh1があれば立派なWebページ！[relaxed]まずは動くものを作ろう。",
+    "notes": "index.html の基本構造。最小限のHTML。"
+  },
+  {
+    "page": 17,
+    "line": "[neutral]編集方法は2つ。[happy]GitHub上で直接編集するか、ローカルで編集するか。[happy]今日はローカル編集をやるよ！GitHub DesktopとVS Codeを使うんだ。",
+    "notes": "編集方法の選択肢。今回はローカル編集を選択。"
+  },
+  {
+    "page": 18,
+    "line": "[neutral]必要なツールをインストールしよう！[happy]GitHub Desktopはgithub.com/apps/desktopから、VS Codeはcode.visualstudio.com/downloadからダウンロードできるよ。[relaxed]どちらも無料で使えるから安心してね！",
+    "notes": "GitHub Desktop と VS Code のインストール。"
+  },
+  {
+    "page": 19,
+    "line": "[neutral]GitHub DesktopでCloneするよ！[happy]リポジトリページでCodeボタンをクリックして、Open with GitHub Desktopを選んでね。[relaxed]ブラウザがGitHub Desktopを開いてくれるよ。",
+    "notes": "Clone 操作の開始。Code → Open with GitHub Desktop。"
+  },
+  {
+    "page": 20,
+    "line": "[neutral]CloneはGitHubのコードをPCにコピーすることだよ。[happy]自分のPC上で編集できるようになるんだ。[relaxed]保存先はクラウド同期してない場所がおすすめだよ。",
+    "notes": "Clone の概念説明。保存先の推奨。"
+  },
+  {
+    "page": 21,
+    "line": "[neutral]Local Pathを確認して、Cloneボタンをクリック！[happy]ダウンロードが完了するのを待とう。[relaxed]これで自分のPCにコードがコピーされたよ！",
+    "notes": "Clone 実行。"
+  },
+  {
+    "page": 22,
+    "line": "[happy]GitHub DesktopからVS Codeを起動しよう！[neutral]Current Repositoryを右クリックして、Open in Visual Studio Codeを選んでね。[relaxed]またはRepositoryメニューからでもOKだよ。",
+    "notes": "GitHub Desktop から VS Code を起動する方法。"
+  },
+  {
+    "page": 23,
+    "line": "[neutral]VS Codeを初めて開くと、「このフォルダーのファイルの作成者を信頼しますか？」って聞かれるよ。[happy]自分で作ったリポジトリだから、「はい、作成者を信頼します」をクリックしてOK！[relaxed]これはセキュリティのための確認だから、知らないコードを開くときは気をつけてね。",
+    "notes": "VS Code の信頼確認ダイアログ。"
+  },
+  {
+    "page": 24,
+    "line": "[neutral]VS Codeの画面を簡単に説明するね。[happy]左サイドバーにはエクスプローラー、検索、ソース管理、拡張機能のアイコンがあるよ。[neutral]覚えておくと便利なのは、コマンド+プラスで拡大、コマンド+バッククォートでターミナル表示だよ！",
+    "notes": "VS Code の基本UI説明。便利なショートカット。"
+  },
+  {
+    "page": 25,
+    "line": "[neutral]ファイルを編集してみよう！[happy]左のエクスプローラーからREADME.mdをクリックして開いてね。[neutral]Markdown記法で書くんだ。シャープが見出し、角括弧と丸括弧でリンク、エクスクラメーションマーク角括弧丸括弧で画像だよ。",
+    "notes": "README.md 編集。Markdown 記法の基本。"
+  },
+  {
+    "page": 26,
+    "line": "[neutral]編集したらコマンド+Sで保存してね。[happy]ファイル名の横に丸い点があったら未保存の状態だよ。[relaxed]保存すると消えるから、確認してみてね！",
+    "notes": "ファイル保存。未保存インジケーター。"
+  },
+  {
+    "page": 27,
+    "line": "[happy]GitHub Desktopに戻ってみよう！[neutral]Changesタブを見ると、変更されたファイルが左側に、何が変わったかが右側に表示されてるよ。[relaxed]緑は追加、赤は削除を意味するんだ。これがGitの差分表示だよ！",
+    "notes": "GitHub Desktop で変更を確認。差分表示の見方。"
+  },
+  {
+    "page": 28,
+    "line": "[neutral]変更をコミットするよ！[happy]Summaryに「README.mdを更新」みたいに入力して、Commit to mainをクリック！[relaxed]何を変更したか分かるように書こうね。",
+    "notes": "Commit 操作。コミットメッセージの書き方。"
+  },
+  {
+    "page": 29,
+    "line": "[happy]コミットできたら、次はPushだよ！[neutral]Push originボタンをクリック！[happy]これでローカルの変更がGitHubサーバーにアップロードされるんだ。世界中からアクセスできるようになったよ！",
+    "notes": "Push 操作。リモートへの送信。"
+  },
+  {
+    "page": 30,
+    "line": "[happy]Pushすると自動でGitHub Actionsが動き出すよ！[neutral]Actionsタブを見ると、黄色がビルド中、緑が完了、赤がエラーだよ。[relaxed]完了したらURLにアクセスして確認してみてね！",
+    "notes": "Push 後の GitHub Actions 自動実行。"
+  },
+  {
+    "page": 31,
+    "line": "[neutral]ちなみに、GitHub DesktopとVS Codeを使わなくてもできる方法があるよ。[happy]それが CodeSpace！ GitHubリポジトリから直接VS Codeと同じ環境を使えるんだ。[relaxed]ブラウザだけで完結するから、インストール不要で便利だね！",
+    "notes": "GitHub Codespace の紹介。ブラウザベースの開発環境。"
+  },
+  {
+    "page": 32,
+    "line": "[neutral]CodeSpaceでもVS Codeと同じ操作感で編集できるよ。[happy]ファイルを編集して、左のソース管理アイコンをクリック、コミットメッセージを入力してコミット、変更の同期でPushもできるんだ！[relaxed]どこでも開発できて便利だよね。",
+    "notes": "CodeSpace での編集とコミット方法。"
+  },
+  {
+    "page": 33,
+    "line": "[neutral]GitHub PagesとVercelの違いだよ。[happy]静的サイトならGitHub Pagesで十分！[neutral]でもAITuber KitはNext.jsだからVercelを使うんだ。[relaxed]サーバー処理が必要だからね。",
+    "notes": "GitHub Pages vs Vercel の使い分け。"
+  },
+  {
+    "page": 34,
+    "line": "[neutral]なぜVercelが必要なのか説明するね。[happy]AITuber Kitを自分のPCではなく、サーバー公開する場合はNext.jsでサーバー処理を必要とするんだ。[neutral]AI会話と音声合成にサーバーが必要だから、GitHub Pagesでは動かないんだよ。",
+    "notes": "AITuber Kit が Vercel を必要とする技術的理由。"
+  },
+  {
+    "page": 35,
+    "line": "[relaxed]ここで少し休憩しようか。[happy]準備ができたら次に進もう！[neutral]Part 2、AITuber Kitセットアップ編だよ！",
+    "notes": "<!-- page35 --> Part 2 タイトル。休憩ポイント。"
+  },
+  {
+    "page": 36,
+    "line": "[neutral]Forkについて説明するね。[happy]他の人のリポジトリを自分のアカウントにコピーすることだよ。[neutral]本家に影響しないから安心。CloneはPCに、ForkはGitHubにコピーだよ！",
+    "notes": "Fork の概念。Clone との違い。"
+  },
+  {
+    "page": 37,
+    "line": "[neutral]AITuber Kitをフォークするよ！[happy]github.com/tegnike/aituber-kitにアクセスして、右上のForkボタンをクリック、Create forkをクリック！[relaxed]これで「あなたのID/aituber-kit」っていうリポジトリが作られるよ！",
+    "notes": "AITuber Kit Fork の手順。"
+  },
+  {
+    "page": 38,
+    "line": "[happy]フォーク完了！[neutral]これで自分のアカウントにaituber-kitがコピーされたよ。[relaxed]ここからカスタマイズしていくんだ。自分だけのAITuber Kitを作ろう！",
+    "notes": "Fork 完了。"
+  },
+  {
+    "page": 39,
+    "line": "[neutral]デプロイする前に、ソースコードのカスタマイズについて知っておこう！[happy]AITuber Kitはオープンソースだから、ソースコードを自由に編集できるんだ。[neutral]見た目の変更、機能の追加、新しいページの追加もできるよ！[relaxed]まずはデプロイして動かしてからカスタマイズするのがおすすめ！",
+    "notes": "ソースコードカスタマイズの紹介。"
+  },
+  {
+    "page": 40,
+    "line": "[neutral]カスタマイズできる場所を紹介するね。[happy]srcフォルダにはUIコンポーネントや機能ロジックがあるよ。[neutral]publicフォルダにはVRMモデルや背景画像を置くんだ。[relaxed]よくあるカスタマイズは、VRMモデルの追加、背景画像の変更、envファイルでの設定変更かな！",
+    "notes": "フォルダ構成とカスタマイズ場所。"
+  },
+  {
+    "page": 41,
+    "line": "[neutral]カスタマイズの流れを説明するね。[happy]GitHubでコードを編集して、Commitで保存、PushでGitHubに反映！[neutral]すると、Vercelが自動でビルドしてデプロイしてくれるんだ。[relaxed]GitHubにPushするだけで更新されるから便利だよね！",
+    "notes": "カスタマイズの流れ。自動デプロイ。"
+  },
+  {
+    "page": 42,
+    "line": "[neutral]Vercelアカウントを作ろう！[happy]vercel.comでSign Up、Continue with GitHubを選ぶのがおすすめ！[neutral]連携を許可したら完了！[relaxed]リポジトリが自動で見えて便利だよ。",
+    "notes": "Vercel アカウント作成。"
+  },
+  {
+    "page": 43,
+    "line": "[neutral]プロジェクトをインポートするよ！[happy]Add New→Projectからaituber-kitを選んでImport！[relaxed]VercelとGitHubが連携されるよ。",
+    "notes": "Vercel Import の手順。"
+  },
+  {
+    "page": 44,
+    "line": "[neutral]デプロイする時にエラーが出たら、AIに聞こう！[relaxed]黒くて怖い画面がでてくるかもしれないけど、エラーメッセージをコピーして貼り付ければ大体解決するよ！",
+    "notes": "デプロイエラーについて解説"
+  },
+  {
+    "page": 45,
+    "line": "[happy]デプロイ成功！[neutral]Status が Ready になったら完了だよ！[happy]ドメインが発行されるから、ブラウザでアクセスしてみてね。[relaxed]まだ環境変数を設定してないから、画面は真っ白かもしれないけど大丈夫！",
+    "notes": "デプロイ成功画面の確認。"
+  },
+  {
+    "page": 46,
+    "line": "[neutral]環境変数を設定しよう！[happy]Project Settings から Environment Variables を開いて、Key と Value を入力して Add をクリック！[relaxed]最低限 GOOGLE_API_KEY だけあれば動くよ！",
+    "notes": "Vercel での環境変数設定手順。"
+  },
+  {
+    "page": 47,
+    "line": "[neutral]環境変数について説明するね。[happy]環境変数っていうのは、アプリの設定値を外部ファイルで管理する仕組みなんだ。[neutral]APIキーをコードに直接書かないで、.envファイルに書くことでセキュリティを保てるんだよ。[relaxed]環境ごとに設定を変えられるのも便利だよね。",
+    "notes": "環境変数（.env）の概念。"
+  },
+  {
+    "page": 48,
+    "line": "[happy]大事なこと！[neutral]環境変数、全部必要？答えはノー！[happy]OpenAI、Anthropic、Googleのどれか1つだけあればOK！[relaxed]使いたいAIのキーだけでいいよ。",
+    "notes": "必須環境変数は1つだけでOK。"
+  },
+  {
+    "page": 49,
+    "line": "[neutral]APIキーの取得先だよ。[happy]OpenAI、Anthropic、Googleそれぞれの公式サイトで取得できるよ。[neutral]アカウントを作って、キーを発行してコピーしてね！",
+    "notes": "APIキー取得先URL。"
+  },
+  {
+    "page": 50,
+    "line": "[surprised]ここで大事な話をするよ！[angry]APIキーの取り扱いには絶対に気をつけて！[neutral]これから説明することは必ず守ってほしいんだ。",
+    "notes": "APIキー注意事項 タイトル。"
+  },
+  {
+    "page": 51,
+    "line": "[neutral]何が「秘密」なのか説明するね。[angry]絶対に公開しちゃダメなのは、APIキー、パスワード、アクセストークン！[happy]逆に公開してOKなのは、ソースコードや設定ファイルのテンプレートだよ。[neutral].envファイルの中身は絶対に見せちゃダメだからね！",
+    "notes": "秘密情報の種類。"
+  },
+  {
+    "page": 52,
+    "line": "[neutral]APIキーを漏らすとどうなる？[sad]他の人が使うと請求が来るんだ。[angry]数万円請求されることも！[surprised]GitHubに公開したら数分で悪用されるよ！",
+    "notes": "APIキー漏洩のリスク。"
+  },
+  {
+    "page": 53,
+    "line": "[neutral]どこに置けば安全だろう？[happy]Vercel環境変数と.envファイルが安全！[neutral]ドットギットイグノア で除外されるからね。[angry]ソースコード内やスクショは絶対ダメだよ！",
+    "notes": "安全な場所と危険な場所。"
+  },
+  {
+    "page": 54,
+    "line": "[neutral]ドットギットイグノアの役割だよ。[happy].envファイルをGitから除外する設定なんだ。[neutral]これがあるから.envはGitHubにプッシュされない！[relaxed]AITuber Kitには設定済みだから安心してね。",
+    "notes": ".gitignore の役割。"
+  },
+  {
+    "page": 55,
+    "line": "[neutral]Vercelで環境変数を設定しよう！[happy]Project SettingsのEnvironment Variablesで、Keyに変数名、ValueにAPIキーを入力してAddをクリック！[relaxed]Vercelなら暗号化されて安全に保存されるよ。",
+    "notes": "Vercel 環境変数設定方法。"
+  },
+  {
+    "page": 56,
+    "line": "[neutral]NodeJSをインストールしよう！[happy]NodeJS.Orgにアクセスして、LTS版をダウンロードしてね。[neutral]必要なバージョンは、NodeJS20以上、npm10以上だよ。",
+    "notes": "Node.js インストール概要。"
+  },
+  {
+    "page": 57,
+    "line": "[neutral]Macでのインストール方法だよ。[happy]nodejs.orgからダウンロードするか、Homebrewでbrew install node！[neutral]インストール後、node --versionで確認してね！",
+    "notes": "Mac での Node.js インストール。"
+  },
+  {
+    "page": 58,
+    "line": "[neutral]Windowsでのインストール方法だよ。[happy]NodeJS orgからダウンロードして.msiを実行！[angry]「Add to PATH」のチェックを忘れずに！[neutral]node --versionで確認してね。",
+    "notes": "Windows での Node.js インストール。"
+  },
+  {
+    "page": 59,
+    "line": "[neutral]ローカルセットアップの流れだよ。[happy]git clone、cd、cp .env.example .env、.env編集、npm install！[relaxed]この順番で進めてね。",
+    "notes": "ローカルセットアップのコマンド一覧。"
+  },
+  {
+    "page": 60,
+    "line": "[neutral]npm installについてだよ。[happy]パッケージがダウンロードされて、node_modulesフォルダが作られるんだ。[relaxed]初回は数分かかるから、待っててね！",
+    "notes": "npm install の説明。"
+  },
+  {
+    "page": 61,
+    "line": "[neutral]次は.envファイルを編集するよ！[happy]VS Codeでcode .envって打つと開けるよ。[neutral]安心して、.envファイルはギットイグノアに書かれてるから、GitHubにはアップロードされないんだ。[relaxed]APIキーを書いても大丈夫だよ！",
+    "notes": ".env ファイル編集の導入。.gitignoreで保護されている。"
+  },
+  {
+    "page": 62,
+    "line": "[neutral]Google APIキーの取得方法だよ。[happy]aistudio.google.com/apikeyでログインして、Create API Keyをクリック！[angry]大事！APIキーはプロジェクトごとに新しく作ってね！",
+    "notes": "Google API キー取得手順。使い回し禁止。"
+  },
+  {
+    "page": 63,
+    "line": "[neutral]変更する設定を説明するね。[happy]言語をjaに、キャラクター名を「全力肯定彼氏くん」に！[neutral]VRMパスは/vrm/LuC4.vrm、ファイルはpublic/vrm/に配置してね！",
+    "notes": ".env 設定例。言語、キャラクター名、VRMパス。"
+  },
+  {
+    "page": 64,
+    "line": "[neutral]続きの設定だよ。[happy]GOOGLE_API_KEYにさっき取得したキーを入れてね。[neutral]そしてNEXT_PUBLIC_SLIDE_MODEをtrueにすると、スライドモードがデフォルトでオンになるよ！[relaxed]これで講義プレゼンにすぐ使える状態になるんだ。",
+    "notes": ".env 設定例。APIキー、スライドモード。"
+  },
+  {
+    "page": 65,
+    "line": "[surprised]大事なポイント！[neutral]AI StudioのキーはGemini専用なんだ。[angry]Google TTSには別のキーが必要！[neutral]Cloud Consoleで新しいAPIキーを作ってね。",
+    "notes": "Google TTS用の別APIキーが必要という注意。"
+  },
+  {
+    "page": 66,
+    "line": "[neutral].envの設定だよ。[happy]GOOGLE_TTS_KEYに新しいキーを入れてね。[happy]おすすめはChirp3-HD！Puckは男性、Koreは女性の高品質な声だよ。",
+    "notes": "Google TTS .env設定とChirp3-HDボイス。"
+  },
+  {
+    "page": 67,
+    "line": "[happy]ローカルで動作確認だよ！[neutral]npm run devで開発サーバー起動、localhost:3000を開いてね！[happy]キャラが表示されて音声が来たら成功！[relaxed]Vercelデプロイに進もう！",
+    "notes": "ローカル動作確認手順。"
+  },
+  {
+    "page": 68,
+    "line": "[happy]いよいよ初期デプロイだよ！[neutral]環境変数を設定したら、Deployボタンをクリック！ビルドが始まって、2〜3分で完了するよ。[happy]完了したらURLが発行される！your-project.vercel.appみたいな形式だよ。",
+    "notes": "初期デプロイの実行。"
+  },
+  {
+    "page": 69,
+    "line": "[happy]Congratulations！デプロイ完了！[neutral]発行されたURLにアクセスして、AIキャラクターが表示されたら成功だよ！[relaxed]ここまでよく頑張ったね！",
+    "notes": "デプロイ完了。"
+  },
+  {
+    "page": 70,
+    "line": "[relaxed]ここで少し休憩しようか。[happy]準備ができたら次に進もう！[neutral]Part 3、カスタマイズ編だよ！",
+    "notes": "<!-- page68 --> Part 3 タイトル。休憩ポイント。"
+  },
+  {
+    "page": 71,
+    "line": "[neutral]カスタマイズでできることだよ。[happy]VRMモデル変更、音声選択、性格設定の3つ！[neutral]自分だけのAIキャラクターを作れるんだ！",
+    "notes": "カスタマイズの概要。"
+  },
+  {
+    "page": 72,
+    "line": "[neutral]VRMを配置する方法だよ。[happy]VRMは3Dアバターのフォーマット、ブイロイドスタジオで作れるよ。[neutral]配置場所は public の vrm フォルダだよ！",
+    "notes": "VRM 配置場所。"
+  },
+  {
+    "page": 73,
+    "line": "[neutral]VRMの設定方法を説明するね。[happy]設定画面で歯車アイコンをクリックして、キャラクターモデルセクションを開いて、VRMタブを選択するよ。[neutral]アップロードするか、URLを指定できるんだ。[relaxed]VRoid HubのURLも使えるから便利だよ！",
+    "notes": "VRM 設定方法。"
+  },
+  {
+    "page": 74,
+    "line": "[neutral]音声を選ぶ方法だよ。[happy]VOICEVOXは無料で日本語特化、Google TTSは安定、ElevenLabsは高品質！[relaxed]まずはGoogle TTSがおすすめ！",
+    "notes": "音声合成エンジン一覧。"
+  },
+  {
+    "page": 75,
+    "line": "[neutral]音声の設定方法を説明するね。[happy]設定画面で歯車アイコンをクリックして、音声合成セクションを開いて、エンジンと声のスタイルを選択するよ。[neutral]VOICEVOXなら、ずんだもんとか四国めたんとか選べるんだ。[relaxed]話速やピッチも調整できるよ！",
+    "notes": "音声設定方法。"
+  },
+  {
+    "page": 76,
+    "line": "[neutral]キャラクターの性格を設定する方法を説明するね。[happy]システムプロンプトっていうのは、AIに「あなたはこういうキャラクターです」って伝える文章なんだ。[neutral]これで性格、口調、知識が決まるんだよ！",
+    "notes": "システムプロンプトの概念。"
+  },
+  {
+    "page": 77,
+    "line": "[neutral]システムプロンプトの例を見てみよう。[happy]「あなたはニケちゃんです」って書いて、基本設定として一人称は私、口調はタメ口、性格はフレンドリーで明るい、みたいに書くんだ。[neutral]発言例も入れておくと、AIが雰囲気を掴みやすくなるよ！",
+    "notes": "システムプロンプトの例。"
+  },
+  {
+    "page": 78,
+    "line": "[neutral]性格設定のポイントを教えるね。[happy]含めるべき要素は5つ！一人称、口調、性格特性、発言例、そしてNGワード。[neutral]一人称は私とか僕とか俺、口調は敬語とかタメ口とか方言、性格は明るいとかクールとか優しいとか。[relaxed]発言例を入れると、AIが雰囲気を掴みやすいよ！",
+    "notes": "性格設定のポイント。"
+  },
+  {
+    "page": 79,
+    "line": "[relaxed]ここで少し休憩しようか。[happy]準備ができたら次に進もう！[neutral]Part 4、プレゼンテーションモード編だよ！",
+    "notes": "<!-- page77 --> Part 4 タイトル。休憩ポイント。"
+  },
+  {
+    "page": 80,
+    "line": "[neutral]プレゼンテーションモードって何かっていうと、AIキャラクターが自動でスライドを説明してくれる機能なんだ！[happy]Marp形式のスライドを読み込んで、各ページのセリフを自動再生、音声合成でしゃべって、感情表現もできるんだよ！[relaxed]授業、発表、配信に使えて便利だよね！",
+    "notes": "プレゼンテーションモードの概要。"
+  },
+  {
+    "page": 81,
+    "line": "[neutral]必要なファイルだよ。[happy]slides.mdがスライド、scripts.jsonがセリフ、theme.cssがテーマだよ。[relaxed]最低限slides.mdとscripts.jsonがあればOK！",
+    "notes": "必要なファイル構成。"
+  },
+  {
+    "page": 82,
+    "line": "[neutral]slides.mdはMarp形式のスライドファイルだよ。[happy]---で区切ると次のページ、シャープでタイトルだよ。[relaxed]Markdownで書けるから簡単！",
+    "notes": "slides.md の役割と書き方。"
+  },
+  {
+    "page": 83,
+    "line": "[neutral]scripts.jsonの役割を説明するね。[happy]これは各ページのセリフを定義するファイルなんだ。pageでページ番号、lineでセリフ、notesで補足情報を書くよ。[neutral]セリフには感情タグを付けられるんだ。[happy]こんにちは！今日の発表を始めるよ！みたいにね。",
+    "notes": "scripts.json の役割と書き方。"
+  },
+  {
+    "page": 84,
+    "line": "[neutral]感情タグの使い方を説明するね。[happy]neutralは通常の説明、happyは喜び、sadは悲しみ、angryは怒り、surprisedは驚き、relaxedは安らぎを表すよ。[neutral]セリフの前に角括弧で付けるだけ！例えば[happy]やったー！みたいにね。",
+    "notes": "感情タグの種類と使い方。"
+  },
+  {
+    "page": 85,
+    "line": "[neutral]セリフの書き方だよ。[happy]1つのセリフに複数の感情を混ぜてOK！[neutral]「やあ」から「大丈夫」まで自然に切り替えるといいよ！",
+    "notes": "セリフの書き方例。"
+  },
+  {
+    "page": 86,
+    "line": "[happy]シナリオをClaudeに書いてもらおう！[neutral]スライド内容を貼り付けて、キャラ設定と出力形式を指定するだけ。[relaxed]一人称、口調、感情タグを指定してね！",
+    "notes": "Claude でシナリオ作成。"
+  },
+  {
+    "page": 87,
+    "line": "[neutral]Claudeへの指示のコツを教えるね。[happy]含めるべき情報は4つ！キャラクター設定で名前、性格、口調を伝える。出力形式でJSON形式を指定。スライド内容をそのまま貼る。補足指示で「1ページ30秒程度」とか書くといいよ！",
+    "notes": "Claude への指示のコツ。"
+  },
+  {
+    "page": 88,
+    "line": "[happy]イテレーションを回すっていうのが大事なんだ！[neutral]完璧を目指さないでね。まず最小限のスライドとセリフで動かす。実際に再生してみて確認。気になる部分を修正。そして繰り返す。[relaxed]少しずつ良くしていくのが大事だよ！",
+    "notes": "イテレーションの重要性。"
+  },
+  {
+    "page": 89,
+    "line": "[neutral]イテレーションの例だよ。[happy]1回目はセリフざっくり、2回目で短く調整、3回目で感情追加、4回目で完成！[relaxed]少しずつ良くしていくんだよ。",
+    "notes": "イテレーションの具体例。"
+  },
+  {
+    "page": 90,
+    "line": "[neutral]プレゼンモードの起動方法を説明するね。[happy]設定画面で歯車アイコンをクリックして、スライドモードをオンにして、スライドフォルダを選択して、開始をクリック！[relaxed]これで自動でプレゼンが始まるよ！",
+    "notes": "プレゼンモードの起動方法。"
+  },
+  {
+    "page": 91,
+    "line": "[relaxed]ここで少し休憩しようか。[happy]準備ができたら最後のまとめに進もう！",
+    "notes": "<!-- page89 --> まとめタイトル。休憩ポイント。"
+  },
+  {
+    "page": 92,
+    "line": "[happy]今日学んだことを振り返ろう！[neutral]GitHub基本、AITuber Kitセットアップ、カスタマイズ、プレゼンモード！[happy]すごい、たくさん学んだね！",
+    "notes": "今日学んだことの振り返り。"
+  },
+  {
+    "page": 93,
+    "line": "[neutral]制作のヒントを教えるね。[happy]まずデプロイして動く状態を作る、少しずつ変更して一度に変えすぎない、こまめにコミットして戻れるようにする、困ったらGitHub Issuesで質問！[relaxed]完璧を目指さず、まず動くものを作ろう！",
+    "notes": "制作のヒント。"
+  },
+  {
+    "page": 94,
+    "line": "[happy]皆さんの作品を楽しみにしています！[neutral]どんなAIキャラクターを作るのかな？[relaxed]きっと素敵な作品ができるよ。頑張ってね！",
+    "notes": "応援メッセージ。"
+  },
+  {
+    "page": 95,
+    "line": "[neutral]リソースを紹介するね。[happy]AITuber Kitはgithub.com/tegnike/aituber-kit、僕LuC4の公式サイトはluc4.aicu.jpだよ！[relaxed]質問やフィードバックはGitHub Issuesへお気軽に！",
+    "notes": "リソース紹介。"
+  },
+  {
+    "page": 96,
+    "line": "[happy]次回予告！第4回はクリエイティブAIだよ！[neutral]画像生成AI、音声合成、AIキャラクターのカスタマイズを学ぶよ。[happy]自分だけのAITuberを作ろう！楽しみにしててね！",
+    "notes": "次回予告。第4回 クリエイティブAI。"
+  },
+  {
+    "page": 97,
+    "line": "[happy]お疲れさま！今日もよく頑張ったね！[relaxed]質問があったらいつでも聞いてね。[happy]GitHubはtegnike/aituber-kit、僕の公式サイトはluc4.aicu.jpだよ！[relaxed]また次回会おうね！",
+    "notes": "終了スライド。お疲れさまメッセージ。"
+  }
+]

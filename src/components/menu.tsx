@@ -99,6 +99,15 @@ export const Menu = () => {
     setTouchStartTime(null)
   }
 
+  // セッション開始時にスライドモードが有効なら自動でプレゼン開始
+  useEffect(() => {
+    if (slideMode && selectedSlideDocs && !slideVisible) {
+      console.log('🚀 Auto-starting slide mode')
+      menuStore.setState({ slideVisible: true })
+      slideStore.setState({ autoPlay: true, currentSlide: 0 })
+    }
+  }, [slideMode, selectedSlideDocs, slideVisible])
+
   useEffect(() => {
     if (!selectedSlideDocs) return
 
@@ -140,6 +149,13 @@ export const Menu = () => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === '.') {
         setShowSettings((prevState) => !prevState)
+      }
+      // Ctrl+H: コントロールパネルの表示/非表示切り替え
+      if ((event.metaKey || event.ctrlKey) && event.key === 'h') {
+        event.preventDefault()
+        settingsStore.setState((state) => ({
+          showControlPanel: !state.showControlPanel,
+        }))
       }
     }
 
@@ -309,9 +325,14 @@ export const Menu = () => {
                   <IconButton
                     iconName="24/FrameEffect"
                     isProcessing={false}
-                    onClick={() =>
-                      menuStore.setState({ slideVisible: !slideVisible })
-                    }
+                    onClick={() => {
+                      const newVisible = !slideVisible
+                      menuStore.setState({ slideVisible: newVisible })
+                      // スライドモード開始時にautoPlayをリセット
+                      if (newVisible) {
+                        slideStore.setState({ autoPlay: true, currentSlide: 0 })
+                      }
+                    }}
                     disabled={slidePlaying}
                   />
                 </div>
@@ -327,8 +348,10 @@ export const Menu = () => {
       {showSettings && <Settings onClickClose={() => setShowSettings(false)} />}
       {chatLogMode === CHAT_LOG_MODE.ASSISTANT &&
         latestAssistantMessage &&
-        (!slideMode || !slideVisible) &&
-        showAssistantText && <AssistantText message={latestAssistantMessage} />}
+        showAssistantText &&
+        !(slideMode && slideVisible && slidePlaying) && (
+          <AssistantText message={latestAssistantMessage} />
+        )}
       {showWebcam && navigator.mediaDevices && <Webcam />}
       {showCapture && <Capture />}
       {showPermissionModal && (

@@ -12,15 +12,23 @@ export const Introduction = () => {
   const showIntroduction = homeStore((s) => s.showIntroduction)
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 
+  // 環境変数で明示的に非表示が設定されている場合
+  const envDisabled = process.env.NEXT_PUBLIC_SHOW_INTRODUCTION === 'false'
+
   const [displayIntroduction, setDisplayIntroduction] = useState(false)
   const [opened, setOpened] = useState(true)
-  const [dontShowAgain, setDontShowAgain] = useState(false)
+  const [dontShowAgain, setDontShowAgain] = useState(envDisabled)
 
   const { t } = useTranslation()
 
   useEffect(() => {
+    // 環境変数で非表示の場合は表示しない
+    if (envDisabled) {
+      setDisplayIntroduction(false)
+      return
+    }
     setDisplayIntroduction(homeStore.getState().showIntroduction)
-  }, [showIntroduction])
+  }, [showIntroduction, envDisabled])
 
   const updateLanguage = () => {
     console.log('i18n.language', i18n.language)

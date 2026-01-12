@@ -139,6 +139,19 @@ const homeStore = create<HomeState>()(
         chatLog: messageSelectors.cutImageMessage(chatLog),
         showIntroduction,
       }),
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<PersistedState>
+        // 環境変数で明示的に false が設定されている場合は優先
+        const envShowIntroduction =
+          process.env.NEXT_PUBLIC_SHOW_INTRODUCTION !== 'false'
+        return {
+          ...currentState,
+          chatLog: persisted?.chatLog || [],
+          showIntroduction: envShowIntroduction
+            ? (persisted?.showIntroduction ?? true)
+            : false,
+        }
+      },
       onRehydrateStorage: () => (state) => {
         if (state) {
           lastSavedLogLength = state.chatLog.length

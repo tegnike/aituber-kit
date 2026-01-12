@@ -6,7 +6,7 @@ export const GitHubLink = () => {
     <div className="absolute right-0 z-15 m-6">
       <a
         draggable={false}
-        href="https://github.com/tegnike/aituber-kit"
+        href="https://github.com/kaitas/aituber-kit"
         rel="noopener noreferrer"
         target="_blank"
       >

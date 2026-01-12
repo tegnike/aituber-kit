@@ -394,17 +394,18 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   selectedLive2DPath:
     process.env.NEXT_PUBLIC_SELECTED_LIVE2D_PATH ||
     '/live2d/nike01/nike01.model3.json',
-  fixedCharacterPosition: false,
+  fixedCharacterPosition:
+    process.env.NEXT_PUBLIC_FIXED_CHARACTER_POSITION === 'true',
   characterPosition: {
-    x: 0,
-    y: 0,
-    z: 0,
-    scale: 1,
+    x: parseFloat(process.env.NEXT_PUBLIC_CHARACTER_POSITION_X || '0') || 0,
+    y: parseFloat(process.env.NEXT_PUBLIC_CHARACTER_POSITION_Y || '0') || 0,
+    z: parseFloat(process.env.NEXT_PUBLIC_CHARACTER_POSITION_Z || '0') || 0,
+    scale: parseFloat(process.env.NEXT_PUBLIC_CHARACTER_SCALE || '1') || 1,
   },
   characterRotation: {
-    x: 0,
-    y: 0,
-    z: 0,
+    x: parseFloat(process.env.NEXT_PUBLIC_CHARACTER_ROTATION_X || '0') || 0,
+    y: parseFloat(process.env.NEXT_PUBLIC_CHARACTER_ROTATION_Y || '0') || 0,
+    z: parseFloat(process.env.NEXT_PUBLIC_CHARACTER_ROTATION_Z || '0') || 0,
   },
   lightingIntensity:
     parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
