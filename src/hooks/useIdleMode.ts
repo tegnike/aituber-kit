@@ -265,12 +265,6 @@ export function useIdleMode({
   }, [idleModeEnabled, idleInterval])
 
   // ----- タイマー処理 -----
-  // Note: triggerSpeech()をsetState更新関数内で呼び出すパターンは、
-  // Reactの純粋関数推奨に反しますが、タイマーベースのロジックでは一般的です。
-  // このパターンは以下の理由で採用しています:
-  // 1. setIntervalのコールバック内での呼び出しのため、二重呼び出しのリスクが低い
-  // 2. テストとの互換性（jest.advanceTimersByTimeとの相性）
-  // 3. 状態とアクションの一貫性を保つ
   useEffect(() => {
     if (!idleModeEnabled || idleState === 'disabled') {
       return
@@ -281,16 +275,9 @@ export function useIdleMode({
       clearInterval(timerRef.current)
     }
 
-    // 毎秒タイマーを設定
+    // 毎秒タイマーを設定（カウントダウンのみ）
     timerRef.current = setInterval(() => {
-      setSecondsUntilNextSpeech((prev) => {
-        if (prev <= 1) {
-          // 発話トリガー
-          triggerSpeech()
-          return idleInterval
-        }
-        return prev - 1
-      })
+      setSecondsUntilNextSpeech((prev) => prev - 1)
     }, 1000)
 
     // クリーンアップ
@@ -300,7 +287,25 @@ export function useIdleMode({
         timerRef.current = null
       }
     }
-  }, [idleModeEnabled, idleState, idleInterval, triggerSpeech])
+  }, [idleModeEnabled, idleState])
+
+  // ----- 発話トリガー（カウントダウン0以下で発火）-----
+  useEffect(() => {
+    if (
+      secondsUntilNextSpeech <= 0 &&
+      idleModeEnabled &&
+      idleState === 'waiting'
+    ) {
+      triggerSpeech()
+      setSecondsUntilNextSpeech(idleInterval)
+    }
+  }, [
+    secondsUntilNextSpeech,
+    idleModeEnabled,
+    idleState,
+    idleInterval,
+    triggerSpeech,
+  ])
 
   // ----- chatLog変更の監視（ユーザー入力検知） -----
   useEffect(() => {
