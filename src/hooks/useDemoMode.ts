@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { isDemoMode } from '@/utils/demoMode'
 
 /**
  * デモモード状態を提供するカスタムフック
@@ -8,6 +9,6 @@ export function useDemoMode(): {
   isDemoMode: boolean
 } {
   return useMemo(() => {
-    return { isDemoMode: process.env.NEXT_PUBLIC_DEMO_MODE === 'true' }
+    return { isDemoMode: isDemoMode() }
   }, [])
 }

@@ -27,14 +27,7 @@ jest.mock('@/features/stores/settings', () => {
   return {
     __esModule: true,
     default: Object.assign(jest.fn(), {
-      setState: (arg: any) => {
-        // Handle both partial objects and function updaters
-        if (typeof arg === 'function') {
-          mockSetState(arg(defaultState))
-        } else {
-          mockSetState(arg)
-        }
-      },
+      setState: (...args: any[]) => mockSetState(...args),
       getState: () => defaultState,
     }),
   }

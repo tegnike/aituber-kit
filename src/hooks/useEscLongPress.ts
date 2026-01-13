@@ -73,6 +73,8 @@ export function useEscLongPress(
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
       clearTimer()
+      isKeyDownRef.current = false
+      setIsHolding(false)
     }
   }, [enabled, duration, onLongPress, clearTimer])
 

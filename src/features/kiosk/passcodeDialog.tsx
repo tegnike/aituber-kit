@@ -167,7 +167,6 @@ export const PasscodeDialog: React.FC<PasscodeDialogProps> = ({
         {!isLocked && attempts > 0 && remainingAttempts > 0 && (
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             {t('Kiosk.PasscodeRemainingAttempts', { count: remainingAttempts })}
-            残り{remainingAttempts}回
           </p>
         )}
 
@@ -181,7 +180,9 @@ export const PasscodeDialog: React.FC<PasscodeDialogProps> = ({
           </button>
           <button
             onClick={handleSubmit}
-            disabled={isLocked || passcode.length === 0}
+            disabled={
+              isLocked || (passcode.length === 0 && correctPasscode.length > 0)
+            }
             className="px-4 py-2 bg-blue-600 text-white rounded-md
                        hover:bg-blue-700 transition-colors
                        disabled:bg-gray-400 disabled:cursor-not-allowed"

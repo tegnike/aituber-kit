@@ -637,6 +637,12 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   kioskNgWordEnabled:
     process.env.NEXT_PUBLIC_KIOSK_NG_WORD_ENABLED === 'true' ||
     DEFAULT_KIOSK_CONFIG.kioskNgWordEnabled,
+  kioskGuidanceMessage:
+    process.env.NEXT_PUBLIC_KIOSK_GUIDANCE_MESSAGE ||
+    DEFAULT_KIOSK_CONFIG.kioskGuidanceMessage,
+  kioskGuidanceTimeout:
+    parseInt(process.env.NEXT_PUBLIC_KIOSK_GUIDANCE_TIMEOUT || '') ||
+    DEFAULT_KIOSK_CONFIG.kioskGuidanceTimeout,
   kioskTemporaryUnlock: DEFAULT_KIOSK_CONFIG.kioskTemporaryUnlock,
 
   // Live2D settings
@@ -857,6 +863,8 @@ const settingsStore = create<SettingsState>()(
       // Kiosk mode settings (kioskTemporaryUnlock is NOT persisted)
       kioskModeEnabled: state.kioskModeEnabled,
       kioskPasscode: state.kioskPasscode,
+      kioskGuidanceMessage: state.kioskGuidanceMessage,
+      kioskGuidanceTimeout: state.kioskGuidanceTimeout,
       kioskMaxInputLength: state.kioskMaxInputLength,
       kioskNgWords: state.kioskNgWords,
       kioskNgWordEnabled: state.kioskNgWordEnabled,

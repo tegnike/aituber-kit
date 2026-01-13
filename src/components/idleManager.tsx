@@ -13,13 +13,19 @@ function IdleManager(): JSX.Element | null {
 
   const { isIdleActive, idleState, secondsUntilNextSpeech } = useIdleMode({
     onIdleSpeechStart: (phrase) => {
-      console.log('[IdleManager] Idle speech started:', phrase.text)
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[IdleManager] Idle speech started:', phrase.text)
+      }
     },
     onIdleSpeechComplete: () => {
-      console.log('[IdleManager] Idle speech completed')
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[IdleManager] Idle speech completed')
+      }
     },
     onIdleSpeechInterrupted: () => {
-      console.log('[IdleManager] Idle speech interrupted')
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[IdleManager] Idle speech interrupted')
+      }
     },
   })
 

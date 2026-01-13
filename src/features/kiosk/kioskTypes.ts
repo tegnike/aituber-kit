@@ -11,6 +11,10 @@ export interface KioskModeSettings {
   kioskModeEnabled: boolean
   kioskPasscode: string
 
+  // Guidance settings (for digital signage)
+  kioskGuidanceMessage?: string // Optional guidance message
+  kioskGuidanceTimeout: number // Guidance timeout in seconds
+
   // Input restrictions
   kioskMaxInputLength: number // characters (50-500)
   kioskNgWords: string[] // NG word list
@@ -24,6 +28,8 @@ export interface KioskModeSettings {
 export const DEFAULT_KIOSK_CONFIG: KioskModeSettings = {
   kioskModeEnabled: false,
   kioskPasscode: '0000',
+  kioskGuidanceMessage: undefined,
+  kioskGuidanceTimeout: 60,
   kioskMaxInputLength: 200,
   kioskNgWords: [],
   kioskNgWordEnabled: false,

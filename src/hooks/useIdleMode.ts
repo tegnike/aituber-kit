@@ -265,6 +265,12 @@ export function useIdleMode({
   }, [idleModeEnabled, idleInterval])
 
   // ----- タイマー処理 -----
+  // Note: triggerSpeech()をsetState更新関数内で呼び出すパターンは、
+  // Reactの純粋関数推奨に反しますが、タイマーベースのロジックでは一般的です。
+  // このパターンは以下の理由で採用しています:
+  // 1. setIntervalのコールバック内での呼び出しのため、二重呼び出しのリスクが低い
+  // 2. テストとの互換性（jest.advanceTimersByTimeとの相性）
+  // 3. 状態とアクションの一貫性を保つ
   useEffect(() => {
     if (!idleModeEnabled || idleState === 'disabled') {
       return
@@ -276,9 +282,6 @@ export function useIdleMode({
     }
 
     // 毎秒タイマーを設定
-    // Note: triggerSpeechは状態更新関数内で呼び出されるが、
-    // タイマーベースのロジックでは一般的なパターンであり、
-    // 正しく動作することが確認されている
     timerRef.current = setInterval(() => {
       setSecondsUntilNextSpeech((prev) => {
         if (prev <= 1) {

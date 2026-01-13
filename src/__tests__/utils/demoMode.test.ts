@@ -5,15 +5,18 @@ import {
 } from '@/utils/demoMode'
 
 describe('demoMode', () => {
-  const originalEnv = process.env
+  const originalValue = process.env.NEXT_PUBLIC_DEMO_MODE
 
   beforeEach(() => {
     jest.resetModules()
-    process.env = { ...originalEnv }
   })
 
   afterEach(() => {
-    process.env = originalEnv
+    if (originalValue === undefined) {
+      delete process.env.NEXT_PUBLIC_DEMO_MODE
+    } else {
+      process.env.NEXT_PUBLIC_DEMO_MODE = originalValue
+    }
   })
 
   describe('isDemoMode', () => {

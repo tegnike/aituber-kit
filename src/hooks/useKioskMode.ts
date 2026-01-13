@@ -66,11 +66,17 @@ export function useKioskMode(): UseKioskModeReturn {
         return { valid: true }
       }
 
+      // Validate and get safe max length value
+      const maxLen =
+        Number.isFinite(kioskMaxInputLength) && kioskMaxInputLength > 0
+          ? kioskMaxInputLength
+          : 200 // Default fallback
+
       // Check max length
-      if (text.length > kioskMaxInputLength) {
+      if (text.length > maxLen) {
         return {
           valid: false,
-          reason: `入力は${kioskMaxInputLength}文字以内で入力してください`,
+          reason: `入力は${maxLen}文字以内で入力してください`,
         }
       }
 
