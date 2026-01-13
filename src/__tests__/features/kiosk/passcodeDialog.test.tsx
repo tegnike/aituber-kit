@@ -21,7 +21,7 @@ const typeText = (input: HTMLElement, text: string) => {
 // Mock react-i18next
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
+    t: (key: string, options?: { count?: number }) => {
       const translations: Record<string, string> = {
         'Kiosk.PasscodeTitle': 'パスコードを入力',
         'Kiosk.PasscodeIncorrect': 'パスコードが違います',
@@ -30,7 +30,12 @@ jest.mock('react-i18next', () => ({
         'Kiosk.Cancel': 'キャンセル',
         'Kiosk.Unlock': '解除',
       }
-      return translations[key] || key
+      let result = translations[key] || key
+      // Replace {{count}} with actual value
+      if (options?.count !== undefined) {
+        result = result.replace('{{count}}', String(options.count))
+      }
+      return result
     },
   }),
 }))
