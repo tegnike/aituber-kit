@@ -170,6 +170,8 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  selectedPNGTuberPath: string
+  pngTuberSensitivity: number
 }
 
 // Preset question type
@@ -219,7 +221,7 @@ interface General {
 }
 
 interface ModelType {
-  modelType: 'vrm' | 'live2d'
+  modelType: 'vrm' | 'live2d' | 'pngtuber'
 }
 
 export type SettingsState = APIKeys &
@@ -526,7 +528,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     0.1,
 
   // Settings
-  modelType: (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
+  modelType:
+    (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d' | 'pngtuber') ||
+    'vrm',
+  selectedPNGTuberPath:
+    process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/default',
+  pngTuberSensitivity:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_SENSITIVITY || '50') || 50,
 
   // Memory settings
   memoryEnabled: DEFAULT_MEMORY_CONFIG.memoryEnabled,
@@ -682,6 +690,8 @@ const settingsStore = create<SettingsState>()(
       nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
       nijivoiceSoundDuration: state.nijivoiceSoundDuration,
       modelType: state.modelType,
+      selectedPNGTuberPath: state.selectedPNGTuberPath,
+      pngTuberSensitivity: state.pngTuberSensitivity,
       neutralEmotions: state.neutralEmotions,
       happyEmotions: state.happyEmotions,
       sadEmotions: state.sadEmotions,

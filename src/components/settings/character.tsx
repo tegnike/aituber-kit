@@ -345,6 +345,8 @@ const Character = () => {
     characterName,
     selectedVrmPath,
     selectedLive2DPath,
+    selectedPNGTuberPath,
+    pngTuberSensitivity,
     modelType,
     fixedCharacterPosition,
     selectAIService,
@@ -364,6 +366,9 @@ const Character = () => {
   } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
+    Array<{ path: string; name: string }>
+  >([])
+  const [pngTuberModels, setPngTuberModels] = useState<
     Array<{ path: string; name: string }>
   >([])
 
@@ -411,6 +416,13 @@ const Character = () => {
       .then((models) => setLive2dModels(models))
       .catch((error) => {
         console.error('Error fetching Live2D list:', error)
+      })
+
+    fetch('/api/get-pngtuber-list')
+      .then((res) => res.json())
+      .then((models) => setPngTuberModels(models))
+      .catch((error) => {
+        console.error('Error fetching PNGTuber list:', error)
       })
   }, [])
   const handlePositionAction = (action: 'fix' | 'unfix' | 'reset') => {
@@ -530,7 +542,7 @@ const Character = () => {
             VRM
           </button>
           <button
-            className={`px-4 py-2 rounded-lg ${
+            className={`px-4 py-2 rounded-lg mr-2 ${
               modelType === 'live2d'
                 ? 'bg-primary text-theme'
                 : 'bg-white hover:bg-white-hover'
@@ -539,9 +551,19 @@ const Character = () => {
           >
             Live2D
           </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              modelType === 'pngtuber'
+                ? 'bg-primary text-theme'
+                : 'bg-white hover:bg-white-hover'
+            }`}
+            onClick={() => settingsStore.setState({ modelType: 'pngtuber' })}
+          >
+            PNGTuber
+          </button>
         </div>
 
-        {modelType === 'vrm' ? (
+        {modelType === 'vrm' && (
           <>
             <select
               className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
@@ -580,7 +602,9 @@ const Character = () => {
               </TextButton>
             </div>
           </>
-        ) : (
+        )}
+
+        {modelType === 'live2d' && (
           <>
             <div className="my-4 whitespace-pre-line">
               {t('Live2D.FileInfo')}
@@ -601,6 +625,49 @@ const Character = () => {
             </select>
             <div className="my-4">
               <Live2DSettingsForm />
+            </div>
+          </>
+        )}
+
+        {modelType === 'pngtuber' && (
+          <>
+            <div className="my-4 whitespace-pre-line">
+              {t('PNGTuber.FileInfo')}
+            </div>
+            <select
+              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
+              value={selectedPNGTuberPath}
+              onChange={(e) => {
+                const path = e.target.value
+                settingsStore.setState({ selectedPNGTuberPath: path })
+              }}
+            >
+              {pngTuberModels.map((model) => (
+                <option key={model.path} value={model.path}>
+                  {model.name}
+                </option>
+              ))}
+            </select>
+            <div className="my-4">
+              <div className="font-bold">
+                {t('PNGTuber.Sensitivity')}: {pngTuberSensitivity}
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={pngTuberSensitivity}
+                onChange={(e) => {
+                  settingsStore.setState({
+                    pngTuberSensitivity: parseInt(e.target.value),
+                  })
+                }}
+                className="mt-2 mb-4 input-range"
+              />
+              <div className="text-sm text-gray-600">
+                {t('PNGTuber.SensitivityInfo')}
+              </div>
             </div>
           </>
         )}
