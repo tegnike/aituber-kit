@@ -34,6 +34,13 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   private smoothedHighRatio = 0
   private sensitivity = 50
 
+  // HQ Audio関連（エンベロープフォロワー・ノイズゲート）
+  private hqAudioEnabled = true // TTS用にデフォルトでON
+  private envelope = 0
+  private noiseFloor = 0.002
+  private levelPeak = 0.02
+  private mouthChangeMinMs = 45 // HQモードのデフォルト
+
   // 口状態
   private mouthState: MouthState = 'closed'
   private lastMouthChange = 0
@@ -305,9 +312,19 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       this.workletNode = null
     }
 
-    this.volume = 0
-    this.smoothedHighRatio = 0
+    this.resetAudioStats()
     this.onAudioFinishCallback = null
+  }
+
+  /**
+   * 音声解析の統計をリセット
+   */
+  private resetAudioStats(): void {
+    this.volume = 0
+    this.envelope = 0
+    this.noiseFloor = 0.002
+    this.levelPeak = 0.02
+    this.smoothedHighRatio = 0
   }
 
   /**
@@ -315,6 +332,12 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    */
   private handleAudioData(data: VolumeAnalyzerData): void {
     if (!data) return
+
+    // HQモードが有効な場合は専用処理
+    if (this.hqAudioEnabled) {
+      this.handleAudioDataHQ(data)
+      return
+    }
 
     const smoothing = 0.2
     const ratio = data.high / (data.low + data.high + 1e-6)
@@ -332,12 +355,86 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   }
 
   /**
+   * HQ Audio用の音声データ処理
+   * エンベロープフォロワー・ノイズゲート・ダイナミックレンジ調整
+   */
+  private handleAudioDataHQ(data: VolumeAnalyzerData): void {
+    // 高周波比率の平滑化
+    const ratio = data.high / (data.low + data.high + 1e-6)
+    const ratioSmoothing = 0.25
+    this.smoothedHighRatio =
+      this.smoothedHighRatio * (1 - ratioSmoothing) + ratio * ratioSmoothing
+
+    // エンベロープフォロワー（アタック/リリース）
+    const rms = data.rms
+    const sensitivity = this.sensitivity / 100
+    const attack = 0.35
+    const release = 0.6
+    const k = rms > this.envelope ? attack : release
+    this.envelope = this.envelope * (1 - k) + rms * k
+
+    // ノイズフロアの動的推定
+    if (this.envelope < this.noiseFloor) {
+      const fall = 0.25
+      this.noiseFloor = this.noiseFloor * (1 - fall) + this.envelope * fall
+    } else {
+      const rise = 0.01
+      this.noiseFloor = this.noiseFloor * (1 - rise) + this.envelope * rise
+    }
+
+    // ピークレベルのトラッキング
+    const peakDecay = 0.985
+    this.levelPeak = Math.max(this.envelope, this.levelPeak * peakDecay)
+    const minRange = 0.006
+    if (this.levelPeak < this.noiseFloor + minRange) {
+      this.levelPeak = this.noiseFloor + minRange
+    }
+
+    // ノイズゲート
+    const gateMargin = 0.002 + (1 - sensitivity) * 0.008
+    const gateLevel = this.noiseFloor + gateMargin
+    if (this.envelope < gateLevel) {
+      this.volume = 0
+      this.setMouthState('closed')
+      return
+    }
+
+    // レベルの正規化と成形
+    const rawLevel =
+      (this.envelope - this.noiseFloor) / (this.levelPeak - this.noiseFloor)
+    const level = Math.max(0, Math.min(1, rawLevel))
+    const gain = 0.6 + sensitivity * 0.8
+    const shaped = Math.min(1, Math.pow(level, 0.75) * gain)
+
+    this.volume = shaped
+
+    // 口状態の選択（HQ用ヒステリシス付き）
+    const thresholds = this.getVolumeThresholdsHQ()
+    const nextState = this.selectMouthStateHQ(
+      shaped,
+      this.smoothedHighRatio,
+      thresholds
+    )
+    this.setMouthState(nextState)
+  }
+
+  /**
    * 感度から閾値を計算
    */
   private getVolumeThresholds(): VolumeThresholds {
     const sensitivity = this.sensitivity / 100
     const closed = 0.008 + (1 - sensitivity) * 0.018
     const half = 0.02 + (1 - sensitivity) * 0.06
+    return { closed, half }
+  }
+
+  /**
+   * HQ Audio用の閾値を計算
+   */
+  private getVolumeThresholdsHQ(): VolumeThresholds {
+    const sensitivity = this.sensitivity / 100
+    const closed = 0.07 + (1 - sensitivity) * 0.08
+    const half = 0.22 + (1 - sensitivity) * 0.12
     return { closed, half }
   }
 
@@ -359,6 +456,67 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   }
 
   /**
+   * HQ Audio用の口状態選択（ヒステリシス付き）
+   * 口の開閉に異なる閾値を使用してチャタリングを防止
+   */
+  private selectMouthStateHQ(
+    level: number,
+    highRatio: number,
+    thresholds: VolumeThresholds
+  ): MouthState {
+    const hasHalf = !!this.mouthSpriteUrls.half
+    const hasE = !!this.mouthSpriteUrls.e
+    const hasU = !!this.mouthSpriteUrls.u
+
+    // ヒステリシス用の閾値
+    const closeTh = Math.max(0.02, thresholds.closed - 0.03)
+    const halfDownTh = Math.max(closeTh + 0.02, thresholds.half - 0.02)
+
+    // 現在の状態をベースに判定
+    let state: MouthState = this.mouthState
+    if (state === 'e' || state === 'u') {
+      state = 'open'
+    }
+
+    // 状態遷移の判定
+    if (state === 'closed') {
+      if (level >= thresholds.half) {
+        state = 'open'
+      } else if (level >= thresholds.closed && hasHalf) {
+        state = 'half'
+      } else if (level >= thresholds.closed) {
+        state = 'open'
+      } else {
+        state = 'closed'
+      }
+    } else if (state === 'half') {
+      if (level < closeTh) {
+        state = 'closed'
+      } else if (level >= thresholds.half) {
+        state = 'open'
+      } else {
+        state = 'half'
+      }
+    } else {
+      // state === 'open'
+      if (level < closeTh) {
+        state = 'closed'
+      } else if (level < halfDownTh && hasHalf) {
+        state = 'half'
+      } else {
+        state = 'open'
+      }
+    }
+
+    // 開いた状態の場合、周波数で母音を判定
+    if (state === 'open') {
+      if (highRatio > 0.62 && hasE) return 'e'
+      if (highRatio < 0.38 && hasU) return 'u'
+    }
+    return state
+  }
+
+  /**
    * 口の状態を設定
    */
   private setMouthState(state: MouthState, force = false): void {
@@ -369,7 +527,11 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     if (!sprite) return
 
     const now = performance.now()
-    if (!force && state !== this.mouthState && now - this.lastMouthChange < 70) {
+    if (
+      !force &&
+      state !== this.mouthState &&
+      now - this.lastMouthChange < this.mouthChangeMinMs
+    ) {
       return
     }
 
@@ -384,8 +546,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    * 口を閉じた状態にリセット
    */
   resetMouth(): void {
-    this.volume = 0
-    this.smoothedHighRatio = 0
+    this.resetAudioStats()
     this.setMouthState('closed', true)
   }
 
