@@ -17,8 +17,16 @@ import {
 export class PNGTuberEngine implements IPNGTuberEngine {
   // DOM要素
   private video: HTMLVideoElement
+  private mainCanvas: HTMLCanvasElement
+  private mainCtx: CanvasRenderingContext2D | null
   private mouthCanvas: HTMLCanvasElement
   private mouthCtx: CanvasRenderingContext2D | null
+
+  // クロマキー関連
+  private chromaKeyEnabled = false
+  private chromaKeyColor = '#00FF00'
+  private chromaKeyTolerance = 50
+  private chromaKeyRGB: [number, number, number] = [0, 255, 0]
 
   // データ
   private trackData: MouthTrackData | null = null
@@ -56,9 +64,12 @@ export class PNGTuberEngine implements IPNGTuberEngine {
 
   constructor(
     video: HTMLVideoElement,
+    mainCanvas: HTMLCanvasElement,
     mouthCanvas: HTMLCanvasElement
   ) {
     this.video = video
+    this.mainCanvas = mainCanvas
+    this.mainCtx = mainCanvas.getContext('2d')
     this.mouthCanvas = mouthCanvas
     this.mouthCtx = mouthCanvas.getContext('2d')
   }
@@ -101,17 +112,23 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       })
 
       // キャンバスサイズを動画に合わせる
-      this.mouthCanvas.width = this.video.videoWidth || 1
-      this.mouthCanvas.height = this.video.videoHeight || 1
+      const videoWidth = this.video.videoWidth || 1
+      const videoHeight = this.video.videoHeight || 1
+
+      this.mainCanvas.width = videoWidth
+      this.mainCanvas.height = videoHeight
+      if (this.mainCtx) {
+        this.mainCtx.setTransform(1, 0, 0, 1, 0, 0)
+        this.mainCtx.imageSmoothingEnabled = true
+        this.mainCtx.clearRect(0, 0, videoWidth, videoHeight)
+      }
+
+      this.mouthCanvas.width = videoWidth
+      this.mouthCanvas.height = videoHeight
       if (this.mouthCtx) {
         this.mouthCtx.setTransform(1, 0, 0, 1, 0, 0)
         this.mouthCtx.imageSmoothingEnabled = true
-        this.mouthCtx.clearRect(
-          0,
-          0,
-          this.mouthCanvas.width,
-          this.mouthCanvas.height
-        )
+        this.mouthCtx.clearRect(0, 0, videoWidth, videoHeight)
       }
 
       // トラッキングデータの読み込み
@@ -285,7 +302,10 @@ export class PNGTuberEngine implements IPNGTuberEngine {
 
     // 再生開始
     this.currentSource.start()
-    console.log('[PNGTuber] Audio started, context state:', this.audioContext.state)
+    console.log(
+      '[PNGTuber] Audio started, context state:',
+      this.audioContext.state
+    )
   }
 
   /**
@@ -558,6 +578,35 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   }
 
   /**
+   * クロマキー設定を更新
+   */
+  setChromaKeySettings(
+    enabled: boolean,
+    color: string,
+    tolerance: number
+  ): void {
+    this.chromaKeyEnabled = enabled
+    this.chromaKeyColor = color
+    this.chromaKeyTolerance = Math.max(0, Math.min(255, tolerance))
+    this.chromaKeyRGB = this.hexToRGB(color)
+  }
+
+  /**
+   * 16進数カラーコードをRGBに変換
+   */
+  private hexToRGB(hex: string): [number, number, number] {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    if (result) {
+      return [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16),
+      ]
+    }
+    return [0, 255, 0] // デフォルトはグリーン
+  }
+
+  /**
    * レンダリングを開始
    */
   start(): void {
@@ -611,13 +660,17 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       const onFrame = () => {
         if (!this.isRunning) return
         this.renderFrame()
-        ;(this.video as HTMLVideoElement & {
-          requestVideoFrameCallback: (callback: () => void) => void
-        }).requestVideoFrameCallback(onFrame)
+        ;(
+          this.video as HTMLVideoElement & {
+            requestVideoFrameCallback: (callback: () => void) => void
+          }
+        ).requestVideoFrameCallback(onFrame)
       }
-      ;(this.video as HTMLVideoElement & {
-        requestVideoFrameCallback: (callback: () => void) => void
-      }).requestVideoFrameCallback(onFrame)
+      ;(
+        this.video as HTMLVideoElement & {
+          requestVideoFrameCallback: (callback: () => void) => void
+        }
+      ).requestVideoFrameCallback(onFrame)
     } else {
       // フォールバック: requestAnimationFrame
       const loop = () => {
@@ -645,7 +698,150 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     const fps = data.fps || 30
     const frameIndex = Math.floor(currentTime * fps) % totalFrames
     this.lastFrameIndex = frameIndex
-    this.updateMouthTransform(frameIndex)
+
+    if (this.chromaKeyEnabled) {
+      this.renderWithChromaKey(frameIndex)
+    } else {
+      this.updateMouthTransform(frameIndex)
+    }
+  }
+
+  /**
+   * クロマキー有効時のレンダリング
+   */
+  private renderWithChromaKey(frameIndex: number): void {
+    const video = this.video
+    const data = this.trackData
+    if (!data || !this.mainCtx || !this.mainCanvas) return
+
+    const ctx = this.mainCtx
+    const width = this.mainCanvas.width
+    const height = this.mainCanvas.height
+
+    // キャンバスをクリア（透明で）
+    ctx.clearRect(0, 0, width, height)
+
+    // 動画をキャンバスに描画
+    ctx.drawImage(video, 0, 0, width, height)
+
+    // クロマキー処理を適用
+    this.applyChromaKey(ctx, width, height)
+
+    // 口スプライトを描画
+    this.drawMouthSpriteOnMain(frameIndex)
+  }
+
+  /**
+   * クロマキー処理を適用
+   */
+  private applyChromaKey(
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number
+  ): void {
+    const imageData = ctx.getImageData(0, 0, width, height)
+    const data = imageData.data
+    const [keyR, keyG, keyB] = this.chromaKeyRGB
+    const tolerance = this.chromaKeyTolerance
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+
+      // ユークリッド距離で色の差を計算
+      const distance = Math.sqrt(
+        (r - keyR) ** 2 + (g - keyG) ** 2 + (b - keyB) ** 2
+      )
+
+      if (distance < tolerance) {
+        // 透明にする
+        data[i + 3] = 0
+      }
+    }
+
+    ctx.putImageData(imageData, 0, 0)
+  }
+
+  /**
+   * mainCanvasに口スプライトを描画
+   */
+  private drawMouthSpriteOnMain(frameIndex: number): void {
+    const data = this.trackData
+    if (!data || !data.frames || data.frames.length === 0) return
+    if (!this.mainCtx || !this.mainCanvas) return
+
+    const frame = data.frames[frameIndex]
+    if (!frame || !frame.valid) return
+
+    const sprite =
+      this.activeSprite || this.mouthSprites.open || this.mouthSprites.closed
+    if (!sprite) return
+
+    const quad = frame.quad
+    const adjustedQuad = this.applyCalibrationToQuad(quad, data)
+    this.drawWarpedSpriteOnCtx(this.mainCtx, sprite, adjustedQuad)
+  }
+
+  /**
+   * 指定したContextにワープしたスプライトを描画
+   */
+  private drawWarpedSpriteOnCtx(
+    ctx: CanvasRenderingContext2D,
+    sprite: HTMLImageElement,
+    quad: [number, number][]
+  ): void {
+    const sw = sprite.naturalWidth || sprite.width
+    const sh = sprite.naturalHeight || sprite.height
+    if (!sw || !sh) return
+
+    // ソース座標
+    const s0: [number, number] = [0, 0]
+    const s1: [number, number] = [sw, 0]
+    const s2: [number, number] = [sw, sh]
+    const s3: [number, number] = [0, sh]
+
+    // デスティネーション座標
+    const q0 = quad[0]
+    const q1 = quad[1]
+    const q2 = quad[2]
+    const q3 = quad[3]
+
+    // 2つの三角形に分割して描画
+    this.drawTriangleOnCtx(ctx, sprite, s0, s1, s2, q0, q1, q2)
+    this.drawTriangleOnCtx(ctx, sprite, s0, s2, s3, q0, q2, q3)
+  }
+
+  /**
+   * 指定したContextに三角形を描画
+   */
+  private drawTriangleOnCtx(
+    ctx: CanvasRenderingContext2D,
+    image: HTMLImageElement,
+    s0: [number, number],
+    s1: [number, number],
+    s2: [number, number],
+    d0: [number, number],
+    d1: [number, number],
+    d2: [number, number]
+  ): void {
+    ctx.save()
+    ctx.setTransform(1, 0, 0, 1, 0, 0)
+    ctx.beginPath()
+    ctx.moveTo(d0[0], d0[1])
+    ctx.lineTo(d1[0], d1[1])
+    ctx.lineTo(d2[0], d2[1])
+    ctx.closePath()
+    ctx.clip()
+
+    const mat = this.computeAffine(s0, s1, s2, d0, d1, d2)
+    if (!mat) {
+      ctx.restore()
+      return
+    }
+    ctx.setTransform(mat.a, mat.b, mat.c, mat.d, mat.e, mat.f)
+    ctx.drawImage(image, 0, 0)
+    ctx.restore()
   }
 
   /**
@@ -679,9 +875,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     if (!frame || !frame.valid) return
 
     const sprite =
-      this.activeSprite ||
-      this.mouthSprites.open ||
-      this.mouthSprites.closed
+      this.activeSprite || this.mouthSprites.open || this.mouthSprites.closed
     if (!sprite) return
 
     const quad = frame.quad
@@ -693,7 +887,12 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    * キャリブレーションを適用
    */
   private applyCalibrationToQuad(
-    quad: [[number, number], [number, number], [number, number], [number, number]],
+    quad: [
+      [number, number],
+      [number, number],
+      [number, number],
+      [number, number],
+    ],
     data: MouthTrackData
   ): [number, number][] {
     const calib = data.calibration || { offset: [0, 0], scale: 1, rotation: 0 }

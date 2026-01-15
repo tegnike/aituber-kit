@@ -96,6 +96,7 @@ export interface IPNGTuberEngine {
   start(): void
   stop(): void
   setSensitivity(value: number): void
+  setChromaKeySettings(enabled: boolean, color: string, tolerance: number): void
   playAudioFromBuffer(
     audioData: ArrayBuffer,
     isNeedDecode: boolean,

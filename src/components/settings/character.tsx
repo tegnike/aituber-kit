@@ -347,6 +347,9 @@ const Character = () => {
     selectedLive2DPath,
     selectedPNGTuberPath,
     pngTuberSensitivity,
+    pngTuberChromaKeyEnabled,
+    pngTuberChromaKeyColor,
+    pngTuberChromaKeyTolerance,
     modelType,
     fixedCharacterPosition,
     selectAIService,
@@ -668,6 +671,84 @@ const Character = () => {
               <div className="text-sm text-gray-600">
                 {t('PNGTuber.SensitivityInfo')}
               </div>
+            </div>
+
+            {/* クロマキー設定 */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="font-bold mb-2">{t('PNGTuber.ChromaKey')}</div>
+
+              {/* 有効/無効トグル */}
+              <label className="flex items-center mb-4 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={pngTuberChromaKeyEnabled}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      pngTuberChromaKeyEnabled: e.target.checked,
+                    })
+                  }
+                  className="mr-2 h-4 w-4"
+                />
+                <span>{t('PNGTuber.ChromaKeyEnabled')}</span>
+              </label>
+
+              {pngTuberChromaKeyEnabled && (
+                <>
+                  {/* カラーピッカー */}
+                  <div className="mb-4">
+                    <div className="font-bold mb-2">
+                      {t('PNGTuber.ChromaKeyColor')}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={pngTuberChromaKeyColor}
+                        onChange={(e) =>
+                          settingsStore.setState({
+                            pngTuberChromaKeyColor: e.target.value,
+                          })
+                        }
+                        className="h-10 w-16 rounded cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={pngTuberChromaKeyColor}
+                        onChange={(e) =>
+                          settingsStore.setState({
+                            pngTuberChromaKeyColor: e.target.value,
+                          })
+                        }
+                        className="px-2 py-1 w-24 bg-white rounded-lg border"
+                        placeholder="#00FF00"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 許容値スライダー */}
+                  <div>
+                    <div className="font-bold">
+                      {t('PNGTuber.ChromaKeyTolerance')}:{' '}
+                      {pngTuberChromaKeyTolerance}
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="255"
+                      step="1"
+                      value={pngTuberChromaKeyTolerance}
+                      onChange={(e) =>
+                        settingsStore.setState({
+                          pngTuberChromaKeyTolerance: parseInt(e.target.value),
+                        })
+                      }
+                      className="mt-2 mb-4 input-range"
+                    />
+                    <div className="text-sm text-gray-600">
+                      {t('PNGTuber.ChromaKeyToleranceInfo')}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </>
         )}

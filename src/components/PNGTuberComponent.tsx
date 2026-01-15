@@ -6,11 +6,19 @@ import { PNGTuberEngine } from '@/features/pngTuber/pngTuberEngine'
 const PNGTuberComponent = (): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mainCanvasRef = useRef<HTMLCanvasElement>(null)
+  const mouthCanvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<PNGTuberEngine | null>(null)
 
   const selectedPNGTuberPath = settingsStore((s) => s.selectedPNGTuberPath)
   const pngTuberSensitivity = settingsStore((s) => s.pngTuberSensitivity)
+  const pngTuberChromaKeyEnabled = settingsStore(
+    (s) => s.pngTuberChromaKeyEnabled
+  )
+  const pngTuberChromaKeyColor = settingsStore((s) => s.pngTuberChromaKeyColor)
+  const pngTuberChromaKeyTolerance = settingsStore(
+    (s) => s.pngTuberChromaKeyTolerance
+  )
 
   const [loadedPath, setLoadedPath] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -21,9 +29,14 @@ const PNGTuberComponent = (): JSX.Element => {
 
   // エンジンを初期化
   useEffect(() => {
-    if (!videoRef.current || !canvasRef.current) return
+    if (!videoRef.current || !mainCanvasRef.current || !mouthCanvasRef.current)
+      return
 
-    const engine = new PNGTuberEngine(videoRef.current, canvasRef.current)
+    const engine = new PNGTuberEngine(
+      videoRef.current,
+      mainCanvasRef.current,
+      mouthCanvasRef.current
+    )
     engineRef.current = engine
 
     // homeStoreに登録
@@ -70,6 +83,19 @@ const PNGTuberComponent = (): JSX.Element => {
     engineRef.current?.setSensitivity(pngTuberSensitivity)
   }, [pngTuberSensitivity])
 
+  // クロマキー設定を更新
+  useEffect(() => {
+    engineRef.current?.setChromaKeySettings(
+      pngTuberChromaKeyEnabled,
+      pngTuberChromaKeyColor,
+      pngTuberChromaKeyTolerance
+    )
+  }, [
+    pngTuberChromaKeyEnabled,
+    pngTuberChromaKeyColor,
+    pngTuberChromaKeyTolerance,
+  ])
+
   // ドラッグ&ドロップで背景画像を設定
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -97,18 +123,29 @@ const PNGTuberComponent = (): JSX.Element => {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      {/* 背景動画 */}
+      {/* 背景動画（クロマキー無効時のみ表示） */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-contain"
+        className={`absolute inset-0 w-full h-full object-contain ${
+          pngTuberChromaKeyEnabled ? 'invisible' : ''
+        }`}
         playsInline
         muted
         loop
       />
-      {/* 口のオーバーレイキャンバス */}
+      {/* メインキャンバス（クロマキー有効時: 動画+口を描画、無効時: 非表示） */}
       <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+        ref={mainCanvasRef}
+        className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
+          pngTuberChromaKeyEnabled ? '' : 'invisible'
+        }`}
+      />
+      {/* 口のオーバーレイキャンバス（クロマキー無効時のみ使用） */}
+      <canvas
+        ref={mouthCanvasRef}
+        className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
+          pngTuberChromaKeyEnabled ? 'invisible' : ''
+        }`}
       />
       {/* エラー表示 */}
       {error && (

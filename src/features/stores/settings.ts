@@ -172,6 +172,9 @@ interface Character {
   lightingIntensity: number
   selectedPNGTuberPath: string
   pngTuberSensitivity: number
+  pngTuberChromaKeyEnabled: boolean
+  pngTuberChromaKeyColor: string
+  pngTuberChromaKeyTolerance: number
 }
 
 // Preset question type
@@ -535,6 +538,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/default',
   pngTuberSensitivity:
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_SENSITIVITY || '50') || 50,
+  pngTuberChromaKeyEnabled:
+    process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_ENABLED === 'true',
+  pngTuberChromaKeyColor:
+    process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_COLOR || '#00FF00',
+  pngTuberChromaKeyTolerance:
+    parseInt(process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_TOLERANCE || '50') ||
+    50,
 
   // Memory settings
   memoryEnabled: DEFAULT_MEMORY_CONFIG.memoryEnabled,
@@ -692,6 +702,9 @@ const settingsStore = create<SettingsState>()(
       modelType: state.modelType,
       selectedPNGTuberPath: state.selectedPNGTuberPath,
       pngTuberSensitivity: state.pngTuberSensitivity,
+      pngTuberChromaKeyEnabled: state.pngTuberChromaKeyEnabled,
+      pngTuberChromaKeyColor: state.pngTuberChromaKeyColor,
+      pngTuberChromaKeyTolerance: state.pngTuberChromaKeyTolerance,
       neutralEmotions: state.neutralEmotions,
       happyEmotions: state.happyEmotions,
       sadEmotions: state.sadEmotions,
