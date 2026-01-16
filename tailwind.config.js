@@ -41,6 +41,21 @@ module.exports = {
         'col-span-4': '392px',
         'col-span-7': '704px',
       },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'fade-out': 'fadeOut 0.5s ease-in-out',
+        'pulse-slow': 'pulse 3s ease-in-out infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+      },
     },
   },
   plugins: [],

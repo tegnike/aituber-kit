@@ -39,7 +39,8 @@
 <h3 align="center">
    <a href="../README.md">日本語</a>｜
    <a href="./README_en.md">English</a>｜
-   <a href="./README_zh.md">中文</a>｜
+   <a href="./README_zh-CN.md">简体中文</a>｜
+   <a href="./README_zh-TW.md">繁體中文</a>｜
    <a href="./README_ko.md">한국어</a>
 </h3>
 
@@ -118,8 +119,8 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 
 ### Środowisko programistyczne
 
-- Node.js: ^20.0.0
-- npm: ^10.0.0
+- Node.js: ^25.2.1
+- npm: ^11.6.2
 
 ### Instrukcje instalacji
 
@@ -321,7 +322,6 @@ Jeśli chcesz poprawić kod lub dodać nowe funkcje, wprowadź zmiany w swoim sf
 Od wersji v2.0.0 projekt ten przyjął **niestandardową licencję**.
 
 - **Bezpłatne użytkowanie**
-
   - Dozwolone jest bezpłatne użytkowanie do celów osobistych (niekomercyjnych), edukacyjnych i non-profit.
 
 - **Licencja komercyjna**

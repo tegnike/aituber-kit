@@ -8,6 +8,7 @@ import { Meta } from '@/components/meta'
 import ModalImage from '@/components/modalImage'
 import VrmViewer from '@/components/vrmViewer'
 import Live2DViewer from '@/components/live2DViewer'
+import PNGTuberViewer from '@/components/pngTuberViewer'
 import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import CharacterPresetMenu from '@/components/characterPresetMenu'
@@ -102,7 +103,13 @@ const Home = () => {
     <div className="h-[100svh] bg-cover" style={backgroundStyle}>
       <Meta />
       <Introduction />
-      {modelType === 'vrm' ? <VrmViewer /> : <Live2DViewer />}
+      {modelType === 'vrm' ? (
+        <VrmViewer />
+      ) : modelType === 'live2d' ? (
+        <Live2DViewer />
+      ) : (
+        <PNGTuberViewer />
+      )}
       <Form />
       <Menu />
       <ModalImage />

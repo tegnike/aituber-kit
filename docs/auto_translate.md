@@ -18,29 +18,24 @@
 現在、以下のファイルが自動翻訳の対象となっています：
 
 1. 元ファイル: `README.md`
-
    - 翻訳先: `docs/README_*.md`（各言語版）
 
 2. 元ファイル: `docs/logo_license.md`
-
    - 翻訳先: `docs/logo_license_*.md`（各言語版）
 
 3. 元ファイル: `docs/license-faq.md`
-
    - 翻訳先: `docs/license-faq_*.md`（各言語版）
 
 4. 元ファイル: `docs/license.md`
-
    - 翻訳先: `docs/license_*.md`（各言語版）
 
 5. 元ファイル: `docs/character_model_licence.md`
-
    - 翻訳先: `docs/character_model_licence_*.md`（各言語版）
 
 6. 元ファイル: `locales/ja/translation.json`
    - 翻訳先: `locales/*/translation.json`（各言語版）
 
-対象言語は現在、英語（en）、中国語（zh）、韓国語（ko）です。
+対象言語は現在、英語（en）、簡体字中国語（zh-CN）、繁体字中国語（zh-TW）、韓国語（ko）です。
 
 ## 実行タイミング
 
@@ -77,7 +72,7 @@ FILE_MAPPINGS = {
 対象言語を追加・変更するには、`scripts/auto_translate.py`の`TARGET_LANGUAGES`変数を編集します：
 
 ```python
-TARGET_LANGUAGES = ["en", "zh", "ko"]  # 言語コードを追加・変更
+TARGET_LANGUAGES = ["en", "zh-CN", "zh-TW", "ko"]  # 言語コードを追加・変更
 ```
 
 ## 動作の仕組み

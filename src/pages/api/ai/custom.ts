@@ -1,6 +1,6 @@
 import { Message } from '@/features/messages/messages'
 import { NextRequest } from 'next/server'
-import { handleCustomApi } from '../services/customApi'
+import { handleCustomApi } from '@/lib/api-services/customApi'
 
 export const config = {
   runtime: 'edge',

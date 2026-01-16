@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Memory Settings Icon (Brain/Database) -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" style="width: 48px; height: 48px; opacity: 1;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#4B4B4B;}
+</style>
+<g>
+	<!-- Database/Memory cylinder -->
+	<ellipse class="st0" cx="256" cy="96" rx="176" ry="64"/>
+	<path class="st0" d="M80,96v80c0,35.3,78.8,64,176,64s176-28.7,176-64V96c0,35.3-78.8,64-176,64S80,131.3,80,96z"/>
+	<path class="st0" d="M80,208v80c0,35.3,78.8,64,176,64s176-28.7,176-64v-80c0,35.3-78.8,64-176,64S80,243.3,80,208z"/>
+	<path class="st0" d="M80,320v96c0,35.3,78.8,64,176,64s176-28.7,176-64v-96c0,35.3-78.8,64-176,64S80,355.3,80,320z"/>
+</g>
+</svg>

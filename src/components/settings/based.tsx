@@ -155,7 +155,8 @@ const Based = () => {
             <option value="ru">Russian - ロシア語</option>
             <option value="es">Spanish - スペイン語</option>
             <option value="th">Thai - タイ語</option>
-            <option value="zh">Traditional Chinese - 繁體中文</option>
+            <option value="zh-CN">Simplified Chinese - 簡体字中国語</option>
+            <option value="zh-TW">Traditional Chinese - 繁体字中国語</option>
             <option value="vi">Vietnamese - ベトナム語</option>
           </select>
         </div>

@@ -19,6 +19,7 @@ import i18next from 'i18next'
 import { SpeakQueue } from './speakQueue'
 import { synthesizeVoiceNijivoiceApi } from './synthesizeVoiceNijivoice'
 import { Live2DHandler } from './live2dHandler'
+import { PNGTuberHandler } from '@/features/pngTuber/pngTuberHandler'
 import {
   asyncConvertEnglishToJapaneseReading,
   containsEnglish,
@@ -411,6 +412,8 @@ export const testVoice = async (voiceType: AIVoice, customText?: string) => {
         await hs.viewer.model?.speak(buffer, talk)
       } else if (ss.modelType === 'live2d') {
         Live2DHandler.speak(buffer, talk)
+      } else if (ss.modelType === 'pngtuber') {
+        await PNGTuberHandler.speak(buffer, talk)
       }
     }
   } catch (error) {
