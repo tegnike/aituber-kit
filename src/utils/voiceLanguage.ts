@@ -9,10 +9,11 @@ export const getVoiceLanguageCode = (selectLanguage: string): VoiceLanguage => {
       return 'en-US'
     case 'ko':
       return 'ko-KR'
-    case 'zh-CN':
-      return 'zh-CN'
+    case 'zh':
     case 'zh-TW':
       return 'zh-TW'
+    case 'zh-CN':
+      return 'zh-CN'
     case 'vi':
       return 'vi-VN'
     case 'fr':
