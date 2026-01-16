@@ -1,6 +1,6 @@
 import handler from '@/pages/api/ai/vercel'
 import {
-  aiServiceConfig,
+  createAIRegistry,
   streamAiText,
   generateAiText,
 } from '@/lib/api-services/vercelAi'
@@ -38,13 +38,14 @@ if (typeof global.Response === 'undefined') {
   global.Response = TestResponse
 }
 
+const mockRegistry = {
+  languageModel: jest.fn().mockReturnValue('mock-model'),
+  google: jest.fn().mockReturnValue('google-model'),
+  azure: jest.fn().mockReturnValue('azure-model'),
+}
+
 jest.mock('@/lib/api-services/vercelAi', () => ({
-  aiServiceConfig: {
-    google: jest.fn(),
-    azure: jest.fn(),
-    ollama: jest.fn(),
-    openai: jest.fn(),
-  },
+  createAIRegistry: jest.fn(),
   streamAiText: jest.fn(),
   generateAiText: jest.fn(),
 }))
@@ -53,6 +54,9 @@ jest.mock('@/lib/api-services/utils', () => ({
   modifyMessages: jest.fn(),
 }))
 
+const mockCreateAIRegistry = createAIRegistry as jest.MockedFunction<
+  typeof createAIRegistry
+>
 const mockStreamAiText = streamAiText as jest.MockedFunction<
   typeof streamAiText
 >
@@ -74,6 +78,7 @@ describe('/api/ai/vercel handler', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     process.env = { ...originalEnv }
+    mockCreateAIRegistry.mockReturnValue(mockRegistry as any)
   })
 
   afterAll(() => {
@@ -135,10 +140,6 @@ describe('/api/ai/vercel handler', () => {
 
   it('streams google responses with search grounding using env API key', async () => {
     process.env.GOOGLE_KEY = 'env-google'
-    const googleModelFactory = jest
-      .fn()
-      .mockReturnValue('google-model-instance')
-    ;(aiServiceConfig.google as jest.Mock).mockReturnValue(googleModelFactory)
     mockModifyMessages.mockReturnValue([
       { role: 'user', content: 'hello' },
     ] as any)
@@ -162,12 +163,15 @@ describe('/api/ai/vercel handler', () => {
       })
     )
 
-    expect(aiServiceConfig.google).toHaveBeenCalledWith({
+    expect(mockCreateAIRegistry).toHaveBeenCalledWith('google', {
       apiKey: 'env-google',
+      baseURL: '',
+      resourceName: '',
     })
     expect(mockStreamAiText).toHaveBeenCalledWith({
       model: 'gemini-1.5-pro',
-      modelInstance: googleModelFactory,
+      registry: mockRegistry,
+      service: 'google',
       messages: [{ role: 'user', content: 'hello' }],
       temperature: 0.8,
       maxTokens: 500,
@@ -180,8 +184,6 @@ describe('/api/ai/vercel handler', () => {
   })
 
   it('calls generateAiText for azure requests using deployment name', async () => {
-    const azureModelFactory = jest.fn().mockReturnValue('azure-model-instance')
-    ;(aiServiceConfig.azure as jest.Mock).mockReturnValue(azureModelFactory)
     mockModifyMessages.mockReturnValue([{ role: 'user', content: 'hi' }] as any)
 
     const generateResponse = new Response('done', { status: 200 })
@@ -201,13 +203,15 @@ describe('/api/ai/vercel handler', () => {
       })
     )
 
-    expect(aiServiceConfig.azure).toHaveBeenCalledWith({
-      resourceName: 'my-resource',
+    expect(mockCreateAIRegistry).toHaveBeenCalledWith('azure', {
       apiKey: 'azure-key',
+      baseURL: undefined,
+      resourceName: 'my-resource',
     })
     expect(mockGenerateAiText).toHaveBeenCalledWith({
       model: 'my-deploy',
-      modelInstance: azureModelFactory,
+      registry: mockRegistry,
+      service: 'azure',
       messages: [{ role: 'user', content: 'hi' }],
       temperature: 0.3,
       maxTokens: 256,
