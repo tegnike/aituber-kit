@@ -20,7 +20,7 @@ export default function PNGTuberViewer() {
   }
 
   return (
-    <div className="fixed inset-0 w-screen h-screen z-5">
+    <div className="fixed inset-0 w-screen h-screen z-10">
       <PNGTuberComponent />
     </div>
   )

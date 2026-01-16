@@ -54,7 +54,7 @@ fetched_at: '2025-12-19T21:01:27.520248+00:00'
    }'
    ```
 
-   The response will contain a “value” string a the top level, which starts with “ek\_” prefix. You can use this ephemeral key to establish a WebRTC connection later on. Note that this key is only valid for a short period of time and will need to be regenerated.
+   The response will contain a "value" string at the top level, which starts with “ek\_” prefix. You can use this ephemeral key to establish a WebRTC connection later on. Note that this key is only valid for a short period of time and will need to be regenerated.
 
 3. **Create your first Agent**
 

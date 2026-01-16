@@ -587,7 +587,7 @@ model: 'gpt-5-mini',
 
 outputType: z.object({
 
-reasong: z.string(),
+reason: z.string(),
 
 refundApproved: z.boolean(),
 
