@@ -2,7 +2,7 @@
 
 <img style="max-width: 100%;" src="../public/ogp.png">
 
-**공지사항: 본 프로젝트는 버전 v2.0.0부터 커스텀 라이선스를 채택하고 있습니다. 상업적 목적으로 사용하시는 경우 [이용약관](#이용약관) 섹션을 확인해 주시기 바랍니다.**
+**通知：本项目从版本v2.0.0开始采用自定义许可证。如果您出于商业目的使用，请查看[使用条款](#使用条款)部分。**
 
 <p align="center">
    <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
@@ -26,67 +26,67 @@
 
 <div align="center">
    <h3>
-      🌟 <a href="https://aituberkit.com">데모 사이트</a> 🌟
+      🌟 <a href="https://aituberkit.com">演示网站</a> 🌟
    </h3>
 </div>
 
 <div align="center">
    <h3>
-      📚 <a href="https://docs.aituberkit.com/en/">문서 사이트</a> 📚
+      📚 <a href="https://docs.aituberkit.com/zh/">文档网站</a> 📚
    </h3>
 </div>
 
 <h3 align="center">
    <a href="../README.md">日本語</a>｜
    <a href="./README_en.md">English</a>｜
-   <a href="./README_zh-CN.md">简体中文</a>｜
    <a href="./README_zh-TW.md">繁體中文</a>｜
+   <a href="./README_ko.md">한국어</a>｜
    <a href="./README_pl.md">Polski</a>
 </h3>
 
-## 개요
+## 概述
 
-AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플리케이션을 구축할 수 있는 오픈소스 툴킷입니다.<br>
-다양한 AI 서비스, 캐릭터 모델, 음성 합성 엔진을 지원하며, 높은 커스터마이징 기능을 갖춘 대화 기능과 AITuber 방송 기능을 중심으로 다양한 확장 모드를 제공합니다.
+AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角色聊天的Web应用程序。<br>
+它支持丰富的AI服务、角色模型和语音合成引擎，提供高度可定制的对话功能和AITuber直播功能，以及各种扩展模式。
 
 <img src="./images/architecture_en.svg" alt="AITuberKit Architecture">
 
-자세한 사용 방법과 설정 방법은 [문서 사이트](https://docs.aituberkit.com/en/)를 참조해 주시기 바랍니다.
+有关详细使用方法和配置说明，请访问[文档网站](https://docs.aituberkit.com/zh/)。
 
-## Star History
+## Star历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
-## 주요 기능
+## 主要功能
 
-### 1. AI 캐릭터와의 대화
+### 1. 与AI角色交互
 
-- 각종 LLM의 API 키를 사용하여 AI 캐릭터와 쉽게 대화 가능
-- 멀티모달 지원으로 카메라 영상이나 업로드한 이미지를 인식하여 답변 생성
-- 최근 대화 내용을 기억으로 유지
+- 使用各种LLM的API密钥轻松与AI角色对话
+- 支持多模态，可识别摄像头画面和上传的图像生成回答
+- 保留最近的对话作为记忆
 
-### 2. AITuber 방송
+### 2. AITuber直播
 
-- YouTube 방송 댓글을 가져와 AI 캐릭터가 자동으로 응답
-- 대화 지속 모드로 댓글이 없어도 자발적으로 발언 가능
-- "#"으로 시작하는 댓글은 읽지 않는 기능
+- 获取YouTube直播评论，AI角色自动回应
+- 对话持续模式下即使没有评论也能自发发言
+- 以"#"开头的评论不会被读取的功能
 
-### 3. 기타 기능
+### 3. 其他功能
 
-- **외부 연동 모드**: WebSocket으로 서버 앱과 연동하여 더 고도한 기능 구현
-- **슬라이드 모드**: AI 캐릭터가 슬라이드를 자동으로 발표하는 모드
-- **Realtime API**: OpenAI의 Realtime API를 사용한 저지연 대화와 함수 실행
-- **오디오 모드**: OpenAI의 Audio API 기능을 활용한 자연스러운 음성 대화
-- **메시지 수신 기능**: 전용 API를 통해 외부에서 지시를 받아 AI 캐릭터가 발언하도록 하는 것이 가능
+- **外部集成模式**：通过WebSocket与服务器应用程序连接，实现更高级的功能
+- **幻灯片模式**：AI角色自动展示幻灯片的模式
+- **实时API**：使用OpenAI的Realtime API实现低延迟对话和函数执行
+- **音频模式**：利用OpenAI的Audio API功能实现自然语音对话
+- **消息接收功能**：通过专用API接受外部指令，让AI角色发言
 
-## 지원 모델 및 서비스
+## 支持的模型和服务
 
-### 캐릭터 모델
+### 角色模型
 
-- **3D 모델**: VRM 파일
-- **2D 모델**: Live2D 파일(Cubism 3 이상)
+- **3D模型**：VRM文件
+- **2D模型**：Live2D文件（Cubism 3及以后版本）
 
-### 지원 LLM
+### 支持的LLM
 
 - OpenAI
 - Anthropic
@@ -97,10 +97,10 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - Mistral AI
 - Perplexity
 - Fireworks
-- 로컬 LLM
+- 本地LLM
 - Dify
 
-### 지원 음성 합성 엔진
+### 支持的语音合成引擎
 
 - VOICEVOX
 - Koeiromap
@@ -113,75 +113,75 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - ElevenLabs
 - OpenAI
 - Azure OpenAI
-- 니지보이스
+- Niji Voice
 
-## 퀵 스타트
+## 快速开始
 
-### 개발 환경
+### 开发环境
 
 - Node.js: ^25.2.1
 - npm: ^11.6.2
 
-### 설치 순서
+### 安装步骤
 
-1. 리포지토리를 로컬에 클론합니다.
+1. 将仓库克隆到本地。
 
 ```bash
 git clone https://github.com/tegnike/aituber-kit.git
 ```
 
-2. 폴더를 엽니다.
+2. 打开文件夹。
 
 ```bash
 cd aituber-kit
 ```
 
-3. 패키지를 설치합니다.
+3. 安装包。
 
 ```bash
 npm install
 ```
 
-4. 개발 모드로 애플리케이션을 실행합니다.
+4. 在开发模式下启动应用程序。
 
 ```bash
 npm run dev
 ```
 
-5. URL을 엽니다. [http://localhost:3000](http://localhost:3000)
+5. 打开URL：[http://localhost:3000](http://localhost:3000)
 
-6. 필요에 따라 .env 파일을 생성합니다.
+6. 根据需要创建.env文件。
 
 ```bash
 cp .env.example .env
 ```
 
-자세한 설정 방법과 사용 방법은 [문서 사이트](https://docs.aituberkit.com/en/)를 참조해 주시기 바랍니다.
+有关详细配置和使用说明，请访问[文档网站](https://docs.aituberkit.com/zh/)。
 
-## ⚠️ 보안에 관한 중요 주의사항
+## ⚠️ 重要安全注意事项
 
-이 리포지토리는 개인 사용과 로컬 환경에서의 개발은 물론, 적절한 보안 대책을 마련한 상업적 사용도 고려하고 있습니다. 단, 웹 환경에 배포할 때는 다음 사항에 주의해 주시기 바랍니다:
+本仓库适用于个人使用和本地环境开发，以及采取适当安全措施的商业用途。但是，在部署到Web环境时，请注意以下几点：
 
-- **API 키 취급**: 백엔드 서버를 통해 AI 서비스(OpenAI, Anthropic 등)와 TTS 서비스의 API를 호출하는 사양이므로, API 키의 적절한 관리가 필요합니다.
+- **API密钥处理**：系统设计为通过后端服务器调用AI服务（OpenAI、Anthropic等）和TTS服务的API，因此需要妥善管理API密钥。
 
-### 프로덕션 환경에서의 사용에 대하여
+### 生产环境使用
 
-프로덕션 환경에서 사용할 경우 다음 중 하나의 대응을 권장합니다:
+在生产环境中使用时，我们建议采取以下方法之一：
 
-1. **백엔드 서버 구현**: API 키 관리를 서버 사이드에서 수행하여 클라이언트로부터의 직접적인 API 액세스를 피함
-2. **사용자에 대한 적절한 설명**: 각 사용자가 자신의 API 키를 사용하는 경우 보안상의 주의점에 대해 설명
-3. **액세스 제한 구현**: 필요에 따라 적절한 인증・인가 메커니즘을 구현
+1. **后端服务器实现**：在服务器端管理API密钥，避免客户端直接访问API
+2. **向用户适当说明**：如果用户使用自己的API密钥，向他们解释安全注意事项
+3. **访问限制实现**：根据需要实施适当的身份验证和授权机制
 
-## 스폰서 모집
+## 赞助
 
-개발을 지속하기 위해 스폰서를 모집하고 있습니다.<br>
-여러분의 지원은 AITuberKit의 개발과 개선에 크게 기여합니다.
+我们正在寻求赞助者以继续开发。<br>
+您的支持将极大地促进AITuberKit的开发和改进。
 
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
 
-### 협력자 여러분(지원해 주신 순서)
+### 贡献者（按支持顺序）
 
 <p>
   <a href="https://github.com/morioki3" title="morioki3">
@@ -288,58 +288,58 @@ cp .env.example .env
   </a>
 </p>
 
-기타 프라이빗 스폰서 다수
+此外还有多位私人赞助者
 
-## 기여
+## 贡献
 
-AITuberKit의 개발에 관심을 가져주셔서 감사합니다. 커뮤니티의 기여를 환영합니다.
+感谢您对AITuberKit开发的关注。我们欢迎来自社区的贡献。
 
-### 이슈 신고
+### 问题报告
 
-버그를 발견했거나 새로운 기능에 대한 아이디어가 있으시면 GitHub의 [Issues](https://github.com/tegnike/aituber-kit/issues) 페이지를 통해 알려주세요.
+如果您发现了错误或有新功能的想法，请通过GitHub的[Issues](https://github.com/tegnike/aituber-kit/issues)页面告知我们。
 
-이슈를 작성할 때 다음 정보를 포함하면 원활한 대응이 가능합니다:
+创建问题时，包含以下信息将有助于我们顺利响应：
 
-- 문제나 새로운 기능에 대한 자세한 설명
-- 재현 단계 (버그의 경우)
-- 예상 동작과 실제 동작
-- 사용 환경 (브라우저, OS, Node.js 버전 등)
-- 스크린샷이나 동영상 (가능하다면)
+- 问题或新功能的详细描述
+- 重现步骤（对于错误）
+- 预期行为与实际行为
+- 使用环境（浏览器、操作系统、Node.js版本等）
+- 屏幕截图或视频（如果可能）
 
-### 풀 리퀘스트
+### 拉取请求
 
-코드 개선이나 새로운 기능을 추가하고 싶으시면 포크한 저장소에서 변경사항을 만들고 풀 리퀘스트를 생성해 주세요.
+如果您想改进代码或添加新功能，请在您的fork仓库中进行更改并创建拉取请求。
 
-- 하나의 풀 리퀘스트에서는 하나의 기능이나 수정사항에 집중해 주세요.
-- 풀 리퀘스트 설명에 변경 내용과 이유를 작성해 주세요.
-- 머지 대상 브랜치는 반드시 `develop`로 설정해 주세요.
-- 충돌이 발생해도 무리하게 해결하지 않으셔도 됩니다. 개발팀이 처리합니다.
+- 一个拉取请求应专注于一个功能或修复。
+- 请在拉取请求描述中说明更改内容和理由。
+- 合并目标分支必须设置为 `develop`。
+- 不要强行解决冲突。开发团队会处理这些问题。
 
-## 이용약관
+## 使用条款
 
-### 라이선스
+### 许可证
 
-본 프로젝트는 버전 v2.0.0부터 **커스텀 라이선스**를 채택하고 있습니다.
+本项目从版本v2.0.0开始采用**自定义许可证**。
 
-- **무상 이용**
-  - 영리 목적 이외의 개인 사용, 교육 목적, 비영리 목적의 사용은 무상으로 이용 가능합니다.
+- **免费使用**
+  - 非商业目的的个人使用、教育目的和非营利目的的使用可以免费使用。
 
-- **상업용 라이선스**
-  - 상업적 목적의 사용에 관해서는 별도의 상업용 라이선스 취득이 필요합니다.
-  - 자세한 내용은 [라이선스에 대하여](./license_en.md)를 확인해 주시기 바랍니다.
+- **商业许可证**
+  - 商业用途需要获取单独的商业许可证。
+  - 详情请查看[关于许可证](./license_en.md)。
 
-### 기타
+### 其他
 
-- [로고 이용약관](./logo_licence_ko.md)
-- [VRM 및 Live2D 모델 이용약관](./character_model_licence_ko.md)
+- [标志使用条款](./logo_licence_zh-CN.md)
+- [VRM和Live2D模型使用条款](./character_model_licence_zh-CN.md)
 
-## 우선 구현에 대하여
+## 优先实施
 
-본 프로젝트에서는 유상으로 기능 우선 구현을 받고 있습니다.
+本项目接受付费优先实施功能。
 
-- 기업이나 개인으로부터 요청받은 기능을 우선적으로 구현할 수 있습니다.
-- 구현된 기능은 본 OSS 프로젝트의 일부로 공개됩니다.
-- 요금은 기능의 복잡도와 구현에 소요되는 시간에 따라 개별 견적이 됩니다.
-- 이 우선 구현은 상업용 라이선스와는 별개의 시도입니다. 구현된 기능을 상업적으로 사용하는 경우에는 별도로 상업용 라이선스 취득이 필요합니다.
+- 可以优先实施企业或个人要求的功能。
+- 实施的功能将作为本OSS项目的一部分发布。
+- 费用根据功能的复杂性和实施所需时间单独报价。
+- 这种优先实施与商业许可证是分开的。如果您想将实施的功能用于商业目的，需要单独获取商业许可证。
 
-자세한 내용은 support@aituberkit.com으로 문의해 주시기 바랍니다.
+详情请联系support@aituberkit.com。
