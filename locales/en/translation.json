@@ -368,6 +368,8 @@
   "InputArea": "Input area",
   "SideArea": "Side Panel",
   "PasteImageSupported": "Image paste support",
+  "ImageSizeExceeded": "Image size exceeds the 10MB limit",
+  "ImageReadError": "Failed to read image file",
   "FileSizeError": "The file size exceeds the maximum of {{maxSize}}MB.",
   "FileTypeError": "Unsupported file format. Only image files (PNG, JPEG, GIF, WebP) can be uploaded.",
   "ImageDimensionError": "The image size exceeds the maximum of {{maxWidth}}x{{maxHeight}} pixels.",
