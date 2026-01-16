@@ -48,6 +48,8 @@ export class PNGTuberHandler {
     const pngTuberViewer = hs.pngTuberViewer
     if (!pngTuberViewer) return
     pngTuberViewer.stopAudio()
+    // 口を閉じた状態にリセット
+    pngTuberViewer.resetMouth()
   }
 
   /**

@@ -772,39 +772,43 @@ const Character = () => {
           </>
         )}
 
-        {/* Character Position Controls */}
-        <div className="my-6">
-          <div className="text-xl font-bold mb-4">{t('CharacterPosition')}</div>
-          <div className="mb-4">{t('CharacterPositionInfo')}</div>
-          <div className="mb-2 text-sm font-medium">
-            {t('CurrentStatus')}:{' '}
-            <span className="font-bold">
-              {fixedCharacterPosition
-                ? t('PositionFixed')
-                : t('PositionNotFixed')}
-            </span>
+        {/* Character Position Controls - VRM/Live2D only (PNGTuber uses scale/offset in viewer) */}
+        {modelType !== 'pngtuber' && (
+          <div className="my-6">
+            <div className="text-xl font-bold mb-4">
+              {t('CharacterPosition')}
+            </div>
+            <div className="mb-4">{t('CharacterPositionInfo')}</div>
+            <div className="mb-2 text-sm font-medium">
+              {t('CurrentStatus')}:{' '}
+              <span className="font-bold">
+                {fixedCharacterPosition
+                  ? t('PositionFixed')
+                  : t('PositionNotFixed')}
+              </span>
+            </div>
+            <div className="flex gap-4 md:flex-row flex-col">
+              <button
+                onClick={() => handlePositionAction('fix')}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('FixPosition')}
+              </button>
+              <button
+                onClick={() => handlePositionAction('unfix')}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('UnfixPosition')}
+              </button>
+              <button
+                onClick={() => handlePositionAction('reset')}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('ResetPosition')}
+              </button>
+            </div>
           </div>
-          <div className="flex gap-4 md:flex-row flex-col">
-            <button
-              onClick={() => handlePositionAction('fix')}
-              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
-            >
-              {t('FixPosition')}
-            </button>
-            <button
-              onClick={() => handlePositionAction('unfix')}
-              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
-            >
-              {t('UnfixPosition')}
-            </button>
-            <button
-              onClick={() => handlePositionAction('reset')}
-              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
-            >
-              {t('ResetPosition')}
-            </button>
-          </div>
-        </div>
+        )}
 
         {/* VRM Lighting Controls */}
         {modelType === 'vrm' && (

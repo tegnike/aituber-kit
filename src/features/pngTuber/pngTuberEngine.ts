@@ -615,6 +615,11 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       return
     }
 
+    // 既に実行中の場合は先に停止する（重複ループを防止）
+    if (this.isRunning) {
+      this.stop()
+    }
+
     this.isRunning = true
 
     // ResizeObserverをセットアップ

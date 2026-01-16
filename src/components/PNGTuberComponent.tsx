@@ -26,11 +26,13 @@ const PNGTuberComponent = (): JSX.Element => {
   const pngTuberOffsetX = settingsStore((s) => s.pngTuberOffsetX)
   const pngTuberOffsetY = settingsStore((s) => s.pngTuberOffsetY)
 
-  // ドラッグ状態の追跡
+  // ドラッグ状態の追跡（refで管理してリスナーを安定させる）
   const [isDragging, setIsDragging] = useState(false)
+  const isDraggingRef = useRef(false)
   const dragStartRef = useRef({ x: 0, y: 0 })
   // ドラッグ中の一時的な位置を追跡（即座にUIに反映するため）
   const [tempOffset, setTempOffset] = useState({ x: 0, y: 0 })
+  const tempOffsetRef = useRef({ x: 0, y: 0 })
 
   const [loadedPath, setLoadedPath] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -70,6 +72,9 @@ const PNGTuberComponent = (): JSX.Element => {
     if (loadedPath === selectedPNGTuberPath) return
 
     let cancelled = false
+
+    // 新しいアセットを読み込む前に既存のレンダーループを停止
+    engine.stop()
 
     engine
       .loadAsset(selectedPNGTuberPath)
@@ -137,40 +142,46 @@ const PNGTuberComponent = (): JSX.Element => {
     settingsStore.setState({ pngTuberScale: newScale })
   }, [])
 
-  // ポインターイベント（ドラッグ）
-  const handlePointerDown = useCallback(
-    (e: PointerEvent) => {
-      setIsDragging(true)
-      setTempOffset({ x: pngTuberOffsetX, y: pngTuberOffsetY })
-      dragStartRef.current = {
-        x: e.clientX - pngTuberOffsetX,
-        y: e.clientY - pngTuberOffsetY,
-      }
-    },
-    [pngTuberOffsetX, pngTuberOffsetY]
-  )
+  // ポインターイベント（ドラッグ）- refを使用してハンドラーを安定させる
+  const handlePointerDown = useCallback((e: PointerEvent) => {
+    const currentOffsetX = settingsStore.getState().pngTuberOffsetX
+    const currentOffsetY = settingsStore.getState().pngTuberOffsetY
 
-  const handlePointerMove = useCallback(
-    (e: PointerEvent) => {
-      if (!isDragging) return
-      setTempOffset({
-        x: e.clientX - dragStartRef.current.x,
-        y: e.clientY - dragStartRef.current.y,
-      })
-    },
-    [isDragging]
-  )
+    isDraggingRef.current = true
+    setIsDragging(true)
+
+    const offset = { x: currentOffsetX, y: currentOffsetY }
+    tempOffsetRef.current = offset
+    setTempOffset(offset)
+
+    dragStartRef.current = {
+      x: e.clientX - currentOffsetX,
+      y: e.clientY - currentOffsetY,
+    }
+  }, [])
+
+  const handlePointerMove = useCallback((e: PointerEvent) => {
+    if (!isDraggingRef.current) return
+
+    const newOffset = {
+      x: e.clientX - dragStartRef.current.x,
+      y: e.clientY - dragStartRef.current.y,
+    }
+    tempOffsetRef.current = newOffset
+    setTempOffset(newOffset)
+  }, [])
 
   const handlePointerUp = useCallback(() => {
-    if (isDragging) {
+    if (isDraggingRef.current) {
       // ドラッグ終了時に位置を保存
       settingsStore.setState({
-        pngTuberOffsetX: tempOffset.x,
-        pngTuberOffsetY: tempOffset.y,
+        pngTuberOffsetX: tempOffsetRef.current.x,
+        pngTuberOffsetY: tempOffsetRef.current.y,
       })
+      isDraggingRef.current = false
       setIsDragging(false)
     }
-  }, [isDragging, tempOffset])
+  }, [])
 
   // イベントリスナーを登録
   useEffect(() => {
