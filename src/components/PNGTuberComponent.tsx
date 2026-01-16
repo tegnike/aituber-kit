@@ -5,6 +5,7 @@ import { PNGTuberEngine } from '@/features/pngTuber/pngTuberEngine'
 
 const PNGTuberComponent = (): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const transformContainerRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const mainCanvasRef = useRef<HTMLCanvasElement>(null)
   const mouthCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -19,6 +20,17 @@ const PNGTuberComponent = (): JSX.Element => {
   const pngTuberChromaKeyTolerance = settingsStore(
     (s) => s.pngTuberChromaKeyTolerance
   )
+
+  // ズーム・ドラッグ用の設定を購読
+  const pngTuberScale = settingsStore((s) => s.pngTuberScale)
+  const pngTuberOffsetX = settingsStore((s) => s.pngTuberOffsetX)
+  const pngTuberOffsetY = settingsStore((s) => s.pngTuberOffsetY)
+
+  // ドラッグ状態の追跡
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStartRef = useRef({ x: 0, y: 0 })
+  // ドラッグ中の一時的な位置を追跡（即座にUIに反映するため）
+  const [tempOffset, setTempOffset] = useState({ x: 0, y: 0 })
 
   const [loadedPath, setLoadedPath] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -116,40 +128,112 @@ const PNGTuberComponent = (): JSX.Element => {
     }
   }, [])
 
+  // ホイールイベント（ズーム）
+  const handleWheel = useCallback((e: WheelEvent) => {
+    e.preventDefault()
+    const currentScale = settingsStore.getState().pngTuberScale
+    const scaleChange = e.deltaY * -0.001
+    const newScale = Math.max(0.1, Math.min(3.0, currentScale + scaleChange))
+    settingsStore.setState({ pngTuberScale: newScale })
+  }, [])
+
+  // ポインターイベント（ドラッグ）
+  const handlePointerDown = useCallback(
+    (e: PointerEvent) => {
+      setIsDragging(true)
+      setTempOffset({ x: pngTuberOffsetX, y: pngTuberOffsetY })
+      dragStartRef.current = {
+        x: e.clientX - pngTuberOffsetX,
+        y: e.clientY - pngTuberOffsetY,
+      }
+    },
+    [pngTuberOffsetX, pngTuberOffsetY]
+  )
+
+  const handlePointerMove = useCallback(
+    (e: PointerEvent) => {
+      if (!isDragging) return
+      setTempOffset({
+        x: e.clientX - dragStartRef.current.x,
+        y: e.clientY - dragStartRef.current.y,
+      })
+    },
+    [isDragging]
+  )
+
+  const handlePointerUp = useCallback(() => {
+    if (isDragging) {
+      // ドラッグ終了時に位置を保存
+      settingsStore.setState({
+        pngTuberOffsetX: tempOffset.x,
+        pngTuberOffsetY: tempOffset.y,
+      })
+      setIsDragging(false)
+    }
+  }, [isDragging, tempOffset])
+
+  // イベントリスナーを登録
+  useEffect(() => {
+    const container = transformContainerRef.current
+    if (!container) return
+
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    container.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel)
+      container.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', handlePointerUp)
+    }
+  }, [handleWheel, handlePointerDown, handlePointerMove, handlePointerUp])
+
   return (
     <div
       ref={containerRef}
-      className="relative w-screen h-screen"
+      className="relative w-screen h-screen overflow-hidden"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      {/* 背景動画（クロマキー無効時のみ表示） */}
-      <video
-        ref={videoRef}
-        className={`absolute inset-0 w-full h-full object-contain ${
-          pngTuberChromaKeyEnabled ? 'invisible' : ''
-        }`}
-        playsInline
-        muted
-        loop
-      />
-      {/* メインキャンバス（クロマキー有効時: 動画+口を描画、無効時: 非表示） */}
-      <canvas
-        ref={mainCanvasRef}
-        className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
-          pngTuberChromaKeyEnabled ? '' : 'invisible'
-        }`}
-      />
-      {/* 口のオーバーレイキャンバス（クロマキー無効時のみ使用） */}
-      <canvas
-        ref={mouthCanvasRef}
-        className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
-          pngTuberChromaKeyEnabled ? 'invisible' : ''
-        }`}
-      />
+      {/* トランスフォームコンテナ（ズーム・ドラッグ用） */}
+      <div
+        ref={transformContainerRef}
+        className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+        style={{
+          transform: `translate(${isDragging ? tempOffset.x : pngTuberOffsetX}px, ${isDragging ? tempOffset.y : pngTuberOffsetY}px) scale(${pngTuberScale})`,
+          transformOrigin: 'center center',
+        }}
+      >
+        {/* 背景動画（クロマキー無効時のみ表示） */}
+        <video
+          ref={videoRef}
+          className={`absolute inset-0 w-full h-full object-contain ${
+            pngTuberChromaKeyEnabled ? 'invisible' : ''
+          }`}
+          playsInline
+          muted
+          loop
+        />
+        {/* メインキャンバス（クロマキー有効時: 動画+口を描画、無効時: 非表示） */}
+        <canvas
+          ref={mainCanvasRef}
+          className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
+            pngTuberChromaKeyEnabled ? '' : 'invisible'
+          }`}
+        />
+        {/* 口のオーバーレイキャンバス（クロマキー無効時のみ使用） */}
+        <canvas
+          ref={mouthCanvasRef}
+          className={`absolute inset-0 w-full h-full object-contain pointer-events-none ${
+            pngTuberChromaKeyEnabled ? 'invisible' : ''
+          }`}
+        />
+      </div>
       {/* エラー表示 */}
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 pointer-events-none">
           <div className="text-white text-center p-4">
             <p className="text-lg">{error}</p>
             <p className="text-sm mt-2">
@@ -160,7 +244,7 @@ const PNGTuberComponent = (): JSX.Element => {
       )}
       {/* 読み込み中表示 */}
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="text-white">読み込み中...</div>
         </div>
       )}

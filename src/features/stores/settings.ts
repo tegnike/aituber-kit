@@ -175,6 +175,9 @@ interface Character {
   pngTuberChromaKeyEnabled: boolean
   pngTuberChromaKeyColor: string
   pngTuberChromaKeyTolerance: number
+  pngTuberScale: number
+  pngTuberOffsetX: number
+  pngTuberOffsetY: number
 }
 
 // Preset question type
@@ -545,6 +548,12 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   pngTuberChromaKeyTolerance:
     parseInt(process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_TOLERANCE || '50') ||
     50,
+  pngTuberScale:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_SCALE || '1.0') || 1.0,
+  pngTuberOffsetX:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_X || '0') || 0,
+  pngTuberOffsetY:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
 
   // Memory settings
   memoryEnabled: DEFAULT_MEMORY_CONFIG.memoryEnabled,
@@ -705,6 +714,9 @@ const settingsStore = create<SettingsState>()(
       pngTuberChromaKeyEnabled: state.pngTuberChromaKeyEnabled,
       pngTuberChromaKeyColor: state.pngTuberChromaKeyColor,
       pngTuberChromaKeyTolerance: state.pngTuberChromaKeyTolerance,
+      pngTuberScale: state.pngTuberScale,
+      pngTuberOffsetX: state.pngTuberOffsetX,
+      pngTuberOffsetY: state.pngTuberOffsetY,
       neutralEmotions: state.neutralEmotions,
       happyEmotions: state.happyEmotions,
       sadEmotions: state.sadEmotions,

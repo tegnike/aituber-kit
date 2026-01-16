@@ -750,6 +750,25 @@ const Character = () => {
                 </>
               )}
             </div>
+
+            {/* 位置・サイズリセットボタン */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="font-bold mb-2">{t('PNGTuber.PositionSize')}</div>
+              <div className="text-sm text-gray-600 mb-4">
+                {t('PNGTuber.PositionInfo')}
+              </div>
+              <TextButton
+                onClick={() => {
+                  settingsStore.setState({
+                    pngTuberScale: 1.0,
+                    pngTuberOffsetX: 0,
+                    pngTuberOffsetY: 0,
+                  })
+                }}
+              >
+                {t('PNGTuber.ResetPosition')}
+              </TextButton>
+            </div>
           </>
         )}
 

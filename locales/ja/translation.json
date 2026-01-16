@@ -351,7 +351,10 @@
     "ChromaKeyEnabled": "クロマキーを有効にする",
     "ChromaKeyColor": "キーカラー（透過する色）",
     "ChromaKeyTolerance": "許容値",
-    "ChromaKeyToleranceInfo": "値が大きいほど、キーカラーに近い色も透過されます。"
+    "ChromaKeyToleranceInfo": "値が大きいほど、キーカラーに近い色も透過されます。",
+    "PositionSize": "位置とサイズ",
+    "PositionInfo": "マウスホイールで拡大縮小、ドラッグで移動できます。",
+    "ResetPosition": "位置とサイズをリセット"
   },
   "UseVideoAsBackground": "共有画面またはWebカメラを背景として使用する",
   "Temperature": "Temperature",
