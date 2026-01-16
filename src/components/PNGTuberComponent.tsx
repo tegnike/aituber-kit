@@ -75,6 +75,7 @@ const PNGTuberComponent = (): JSX.Element => {
 
     // 新しいアセットを読み込む前に既存のレンダーループを停止
     engine.stop()
+    setError(null)
 
     engine
       .loadAsset(selectedPNGTuberPath)
@@ -195,12 +196,14 @@ const PNGTuberComponent = (): JSX.Element => {
     container.addEventListener('pointerdown', handlePointerDown)
     window.addEventListener('pointermove', handlePointerMove)
     window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerUp)
 
     return () => {
       container.removeEventListener('wheel', handleWheel)
       container.removeEventListener('pointerdown', handlePointerDown)
       window.removeEventListener('pointermove', handlePointerMove)
       window.removeEventListener('pointerup', handlePointerUp)
+      window.removeEventListener('pointercancel', handlePointerUp)
     }
   }, [handleWheel, handlePointerDown, handlePointerMove, handlePointerUp])
 

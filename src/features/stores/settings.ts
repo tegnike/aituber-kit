@@ -546,8 +546,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   pngTuberChromaKeyColor:
     process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_COLOR || '#00FF00',
   pngTuberChromaKeyTolerance:
-    parseInt(process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_TOLERANCE || '50') ||
-    50,
+    parseInt(
+      process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_TOLERANCE || '50',
+      10
+    ) || 50,
   pngTuberScale:
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_SCALE || '1.0') || 1.0,
   pngTuberOffsetX:
