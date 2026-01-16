@@ -131,6 +131,9 @@ const PNGTuberComponent = (): JSX.Element => {
         homeStore.setState({ modalImage: image })
       }
     }
+    reader.onerror = () => {
+      console.error('Failed to read image file')
+    }
   }, [])
 
   // ホイールイベント（ズーム）

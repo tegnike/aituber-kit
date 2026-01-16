@@ -540,7 +540,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   selectedPNGTuberPath:
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/default',
   pngTuberSensitivity:
-    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_SENSITIVITY || '50') || 50,
+    parseInt(process.env.NEXT_PUBLIC_PNGTUBER_SENSITIVITY || '50', 10) || 50,
   pngTuberChromaKeyEnabled:
     process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_ENABLED === 'true',
   pngTuberChromaKeyColor:
