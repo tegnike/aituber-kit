@@ -365,25 +365,6 @@ const ModelProvider = () => {
 
       {state.selectAIService !== 'dify' && (
         <>
-          <div className="my-6">
-            <div className="my-4 text-xl font-bold">{t('MaxPastMessages')}</div>
-            <div className="my-2">
-              <input
-                type="number"
-                min="1"
-                max="9999"
-                className="px-4 py-2 w-24 bg-white hover:bg-white-hover rounded-lg"
-                value={state.maxPastMessages}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value)
-                  if (!Number.isNaN(value) && value >= 1 && value <= 9999) {
-                    settingsStore.setState({ maxPastMessages: value })
-                  }
-                }}
-              />
-            </div>
-          </div>
-
           {!state.realtimeAPIMode &&
             !state.audioMode &&
             state.selectAIService !== 'custom-api' && (

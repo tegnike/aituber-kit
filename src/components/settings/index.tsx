@@ -12,10 +12,10 @@ import AI from './ai'
 import Voice from './voice'
 import YouTube from './youtube'
 import Slide from './slide'
-import Log from './log'
 import Other from './other'
 import SpeechInput from './speechInput'
 import Images from './images'
+import MemorySettings from './memorySettings'
 
 type Props = {
   onClickClose: () => void
@@ -56,9 +56,9 @@ type TabKey =
   | 'youtube'
   | 'slide'
   | 'images'
-  | 'log'
   | 'other'
   | 'speechInput'
+  | 'memory'
 
 // アイコンのパスマッピング
 const tabIconMapping: Record<TabKey, string> = {
@@ -70,9 +70,9 @@ const tabIconMapping: Record<TabKey, string> = {
   youtube: '/images/setting-icons/youtube-settings.svg',
   slide: '/images/setting-icons/slide-settings.svg',
   images: '/images/setting-icons/image-settings.svg',
-  log: '/images/setting-icons/conversation-history.svg',
   other: '/images/setting-icons/other-settings.svg',
   speechInput: '/images/setting-icons/microphone-settings.svg',
+  memory: '/images/setting-icons/memory-settings.svg',
 }
 
 const Main = () => {
@@ -144,8 +144,8 @@ const Main = () => {
       label: t('ImageSettings'),
     },
     {
-      key: 'log',
-      label: t('LogSettings'),
+      key: 'memory',
+      label: t('MemorySettings'),
     },
     {
       key: 'other',
@@ -171,8 +171,8 @@ const Main = () => {
         return <Slide />
       case 'images':
         return <Images />
-      case 'log':
-        return <Log />
+      case 'memory':
+        return <MemorySettings />
       case 'other':
         return <Other />
       case 'speechInput':
@@ -289,7 +289,7 @@ const Main = () => {
 const Footer = () => {
   return (
     <footer className="absolute py-1 bg-[#413D43] text-center text-theme font-Montserrat bottom-0 w-full">
-      powered by ChatVRM from Pixiv / ver. 2.37.0
+      powered by ChatVRM from Pixiv / ver. 2.38.0
     </footer>
   )
 }
