@@ -20,7 +20,10 @@ import {
   SpeechRecognitionMode,
   WhisperTranscriptionModel,
 } from '../constants/settings'
-import { googleSearchGroundingModels } from '../constants/aiModels'
+import {
+  googleSearchGroundingModels,
+  defaultModels,
+} from '../constants/aiModels'
 import { migrateOpenAIModelName } from '@/utils/modelMigration'
 
 export type googleSearchGroundingModelKey =
@@ -272,7 +275,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   selectAIService:
     (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai',
   selectAIModel: migrateOpenAIModelName(
-    process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4.1'
+    process.env.NEXT_PUBLIC_SELECT_AI_MODEL ||
+      defaultModels[
+        (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai'
+      ]
   ),
   localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
   selectVoice: (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
