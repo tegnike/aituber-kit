@@ -13,22 +13,22 @@ user-invocable: true
 
 以下の14言語ファイルを更新対象とします：
 
-| 言語 | ファイルパス |
-|------|-------------|
-| 英語 | `locales/en/translation.json` |
-| 中国語 | `locales/zh/translation.json` |
-| 韓国語 | `locales/ko/translation.json` |
-| フランス語 | `locales/fr/translation.json` |
-| ドイツ語 | `locales/de/translation.json` |
-| スペイン語 | `locales/es/translation.json` |
-| イタリア語 | `locales/it/translation.json` |
+| 言語         | ファイルパス                  |
+| ------------ | ----------------------------- |
+| 英語         | `locales/en/translation.json` |
+| 中国語       | `locales/zh/translation.json` |
+| 韓国語       | `locales/ko/translation.json` |
+| フランス語   | `locales/fr/translation.json` |
+| ドイツ語     | `locales/de/translation.json` |
+| スペイン語   | `locales/es/translation.json` |
+| イタリア語   | `locales/it/translation.json` |
 | ポルトガル語 | `locales/pt/translation.json` |
-| ロシア語 | `locales/ru/translation.json` |
+| ロシア語     | `locales/ru/translation.json` |
 | ポーランド語 | `locales/pl/translation.json` |
-| タイ語 | `locales/th/translation.json` |
-| ベトナム語 | `locales/vi/translation.json` |
+| タイ語       | `locales/th/translation.json` |
+| ベトナム語   | `locales/vi/translation.json` |
 | ヒンディー語 | `locales/hi/translation.json` |
-| アラビア語 | `locales/ar/translation.json` |
+| アラビア語   | `locales/ar/translation.json` |
 
 ## 実行手順
 
@@ -45,6 +45,7 @@ locales/ja/translation.json
 各言語ファイルを読み込み、日本語ファイルに存在するが対象言語ファイルに存在しないキーを特定します。
 
 **チェック対象：**
+
 - トップレベルのキー（例：`MemorySettings`, `PNGTuber`）
 - ネストされたオブジェクト内のキー（例：`PNGTuber.FileInfo`）
 

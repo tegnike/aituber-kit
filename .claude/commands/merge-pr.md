@@ -38,6 +38,7 @@ git merge develop
 ### 4. マージ結果の確認
 
 #### コンフリクトがない場合
+
 - `git status` で状態を確認
 - `git log --oneline -3` で最新コミットを確認
 - 完了を報告
@@ -45,9 +46,11 @@ git merge develop
 #### コンフリクトがある場合
 
 1. **コンフリクトファイルの特定**
+
    ```bash
    git status
    ```
+
    `both modified:` と表示されるファイルがコンフリクト箇所
 
 2. **コンフリクト内容の確認**
@@ -61,6 +64,7 @@ git merge develop
    - 原則として両方の変更を保持するが、文脈に応じて判断
 
 4. **解決後の処理**
+
    ```bash
    git add <解決したファイル>
    git commit -m "Merge branch 'develop' into <PR branch name>"
