@@ -170,6 +170,14 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  selectedPNGTuberPath: string
+  pngTuberSensitivity: number
+  pngTuberChromaKeyEnabled: boolean
+  pngTuberChromaKeyColor: string
+  pngTuberChromaKeyTolerance: number
+  pngTuberScale: number
+  pngTuberOffsetX: number
+  pngTuberOffsetY: number
 }
 
 // Preset question type
@@ -219,7 +227,7 @@ interface General {
 }
 
 interface ModelType {
-  modelType: 'vrm' | 'live2d'
+  modelType: 'vrm' | 'live2d' | 'pngtuber'
 }
 
 export type SettingsState = APIKeys &
@@ -526,7 +534,28 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     0.1,
 
   // Settings
-  modelType: (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
+  modelType:
+    (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d' | 'pngtuber') ||
+    'vrm',
+  selectedPNGTuberPath:
+    process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/default',
+  pngTuberSensitivity:
+    parseInt(process.env.NEXT_PUBLIC_PNGTUBER_SENSITIVITY || '50', 10) || 50,
+  pngTuberChromaKeyEnabled:
+    process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_ENABLED === 'true',
+  pngTuberChromaKeyColor:
+    process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_COLOR || '#00FF00',
+  pngTuberChromaKeyTolerance:
+    parseInt(
+      process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_TOLERANCE || '50',
+      10
+    ) || 50,
+  pngTuberScale:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_SCALE || '1.0') || 1.0,
+  pngTuberOffsetX:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_X || '0') || 0,
+  pngTuberOffsetY:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
 
   // Memory settings
   memoryEnabled: DEFAULT_MEMORY_CONFIG.memoryEnabled,
@@ -682,6 +711,14 @@ const settingsStore = create<SettingsState>()(
       nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
       nijivoiceSoundDuration: state.nijivoiceSoundDuration,
       modelType: state.modelType,
+      selectedPNGTuberPath: state.selectedPNGTuberPath,
+      pngTuberSensitivity: state.pngTuberSensitivity,
+      pngTuberChromaKeyEnabled: state.pngTuberChromaKeyEnabled,
+      pngTuberChromaKeyColor: state.pngTuberChromaKeyColor,
+      pngTuberChromaKeyTolerance: state.pngTuberChromaKeyTolerance,
+      pngTuberScale: state.pngTuberScale,
+      pngTuberOffsetX: state.pngTuberOffsetX,
+      pngTuberOffsetY: state.pngTuberOffsetY,
       neutralEmotions: state.neutralEmotions,
       happyEmotions: state.happyEmotions,
       sadEmotions: state.sadEmotions,
