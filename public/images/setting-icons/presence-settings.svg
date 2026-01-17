@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Presence Detection Settings Icon (Person) -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" style="width: 48px; height: 48px; opacity: 1;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#4B4B4B;}
+</style>
+<g>
+	<!-- Head -->
+	<circle class="st0" cx="256" cy="120" r="112"/>
+	<!-- Body -->
+	<path class="st0" d="M256,208c-106,0-192,86-192,192v96h384v-96C448,294,362,208,256,208z"/>
+</g>
+</svg>
