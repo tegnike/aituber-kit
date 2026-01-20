@@ -544,7 +544,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d' | 'pngtuber') ||
     'vrm',
   selectedPNGTuberPath:
-    process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/default',
+    process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
   pngTuberSensitivity:
     parseInt(process.env.NEXT_PUBLIC_PNGTUBER_SENSITIVITY || '50', 10) || 50,
   pngTuberChromaKeyEnabled:
