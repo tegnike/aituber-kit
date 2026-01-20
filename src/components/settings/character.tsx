@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
 
@@ -372,8 +372,61 @@ const Character = () => {
     Array<{ path: string; name: string }>
   >([])
   const [pngTuberModels, setPngTuberModels] = useState<
-    Array<{ path: string; name: string }>
+    Array<{ path: string; name: string; videoFile?: string }>
   >([])
+
+  // クロマキー用動画プレビュー
+  const chromaKeyVideoRef = useRef<HTMLVideoElement>(null)
+  const chromaKeyCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [chromaKeyVideoUrl, setChromaKeyVideoUrl] = useState<string>('')
+
+  // 選択されたPNGTuberの動画URLを取得
+  useEffect(() => {
+    if (selectedPNGTuberPath && pngTuberModels.length > 0) {
+      const selectedModel = pngTuberModels.find(
+        (model) => model.path === selectedPNGTuberPath
+      )
+      if (selectedModel?.videoFile) {
+        setChromaKeyVideoUrl(`${selectedModel.path}/${selectedModel.videoFile}`)
+      }
+    }
+  }, [selectedPNGTuberPath, pngTuberModels])
+
+  // 動画クリックで色を取得
+  const handleVideoClick = useCallback(
+    (e: React.MouseEvent<HTMLVideoElement>) => {
+      const video = chromaKeyVideoRef.current
+      const canvas = chromaKeyCanvasRef.current
+      if (!video || !canvas) return
+
+      const rect = video.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+
+      // キャンバスサイズを動画に合わせる
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+
+      // 動画の現在フレームをキャンバスに描画
+      ctx.drawImage(video, 0, 0)
+
+      // クリック位置を動画座標に変換
+      const scaleX = video.videoWidth / rect.width
+      const scaleY = video.videoHeight / rect.height
+      const videoX = Math.floor(x * scaleX)
+      const videoY = Math.floor(y * scaleY)
+
+      // ピクセルの色を取得
+      const pixel = ctx.getImageData(videoX, videoY, 1, 1).data
+      const hexColor = `#${pixel[0].toString(16).padStart(2, '0')}${pixel[1].toString(16).padStart(2, '0')}${pixel[2].toString(16).padStart(2, '0')}`
+
+      settingsStore.setState({ pngTuberChromaKeyColor: hexColor })
+    },
+    []
+  )
 
   const characterPresets = [
     {
@@ -694,6 +747,34 @@ const Character = () => {
 
               {pngTuberChromaKeyEnabled && (
                 <>
+                  {/* 動画プレビュー */}
+                  {chromaKeyVideoUrl && (
+                    <div className="mb-4">
+                      <div className="font-bold mb-2">
+                        {t('PNGTuber.ChromaKeyPreview')}
+                      </div>
+                      <div className="text-sm text-gray-600 mb-2">
+                        {t('PNGTuber.ChromaKeyPreviewInfo')}
+                      </div>
+                      <div className="relative inline-block">
+                        <video
+                          ref={chromaKeyVideoRef}
+                          src={chromaKeyVideoUrl}
+                          className="max-w-full h-auto max-h-48 rounded-lg cursor-crosshair border border-gray-300"
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          onClick={handleVideoClick}
+                        />
+                        <canvas
+                          ref={chromaKeyCanvasRef}
+                          className="hidden"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   {/* カラーピッカー */}
                   <div className="mb-4">
                     <div className="font-bold mb-2">

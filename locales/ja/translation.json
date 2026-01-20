@@ -352,6 +352,8 @@
     "ChromaKeyColor": "キーカラー（透過する色）",
     "ChromaKeyTolerance": "許容値",
     "ChromaKeyToleranceInfo": "値が大きいほど、キーカラーに近い色も透過されます。",
+    "ChromaKeyPreview": "動画プレビュー",
+    "ChromaKeyPreviewInfo": "動画をクリックして、透過したい色を選択できます。",
     "PositionSize": "位置とサイズ",
     "PositionInfo": "マウスホイールで拡大縮小、ドラッグで移動できます。",
     "ResetPosition": "位置とサイズをリセット"
