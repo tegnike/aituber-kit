@@ -84,9 +84,13 @@ const parseFirstEmotion = (line: string): EmotionType => {
   return (match ? match[1] : 'neutral') as EmotionType
 }
 
+// AICU API の音声ホスティングURL
+const AICU_AUDIO_BASE_URL = 'https://api.aicu.ai/v1/audio'
+
 // 事前生成音声ファイルのパスを取得
 const getPreGeneratedAudioPath = (slideDocs: string, page: number): string => {
-  return `/slides/${slideDocs}/audio/page${page}.mp3`
+  // AICU API から音声を取得
+  return `${AICU_AUDIO_BASE_URL}/${slideDocs}/page${page}.mp3`
 }
 
 // 事前生成音声ファイルが存在するかチェック
