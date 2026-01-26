@@ -120,6 +120,7 @@ interface ModelProvider extends Live2DSettings {
   nijivoiceSpeed: number
   nijivoiceEmotionalLevel: number
   nijivoiceSoundDuration: number
+  aicuSlug: string
 }
 
 interface Integrations {
@@ -521,6 +522,9 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
     0.1,
 
+  // AICU TTS settings
+  aicuSlug: process.env.NEXT_PUBLIC_AICU_SLUG || 'luc4',
+
   // Settings
   modelType: (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
 
@@ -671,6 +675,7 @@ const settingsStore = create<SettingsState>()(
       nijivoiceSpeed: state.nijivoiceSpeed,
       nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
       nijivoiceSoundDuration: state.nijivoiceSoundDuration,
+      aicuSlug: state.aicuSlug,
       modelType: state.modelType,
       neutralEmotions: state.neutralEmotions,
       happyEmotions: state.happyEmotions,
