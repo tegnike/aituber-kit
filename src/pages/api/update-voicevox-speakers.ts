@@ -14,7 +14,7 @@ interface Speaker {
   styles: Style[]
 }
 
-interface AivisSpeaker {
+interface VoicevoxSpeaker {
   speaker: string
   id: number
 }
@@ -30,17 +30,24 @@ export default async function handler(
       : req.query.serverUrl
     const serverUrl =
       rawServerUrl ||
-      process.env.AIVIS_SPEECH_SERVER_URL ||
-      'http://127.0.0.1:10101'
+      process.env.VOICEVOX_SERVER_URL ||
+      'http://localhost:50021'
     const parsedUrl = new URL(serverUrl)
     if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
       return res.status(400).json({ error: 'Invalid server URL protocol' })
     }
     const response = await fetch(`${serverUrl}/speakers`)
+
+    if (!response.ok) {
+      throw new Error(
+        `VOICEVOX server responded with status: ${response.status}`
+      )
+    }
+
     const speakers: Speaker[] = await response.json()
 
-    // Aivis形式に変換
-    const aivisSpeakers: AivisSpeaker[] = speakers.flatMap((speaker) =>
+    // VOICEVOX形式に変換
+    const voicevoxSpeakers: VoicevoxSpeaker[] = speakers.flatMap((speaker) =>
       speaker.styles.map((style) => ({
         speaker: `${speaker.name}/${style.name}`,
         id: style.id,
@@ -48,12 +55,15 @@ export default async function handler(
     )
 
     // JSONファイルに書き込み
-    const filePath = path.join(process.cwd(), 'public/speakers_aivis.json')
-    await fs.writeFile(filePath, JSON.stringify(aivisSpeakers, null, 2) + '\n')
+    const filePath = path.join(process.cwd(), 'public/speakers.json')
+    await fs.writeFile(
+      filePath,
+      JSON.stringify(voicevoxSpeakers, null, 2) + '\n'
+    )
 
     res.status(200).json({ message: 'Speakers file updated successfully' })
   } catch (error) {
-    console.error('Error updating speakers:', error)
-    res.status(500).json({ error: 'Failed to update speakers file' })
+    console.error('Error updating VOICEVOX speakers:', error)
+    res.status(500).json({ error: 'Failed to update VOICEVOX speakers file' })
   }
 }
