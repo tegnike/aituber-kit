@@ -416,11 +416,12 @@ const Voice = () => {
                       try {
                         const response = await fetch(
                           '/api/update-voicevox-speakers?serverUrl=' +
-                            voicevoxServerUrl
+                            encodeURIComponent(voicevoxServerUrl)
                         )
                         if (response.ok) {
-                          const updatedSpeakersResponse =
-                            await fetch('/speakers.json')
+                          const updatedSpeakersResponse = await fetch(
+                            `/speakers.json?ts=${Date.now()}`
+                          )
                           const updatedSpeakers =
                             await updatedSpeakersResponse.json()
                           setSpeakers_voicevox(updatedSpeakers)
@@ -711,11 +712,11 @@ const Voice = () => {
                       try {
                         const response = await fetch(
                           '/api/update-aivis-speakers?serverUrl=' +
-                            aivisSpeechServerUrl
+                            encodeURIComponent(aivisSpeechServerUrl)
                         )
                         if (response.ok) {
                           const updatedSpeakersResponse = await fetch(
-                            '/speakers_aivis.json'
+                            `/speakers_aivis.json?ts=${Date.now()}`
                           )
                           const updatedSpeakers =
                             await updatedSpeakersResponse.json()

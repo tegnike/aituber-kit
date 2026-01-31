@@ -25,10 +25,17 @@ export default async function handler(
 ) {
   try {
     // APIからデータを取得
+    const rawServerUrl = Array.isArray(req.query.serverUrl)
+      ? req.query.serverUrl[0]
+      : req.query.serverUrl
     const serverUrl =
-      req.query.serverUrl ||
+      rawServerUrl ||
       process.env.AIVIS_SPEECH_SERVER_URL ||
       'http://127.0.0.1:10101'
+    const parsedUrl = new URL(serverUrl)
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      return res.status(400).json({ error: 'Invalid server URL protocol' })
+    }
     const response = await fetch(`${serverUrl}/speakers`)
     const speakers: Speaker[] = await response.json()
 
