@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../../textButton'
+import { ToggleSwitch } from '../../toggleSwitch'
 import {
   getModels,
   googleSearchGroundingModels,
@@ -79,10 +80,12 @@ export const GoogleConfig = ({
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
         <div className="my-4">
-          <div className="mb-2">
-            <TextButton onClick={handleCustomModelToggle}>
-              {customModel ? t('CustomModelOn') : t('CustomModelOff')}
-            </TextButton>
+          <div className="mb-2 flex items-center gap-3">
+            <ToggleSwitch
+              enabled={customModel}
+              onChange={() => handleCustomModelToggle()}
+            />
+            <span className="font-bold text-sm">{t('UseCustomModel')}</span>
           </div>
           {customModel ? (
             <input
@@ -129,11 +132,12 @@ export const GoogleConfig = ({
               {t('EnableMultiModal')}
             </div>
             <div className="my-2">
-              <TextButton onClick={handleMultiModalToggle}>
-                {enableMultiModal ? t('StatusOn') : t('StatusOff')}
-              </TextButton>
+              <ToggleSwitch
+                enabled={enableMultiModal}
+                onChange={() => handleMultiModalToggle()}
+              />
             </div>
-            <div className="my-2 text-sm">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('EnableMultiModalDescription')}
             </div>
           </div>
@@ -142,20 +146,17 @@ export const GoogleConfig = ({
 
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('SearchGrounding')}</div>
-        <div className="my-4">{t('SearchGroundingDescription')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('SearchGroundingDescription')}
+        </div>
         <div className="my-2">
-          <TextButton
-            onClick={() => {
-              settingsStore.setState({
-                useSearchGrounding: !useSearchGrounding,
-              })
-            }}
+          <ToggleSwitch
+            enabled={useSearchGrounding}
+            onChange={(v) => settingsStore.setState({ useSearchGrounding: v })}
             disabled={
               !googleSearchGroundingModels.includes(selectAIModel as any)
             }
-          >
-            {useSearchGrounding ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          />
         </div>
 
         {useSearchGrounding &&
@@ -164,7 +165,9 @@ export const GoogleConfig = ({
               <div className="mt-6 mb-4 text-xl font-bold">
                 {t('DynamicRetrieval')}
               </div>
-              <div className="my-4">{t('DynamicRetrievalDescription')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('DynamicRetrievalDescription')}
+              </div>
               <div className="my-4">
                 <div className="mb-2 font-medium">
                   {t('DynamicRetrievalThreshold')}:{' '}

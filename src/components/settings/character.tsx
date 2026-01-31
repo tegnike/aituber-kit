@@ -182,7 +182,7 @@ const Live2DSettingsForm = () => {
     <div className="space-y-8">
       <div className="mb-6">
         <div className="mb-4 text-xl font-bold">{t('Live2D.Emotions')}</div>
-        <div className="mb-6 whitespace-pre-line">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           {t('Live2D.EmotionInfo')}
         </div>
         <div className="space-y-4 text-sm">
@@ -285,7 +285,7 @@ const Live2DSettingsForm = () => {
 
       <div className="">
         <div className="mb-4 text-xl font-bold">{t('Live2D.MotionGroups')}</div>
-        <div className="mb-6 whitespace-pre-line">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           {t('Live2D.MotionGroupsInfo')}
         </div>
         <div className="space-y-4">
@@ -584,7 +584,9 @@ const Character = () => {
         <div className="mt-6 mb-4 text-xl font-bold">
           {t('CharacterModelLabel')}
         </div>
-        <div className="mb-4">{t('CharacterModelInfo')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('CharacterModelInfo')}
+        </div>
 
         <div className="flex mb-2">
           <button
@@ -662,7 +664,7 @@ const Character = () => {
 
         {modelType === 'live2d' && (
           <>
-            <div className="my-4 whitespace-pre-line">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('Live2D.FileInfo')}
             </div>
             <select
@@ -687,7 +689,7 @@ const Character = () => {
 
         {modelType === 'pngtuber' && (
           <>
-            <div className="my-4 whitespace-pre-line">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('PNGTuber.FileInfo')}
             </div>
             <select
@@ -727,7 +729,7 @@ const Character = () => {
             </div>
 
             {/* クロマキー設定 */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="border-t border-gray-300 pt-6 my-6">
               <div className="font-bold mb-2">{t('PNGTuber.ChromaKey')}</div>
 
               {/* 有効/無効トグル */}
@@ -767,10 +769,7 @@ const Character = () => {
                           playsInline
                           onClick={handleVideoClick}
                         />
-                        <canvas
-                          ref={chromaKeyCanvasRef}
-                          className="hidden"
-                        />
+                        <canvas ref={chromaKeyCanvasRef} className="hidden" />
                       </div>
                     </div>
                   )}
@@ -833,7 +832,7 @@ const Character = () => {
             </div>
 
             {/* 位置・サイズリセットボタン */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="border-t border-gray-300 pt-6 my-6">
               <div className="font-bold mb-2">{t('PNGTuber.PositionSize')}</div>
               <div className="text-sm text-gray-600 mb-4">
                 {t('PNGTuber.PositionInfo')}
@@ -859,7 +858,9 @@ const Character = () => {
             <div className="text-xl font-bold mb-4">
               {t('CharacterPosition')}
             </div>
-            <div className="mb-4">{t('CharacterPositionInfo')}</div>
+            <div className="my-2 text-sm whitespace-pre-wrap">
+              {t('CharacterPositionInfo')}
+            </div>
             <div className="mb-2 text-sm font-medium">
               {t('CurrentStatus')}:{' '}
               <span className="font-bold">
@@ -928,14 +929,16 @@ const Character = () => {
             {t('CharacterSettingsPrompt')}
           </div>
           {selectAIService === 'dify' ? (
-            <div className="my-4">{t('DifyInstruction')}</div>
+            <div className="my-2 text-sm whitespace-pre-wrap">
+              {t('DifyInstruction')}
+            </div>
           ) : (
-            <div className="my-4 whitespace-pre-line">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('CharacterSettingsInfo')}
             </div>
           )}
         </div>
-        <div className="my-4 whitespace-pre-line">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           {t('CharacterpresetInfo')}
         </div>
         <div className="my-6 mb-2">

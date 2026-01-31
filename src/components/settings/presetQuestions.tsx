@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 
 import settingsStore, { PresetQuestion } from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import { IconButton } from '../iconButton'
 
 const PresetQuestions = () => {
@@ -85,16 +86,19 @@ const PresetQuestions = () => {
     <div className="mb-10">
       <div className="mb-6">
         <div className="mb-4 text-xl font-bold">{t('PresetQuestions')}</div>
-        <div className="my-4">{t('PresetQuestionsInfo')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('PresetQuestionsInfo')}
+        </div>
 
         <div className="my-4">
-          <TextButton onClick={handleToggleShowPresetQuestions}>
-            {t(showPresetQuestions ? 'StatusOn' : 'StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={showPresetQuestions}
+            onChange={() => handleToggleShowPresetQuestions()}
+          />
         </div>
       </div>
 
-      <div className="mt-4 mb-5">
+      <div className="border-t border-gray-300 pt-6 mt-4 mb-5">
         <div className="pr-1 grid grid-flow-col grid-cols-[1fr_min-content] gap-4 mt-6">
           <input
             className="text-ellipsis px-4 py-2 bg-white hover:bg-white-hover rounded-lg"

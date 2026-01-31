@@ -199,7 +199,9 @@ const Voice = () => {
       <div className="mb-4 text-xl font-bold">
         {t('SyntheticVoiceEngineChoice')}
       </div>
-      <div>{t('VoiceEngineInstruction')}</div>
+      <div className="my-2 text-sm whitespace-pre-wrap">
+        {t('VoiceEngineInstruction')}
+      </div>
       <div className="my-2">
         <select
           value={selectVoice}
@@ -223,13 +225,13 @@ const Voice = () => {
         </select>
       </div>
 
-      <div className="mt-10">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="mb-4 text-xl font-bold">{t('VoiceAdjustment')}</div>
         {(() => {
           if (selectVoice === 'koeiromap') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('KoeiromapInfo')}
                   <br />
                   <Link
@@ -342,7 +344,7 @@ const Voice = () => {
           } else if (selectVoice === 'voicevox') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('VoiceVoxInfo')}
                   <br />
                   <Link
@@ -438,7 +440,7 @@ const Voice = () => {
           } else if (selectVoice === 'google') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('GoogleTTSInfo')}
                   {t('AuthFileInstruction')}
                   <br />
@@ -472,7 +474,7 @@ const Voice = () => {
           } else if (selectVoice === 'stylebertvits2') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('StyleBertVITS2Info')}
                   <br />
                   <Link
@@ -581,7 +583,7 @@ const Voice = () => {
           } else if (selectVoice === 'aivis_speech') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('AivisSpeechInfo')}
                   <br />
                   <Link
@@ -783,7 +785,7 @@ const Voice = () => {
           } else if (selectVoice === 'aivis_cloud_api') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('AivisCloudAPIInfo')}
                   <br />
                   <Link
@@ -979,7 +981,9 @@ const Voice = () => {
           } else if (selectVoice === 'gsvitts') {
             return (
               <>
-                <div>{t('GSVITTSInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('GSVITTSInfo')}
+                </div>
                 <div className="mt-4 font-bold">{t('GSVITTSServerUrl')}</div>
                 <div className="mt-2">
                   <input
@@ -1041,7 +1045,7 @@ const Voice = () => {
           } else if (selectVoice === 'elevenlabs') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('ElevenLabsInfo')}
                   <br />
                   <Link
@@ -1065,7 +1069,7 @@ const Voice = () => {
                   />
                 </div>
                 <div className="mt-4 font-bold">{t('ElevenLabsVoiceId')}</div>
-                <div className="mt-2">
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('ElevenLabsVoiceIdInfo')}
                   <br />
                   <Link
@@ -1092,7 +1096,7 @@ const Voice = () => {
           } else if (selectVoice === 'cartesia') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('CartesiaInfo')}
                   <br />
                   <Link
@@ -1116,7 +1120,7 @@ const Voice = () => {
                   />
                 </div>
                 <div className="mt-4 font-bold">{t('CartesiaVoiceId')}</div>
-                <div className="mt-2">
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('CartesiaVoiceIdInfo')}
                   <br />
                   <Link
@@ -1143,7 +1147,9 @@ const Voice = () => {
           } else if (selectVoice === 'openai') {
             return (
               <>
-                <div>{t('OpenAITTSInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('OpenAITTSInfo')}
+                </div>
                 <div className="mt-4 font-bold">{t('OpenAIAPIKeyLabel')}</div>
                 <div className="mt-2">
                   <input
@@ -1220,7 +1226,9 @@ const Voice = () => {
           } else if (selectVoice === 'azure') {
             return (
               <>
-                <div>{t('AzureTTSInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('AzureTTSInfo')}
+                </div>
                 <div className="mt-4 font-bold">{t('AzureAPIKeyLabel')}</div>
                 <div className="mt-2">
                   <input
@@ -1290,7 +1298,9 @@ const Voice = () => {
           } else if (selectVoice === 'nijivoice') {
             return (
               <>
-                <div>{t('NijiVoiceInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('NijiVoiceInfo')}
+                </div>
                 <Link
                   url="https://app.nijivoice.com/"
                   label="https://app.nijivoice.com/"

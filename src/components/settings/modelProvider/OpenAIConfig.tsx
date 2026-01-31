@@ -4,6 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../../textButton'
+import { ToggleSwitch } from '../../toggleSwitch'
 import { ApiKeyInput } from './ApiKeyInput'
 import { ModelSelector } from './ModelSelector'
 import { MultiModalToggle } from './MultiModalToggle'
@@ -135,20 +136,17 @@ export const OpenAIConfig = ({
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
         <div className="my-2">
-          <TextButton
-            onClick={() => handleRealtimeAPIModeChange(!realtimeAPIMode)}
-          >
-            {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={realtimeAPIMode}
+            onChange={handleRealtimeAPIModeChange}
+          />
         </div>
       </div>
 
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('AudioMode')}</div>
         <div className="my-2">
-          <TextButton onClick={() => handleAudioModeChange(!audioMode)}>
-            {audioMode ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch enabled={audioMode} onChange={handleAudioModeChange} />
         </div>
       </div>
 
@@ -207,7 +205,9 @@ export const OpenAIConfig = ({
           </div>
 
           <div className="my-4">
-            <div className="my-4">{t('UpdateRealtimeAPISettingsInfo')}</div>
+            <div className="my-2 text-sm whitespace-pre-wrap">
+              {t('UpdateRealtimeAPISettingsInfo')}
+            </div>
             <TextButton onClick={handleUpdate}>
               {t('UpdateRealtimeAPISettings')}
             </TextButton>

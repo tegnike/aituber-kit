@@ -564,10 +564,18 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
 
   // Memory settings
-  memoryEnabled: DEFAULT_MEMORY_CONFIG.memoryEnabled,
-  memorySimilarityThreshold: DEFAULT_MEMORY_CONFIG.memorySimilarityThreshold,
-  memorySearchLimit: DEFAULT_MEMORY_CONFIG.memorySearchLimit,
-  memoryMaxContextTokens: DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
+  memoryEnabled:
+    process.env.NEXT_PUBLIC_MEMORY_ENABLED === 'true' ||
+    DEFAULT_MEMORY_CONFIG.memoryEnabled,
+  memorySimilarityThreshold:
+    parseFloat(process.env.NEXT_PUBLIC_MEMORY_SIMILARITY_THRESHOLD || '') ||
+    DEFAULT_MEMORY_CONFIG.memorySimilarityThreshold,
+  memorySearchLimit:
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_SEARCH_LIMIT || '', 10) ||
+    DEFAULT_MEMORY_CONFIG.memorySearchLimit,
+  memoryMaxContextTokens:
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_MAX_CONTEXT_TOKENS || '', 10) ||
+    DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
 
   // Live2D settings
   neutralEmotions: process.env.NEXT_PUBLIC_NEUTRAL_EMOTIONS?.split(',') || [],

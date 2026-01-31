@@ -13,6 +13,7 @@ import homeStore, {
   setTargetLogFileName,
 } from '@/features/stores/home'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import { ApiKeyInput } from './modelProvider/ApiKeyInput'
 import { getMemoryService } from '@/features/memory/memoryService'
 import { extractTextContent } from '@/features/memory/memoryStoreSync'
@@ -309,15 +310,10 @@ const MemorySettings = () => {
               {t('MemoryEnabledInfo')}
             </div>
             <div className="my-2">
-              <TextButton
-                onClick={() =>
-                  settingsStore.setState((s) => ({
-                    memoryEnabled: !s.memoryEnabled,
-                  }))
-                }
-              >
-                {memoryEnabled ? t('StatusOn') : t('StatusOff')}
-              </TextButton>
+              <ToggleSwitch
+                enabled={memoryEnabled}
+                onChange={(v) => settingsStore.setState({ memoryEnabled: v })}
+              />
             </div>
           </div>
 
@@ -446,12 +442,11 @@ const MemorySettings = () => {
               {t('VectorizeOnRestoreInfo')}
             </div>
             <div className="my-2">
-              <TextButton
-                onClick={() => setVectorizeOnRestore(!vectorizeOnRestore)}
+              <ToggleSwitch
+                enabled={vectorizeOnRestore}
+                onChange={(v) => setVectorizeOnRestore(v)}
                 disabled={!memoryEnabled}
-              >
-                {vectorizeOnRestore ? t('StatusOn') : t('StatusOff')}
-              </TextButton>
+              />
             </div>
           </div>
 

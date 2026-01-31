@@ -6,6 +6,7 @@ import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 
 const YouTube = () => {
@@ -53,22 +54,19 @@ const YouTube = () => {
       </div>
       <div className="mb-4 text-xl font-bold">{t('YoutubeMode')}</div>
       <div className="my-2">
-        {youtubeMode ? (
-          <TextButton onClick={() => handleChangeYoutubeMode(false)}>
-            {t('StatusOn')}
-          </TextButton>
-        ) : (
-          <TextButton onClick={() => handleChangeYoutubeMode(true)}>
-            {t('StatusOff')}
-          </TextButton>
-        )}
+        <ToggleSwitch
+          enabled={youtubeMode}
+          onChange={handleChangeYoutubeMode}
+        />
       </div>
       <div className="mt-4">
         {(() => {
           if (youtubeMode) {
             return (
               <>
-                <div className="">{t('YoutubeInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('YoutubeInfo')}
+                </div>
                 <div className="my-4 text-xl font-bold">
                   {t('YoutubeAPIKey')}
                 </div>
@@ -101,19 +99,20 @@ const YouTube = () => {
                   <div className="my-4 text-xl font-bold">
                     {t('ConversationContinuityMode')}
                   </div>
-                  <div className="my-2">
+                  <div className="my-2 text-sm whitespace-pre-wrap">
                     {t('ConversationContinuityModeInfo')}
                   </div>
-                  <div className="my-2">
+                  <div className="my-2 text-sm whitespace-pre-wrap">
                     {t('ConversationContinuityModeInfo2')}
                   </div>
-                  <div className="mb-4">
+                  <div className="my-2 text-sm whitespace-pre-wrap">
                     {t('ConversationContinuityModeInfo3')}
                   </div>
-                  <TextButton
-                    onClick={() =>
+                  <ToggleSwitch
+                    enabled={conversationContinuityMode}
+                    onChange={(v) =>
                       settingsStore.setState({
-                        conversationContinuityMode: !conversationContinuityMode,
+                        conversationContinuityMode: v,
                       })
                     }
                     disabled={
@@ -127,9 +126,7 @@ const YouTube = () => {
                       slideMode ||
                       externalLinkageMode
                     }
-                  >
-                    {t(conversationContinuityMode ? 'StatusOn' : 'StatusOff')}
-                  </TextButton>
+                  />
                 </div>
               </>
             )

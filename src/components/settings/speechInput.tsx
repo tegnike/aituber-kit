@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { WhisperTranscriptionModel } from '@/features/constants/settings'
@@ -70,7 +71,7 @@ const SpeechInput = () => {
         <div className="my-4 text-xl font-bold">
           {t('SpeechRecognitionMode')}
         </div>
-        <div className="my-4 whitespace-pre-line">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           {t('SpeechRecognitionModeInfo')}
         </div>
         {isSpeechModeSwitchDisabled && (
@@ -122,7 +123,7 @@ const SpeechInput = () => {
             <div className="mb-4 text-xl font-bold">
               {t('WhisperTranscriptionModel')}
             </div>
-            <div className="mb-4 whitespace-pre-line">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('WhisperTranscriptionModelInfo')}
             </div>
             <select
@@ -151,7 +152,7 @@ const SpeechInput = () => {
             <div className="my-4 text-xl font-bold">
               {t('InitialSpeechTimeout')}
             </div>
-            <div className="my-4 whitespace-pre-line">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('InitialSpeechTimeoutInfo')}
             </div>
             <div className="mt-6 font-bold">
@@ -175,7 +176,7 @@ const SpeechInput = () => {
           </div>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">{t('NoSpeechTimeout')}</div>
-            <div className="my-4 whitespace-pre-line">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('NoSpeechTimeoutInfo')}
             </div>
             <div className="mt-6 font-bold">
@@ -200,31 +201,25 @@ const SpeechInput = () => {
               <div className="font-bold mb-2">
                 {t('ShowSilenceProgressBar')}
               </div>
-              <TextButton
-                onClick={() =>
-                  settingsStore.setState({
-                    showSilenceProgressBar: !showSilenceProgressBar,
-                  })
+              <ToggleSwitch
+                enabled={showSilenceProgressBar}
+                onChange={(v) =>
+                  settingsStore.setState({ showSilenceProgressBar: v })
                 }
-              >
-                {showSilenceProgressBar ? t('StatusOn') : t('StatusOff')}
-              </TextButton>
+              />
             </div>
           </div>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">{t('ContinuousMic')}</div>
-            <div className="my-4 whitespace-pre-line">
+            <div className="my-2 text-sm whitespace-pre-wrap">
               {t('ContinuousMicInfo')}
             </div>
-            <TextButton
-              onClick={() =>
-                settingsStore.setState({
-                  continuousMicListeningMode: !continuousMicListeningMode,
-                })
+            <ToggleSwitch
+              enabled={continuousMicListeningMode}
+              onChange={(v) =>
+                settingsStore.setState({ continuousMicListeningMode: v })
               }
-            >
-              {continuousMicListeningMode ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            />
           </div>
         </>
       )}

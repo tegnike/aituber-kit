@@ -7,6 +7,7 @@ import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import menuStore from '@/features/stores/menu'
 import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import SlideConvert from './slideConvert'
 
 const Slide = () => {
@@ -70,10 +71,13 @@ const Slide = () => {
         <h2 className="text-2xl font-bold">{t('SlideSettings')}</h2>
       </div>
       <div className="mb-4 text-xl font-bold">{t('SlideMode')}</div>
-      <p className="">{t('SlideModeDescription')}</p>
+      <p className="my-2 text-sm whitespace-pre-wrap">
+        {t('SlideModeDescription')}
+      </p>
       <div className="my-2">
-        <TextButton
-          onClick={toggleSlideMode}
+        <ToggleSwitch
+          enabled={slideMode}
+          onChange={() => toggleSlideMode()}
           disabled={
             !isMultiModalAvailable(
               selectAIService,
@@ -83,9 +87,7 @@ const Slide = () => {
               customModel
             )
           }
-        >
-          {slideMode ? t('StatusOn') : t('StatusOff')}
-        </TextButton>
+        />
       </div>
       {slideMode && (
         <>

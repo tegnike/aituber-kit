@@ -7,6 +7,7 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import { IMAGE_CONSTANTS } from '@/constants/images'
 
 const Based = () => {
@@ -165,21 +166,20 @@ const Based = () => {
         <div className="my-6">
           <div className="my-4 font-bold">{t('EnglishToJapanese')}</div>
           <div className="my-2">
-            <TextButton
-              onClick={() =>
-                settingsStore.setState((prevState) => ({
-                  changeEnglishToJapanese: !prevState.changeEnglishToJapanese,
-                }))
+            <ToggleSwitch
+              enabled={changeEnglishToJapanese}
+              onChange={(v) =>
+                settingsStore.setState({ changeEnglishToJapanese: v })
               }
-            >
-              {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
-            </TextButton>
+            />
           </div>
         </div>
       )}
-      <div className="mt-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('BackgroundSettings')}</div>
-        <div className="my-4">{t('BackgroundSettingsDescription')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('BackgroundSettingsDescription')}
+        </div>
 
         {isLoading && <div className="my-2">{t('Loading')}</div>}
         {error && <div className="my-2 text-red-500">{error}</div>}
@@ -230,61 +230,48 @@ const Based = () => {
       </div>
 
       {/* アシスタントテキスト表示設定 */}
-      <div className="my-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('ShowAssistantText')}</div>
         <div className="my-2">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState((s) => ({
-                showAssistantText: !s.showAssistantText,
-              }))
-            }
-          >
-            {showAssistantText ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={showAssistantText}
+            onChange={(v) => settingsStore.setState({ showAssistantText: v })}
+          />
         </div>
       </div>
 
       {/* キャラクター名表示設定 */}
-      <div className="my-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('ShowCharacterName')}</div>
         <div className="my-2">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState((s) => ({
-                showCharacterName: !s.showCharacterName,
-              }))
-            }
-          >
-            {showCharacterName ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={showCharacterName}
+            onChange={(v) => settingsStore.setState({ showCharacterName: v })}
+          />
         </div>
       </div>
 
       {/* コントロールパネル表示設定 */}
-      <div className="my-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('ShowControlPanel')}</div>
-        <div className="my-4 whitespace-pre-wrap">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           {t('ShowControlPanelInfo')}
         </div>
 
         <div className="my-2">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({
-                showControlPanel: !showControlPanel,
-              })
-            }
-          >
-            {showControlPanel ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={showControlPanel}
+            onChange={(v) => settingsStore.setState({ showControlPanel: v })}
+          />
         </div>
       </div>
 
       {/* カラーテーマ設定 */}
-      <div className="my-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('ColorTheme')}</div>
-        <div className="my-4 whitespace-pre-wrap">{t('ColorThemeInfo')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('ColorThemeInfo')}
+        </div>
 
         <div className="flex flex-col mb-4">
           <select

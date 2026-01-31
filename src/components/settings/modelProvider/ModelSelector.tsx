@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { TextButton } from '../../textButton'
+import { ToggleSwitch } from '../../toggleSwitch'
 import {
   getModels,
   isMultiModalModel,
@@ -44,10 +44,12 @@ export const ModelSelector = ({
     <div className="my-6">
       <div className="my-4 text-xl font-bold">{t('SelectModel')}</div>
       <div className="my-4">
-        <div className="mb-2">
-          <TextButton onClick={onCustomModelToggle}>
-            {customModel ? t('CustomModelOn') : t('CustomModelOff')}
-          </TextButton>
+        <div className="mb-2 flex items-center gap-3">
+          <ToggleSwitch
+            enabled={customModel}
+            onChange={() => onCustomModelToggle()}
+          />
+          <span className="font-bold text-sm">{t('UseCustomModel')}</span>
         </div>
         {customModel ? (
           <input
@@ -84,11 +86,14 @@ export const ModelSelector = ({
         <div className="my-6">
           <div className="my-4 text-xl font-bold">{t('EnableMultiModal')}</div>
           <div className="my-2">
-            <TextButton onClick={onMultiModalToggle}>
-              {enableMultiModal ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={enableMultiModal}
+              onChange={() => onMultiModalToggle()}
+            />
           </div>
-          <div className="my-2 text-sm">{t('EnableMultiModalDescription')}</div>
+          <div className="my-2 text-sm whitespace-pre-wrap">
+            {t('EnableMultiModalDescription')}
+          </div>
         </div>
       )}
     </div>

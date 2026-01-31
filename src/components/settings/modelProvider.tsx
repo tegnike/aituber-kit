@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Listbox } from '@headlessui/react'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import { ServiceLogo } from './modelProvider/ServiceLogo'
 import { GenericAIServiceConfig } from './modelProvider/GenericAIServiceConfig'
 import { OpenAIConfig } from './modelProvider/OpenAIConfig'
@@ -92,7 +93,9 @@ const ModelProvider = () => {
         return (
           <>
             <div className="my-6">
-              <div className="my-4">{t('LocalLLMInfo')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('LocalLLMInfo')}
+              </div>
               <div className="my-4 text-xl font-bold">{t('EnterURL')}</div>
               <div className="my-4">
                 {t('LocalLLMInfo2')}
@@ -144,7 +147,9 @@ const ModelProvider = () => {
         return (
           <>
             <div className="my-6">
-              <div className="my-4">{t('DifyInfo')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('DifyInfo')}
+              </div>
               <div className="my-4 text-xl font-bold">
                 {t('DifyAPIKeyLabel')}
               </div>
@@ -160,7 +165,9 @@ const ModelProvider = () => {
             </div>
             <div className="my-6">
               <div className="my-4 text-xl font-bold">{t('EnterURL')}</div>
-              <div className="my-4">{t('DifyInfo3')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('DifyInfo3')}
+              </div>
               <input
                 className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                 type="text"
@@ -181,7 +188,9 @@ const ModelProvider = () => {
               <div className="my-4 text-xl font-bold">
                 {t('CustomAPIEndpoint')}
               </div>
-              <div className="my-4">{t('CustomAPIEndpointInfo')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('CustomAPIEndpointInfo')}
+              </div>
               <input
                 className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                 type="text"
@@ -198,21 +207,20 @@ const ModelProvider = () => {
               </div>
               <div className="">{t('CustomAPIStreamForced')}</div>
               <div className="my-2">
-                <TextButton
-                  onClick={() =>
-                    settingsStore.setState({ customApiStream: true })
-                  }
+                <ToggleSwitch
+                  enabled={true}
+                  onChange={() => {}}
                   disabled={true}
-                >
-                  {t('StatusOn')}
-                </TextButton>
+                />
               </div>
             </div>
             <div className="my-6">
               <div className="my-4 text-xl font-bold">
                 {t('CustomAPIHeaders')}
               </div>
-              <div className="my-4">{t('CustomAPIHeadersInfo')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('CustomAPIHeadersInfo')}
+              </div>
               <textarea
                 className="text-ellipsis px-4 py-2 w-full h-32 bg-white hover:bg-white-hover rounded-lg"
                 placeholder={`{\\n  \"Authorization\": \"Bearer YOUR_TOKEN\",\\n  \"Content-Type\": \"application/json\"\\n}`}
@@ -224,7 +232,9 @@ const ModelProvider = () => {
             </div>
             <div className="my-6">
               <div className="my-4 text-xl font-bold">{t('CustomAPIBody')}</div>
-              <div className="my-4">{t('CustomAPIBodyInfo')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('CustomAPIBodyInfo')}
+              </div>
               <textarea
                 className="text-ellipsis px-4 py-2 w-full h-32 bg-white hover:bg-white-hover rounded-lg"
                 placeholder={`{\\n  \"model\": \"your-model\",\\n  \"temperature\": 0.7,\\n  \"max_tokens\": 2000\\n}`}
@@ -235,25 +245,23 @@ const ModelProvider = () => {
               />
             </div>
             <div className="my-6">
-              <div className="my-4 text-sm">{t('CustomAPIDescription')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('CustomAPIDescription')}
+              </div>
             </div>
             <div className="my-6">
               <div className="my-4 text-xl font-bold">
                 {t('IncludeSystemMessages')}
               </div>
               <div className="my-2">
-                <TextButton
-                  onClick={() =>
+                <ToggleSwitch
+                  enabled={state.includeSystemMessagesInCustomApi}
+                  onChange={(v) =>
                     settingsStore.setState({
-                      includeSystemMessagesInCustomApi:
-                        !state.includeSystemMessagesInCustomApi,
+                      includeSystemMessagesInCustomApi: v,
                     })
                   }
-                >
-                  {state.includeSystemMessagesInCustomApi
-                    ? t('StatusOn')
-                    : t('StatusOff')}
-                </TextButton>
+                />
               </div>
             </div>
             <MultiModalToggle
@@ -269,22 +277,18 @@ const ModelProvider = () => {
                 <div className="my-4 text-xl font-bold">
                   {t('CustomApiIncludeMimeType')}
                 </div>
-                <div className="my-2 text-sm">
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('CustomApiIncludeMimeTypeDescription')}
                 </div>
                 <div className="my-2">
-                  <TextButton
-                    onClick={() =>
+                  <ToggleSwitch
+                    enabled={state.customApiIncludeMimeType}
+                    onChange={(v) =>
                       settingsStore.setState({
-                        customApiIncludeMimeType:
-                          !state.customApiIncludeMimeType,
+                        customApiIncludeMimeType: v,
                       })
                     }
-                  >
-                    {state.customApiIncludeMimeType
-                      ? t('StatusOn')
-                      : t('StatusOff')}
-                  </TextButton>
+                  />
                 </div>
               </div>
             )}
@@ -369,7 +373,7 @@ const ModelProvider = () => {
             !state.audioMode &&
             state.selectAIService !== 'custom-api' && (
               <>
-                <div className="my-6">
+                <div className="border-t border-gray-300 pt-6 my-6">
                   <div className="my-4 text-xl font-bold">
                     {t('Temperature')}: {state.temperature.toFixed(2)}
                   </div>
@@ -389,7 +393,9 @@ const ModelProvider = () => {
                 </div>
                 <div className="my-6">
                   <div className="my-4 text-xl font-bold">{t('MaxTokens')}</div>
-                  <div className="my-2 text-sm ">{t('MaxTokensInfo')}</div>
+                  <div className="my-2 text-sm whitespace-pre-wrap">
+                    {t('MaxTokensInfo')}
+                  </div>
                   <div className="my-2">
                     <input
                       type="number"
@@ -409,11 +415,11 @@ const ModelProvider = () => {
             )}
 
           {state.isMultiModalSupported && (
-            <div className="my-6">
+            <div className="border-t border-gray-300 pt-6 my-6">
               <div className="my-4 text-xl font-bold">
                 {t('MultiModalMode')}
               </div>
-              <div className="my-4 text-sm">
+              <div className="my-2 text-sm whitespace-pre-wrap">
                 {t('MultiModalModeDescription')}
               </div>
               <div className="my-2">
@@ -469,11 +475,11 @@ const ModelProvider = () => {
       )}
 
       {state.isMultiModalSupported && (
-        <div className="my-6">
+        <div className="border-t border-gray-300 pt-6 my-6">
           <div className="my-4 text-xl font-bold">
             {t('ImageDisplayPosition')}
           </div>
-          <div className="my-4 text-sm">
+          <div className="my-2 text-sm whitespace-pre-wrap">
             {t('ImageDisplayPositionDescription')}
           </div>
           <div className="my-2">
