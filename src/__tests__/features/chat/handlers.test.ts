@@ -20,6 +20,10 @@ jest.mock('../../../features/messages/speakCharacter', () => ({
   speakCharacter: jest.fn(),
 }))
 
+jest.mock('../../../components/slides', () => ({
+  goToSlide: jest.fn(),
+}))
+
 jest.mock('../../../features/stores/home', () => ({
   getState: jest.fn(),
   setState: jest.fn(),

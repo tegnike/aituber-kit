@@ -345,6 +345,11 @@ const Character = () => {
     characterName,
     selectedVrmPath,
     selectedLive2DPath,
+    selectedPNGTuberPath,
+    pngTuberSensitivity,
+    pngTuberChromaKeyEnabled,
+    pngTuberChromaKeyColor,
+    pngTuberChromaKeyTolerance,
     modelType,
     fixedCharacterPosition,
     selectAIService,
@@ -364,6 +369,9 @@ const Character = () => {
   } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
+    Array<{ path: string; name: string }>
+  >([])
+  const [pngTuberModels, setPngTuberModels] = useState<
     Array<{ path: string; name: string }>
   >([])
 
@@ -411,6 +419,13 @@ const Character = () => {
       .then((models) => setLive2dModels(models))
       .catch((error) => {
         console.error('Error fetching Live2D list:', error)
+      })
+
+    fetch('/api/get-pngtuber-list')
+      .then((res) => res.json())
+      .then((models) => setPngTuberModels(models))
+      .catch((error) => {
+        console.error('Error fetching PNGTuber list:', error)
       })
   }, [])
   const handlePositionAction = (action: 'fix' | 'unfix' | 'reset') => {
@@ -530,7 +545,7 @@ const Character = () => {
             VRM
           </button>
           <button
-            className={`px-4 py-2 rounded-lg ${
+            className={`px-4 py-2 rounded-lg mr-2 ${
               modelType === 'live2d'
                 ? 'bg-primary text-theme'
                 : 'bg-white hover:bg-white-hover'
@@ -539,9 +554,19 @@ const Character = () => {
           >
             Live2D
           </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              modelType === 'pngtuber'
+                ? 'bg-primary text-theme'
+                : 'bg-white hover:bg-white-hover'
+            }`}
+            onClick={() => settingsStore.setState({ modelType: 'pngtuber' })}
+          >
+            PNGTuber
+          </button>
         </div>
 
-        {modelType === 'vrm' ? (
+        {modelType === 'vrm' && (
           <>
             <select
               className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
@@ -580,7 +605,9 @@ const Character = () => {
               </TextButton>
             </div>
           </>
-        ) : (
+        )}
+
+        {modelType === 'live2d' && (
           <>
             <div className="my-4 whitespace-pre-line">
               {t('Live2D.FileInfo')}
@@ -605,39 +632,183 @@ const Character = () => {
           </>
         )}
 
-        {/* Character Position Controls */}
-        <div className="my-6">
-          <div className="text-xl font-bold mb-4">{t('CharacterPosition')}</div>
-          <div className="mb-4">{t('CharacterPositionInfo')}</div>
-          <div className="mb-2 text-sm font-medium">
-            {t('CurrentStatus')}:{' '}
-            <span className="font-bold">
-              {fixedCharacterPosition
-                ? t('PositionFixed')
-                : t('PositionNotFixed')}
-            </span>
+        {modelType === 'pngtuber' && (
+          <>
+            <div className="my-4 whitespace-pre-line">
+              {t('PNGTuber.FileInfo')}
+            </div>
+            <select
+              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
+              value={selectedPNGTuberPath}
+              onChange={(e) => {
+                const path = e.target.value
+                settingsStore.setState({ selectedPNGTuberPath: path })
+              }}
+            >
+              {pngTuberModels.map((model) => (
+                <option key={model.path} value={model.path}>
+                  {model.name}
+                </option>
+              ))}
+            </select>
+            <div className="my-4">
+              <div className="font-bold">
+                {t('PNGTuber.Sensitivity')}: {pngTuberSensitivity}
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={pngTuberSensitivity}
+                onChange={(e) => {
+                  settingsStore.setState({
+                    pngTuberSensitivity: parseInt(e.target.value),
+                  })
+                }}
+                className="mt-2 mb-4 input-range"
+              />
+              <div className="text-sm text-gray-600">
+                {t('PNGTuber.SensitivityInfo')}
+              </div>
+            </div>
+
+            {/* クロマキー設定 */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="font-bold mb-2">{t('PNGTuber.ChromaKey')}</div>
+
+              {/* 有効/無効トグル */}
+              <label className="flex items-center mb-4 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={pngTuberChromaKeyEnabled}
+                  onChange={(e) =>
+                    settingsStore.setState({
+                      pngTuberChromaKeyEnabled: e.target.checked,
+                    })
+                  }
+                  className="mr-2 h-4 w-4"
+                />
+                <span>{t('PNGTuber.ChromaKeyEnabled')}</span>
+              </label>
+
+              {pngTuberChromaKeyEnabled && (
+                <>
+                  {/* カラーピッカー */}
+                  <div className="mb-4">
+                    <div className="font-bold mb-2">
+                      {t('PNGTuber.ChromaKeyColor')}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={pngTuberChromaKeyColor}
+                        onChange={(e) =>
+                          settingsStore.setState({
+                            pngTuberChromaKeyColor: e.target.value,
+                          })
+                        }
+                        className="h-10 w-16 rounded cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={pngTuberChromaKeyColor}
+                        onChange={(e) =>
+                          settingsStore.setState({
+                            pngTuberChromaKeyColor: e.target.value,
+                          })
+                        }
+                        className="px-2 py-1 w-24 bg-white rounded-lg border"
+                        placeholder="#00FF00"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 許容値スライダー */}
+                  <div>
+                    <div className="font-bold">
+                      {t('PNGTuber.ChromaKeyTolerance')}:{' '}
+                      {pngTuberChromaKeyTolerance}
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="255"
+                      step="1"
+                      value={pngTuberChromaKeyTolerance}
+                      onChange={(e) =>
+                        settingsStore.setState({
+                          pngTuberChromaKeyTolerance: parseInt(e.target.value),
+                        })
+                      }
+                      className="mt-2 mb-4 input-range"
+                    />
+                    <div className="text-sm text-gray-600">
+                      {t('PNGTuber.ChromaKeyToleranceInfo')}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* 位置・サイズリセットボタン */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="font-bold mb-2">{t('PNGTuber.PositionSize')}</div>
+              <div className="text-sm text-gray-600 mb-4">
+                {t('PNGTuber.PositionInfo')}
+              </div>
+              <TextButton
+                onClick={() => {
+                  settingsStore.setState({
+                    pngTuberScale: 1.0,
+                    pngTuberOffsetX: 0,
+                    pngTuberOffsetY: 0,
+                  })
+                }}
+              >
+                {t('PNGTuber.ResetPosition')}
+              </TextButton>
+            </div>
+          </>
+        )}
+
+        {/* Character Position Controls - VRM/Live2D only (PNGTuber uses scale/offset in viewer) */}
+        {modelType !== 'pngtuber' && (
+          <div className="my-6">
+            <div className="text-xl font-bold mb-4">
+              {t('CharacterPosition')}
+            </div>
+            <div className="mb-4">{t('CharacterPositionInfo')}</div>
+            <div className="mb-2 text-sm font-medium">
+              {t('CurrentStatus')}:{' '}
+              <span className="font-bold">
+                {fixedCharacterPosition
+                  ? t('PositionFixed')
+                  : t('PositionNotFixed')}
+              </span>
+            </div>
+            <div className="flex gap-4 md:flex-row flex-col">
+              <button
+                onClick={() => handlePositionAction('fix')}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('FixPosition')}
+              </button>
+              <button
+                onClick={() => handlePositionAction('unfix')}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('UnfixPosition')}
+              </button>
+              <button
+                onClick={() => handlePositionAction('reset')}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('ResetPosition')}
+              </button>
+            </div>
           </div>
-          <div className="flex gap-4 md:flex-row flex-col">
-            <button
-              onClick={() => handlePositionAction('fix')}
-              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
-            >
-              {t('FixPosition')}
-            </button>
-            <button
-              onClick={() => handlePositionAction('unfix')}
-              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
-            >
-              {t('UnfixPosition')}
-            </button>
-            <button
-              onClick={() => handlePositionAction('reset')}
-              className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
-            >
-              {t('ResetPosition')}
-            </button>
-          </div>
-        </div>
+        )}
 
         {/* VRM Lighting Controls */}
         {modelType === 'vrm' && (

@@ -9,8 +9,11 @@ i18n.use(initReactI18next).init({
     ja: {
       translation: require('../../locales/ja/translation.json'),
     },
-    zh: {
-      translation: require('../../locales/zh/translation.json'),
+    'zh-CN': {
+      translation: require('../../locales/zh-CN/translation.json'),
+    },
+    'zh-TW': {
+      translation: require('../../locales/zh-TW/translation.json'),
     },
     ko: {
       translation: require('../../locales/ko/translation.json'),

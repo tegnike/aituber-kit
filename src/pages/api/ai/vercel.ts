@@ -5,12 +5,12 @@ import {
   isVercelCloudAIService,
   isVercelLocalAIService,
 } from '@/features/constants/settings'
-import { modifyMessages } from '../services/utils'
+import { modifyMessages } from '@/lib/api-services/utils'
 import {
-  aiServiceConfig,
+  createAIRegistry,
   streamAiText,
   generateAiText,
-} from '../services/vercelAi'
+} from '@/lib/api-services/vercelAi'
 import { googleSearchGroundingModels } from '@/features/constants/aiModels'
 
 export const config = {
@@ -109,32 +109,26 @@ export default async function handler(req: NextRequest) {
     )
   }
 
-  // AIサービスのインスタンス作成
-  const getServiceInstance = aiServiceConfig[aiService as VercelAIService]
-  if (!getServiceInstance) {
-    return new Response(
-      JSON.stringify({
-        error: 'Invalid AI service',
-        errorCode: 'InvalidAIService',
-      }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
-  }
-
   try {
-    // AIサービスに適したパラメータを生成
-    const serviceParams =
-      aiService === 'azure'
-        ? { resourceName: modifiedAzureEndpoint, apiKey: aiApiKey }
-        : isVercelLocalAIService(aiService)
-          ? { baseURL: localLlmUrl }
-          : { apiKey: aiApiKey }
+    // Provider Registryの作成
+    const registry = createAIRegistry(aiService as VercelAIService, {
+      apiKey: aiApiKey,
+      baseURL: localLlmUrl,
+      resourceName: modifiedAzureEndpoint,
+    })
 
-    // モデルインスタンスの作成
-    const modelInstance = getServiceInstance(serviceParams)
+    if (!registry) {
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid AI service',
+          errorCode: 'InvalidAIService',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
 
     // メッセージの修正
     const modifiedMessages = modifyMessages(aiService, model, messages)
@@ -145,7 +139,7 @@ export default async function handler(req: NextRequest) {
       useSearchGrounding &&
       modifiedMessages.every((msg) => typeof msg.content === 'string')
 
-    let options = {}
+    let options: Record<string, unknown> = {}
     if (isUseSearchGrounding) {
       options = {
         useSearchGrounding: true,
@@ -167,7 +161,8 @@ export default async function handler(req: NextRequest) {
     if (stream) {
       return await streamAiText({
         model: modifiedModel,
-        modelInstance,
+        registry,
+        service: aiService as VercelAIService,
         messages: modifiedMessages,
         temperature,
         maxTokens,
@@ -176,7 +171,8 @@ export default async function handler(req: NextRequest) {
     } else {
       return await generateAiText({
         model: modifiedModel,
-        modelInstance,
+        registry,
+        service: aiService as VercelAIService,
         messages: modifiedMessages,
         temperature,
         maxTokens,

@@ -38,7 +38,8 @@
 
 <h3 align="center">
    <a href="./docs/README_en.md">English</a>｜
-   <a href="./docs/README_zh.md">中文</a>｜
+   <a href="./docs/README_zh-CN.md">简体中文</a>｜
+   <a href="./docs/README_zh-TW.md">繁體中文</a>｜
    <a href="./docs/README_ko.md">한국어</a>｜
    <a href="./docs/README_pl.md">Polski</a>
 </h3>
@@ -118,8 +119,8 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 ### 開発環境
 
-- Node.js: ^20.0.0
-- npm: ^10.0.0
+- Node.js: ^25.2.1
+- npm: ^11.6.2
 
 ### インストール手順
 
@@ -321,7 +322,6 @@ AITuberKitの発展にご協力いただき、ありがとうございます。�
 本プロジェクトは、バージョン v2.0.0 以降、**カスタムライセンス**を採用しています。
 
 - **無償利用**
-
   - 営利目的以外での個人利用、教育目的、非営利目的での使用は無償で利用可能です。
 
 - **商用ライセンス**
