@@ -104,9 +104,14 @@ const Voice = () => {
   const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
   const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
   const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
+  const [speakers_voicevox, setSpeakers_voicevox] = useState<Array<any>>([])
   const [customVoiceText, setCustomVoiceText] = useState<string>('')
   const [isUpdatingSpeakers, setIsUpdatingSpeakers] = useState<boolean>(false)
   const [speakersUpdateError, setSpeakersUpdateError] = useState<string>('')
+  const [isUpdatingVoicevoxSpeakers, setIsUpdatingVoicevoxSpeakers] =
+    useState<boolean>(false)
+  const [voicevoxSpeakersUpdateError, setVoicevoxSpeakersUpdateError] =
+    useState<string>('')
 
   // にじボイスの話者一覧を取得する関数
   const fetchNijivoiceSpeakers = useCallback(async () => {
@@ -137,6 +142,17 @@ const Voice = () => {
     }
   }
 
+  // VOICEVOXの話者一覧を取得する関数
+  const fetchVoicevoxSpeakers = async () => {
+    try {
+      const response = await fetch('/speakers.json')
+      const data = await response.json()
+      setSpeakers_voicevox(data)
+    } catch (error) {
+      console.error('Failed to fetch VOICEVOX speakers:', error)
+    }
+  }
+
   // コンポーネントマウント時またはにじボイス選択時に話者一覧を取得
   useEffect(() => {
     if (selectVoice === 'nijivoice') {
@@ -148,6 +164,13 @@ const Voice = () => {
   useEffect(() => {
     if (selectVoice === 'aivis_speech') {
       fetchAivisSpeakers()
+    }
+  }, [selectVoice])
+
+  // コンポーネントマウント時またはVOICEVOX選択時に話者一覧を取得
+  useEffect(() => {
+    if (selectVoice === 'voicevox') {
+      fetchVoicevoxSpeakers()
     }
   }, [selectVoice])
 
@@ -365,7 +388,7 @@ const Voice = () => {
                   />
                 </div>
                 <div className="mt-4 font-bold">{t('SpeakerSelection')}</div>
-                <div className="flex items-center">
+                <div className="space-y-3">
                   <select
                     value={voicevoxSpeaker}
                     onChange={(e) =>
@@ -376,12 +399,69 @@ const Voice = () => {
                     className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="">{t('Select')}</option>
-                    {speakers.map((speaker) => (
+                    {(speakers_voicevox.length > 0
+                      ? speakers_voicevox
+                      : speakers
+                    ).map((speaker) => (
                       <option key={speaker.id} value={speaker.id}>
                         {speaker.speaker}
                       </option>
                     ))}
                   </select>
+
+                  <button
+                    onClick={async () => {
+                      setIsUpdatingVoicevoxSpeakers(true)
+                      setVoicevoxSpeakersUpdateError('')
+                      try {
+                        const response = await fetch(
+                          '/api/update-voicevox-speakers?serverUrl=' +
+                            voicevoxServerUrl
+                        )
+                        if (response.ok) {
+                          const updatedSpeakersResponse =
+                            await fetch('/speakers.json')
+                          const updatedSpeakers =
+                            await updatedSpeakersResponse.json()
+                          setSpeakers_voicevox(updatedSpeakers)
+                        } else {
+                          setVoicevoxSpeakersUpdateError(
+                            '話者リストの更新に失敗しました'
+                          )
+                        }
+                      } catch (error) {
+                        setVoicevoxSpeakersUpdateError(
+                          'ネットワークエラーが発生しました'
+                        )
+                      } finally {
+                        setIsUpdatingVoicevoxSpeakers(false)
+                      }
+                    }}
+                    disabled={isUpdatingVoicevoxSpeakers}
+                    className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                    {isUpdatingVoicevoxSpeakers
+                      ? '更新中...'
+                      : t('UpdateSpeakerList')}
+                  </button>
+                  {voicevoxSpeakersUpdateError && (
+                    <div className="mt-2 text-red-600 text-sm">
+                      {voicevoxSpeakersUpdateError}
+                    </div>
+                  )}
                 </div>
                 <div className="mt-6 font-bold">
                   <div className="select-none">
