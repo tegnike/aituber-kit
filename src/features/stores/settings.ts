@@ -144,6 +144,7 @@ interface Integrations {
 
 interface Character {
   characterName: string
+  userDisplayName: string
   characterPreset1: string
   characterPreset2: string
   characterPreset3: string
@@ -389,6 +390,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
 
   // Character
   characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
+  userDisplayName: process.env.NEXT_PUBLIC_USER_DISPLAY_NAME || 'YOU',
   characterPreset1: process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
   characterPreset2: process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
   characterPreset3: process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
@@ -681,6 +683,7 @@ const settingsStore = create<SettingsState>()(
       difyConversationId: state.difyConversationId,
       youtubeLiveId: state.youtubeLiveId,
       characterName: state.characterName,
+      userDisplayName: state.userDisplayName,
       characterPreset1: state.characterPreset1,
       characterPreset2: state.characterPreset2,
       characterPreset3: state.characterPreset3,

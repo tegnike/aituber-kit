@@ -172,6 +172,7 @@
   "CartesiaVoiceId": "Cartesia ボイスID",
   "CartesiaVoiceIdInfo": "ボイスIDは下記のURLから選択してください。",
   "CharacterName": "キャラクター名",
+  "UserDisplayName": "ユーザー表示名",
   "ShowAssistantText": "回答欄を表示する",
   "ShowCharacterName": "回答欄にキャラクター名を表示する",
   "ShowControlPanel": "操作パネルを表示する",
