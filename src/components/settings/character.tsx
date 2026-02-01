@@ -581,19 +581,6 @@ const Character = () => {
           }
         />
 
-        <div className="mt-4 mb-4 text-xl font-bold">
-          {t('UserDisplayName')}
-        </div>
-        <input
-          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-          type="text"
-          placeholder={t('UserDisplayName')}
-          value={settingsStore((s) => s.userDisplayName)}
-          onChange={(e) =>
-            settingsStore.setState({ userDisplayName: e.target.value })
-          }
-        />
-
         <div className="mt-6 mb-4 text-xl font-bold">
           {t('CharacterModelLabel')}
         </div>

@@ -176,6 +176,18 @@ const Based = () => {
         </div>
       )}
       <div className="border-t border-gray-300 pt-6 my-6">
+        <div className="my-4 text-xl font-bold">{t('UserDisplayName')}</div>
+        <input
+          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          type="text"
+          placeholder={t('UserDisplayName')}
+          value={settingsStore((s) => s.userDisplayName)}
+          onChange={(e) =>
+            settingsStore.setState({ userDisplayName: e.target.value })
+          }
+        />
+      </div>
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('BackgroundSettings')}</div>
         <div className="my-2 text-sm whitespace-pre-wrap">
           {t('BackgroundSettingsDescription')}
@@ -241,7 +253,7 @@ const Based = () => {
       </div>
 
       {/* キャラクター名表示設定 */}
-      <div className="border-t border-gray-300 pt-6 my-6">
+      <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('ShowCharacterName')}</div>
         <div className="my-2">
           <ToggleSwitch
