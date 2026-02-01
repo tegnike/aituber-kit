@@ -3,7 +3,6 @@ import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 import Image from 'next/image'
-import { useEffect } from 'react'
 import { WhisperTranscriptionModel } from '@/features/constants/settings'
 import { Link } from '../link'
 import { getOpenAIWhisperModels } from '@/features/constants/aiModels'
@@ -24,27 +23,6 @@ const SpeechInput = () => {
   const audioMode = settingsStore((s) => s.audioMode)
 
   const { t } = useTranslation()
-
-  // whisperモードの場合、自動的にnoSpeechTimeoutを0に、showSilenceProgressBarをfalseに設定
-  useEffect(() => {
-    if (speechRecognitionMode === 'whisper') {
-      settingsStore.setState({
-        initialSpeechTimeout: 0,
-        noSpeechTimeout: 0,
-        showSilenceProgressBar: false,
-        continuousMicListeningMode: false,
-      })
-    }
-  }, [speechRecognitionMode])
-
-  // realtimeAPIモードかaudioモードがオンの場合、強制的にbrowserモードに設定
-  useEffect(() => {
-    if (realtimeAPIMode || audioMode) {
-      settingsStore.setState({
-        speechRecognitionMode: 'browser',
-      })
-    }
-  }, [realtimeAPIMode, audioMode])
 
   const whisperModels: { value: WhisperTranscriptionModel; label: string }[] =
     getOpenAIWhisperModels().map((m) => ({

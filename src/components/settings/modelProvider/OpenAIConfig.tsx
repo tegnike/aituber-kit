@@ -13,7 +13,6 @@ import {
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
   isMultiModalModel,
-  defaultModels,
 } from '@/features/constants/aiModels'
 import {
   RealtimeAPIModeContentType,
@@ -56,43 +55,11 @@ export const OpenAIConfig = ({
   const { t } = useTranslation()
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
-    settingsStore.setState({
-      realtimeAPIMode: newMode,
-    })
-    if (newMode) {
-      // リアルタイムAPIモードをONにした場合
-      settingsStore.setState({
-        audioMode: false,
-        speechRecognitionMode: 'browser',
-        selectAIModel: defaultModels.openaiRealtime,
-        initialSpeechTimeout: 0,
-        noSpeechTimeout: 0,
-        showSilenceProgressBar: false,
-        continuousMicListeningMode: false,
-      })
-    } else {
-      // リアルタイムAPIモードをOFFにした場合、通常のOpenAIモデルに戻す
-      settingsStore.setState({
-        selectAIModel: defaultModels.openai,
-      })
-    }
+    settingsStore.setState({ realtimeAPIMode: newMode })
   }, [])
 
   const handleAudioModeChange = useCallback((newMode: boolean) => {
-    settingsStore.setState({
-      audioMode: newMode,
-    })
-    if (newMode) {
-      settingsStore.setState({
-        realtimeAPIMode: false,
-        speechRecognitionMode: 'browser',
-        selectAIModel: defaultModels.openaiAudio,
-      })
-    } else {
-      settingsStore.setState({
-        selectAIModel: defaultModels.openai,
-      })
-    }
+    settingsStore.setState({ audioMode: newMode })
   }, [])
 
   const handleUpdate = useCallback(() => {

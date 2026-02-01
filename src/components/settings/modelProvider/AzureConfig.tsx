@@ -7,7 +7,6 @@ import { TextButton } from '../../textButton'
 import { ToggleSwitch } from '../../toggleSwitch'
 import { ApiKeyInput } from './ApiKeyInput'
 import { MultiModalToggle } from './MultiModalToggle'
-import { defaultModels } from '@/features/constants/aiModels'
 import {
   RealtimeAPIModeContentType,
   RealtimeAPIModeVoice,
@@ -34,20 +33,7 @@ export const AzureConfig = ({
   const { t } = useTranslation()
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
-    settingsStore.setState({
-      realtimeAPIMode: newMode,
-    })
-    if (newMode) {
-      settingsStore.setState({
-        audioMode: false,
-        speechRecognitionMode: 'browser',
-        selectAIModel: defaultModels.openaiRealtime,
-        initialSpeechTimeout: 0,
-        noSpeechTimeout: 0,
-        showSilenceProgressBar: false,
-        continuousMicListeningMode: false,
-      })
-    }
+    settingsStore.setState({ realtimeAPIMode: newMode })
   }, [])
 
   const handleUpdate = useCallback(() => {

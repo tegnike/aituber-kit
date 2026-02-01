@@ -116,31 +116,8 @@ const Based = () => {
             value={selectLanguage}
             onChange={(e) => {
               const newLanguage = e.target.value as Language
-
-              const ss = settingsStore.getState()
-              const jaVoiceSelected =
-                ss.selectVoice === 'voicevox' ||
-                ss.selectVoice === 'koeiromap' ||
-                ss.selectVoice === 'aivis_speech' ||
-                ss.selectVoice === 'nijivoice'
-
-              switch (newLanguage) {
-                case 'ja':
-                  settingsStore.setState({ selectLanguage: 'ja' })
-                  i18n.changeLanguage('ja')
-                  break
-                default:
-                  // 日本語以外の言語はすべて同じ処理
-                  settingsStore.setState({ selectLanguage: newLanguage })
-
-                  // 日本語専用の音声が選択されている場合は、googleに変更
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage(newLanguage)
-                  break
-              }
+              settingsStore.setState({ selectLanguage: newLanguage })
+              i18n.changeLanguage(newLanguage)
             }}
           >
             <option value="ar">Arabic - アラビア語</option>

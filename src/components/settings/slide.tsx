@@ -40,16 +40,8 @@ const Slide = () => {
 
   const toggleSlideMode = () => {
     const newSlideMode = !slideMode
-    settingsStore.setState({
-      slideMode: newSlideMode,
-    })
+    settingsStore.setState({ slideMode: newSlideMode })
     menuStore.setState({ slideVisible: newSlideMode })
-    if (newSlideMode) {
-      settingsStore.setState({
-        youtubeMode: false,
-        conversationContinuityMode: false,
-      })
-    }
   }
 
   const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

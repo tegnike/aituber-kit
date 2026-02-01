@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
 
-import homeStore from '@/features/stores/home'
-import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
-import slideStore from '@/features/stores/slide'
 import { ToggleSwitch } from '../toggleSwitch'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 
@@ -31,12 +28,7 @@ const YouTube = () => {
   const handleChangeYoutubeMode = (youtubeMode: boolean) => {
     settingsStore.setState({ youtubeMode })
 
-    if (youtubeMode) {
-      homeStore.setState({ modalImage: '' })
-      menuStore.setState({ showWebcam: false })
-      settingsStore.setState({ slideMode: false })
-      slideStore.setState({ isPlaying: false })
-    } else {
+    if (!youtubeMode) {
       settingsStore.setState({ youtubePlaying: false })
     }
   }
