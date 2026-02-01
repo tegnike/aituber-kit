@@ -10,7 +10,7 @@
   "ImageSettings": "画像設定",
   "LogSettings": "会話履歴",
   "OtherSettings": "その他",
-  "ExternalLinkageMode": "外部連携モード（ベータ版）",
+  "ExternalLinkageMode": "外部連携モード",
   "YoutubeMode": "YouTubeモード",
   "YoutubeInfo": "先頭が「#」のコメントは無視されます。",
   "YoutubeAPIKey": "YouTube API キー",
