@@ -31,6 +31,13 @@ export const workflowInputSchema = z.object({
   noCommentCount: z.number(),
   continuationCount: z.number(),
   sleepMode: z.boolean(),
+  newTopicThreshold: z.number(),
+  sleepThreshold: z.number(),
+  promptEvaluate: z.string().optional(),
+  promptContinuation: z.string().optional(),
+  promptSelectComment: z.string().optional(),
+  promptNewTopic: z.string().optional(),
+  promptSleep: z.string().optional(),
 })
 
 export type WorkflowInput = z.infer<typeof workflowInputSchema>
@@ -64,6 +71,12 @@ export const evaluateStateOutputSchema = z.object({
   youtubeComments: z.array(commentSchema),
   continuationCount: z.number(),
   sleepMode: z.boolean(),
+  newTopicThreshold: z.number(),
+  sleepThreshold: z.number(),
+  promptContinuation: z.string().optional(),
+  promptSelectComment: z.string().optional(),
+  promptNewTopic: z.string().optional(),
+  promptSleep: z.string().optional(),
 })
 
 export type EvaluateStateOutput = z.infer<typeof evaluateStateOutputSchema>

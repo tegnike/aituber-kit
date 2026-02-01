@@ -1,11 +1,20 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
 
 import settingsStore from '@/features/stores/settings'
 import { ToggleSwitch } from '../toggleSwitch'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
+import {
+  DEFAULT_PROMPT_EVALUATE,
+  DEFAULT_PROMPT_CONTINUATION,
+  DEFAULT_PROMPT_SLEEP,
+  DEFAULT_PROMPT_NEW_TOPIC,
+  DEFAULT_PROMPT_SELECT_COMMENT,
+} from '@/lib/mastra/defaultPrompts'
 
 const YouTube = () => {
+  const [showAdvancedPrompts, setShowAdvancedPrompts] = useState(false)
   const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubeLiveId = settingsStore((s) => s.youtubeLiveId)
@@ -18,12 +27,34 @@ const YouTube = () => {
   const multiModalMode = settingsStore((s) => s.multiModalMode)
   const customModel = settingsStore((s) => s.customModel)
 
+  const youtubeCommentInterval = settingsStore((s) => s.youtubeCommentInterval)
   const conversationContinuityMode = settingsStore(
     (s) => s.conversationContinuityMode
   )
+  const conversationContinuityNewTopicThreshold = settingsStore(
+    (s) => s.conversationContinuityNewTopicThreshold
+  )
+  const conversationContinuitySleepThreshold = settingsStore(
+    (s) => s.conversationContinuitySleepThreshold
+  )
+  const conversationContinuityPromptEvaluate = settingsStore(
+    (s) => s.conversationContinuityPromptEvaluate
+  )
+  const conversationContinuityPromptContinuation = settingsStore(
+    (s) => s.conversationContinuityPromptContinuation
+  )
+  const conversationContinuityPromptSleep = settingsStore(
+    (s) => s.conversationContinuityPromptSleep
+  )
+  const conversationContinuityPromptNewTopic = settingsStore(
+    (s) => s.conversationContinuityPromptNewTopic
+  )
+  const conversationContinuityPromptSelectComment = settingsStore(
+    (s) => s.conversationContinuityPromptSelectComment
+  )
   const slideMode = settingsStore((s) => s.slideMode)
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const handleChangeYoutubeMode = (youtubeMode: boolean) => {
     settingsStore.setState({ youtubeMode })
@@ -151,6 +182,25 @@ const YouTube = () => {
 
                 <div className="mt-6">
                   <div className="my-4 text-xl font-bold">
+                    {t('YoutubeCommentInterval')}: {youtubeCommentInterval}
+                  </div>
+                  <input
+                    type="range"
+                    min={3}
+                    max={30}
+                    step={1}
+                    value={youtubeCommentInterval}
+                    className="mt-2 mb-4 input-range"
+                    onChange={(e) => {
+                      settingsStore.setState({
+                        youtubeCommentInterval: Number(e.target.value),
+                      })
+                    }}
+                  />
+                </div>
+
+                <div className="mt-6">
+                  <div className="my-4 text-xl font-bold">
                     {t('ConversationContinuityMode')}
                   </div>
                   <div className="my-2 text-sm whitespace-pre-wrap">
@@ -181,6 +231,247 @@ const YouTube = () => {
                       externalLinkageMode
                     }
                   />
+                  {conversationContinuityMode && (
+                    <>
+                      <div className="mt-4">
+                        <Image
+                          src={
+                              i18n.language === 'ja'
+                                ? '/images/docs/conversation-continuity-workflow-ja.png'
+                                : '/images/docs/conversation-continuity-workflow-en.png'
+                            }
+                          alt={t('ConversationContinuityMode')}
+                          width={800}
+                          height={400}
+                          className="w-full rounded-lg"
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <div className="my-4 text-xl font-bold">
+                          {t('ConversationContinuityNewTopicThreshold')}:{' '}
+                          {conversationContinuityNewTopicThreshold}
+                        </div>
+                        <div className="my-2 text-sm whitespace-pre-wrap">
+                          {t('ConversationContinuityNewTopicThresholdInfo')}
+                        </div>
+                        <input
+                          type="range"
+                          min={1}
+                          max={conversationContinuitySleepThreshold - 1}
+                          step={1}
+                          value={conversationContinuityNewTopicThreshold}
+                          className="mt-2 mb-4 input-range"
+                          onChange={(e) => {
+                            settingsStore.setState({
+                              conversationContinuityNewTopicThreshold: Number(
+                                e.target.value
+                              ),
+                            })
+                          }}
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <div className="my-4 text-xl font-bold">
+                          {t('ConversationContinuitySleepThreshold')}:{' '}
+                          {conversationContinuitySleepThreshold}
+                        </div>
+                        <div className="my-2 text-sm whitespace-pre-wrap">
+                          {t('ConversationContinuitySleepThresholdInfo')}
+                        </div>
+                        <input
+                          type="range"
+                          min={conversationContinuityNewTopicThreshold + 1}
+                          max={20}
+                          step={1}
+                          value={conversationContinuitySleepThreshold}
+                          className="mt-2 mb-4 input-range"
+                          onChange={(e) => {
+                            settingsStore.setState({
+                              conversationContinuitySleepThreshold: Number(
+                                e.target.value
+                              ),
+                            })
+                          }}
+                        />
+                      </div>
+                      <div className="mt-6">
+                        <button
+                          className="flex items-center text-lg font-bold text-primary hover:opacity-80"
+                          onClick={() =>
+                            setShowAdvancedPrompts(!showAdvancedPrompts)
+                          }
+                        >
+                          <span className="mr-2">
+                            {showAdvancedPrompts ? '▼' : '▶'}
+                          </span>
+                          {t('ConversationContinuityAdvancedPrompts')}
+                        </button>
+                        {showAdvancedPrompts && (
+                          <div className="mt-2">
+                            <div className="my-2 text-sm whitespace-pre-wrap">
+                              {t('ConversationContinuityAdvancedPromptsInfo')}
+                            </div>
+                            <div className="mt-4">
+                              <div className="my-2 text-base font-bold">
+                                {t('ConversationContinuityPromptEvaluate')}
+                              </div>
+                              <div className="my-1 text-sm whitespace-pre-wrap">
+                                {t('ConversationContinuityPromptEvaluateInfo')}
+                              </div>
+                              <textarea
+                                className="px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                                rows={4}
+                                value={conversationContinuityPromptEvaluate}
+                                onChange={(e) =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptEvaluate:
+                                      e.target.value,
+                                  })
+                                }
+                              />
+                              <button
+                                className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
+                                onClick={() =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptEvaluate:
+                                      DEFAULT_PROMPT_EVALUATE,
+                                  })
+                                }
+                              >
+                                {t('ResetToDefault')}
+                              </button>
+                            </div>
+                            <div className="mt-4">
+                              <div className="my-2 text-base font-bold">
+                                {t('ConversationContinuityPromptContinuation')}
+                              </div>
+                              <div className="my-1 text-sm whitespace-pre-wrap">
+                                {t(
+                                  'ConversationContinuityPromptContinuationInfo'
+                                )}
+                              </div>
+                              <textarea
+                                className="px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                                rows={4}
+                                value={conversationContinuityPromptContinuation}
+                                onChange={(e) =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptContinuation:
+                                      e.target.value,
+                                  })
+                                }
+                              />
+                              <button
+                                className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
+                                onClick={() =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptContinuation:
+                                      DEFAULT_PROMPT_CONTINUATION,
+                                  })
+                                }
+                              >
+                                {t('ResetToDefault')}
+                              </button>
+                            </div>
+                            <div className="mt-4">
+                              <div className="my-2 text-base font-bold">
+                                {t('ConversationContinuityPromptSelectComment')}
+                              </div>
+                              <div className="my-1 text-sm whitespace-pre-wrap">
+                                {t(
+                                  'ConversationContinuityPromptSelectCommentInfo'
+                                )}
+                              </div>
+                              <textarea
+                                className="px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                                rows={4}
+                                value={
+                                  conversationContinuityPromptSelectComment
+                                }
+                                onChange={(e) =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptSelectComment:
+                                      e.target.value,
+                                  })
+                                }
+                              />
+                              <button
+                                className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
+                                onClick={() =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptSelectComment:
+                                      DEFAULT_PROMPT_SELECT_COMMENT,
+                                  })
+                                }
+                              >
+                                {t('ResetToDefault')}
+                              </button>
+                            </div>
+                            <div className="mt-4">
+                              <div className="my-2 text-base font-bold">
+                                {t('ConversationContinuityPromptNewTopic')}
+                              </div>
+                              <div className="my-1 text-sm whitespace-pre-wrap">
+                                {t('ConversationContinuityPromptNewTopicInfo')}
+                              </div>
+                              <textarea
+                                className="px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                                rows={4}
+                                value={conversationContinuityPromptNewTopic}
+                                onChange={(e) =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptNewTopic:
+                                      e.target.value,
+                                  })
+                                }
+                              />
+                              <button
+                                className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
+                                onClick={() =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptNewTopic:
+                                      DEFAULT_PROMPT_NEW_TOPIC,
+                                  })
+                                }
+                              >
+                                {t('ResetToDefault')}
+                              </button>
+                            </div>
+                            <div className="mt-4">
+                              <div className="my-2 text-base font-bold">
+                                {t('ConversationContinuityPromptSleep')}
+                              </div>
+                              <div className="my-1 text-sm whitespace-pre-wrap">
+                                {t('ConversationContinuityPromptSleepInfo')}
+                              </div>
+                              <textarea
+                                className="px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
+                                rows={4}
+                                value={conversationContinuityPromptSleep}
+                                onChange={(e) =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptSleep:
+                                      e.target.value,
+                                  })
+                                }
+                              />
+                              <button
+                                className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
+                                onClick={() =>
+                                  settingsStore.setState({
+                                    conversationContinuityPromptSleep:
+                                      DEFAULT_PROMPT_SLEEP,
+                                  })
+                                }
+                              >
+                                {t('ResetToDefault')}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )

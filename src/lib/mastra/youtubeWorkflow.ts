@@ -18,12 +18,12 @@ import { buildDoNothingStep } from './steps/buildDoNothing'
  * 決定木:
  *   evaluateState → 状況を判定（AI呼び出し：継続チェック）
  *   Branch:
- *     [shouldContinue]        → buildContinuation（メッセージ構築）
- *     [hasComments]           → selectBestComment（AI呼び出し：最適コメント選択）
- *     [noComments, count==3]  → generateNewTopic（AI呼び出し：新トピック生成）
- *     [noComments, count==6]  → buildSleep（メッセージ構築）
- *     [noComments, count>6]   → doNothing（スリープ後は何もしない）
- *     [default]               → buildContinueNoComment（メッセージ構築）
+ *     [shouldContinue]                     → buildContinuation（メッセージ構築）
+ *     [hasComments]                        → selectBestComment（AI呼び出し：最適コメント選択）
+ *     [noComments, count>sleepThreshold]    → doNothing（スリープ中は何もしない）
+ *     [noComments, count==newTopicThreshold] → generateNewTopic（AI呼び出し：新トピック生成）
+ *     [noComments, count==sleepThreshold]   → buildSleep（メッセージ構築）
+ *     [default]                             → buildContinueNoComment（メッセージ構築）
  */
 export const conversationWorkflow = createWorkflow({
   id: 'youtube-conversation',
@@ -43,22 +43,25 @@ export const conversationWorkflow = createWorkflow({
       async ({ inputData }) => inputData.hasComments === true,
       selectBestCommentStep,
     ],
-    // 3. コメントなし, count===3 → 新トピック生成
+    // 3. スリープ中（count>sleepThreshold）→ 何もしない
     [
-      async ({ inputData }) => inputData.newNoCommentCount === 3,
-      generateNewTopicStep,
-    ],
-    // 4. コメントなし, count===6 → スリープ突入（1回だけ）
-    [
-      async ({ inputData }) => inputData.newNoCommentCount === 6,
-      buildSleepStep,
-    ],
-    // 5. コメントなし, count>6 → スリープ中は何もしない
-    [
-      async ({ inputData }) => inputData.newNoCommentCount > 6,
+      async ({ inputData }) =>
+        inputData.newNoCommentCount > inputData.sleepThreshold,
       buildDoNothingStep,
     ],
-    // 6. デフォルト（count<3 or 4-5）→ 会話継続
+    // 4. コメントなし, count===newTopicThreshold → 新トピック生成
+    [
+      async ({ inputData }) =>
+        inputData.newNoCommentCount === inputData.newTopicThreshold,
+      generateNewTopicStep,
+    ],
+    // 5. コメントなし, count===sleepThreshold → スリープ突入（1回だけ）
+    [
+      async ({ inputData }) =>
+        inputData.newNoCommentCount === inputData.sleepThreshold,
+      buildSleepStep,
+    ],
+    // 6. デフォルト（count<newTopicThreshold or 中間値）→ 会話継続
     [async () => true, buildContinueNoCommentStep],
   ])
   .map(async ({ inputData }) => {

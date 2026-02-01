@@ -17,7 +17,8 @@ export const generateNewTopicStep = createStep({
   inputSchema: evaluateStateOutputSchema,
   outputSchema: workflowOutputSchema,
   execute: async ({ inputData, requestContext }) => {
-    const { chatLog, systemPrompt, newNoCommentCount } = inputData
+    const { chatLog, systemPrompt, newNoCommentCount, promptNewTopic } =
+      inputData
 
     const { languageModel, temperature, maxTokens } =
       requestContext as unknown as {
@@ -27,7 +28,10 @@ export const generateNewTopicStep = createStep({
       }
 
     // Step 1: 新トピックを生成
-    const topicMessages = buildNewTopicGenerationMessages(chatLog).map((m) => ({
+    const topicMessages = buildNewTopicGenerationMessages(
+      chatLog,
+      promptNewTopic || undefined
+    ).map((m) => ({
       role: m.role as 'system' | 'user' | 'assistant',
       content: typeof m.content === 'string' ? m.content : '',
     }))

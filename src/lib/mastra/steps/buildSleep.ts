@@ -1,6 +1,7 @@
 import { createStep } from '@mastra/core/workflows'
 import { evaluateStateOutputSchema, workflowOutputSchema } from '../schemas'
 import { getLastMessages, buildCharacterSystemMessage } from '../prompts'
+import { DEFAULT_PROMPT_SLEEP } from '../defaultPrompts'
 
 /**
  * スリープメッセージ構築ステップ
@@ -12,12 +13,12 @@ export const buildSleepStep = createStep({
   inputSchema: evaluateStateOutputSchema,
   outputSchema: workflowOutputSchema,
   execute: async ({ inputData }) => {
-    const { chatLog, systemPrompt, newNoCommentCount } = inputData
+    const { chatLog, systemPrompt, newNoCommentCount, promptSleep } = inputData
 
     const lastTenMessages = getLastMessages(chatLog, 10)
     const systemMessage = buildCharacterSystemMessage(
       systemPrompt,
-      '- あなたはYouTubeの配信者ですが、現在視聴者があまり来ていません。\n- 視聴者が来るまで別の作業をしている旨のセリフを生成してください。'
+      promptSleep || DEFAULT_PROMPT_SLEEP
     )
 
     const messages = [

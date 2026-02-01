@@ -173,6 +173,13 @@ const callContinuationApi = async (params: {
       noCommentCount,
       continuationCount,
       sleepMode,
+      newTopicThreshold: ss.conversationContinuityNewTopicThreshold,
+      sleepThreshold: ss.conversationContinuitySleepThreshold,
+      promptEvaluate: ss.conversationContinuityPromptEvaluate,
+      promptContinuation: ss.conversationContinuityPromptContinuation,
+      promptSelectComment: ss.conversationContinuityPromptSelectComment,
+      promptNewTopic: ss.conversationContinuityPromptNewTopic,
+      promptSleep: ss.conversationContinuityPromptSleep,
     }),
   })
 

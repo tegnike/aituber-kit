@@ -13,7 +13,7 @@ export const selectBestCommentStep = createStep({
   inputSchema: evaluateStateOutputSchema,
   outputSchema: workflowOutputSchema,
   execute: async ({ inputData, requestContext }) => {
-    const { chatLog, youtubeComments } = inputData
+    const { chatLog, youtubeComments, promptSelectComment } = inputData
 
     const { languageModel, temperature, maxTokens } =
       requestContext as unknown as {
@@ -24,7 +24,8 @@ export const selectBestCommentStep = createStep({
 
     const queryMessages = buildBestCommentSelectionMessages(
       chatLog,
-      youtubeComments
+      youtubeComments,
+      promptSelectComment || undefined
     ).map((m) => ({
       role: m.role as 'system' | 'user' | 'assistant',
       content: typeof m.content === 'string' ? m.content : '',

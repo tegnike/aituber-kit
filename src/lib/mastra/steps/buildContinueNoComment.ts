@@ -1,6 +1,7 @@
 import { createStep } from '@mastra/core/workflows'
 import { evaluateStateOutputSchema, workflowOutputSchema } from '../schemas'
 import { getLastMessages, buildCharacterSystemMessage } from '../prompts'
+import { DEFAULT_PROMPT_CONTINUATION } from '../defaultPrompts'
 
 /**
  * コメント無し時の会話継続メッセージ構築ステップ
@@ -12,12 +13,13 @@ export const buildContinueNoCommentStep = createStep({
   inputSchema: evaluateStateOutputSchema,
   outputSchema: workflowOutputSchema,
   execute: async ({ inputData }) => {
-    const { chatLog, systemPrompt, newNoCommentCount } = inputData
+    const { chatLog, systemPrompt, newNoCommentCount, promptContinuation } =
+      inputData
 
     const lastTenMessages = getLastMessages(chatLog, 10)
     const systemMessage = buildCharacterSystemMessage(
       systemPrompt,
-      '- 与えられた会話歴に続く自然なコメントを生成してください。ただし、直前と同じ内容は避けてください。'
+      promptContinuation || DEFAULT_PROMPT_CONTINUATION
     )
 
     const messages = [

@@ -188,7 +188,7 @@ describe('branch steps', () => {
       expect(result.action).toBe('sleep')
       expect(result.messages).toBeDefined()
       expect(result.messages![0].content).toContain(
-        '視聴者があまり来ていません'
+        '視聴者からのコメントがありません'
       )
       expect(result.stateUpdates.sleepMode).toBe(true)
       expect(result.stateUpdates.noCommentCount).toBe(6)

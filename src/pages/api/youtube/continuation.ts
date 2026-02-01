@@ -29,6 +29,13 @@ export default async function handler(
     noCommentCount,
     continuationCount,
     sleepMode,
+    newTopicThreshold = 3,
+    sleepThreshold = 6,
+    promptEvaluate = '',
+    promptContinuation = '',
+    promptSelectComment = '',
+    promptNewTopic = '',
+    promptSleep = '',
   } = req.body
 
   // APIキーの取得と検証
@@ -104,6 +111,13 @@ export default async function handler(
         noCommentCount,
         continuationCount,
         sleepMode,
+        newTopicThreshold,
+        sleepThreshold,
+        promptEvaluate,
+        promptContinuation,
+        promptSelectComment,
+        promptNewTopic,
+        promptSleep,
       },
       requestContext: { languageModel, temperature, maxTokens },
     })

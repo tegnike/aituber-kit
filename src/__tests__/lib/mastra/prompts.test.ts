@@ -126,12 +126,12 @@ describe('mastra prompts', () => {
     it('returns a prompt containing example conversations', () => {
       const result = continuationCheckSystemPrompt()
 
-      expect(result).toContain('次にどの話者が発言すべきか')
+      expect(result).toContain('配信者が自発的に話を続けるべきか')
       expect(result).toContain('"answer"')
       expect(result).toContain('"reason"')
-      // 5つの例が含まれている
-      expect(result).toContain('1.')
-      expect(result).toContain('5.')
+      // 配信コンテキストの例が含まれている
+      expect(result).toContain('user:')
+      expect(result).toContain('assistant:')
     })
   })
 
@@ -150,7 +150,7 @@ describe('mastra prompts', () => {
 
       expect(result.length).toBe(2)
       expect(result[0].role).toBe('system')
-      expect(result[0].content).toContain('会話選択タスク')
+      expect(result[0].content).toContain('コメント選択タスク')
       expect(result[1].role).toBe('user')
       expect(result[1].content).toContain('いい天気だね')
       expect(result[1].content).toContain('明日は雨？')
@@ -168,7 +168,7 @@ describe('mastra prompts', () => {
 
       expect(result.length).toBeGreaterThanOrEqual(2)
       expect(result[0].role).toBe('system')
-      expect(result[0].content).toContain('別の話題を1つ考えてください')
+      expect(result[0].content).toContain('新しい話題を1つ提案してください')
     })
   })
 })

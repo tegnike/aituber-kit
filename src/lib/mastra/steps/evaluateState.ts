@@ -21,6 +21,13 @@ export const evaluateStateStep = createStep({
       noCommentCount,
       continuationCount,
       sleepMode,
+      newTopicThreshold,
+      sleepThreshold,
+      promptEvaluate,
+      promptContinuation,
+      promptSelectComment,
+      promptNewTopic,
+      promptSleep,
     } = inputData
 
     let shouldContinue = false
@@ -47,7 +54,9 @@ export const evaluateStateStep = createStep({
           const queryMessages = [
             {
               role: 'system' as const,
-              content: continuationCheckSystemPrompt(),
+              content: continuationCheckSystemPrompt(
+                promptEvaluate || undefined
+              ),
             },
             ...lastTenMessages.map((m) => ({
               role: m.role as 'user' | 'assistant',
@@ -96,6 +105,12 @@ export const evaluateStateStep = createStep({
       youtubeComments,
       continuationCount,
       sleepMode,
+      newTopicThreshold,
+      sleepThreshold,
+      promptContinuation,
+      promptSelectComment,
+      promptNewTopic,
+      promptSleep,
     }
   },
 })

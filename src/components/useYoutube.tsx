@@ -8,8 +8,6 @@ import {
 } from '@/features/youtube/youtubeComments'
 import { useOneComme } from '@/features/youtube/useOneComme'
 
-const INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS = 10000 // 10秒
-
 interface Params {
   handleSendChat: (text: string, userName?: string) => Promise<void>
 }
@@ -24,6 +22,7 @@ interface UseYoutubeReturn {
 
 const useYoutube = ({ handleSendChat }: Params): UseYoutubeReturn => {
   const youtubePlaying = settingsStore((s) => s.youtubePlaying)
+  const youtubeCommentInterval = settingsStore((s) => s.youtubeCommentInterval)
   const youtubeCommentSource = settingsStore((s) => s.youtubeCommentSource)
   const onecommePort = settingsStore((s) => s.onecommePort)
 
@@ -78,13 +77,13 @@ const useYoutube = ({ handleSendChat }: Params): UseYoutubeReturn => {
 
     const intervalId = setInterval(() => {
       fetchAndProcessCommentsCallback()
-    }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS)
+    }, youtubeCommentInterval * 1000)
 
     return () => {
       clearInterval(intervalId)
       resetYoutubeState()
     }
-  }, [youtubePlaying, fetchAndProcessCommentsCallback])
+  }, [youtubePlaying, youtubeCommentInterval, fetchAndProcessCommentsCallback])
 
   return {
     oneCommeStatus: {

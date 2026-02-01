@@ -9,6 +9,13 @@ import {
 } from '@/features/memory/memoryTypes'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
+  DEFAULT_PROMPT_EVALUATE,
+  DEFAULT_PROMPT_CONTINUATION,
+  DEFAULT_PROMPT_SLEEP,
+  DEFAULT_PROMPT_NEW_TOPIC,
+  DEFAULT_PROMPT_SELECT_COMMENT,
+} from '@/lib/mastra/defaultPrompts'
+import {
   AIService,
   AIVoice,
   Language,
@@ -142,7 +149,15 @@ interface Integrations {
   youtubeNoCommentCount: number
   youtubeSleepMode: boolean
   conversationContinuityMode: boolean
+  conversationContinuityNewTopicThreshold: number
+  conversationContinuitySleepThreshold: number
+  conversationContinuityPromptEvaluate: string
+  conversationContinuityPromptContinuation: string
+  conversationContinuityPromptSelectComment: string
+  conversationContinuityPromptNewTopic: string
+  conversationContinuityPromptSleep: string
   onecommePort: number
+  youtubeCommentInterval: number
 }
 
 interface Character {
@@ -394,8 +409,33 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   youtubeNoCommentCount: 0,
   youtubeSleepMode: false,
   conversationContinuityMode: false,
+  conversationContinuityNewTopicThreshold:
+    parseInt(
+      process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_NEW_TOPIC_THRESHOLD || '3'
+    ) || 3,
+  conversationContinuitySleepThreshold:
+    parseInt(
+      process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_SLEEP_THRESHOLD || '6'
+    ) || 6,
+  conversationContinuityPromptEvaluate:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_EVALUATE ||
+    DEFAULT_PROMPT_EVALUATE,
+  conversationContinuityPromptContinuation:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_CONTINUATION ||
+    DEFAULT_PROMPT_CONTINUATION,
+  conversationContinuityPromptSelectComment:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SELECT_COMMENT ||
+    DEFAULT_PROMPT_SELECT_COMMENT,
+  conversationContinuityPromptNewTopic:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_NEW_TOPIC ||
+    DEFAULT_PROMPT_NEW_TOPIC,
+  conversationContinuityPromptSleep:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SLEEP ||
+    DEFAULT_PROMPT_SLEEP,
   onecommePort:
     parseInt(process.env.NEXT_PUBLIC_ONECOMME_PORT || '11180') || 11180,
+  youtubeCommentInterval:
+    parseInt(process.env.NEXT_PUBLIC_YOUTUBE_COMMENT_INTERVAL || '10') || 10,
 
   // Character
   characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
@@ -695,9 +735,26 @@ const settingsStore = create<SettingsState>()(
         cartesiaVoiceId: state.cartesiaVoiceId,
         difyUrl: state.difyUrl,
         difyConversationId: state.difyConversationId,
+        youtubeMode: state.youtubeMode,
         youtubeLiveId: state.youtubeLiveId,
         youtubeCommentSource: state.youtubeCommentSource,
         onecommePort: state.onecommePort,
+        youtubeCommentInterval: state.youtubeCommentInterval,
+        conversationContinuityMode: state.conversationContinuityMode,
+        conversationContinuityNewTopicThreshold:
+          state.conversationContinuityNewTopicThreshold,
+        conversationContinuitySleepThreshold:
+          state.conversationContinuitySleepThreshold,
+        conversationContinuityPromptEvaluate:
+          state.conversationContinuityPromptEvaluate,
+        conversationContinuityPromptContinuation:
+          state.conversationContinuityPromptContinuation,
+        conversationContinuityPromptSelectComment:
+          state.conversationContinuityPromptSelectComment,
+        conversationContinuityPromptNewTopic:
+          state.conversationContinuityPromptNewTopic,
+        conversationContinuityPromptSleep:
+          state.conversationContinuityPromptSleep,
         characterName: state.characterName,
         userDisplayName: state.userDisplayName,
         characterPreset1: state.characterPreset1,
