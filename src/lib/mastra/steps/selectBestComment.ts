@@ -38,13 +38,30 @@ export const selectBestCommentStep = createStep({
     })
 
     const selectedText = result.text.trim()
-    const matchedComment = youtubeComments.find(
-      (c) => c.userComment === selectedText
+
+    // 段階的マッチング: 完全一致 → 部分一致 → フォールバック
+    const normalizedSelected = selectedText
+      .replace(/^["'「『（(]+/, '')
+      .replace(/["'」』）)]+$/, '')
+      .trim()
+
+    let matchedComment = youtubeComments.find(
+      (c) => c.userComment === normalizedSelected
     )
+    if (!matchedComment) {
+      matchedComment = youtubeComments.find(
+        (c) =>
+          normalizedSelected.includes(c.userComment) ||
+          c.userComment.includes(normalizedSelected)
+      )
+    }
+    if (!matchedComment && youtubeComments.length > 0) {
+      matchedComment = youtubeComments[0]
+    }
 
     return {
       action: 'send_comment' as const,
-      comment: selectedText,
+      comment: matchedComment?.userComment || selectedText,
       userName: matchedComment?.userName || '',
       stateUpdates: {
         noCommentCount: 0,

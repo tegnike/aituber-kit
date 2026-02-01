@@ -3,6 +3,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import {
   fetchAndProcessComments,
+  resetYoutubeState,
   YouTubeComment,
 } from '@/features/youtube/youtubeComments'
 import { useOneComme } from '@/features/youtube/useOneComme'
@@ -79,7 +80,10 @@ const useYoutube = ({ handleSendChat }: Params): UseYoutubeReturn => {
       fetchAndProcessCommentsCallback()
     }, INTERVAL_MILL_SECONDS_RETRIEVING_COMMENTS)
 
-    return () => clearInterval(intervalId)
+    return () => {
+      clearInterval(intervalId)
+      resetYoutubeState()
+    }
   }, [youtubePlaying, fetchAndProcessCommentsCallback])
 
   return {

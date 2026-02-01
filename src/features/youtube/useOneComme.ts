@@ -57,7 +57,7 @@ export const useOneComme = ({
 
       for (const item of data) {
         const commentData = (item as any)?.data || item
-        const id = (commentData as any)?.id || `${Date.now()}-${Math.random()}`
+        const id = (commentData as any)?.id || crypto.randomUUID()
 
         if (processedIdsRef.current.has(id)) continue
         processedIdsRef.current.add(id)
@@ -167,6 +167,14 @@ export const useOneComme = ({
 
     return () => {
       mounted = false
+      const scriptUrl = `http://localhost:${port}/templates/preset/__origin/js/onesdk.js`
+      const existingScript = document.querySelector(
+        `script[src="${scriptUrl}"]`
+      )
+      if (existingScript) {
+        existingScript.remove()
+      }
+      window.OneSDK = undefined
     }
   }, [enabled, port, handleComments])
 

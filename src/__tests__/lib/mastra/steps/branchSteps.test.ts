@@ -125,7 +125,7 @@ describe('branch steps', () => {
       expect(result.stateUpdates.sleepMode).toBe(false)
     })
 
-    it('returns empty userName when comment does not match', async () => {
+    it('falls back to first comment when AI response does not match', async () => {
       mockGenerateText.mockResolvedValue({
         text: 'unknown comment',
       } as any)
@@ -142,7 +142,8 @@ describe('branch steps', () => {
       } as any)
 
       expect(result.action).toBe('send_comment')
-      expect(result.userName).toBe('')
+      expect(result.comment).toBe('いい天気だね')
+      expect(result.userName).toBe('user1')
     })
   })
 
