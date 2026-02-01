@@ -668,7 +668,7 @@ export const processAIResponse = async (messages: Message[]) => {
  * 画面のチャット欄から入力されたときに実行される処理
  * Youtubeでチャット取得した場合もこの関数を使用する
  */
-export const handleSendChatFn = () => async (text: string) => {
+export const handleSendChatFn = () => async (text: string, userName?: string) => {
   const sessionId = generateSessionId()
   const newMessage = text
   const timestamp = new Date().toISOString()
@@ -688,6 +688,7 @@ export const handleSendChatFn = () => async (text: string) => {
         role: 'user',
         content: newMessage,
         timestamp: timestamp,
+        userName: userName,
       })
 
       wsManager.websocket.send(
@@ -709,6 +710,7 @@ export const handleSendChatFn = () => async (text: string) => {
         role: 'user',
         content: newMessage,
         timestamp: timestamp,
+        userName: userName,
       })
     }
   } else {
@@ -811,6 +813,7 @@ export const handleSendChatFn = () => async (text: string) => {
       role: 'user',
       content: userMessageContent,
       timestamp: timestamp,
+      userName: userName,
     })
 
     if (modalImage) {

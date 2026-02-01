@@ -86,6 +86,7 @@ export const ChatLog = () => {
                   role={msg.role}
                   message={msg.content}
                   characterName={characterName}
+                  userName={msg.userName}
                 />
               ) : (
                 <>
@@ -93,6 +94,7 @@ export const ChatLog = () => {
                     role={msg.role}
                     message={msg.content ? msg.content[0].text : ''}
                     characterName={characterName}
+                    userName={msg.userName}
                   />
                   <ChatImage
                     role={msg.role}
@@ -122,10 +124,12 @@ const Chat = ({
   role,
   message,
   characterName,
+  userName,
 }: {
   role: string
   message: string
   characterName: string
+  userName?: string
 }) => {
   const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'gi')
   const processedMessage = message.replace(emotionPattern, '')
@@ -146,7 +150,7 @@ const Chat = ({
           <div
             className={`px-6 py-2 rounded-t-lg font-bold tracking-wider ${roleColor}`}
           >
-            {role !== 'user' ? characterName || 'CHARACTER' : 'YOU'}
+            {role !== 'user' ? characterName || 'CHARACTER' : userName || 'YOU'}
           </div>
           <div className="px-6 py-4 bg-white rounded-b-lg">
             <div className={`font-bold ${roleText}`}>{processedMessage}</div>

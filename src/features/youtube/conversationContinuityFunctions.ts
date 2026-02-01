@@ -102,7 +102,7 @@ const getLastMessages = (
 export const getBestComment = async (
   messages: Message[],
   youtubeComments: any[]
-): Promise<string> => {
+): Promise<{ comment: string; userName: string }> => {
   console.log('getBestComment')
   const lastTenMessages = getLastMessages(messages, 10)
   const systemMessage = `# 会話選択タスク
@@ -141,7 +141,15 @@ ${lastTenMessages}
 
   const response = await fetchAIResponse(queryMessages)
 
-  return response.text
+  const selectedText = response.text.trim()
+  const matchedComment = youtubeComments.find(
+    (c: any) => c.userComment === selectedText
+  )
+
+  return {
+    comment: selectedText,
+    userName: matchedComment?.userName || '',
+  }
 }
 
 /**

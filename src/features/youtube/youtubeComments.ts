@@ -94,7 +94,7 @@ const retrieveLiveComments = async (
 }
 
 export const fetchAndProcessComments = async (
-  handleSendChat: (text: string) => void
+  handleSendChat: (text: string, userName?: string) => void
 ): Promise<void> => {
   const ss = settingsStore.getState()
   const hs = homeStore.getState()
@@ -142,16 +142,20 @@ export const fetchAndProcessComments = async (
         settingsStore.setState({ youtubeNoCommentCount: 0 })
         settingsStore.setState({ youtubeSleepMode: false })
         let selectedComment = ''
+        let selectedUserName = ''
         if (ss.conversationContinuityMode) {
-          selectedComment = await getBestComment(chatLog, youtubeComments)
+          const bestComment = await getBestComment(chatLog, youtubeComments)
+          selectedComment = bestComment.comment
+          selectedUserName = bestComment.userName
         } else {
-          selectedComment =
+          const randomComment =
             youtubeComments[Math.floor(Math.random() * youtubeComments.length)]
-              .userComment
+          selectedComment = randomComment.userComment
+          selectedUserName = randomComment.userName
         }
-        console.log('selectedYoutubeComment:', selectedComment)
+        console.log('selectedYoutubeComment:', selectedComment, 'userName:', selectedUserName)
 
-        handleSendChat(selectedComment)
+        handleSendChat(selectedComment, selectedUserName)
       } else {
         const noCommentCount = ss.youtubeNoCommentCount + 1
         if (ss.conversationContinuityMode) {
