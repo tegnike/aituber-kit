@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, useCallback, MutableRefObject } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  MutableRefObject,
+} from 'react'
 import { YouTubeComment } from './youtubeComments'
 
 // OneSDKの型定義
@@ -51,16 +57,13 @@ export const useOneComme = ({
 
       for (const item of data) {
         const commentData = (item as any)?.data || item
-        const id =
-          (commentData as any)?.id || `${Date.now()}-${Math.random()}`
+        const id = (commentData as any)?.id || `${Date.now()}-${Math.random()}`
 
         if (processedIdsRef.current.has(id)) continue
         processedIdsRef.current.add(id)
 
         const rawComment =
-          (commentData as any)?.comment ||
-          (commentData as any)?.message ||
-          ''
+          (commentData as any)?.comment || (commentData as any)?.message || ''
         if (!rawComment || rawComment.startsWith('#')) continue
 
         const userName =
@@ -153,9 +156,7 @@ export const useOneComme = ({
       } catch (err) {
         if (!mounted) return
         const message =
-          err instanceof Error
-            ? err.message
-            : 'わんコメへの接続に失敗しました'
+          err instanceof Error ? err.message : 'わんコメへの接続に失敗しました'
         setError(message)
         setIsLoading(false)
         console.error('OneSDK initialization error:', err)

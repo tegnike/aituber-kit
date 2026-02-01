@@ -150,8 +150,7 @@ const YouTube = () => {
                       value={onecommePort}
                       onChange={(e) =>
                         settingsStore.setState({
-                          onecommePort:
-                            parseInt(e.target.value) || 11180,
+                          onecommePort: parseInt(e.target.value) || 11180,
                         })
                       }
                     />
