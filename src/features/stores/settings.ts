@@ -133,6 +133,7 @@ interface Integrations {
   difyUrl: string
   difyConversationId: string
   youtubeMode: boolean
+  youtubeCommentSource: 'youtube-api' | 'onecomme'
   youtubeLiveId: string
   youtubePlaying: boolean
   youtubeNextPageToken: string
@@ -140,6 +141,7 @@ interface Integrations {
   youtubeNoCommentCount: number
   youtubeSleepMode: boolean
   conversationContinuityMode: boolean
+  onecommePort: number
 }
 
 interface Character {
@@ -380,6 +382,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   difyUrl: '',
   difyConversationId: '',
   youtubeMode: process.env.NEXT_PUBLIC_YOUTUBE_MODE === 'true' ? true : false,
+  youtubeCommentSource:
+    (process.env.NEXT_PUBLIC_YOUTUBE_COMMENT_SOURCE as
+      | 'youtube-api'
+      | 'onecomme') || 'youtube-api',
   youtubeLiveId: process.env.NEXT_PUBLIC_YOUTUBE_LIVE_ID || '',
   youtubePlaying: false,
   youtubeNextPageToken: '',
@@ -387,6 +393,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   youtubeNoCommentCount: 0,
   youtubeSleepMode: false,
   conversationContinuityMode: false,
+  onecommePort:
+    parseInt(process.env.NEXT_PUBLIC_ONECOMME_PORT || '11180') || 11180,
 
   // Character
   characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
@@ -682,6 +690,8 @@ const settingsStore = create<SettingsState>()(
       difyUrl: state.difyUrl,
       difyConversationId: state.difyConversationId,
       youtubeLiveId: state.youtubeLiveId,
+      youtubeCommentSource: state.youtubeCommentSource,
+      onecommePort: state.onecommePort,
       characterName: state.characterName,
       userDisplayName: state.userDisplayName,
       characterPreset1: state.characterPreset1,

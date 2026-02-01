@@ -5,7 +5,11 @@ import { handleSendChatFn } from '@/features/chat/handlers'
 export const YoutubeManager: FC = () => {
   const handleSendChat = handleSendChatFn()
 
-  useYoutube({ handleSendChat })
+  const { oneCommeStatus } = useYoutube({ handleSendChat })
+
+  if (oneCommeStatus.error) {
+    console.warn('OneComme connection error:', oneCommeStatus.error)
+  }
 
   return null
 }

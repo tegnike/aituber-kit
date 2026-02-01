@@ -5,7 +5,6 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
-import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 
@@ -13,6 +12,8 @@ const YouTube = () => {
   const youtubeApiKey = settingsStore((s) => s.youtubeApiKey)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
   const youtubeLiveId = settingsStore((s) => s.youtubeLiveId)
+  const youtubeCommentSource = settingsStore((s) => s.youtubeCommentSource)
+  const onecommePort = settingsStore((s) => s.onecommePort)
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
@@ -64,37 +65,99 @@ const YouTube = () => {
           if (youtubeMode) {
             return (
               <>
-                <div className="my-2 text-sm whitespace-pre-wrap">
-                  {t('YoutubeInfo')}
-                </div>
                 <div className="my-4 text-xl font-bold">
-                  {t('YoutubeAPIKey')}
+                  {t('YoutubeCommentSource')}
                 </div>
-                <input
-                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
-                  placeholder="..."
-                  value={youtubeApiKey}
-                  onChange={(e) =>
-                    settingsStore.setState({
-                      youtubeApiKey: e.target.value,
-                    })
-                  }
-                />
-                <div className="my-4 text-xl font-bold">
-                  {t('YoutubeLiveID')}
+                <div className="my-2 flex">
+                  <button
+                    className={`px-4 py-2 rounded-lg mr-2 ${
+                      youtubeCommentSource === 'youtube-api'
+                        ? 'bg-primary text-theme'
+                        : 'bg-white hover:bg-white-hover'
+                    }`}
+                    onClick={() =>
+                      settingsStore.setState({
+                        youtubeCommentSource: 'youtube-api',
+                      })
+                    }
+                  >
+                    {t('YoutubeCommentSourceAPI')}
+                  </button>
+                  <button
+                    className={`px-4 py-2 rounded-lg ${
+                      youtubeCommentSource === 'onecomme'
+                        ? 'bg-primary text-theme'
+                        : 'bg-white hover:bg-white-hover'
+                    }`}
+                    onClick={() =>
+                      settingsStore.setState({
+                        youtubeCommentSource: 'onecomme',
+                      })
+                    }
+                  >
+                    {t('YoutubeCommentSourceOneComme')}
+                  </button>
                 </div>
-                <input
-                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
-                  type="text"
-                  placeholder="..."
-                  value={youtubeLiveId}
-                  onChange={(e) =>
-                    settingsStore.setState({
-                      youtubeLiveId: e.target.value,
-                    })
-                  }
-                />
+
+                {youtubeCommentSource === 'youtube-api' && (
+                  <>
+                    <div className="my-2 text-sm whitespace-pre-wrap">
+                      {t('YoutubeInfo')}
+                    </div>
+                    <div className="my-4 text-xl font-bold">
+                      {t('YoutubeAPIKey')}
+                    </div>
+                    <input
+                      className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                      type="text"
+                      placeholder="..."
+                      value={youtubeApiKey}
+                      onChange={(e) =>
+                        settingsStore.setState({
+                          youtubeApiKey: e.target.value,
+                        })
+                      }
+                    />
+                    <div className="my-4 text-xl font-bold">
+                      {t('YoutubeLiveID')}
+                    </div>
+                    <input
+                      className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                      type="text"
+                      placeholder="..."
+                      value={youtubeLiveId}
+                      onChange={(e) =>
+                        settingsStore.setState({
+                          youtubeLiveId: e.target.value,
+                        })
+                      }
+                    />
+                  </>
+                )}
+
+                {youtubeCommentSource === 'onecomme' && (
+                  <>
+                    <div className="my-2 text-sm whitespace-pre-wrap">
+                      {t('OneCommeInfo')}
+                    </div>
+                    <div className="my-4 text-xl font-bold">
+                      {t('OneCommePort')}
+                    </div>
+                    <input
+                      className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                      type="number"
+                      placeholder="11180"
+                      value={onecommePort}
+                      onChange={(e) =>
+                        settingsStore.setState({
+                          onecommePort:
+                            parseInt(e.target.value) || 11180,
+                        })
+                      }
+                    />
+                  </>
+                )}
+
                 <div className="mt-6">
                   <div className="my-4 text-xl font-bold">
                     {t('ConversationContinuityMode')}
