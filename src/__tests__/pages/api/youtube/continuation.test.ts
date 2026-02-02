@@ -1,5 +1,6 @@
 import handler from '@/pages/api/youtube/continuation'
 import { createAIRegistry, getLanguageModel } from '@/lib/api-services/vercelAi'
+import { RequestContext } from '@mastra/core/request-context'
 import { createMocks } from 'node-mocks-http'
 
 // Mastra workflow mock
@@ -157,13 +158,16 @@ describe('/api/youtube/continuation handler', () => {
           continuationCount: 0,
           sleepMode: false,
         }),
-        requestContext: expect.objectContaining({
-          languageModel: 'mock-language-model',
-          temperature: 1.0,
-          maxTokens: 4096,
-        }),
+        requestContext: expect.any(RequestContext),
       })
     )
+
+    // Verify requestContext contains correct values
+    const callArgs = mockStart.mock.calls[0][0]
+    const ctx = callArgs.requestContext as RequestContext
+    expect(ctx.get('languageModel')).toBe('mock-language-model')
+    expect(ctx.get('temperature')).toBe(1.0)
+    expect(ctx.get('maxTokens')).toBe(4096)
   })
 
   it('returns send_comment action for comment selection', async () => {

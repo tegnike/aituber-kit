@@ -15,12 +15,11 @@ export const selectBestCommentStep = createStep({
   execute: async ({ inputData, requestContext }) => {
     const { chatLog, youtubeComments, promptSelectComment } = inputData
 
-    const { languageModel, temperature, maxTokens } =
-      requestContext as unknown as {
-        languageModel: any
-        temperature?: number
-        maxTokens?: number
-      }
+    const { languageModel, temperature, maxTokens } = requestContext.all as {
+      languageModel: any
+      temperature?: number
+      maxTokens?: number
+    }
 
     const queryMessages = buildBestCommentSelectionMessages(
       chatLog,

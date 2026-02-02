@@ -20,12 +20,11 @@ export const generateNewTopicStep = createStep({
     const { chatLog, systemPrompt, newNoCommentCount, promptNewTopic } =
       inputData
 
-    const { languageModel, temperature, maxTokens } =
-      requestContext as unknown as {
-        languageModel: any
-        temperature?: number
-        maxTokens?: number
-      }
+    const { languageModel, temperature, maxTokens } = requestContext.all as {
+      languageModel: any
+      temperature?: number
+      maxTokens?: number
+    }
 
     // Step 1: 新トピックを生成
     const topicMessages = buildNewTopicGenerationMessages(

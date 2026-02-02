@@ -6,6 +6,7 @@ import {
 } from '@/features/constants/settings'
 import { createAIRegistry, getLanguageModel } from '@/lib/api-services/vercelAi'
 import { mastra } from '@/lib/mastra'
+import { RequestContext } from '@mastra/core/request-context'
 
 export default async function handler(
   req: NextApiRequest,
@@ -119,7 +120,11 @@ export default async function handler(
         promptNewTopic,
         promptSleep,
       },
-      requestContext: { languageModel, temperature, maxTokens },
+      requestContext: new RequestContext([
+        ['languageModel', languageModel],
+        ['temperature', temperature],
+        ['maxTokens', maxTokens],
+      ]),
     })
 
     if (result.status === 'success') {

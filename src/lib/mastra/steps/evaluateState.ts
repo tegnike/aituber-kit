@@ -45,7 +45,7 @@ export const evaluateStateStep = createStep({
       if (hasAssistant) {
         try {
           const { languageModel, temperature, maxTokens } =
-            requestContext as unknown as {
+            requestContext.all as {
               languageModel: any
               temperature?: number
               maxTokens?: number
