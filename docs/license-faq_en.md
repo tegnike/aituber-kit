@@ -62,45 +62,53 @@ A6: No, the commercial license is a one-time purchase with no expiration. Once p
 
 A7: No, the commercial license does not include support. However, bug reports and feature requests are accepted as with regular OSS projects. If additional support is needed, please consult separately.
 
+**Q8: Can I use the Live2D feature for commercial purposes?**
+
+A8: Due to contractual issues with Live2D Inc., commercial use of the Live2D feature is currently not permitted. The Live2D feature remains available for non-commercial use (personal use, educational purposes, and non-profit purposes). However, we can assist with individual negotiations with Live2D Inc. on your behalf. If you are interested, please contact support@aituberkit.com.
+
 ## License Selection and Use
 
-**Q8: Does using it for personal YouTube streaming count as commercial use?**
+**Q9: Does using it for personal YouTube streaming count as commercial use?**
 
-A8: Generally, personal use does not count as commercial use and is available for free. However, if significant revenue is generated, please consider purchasing a commercial license.
+A9: Generally, personal use does not count as commercial use and is available for free. However, if streaming using AITuberKit is the main content of your channel and your monthly revenue exceeds approximately ¥50,000, please consider purchasing a commercial license.
 
-**Q9: Does using it in a small store count as commercial use?**
+**Q10: Does using it in a small store count as commercial use?**
 
-A9: Yes, even for small-scale use, if it is for commercial purposes, it counts as commercial use. Please consider purchasing a **Standard License**.
+A10: Yes, even for small-scale use, if it is for commercial purposes, it counts as commercial use. Please consider purchasing a **Standard License**.
 
-**Q10: What license applies to use by non-profit organizations?**
+**Q11: What license applies to use by non-profit organizations?**
 
-A10: Use by non-profit organizations is generally available for free. However, for large organizations or special cases, please consult individually.
+A11: Use by non-profit organizations is generally available for free. However, for large organizations or special cases, please consult individually.
+
+**Q12: Is credit attribution for AITuberKit required?**
+
+A12: No, credit attribution is not required for either commercial or non-commercial use. However, we would appreciate it if you could mention AITuberKit, as it helps increase the project's visibility.
 
 ## Technical Questions
 
-**Q11: If I purchase a commercial license, will there be any changes to the software?**
+**Q13: If I purchase a commercial license, will there be any changes to the software?**
 
-A11: No, there are no changes to the software itself. The commercial license is a legal usage agreement and does not affect the software's functionality.
+A13: No, there are no changes to the software itself. The commercial license is a legal usage agreement and does not affect the software's functionality.
 
-**Q12: Is the source code publicly available?**
+**Q14: Is the source code publicly available?**
 
-A12: Yes, this project maintains the spirit of open source, and the source code continues to be publicly available.
+A14: Yes, this project maintains the spirit of open source, and the source code continues to be publicly available.
 
 ## Other
 
-**Q13: Is there a possibility of further license changes in the future?**
+**Q15: Is there a possibility of further license changes in the future?**
 
-A13: There are no plans at present, but changes may be made if necessary to ensure the project's sustainability. If there are changes, we will provide sufficient notice.
+A15: There are no plans at present, but changes may be made if necessary to ensure the project's sustainability. If there are changes, we will provide sufficient notice.
 
-**Q14: What should I do if I have more questions about the license?**
+**Q16: What should I do if I have more questions about the license?**
 
-A14: Please contact support@aituberkit.com. We will respond as quickly as possible.
+A16: Please contact support@aituberkit.com. We will respond as quickly as possible.
 
 ## Specific Examples of Commercial Use
 
-**Q15: Can you provide specific examples of when a commercial license is required and when it is available for free?**
+**Q17: Can you provide specific examples of when a commercial license is required and when it is available for free?**
 
-A15: Here are specific examples. If you have any questions, please contact us individually.
+A17: Here are specific examples. If you have any questions, please contact us individually.
 
 **Examples requiring a commercial license:**
 
@@ -132,9 +140,9 @@ A15: Here are specific examples. If you have any questions, please contact us in
 
 ## About Forking the Project
 
-**Q16: What happens to the license if I fork this project?**
+**Q18: What happens to the license if I fork this project?**
 
-A16: The license terms apply to forked projects as well.
+A18: The license terms apply to forked projects as well.
 
 1. **Forking under a custom license:**
    - If used for commercial purposes, an appropriate commercial license must be obtained.
@@ -144,18 +152,18 @@ A16: The license terms apply to forked projects as well.
 
 ## Other Questions
 
-**Q17: What happens if I switch to commercial use after starting as non-commercial use?**
+**Q19: What happens if I switch to commercial use after starting as non-commercial use?**
 
-A17: If commercial use is confirmed after starting with personal use, educational purposes, or non-profit use, we will charge the license fee from the start of commercial use. Please obtain the appropriate license.
+A19: If commercial use is confirmed after starting with personal use, educational purposes, or non-profit use, we will charge the license fee from the start of commercial use. Please obtain the appropriate license.
 
-**Q18: What happens to the license if there is a version upgrade?**
+**Q20: What happens to the license if there is a version upgrade?**
 
-A18: The commercial license applies only to the version at the time of acquisition. An upgrade fee may be required if there is a major update. Please check the latest license terms when using a new version.
+A20: The commercial license applies only to the version at the time of acquisition. An upgrade fee may be required if there is a major update. Please check the latest license terms when using a new version.
 
-**Q19: What license applies to use at exhibitions or events?**
+**Q21: What license applies to use at exhibitions or events?**
 
-A19: Demonstrations at exhibitions or events aimed at increasing project awareness are available for free. This applies even to commercial events. However, if the use at exhibitions or events leads to direct revenue, a commercial license may be required.
+A21: Demonstrations at exhibitions or events aimed at increasing project awareness are available for free. This applies even to commercial events. However, if the use at exhibitions or events leads to direct revenue, a commercial license may be required.
 
-**Q20: Does the commercial license apply to all branches of the project?**
+**Q22: Does the commercial license apply to all branches of the project?**
 
-A20: No, the commercial license applies only to the code included in the **main branch**. Branches other than the main branch cannot be used for commercial purposes. If using for commercial purposes, be sure to use the release version from the main branch.
+A22: No, the commercial license applies only to the code included in the **main branch**. Branches other than the main branch cannot be used for commercial purposes. If using for commercial purposes, be sure to use the release version from the main branch.
