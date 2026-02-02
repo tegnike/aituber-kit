@@ -340,7 +340,7 @@ const Live2DSettingsForm = () => {
 }
 
 const Character = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const {
     characterName,
     selectedVrmPath,
@@ -617,7 +617,7 @@ const Character = () => {
             }`}
             onClick={() => settingsStore.setState({ modelType: 'pngtuber' })}
           >
-            PNGTuber
+            {i18n.language === 'ja' ? '動くPNGTuber' : 'MotionPNGTuber'}
           </button>
         </div>
 
@@ -691,6 +691,22 @@ const Character = () => {
           <>
             <div className="my-2 text-sm whitespace-pre-wrap">
               {t('PNGTuber.FileInfo')}
+            </div>
+            <div className="my-2 text-sm">
+              {i18n.language === 'ja'
+                ? 'アセットの作成方法は '
+                : 'For asset creation, see '}
+              <a
+                href="https://github.com/rotejin/MotionPNGTuber"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                https://github.com/rotejin/MotionPNGTuber
+              </a>
+              {i18n.language === 'ja'
+                ? ' を参照してください。'
+                : '.'}
             </div>
             <select
               className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
