@@ -12,9 +12,7 @@ jest.mock('@/features/vrmViewer/viewer', () => ({
 }))
 jest.mock('pixi-live2d-display-lipsyncpatch', () => ({}))
 jest.mock('@/features/memory/memoryStoreSync', () => ({
-  addEmbeddingsToMessages: jest.fn((msgs: unknown[]) =>
-    Promise.resolve(msgs)
-  ),
+  addEmbeddingsToMessages: jest.fn((msgs: unknown[]) => Promise.resolve(msgs)),
 }))
 jest.mock('@/features/messages/messageSelectors', () => ({
   messageSelectors: {

@@ -25,9 +25,7 @@ describe('AudioBufferManager', () => {
 
       const merged = manager.mergeArrayBuffers(buf1, buf2)
 
-      expect(new Uint8Array(merged)).toEqual(
-        new Uint8Array([1, 2, 3, 4, 5, 6])
-      )
+      expect(new Uint8Array(merged)).toEqual(new Uint8Array([1, 2, 3, 4, 5, 6]))
     })
 
     it('should handle empty first buffer', () => {

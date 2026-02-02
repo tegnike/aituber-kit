@@ -48,9 +48,7 @@ describe('getLatestAssistantMessage', () => {
     const chatLog: Message[] = [
       {
         role: 'assistant',
-        content: [
-          { type: 'image', image: 'data:image/png;base64,...' },
-        ] as any,
+        content: [{ type: 'image', image: 'data:image/png;base64,...' }] as any,
       },
     ]
     expect(getLatestAssistantMessage(chatLog)).toBe('')

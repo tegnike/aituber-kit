@@ -21,12 +21,9 @@ describe('getVoiceLanguageCode', () => {
     ['th', 'th-TH'],
   ]
 
-  it.each(mappings)(
-    'should map "%s" to "%s"',
-    (input, expected) => {
-      expect(getVoiceLanguageCode(input)).toBe(expected)
-    }
-  )
+  it.each(mappings)('should map "%s" to "%s"', (input, expected) => {
+    expect(getVoiceLanguageCode(input)).toBe(expected)
+  })
 
   it('should return ja-JP as default for unknown language', () => {
     expect(getVoiceLanguageCode('unknown')).toBe('ja-JP')

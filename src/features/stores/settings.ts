@@ -27,6 +27,7 @@ import {
   AudioModeInputType,
   SpeechRecognitionMode,
   WhisperTranscriptionModel,
+  ReasoningEffort,
 } from '../constants/settings'
 import {
   googleSearchGroundingModels,
@@ -231,6 +232,10 @@ interface General {
   useVideoAsBackground: boolean
   temperature: number
   maxTokens: number
+  reasoningMode: boolean
+  reasoningEffort: ReasoningEffort
+  reasoningTokenBudget: number
+  showThinkingText: boolean
   noSpeechTimeout: number
   showSilenceProgressBar: boolean
   continuousMicListeningMode: boolean
@@ -521,6 +526,12 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     process.env.NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND === 'true',
   temperature: parseFloat(process.env.NEXT_PUBLIC_TEMPERATURE || '1.0') || 1.0,
   maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
+  reasoningMode: process.env.NEXT_PUBLIC_REASONING_MODE === 'true',
+  reasoningEffort:
+    (process.env.NEXT_PUBLIC_REASONING_EFFORT as ReasoningEffort) || 'medium',
+  reasoningTokenBudget:
+    parseInt(process.env.NEXT_PUBLIC_REASONING_TOKEN_BUDGET || '8192') || 8192,
+  showThinkingText: process.env.NEXT_PUBLIC_SHOW_THINKING_TEXT === 'true',
   noSpeechTimeout:
     parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
   showSilenceProgressBar:
@@ -827,6 +838,10 @@ const settingsStore = create<SettingsState>()(
         showQuickMenu: state.showQuickMenu,
         temperature: state.temperature,
         maxTokens: state.maxTokens,
+        reasoningMode: state.reasoningMode,
+        reasoningEffort: state.reasoningEffort,
+        reasoningTokenBudget: state.reasoningTokenBudget,
+        showThinkingText: state.showThinkingText,
         noSpeechTimeout: state.noSpeechTimeout,
         showSilenceProgressBar: state.showSilenceProgressBar,
         continuousMicListeningMode: state.continuousMicListeningMode,

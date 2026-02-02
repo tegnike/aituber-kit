@@ -1,4 +1,4 @@
-import { AIService } from './settings'
+import { AIService, ReasoningEffort } from './settings'
 
 /**
  * モデルの属性定義
@@ -10,6 +10,15 @@ interface ModelInfo {
   multiModal?: boolean
   /** デフォルトモデルかどうか */
   isDefault?: boolean
+  /**
+   * 推論effortレベルの選択肢。
+   * - undefined: 推論非対応
+   * - []: 推論対応だがeffortセレクタ不要（トグルのみ or tokenBudgetのみ）
+   * - ['low', 'high']: 推論対応で選択可能なeffort値
+   */
+  reasoningEfforts?: ReasoningEffort[]
+  /** tokenBudget設定が利用可能か */
+  reasoningTokenBudget?: boolean
 }
 
 /**
@@ -17,19 +26,71 @@ interface ModelInfo {
  */
 const modelDefinitions: Record<AIService, ModelInfo[]> = {
   openai: [
-    { name: 'gpt-5.2-pro', multiModal: true },
-    { name: 'gpt-5.2-chat-latest', multiModal: true },
-    { name: 'gpt-5.2', multiModal: true },
-    { name: 'gpt-5.1-codex-mini', multiModal: true },
-    { name: 'gpt-5.1-codex', multiModal: true },
-    { name: 'gpt-5.1-chat-latest', multiModal: true },
-    { name: 'gpt-5.1', multiModal: true },
-    { name: 'gpt-5-pro', multiModal: true },
-    { name: 'gpt-5', multiModal: true },
-    { name: 'gpt-5-mini', multiModal: true },
-    { name: 'gpt-5-nano', multiModal: true },
-    { name: 'gpt-5-codex', multiModal: true },
-    { name: 'gpt-5-chat-latest', multiModal: true },
+    {
+      name: 'gpt-5.2-pro',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.2-chat-latest',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.2',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1-codex-mini',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1-codex',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1-chat-latest',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-pro',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-mini',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-nano',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-codex',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-chat-latest',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
     { name: 'gpt-4.1', multiModal: true },
     { name: 'gpt-4.1-mini', multiModal: true, isDefault: true },
     { name: 'gpt-4.1-nano', multiModal: true },
@@ -37,21 +98,82 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'gpt-4o-mini', multiModal: true },
   ],
   anthropic: [
-    { name: 'claude-opus-4-5', multiModal: true },
-    { name: 'claude-opus-4-1', multiModal: true },
-    { name: 'claude-opus-4-0', multiModal: true },
-    { name: 'claude-sonnet-4-5', multiModal: true, isDefault: true },
-    { name: 'claude-sonnet-4-0', multiModal: true },
-    { name: 'claude-haiku-4-5', multiModal: true },
-    { name: 'claude-3-7-sonnet-latest', multiModal: true },
+    {
+      name: 'claude-opus-4-5',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high'],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-opus-4-1',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-opus-4-0',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-sonnet-4-5',
+      multiModal: true,
+      isDefault: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-sonnet-4-0',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-haiku-4-5',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-3-7-sonnet-latest',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
     { name: 'claude-3-5-haiku-latest', multiModal: true },
   ],
   google: [
-    { name: 'gemini-3-pro-preview', multiModal: true },
-    { name: 'gemini-2.5-pro', multiModal: true },
-    { name: 'gemini-2.5-flash', multiModal: true, isDefault: true },
-    { name: 'gemini-2.5-flash-lite', multiModal: true },
-    { name: 'gemini-2.5-flash-lite-preview-06-17', multiModal: true },
+    {
+      name: 'gemini-3-pro-preview',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'gemini-2.5-pro',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'gemini-2.5-flash',
+      multiModal: true,
+      isDefault: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'gemini-2.5-flash-lite',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'gemini-2.5-flash-lite-preview-06-17',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
     { name: 'gemini-2.0-flash', multiModal: true },
     { name: 'gemini-1.5-pro', multiModal: true },
     { name: 'gemini-1.5-pro-latest', multiModal: true },
@@ -63,17 +185,50 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
   azure: [],
   xai: [
     { name: 'grok-4-fast-non-reasoning' },
-    { name: 'grok-4-fast-reasoning' },
+    { name: 'grok-4-fast-reasoning', reasoningEfforts: ['low', 'high'] },
     { name: 'grok-code-fast-1' },
-    { name: 'grok-4', multiModal: true, isDefault: true },
-    { name: 'grok-3', multiModal: true },
-    { name: 'grok-3-latest', multiModal: true },
-    { name: 'grok-3-fast', multiModal: true },
-    { name: 'grok-3-fast-latest', multiModal: true },
-    { name: 'grok-3-mini', multiModal: true },
-    { name: 'grok-3-mini-latest', multiModal: true },
-    { name: 'grok-3-mini-fast', multiModal: true },
-    { name: 'grok-3-mini-fast-latest', multiModal: true },
+    {
+      name: 'grok-4',
+      multiModal: true,
+      isDefault: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    { name: 'grok-3', multiModal: true, reasoningEfforts: ['low', 'high'] },
+    {
+      name: 'grok-3-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-fast',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-fast-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini-fast',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini-fast-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
     { name: 'grok-2', multiModal: true },
     { name: 'grok-2-latest', multiModal: true },
     { name: 'grok-2-1212', multiModal: true },
@@ -94,7 +249,7 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'meta-llama/llama-prompt-guard-2-22m' },
     { name: 'meta-llama/llama-prompt-guard-2-86m' },
     { name: 'moonshotai/kimi-k2-instruct-0905' },
-    { name: 'qwen/qwen3-32b' },
+    { name: 'qwen/qwen3-32b', reasoningEfforts: [] },
     { name: 'llama-guard-3-8b' },
     { name: 'llama3-70b-8192' },
     { name: 'llama3-8b-8192' },
@@ -102,12 +257,19 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'qwen-qwq-32b' },
     { name: 'qwen-2.5-32b' },
     { name: 'deepseek-r1-distill-qwen-32b' },
-    { name: 'openai/gpt-oss-20b' },
-    { name: 'openai/gpt-oss-120b' },
+    { name: 'openai/gpt-oss-20b', reasoningEfforts: ['low', 'medium', 'high'] },
+    {
+      name: 'openai/gpt-oss-120b',
+      reasoningEfforts: ['low', 'medium', 'high'],
+    },
   ],
   cohere: [
     { name: 'command-a-03-2025', isDefault: true },
-    { name: 'command-a-reasoning-08-2025' },
+    {
+      name: 'command-a-reasoning-08-2025',
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
     { name: 'command-r7b-12-2024' },
     { name: 'command-r-plus-04-2024' },
     { name: 'command-r-plus' },
@@ -408,4 +570,107 @@ export function isSearchGroundingModel(
     return (googleSearchGroundingModels as readonly string[]).includes(model)
   }
   return false
+}
+
+/**
+ * カスタムモデルやモデルリストを持たないサービス向けのフォールバック
+ */
+const serviceReasoningDefaults: Partial<
+  Record<AIService, { efforts: ReasoningEffort[]; tokenBudget: boolean }>
+> = {
+  openai: {
+    efforts: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'],
+    tokenBudget: false,
+  },
+  azure: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
+  anthropic: { efforts: [], tokenBudget: true },
+  google: { efforts: ['low', 'medium', 'high'], tokenBudget: true },
+  xai: { efforts: ['low', 'high'], tokenBudget: false },
+  groq: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
+  cohere: { efforts: [], tokenBudget: true },
+}
+
+/**
+ * モデル定義からModelInfoを検索する
+ */
+function findModelInfo(
+  service: AIService,
+  model: string
+): ModelInfo | undefined {
+  return modelDefinitions[service]?.find((m) => m.name === model)
+}
+
+/**
+ * 推論対応モデルかどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @param customModel カスタムモデルかどうか
+ * @returns 推論対応の場合はtrue
+ */
+export function isReasoningModel(
+  service: AIService,
+  model: string,
+  customModel?: boolean
+): boolean {
+  if (customModel) {
+    return serviceReasoningDefaults[service] !== undefined
+  }
+
+  // モデルリストが空のサービス（Azure等）はフォールバック
+  if (modelDefinitions[service]?.length === 0) {
+    return serviceReasoningDefaults[service] !== undefined
+  }
+
+  const info = findModelInfo(service, model)
+  return info?.reasoningEfforts !== undefined
+}
+
+/**
+ * モデルの推論effort選択肢を取得する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @param customModel カスタムモデルかどうか
+ * @returns effort選択肢の配列（推論非対応の場合は空配列）
+ */
+export function getReasoningEfforts(
+  service: AIService,
+  model: string,
+  customModel?: boolean
+): ReasoningEffort[] {
+  if (customModel) {
+    return serviceReasoningDefaults[service]?.efforts ?? []
+  }
+
+  // モデルリストが空のサービス（Azure等）はフォールバック
+  if (modelDefinitions[service]?.length === 0) {
+    return serviceReasoningDefaults[service]?.efforts ?? []
+  }
+
+  const info = findModelInfo(service, model)
+  return info?.reasoningEfforts ?? []
+}
+
+/**
+ * モデルにtokenBudget設定が必要かどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @param customModel カスタムモデルかどうか
+ * @returns tokenBudget設定が必要な場合はtrue
+ */
+export function needsReasoningTokenBudget(
+  service: AIService,
+  model: string,
+  customModel?: boolean
+): boolean {
+  if (customModel) {
+    return serviceReasoningDefaults[service]?.tokenBudget ?? false
+  }
+
+  // モデルリストが空のサービス（Azure等）はフォールバック
+  if (modelDefinitions[service]?.length === 0) {
+    return serviceReasoningDefaults[service]?.tokenBudget ?? false
+  }
+
+  const info = findModelInfo(service, model)
+  return info?.reasoningTokenBudget ?? false
 }

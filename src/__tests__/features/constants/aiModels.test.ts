@@ -65,12 +65,9 @@ describe('aiModels', () => {
       }
     )
 
-    it.each(emptyServices)(
-      'should return empty array for %s',
-      (service) => {
-        expect(getModels(service)).toEqual([])
-      }
-    )
+    it.each(emptyServices)('should return empty array for %s', (service) => {
+      expect(getModels(service)).toEqual([])
+    })
 
     it('should match aiModels record', () => {
       allServices.forEach((service) => {
@@ -163,9 +160,7 @@ describe('aiModels', () => {
 
     it('should return subset for groq (most are not multimodal)', () => {
       const models = getMultiModalModels('groq')
-      expect(models).toEqual([
-        'meta-llama/llama-4-scout-17b-16e-instruct',
-      ])
+      expect(models).toEqual(['meta-llama/llama-4-scout-17b-16e-instruct'])
     })
 
     it('should return empty array for services with no models', () => {
@@ -176,9 +171,7 @@ describe('aiModels', () => {
 
     it('should match multiModalModels record', () => {
       allServices.forEach((service) => {
-        expect(getMultiModalModels(service)).toEqual(
-          multiModalModels[service]
-        )
+        expect(getMultiModalModels(service)).toEqual(multiModalModels[service])
       })
     })
   })
@@ -220,12 +213,12 @@ describe('aiModels', () => {
     it.each(bypassServices)(
       'should return enableMultiModal directly for bypass service %s',
       (service) => {
-        expect(
-          isMultiModalModelWithToggle(service, 'any-model', true)
-        ).toBe(true)
-        expect(
-          isMultiModalModelWithToggle(service, 'any-model', false)
-        ).toBe(false)
+        expect(isMultiModalModelWithToggle(service, 'any-model', true)).toBe(
+          true
+        )
+        expect(isMultiModalModelWithToggle(service, 'any-model', false)).toBe(
+          false
+        )
       }
     )
 
@@ -239,67 +232,53 @@ describe('aiModels', () => {
     })
 
     it('should delegate to isMultiModalModel for standard services', () => {
-      expect(
-        isMultiModalModelWithToggle('openai', 'gpt-4o', false)
-      ).toBe(true)
-      expect(
-        isMultiModalModelWithToggle('groq', 'gemma2-9b-it', true)
-      ).toBe(false)
+      expect(isMultiModalModelWithToggle('openai', 'gpt-4o', false)).toBe(true)
+      expect(isMultiModalModelWithToggle('groq', 'gemma2-9b-it', true)).toBe(
+        false
+      )
     })
   })
 
   describe('isMultiModalAvailable', () => {
     it('should return false when mode is never', () => {
-      expect(
-        isMultiModalAvailable('openai', 'gpt-4o', true, 'never')
-      ).toBe(false)
+      expect(isMultiModalAvailable('openai', 'gpt-4o', true, 'never')).toBe(
+        false
+      )
     })
 
     it('should delegate to isMultiModalModelWithToggle when mode is always', () => {
-      expect(
-        isMultiModalAvailable('openai', 'gpt-4o', true, 'always')
-      ).toBe(true)
+      expect(isMultiModalAvailable('openai', 'gpt-4o', true, 'always')).toBe(
+        true
+      )
       expect(
         isMultiModalAvailable('groq', 'gemma2-9b-it', true, 'always')
       ).toBe(false)
     })
 
     it('should delegate to isMultiModalModelWithToggle when mode is ai-decide', () => {
-      expect(
-        isMultiModalAvailable('openai', 'gpt-4o', true, 'ai-decide')
-      ).toBe(true)
+      expect(isMultiModalAvailable('openai', 'gpt-4o', true, 'ai-decide')).toBe(
+        true
+      )
       expect(
         isMultiModalAvailable('groq', 'gemma2-9b-it', true, 'ai-decide')
       ).toBe(false)
     })
 
     it('should respect enableMultiModal for bypass services', () => {
-      expect(
-        isMultiModalAvailable('azure', 'any-model', true, 'always')
-      ).toBe(true)
-      expect(
-        isMultiModalAvailable('azure', 'any-model', false, 'always')
-      ).toBe(false)
+      expect(isMultiModalAvailable('azure', 'any-model', true, 'always')).toBe(
+        true
+      )
+      expect(isMultiModalAvailable('azure', 'any-model', false, 'always')).toBe(
+        false
+      )
     })
 
     it('should respect customModel flag', () => {
       expect(
-        isMultiModalAvailable(
-          'openai',
-          'custom-model',
-          true,
-          'always',
-          true
-        )
+        isMultiModalAvailable('openai', 'custom-model', true, 'always', true)
       ).toBe(true)
       expect(
-        isMultiModalAvailable(
-          'openai',
-          'custom-model',
-          false,
-          'always',
-          true
-        )
+        isMultiModalAvailable('openai', 'custom-model', false, 'always', true)
       ).toBe(false)
     })
   })
@@ -317,12 +296,8 @@ describe('aiModels', () => {
     })
 
     it('should return false for non-Google services', () => {
-      expect(
-        isSearchGroundingModel('openai', 'gemini-1.5-flash')
-      ).toBe(false)
-      expect(isSearchGroundingModel('anthropic', 'claude-opus-4-5')).toBe(
-        false
-      )
+      expect(isSearchGroundingModel('openai', 'gemini-1.5-flash')).toBe(false)
+      expect(isSearchGroundingModel('anthropic', 'claude-opus-4-5')).toBe(false)
     })
   })
 

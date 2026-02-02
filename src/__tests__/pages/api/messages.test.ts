@@ -42,7 +42,7 @@ describe('/api/messages', () => {
 
   beforeEach(() => {
     jest.resetModules()
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     handler = require('@/pages/api/messages').default
   })
 
@@ -218,9 +218,7 @@ describe('/api/messages', () => {
 
       const messages = (getRes._json as { messages: unknown[] }).messages
       expect(messages).toHaveLength(2)
-      expect(messages[0]).toEqual(
-        expect.objectContaining({ message: 'first' })
-      )
+      expect(messages[0]).toEqual(expect.objectContaining({ message: 'first' }))
       expect(messages[1]).toEqual(
         expect.objectContaining({ message: 'second' })
       )
@@ -317,9 +315,9 @@ describe('/api/messages', () => {
         }),
         getRes1
       )
-      expect(
-        (getRes1._json as { messages: unknown[] }).messages
-      ).toHaveLength(1)
+      expect((getRes1._json as { messages: unknown[] }).messages).toHaveLength(
+        1
+      )
 
       // Second GET should be empty
       const getRes2 = createMockRes()
@@ -330,9 +328,9 @@ describe('/api/messages', () => {
         }),
         getRes2
       )
-      expect(
-        (getRes2._json as { messages: unknown[] }).messages
-      ).toHaveLength(0)
+      expect((getRes2._json as { messages: unknown[] }).messages).toHaveLength(
+        0
+      )
     })
 
     it('should return 400 when clientId is missing', () => {
@@ -389,9 +387,9 @@ describe('/api/messages', () => {
           }),
           getRes
         )
-        expect(
-          (getRes._json as { messages: unknown[] }).messages
-        ).toHaveLength(0)
+        expect((getRes._json as { messages: unknown[] }).messages).toHaveLength(
+          0
+        )
       } finally {
         Date.now = realDateNow
       }
@@ -435,9 +433,9 @@ describe('/api/messages', () => {
           }),
           getRes
         )
-        expect(
-          (getRes._json as { messages: unknown[] }).messages
-        ).toHaveLength(1)
+        expect((getRes._json as { messages: unknown[] }).messages).toHaveLength(
+          1
+        )
       } finally {
         Date.now = realDateNow
       }

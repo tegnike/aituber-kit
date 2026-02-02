@@ -98,8 +98,9 @@ describe('SpeakQueue', () => {
     ;(SpeakQueue as unknown as { _instance: null })._instance = null
     ;(SpeakQueue as unknown as { stopTokenCounter: number }).stopTokenCounter =
       0
-    ;(SpeakQueue as unknown as { speakCompletionCallbacks: (() => void)[] })
-      .speakCompletionCallbacks = []
+    ;(
+      SpeakQueue as unknown as { speakCompletionCallbacks: (() => void)[] }
+    ).speakCompletionCallbacks = []
     setupMocks()
   })
 

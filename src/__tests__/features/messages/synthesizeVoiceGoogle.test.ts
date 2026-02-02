@@ -80,17 +80,15 @@ describe('synthesizeVoiceGoogleApi', () => {
       status: 500,
     })
 
-    await expect(
-      synthesizeVoiceGoogleApi(mockTalk, '', 'ja')
-    ).rejects.toThrow('Google Text-to-Speechでエラーが発生しました')
+    await expect(synthesizeVoiceGoogleApi(mockTalk, '', 'ja')).rejects.toThrow(
+      'Google Text-to-Speechでエラーが発生しました'
+    )
   })
 
   it('should throw wrapped error on fetch failure', async () => {
     mockFetch.mockRejectedValue(new Error('Network failure'))
 
-    await expect(
-      synthesizeVoiceGoogleApi(mockTalk, '', 'ja')
-    ).rejects.toThrow(
+    await expect(synthesizeVoiceGoogleApi(mockTalk, '', 'ja')).rejects.toThrow(
       'Google Text-to-Speechでエラーが発生しました: Network failure'
     )
   })
@@ -98,9 +96,9 @@ describe('synthesizeVoiceGoogleApi', () => {
   it('should throw generic error for non-Error exceptions', async () => {
     mockFetch.mockRejectedValue(42)
 
-    await expect(
-      synthesizeVoiceGoogleApi(mockTalk, '', 'ja')
-    ).rejects.toThrow('Google Text-to-Speechで不明なエラーが発生しました')
+    await expect(synthesizeVoiceGoogleApi(mockTalk, '', 'ja')).rejects.toThrow(
+      'Google Text-to-Speechで不明なエラーが発生しました'
+    )
   })
 
   describe('language mappings', () => {

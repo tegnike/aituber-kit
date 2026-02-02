@@ -4,6 +4,7 @@ import {
   getModels,
   isMultiModalModel,
   isSearchGroundingModel,
+  isReasoningModel,
 } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 
@@ -69,9 +70,12 @@ export const ModelSelector = ({
             {getModels(aiService).map((model) => {
               const isMultiModal = isMultiModalModel(aiService, model)
               const isSearchEnabled = isSearchGroundingModel(aiService, model)
-              let icons = ''
-              if (isMultiModal) icons += '📷'
-              if (isSearchEnabled) icons += '🔍'
+              const isReasoning = isReasoningModel(aiService, model)
+              const iconList: string[] = []
+              if (isMultiModal) iconList.push('📷')
+              if (isSearchEnabled) iconList.push('🔍')
+              if (isReasoning) iconList.push('💡')
+              const icons = iconList.join(' ')
               return (
                 <option key={model} value={model}>
                   {model} {icons}

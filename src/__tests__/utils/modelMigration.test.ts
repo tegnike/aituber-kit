@@ -10,12 +10,9 @@ describe('migrateOpenAIModelName', () => {
     ['gpt-4.1-2025-04-14', 'gpt-4.1'],
   ]
 
-  it.each(legacyMappings)(
-    'should migrate "%s" to "%s"',
-    (legacy, current) => {
-      expect(migrateOpenAIModelName(legacy)).toBe(current)
-    }
-  )
+  it.each(legacyMappings)('should migrate "%s" to "%s"', (legacy, current) => {
+    expect(migrateOpenAIModelName(legacy)).toBe(current)
+  })
 
   it('should return model name unchanged when not in legacy list', () => {
     expect(migrateOpenAIModelName('gpt-4o')).toBe('gpt-4o')

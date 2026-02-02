@@ -161,6 +161,62 @@ describe('vercelAi service helpers', () => {
       expect(result).toBe(response)
     })
 
+    it('passes providerOptions to streamText when provided', async () => {
+      const response = new Response('stream-body')
+      const mockToUIMessageStreamResponse = jest.fn().mockReturnValue(response)
+      mockStreamText.mockResolvedValue({
+        textStream: 'text-stream',
+        toUIMessageStreamResponse: mockToUIMessageStreamResponse,
+      } as any)
+
+      const providerOptions = { openai: { reasoningEffort: 'high' } }
+
+      await streamAiText({
+        model: 'gpt-5',
+        registry: mockRegistry as any,
+        service: 'openai',
+        messages: testMessages,
+        temperature: 0.2,
+        maxTokens: 150,
+        options: {},
+        providerOptions,
+      })
+
+      expect(mockStreamText).toHaveBeenCalledWith({
+        model: 'mock-model',
+        messages: testMessages,
+        temperature: 0.2,
+        maxOutputTokens: 150,
+        providerOptions: { openai: { reasoningEffort: 'high' } },
+      })
+    })
+
+    it('does not include providerOptions when undefined', async () => {
+      const response = new Response('stream-body')
+      const mockToUIMessageStreamResponse = jest.fn().mockReturnValue(response)
+      mockStreamText.mockResolvedValue({
+        textStream: 'text-stream',
+        toUIMessageStreamResponse: mockToUIMessageStreamResponse,
+      } as any)
+
+      await streamAiText({
+        model: 'gpt-4o-mini',
+        registry: mockRegistry as any,
+        service: 'openai',
+        messages: testMessages,
+        temperature: 0.2,
+        maxTokens: 150,
+        options: {},
+      })
+
+      expect(mockStreamText).toHaveBeenCalledWith({
+        model: 'mock-model',
+        messages: testMessages,
+        temperature: 0.2,
+        maxOutputTokens: 150,
+      })
+    })
+
     it('returns a 500 response when streaming fails', async () => {
       mockStreamText.mockRejectedValue(new Error('network down'))
 
@@ -202,6 +258,40 @@ describe('vercelAi service helpers', () => {
       })
       expect(response.status).toBe(200)
       expect(await response.json()).toEqual({ text: 'final text' })
+    })
+
+    it('passes providerOptions to generateText when provided', async () => {
+      mockGenerateText.mockResolvedValue({ text: 'reasoning result' } as any)
+
+      const providerOptions = {
+        anthropic: {
+          thinking: { type: 'enabled', budgetTokens: 12000 },
+          effort: 'high',
+        },
+      }
+
+      await generateAiText({
+        model: 'claude-sonnet-4-5',
+        registry: mockRegistry as any,
+        service: 'anthropic' as any,
+        messages: testMessages,
+        temperature: 1.0,
+        maxTokens: 4096,
+        providerOptions,
+      })
+
+      expect(mockGenerateText).toHaveBeenCalledWith({
+        model: 'mock-model',
+        messages: testMessages,
+        temperature: 1.0,
+        maxOutputTokens: 4096,
+        providerOptions: {
+          anthropic: {
+            thinking: { type: 'enabled', budgetTokens: 12000 },
+            effort: 'high',
+          },
+        },
+      })
     })
 
     it('returns error response when generation fails', async () => {

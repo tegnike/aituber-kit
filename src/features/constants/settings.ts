@@ -183,3 +183,11 @@ export type AudioModeInputType = 'input_text' | 'input_audio'
 export type SpeechRecognitionMode = 'browser' | 'whisper'
 
 export type WhisperTranscriptionModel = (typeof openAIWhisperModels)[number]
+
+export type ReasoningEffort =
+  | 'none'
+  | 'minimal'
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'xhigh'

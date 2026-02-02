@@ -8,6 +8,7 @@ export type Message = {
   timestamp?: string
   embedding?: number[] // メモリ機能用のembedding
   userName?: string // YouTubeコメント主名
+  thinking?: string // 推論/思考内容（UI表示・永続化用、LLMには送信しない）
 }
 
 export const EMOTIONS = [

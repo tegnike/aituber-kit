@@ -157,6 +157,7 @@ export async function streamAiText({
   temperature,
   maxTokens,
   options = {},
+  providerOptions,
 }: {
   model: string
   registry: AIRegistry
@@ -165,6 +166,7 @@ export async function streamAiText({
   temperature: number
   maxTokens: number
   options?: Record<string, unknown>
+  providerOptions?: Record<string, Record<string, unknown>>
 }) {
   try {
     const languageModel = getLanguageModel(registry, service, model, options)
@@ -174,6 +176,11 @@ export async function streamAiText({
       messages: messages as ModelMessage[],
       temperature,
       maxOutputTokens: maxTokens,
+      ...(providerOptions && {
+        providerOptions: providerOptions as Parameters<
+          typeof streamText
+        >[0]['providerOptions'],
+      }),
     })
 
     return result.toUIMessageStreamResponse()
@@ -206,6 +213,7 @@ export async function generateAiText({
   messages,
   temperature,
   maxTokens,
+  providerOptions,
 }: {
   model: string
   registry: AIRegistry
@@ -213,6 +221,7 @@ export async function generateAiText({
   messages: Message[]
   temperature: number
   maxTokens: number
+  providerOptions?: Record<string, Record<string, unknown>>
 }) {
   try {
     const languageModel = getLanguageModel(registry, service, model)
@@ -222,6 +231,11 @@ export async function generateAiText({
       messages: messages as ModelMessage[],
       temperature,
       maxOutputTokens: maxTokens,
+      ...(providerOptions && {
+        providerOptions: providerOptions as Parameters<
+          typeof generateText
+        >[0]['providerOptions'],
+      }),
     })
 
     return new Response(JSON.stringify({ text: result.text }), {

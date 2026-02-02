@@ -11,6 +11,7 @@ import {
   streamAiText,
   generateAiText,
 } from '@/lib/api-services/vercelAi'
+import { buildReasoningProviderOptions } from '@/lib/api-services/providerOptionsBuilder'
 import { googleSearchGroundingModels } from '@/features/constants/aiModels'
 
 export const config = {
@@ -43,6 +44,9 @@ export default async function handler(req: NextRequest) {
     dynamicRetrievalThreshold,
     temperature = 1.0,
     maxTokens = 4096,
+    reasoningMode = false,
+    reasoningEffort = 'medium',
+    reasoningTokenBudget = 8192,
   } = await req.json()
 
   // APIキーの取得と検証
@@ -157,6 +161,15 @@ export default async function handler(req: NextRequest) {
 
     console.log('options', options)
 
+    // 推論モードのproviderOptionsを構築
+    const providerOptions = buildReasoningProviderOptions(
+      aiService,
+      modifiedModel,
+      reasoningMode,
+      reasoningEffort,
+      reasoningTokenBudget
+    )
+
     // ストリーミングレスポンスまたは一括レスポンスの生成
     if (stream) {
       return await streamAiText({
@@ -167,6 +180,7 @@ export default async function handler(req: NextRequest) {
         temperature,
         maxTokens,
         options,
+        providerOptions,
       })
     } else {
       return await generateAiText({
@@ -176,6 +190,7 @@ export default async function handler(req: NextRequest) {
         messages: modifiedMessages,
         temperature,
         maxTokens,
+        providerOptions,
       })
     }
   } catch (error) {

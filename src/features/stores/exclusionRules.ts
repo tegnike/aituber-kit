@@ -3,8 +3,10 @@ import {
   defaultModels,
   isMultiModalModel,
   googleSearchGroundingModels,
+  isReasoningModel,
+  getReasoningEfforts,
 } from '../constants/aiModels'
-import type { AIService, AIVoice } from '../constants/settings'
+import type { AIService, AIVoice, ReasoningEffort } from '../constants/settings'
 
 export interface CrossStoreEffect {
   store: 'menu' | 'home' | 'slide'
@@ -231,5 +233,46 @@ export const exclusionRules: ExclusionRule[] = [
     apply: () => ({
       useSearchGrounding: false,
     }),
+  },
+
+  // Rule 13: モデル変更時に非対応のreasoningEffort/reasoningModeをリセット
+  {
+    id: 'reasoning-effort-reset',
+    description:
+      'モデル変更時に非対応のreasoningEffort/reasoningModeをリセット',
+    trigger: (incoming, merged, prev) =>
+      (wasSet(incoming, 'selectAIModel') &&
+        changed('selectAIModel', prev, merged)) ||
+      (wasSet(incoming, 'selectAIService') &&
+        changed('selectAIService', prev, merged)) ||
+      (wasSet(incoming, 'customModel') && changed('customModel', prev, merged)),
+    apply: (merged) => {
+      const isReasoning = isReasoningModel(
+        merged.selectAIService,
+        merged.selectAIModel,
+        merged.customModel
+      )
+      const efforts = getReasoningEfforts(
+        merged.selectAIService,
+        merged.selectAIModel,
+        merged.customModel
+      )
+      const corrections: Partial<SettingsState> = {}
+
+      if (!isReasoning && merged.reasoningMode) {
+        corrections.reasoningMode = false
+      }
+
+      if (
+        efforts.length > 0 &&
+        !efforts.includes(merged.reasoningEffort as ReasoningEffort)
+      ) {
+        corrections.reasoningEffort = efforts.includes('medium')
+          ? 'medium'
+          : efforts[0]
+      }
+
+      return corrections
+    },
   },
 ]

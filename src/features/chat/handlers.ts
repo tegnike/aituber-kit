@@ -16,6 +16,7 @@ import {
   saveMessageToMemory,
   searchMemoryContext,
 } from '@/features/memory/memoryStoreSync'
+import { THINKING_MARKER } from '@/features/chat/vercelAIChat'
 
 // セッションIDを生成する関数
 const generateSessionId = () => generateMessageId()
@@ -397,46 +398,70 @@ export const processAIResponse = async (messages: Message[]) => {
   let currentEmotionTag = ''
   let isCodeBlock = false
   let codeBlockContent = ''
+  let currentThinkingContent = ''
 
   try {
     while (true) {
       const { done, value } = await reader.read()
 
       if (value) {
-        let textToAdd = value
+        // 思考チャンクの検出（THINKING_MARKERプレフィックス）
+        if (value.startsWith(THINKING_MARKER)) {
+          const thinkingChunk = value.substring(THINKING_MARKER.length)
+          currentThinkingContent += thinkingChunk
 
-        if (!isCodeBlock) {
-          const delimiterIndexInValue = value.indexOf(CODE_DELIMITER)
-          if (delimiterIndexInValue !== -1) {
-            textToAdd = value.substring(0, delimiterIndexInValue)
+          if (currentMessageId === null) {
+            currentMessageId = generateMessageId()
           }
+          homeStore.getState().upsertMessage({
+            id: currentMessageId,
+            role: 'assistant',
+            content: currentMessageContent || '',
+            thinking: currentThinkingContent,
+          })
+          // receivedChunksForSpeechには追加しない（読み上げ対象外）
+        } else {
+          let textToAdd = value
+
+          if (!isCodeBlock) {
+            const delimiterIndexInValue = value.indexOf(CODE_DELIMITER)
+            if (delimiterIndexInValue !== -1) {
+              textToAdd = value.substring(0, delimiterIndexInValue)
+            }
+          }
+
+          if (currentMessageId === null) {
+            currentMessageId = generateMessageId()
+            currentMessageContent = textToAdd
+            if (currentMessageContent) {
+              homeStore.getState().upsertMessage({
+                id: currentMessageId,
+                role: 'assistant',
+                content: currentMessageContent,
+                ...(currentThinkingContent && {
+                  thinking: currentThinkingContent,
+                }),
+              })
+            }
+          } else if (!isCodeBlock) {
+            currentMessageContent += textToAdd
+
+            if (textToAdd) {
+              homeStore.getState().upsertMessage({
+                id: currentMessageId,
+                role: 'assistant',
+                content: currentMessageContent,
+                ...(currentThinkingContent && {
+                  thinking: currentThinkingContent,
+                }),
+              })
+            }
+          }
+
+          // assistantMessage is now derived from chatLog, no need to set it separately
+
+          receivedChunksForSpeech += value
         }
-
-        if (currentMessageId === null) {
-          currentMessageId = generateMessageId()
-          currentMessageContent = textToAdd
-          if (currentMessageContent) {
-            homeStore.getState().upsertMessage({
-              id: currentMessageId,
-              role: 'assistant',
-              content: currentMessageContent,
-            })
-          }
-        } else if (!isCodeBlock) {
-          currentMessageContent += textToAdd
-
-          if (textToAdd) {
-            homeStore.getState().upsertMessage({
-              id: currentMessageId,
-              role: 'assistant',
-              content: currentMessageContent,
-            })
-          }
-        }
-
-        // assistantMessage is now derived from chatLog, no need to set it separately
-
-        receivedChunksForSpeech += value
       }
 
       let processableTextForSpeech = receivedChunksForSpeech
@@ -652,6 +677,7 @@ export const processAIResponse = async (messages: Message[]) => {
       id: currentMessageId ?? generateMessageId(),
       role: 'assistant',
       content: currentMessageContent.trim(),
+      ...(currentThinkingContent && { thinking: currentThinkingContent }),
     })
 
     // IndexedDBにアシスタントメッセージを保存

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { EMOTIONS } from '@/features/messages/messages'
 
 import homeStore from '@/features/stores/home'
@@ -86,6 +87,7 @@ export const ChatLog = () => {
                 <Chat
                   role={msg.role}
                   message={msg.content}
+                  thinking={msg.thinking}
                   characterName={characterName}
                   userName={msg.userName}
                   userDisplayName={userDisplayName}
@@ -95,6 +97,7 @@ export const ChatLog = () => {
                   <Chat
                     role={msg.role}
                     message={msg.content ? msg.content[0].text : ''}
+                    thinking={msg.thinking}
                     characterName={characterName}
                     userName={msg.userName}
                     userDisplayName={userDisplayName}
@@ -126,16 +129,22 @@ export const ChatLog = () => {
 const Chat = ({
   role,
   message,
+  thinking,
   characterName,
   userName,
   userDisplayName,
 }: {
   role: string
   message: string
+  thinking?: string
   characterName: string
   userName?: string
   userDisplayName: string
 }) => {
+  const { t } = useTranslation()
+  const showThinkingText = settingsStore((s) => s.showThinkingText)
+  const [isLocalExpanded, setIsLocalExpanded] = useState(false)
+  const isThinkingExpanded = showThinkingText || isLocalExpanded
   const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'gi')
   const processedMessage = message.replace(emotionPattern, '')
 
@@ -160,6 +169,26 @@ const Chat = ({
               : userName || userDisplayName || 'YOU'}
           </div>
           <div className="px-6 py-4 bg-white rounded-b-lg">
+            {thinking && role !== 'user' && (
+              <div className="mb-3">
+                <button
+                  onClick={() => setIsLocalExpanded(!isLocalExpanded)}
+                  className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  <span
+                    className={`inline-block transform transition-transform ${isThinkingExpanded ? 'rotate-90' : ''}`}
+                  >
+                    &#9654;
+                  </span>
+                  <span>{t('ThinkingProcess')}</span>
+                </button>
+                {isThinkingExpanded && (
+                  <div className="mt-2 px-3 py-2 border-l-2 border-gray-300 bg-gray-50 rounded text-xs text-gray-600 italic whitespace-pre-wrap">
+                    {thinking}
+                  </div>
+                )}
+              </div>
+            )}
             <div className={`font-bold ${roleText}`}>{processedMessage}</div>
           </div>
         </>

@@ -16,7 +16,7 @@ import {
   aiServiceOptions,
   getServiceConfigByKey,
 } from './modelProvider/utils/aiServiceConfigs'
-import { AIService } from '@/features/constants/settings'
+import { AIService, ReasoningEffort } from '@/features/constants/settings'
 
 const ModelProvider = () => {
   const { t } = useTranslation()
@@ -373,6 +373,101 @@ const ModelProvider = () => {
             !state.audioMode &&
             state.selectAIService !== 'custom-api' && (
               <>
+                {state.isReasoningSupported && (
+                  <div className="border-t border-gray-300 pt-6 my-6">
+                    <div className="my-4 text-xl font-bold">
+                      {t('ReasoningMode')}
+                    </div>
+                    <div className="my-2 text-sm whitespace-pre-wrap">
+                      {t('ReasoningModeInfo')}
+                    </div>
+                    <div className="my-2">
+                      <ToggleSwitch
+                        enabled={state.reasoningMode}
+                        onChange={(v) =>
+                          settingsStore.setState({ reasoningMode: v })
+                        }
+                      />
+                    </div>
+
+                    {state.reasoningMode && (
+                      <>
+                        {state.availableReasoningEfforts.length > 0 && (
+                          <div className="my-4">
+                            <div className="my-2 font-bold">
+                              {t('ReasoningEffort')}
+                            </div>
+                            <div className="my-2 text-sm whitespace-pre-wrap">
+                              {t('ReasoningEffortInfo')}
+                            </div>
+                            <select
+                              className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                              value={state.reasoningEffort}
+                              onChange={(e) =>
+                                settingsStore.setState({
+                                  reasoningEffort: e.target
+                                    .value as ReasoningEffort,
+                                })
+                              }
+                            >
+                              {state.availableReasoningEfforts.map((effort) => (
+                                <option key={effort} value={effort}>
+                                  {effort.charAt(0).toUpperCase() +
+                                    effort.slice(1)}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        {state.showReasoningTokenBudget && (
+                          <div className="my-4">
+                            <div className="my-2 font-bold">
+                              {t('ReasoningTokenBudget')}
+                            </div>
+                            <div className="my-2 text-sm whitespace-pre-wrap">
+                              {t('ReasoningTokenBudgetInfo')}
+                            </div>
+                            <input
+                              type="number"
+                              min="1024"
+                              max="131072"
+                              className="px-4 py-2 w-140 bg-white hover:bg-white-hover rounded-lg"
+                              value={state.reasoningTokenBudget}
+                              onChange={(e) => {
+                                const value = parseInt(e.target.value)
+                                if (!Number.isNaN(value) && value >= 1024) {
+                                  settingsStore.setState({
+                                    reasoningTokenBudget: value,
+                                  })
+                                }
+                              }}
+                            />
+                          </div>
+                        )}
+                        <div className="my-4">
+                          <div className="my-2 font-bold">
+                            {t('ShowThinkingText')}
+                          </div>
+                          <div className="my-2 text-sm whitespace-pre-wrap">
+                            {t('ShowThinkingTextInfo')}
+                          </div>
+                          <div className="my-2">
+                            <ToggleSwitch
+                              enabled={state.showThinkingText}
+                              onChange={(v) =>
+                                settingsStore.setState({
+                                  showThinkingText: v,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
                 <div className="border-t border-gray-300 pt-6 my-6">
                   <div className="my-4 text-xl font-bold">
                     {t('Temperature')}: {state.temperature.toFixed(2)}

@@ -141,9 +141,7 @@ describe('exclusivityMiddleware', () => {
     it('should schedule menu store effects via queueMicrotask', async () => {
       mockComputeExclusions.mockReturnValue({
         corrections: {},
-        crossStoreEffects: [
-          { store: 'menu', state: { showWebcam: false } },
-        ],
+        crossStoreEffects: [{ store: 'menu', state: { showWebcam: false } }],
       })
 
       const { config } = setupMiddleware()
@@ -160,9 +158,7 @@ describe('exclusivityMiddleware', () => {
     it('should schedule home store effects', async () => {
       mockComputeExclusions.mockReturnValue({
         corrections: {},
-        crossStoreEffects: [
-          { store: 'home', state: { modalImage: '' } },
-        ],
+        crossStoreEffects: [{ store: 'home', state: { modalImage: '' } }],
       })
 
       const { config } = setupMiddleware()
@@ -178,9 +174,7 @@ describe('exclusivityMiddleware', () => {
     it('should schedule slide store effects', async () => {
       mockComputeExclusions.mockReturnValue({
         corrections: {},
-        crossStoreEffects: [
-          { store: 'slide', state: { isPlaying: false } },
-        ],
+        crossStoreEffects: [{ store: 'slide', state: { isPlaying: false } }],
       })
 
       const { config } = setupMiddleware()

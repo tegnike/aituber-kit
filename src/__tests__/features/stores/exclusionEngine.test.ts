@@ -317,6 +317,91 @@ describe('排他エンジン (computeExclusions)', () => {
     })
   })
 
+  describe('Rule 13: reasoning-effort-reset', () => {
+    it('非推論モデルに切り替え時にreasoningModeがfalseにリセットされる', () => {
+      const prev = createBaseState({
+        selectAIService: 'openai',
+        selectAIModel: 'gpt-5',
+        reasoningMode: true,
+        reasoningEffort: 'high',
+      })
+      const incoming = { selectAIModel: 'gpt-4.1' }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.reasoningMode).toBe(false)
+    })
+
+    it('推論モデル間の切り替えで非対応effortがリセットされる', () => {
+      const prev = createBaseState({
+        selectAIService: 'openai',
+        selectAIModel: 'gpt-5.1',
+        reasoningMode: true,
+        reasoningEffort: 'none',
+      })
+      // gpt-5はnoneに対応していない（minimal/low/medium/high）
+      const incoming = { selectAIModel: 'gpt-5' }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      // noneはgpt-5の対応effortにないため、mediumにリセットされる
+      expect(corrections.reasoningEffort).toBe('medium')
+    })
+
+    it('推論モデル間の切り替えで対応effortはリセットされない', () => {
+      const prev = createBaseState({
+        selectAIService: 'openai',
+        selectAIModel: 'gpt-5.1',
+        reasoningMode: true,
+        reasoningEffort: 'high',
+      })
+      const incoming = { selectAIModel: 'gpt-5' }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      // highはgpt-5でも対応しているためリセットされない
+      expect(corrections.reasoningEffort).toBeUndefined()
+    })
+
+    it('サービス変更時に非推論サービスへの切り替えでreasoningModeがリセットされる', () => {
+      const prev = createBaseState({
+        selectAIService: 'openai',
+        selectAIModel: 'gpt-5',
+        reasoningMode: true,
+        reasoningEffort: 'high',
+      })
+      const incoming = { selectAIService: 'dify' as const }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.reasoningMode).toBe(false)
+    })
+
+    it('xAI grok-2（非推論）からgrok-4（推論）への変更ではreasoningModeはリセットされない', () => {
+      const prev = createBaseState({
+        selectAIService: 'xai',
+        selectAIModel: 'grok-2',
+        reasoningMode: false,
+      })
+      const incoming = { selectAIModel: 'grok-4' }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      // reasoningModeはfalseのままなのでリセット不要
+      expect(corrections.reasoningMode).toBeUndefined()
+    })
+
+    it('effortが空配列のモデルではeffortリセットが発生しない', () => {
+      const prev = createBaseState({
+        selectAIService: 'groq',
+        selectAIModel: 'openai/gpt-oss-20b',
+        reasoningMode: true,
+        reasoningEffort: 'medium',
+      })
+      // qwen3はeffort空配列
+      const incoming = { selectAIModel: 'qwen/qwen3-32b' }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      // effortが空配列なのでeffortリセットは発生しない
+      expect(corrections.reasoningEffort).toBeUndefined()
+    })
+  })
+
   describe('カスケードテスト', () => {
     it('externalLinkageMode ON → realtimeAPIMode OFF → モデル復元のカスケード', () => {
       const prev = createBaseState({

@@ -108,11 +108,7 @@ describe('WebSocketManager', () => {
 
     it('should handle null websocket from connectWebsocket', () => {
       const nullConnect = jest.fn(() => null)
-      const manager = new WebSocketManager(
-        mockT,
-        handlers,
-        nullConnect as any
-      )
+      const manager = new WebSocketManager(mockT, handlers, nullConnect as any)
       manager.connect()
 
       expect(nullConnect).toHaveBeenCalledTimes(1)
@@ -235,18 +231,12 @@ describe('WebSocketManager', () => {
       )
       manager.removeToast()
 
-      expect(mockRemoveToast).toHaveBeenCalledWith(
-        'websocket-connection-error'
-      )
+      expect(mockRemoveToast).toHaveBeenCalledWith('websocket-connection-error')
       expect(mockRemoveToast).toHaveBeenCalledWith(
         'websocket-connection-success'
       )
-      expect(mockRemoveToast).toHaveBeenCalledWith(
-        'websocket-connection-close'
-      )
-      expect(mockRemoveToast).toHaveBeenCalledWith(
-        'websocket-connection-info'
-      )
+      expect(mockRemoveToast).toHaveBeenCalledWith('websocket-connection-close')
+      expect(mockRemoveToast).toHaveBeenCalledWith('websocket-connection-info')
     })
   })
 

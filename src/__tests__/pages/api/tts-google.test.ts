@@ -110,9 +110,7 @@ describe('/api/tts-google', () => {
   describe('Credential authentication', () => {
     it('should use TextToSpeechClient when no API key', async () => {
       const audioContent = Buffer.from('audio data')
-      mockSynthesizeSpeech.mockResolvedValue([
-        { audioContent: audioContent },
-      ])
+      mockSynthesizeSpeech.mockResolvedValue([{ audioContent: audioContent }])
 
       const req = createMockReq({
         body: {
