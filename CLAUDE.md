@@ -27,7 +27,7 @@ npm run lint:fix && npm run format && npm run build  # lint修正+フォーマ�
 ### セットアップ
 
 ```bash
-npm install        # 依存関係をインストール（Node.js 20.0.0+、npm 10.0.0+が必要）
+npm install        # 依存関係をインストール（Node.js ^25.2.1、npm ^11.6.2が必要）
 cp .env.example .env  # 環境変数を設定
 ```
 
@@ -52,7 +52,7 @@ cp .env.example .env  # 環境変数を設定
 ### AI連携ポイント
 
 - **チャット**: `/src/features/chat/` - 複数プロバイダー対応のファクトリーパターン
-- **音声**: `/src/features/messages/synthesizeVoice*.ts` - 13種類のTTSエンジン
+- **音声**: `/src/features/messages/synthesizeVoice*.ts` - 11種類のTTSエンジン
 - **モデル**: VRM（3D）は`/src/features/vrmViewer/`、Live2D（2D）もサポート
 
 ### 重要なパターン
