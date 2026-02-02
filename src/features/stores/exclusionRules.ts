@@ -40,7 +40,6 @@ const JA_ONLY_VOICES: AIVoice[] = [
   'aivis_speech',
   'aivis_cloud_api',
   'gsvitts',
-  'nijivoice',
 ]
 
 export const exclusionRules: ExclusionRule[] = [

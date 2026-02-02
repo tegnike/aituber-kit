@@ -91,7 +91,6 @@ export type AIVoice =
   | 'stylebertvits2'
   | 'aivis_speech'
   | 'aivis_cloud_api'
-  | 'nijivoice'
   | 'gsvitts'
   | 'elevenlabs'
   | 'cartesia'

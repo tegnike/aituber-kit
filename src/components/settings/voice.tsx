@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import {
@@ -92,17 +92,7 @@ const Voice = () => {
   const openaiTTSSpeed = settingsStore((s) => s.openaiTTSSpeed)
   const azureTTSKey = settingsStore((s) => s.azureTTSKey)
   const azureTTSEndpoint = settingsStore((s) => s.azureTTSEndpoint)
-  const nijivoiceApiKey = settingsStore((s) => s.nijivoiceApiKey)
-  const nijivoiceActorId = settingsStore((s) => s.nijivoiceActorId)
-  const nijivoiceSpeed = settingsStore((s) => s.nijivoiceSpeed)
-  const nijivoiceEmotionalLevel = settingsStore(
-    (s) => s.nijivoiceEmotionalLevel
-  )
-  const nijivoiceSoundDuration = settingsStore((s) => s.nijivoiceSoundDuration)
-
   const { t } = useTranslation()
-  const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
-  const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
   const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
   const [speakers_voicevox, setSpeakers_voicevox] = useState<Array<any>>([])
   const [customVoiceText, setCustomVoiceText] = useState<string>('')
@@ -112,24 +102,6 @@ const Voice = () => {
     useState<boolean>(false)
   const [voicevoxSpeakersUpdateError, setVoicevoxSpeakersUpdateError] =
     useState<string>('')
-
-  // にじボイスの話者一覧を取得する関数
-  const fetchNijivoiceSpeakers = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `/api/get-nijivoice-actors?apiKey=${nijivoiceApiKey}`
-      )
-      const data = await response.json()
-      if (data.voiceActors) {
-        const sortedActors = data.voiceActors.sort(
-          (a: any, b: any) => a.id - b.id
-        )
-        setNijivoiceSpeakers(sortedActors)
-      }
-    } catch (error) {
-      console.error('Failed to fetch nijivoice speakers:', error)
-    }
-  }, [nijivoiceApiKey])
 
   // AIVISの話者一覧を取得する関数
   const fetchAivisSpeakers = async () => {
@@ -153,13 +125,6 @@ const Voice = () => {
     }
   }
 
-  // コンポーネントマウント時またはにじボイス選択時に話者一覧を取得
-  useEffect(() => {
-    if (selectVoice === 'nijivoice') {
-      fetchNijivoiceSpeakers()
-    }
-  }, [selectVoice, nijivoiceApiKey, fetchNijivoiceSpeakers])
-
   // コンポーネントマウント時またはAIVIS選択時に話者一覧を取得
   useEffect(() => {
     if (selectVoice === 'aivis_speech') {
@@ -173,30 +138,6 @@ const Voice = () => {
       fetchVoicevoxSpeakers()
     }
   }, [selectVoice])
-
-  // nijivoiceActorIdが変更された時にrecommendedVoiceSpeedを設定する処理を追加
-  useEffect(() => {
-    if (
-      selectVoice === 'nijivoice' &&
-      nijivoiceActorId &&
-      nijivoiceActorId !== prevNijivoiceActorId
-    ) {
-      // 現在選択されていキャラクターを探す
-      const selectedActor = nijivoiceSpeakers.find(
-        (actor) => actor.id === nijivoiceActorId
-      )
-
-      // キャラクターが見つかり、recommendedVoiceSpeedが設定されている場合
-      if (selectedActor?.recommendedVoiceSpeed) {
-        settingsStore.setState({
-          nijivoiceSpeed: selectedActor.recommendedVoiceSpeed,
-        })
-      }
-
-      // 前回の選択を更新
-      setPrevNijivoiceActorId(nijivoiceActorId)
-    }
-  }, [nijivoiceActorId, nijivoiceSpeakers, prevNijivoiceActorId, selectVoice])
 
   // 追加: realtimeAPIMode または audioMode が true の場合にメッセージを表示
   if (realtimeAPIMode || audioMode) {
@@ -244,7 +185,6 @@ const Voice = () => {
           <option value="cartesia">{t('UsingCartesia')}</option>
           <option value="openai">{t('UsingOpenAITTS')}</option>
           <option value="azure">{t('UsingAzureTTS')}</option>
-          <option value="nijivoice">{t('UsingNijiVoice')}</option>
         </select>
       </div>
 
@@ -1371,99 +1311,6 @@ const Voice = () => {
                   onChange={(e) => {
                     settingsStore.setState({
                       openaiTTSSpeed: Number(e.target.value),
-                    })
-                  }}
-                />
-              </>
-            )
-          } else if (selectVoice === 'nijivoice') {
-            return (
-              <>
-                <div className="my-2 text-sm whitespace-pre-wrap">
-                  {t('NijiVoiceInfo')}
-                </div>
-                <Link
-                  url="https://app.nijivoice.com/"
-                  label="https://app.nijivoice.com/"
-                />
-                <div className="mt-4 font-bold">{t('NijiVoiceApiKey')}</div>
-                <div className="mt-2">
-                  <input
-                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                    type="text"
-                    placeholder="..."
-                    value={nijivoiceApiKey}
-                    onChange={(e) =>
-                      settingsStore.setState({
-                        nijivoiceApiKey: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="mt-4 font-bold">{t('NijiVoiceActorId')}</div>
-                <div className="mt-2">
-                  <select
-                    value={nijivoiceActorId}
-                    onChange={(e) => {
-                      settingsStore.setState({
-                        nijivoiceActorId: e.target.value,
-                      })
-                    }}
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
-                  >
-                    <option value="">{t('Select')}</option>
-                    {nijivoiceSpeakers.map((actor) => (
-                      <option key={actor.id} value={actor.id}>
-                        {actor.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mt-4 font-bold">
-                  {t('NijiVoiceSpeed')}: {nijivoiceSpeed}
-                </div>
-                <input
-                  type="range"
-                  min={0.4}
-                  max={3.0}
-                  step={0.1}
-                  value={nijivoiceSpeed}
-                  className="mt-2 mb-4 input-range"
-                  onChange={(e) => {
-                    settingsStore.setState({
-                      nijivoiceSpeed: Number(e.target.value),
-                    })
-                  }}
-                />
-                <div className="mt-4 font-bold">
-                  {t('NijiVoiceEmotionalLevel')}: {nijivoiceEmotionalLevel}
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1.5}
-                  step={0.1}
-                  value={nijivoiceEmotionalLevel}
-                  className="mt-2 mb-4 input-range"
-                  onChange={(e) => {
-                    settingsStore.setState({
-                      nijivoiceEmotionalLevel: Number(e.target.value),
-                    })
-                  }}
-                />
-                <div className="mt-4 font-bold">
-                  {t('NijiVoiceSoundDuration')}: {nijivoiceSoundDuration}
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1.7}
-                  step={0.1}
-                  value={nijivoiceSoundDuration}
-                  className="mt-2 mb-4 input-range"
-                  onChange={(e) => {
-                    settingsStore.setState({
-                      nijivoiceSoundDuration: Number(e.target.value),
                     })
                   }}
                 />
