@@ -332,7 +332,7 @@ const MemorySettings = () => {
                 }
                 placeholder="sk-..."
                 linkUrl="https://platform.openai.com/account/api-keys"
-                linkLabel="OpenAI"
+                linkLabel="OpenAI Platform"
               />
 
               {/* 類似度閾値スライダー */}

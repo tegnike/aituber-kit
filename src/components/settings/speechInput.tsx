@@ -84,7 +84,7 @@ const SpeechInput = () => {
               <br />
               <Link
                 url="https://platform.openai.com/account/api-keys"
-                label="OpenAI"
+                label="OpenAI Platform"
               />
             </div>
             <input

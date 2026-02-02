@@ -97,7 +97,7 @@ export const OpenAIConfig = ({
         onChange={(value) => settingsStore.setState({ openaiKey: value })}
         placeholder="sk-..."
         linkUrl="https://platform.openai.com/account/api-keys"
-        linkLabel="OpenAI"
+        linkLabel="OpenAI Platform"
       />
 
       <div className="my-6">
