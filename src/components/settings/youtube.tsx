@@ -171,11 +171,13 @@ const YouTube = () => {
                       type="number"
                       placeholder="11180"
                       value={onecommePort}
-                      onChange={(e) =>
-                        settingsStore.setState({
-                          onecommePort: parseInt(e.target.value) || 11180,
-                        })
-                      }
+                      onChange={(e) => {
+                        const parsed = Number(e.target.value)
+                        const clamped = Number.isFinite(parsed)
+                          ? Math.min(Math.max(parsed, 1), 65535)
+                          : 11180
+                        settingsStore.setState({ onecommePort: clamped })
+                      }}
                     />
                   </>
                 )}

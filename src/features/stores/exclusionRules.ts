@@ -36,6 +36,8 @@ const JA_ONLY_VOICES: AIVoice[] = [
   'voicevox',
   'koeiromap',
   'aivis_speech',
+  'aivis_cloud_api',
+  'gsvitts',
   'nijivoice',
 ]
 
@@ -148,7 +150,7 @@ export const exclusionRules: ExclusionRule[] = [
   {
     id: 'aiService-nonMultiModal',
     description:
-      'AIサービス変更時にデフォルトモデルが非マルチモーダルならsliodeMode等をOFF',
+      'AIサービス変更時にデフォルトモデルが非マルチモーダルならslideMode等をOFF',
     trigger: (incoming, merged, prev) =>
       (wasSet(incoming, 'selectAIService') &&
         changed('selectAIService', prev, merged) &&

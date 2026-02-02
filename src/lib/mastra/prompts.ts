@@ -28,7 +28,7 @@ export function getLastMessages(
       const normalizedContent = message.content
         ? typeof message.content === 'string'
           ? message.content
-          : message.content[0].text
+          : (message.content[0]?.text ?? '')
         : ''
       combinedContent += '\n' + normalizedContent
     } else {
@@ -39,7 +39,7 @@ export function getLastMessages(
       combinedContent = message.content
         ? typeof message.content === 'string'
           ? message.content
-          : message.content[0].text
+          : (message.content[0]?.text ?? '')
         : ''
     }
 
