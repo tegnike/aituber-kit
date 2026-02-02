@@ -132,14 +132,14 @@ describe('MemorySettings Component', () => {
       expect(settingsStore.getState().memorySimilarityThreshold).toBe(0.8)
     })
 
-    it('should enforce min/max range (0.5-0.9)', () => {
+    it('should enforce min/max range (0.1-0.95)', () => {
       settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
       const slider = screen.getByRole('slider', { name: /類似度閾値/i })
-      expect(slider).toHaveAttribute('min', '0.5')
-      expect(slider).toHaveAttribute('max', '0.9')
+      expect(slider).toHaveAttribute('min', '0.1')
+      expect(slider).toHaveAttribute('max', '0.95')
     })
   })
 

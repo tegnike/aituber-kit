@@ -704,9 +704,7 @@ const Character = () => {
               >
                 https://github.com/rotejin/MotionPNGTuber
               </a>
-              {i18n.language === 'ja'
-                ? ' を参照してください。'
-                : '.'}
+              {i18n.language === 'ja' ? ' を参照してください。' : '.'}
             </div>
             <select
               className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"

@@ -408,9 +408,7 @@ const MemorySettings = () => {
 
               {/* 類似度プレビュー */}
               <div className="my-6">
-                <div className="my-4 font-bold">
-                  {t('MemorySearchPreview')}
-                </div>
+                <div className="my-4 font-bold">{t('MemorySearchPreview')}</div>
                 <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('MemorySearchPreviewInfo')}
                 </div>
@@ -428,13 +426,9 @@ const MemorySettings = () => {
                   />
                   <TextButton
                     onClick={handleSearchPreview}
-                    disabled={
-                      isDisabled || isSearching || !searchQuery.trim()
-                    }
+                    disabled={isDisabled || isSearching || !searchQuery.trim()}
                   >
-                    {isSearching
-                      ? '...'
-                      : t('MemorySearchPreviewButton')}
+                    {isSearching ? '...' : t('MemorySearchPreviewButton')}
                   </TextButton>
                 </div>
                 {hasSearched && !isSearching && (
@@ -449,16 +443,14 @@ const MemorySettings = () => {
                                 ? 'border-b border-gray-200'
                                 : ''
                             } ${
-                              result.similarity >=
-                              memorySimilarityThreshold
+                              result.similarity >= memorySimilarityThreshold
                                 ? ''
                                 : 'opacity-40'
                             }`}
                           >
                             <span
                               className={`font-mono font-bold whitespace-nowrap ${
-                                result.similarity >=
-                                memorySimilarityThreshold
+                                result.similarity >= memorySimilarityThreshold
                                   ? 'text-green-600'
                                   : 'text-gray-400'
                               }`}
