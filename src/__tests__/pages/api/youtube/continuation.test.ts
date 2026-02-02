@@ -82,7 +82,8 @@ describe('/api/youtube/continuation handler', () => {
       errorCode: 'EmptyAPIKey',
     })
 
-    process.env = originalEnv
+    Object.keys(process.env).forEach((key) => delete process.env[key])
+    Object.assign(process.env, originalEnv)
   })
 
   it('returns 400 when local LLM URL is missing', async () => {

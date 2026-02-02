@@ -75,7 +75,10 @@ export const evaluateStateStep = createStep({
             const responseJson = JSON.parse(result.text)
             shouldContinue = responseJson.answer?.toString() === 'true'
           } catch {
-            console.error('JSON.parseエラーが発生しました。')
+            console.error(
+              'JSON.parseエラーが発生しました。response:',
+              result.text
+            )
             shouldContinue = false
           }
         } catch (error) {

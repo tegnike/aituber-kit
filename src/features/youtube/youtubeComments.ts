@@ -184,8 +184,13 @@ const callContinuationApi = async (params: {
   })
 
   if (!response.ok) {
-    const errorData = await response.json()
-    console.error('Continuation API error:', errorData.error)
+    try {
+      const errorData = await response.json()
+      console.error('Continuation API error:', errorData.error)
+    } catch {
+      const text = await response.text()
+      console.error('Continuation API error (non-JSON response):', text)
+    }
     return null
   }
 

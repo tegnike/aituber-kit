@@ -236,10 +236,10 @@ const YouTube = () => {
                       <div className="mt-4">
                         <Image
                           src={
-                              i18n.language === 'ja'
-                                ? '/images/docs/conversation-continuity-workflow-ja.png'
-                                : '/images/docs/conversation-continuity-workflow-en.png'
-                            }
+                            i18n.language === 'ja'
+                              ? '/images/docs/conversation-continuity-workflow-ja.png'
+                              : '/images/docs/conversation-continuity-workflow-en.png'
+                          }
                           alt={t('ConversationContinuityMode')}
                           width={800}
                           height={400}

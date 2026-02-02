@@ -79,6 +79,13 @@ export default async function handler(
     )?.[1] || ''
   const modifiedModel = aiService === 'azure' ? modifiedAzureDeployment : model
 
+  if (aiService === 'azure' && !modifiedModel) {
+    return res.status(400).json({
+      error: 'Azure deployment name could not be extracted from endpoint',
+      errorCode: 'EmptyAzureDeployment',
+    })
+  }
+
   try {
     // Provider Registryの作成
     const registry = createAIRegistry(aiService as VercelAIService, {

@@ -62,7 +62,7 @@ export const selectBestCommentStep = createStep({
     return {
       action: 'send_comment' as const,
       comment: matchedComment?.userComment || selectedText,
-      userName: matchedComment?.userName || '',
+      userName: matchedComment?.userName,
       stateUpdates: {
         noCommentCount: 0,
         continuationCount: 0,

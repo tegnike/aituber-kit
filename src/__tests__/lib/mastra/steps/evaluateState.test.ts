@@ -21,13 +21,17 @@ const buildInput = (overrides: any = {}) => ({
   noCommentCount: 0,
   continuationCount: 0,
   sleepMode: false,
+  newTopicThreshold: 3,
+  sleepThreshold: 6,
   ...overrides,
 })
 
 const mockRequestContext = {
-  languageModel: 'mock-model',
-  temperature: 1.0,
-  maxTokens: 4096,
+  all: {
+    languageModel: 'mock-model',
+    temperature: 1.0,
+    maxTokens: 4096,
+  },
 }
 
 describe('evaluateStateStep', () => {

@@ -25,7 +25,12 @@ export function getLastMessages(
 
   filteredMessages.forEach((message: Message, index: number) => {
     if (message.role === lastRole) {
-      combinedContent += '\n' + message.content
+      const normalizedContent = message.content
+        ? typeof message.content === 'string'
+          ? message.content
+          : message.content[0].text
+        : ''
+      combinedContent += '\n' + normalizedContent
     } else {
       if (lastRole !== null) {
         returnMessages.push({ role: lastRole, content: combinedContent })

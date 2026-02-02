@@ -150,12 +150,18 @@ export const exclusionRules: ExclusionRule[] = [
     description:
       'AIサービス変更時にデフォルトモデルが非マルチモーダルならsliodeMode等をOFF',
     trigger: (incoming, merged, prev) =>
-      wasSet(incoming, 'selectAIService') &&
-      changed('selectAIService', prev, merged) &&
-      !isMultiModalModel(
-        merged.selectAIService,
-        defaultModels[merged.selectAIService] || ''
-      ),
+      (wasSet(incoming, 'selectAIService') &&
+        changed('selectAIService', prev, merged) &&
+        !isMultiModalModel(
+          merged.selectAIService,
+          defaultModels[merged.selectAIService] || ''
+        )) ||
+      (wasSet(incoming, 'selectAIModel') &&
+        changed('selectAIModel', prev, merged) &&
+        !isMultiModalModel(
+          merged.selectAIService,
+          merged.selectAIModel || defaultModels[merged.selectAIService] || ''
+        )),
     apply: () => ({
       conversationContinuityMode: false,
       slideMode: false,
@@ -201,7 +207,7 @@ export const exclusionRules: ExclusionRule[] = [
     id: 'language-nonJa-jaVoice',
     description: '非日本語で日本語専用Voice選択時にgoogle TTSに変更',
     trigger: (incoming, merged) =>
-      wasSet(incoming, 'selectLanguage') &&
+      (wasSet(incoming, 'selectLanguage') || wasSet(incoming, 'selectVoice')) &&
       merged.selectLanguage !== 'ja' &&
       JA_ONLY_VOICES.includes(merged.selectVoice),
     apply: () => ({

@@ -43,7 +43,6 @@ export const generateNewTopicStep = createStep({
     })
 
     const topic = topicResult.text.trim()
-    console.log('anotherTopic:', topic)
 
     // Step 2: 新トピックに基づくメッセージを構築
     const lastTenMessages = getLastMessages(chatLog, 10)

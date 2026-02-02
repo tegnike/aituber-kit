@@ -31,9 +31,11 @@ const buildEvaluateOutput = (overrides: any = {}) => ({
 })
 
 const mockRequestContext = {
-  languageModel: 'mock-model',
-  temperature: 1.0,
-  maxTokens: 4096,
+  all: {
+    languageModel: 'mock-model',
+    temperature: 1.0,
+    maxTokens: 4096,
+  },
 }
 
 const baseExecuteParams = {
