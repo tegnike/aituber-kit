@@ -79,6 +79,9 @@ const MemorySettings = () => {
   const fetchMemoryCount = useCallback(async () => {
     try {
       const memoryService = getMemoryService()
+      if (!memoryService.isAvailable()) {
+        await memoryService.initialize()
+      }
       const count = await memoryService.getMemoryCount()
       setMemoryCount(count)
     } catch (error) {

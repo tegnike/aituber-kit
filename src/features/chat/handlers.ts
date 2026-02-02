@@ -12,6 +12,10 @@ import i18next from 'i18next'
 import toastStore from '@/features/stores/toast'
 import { generateMessageId } from '@/utils/messageUtils'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
+import {
+  saveMessageToMemory,
+  searchMemoryContext,
+} from '@/features/memory/memoryStoreSync'
 
 // セッションIDを生成する関数
 const generateSessionId = () => generateMessageId()
@@ -649,6 +653,12 @@ export const processAIResponse = async (messages: Message[]) => {
       role: 'assistant',
       content: currentMessageContent.trim(),
     })
+
+    // IndexedDBにアシスタントメッセージを保存
+    saveMessageToMemory({
+      role: 'assistant',
+      content: currentMessageContent.trim(),
+    }).catch(() => {})
   }
   if (isCodeBlock && codeBlockContent.trim()) {
     console.warn(
@@ -692,6 +702,12 @@ export const handleSendChatFn =
           userName: userName,
         })
 
+        saveMessageToMemory({
+          role: 'user',
+          content: newMessage,
+          timestamp: timestamp,
+        }).catch(() => {})
+
         wsManager.websocket.send(
           JSON.stringify({ content: newMessage, type: 'chat' })
         )
@@ -713,6 +729,12 @@ export const handleSendChatFn =
           timestamp: timestamp,
           userName: userName,
         })
+
+        saveMessageToMemory({
+          role: 'user',
+          content: newMessage,
+          timestamp: timestamp,
+        }).catch(() => {})
       }
     } else {
       let systemPrompt = ss.systemPrompt
@@ -817,8 +839,24 @@ export const handleSendChatFn =
         userName: userName,
       })
 
+      // IndexedDBにユーザーメッセージを保存
+      saveMessageToMemory({
+        role: 'user',
+        content:
+          typeof userMessageContent === 'string'
+            ? userMessageContent
+            : newMessage,
+        timestamp: timestamp,
+      }).catch(() => {})
+
       if (modalImage) {
         homeStore.setState({ modalImage: '' })
+      }
+
+      // IndexedDBから関連する過去の記憶を検索してsystemPromptに追加
+      const memoryContext = await searchMemoryContext(newMessage)
+      if (memoryContext) {
+        systemPrompt = systemPrompt + '\n\n' + memoryContext
       }
 
       const currentChatLog = homeStore.getState().chatLog
