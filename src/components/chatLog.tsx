@@ -12,6 +12,7 @@ export const ChatLog = () => {
   const chatLogRef = useRef<HTMLDivElement>(null)
 
   const characterName = settingsStore((s) => s.characterName)
+  const userDisplayName = settingsStore((s) => s.userDisplayName)
   const chatLogWidth = settingsStore((s) => s.chatLogWidth)
   const messages = messageSelectors.getTextAndImageMessages(
     homeStore((s) => s.chatLog)
@@ -86,6 +87,8 @@ export const ChatLog = () => {
                   role={msg.role}
                   message={msg.content}
                   characterName={characterName}
+                  userName={msg.userName}
+                  userDisplayName={userDisplayName}
                 />
               ) : (
                 <>
@@ -93,6 +96,8 @@ export const ChatLog = () => {
                     role={msg.role}
                     message={msg.content ? msg.content[0].text : ''}
                     characterName={characterName}
+                    userName={msg.userName}
+                    userDisplayName={userDisplayName}
                   />
                   <ChatImage
                     role={msg.role}
@@ -122,10 +127,14 @@ const Chat = ({
   role,
   message,
   characterName,
+  userName,
+  userDisplayName,
 }: {
   role: string
   message: string
   characterName: string
+  userName?: string
+  userDisplayName: string
 }) => {
   const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'gi')
   const processedMessage = message.replace(emotionPattern, '')
@@ -146,7 +155,9 @@ const Chat = ({
           <div
             className={`px-6 py-2 rounded-t-lg font-bold tracking-wider ${roleColor}`}
           >
-            {role !== 'user' ? characterName || 'CHARACTER' : 'YOU'}
+            {role !== 'user'
+              ? characterName || 'CHARACTER'
+              : userName || userDisplayName || 'YOU'}
           </div>
           <div className="px-6 py-4 bg-white rounded-b-lg">
             <div className={`font-bold ${roleText}`}>{processedMessage}</div>

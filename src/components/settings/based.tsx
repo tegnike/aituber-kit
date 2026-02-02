@@ -116,31 +116,8 @@ const Based = () => {
             value={selectLanguage}
             onChange={(e) => {
               const newLanguage = e.target.value as Language
-
-              const ss = settingsStore.getState()
-              const jaVoiceSelected =
-                ss.selectVoice === 'voicevox' ||
-                ss.selectVoice === 'koeiromap' ||
-                ss.selectVoice === 'aivis_speech' ||
-                ss.selectVoice === 'nijivoice'
-
-              switch (newLanguage) {
-                case 'ja':
-                  settingsStore.setState({ selectLanguage: 'ja' })
-                  i18n.changeLanguage('ja')
-                  break
-                default:
-                  // 日本語以外の言語はすべて同じ処理
-                  settingsStore.setState({ selectLanguage: newLanguage })
-
-                  // 日本語専用の音声が選択されている場合は、googleに変更
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage(newLanguage)
-                  break
-              }
+              settingsStore.setState({ selectLanguage: newLanguage })
+              i18n.changeLanguage(newLanguage)
             }}
           >
             <option value="ar">Arabic - アラビア語</option>
@@ -175,6 +152,18 @@ const Based = () => {
           </div>
         </div>
       )}
+      <div className="border-t border-gray-300 pt-6 my-6">
+        <div className="my-4 text-xl font-bold">{t('UserDisplayName')}</div>
+        <input
+          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          type="text"
+          placeholder={t('UserDisplayName')}
+          value={settingsStore((s) => s.userDisplayName)}
+          onChange={(e) =>
+            settingsStore.setState({ userDisplayName: e.target.value })
+          }
+        />
+      </div>
       <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('BackgroundSettings')}</div>
         <div className="my-2 text-sm whitespace-pre-wrap">
@@ -241,7 +230,7 @@ const Based = () => {
       </div>
 
       {/* キャラクター名表示設定 */}
-      <div className="border-t border-gray-300 pt-6 my-6">
+      <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('ShowCharacterName')}</div>
         <div className="my-2">
           <ToggleSwitch

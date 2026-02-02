@@ -7,6 +7,7 @@ export type Message = {
   audio?: { id: string }
   timestamp?: string
   embedding?: number[] // メモリ機能用のembedding
+  userName?: string // YouTubeコメント主名
 }
 
 export const EMOTIONS = [

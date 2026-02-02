@@ -34,11 +34,6 @@ export const GoogleConfig = ({
   const handleModelChange = useCallback(
     (model: string) => {
       settingsStore.setState({ selectAIModel: model })
-
-      if (!googleSearchGroundingModels.includes(model as any)) {
-        settingsStore.setState({ useSearchGrounding: false })
-      }
-
       updateMultiModalModeForModel('google' as AIService, model)
     },
     [updateMultiModalModeForModel]

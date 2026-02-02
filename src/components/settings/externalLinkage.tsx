@@ -8,16 +8,7 @@ const ExternalLinkage = () => {
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
 
   const handleExternalLinkageModeChange = useCallback((newMode: boolean) => {
-    settingsStore.setState({
-      externalLinkageMode: newMode,
-    })
-
-    if (newMode) {
-      settingsStore.setState({
-        conversationContinuityMode: false,
-        realtimeAPIMode: false,
-      })
-    }
+    settingsStore.setState({ externalLinkageMode: newMode })
   }, [])
 
   return (
