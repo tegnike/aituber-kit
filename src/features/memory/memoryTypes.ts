@@ -45,7 +45,7 @@ export interface SearchOptions {
 export interface MemoryConfig {
   /** メモリ機能の有効/無効 */
   memoryEnabled: boolean
-  /** 類似度閾値 (0.5-0.9) */
+  /** 類似度閾値 (0.1-0.95) */
   memorySimilarityThreshold: number
   /** 検索結果上限 (1-10) */
   memorySearchLimit: number

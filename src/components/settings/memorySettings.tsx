@@ -67,6 +67,17 @@ const MemorySettings = () => {
   const [restoreMessage, setRestoreMessage] = useState<string>('')
   const [vectorizeOnRestore, setVectorizeOnRestore] = useState<boolean>(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [searchResults, setSearchResults] = useState<
+    Array<{
+      role: string
+      content: string
+      similarity: number
+      timestamp: string
+    }>
+  >([])
+  const [isSearching, setIsSearching] = useState<boolean>(false)
+  const [hasSearched, setHasSearched] = useState<boolean>(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // APIキーが設定されているか
@@ -129,6 +140,36 @@ const MemorySettings = () => {
         settingsStore.setState({ [key]: value })
       }
     }
+
+  // 類似度プレビュー検索
+  const handleSearchPreview = async () => {
+    if (!searchQuery.trim()) return
+    setIsSearching(true)
+    setHasSearched(true)
+    try {
+      const memoryService = getMemoryService()
+      if (!memoryService.isAvailable()) {
+        await memoryService.initialize()
+      }
+      const results = await memoryService.searchMemories(searchQuery, {
+        threshold: -1,
+        limit: 10,
+      })
+      setSearchResults(
+        results.map((r) => ({
+          role: r.role,
+          content: r.content,
+          similarity: r.similarity ?? 0,
+          timestamp: r.timestamp,
+        }))
+      )
+    } catch (error) {
+      console.error('Failed to search memories:', error)
+      setSearchResults([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
 
   // ファイル選択ボタンのクリック
   const handleFileSelectClick = () => {
@@ -350,8 +391,8 @@ const MemorySettings = () => {
                   </div>
                   <input
                     type="range"
-                    min="0.5"
-                    max="0.9"
+                    min="0.1"
+                    max="0.95"
                     step="0.05"
                     value={memorySimilarityThreshold}
                     onChange={createNumberHandler(
@@ -363,6 +404,83 @@ const MemorySettings = () => {
                     disabled={isDisabled}
                   />
                 </div>
+              </div>
+
+              {/* 類似度プレビュー */}
+              <div className="my-6">
+                <div className="my-4 font-bold">
+                  {t('MemorySearchPreview')}
+                </div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('MemorySearchPreviewInfo')}
+                </div>
+                <div className="flex gap-2 my-4">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSearchPreview()
+                    }}
+                    placeholder={t('MemorySearchPreviewPlaceholder')}
+                    className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                    disabled={isDisabled || isSearching}
+                  />
+                  <TextButton
+                    onClick={handleSearchPreview}
+                    disabled={
+                      isDisabled || isSearching || !searchQuery.trim()
+                    }
+                  >
+                    {isSearching
+                      ? '...'
+                      : t('MemorySearchPreviewButton')}
+                  </TextButton>
+                </div>
+                {hasSearched && !isSearching && (
+                  <div className="my-4">
+                    {searchResults.length > 0 ? (
+                      <div className="text-sm space-y-1">
+                        {searchResults.map((result, index) => (
+                          <div
+                            key={index}
+                            className={`flex items-start gap-3 py-2 ${
+                              index < searchResults.length - 1
+                                ? 'border-b border-gray-200'
+                                : ''
+                            } ${
+                              result.similarity >=
+                              memorySimilarityThreshold
+                                ? ''
+                                : 'opacity-40'
+                            }`}
+                          >
+                            <span
+                              className={`font-mono font-bold whitespace-nowrap ${
+                                result.similarity >=
+                                memorySimilarityThreshold
+                                  ? 'text-green-600'
+                                  : 'text-gray-400'
+                              }`}
+                            >
+                              {result.similarity.toFixed(3)}
+                            </span>
+                            <span className="whitespace-nowrap text-gray-500">
+                              {result.role === 'user' ? 'User' : 'AI'}
+                            </span>
+                            <span className="break-all line-clamp-2">
+                              {result.content}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-500">
+                        {t('MemorySearchPreviewNoResults')}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* 検索結果上限 */}
