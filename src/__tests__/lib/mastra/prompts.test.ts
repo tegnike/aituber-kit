@@ -71,7 +71,7 @@ describe('mastra prompts', () => {
 
       const result = getLastMessages(messages, 10)
       expect(result[result.length - 1].role).toBe('user')
-      expect(result[result.length - 1].content).toContain('システムメッセージ')
+      expect(result[result.length - 1].content).toBe('CONTINUE')
     })
 
     it('appends dummy user message when messages array is empty', () => {

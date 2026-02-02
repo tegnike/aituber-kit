@@ -59,8 +59,7 @@ export function getLastMessages(
   ) {
     returnMessages.push({
       role: 'user',
-      content:
-        'これはシステムメッセージです。回答を作成してください。このコメントは無視してください。',
+      content: 'CONTINUE',
     })
   }
 
@@ -89,7 +88,9 @@ ${systemPrompt}
 - 可能な限り詳細なレスポンスを提供し、キャラクターのコメントのみを返答としてください。
 ${additionalGuidelines}
 
-以下の対話に続くコメントを生成してください。`
+以下の対話に続くコメントを生成してください。
+
+**重要** 最後のユーザーメッセージが「CONTINUE」である場合、直前のAIメッセージに続く内容を話してください。`
 }
 
 /**
