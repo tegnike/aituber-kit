@@ -29,6 +29,13 @@ const useYoutube = ({ handleSendChat }: Params): UseYoutubeReturn => {
   // わんコメコメント用バッファ
   const commentBufferRef = useRef<YouTubeComment[]>([])
 
+  // handleSendChat をrefで保持し、useCallbackの依存から外す
+  const handleSendChatRef = useRef(handleSendChat)
+  handleSendChatRef.current = handleSendChat
+
+  // 多重実行防止用ref
+  const isProcessingRef = useRef(false)
+
   // わんコメ接続
   const {
     isConnected: oneCommeConnected,
@@ -45,6 +52,7 @@ const useYoutube = ({ handleSendChat }: Params): UseYoutubeReturn => {
     const hs = homeStore.getState()
 
     if (
+      isProcessingRef.current ||
       hs.chatProcessing ||
       hs.chatProcessingCount > 0 ||
       !ss.youtubeMode ||
@@ -53,23 +61,31 @@ const useYoutube = ({ handleSendChat }: Params): UseYoutubeReturn => {
       return
     }
 
-    if (ss.youtubeCommentSource === 'youtube-api') {
-      // YouTube APIモード: 従来通り
-      if (!ss.youtubeLiveId || !ss.youtubeApiKey) return
-      console.log('Call fetchAndProcessComments !!!')
-      await fetchAndProcessComments(handleSendChat)
-    } else {
-      // わんコメモード: バッファをドレインして渡す
-      const bufferedComments = [...commentBufferRef.current]
-      commentBufferRef.current = []
-      console.log(
-        'Call fetchAndProcessComments (OneComme) !!!',
-        'buffered:',
-        bufferedComments.length
-      )
-      await fetchAndProcessComments(handleSendChat, bufferedComments)
+    isProcessingRef.current = true
+    try {
+      if (ss.youtubeCommentSource === 'youtube-api') {
+        // YouTube APIモード: 従来通り
+        if (!ss.youtubeLiveId || !ss.youtubeApiKey) return
+        console.log('Call fetchAndProcessComments !!!')
+        await fetchAndProcessComments(handleSendChatRef.current)
+      } else {
+        // わんコメモード: バッファをドレインして渡す
+        const bufferedComments = [...commentBufferRef.current]
+        commentBufferRef.current = []
+        console.log(
+          'Call fetchAndProcessComments (OneComme) !!!',
+          'buffered:',
+          bufferedComments.length
+        )
+        await fetchAndProcessComments(
+          handleSendChatRef.current,
+          bufferedComments
+        )
+      }
+    } finally {
+      isProcessingRef.current = false
     }
-  }, [handleSendChat])
+  }, [])
 
   useEffect(() => {
     if (!youtubePlaying) return
