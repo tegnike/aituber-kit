@@ -98,7 +98,7 @@ const PresetQuestions = () => {
         </div>
       </div>
 
-      <div className="border-t border-gray-300 pt-6 mt-4 mb-5">
+      <div className="mt-4 mb-5">
         <div className="pr-1 grid grid-flow-col grid-cols-[1fr_min-content] gap-4 mt-6">
           <input
             className="text-ellipsis px-4 py-2 bg-white hover:bg-white-hover rounded-lg"

@@ -372,7 +372,7 @@
     "FileInfo": "使用したいPNGTuberアセットのフォルダを、public/pngtuber に配置してください。各フォルダには以下のファイルが必要です：\n・*_mouthless_h264.mp4（口なし背景動画）\n・mouth_track.json（口の位置トラッキングデータ）\n・mouth/フォルダ（口スプライト：closed.png, open.png が必須、half.png, e.png, u.png はオプション）",
     "Sensitivity": "感度",
     "SensitivityInfo": "リップシンクの音量感度を調整します。値が大きいほど小さな音にも反応します。",
-    "ChromaKey": "クロマキー（背景透過）",
+    "ChromaKey": "クロマキー（背景透過）を有効にする",
     "ChromaKeyEnabled": "クロマキーを有効にする",
     "ChromaKeyColor": "キーカラー（透過する色）",
     "ChromaKeyTolerance": "許容値",

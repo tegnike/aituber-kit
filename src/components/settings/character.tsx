@@ -7,6 +7,7 @@ import menuStore from '@/features/stores/menu'
 import settingsStore, { SettingsState } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 
 // Character型の定義
 type Character = Pick<
@@ -743,23 +744,18 @@ const Character = () => {
             </div>
 
             {/* クロマキー設定 */}
-            <div className="border-t border-gray-300 pt-6 my-6">
-              <div className="font-bold mb-2">{t('PNGTuber.ChromaKey')}</div>
-
-              {/* 有効/無効トグル */}
-              <label className="flex items-center mb-4 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={pngTuberChromaKeyEnabled}
-                  onChange={(e) =>
+            <div className="my-6">
+              <div className="my-4 font-bold">{t('PNGTuber.ChromaKey')}</div>
+              <div className="my-2">
+                <ToggleSwitch
+                  enabled={pngTuberChromaKeyEnabled}
+                  onChange={(v) =>
                     settingsStore.setState({
-                      pngTuberChromaKeyEnabled: e.target.checked,
+                      pngTuberChromaKeyEnabled: v,
                     })
                   }
-                  className="mr-2 h-4 w-4"
                 />
-                <span>{t('PNGTuber.ChromaKeyEnabled')}</span>
-              </label>
+              </div>
 
               {pngTuberChromaKeyEnabled && (
                 <>
@@ -846,7 +842,7 @@ const Character = () => {
             </div>
 
             {/* 位置・サイズリセットボタン */}
-            <div className="border-t border-gray-300 pt-6 my-6">
+            <div className="my-6">
               <div className="font-bold mb-2">{t('PNGTuber.PositionSize')}</div>
               <div className="text-sm text-gray-600 mb-4">
                 {t('PNGTuber.PositionInfo')}
@@ -938,7 +934,7 @@ const Character = () => {
           </div>
         )}
 
-        <div className="my-6 mb-2">
+        <div className="border-t border-gray-300 pt-6 my-6 mb-2">
           <div className="my-4 text-xl font-bold">
             {t('CharacterSettingsPrompt')}
           </div>
