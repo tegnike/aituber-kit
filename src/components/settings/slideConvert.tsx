@@ -128,7 +128,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
         <div className="my-4 mb-4 text-xl font-bold">
           {t('PdfConvertLabel')}
         </div>
-        <p className="">{t('PdfConvertDescription')}</p>
+        <p className="my-2 text-sm whitespace-pre-wrap">
+          {t('PdfConvertDescription')}
+        </p>
         <div className="my-4 flex items-center">
           <input
             type="file"

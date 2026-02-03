@@ -1,4 +1,4 @@
-import { AIService } from './settings'
+import { AIService, ReasoningEffort } from './settings'
 
 /**
  * モデルの属性定義
@@ -10,6 +10,15 @@ interface ModelInfo {
   multiModal?: boolean
   /** デフォルトモデルかどうか */
   isDefault?: boolean
+  /**
+   * 推論effortレベルの選択肢。
+   * - undefined: 推論非対応
+   * - []: 推論対応だがeffortセレクタ不要（トグルのみ or tokenBudgetのみ）
+   * - ['low', 'high']: 推論対応で選択可能なeffort値
+   */
+  reasoningEfforts?: ReasoningEffort[]
+  /** tokenBudget設定が利用可能か */
+  reasoningTokenBudget?: boolean
 }
 
 /**
@@ -17,102 +26,308 @@ interface ModelInfo {
  */
 const modelDefinitions: Record<AIService, ModelInfo[]> = {
   openai: [
-    { name: 'gpt-4.1', multiModal: true, isDefault: true },
-    { name: 'gpt-4.1-mini', multiModal: true },
+    {
+      name: 'gpt-5.2-pro',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.2-chat-latest',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.2',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1-codex-mini',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1-codex',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1-chat-latest',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5.1',
+      multiModal: true,
+      reasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-pro',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-mini',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-nano',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-codex',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gpt-5-chat-latest',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    { name: 'gpt-4.1', multiModal: true },
+    { name: 'gpt-4.1-mini', multiModal: true, isDefault: true },
     { name: 'gpt-4.1-nano', multiModal: true },
     { name: 'gpt-4o', multiModal: true },
     { name: 'gpt-4o-mini', multiModal: true },
-    { name: 'o1', multiModal: true },
-    { name: 'o1-mini', multiModal: true },
-    { name: 'o1-preview' },
-    { name: 'o3-mini' },
-    { name: 'o3', multiModal: true },
-    { name: 'o4-mini', multiModal: true },
-    { name: 'chatgpt-4o-latest', multiModal: true },
   ],
   anthropic: [
-    { name: 'claude-opus-4-1-20250805', multiModal: true },
-    { name: 'claude-opus-4-20250514', multiModal: true },
-    { name: 'claude-sonnet-4-20250514', multiModal: true },
-    { name: 'claude-3-7-sonnet-20250219', multiModal: true },
-    { name: 'claude-3-5-sonnet-20241022', multiModal: true, isDefault: true },
-    { name: 'claude-3-5-sonnet-20240620', multiModal: true },
-    { name: 'claude-3-5-haiku-20241022', multiModal: true },
+    {
+      name: 'claude-opus-4-5',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high'],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-opus-4-1',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-opus-4-0',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-sonnet-4-5',
+      multiModal: true,
+      isDefault: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-sonnet-4-0',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-haiku-4-5',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'claude-3-7-sonnet-latest',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    { name: 'claude-3-5-haiku-latest', multiModal: true },
   ],
   google: [
-    { name: 'gemini-2.5-pro', multiModal: true },
-    { name: 'gemini-2.5-flash', multiModal: true },
-    { name: 'gemini-2.5-flash-lite', multiModal: true },
-    { name: 'gemini-2.5-pro-preview-05-06', multiModal: true },
-    { name: 'gemini-2.5-flash-preview-04-17', multiModal: true },
-    { name: 'gemini-2.5-pro-exp-03-25', multiModal: true },
+    {
+      name: 'gemini-3-pro-preview',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'gemini-2.5-pro',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'gemini-2.5-flash',
+      multiModal: true,
+      isDefault: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'gemini-2.5-flash-lite',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    {
+      name: 'gemini-2.5-flash-lite-preview-06-17',
+      multiModal: true,
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
     { name: 'gemini-2.0-flash', multiModal: true },
     { name: 'gemini-1.5-pro', multiModal: true },
     { name: 'gemini-1.5-pro-latest', multiModal: true },
     { name: 'gemini-1.5-flash', multiModal: true },
-    { name: 'gemini-1.5-flash-latest', multiModal: true, isDefault: true },
+    { name: 'gemini-1.5-flash-latest', multiModal: true },
     { name: 'gemini-1.5-flash-8b', multiModal: true },
     { name: 'gemini-1.5-flash-8b-latest', multiModal: true },
   ],
   azure: [],
   xai: [
-    { name: 'grok-3', isDefault: true },
-    { name: 'grok-3-fast' },
-    { name: 'grok-3-mini' },
-    { name: 'grok-3-mini-fast' },
-    { name: 'grok-2-1212' },
+    { name: 'grok-4-fast-non-reasoning' },
+    { name: 'grok-4-fast-reasoning', reasoningEfforts: ['low', 'high'] },
+    { name: 'grok-code-fast-1' },
+    {
+      name: 'grok-4',
+      multiModal: true,
+      isDefault: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    { name: 'grok-3', multiModal: true, reasoningEfforts: ['low', 'high'] },
+    {
+      name: 'grok-3-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-fast',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-fast-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini-fast',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    {
+      name: 'grok-3-mini-fast-latest',
+      multiModal: true,
+      reasoningEfforts: ['low', 'high'],
+    },
+    { name: 'grok-2', multiModal: true },
+    { name: 'grok-2-latest', multiModal: true },
+    { name: 'grok-2-1212', multiModal: true },
+    { name: 'grok-2-vision', multiModal: true },
+    { name: 'grok-2-vision-latest', multiModal: true },
     { name: 'grok-2-vision-1212', multiModal: true },
+    { name: 'grok-beta', multiModal: true },
+    { name: 'grok-vision-beta', multiModal: true },
   ],
   groq: [
-    { name: 'meta-llama/llama-4-scout-17b-16e-instruct', multiModal: true },
     { name: 'gemma2-9b-it' },
-    { name: 'llama-3.3-70b-versatile' },
     { name: 'llama-3.1-8b-instant' },
+    { name: 'llama-3.3-70b-versatile', isDefault: true },
+    { name: 'meta-llama/llama-guard-4-12b' },
+    { name: 'deepseek-r1-distill-llama-70b' },
+    { name: 'meta-llama/llama-4-maverick-17b-128e-instruct' },
+    { name: 'meta-llama/llama-4-scout-17b-16e-instruct', multiModal: true },
+    { name: 'meta-llama/llama-prompt-guard-2-22m' },
+    { name: 'meta-llama/llama-prompt-guard-2-86m' },
+    { name: 'moonshotai/kimi-k2-instruct-0905' },
+    { name: 'qwen/qwen3-32b', reasoningEfforts: [] },
     { name: 'llama-guard-3-8b' },
     { name: 'llama3-70b-8192' },
     { name: 'llama3-8b-8192' },
     { name: 'mixtral-8x7b-32768' },
     { name: 'qwen-qwq-32b' },
-    { name: 'mistral-saba-24b' },
     { name: 'qwen-2.5-32b' },
     { name: 'deepseek-r1-distill-qwen-32b' },
-    { name: 'deepseek-r1-distill-llama-70b' },
+    { name: 'openai/gpt-oss-20b', reasoningEfforts: ['low', 'medium', 'high'] },
+    {
+      name: 'openai/gpt-oss-120b',
+      reasoningEfforts: ['low', 'medium', 'high'],
+    },
   ],
   cohere: [
-    { name: 'command-a-03-2025' },
+    { name: 'command-a-03-2025', isDefault: true },
+    {
+      name: 'command-a-reasoning-08-2025',
+      reasoningEfforts: [],
+      reasoningTokenBudget: true,
+    },
+    { name: 'command-r7b-12-2024' },
+    { name: 'command-r-plus-04-2024' },
     { name: 'command-r-plus' },
+    { name: 'command-r-08-2024' },
+    { name: 'command-r-03-2024' },
     { name: 'command-r' },
     { name: 'command' },
+    { name: 'command-nightly' },
     { name: 'command-light' },
+    { name: 'command-light-nightly' },
   ],
   mistralai: [
-    { name: 'pixtral-large-latest', multiModal: true },
-    { name: 'mistral-large-latest' },
+    { name: 'mistral-large-latest', isDefault: true },
+    { name: 'mistral-medium-latest' },
+    { name: 'mistral-medium-2505' },
     { name: 'mistral-small-latest' },
+    { name: 'pixtral-large-latest', multiModal: true },
+    { name: 'pixtral-12b-2409', multiModal: true },
+    { name: 'magistral-small-2506' },
+    { name: 'magistral-medium-2506' },
     { name: 'ministral-3b-latest' },
     { name: 'ministral-8b-latest' },
-    { name: 'pixtral-12b-2409', multiModal: true },
+    { name: 'open-mistral-7b' },
+    { name: 'open-mixtral-8x7b' },
+    { name: 'open-mixtral-8x22b' },
   ],
   perplexity: [
-    { name: 'sonar-pro' },
-    { name: 'sonar' },
     { name: 'sonar-deep-research' },
+    { name: 'sonar-reasoning-pro' },
+    { name: 'sonar-reasoning' },
+    { name: 'sonar-pro', multiModal: true, isDefault: true },
+    { name: 'sonar' },
   ],
   fireworks: [
+    { name: 'accounts/fireworks/models/firefunction-v1' },
     { name: 'accounts/fireworks/models/deepseek-r1' },
     { name: 'accounts/fireworks/models/deepseek-v3' },
     { name: 'accounts/fireworks/models/llama-v3p1-405b-instruct' },
     { name: 'accounts/fireworks/models/llama-v3p1-8b-instruct' },
     { name: 'accounts/fireworks/models/llama-v3p2-3b-instruct' },
     { name: 'accounts/fireworks/models/llama-v3p3-70b-instruct' },
+    { name: 'accounts/fireworks/models/mixtral-8x7b-instruct' },
     { name: 'accounts/fireworks/models/mixtral-8x7b-instruct-hf' },
     { name: 'accounts/fireworks/models/mixtral-8x22b-instruct' },
     { name: 'accounts/fireworks/models/qwen2p5-coder-32b-instruct' },
+    { name: 'accounts/fireworks/models/qwen2p5-72b-instruct' },
+    { name: 'accounts/fireworks/models/qwen-qwq-32b-preview' },
+    {
+      name: 'accounts/fireworks/models/qwen2-vl-72b-instruct',
+      multiModal: true,
+    },
     {
       name: 'accounts/fireworks/models/llama-v3p2-11b-vision-instruct',
       multiModal: true,
     },
+    { name: 'accounts/fireworks/models/qwq-32b' },
     { name: 'accounts/fireworks/models/yi-large' },
+    { name: 'accounts/fireworks/models/kimi-k2-instruct' },
   ],
   deepseek: [{ name: 'deepseek-chat' }, { name: 'deepseek-reasoner' }],
   openrouter: [],
@@ -145,8 +360,8 @@ export const defaultModels: Record<
       models.find((model) => model.isDefault)?.name || '',
     ])
   ),
-  openaiAudio: 'gpt-4o-audio-preview-2024-10-01',
-  openaiRealtime: 'gpt-4o-realtime-preview-2024-10-01',
+  openaiAudio: 'tts-1',
+  openaiRealtime: 'gpt-realtime',
 } as Record<AIService | 'openaiAudio' | 'openaiRealtime', string>
 
 /**
@@ -201,18 +416,17 @@ export function getMultiModalModels(service: AIService): string[] {
  * OpenAIのリアルタイムAPIモードで使用するモデル一覧
  */
 export const openAIRealtimeModels = [
-  'gpt-4o-realtime-preview-2024-10-01',
-  'gpt-4o-realtime-preview-2024-12-17',
-  'gpt-4o-mini-realtime-preview-2024-12-17',
+  'gpt-realtime',
+  'gpt-realtime-mini',
 ] as const
 
 /**
  * OpenAIのオーディオAPIモードで使用するモデル一覧
  */
 export const openAIAudioModels = [
-  'gpt-4o-audio-preview-2024-10-01',
-  'gpt-4o-audio-preview-2024-12-17',
-  'gpt-4o-mini-audio-preview-2024-12-17',
+  'tts-1',
+  'tts-1-hd',
+  'gpt-4o-mini-tts',
 ] as const
 
 /**
@@ -356,4 +570,107 @@ export function isSearchGroundingModel(
     return (googleSearchGroundingModels as readonly string[]).includes(model)
   }
   return false
+}
+
+/**
+ * カスタムモデルやモデルリストを持たないサービス向けのフォールバック
+ */
+const serviceReasoningDefaults: Partial<
+  Record<AIService, { efforts: ReasoningEffort[]; tokenBudget: boolean }>
+> = {
+  openai: {
+    efforts: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'],
+    tokenBudget: false,
+  },
+  azure: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
+  anthropic: { efforts: [], tokenBudget: true },
+  google: { efforts: ['low', 'medium', 'high'], tokenBudget: true },
+  xai: { efforts: ['low', 'high'], tokenBudget: false },
+  groq: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
+  cohere: { efforts: [], tokenBudget: true },
+}
+
+/**
+ * モデル定義からModelInfoを検索する
+ */
+function findModelInfo(
+  service: AIService,
+  model: string
+): ModelInfo | undefined {
+  return modelDefinitions[service]?.find((m) => m.name === model)
+}
+
+/**
+ * 推論対応モデルかどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @param customModel カスタムモデルかどうか
+ * @returns 推論対応の場合はtrue
+ */
+export function isReasoningModel(
+  service: AIService,
+  model: string,
+  customModel?: boolean
+): boolean {
+  if (customModel) {
+    return serviceReasoningDefaults[service] !== undefined
+  }
+
+  // モデルリストが空のサービス（Azure等）はフォールバック
+  if (modelDefinitions[service]?.length === 0) {
+    return serviceReasoningDefaults[service] !== undefined
+  }
+
+  const info = findModelInfo(service, model)
+  return info?.reasoningEfforts !== undefined
+}
+
+/**
+ * モデルの推論effort選択肢を取得する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @param customModel カスタムモデルかどうか
+ * @returns effort選択肢の配列（推論非対応の場合は空配列）
+ */
+export function getReasoningEfforts(
+  service: AIService,
+  model: string,
+  customModel?: boolean
+): ReasoningEffort[] {
+  if (customModel) {
+    return serviceReasoningDefaults[service]?.efforts ?? []
+  }
+
+  // モデルリストが空のサービス（Azure等）はフォールバック
+  if (modelDefinitions[service]?.length === 0) {
+    return serviceReasoningDefaults[service]?.efforts ?? []
+  }
+
+  const info = findModelInfo(service, model)
+  return info?.reasoningEfforts ?? []
+}
+
+/**
+ * モデルにtokenBudget設定が必要かどうかを判定する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @param customModel カスタムモデルかどうか
+ * @returns tokenBudget設定が必要な場合はtrue
+ */
+export function needsReasoningTokenBudget(
+  service: AIService,
+  model: string,
+  customModel?: boolean
+): boolean {
+  if (customModel) {
+    return serviceReasoningDefaults[service]?.tokenBudget ?? false
+  }
+
+  // モデルリストが空のサービス（Azure等）はフォールバック
+  if (modelDefinitions[service]?.length === 0) {
+    return serviceReasoningDefaults[service]?.tokenBudget ?? false
+  }
+
+  const info = findModelInfo(service, model)
+  return info?.reasoningTokenBudget ?? false
 }

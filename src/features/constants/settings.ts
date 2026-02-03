@@ -91,7 +91,6 @@ export type AIVoice =
   | 'stylebertvits2'
   | 'aivis_speech'
   | 'aivis_cloud_api'
-  | 'nijivoice'
   | 'gsvitts'
   | 'elevenlabs'
   | 'cartesia'
@@ -104,7 +103,8 @@ export const LANGUAGES = [
   'en',
   'ja',
   'ko',
-  'zh',
+  'zh-CN',
+  'zh-TW',
   'vi',
   'fr',
   'es',
@@ -125,6 +125,7 @@ export type VoiceLanguage =
   | 'en-US'
   | 'ja-JP'
   | 'ko-KR'
+  | 'zh-CN'
   | 'zh-TW'
   | 'vi-VN'
   | 'fr-FR'
@@ -181,3 +182,11 @@ export type AudioModeInputType = 'input_text' | 'input_audio'
 export type SpeechRecognitionMode = 'browser' | 'whisper'
 
 export type WhisperTranscriptionModel = (typeof openAIWhisperModels)[number]
+
+export type ReasoningEffort =
+  | 'none'
+  | 'minimal'
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'xhigh'

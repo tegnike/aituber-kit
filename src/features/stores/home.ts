@@ -6,6 +6,7 @@ import { Viewer } from '../vrmViewer/viewer'
 import { messageSelectors } from '../messages/messageSelectors'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch'
 import { generateMessageId } from '@/utils/messageUtils'
+import { addEmbeddingsToMessages } from '@/features/memory/memoryStoreSync'
 
 export interface PersistedState {
   userOnboarded: boolean
@@ -16,6 +17,7 @@ export interface PersistedState {
 export interface TransientState {
   viewer: Viewer
   live2dViewer: any
+  pngTuberViewer: any
   slideMessages: string[]
   chatProcessing: boolean
   chatProcessingCount: number
@@ -42,12 +44,46 @@ const SAVE_DEBOUNCE_DELAY = 2000 // 2秒
 let lastSavedLogLength = 0 // 最後に保存したログの長さを記録
 // 履歴削除後に次回保存で新規ファイルを作成するかどうかを示すフラグ
 let shouldCreateNewFile = false
+// 復元中はembedding取得をスキップするためのフラグ
+let isRestoringChatLog = false
+// 復元したログファイル名（復元後はこのファイルに追記する）
+let targetLogFileName: string | null = null
+
+/**
+ * 復元中フラグを設定する
+ * 復元中はembedding取得とファイル保存をスキップする
+ */
+export const setRestoringChatLog = (restoring: boolean) => {
+  isRestoringChatLog = restoring
+  if (restoring) {
+    // 復元開始時はlastSavedLogLengthをリセットして
+    // 復元後のメッセージが新規として認識されないようにする
+    lastSavedLogLength = 0
+  }
+}
+
+/**
+ * ターゲットログファイル名を設定する
+ * 復元時に呼び出して、以降の保存をこのファイルに行う
+ */
+export const setTargetLogFileName = (fileName: string | null) => {
+  targetLogFileName = fileName
+  console.log('Target log file set to:', fileName)
+}
+
+/**
+ * 現在のターゲットログファイル名を取得する
+ */
+export const getTargetLogFileName = (): string | null => {
+  return targetLogFileName
+}
 
 // ログ保存状態をリセットする共通関数
 const resetSaveState = () => {
   console.log('Chat log was cleared, resetting save state.')
   lastSavedLogLength = 0
   shouldCreateNewFile = true
+  targetLogFileName = null // ターゲットファイルもリセット
   if (saveDebounceTimer) {
     clearTimeout(saveDebounceTimer)
   }
@@ -64,6 +100,7 @@ const homeStore = create<HomeState>()(
       // transient states
       viewer: new Viewer(),
       live2dViewer: null,
+      pngTuberViewer: null,
       slideMessages: [],
       chatProcessing: false,
       chatProcessingCount: 0,
@@ -111,6 +148,8 @@ const homeStore = create<HomeState>()(
               content: message.content,
               ...(message.audio && { audio: message.audio }),
               ...(message.timestamp && { timestamp: message.timestamp }),
+              ...(message.userName && { userName: message.userName }),
+              ...(message.thinking && { thinking: message.thinking }),
             }
             updatedChatLog = [...currentChatLog, newMessage]
             console.log(`Message added: ID=${messageId}`)
@@ -152,6 +191,12 @@ const homeStore = create<HomeState>()(
 // chatLogの変更を監視して差分を保存
 homeStore.subscribe((state, prevState) => {
   if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
+    // 復元中はスキップ
+    if (isRestoringChatLog) {
+      lastSavedLogLength = state.chatLog.length
+      return
+    }
+
     if (lastSavedLogLength > state.chatLog.length) {
       resetSaveState()
     }
@@ -160,7 +205,12 @@ homeStore.subscribe((state, prevState) => {
       clearTimeout(saveDebounceTimer)
     }
 
-    saveDebounceTimer = setTimeout(() => {
+    saveDebounceTimer = setTimeout(async () => {
+      // 復元中はスキップ（タイムアウト中に復元が開始された場合）
+      if (isRestoringChatLog) {
+        return
+      }
+
       // 新規追加 or 更新があったメッセージだけを抽出
       const newMessagesToSave = state.chatLog.filter(
         (msg, idx) =>
@@ -174,7 +224,20 @@ homeStore.subscribe((state, prevState) => {
           messageSelectors.sanitizeMessageForStorage(msg)
         )
 
-        console.log(`Saving ${processedMessages.length} new messages...`)
+        // メモリ機能が有効な場合、Embeddingを付与してから保存
+        let messagesWithEmbedding: Message[]
+        try {
+          messagesWithEmbedding =
+            await addEmbeddingsToMessages(processedMessages)
+        } catch (error) {
+          console.warn(
+            'Failed to add embeddings, saving without embeddings:',
+            error
+          )
+          messagesWithEmbedding = processedMessages
+        }
+
+        console.log(`Saving ${messagesWithEmbedding.length} new messages...`)
 
         void fetch('/api/save-chat-log', {
           method: 'POST',
@@ -182,8 +245,9 @@ homeStore.subscribe((state, prevState) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            messages: processedMessages,
+            messages: messagesWithEmbedding,
             isNewFile: shouldCreateNewFile,
+            targetFileName: targetLogFileName,
           }),
         })
           .then((response) => {

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import { v4 as uuidv4 } from 'uuid'
 import Link from 'next/link'
 
@@ -65,11 +66,14 @@ const MessageReceiverSetting = () => {
   return (
     <div className="mt-2 mb-2">
       <div className="my-4 text-xl font-bold">{t('MessageReceiver')}</div>
-      <p className="">{t('MessageReceiverDescription')}</p>
+      <p className="my-2 text-sm whitespace-pre-wrap">
+        {t('MessageReceiverDescription')}
+      </p>
       <div className="my-2">
-        <TextButton onClick={toggleMessageReceiver}>
-          {messageReceiverEnabled ? t('StatusOn') : t('StatusOff')}
-        </TextButton>
+        <ToggleSwitch
+          enabled={messageReceiverEnabled}
+          onChange={() => toggleMessageReceiver()}
+        />
       </div>
       {messageReceiverEnabled && (
         <>

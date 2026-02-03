@@ -1,12 +1,6 @@
 import { useCallback } from 'react'
-import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
-import slideStore from '@/features/stores/slide'
-import {
-  isMultiModalModel,
-  googleSearchGroundingModels,
-  defaultModels,
-} from '@/features/constants/aiModels'
+import { isMultiModalModel, defaultModels } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 
 export const useAIServiceHandlers = () => {
@@ -36,6 +30,7 @@ export const useAIServiceHandlers = () => {
     const selectedModel = defaultModels[newService]
     const currentState = settingsStore.getState()
 
+    // 排他ルールはミドルウェアが自動適用する
     settingsStore.setState({
       selectAIService: newService,
       selectAIModel: selectedModel,
@@ -45,32 +40,6 @@ export const useAIServiceHandlers = () => {
           ? 'always'
           : currentState.multiModalMode,
     })
-
-    if (!isMultiModalModel(newService, selectedModel)) {
-      menuStore.setState({ showWebcam: false })
-
-      settingsStore.setState({
-        conversationContinuityMode: false,
-        slideMode: false,
-        multiModalMode: 'never',
-      })
-      slideStore.setState({
-        isPlaying: false,
-      })
-    }
-
-    if (newService !== 'openai' && newService !== 'azure') {
-      settingsStore.setState({
-        realtimeAPIMode: false,
-        audioMode: false,
-      })
-    }
-
-    if (newService === 'google') {
-      if (!googleSearchGroundingModels.includes(selectedModel as any)) {
-        settingsStore.setState({ useSearchGrounding: false })
-      }
-    }
   }, [])
 
   return {

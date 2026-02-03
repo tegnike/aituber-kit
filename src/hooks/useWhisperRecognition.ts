@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
@@ -9,9 +9,9 @@ import { SpeakQueue } from '@/features/messages/speakQueue'
 /**
  * Whisper APIを使用した音声認識のカスタムフック
  */
-export const useWhisperRecognition = (
+export function useWhisperRecognition(
   onChatProcessStart: (text: string) => void
-) => {
+) {
   const { t } = useTranslation()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
 
@@ -26,83 +26,84 @@ export const useWhisperRecognition = (
   const { startRecording, stopRecording } = useAudioProcessing()
 
   // ----- Whisper APIに音声データを送信して文字起こし -----
-  const processWhisperRecognition = async (
-    audioBlob: Blob
-  ): Promise<string> => {
-    setIsProcessing(true)
+  const processWhisperRecognition = useCallback(
+    async (audioBlob: Blob): Promise<string> => {
+      setIsProcessing(true)
 
-    try {
-      // 適切なフォーマットを確保するために新しいBlobを作成
-      // OpenAI Whisper APIは特定の形式のみをサポート
-      const formData = new FormData()
+      try {
+        // 適切なフォーマットを確保するために新しいBlobを作成
+        // OpenAI Whisper APIは特定の形式のみをサポート
+        const formData = new FormData()
 
-      // ファイル名とMIMEタイプを決定
-      let fileExtension = 'webm'
-      let mimeType = audioBlob.type
+        // ファイル名とMIMEタイプを決定
+        let fileExtension = 'webm'
+        const mimeType = audioBlob.type
 
-      // MIMEタイプに基づいて拡張子を設定
-      if (mimeType.includes('mp3')) {
-        fileExtension = 'mp3'
-      } else if (mimeType.includes('ogg')) {
-        fileExtension = 'ogg'
-      } else if (mimeType.includes('wav')) {
-        fileExtension = 'wav'
-      } else if (mimeType.includes('mp4')) {
-        fileExtension = 'mp4'
-      }
+        // MIMEタイプに基づいて拡張子を設定
+        if (mimeType.includes('mp3')) {
+          fileExtension = 'mp3'
+        } else if (mimeType.includes('ogg')) {
+          fileExtension = 'ogg'
+        } else if (mimeType.includes('wav')) {
+          fileExtension = 'wav'
+        } else if (mimeType.includes('mp4')) {
+          fileExtension = 'mp4'
+        }
 
-      // ファイル名を生成
-      const fileName = `audio.${fileExtension}`
+        // ファイル名を生成
+        const fileName = `audio.${fileExtension}`
 
-      // FormDataにファイルを追加
-      formData.append('file', audioBlob, fileName)
+        // FormDataにファイルを追加
+        formData.append('file', audioBlob, fileName)
 
-      // 言語設定の追加
-      if (selectLanguage) {
-        formData.append('language', selectLanguage)
-      }
+        // 言語設定の追加
+        if (selectLanguage) {
+          formData.append('language', selectLanguage)
+        }
 
-      // OpenAI APIキーを追加
-      const openaiKey = settingsStore.getState().openaiKey
-      if (openaiKey) {
-        formData.append('openaiKey', openaiKey)
-      }
+        // OpenAI APIキーを追加
+        const openaiKey = settingsStore.getState().openaiKey
+        if (openaiKey) {
+          formData.append('openaiKey', openaiKey)
+        }
 
-      // Whisperモデルを追加
-      const whisperModel = settingsStore.getState().whisperTranscriptionModel
-      formData.append('model', whisperModel)
+        // Whisperモデルを追加
+        const whisperModel = settingsStore.getState().whisperTranscriptionModel
+        formData.append('model', whisperModel)
 
-      console.log(
-        `Sending audio to Whisper API - size: ${audioBlob.size} bytes, type: ${mimeType}, filename: ${fileName}, model: ${whisperModel}`
-      )
-
-      // APIリクエストを送信
-      const response = await fetch('/api/whisper', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(
-          `Whisper API error: ${response.status} - ${errorData.details || errorData.error || 'Unknown error'}`
+        console.log(
+          `Sending audio to Whisper API - size: ${audioBlob.size} bytes, type: ${mimeType}, filename: ${fileName}, model: ${whisperModel}`
         )
-      }
 
-      const result = await response.json()
-      return result.text || ''
-    } catch (error) {
-      console.error('Whisper transcription error:', error)
-      toastStore.getState().addToast({
-        message: t('Toasts.WhisperError'),
-        type: 'error',
-        tag: 'whisper-error',
-      })
-      return ''
-    } finally {
-      setIsProcessing(false)
-    }
-  }
+        // APIリクエストを送信
+        const response = await fetch('/api/whisper', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(
+            `Whisper API error: ${response.status} - ${errorData.details || errorData.error || 'Unknown error'}`
+          )
+        }
+
+        const result = await response.json()
+        return result.text || ''
+      } catch (error) {
+        console.error('Whisper transcription error:', error)
+        toastStore.getState().addToast({
+          message: t('Toasts.WhisperError'),
+          type: 'error',
+          tag: 'whisper-error',
+        })
+        return ''
+      } finally {
+        setIsProcessing(false)
+      }
+    },
+    [selectLanguage, t]
+  )
 
   // ----- 音声認識停止処理 -----
   const stopListening = useCallback(async () => {
@@ -210,15 +211,30 @@ export const useWhisperRecognition = (
     []
   )
 
-  return {
-    userMessage,
-    isListening,
-    isProcessing,
-    silenceTimeoutRemaining: null, // Whisperモードでは使用しない
-    handleInputChange,
-    handleSendMessage,
-    toggleListening,
-    startListening,
-    stopListening,
-  }
+  // 戻り値オブジェクトをメモ化（Requirement 1.2, 1.4）
+  const returnValue = useMemo(
+    () => ({
+      userMessage,
+      isListening,
+      isProcessing,
+      silenceTimeoutRemaining: null, // Whisperモードでは使用しない
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    }),
+    [
+      userMessage,
+      isListening,
+      isProcessing,
+      handleInputChange,
+      handleSendMessage,
+      toggleListening,
+      startListening,
+      stopListening,
+    ]
+  )
+
+  return returnValue
 }

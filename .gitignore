@@ -67,8 +67,17 @@ public/scripts/*
 /public/backgrounds/*
 !/public/backgrounds/bg-c.png
 
+# PNGTuber files
+public/pngtuber/*
+!public/pngtuber/nike01
+!public/pngtuber/nike02
+
 /public/images/uploaded/*
 !/public/images/placed/.keep
 
 .claude/settings.local.json
 
+.kiro/specs/*
+
+# Playwright reports
+/reports

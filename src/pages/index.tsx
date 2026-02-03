@@ -8,6 +8,7 @@ import { Meta } from '@/components/meta'
 import ModalImage from '@/components/modalImage'
 import VrmViewer from '@/components/vrmViewer'
 import Live2DViewer from '@/components/live2DViewer'
+import PNGTuberViewer from '@/components/pngTuberViewer'
 import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import CharacterPresetMenu from '@/components/characterPresetMenu'
@@ -17,6 +18,7 @@ import settingsStore from '@/features/stores/settings'
 import '@/lib/i18n'
 import { buildUrl } from '@/utils/buildUrl'
 import { YoutubeManager } from '@/components/youtubeManager'
+import { MemoryServiceInitializer } from '@/components/memoryServiceInitializer'
 import toastStore from '@/features/stores/toast'
 
 const Home = () => {
@@ -102,7 +104,13 @@ const Home = () => {
     <div className="h-[100svh] bg-cover" style={backgroundStyle}>
       <Meta />
       <Introduction />
-      {modelType === 'vrm' ? <VrmViewer /> : <Live2DViewer />}
+      {modelType === 'vrm' ? (
+        <VrmViewer />
+      ) : modelType === 'live2d' ? (
+        <Live2DViewer />
+      ) : (
+        <PNGTuberViewer />
+      )}
       <Form />
       <Menu />
       <ModalImage />
@@ -110,6 +118,7 @@ const Home = () => {
       <Toasts />
       <WebSocketManager />
       <YoutubeManager />
+      <MemoryServiceInitializer />
       <CharacterPresetMenu />
       <ImageOverlay />
     </div>

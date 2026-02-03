@@ -10,12 +10,12 @@ type UseSilenceDetectionProps = {
   speechDetectedRef: MutableRefObject<boolean>
 }
 
-export const useSilenceDetection = ({
+export function useSilenceDetection({
   onTextDetected,
   transcriptRef,
   setUserMessage,
   speechDetectedRef,
-}: UseSilenceDetectionProps) => {
+}: UseSilenceDetectionProps) {
   // 無音タイムアウト残り時間のステート
   const [silenceTimeoutRemaining, setSilenceTimeoutRemaining] = useState<
     number | null
@@ -93,6 +93,12 @@ export const useSilenceDetection = ({
           speechEndedRef.current = true
           setSilenceTimeoutRemaining(null)
 
+          // stopListeningFnを呼び出す前にインターバルをクリア（二重停止防止）
+          if (silenceCheckInterval.current) {
+            clearInterval(silenceCheckInterval.current)
+            silenceCheckInterval.current = null
+          }
+
           // 常時マイク入力モードをOFFに設定
           if (settingsStore.getState().continuousMicListeningMode) {
             console.log(
@@ -140,6 +146,13 @@ export const useSilenceDetection = ({
             // 送信前にフラグを立てて重複送信を防止
             speechEndedRef.current = true
             setSilenceTimeoutRemaining(null)
+
+            // stopListeningFnを呼び出す前にインターバルをクリア（二重停止防止）
+            if (silenceCheckInterval.current) {
+              clearInterval(silenceCheckInterval.current)
+              silenceCheckInterval.current = null
+            }
+
             console.log('✅ 無音検出による自動送信を実行します')
             // 無音検出で自動送信
             onTextDetected(trimmedTranscript)

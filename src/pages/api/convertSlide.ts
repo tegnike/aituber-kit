@@ -149,7 +149,7 @@ interface SlideLineResponse {
   page?: number
 }
 
-async function createSlideLine(
+export async function createSlideLine(
   imageBase64: string,
   apiKey: string,
   aiService: string,
@@ -232,7 +232,6 @@ async function createSlideLine(
           },
         ],
         output: 'no-schema',
-        mode: 'json',
       })
     }
   } catch (error) {
@@ -355,8 +354,10 @@ function getLanguage(selectLanguage: string | undefined) {
       return 'Japanese'
     case 'en':
       return 'English'
-    case 'zh':
-      return 'Chinese'
+    case 'zh-CN':
+      return 'Simplified Chinese'
+    case 'zh-TW':
+      return 'Traditional Chinese'
     case 'ko':
       return 'Korean'
     case 'vi':
