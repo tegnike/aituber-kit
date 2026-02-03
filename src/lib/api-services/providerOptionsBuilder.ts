@@ -15,7 +15,7 @@ export function buildReasoningProviderOptions(
 
   switch (service) {
     case 'openai':
-      return { openai: { reasoningEffort } }
+      return { openai: { reasoningEffort, reasoningSummary: 'detailed' } }
 
     case 'azure':
       return { azure: { reasoningEffort } }

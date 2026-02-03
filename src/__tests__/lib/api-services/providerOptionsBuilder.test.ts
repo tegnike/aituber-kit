@@ -24,7 +24,7 @@ describe('buildReasoningProviderOptions', () => {
   })
 
   describe('OpenAI', () => {
-    it('returns openai providerOptions with reasoningEffort', () => {
+    it('returns openai providerOptions with reasoningEffort and reasoningSummary', () => {
       const result = buildReasoningProviderOptions(
         'openai',
         'gpt-5',
@@ -33,7 +33,7 @@ describe('buildReasoningProviderOptions', () => {
         8192
       )
       expect(result).toEqual({
-        openai: { reasoningEffort: 'high' },
+        openai: { reasoningEffort: 'high', reasoningSummary: 'detailed' },
       })
     })
   })
