@@ -7,6 +7,8 @@ import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
 import { createAzure } from '@ai-sdk/azure'
 import { createDeepSeek } from '@ai-sdk/deepseek'
+import { createPerplexity } from '@ai-sdk/perplexity'
+import { createFireworks } from '@ai-sdk/fireworks'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createOllama } from 'ollama-ai-provider'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
@@ -81,16 +83,14 @@ export function createAIRegistry(
       }) as unknown as ReturnType<typeof createOpenAI>
       break
     case 'perplexity':
-      providers.perplexity = createOpenAI({
-        baseURL: 'https://api.perplexity.ai/',
+      providers.perplexity = createPerplexity({
         apiKey: params.apiKey,
-      })
+      }) as unknown as ReturnType<typeof createOpenAI>
       break
     case 'fireworks':
-      providers.fireworks = createOpenAI({
-        baseURL: 'https://api.fireworks.ai/inference/v1',
+      providers.fireworks = createFireworks({
         apiKey: params.apiKey,
-      })
+      }) as unknown as ReturnType<typeof createOpenAI>
       break
     case 'deepseek':
       providers.deepseek = createDeepSeek({
