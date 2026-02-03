@@ -305,6 +305,10 @@ npm run dev
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
+## 謝辞
+
+本プロジェクトは、pixiv株式会社が公開する [ChatVRM](https://github.com/pixiv/ChatVRM) をフォークして開発されています。素晴らしいオープンソースプロジェクトを公開してくださったpixiv株式会社に深く感謝いたします。
+
 ## 貢献
 
 AITuberKitの発展にご協力いただき、ありがとうございます。コミュニティからの貢献を歓迎しています。
