@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
-import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import {
   clampKioskMaxInputLength,
   parseNgWords,
@@ -35,12 +35,6 @@ const KioskSettings = () => {
   }, [kioskNgWords])
 
   // Handlers
-  const handleToggleEnabled = () => {
-    settingsStore.setState((s) => ({
-      kioskModeEnabled: !s.kioskModeEnabled,
-    }))
-  }
-
   const handlePasscodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     settingsStore.setState({ kioskPasscode: e.target.value })
   }
@@ -63,12 +57,6 @@ const KioskSettings = () => {
     settingsStore.setState({
       kioskMaxInputLength: clampKioskMaxInputLength(kioskMaxInputLength),
     })
-  }
-
-  const handleToggleNgWordEnabled = () => {
-    settingsStore.setState((s) => ({
-      kioskNgWordEnabled: !s.kioskNgWordEnabled,
-    }))
   }
 
   const handleNgWordsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -102,9 +90,10 @@ const KioskSettings = () => {
             {t('KioskModeEnabledInfo')}
           </div>
           <div className="my-2">
-            <TextButton onClick={handleToggleEnabled}>
-              {kioskModeEnabled ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={kioskModeEnabled}
+              onChange={(v) => settingsStore.setState({ kioskModeEnabled: v })}
+            />
           </div>
         </div>
 
@@ -164,9 +153,12 @@ const KioskSettings = () => {
             {t('KioskNgWordEnabledInfo')}
           </div>
           <div className="my-2">
-            <TextButton onClick={handleToggleNgWordEnabled}>
-              {kioskNgWordEnabled ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={kioskNgWordEnabled}
+              onChange={(v) =>
+                settingsStore.setState({ kioskNgWordEnabled: v })
+              }
+            />
           </div>
 
           {kioskNgWordEnabled && (
