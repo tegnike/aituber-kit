@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import {
   IdlePhrase,
   IdlePlaybackMode,
@@ -48,18 +49,20 @@ const IdleSettings = () => {
   )
   const idleAiPromptTemplate = settingsStore((s) => s.idleAiPromptTemplate)
 
+  // 排他制御による無効化判定
+  const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
+  const audioMode = settingsStore((s) => s.audioMode)
+  const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
+  const slideMode = settingsStore((s) => s.slideMode)
+  const isIdleModeDisabled =
+    realtimeAPIMode || audioMode || externalLinkageMode || slideMode
+
   // Local state for new phrase input
   const [newPhraseText, setNewPhraseText] = useState('')
   const [newPhraseEmotion, setNewPhraseEmotion] =
     useState<EmotionType>('neutral')
 
   // Handlers
-  const handleToggleEnabled = () => {
-    settingsStore.setState((s) => ({
-      idleModeEnabled: !s.idleModeEnabled,
-    }))
-  }
-
   const handleIntervalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10)
     if (!isNaN(value)) {
@@ -142,12 +145,6 @@ const IdleSettings = () => {
     settingsStore.setState({ idlePhrases: updatedPhrases })
   }
 
-  const handleToggleTimePeriod = () => {
-    settingsStore.setState((s) => ({
-      idleTimePeriodEnabled: !s.idleTimePeriodEnabled,
-    }))
-  }
-
   const handleTimePeriodChange = (
     period: 'morning' | 'afternoon' | 'evening',
     value: string
@@ -158,12 +155,6 @@ const IdleSettings = () => {
         | 'idleTimePeriodAfternoon'
         | 'idleTimePeriodEvening'
     settingsStore.setState({ [key]: value })
-  }
-
-  const handleToggleAiGeneration = () => {
-    settingsStore.setState((s) => ({
-      idleAiGenerationEnabled: !s.idleAiGenerationEnabled,
-    }))
   }
 
   const handleAiPromptTemplateChange = (
@@ -194,10 +185,17 @@ const IdleSettings = () => {
           <div className="my-2 text-sm whitespace-pre-wrap">
             {t('IdleModeEnabledInfo')}
           </div>
+          {isIdleModeDisabled && (
+            <div className="my-4 text-sm text-orange-500 whitespace-pre-line">
+              {t('IdleModeDisabledInfo')}
+            </div>
+          )}
           <div className="my-2">
-            <TextButton onClick={handleToggleEnabled}>
-              {idleModeEnabled ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={idleModeEnabled}
+              onChange={(v) => settingsStore.setState({ idleModeEnabled: v })}
+              disabled={isIdleModeDisabled}
+            />
           </div>
         </div>
 
@@ -381,9 +379,12 @@ const IdleSettings = () => {
             {t('IdleTimePeriodEnabledInfo')}
           </div>
           <div className="my-2">
-            <TextButton onClick={handleToggleTimePeriod}>
-              {idleTimePeriodEnabled ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={idleTimePeriodEnabled}
+              onChange={(v) =>
+                settingsStore.setState({ idleTimePeriodEnabled: v })
+              }
+            />
           </div>
 
           {idleTimePeriodEnabled && (
@@ -449,9 +450,12 @@ const IdleSettings = () => {
             {t('IdleAiGenerationEnabledInfo')}
           </div>
           <div className="my-2">
-            <TextButton onClick={handleToggleAiGeneration}>
-              {idleAiGenerationEnabled ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={idleAiGenerationEnabled}
+              onChange={(v) =>
+                settingsStore.setState({ idleAiGenerationEnabled: v })
+              }
+            />
           </div>
 
           {idleAiGenerationEnabled && (

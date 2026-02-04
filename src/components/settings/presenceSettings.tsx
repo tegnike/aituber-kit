@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import settingsStore, {
   PresenceDetectionSensitivity,
 } from '@/features/stores/settings'
-import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 
 const PresenceSettings = () => {
   const { t } = useTranslation()
@@ -30,13 +30,15 @@ const PresenceSettings = () => {
   )
   const presenceDebugMode = settingsStore((s) => s.presenceDebugMode)
 
-  // Handlers
-  const handleToggleEnabled = () => {
-    settingsStore.setState((s) => ({
-      presenceDetectionEnabled: !s.presenceDetectionEnabled,
-    }))
-  }
+  // 排他制御による無効化判定
+  const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
+  const audioMode = settingsStore((s) => s.audioMode)
+  const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
+  const slideMode = settingsStore((s) => s.slideMode)
+  const isPresenceDisabled =
+    realtimeAPIMode || audioMode || externalLinkageMode || slideMode
 
+  // Handlers
   const handleGreetingMessageChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -66,12 +68,6 @@ const PresenceSettings = () => {
     })
   }
 
-  const handleToggleDebugMode = () => {
-    settingsStore.setState((s) => ({
-      presenceDebugMode: !s.presenceDebugMode,
-    }))
-  }
-
   return (
     <>
       <div className="mb-6">
@@ -96,10 +92,19 @@ const PresenceSettings = () => {
           <div className="my-2 text-sm whitespace-pre-wrap">
             {t('PresenceDetectionEnabledInfo')}
           </div>
+          {isPresenceDisabled && (
+            <div className="my-4 text-sm text-orange-500 whitespace-pre-line">
+              {t('PresenceDetectionDisabledInfo')}
+            </div>
+          )}
           <div className="my-2">
-            <TextButton onClick={handleToggleEnabled}>
-              {presenceDetectionEnabled ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={presenceDetectionEnabled}
+              onChange={(v) =>
+                settingsStore.setState({ presenceDetectionEnabled: v })
+              }
+              disabled={isPresenceDisabled}
+            />
           </div>
         </div>
 
@@ -194,9 +199,10 @@ const PresenceSettings = () => {
             {t('PresenceDebugModeInfo')}
           </div>
           <div className="my-2">
-            <TextButton onClick={handleToggleDebugMode}>
-              {presenceDebugMode ? t('StatusOn') : t('StatusOff')}
-            </TextButton>
+            <ToggleSwitch
+              enabled={presenceDebugMode}
+              onChange={(v) => settingsStore.setState({ presenceDebugMode: v })}
+            />
           </div>
         </div>
       </div>

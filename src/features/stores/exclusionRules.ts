@@ -274,4 +274,52 @@ export const exclusionRules: ExclusionRule[] = [
       return corrections
     },
   },
+
+  // Rule 14: realtimeAPIMode ON → アイドル・人感検知OFF
+  {
+    id: 'realtimeAPI-on-disableIdlePresence',
+    description:
+      'realtimeAPIMode ON時にidleModeEnabled, presenceDetectionEnabledをOFFにする',
+    trigger: (_incoming, merged) => merged.realtimeAPIMode === true,
+    apply: () => ({
+      idleModeEnabled: false,
+      presenceDetectionEnabled: false,
+    }),
+  },
+
+  // Rule 15: audioMode ON → アイドル・人感検知OFF
+  {
+    id: 'audioMode-on-disableIdlePresence',
+    description:
+      'audioMode ON時にidleModeEnabled, presenceDetectionEnabledをOFFにする',
+    trigger: (_incoming, merged) => merged.audioMode === true,
+    apply: () => ({
+      idleModeEnabled: false,
+      presenceDetectionEnabled: false,
+    }),
+  },
+
+  // Rule 16: externalLinkageMode ON → アイドル・人感検知OFF
+  {
+    id: 'externalLinkage-on-disableIdlePresence',
+    description:
+      'externalLinkageMode ON時にidleModeEnabled, presenceDetectionEnabledをOFFにする',
+    trigger: (_incoming, merged) => merged.externalLinkageMode === true,
+    apply: () => ({
+      idleModeEnabled: false,
+      presenceDetectionEnabled: false,
+    }),
+  },
+
+  // Rule 17: slideMode ON → アイドル・人感検知OFF
+  {
+    id: 'slideMode-on-disableIdlePresence',
+    description:
+      'slideMode ON時にidleModeEnabled, presenceDetectionEnabledをOFFにする',
+    trigger: (_incoming, merged) => merged.slideMode === true,
+    apply: () => ({
+      idleModeEnabled: false,
+      presenceDetectionEnabled: false,
+    }),
+  },
 ]
