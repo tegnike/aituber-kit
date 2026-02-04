@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { TextButton } from '../../textButton'
+import { ToggleSwitch } from '../../toggleSwitch'
 
 interface MultiModalToggleProps {
   enabled: boolean
@@ -18,12 +18,12 @@ export const MultiModalToggle = ({
     <div className="my-6">
       <div className="my-4 text-xl font-bold">{t('EnableMultiModal')}</div>
       <div className="my-2">
-        <TextButton onClick={onToggle}>
-          {enabled ? t('StatusOn') : t('StatusOff')}
-        </TextButton>
+        <ToggleSwitch enabled={enabled} onChange={() => onToggle()} />
       </div>
       {showDescription && (
-        <div className="my-2 text-sm">{t('EnableMultiModalDescription')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('EnableMultiModalDescription')}
+        </div>
       )}
     </div>
   )

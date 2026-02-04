@@ -40,7 +40,7 @@ export const getServiceConfigByKey = (
     keyLabel: t('OpenAIAPIKeyLabel'),
     keyPlaceholder: 'sk-...',
     linkUrl: 'https://platform.openai.com/account/api-keys',
-    linkLabel: 'OpenAI',
+    linkLabel: 'OpenAI Platform',
     showMultiModalToggle: true,
   },
   anthropic: {
@@ -49,7 +49,7 @@ export const getServiceConfigByKey = (
     keyLabel: t('AnthropicAPIKeyLabel'),
     keyPlaceholder: 'sk-...',
     linkUrl: 'https://console.anthropic.com',
-    linkLabel: 'Anthropic',
+    linkLabel: 'Anthropic Console',
     showMultiModalToggle: true,
   },
   google: {
@@ -66,7 +66,7 @@ export const getServiceConfigByKey = (
     keyLabel: t('AzureAPIKeyLabel'),
     linkUrl:
       'https://portal.azure.com/#view/Microsoft_Azure_AI/AzureOpenAI/keys',
-    linkLabel: 'Azure OpenAI',
+    linkLabel: 'Azure OpenAI Portal',
   },
   xai: {
     value: 'xai',

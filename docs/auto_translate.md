@@ -35,7 +35,7 @@
 6. 元ファイル: `locales/ja/translation.json`
    - 翻訳先: `locales/*/translation.json`（各言語版）
 
-対象言語は現在、英語（en）、中国語（zh）、韓国語（ko）です。
+対象言語は現在、英語（en）、簡体字中国語（zh-CN）、繁体字中国語（zh-TW）、韓国語（ko）です。
 
 ## 実行タイミング
 
@@ -72,7 +72,7 @@ FILE_MAPPINGS = {
 対象言語を追加・変更するには、`scripts/auto_translate.py`の`TARGET_LANGUAGES`変数を編集します：
 
 ```python
-TARGET_LANGUAGES = ["en", "zh", "ko"]  # 言語コードを追加・変更
+TARGET_LANGUAGES = ["en", "zh-CN", "zh-TW", "ko"]  # 言語コードを追加・変更
 ```
 
 ## 動作の仕組み

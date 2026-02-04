@@ -7,6 +7,7 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 import { IMAGE_CONSTANTS } from '@/constants/images'
 
 const Based = () => {
@@ -115,31 +116,8 @@ const Based = () => {
             value={selectLanguage}
             onChange={(e) => {
               const newLanguage = e.target.value as Language
-
-              const ss = settingsStore.getState()
-              const jaVoiceSelected =
-                ss.selectVoice === 'voicevox' ||
-                ss.selectVoice === 'koeiromap' ||
-                ss.selectVoice === 'aivis_speech' ||
-                ss.selectVoice === 'nijivoice'
-
-              switch (newLanguage) {
-                case 'ja':
-                  settingsStore.setState({ selectLanguage: 'ja' })
-                  i18n.changeLanguage('ja')
-                  break
-                default:
-                  // 日本語以外の言語はすべて同じ処理
-                  settingsStore.setState({ selectLanguage: newLanguage })
-
-                  // 日本語専用の音声が選択されている場合は、googleに変更
-                  if (jaVoiceSelected) {
-                    settingsStore.setState({ selectVoice: 'google' })
-                  }
-
-                  i18n.changeLanguage(newLanguage)
-                  break
-              }
+              settingsStore.setState({ selectLanguage: newLanguage })
+              i18n.changeLanguage(newLanguage)
             }}
           >
             <option value="ar">Arabic - アラビア語</option>
@@ -155,7 +133,8 @@ const Based = () => {
             <option value="ru">Russian - ロシア語</option>
             <option value="es">Spanish - スペイン語</option>
             <option value="th">Thai - タイ語</option>
-            <option value="zh">Traditional Chinese - 繁體中文</option>
+            <option value="zh-CN">Simplified Chinese - 簡体字中国語</option>
+            <option value="zh-TW">Traditional Chinese - 繁体字中国語</option>
             <option value="vi">Vietnamese - ベトナム語</option>
           </select>
         </div>
@@ -164,21 +143,32 @@ const Based = () => {
         <div className="my-6">
           <div className="my-4 font-bold">{t('EnglishToJapanese')}</div>
           <div className="my-2">
-            <TextButton
-              onClick={() =>
-                settingsStore.setState((prevState) => ({
-                  changeEnglishToJapanese: !prevState.changeEnglishToJapanese,
-                }))
+            <ToggleSwitch
+              enabled={changeEnglishToJapanese}
+              onChange={(v) =>
+                settingsStore.setState({ changeEnglishToJapanese: v })
               }
-            >
-              {t(changeEnglishToJapanese ? 'StatusOn' : 'StatusOff')}
-            </TextButton>
+            />
           </div>
         </div>
       )}
-      <div className="mt-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
+        <div className="my-4 text-xl font-bold">{t('UserDisplayName')}</div>
+        <input
+          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          type="text"
+          placeholder={t('UserDisplayName')}
+          value={settingsStore((s) => s.userDisplayName)}
+          onChange={(e) =>
+            settingsStore.setState({ userDisplayName: e.target.value })
+          }
+        />
+      </div>
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('BackgroundSettings')}</div>
-        <div className="my-4">{t('BackgroundSettingsDescription')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('BackgroundSettingsDescription')}
+        </div>
 
         {isLoading && <div className="my-2">{t('Loading')}</div>}
         {error && <div className="my-2 text-red-500">{error}</div>}
@@ -229,18 +219,13 @@ const Based = () => {
       </div>
 
       {/* アシスタントテキスト表示設定 */}
-      <div className="my-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('ShowAssistantText')}</div>
         <div className="my-2">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState((s) => ({
-                showAssistantText: !s.showAssistantText,
-              }))
-            }
-          >
-            {showAssistantText ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={showAssistantText}
+            onChange={(v) => settingsStore.setState({ showAssistantText: v })}
+          />
         </div>
       </div>
 
@@ -248,42 +233,34 @@ const Based = () => {
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('ShowCharacterName')}</div>
         <div className="my-2">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState((s) => ({
-                showCharacterName: !s.showCharacterName,
-              }))
-            }
-          >
-            {showCharacterName ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={showCharacterName}
+            onChange={(v) => settingsStore.setState({ showCharacterName: v })}
+          />
         </div>
       </div>
 
       {/* コントロールパネル表示設定 */}
-      <div className="my-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('ShowControlPanel')}</div>
-        <div className="my-4 whitespace-pre-wrap">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           {t('ShowControlPanelInfo')}
         </div>
 
         <div className="my-2">
-          <TextButton
-            onClick={() =>
-              settingsStore.setState({
-                showControlPanel: !showControlPanel,
-              })
-            }
-          >
-            {showControlPanel ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={showControlPanel}
+            onChange={(v) => settingsStore.setState({ showControlPanel: v })}
+          />
         </div>
       </div>
 
       {/* カラーテーマ設定 */}
-      <div className="my-6">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('ColorTheme')}</div>
-        <div className="my-4 whitespace-pre-wrap">{t('ColorThemeInfo')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('ColorThemeInfo')}
+        </div>
 
         <div className="flex flex-col mb-4">
           <select

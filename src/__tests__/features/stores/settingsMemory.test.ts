@@ -40,15 +40,15 @@ describe('Settings Store - Memory Settings', () => {
       expect(state.memorySimilarityThreshold).toBe(0.7)
     })
 
-    it('should be updatable within valid range (0.5-0.9)', () => {
+    it('should be updatable within valid range (0.1-0.95)', () => {
+      settingsStore.setState({ memorySimilarityThreshold: 0.1 })
+      expect(settingsStore.getState().memorySimilarityThreshold).toBe(0.1)
+
+      settingsStore.setState({ memorySimilarityThreshold: 0.95 })
+      expect(settingsStore.getState().memorySimilarityThreshold).toBe(0.95)
+
       settingsStore.setState({ memorySimilarityThreshold: 0.5 })
       expect(settingsStore.getState().memorySimilarityThreshold).toBe(0.5)
-
-      settingsStore.setState({ memorySimilarityThreshold: 0.9 })
-      expect(settingsStore.getState().memorySimilarityThreshold).toBe(0.9)
-
-      settingsStore.setState({ memorySimilarityThreshold: 0.75 })
-      expect(settingsStore.getState().memorySimilarityThreshold).toBe(0.75)
     })
   })
 

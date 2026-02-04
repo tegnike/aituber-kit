@@ -11,7 +11,8 @@ const getLanguageCode = (selectLanguage: string): string => {
       return 'JP'
     case 'en':
       return 'EN'
-    case 'zh':
+    case 'zh-CN':
+    case 'zh-TW':
       return 'ZH'
     default:
       return 'EN'

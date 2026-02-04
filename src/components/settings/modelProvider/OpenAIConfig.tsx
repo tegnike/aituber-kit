@@ -4,6 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../../textButton'
+import { ToggleSwitch } from '../../toggleSwitch'
 import { ApiKeyInput } from './ApiKeyInput'
 import { ModelSelector } from './ModelSelector'
 import { MultiModalToggle } from './MultiModalToggle'
@@ -12,7 +13,6 @@ import {
   getOpenAIRealtimeModels,
   getOpenAIAudioModels,
   isMultiModalModel,
-  defaultModels,
 } from '@/features/constants/aiModels'
 import {
   RealtimeAPIModeContentType,
@@ -55,43 +55,11 @@ export const OpenAIConfig = ({
   const { t } = useTranslation()
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
-    settingsStore.setState({
-      realtimeAPIMode: newMode,
-    })
-    if (newMode) {
-      // リアルタイムAPIモードをONにした場合
-      settingsStore.setState({
-        audioMode: false,
-        speechRecognitionMode: 'browser',
-        selectAIModel: defaultModels.openaiRealtime,
-        initialSpeechTimeout: 0,
-        noSpeechTimeout: 0,
-        showSilenceProgressBar: false,
-        continuousMicListeningMode: false,
-      })
-    } else {
-      // リアルタイムAPIモードをOFFにした場合、通常のOpenAIモデルに戻す
-      settingsStore.setState({
-        selectAIModel: defaultModels.openai,
-      })
-    }
+    settingsStore.setState({ realtimeAPIMode: newMode })
   }, [])
 
   const handleAudioModeChange = useCallback((newMode: boolean) => {
-    settingsStore.setState({
-      audioMode: newMode,
-    })
-    if (newMode) {
-      settingsStore.setState({
-        realtimeAPIMode: false,
-        speechRecognitionMode: 'browser',
-        selectAIModel: defaultModels.openaiAudio,
-      })
-    } else {
-      settingsStore.setState({
-        selectAIModel: defaultModels.openai,
-      })
-    }
+    settingsStore.setState({ audioMode: newMode })
   }, [])
 
   const handleUpdate = useCallback(() => {
@@ -129,26 +97,23 @@ export const OpenAIConfig = ({
         onChange={(value) => settingsStore.setState({ openaiKey: value })}
         placeholder="sk-..."
         linkUrl="https://platform.openai.com/account/api-keys"
-        linkLabel="OpenAI"
+        linkLabel="OpenAI Platform"
       />
 
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
         <div className="my-2">
-          <TextButton
-            onClick={() => handleRealtimeAPIModeChange(!realtimeAPIMode)}
-          >
-            {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={realtimeAPIMode}
+            onChange={handleRealtimeAPIModeChange}
+          />
         </div>
       </div>
 
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('AudioMode')}</div>
         <div className="my-2">
-          <TextButton onClick={() => handleAudioModeChange(!audioMode)}>
-            {audioMode ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch enabled={audioMode} onChange={handleAudioModeChange} />
         </div>
       </div>
 
@@ -207,7 +172,9 @@ export const OpenAIConfig = ({
           </div>
 
           <div className="my-4">
-            <div className="my-4">{t('UpdateRealtimeAPISettingsInfo')}</div>
+            <div className="my-2 text-sm whitespace-pre-wrap">
+              {t('UpdateRealtimeAPISettingsInfo')}
+            </div>
             <TextButton onClick={handleUpdate}>
               {t('UpdateRealtimeAPISettings')}
             </TextButton>

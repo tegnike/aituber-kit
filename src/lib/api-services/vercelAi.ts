@@ -7,47 +7,143 @@ import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
 import { createAzure } from '@ai-sdk/azure'
 import { createDeepSeek } from '@ai-sdk/deepseek'
+import { createPerplexity } from '@ai-sdk/perplexity'
+import { createFireworks } from '@ai-sdk/fireworks'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createOllama } from 'ollama-ai-provider'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
-import { streamText, generateText, ModelMessage } from 'ai'
+import {
+  streamText,
+  generateText,
+  ModelMessage,
+  createProviderRegistry,
+  LanguageModel,
+} from 'ai'
 import { VercelAIService } from '@/features/constants/settings'
 
-type AIServiceConfig = Record<VercelAIService, (params: any) => any>
+/**
+ * プロバイダー作成に必要なパラメータ
+ */
+export type ProviderParams = {
+  apiKey?: string
+  baseURL?: string
+  resourceName?: string
+}
+
+type AIRegistry = ReturnType<typeof createProviderRegistry<Record<string, any>>>
 
 /**
- * Vercel AI SDKを使用したAIサービス設定
+ * 指定されたAIサービス用のProvider Registryを作成する
  */
-export const aiServiceConfig: AIServiceConfig = {
-  openai: ({ apiKey }) => createOpenAI({ apiKey }),
-  anthropic: ({ apiKey }) => createAnthropic({ apiKey }),
-  google: ({ apiKey }) => createGoogleGenerativeAI({ apiKey }),
-  azure: ({ resourceName, apiKey }) =>
-    createAzure({
-      resourceName,
-      apiKey,
-    }),
-  xai: ({ apiKey }) => createXai({ apiKey }),
-  groq: ({ apiKey }) =>
-    createOpenAI({
-      baseURL: 'https://api.groq.com/openai/v1',
-      apiKey,
-    }),
-  cohere: ({ apiKey }) => createCohere({ apiKey }),
-  mistralai: ({ apiKey }) => createMistral({ apiKey }),
-  perplexity: ({ apiKey }) =>
-    createOpenAI({ baseURL: 'https://api.perplexity.ai/', apiKey }),
-  fireworks: ({ apiKey }) =>
-    createOpenAI({
-      baseURL: 'https://api.fireworks.ai/inference/v1',
-      apiKey,
-    }),
-  deepseek: ({ apiKey }) => createDeepSeek({ apiKey }),
-  openrouter: ({ apiKey }) => createOpenRouter({ apiKey }),
-  lmstudio: ({ baseURL }) =>
-    createOpenAICompatible({ name: 'lmstudio', baseURL }),
-  ollama: ({ baseURL }) => createOllama({ baseURL }),
-  'custom-api': () => null, // 特別な処理はせず、カスタムAPI用
+export function createAIRegistry(
+  service: VercelAIService,
+  params: ProviderParams
+): AIRegistry | null {
+  const providers: Record<string, any> = {}
+
+  switch (service) {
+    case 'openai':
+      providers.openai = createOpenAI({ apiKey: params.apiKey })
+      break
+    case 'anthropic':
+      providers.anthropic = createAnthropic({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'google':
+      providers.google = createGoogleGenerativeAI({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'azure':
+      providers.azure = createAzure({
+        resourceName: params.resourceName,
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'xai':
+      providers.xai = createXai({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'groq':
+      providers.groq = createOpenAI({
+        baseURL: 'https://api.groq.com/openai/v1',
+        apiKey: params.apiKey,
+      })
+      break
+    case 'cohere':
+      providers.cohere = createCohere({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'mistralai':
+      providers.mistralai = createMistral({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'perplexity':
+      providers.perplexity = createPerplexity({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'fireworks':
+      providers.fireworks = createFireworks({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'deepseek':
+      providers.deepseek = createDeepSeek({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'openrouter':
+      providers.openrouter = createOpenRouter({
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'lmstudio':
+      providers.lmstudio = createOpenAICompatible({
+        name: 'lmstudio',
+        baseURL: params.baseURL ?? '',
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'ollama':
+      providers.ollama = createOllama({
+        baseURL: params.baseURL ?? '',
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'custom-api':
+      // custom-apiは別途処理されるため、ここでは空
+      return null
+  }
+
+  return createProviderRegistry(providers)
+}
+
+/**
+ * Registryからモデルを取得する
+ */
+export function getLanguageModel(
+  registry: AIRegistry,
+  service: VercelAIService,
+  model: string,
+  options?: Record<string, unknown>
+): LanguageModel {
+  const modelId = `${service}:${model}`
+
+  if (options && Object.keys(options).length > 0) {
+    // オプションがある場合（例：Google Search Grounding）
+    // registryから直接プロバイダーを取得してオプション付きでモデルを作成
+    const provider = (registry as unknown as Record<string, CallableFunction>)[
+      service
+    ]
+    if (provider) {
+      return provider(model, options) as LanguageModel
+    }
+  }
+
+  return registry.languageModel(modelId as `${string}:${string}`)
 }
 
 /**
@@ -55,35 +151,48 @@ export const aiServiceConfig: AIServiceConfig = {
  */
 export async function streamAiText({
   model,
-  modelInstance,
+  registry,
+  service,
   messages,
   temperature,
   maxTokens,
   options = {},
+  providerOptions,
 }: {
   model: string
-  modelInstance: any
+  registry: AIRegistry
+  service: VercelAIService
   messages: Message[]
   temperature: number
   maxTokens: number
-  options?: any
+  options?: Record<string, unknown>
+  providerOptions?: Record<string, Record<string, unknown>>
 }) {
   try {
+    const languageModel = getLanguageModel(registry, service, model, options)
+
     const result = await streamText({
-      model: modelInstance(model, options),
+      model: languageModel,
       messages: messages as ModelMessage[],
       temperature,
       maxOutputTokens: maxTokens,
+      ...(providerOptions && {
+        providerOptions: providerOptions as Parameters<
+          typeof streamText
+        >[0]['providerOptions'],
+      }),
     })
 
     return result.toUIMessageStreamResponse()
-  } catch (error: any) {
-    console.error(`Vercel AI Stream Error: ${error.message || 'Unknown error'}`)
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    console.error(`Vercel AI Stream Error: ${errorMessage}`)
     console.error(`Model: ${model}, Temperature: ${temperature}`)
 
     return new Response(
       JSON.stringify({
-        error: `AI Service Error: ${error.message || 'Unknown error'}`,
+        error: `AI Service Error: ${errorMessage}`,
         errorCode: 'AIServiceError',
       }),
       {
@@ -99,38 +208,49 @@ export async function streamAiText({
  */
 export async function generateAiText({
   model,
-  modelInstance,
+  registry,
+  service,
   messages,
   temperature,
   maxTokens,
+  providerOptions,
 }: {
   model: string
-  modelInstance: any
+  registry: AIRegistry
+  service: VercelAIService
   messages: Message[]
   temperature: number
   maxTokens: number
+  providerOptions?: Record<string, Record<string, unknown>>
 }) {
   try {
+    const languageModel = getLanguageModel(registry, service, model)
+
     const result = await generateText({
-      model: modelInstance(model),
+      model: languageModel,
       messages: messages as ModelMessage[],
       temperature,
       maxOutputTokens: maxTokens,
+      ...(providerOptions && {
+        providerOptions: providerOptions as Parameters<
+          typeof generateText
+        >[0]['providerOptions'],
+      }),
     })
 
     return new Response(JSON.stringify({ text: result.text }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
-  } catch (error: any) {
-    console.error(
-      `Vercel AI Generate Error: ${error.message || 'Unknown error'}`
-    )
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    console.error(`Vercel AI Generate Error: ${errorMessage}`)
     console.error(`Model: ${model}, Temperature: ${temperature}`)
 
     return new Response(
       JSON.stringify({
-        error: `AI Service Error: ${error.message || 'Unknown error'}`,
+        error: `AI Service Error: ${errorMessage}`,
         errorCode: 'AIServiceError',
       }),
       {

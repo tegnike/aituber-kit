@@ -31,6 +31,11 @@ const DEFAULT_MAX_TOKENS = 1000
 export function formatTimestamp(isoTimestamp: string): string {
   const date = new Date(isoTimestamp)
 
+  // 無効な日付の場合はフォールバック
+  if (isNaN(date.getTime())) {
+    return '[不明]'
+  }
+
   // JSTに変換（UTC+9）
   const jstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000)
 

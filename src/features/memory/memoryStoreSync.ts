@@ -48,6 +48,9 @@ export async function saveMessageToMemory(message: Message): Promise<void> {
  * @returns システムプロンプトに追加するコンテキスト文字列
  */
 export async function searchMemoryContext(query: string): Promise<string> {
+  // 空/空白のみのクエリをスキップ
+  if (!query || !query.trim()) return ''
+
   const ss = settingsStore.getState()
   if (!ss.memoryEnabled) return ''
 

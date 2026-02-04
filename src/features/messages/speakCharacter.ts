@@ -17,8 +17,8 @@ import { synthesizeVoiceAzureOpenAIApi } from './synthesizeVoiceAzureOpenAI'
 import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
 import { SpeakQueue } from './speakQueue'
-import { synthesizeVoiceNijivoiceApi } from './synthesizeVoiceNijivoice'
 import { Live2DHandler } from './live2dHandler'
+import { PNGTuberHandler } from '@/features/pngTuber/pngTuberHandler'
 import {
   asyncConvertEnglishToJapaneseReading,
   containsEnglish,
@@ -175,15 +175,6 @@ async function synthesizeVoice(
           ss.azureTTSEndpoint || ss.azureEndpoint,
           ss.openaiTTSVoice,
           ss.openaiTTSSpeed
-        )
-      case 'nijivoice':
-        return await synthesizeVoiceNijivoiceApi(
-          talk,
-          ss.nijivoiceApiKey,
-          ss.nijivoiceActorId,
-          ss.nijivoiceSpeed,
-          ss.nijivoiceEmotionalLevel,
-          ss.nijivoiceSoundDuration
         )
       default:
         return null
@@ -387,7 +378,6 @@ export const testVoice = async (voiceType: AIVoice, customText?: string) => {
     cartesia: 'Cartesiaを使用します',
     openai: 'OpenAI TTSを使用します',
     azure: 'Azure TTSを使用します',
-    nijivoice: 'にじボイスを使用します',
   }
 
   const message = customText || defaultMessages[voiceType]
@@ -411,6 +401,8 @@ export const testVoice = async (voiceType: AIVoice, customText?: string) => {
         await hs.viewer.model?.speak(buffer, talk)
       } else if (ss.modelType === 'live2d') {
         Live2DHandler.speak(buffer, talk)
+      } else if (ss.modelType === 'pngtuber') {
+        await PNGTuberHandler.speak(buffer, talk)
       }
     }
   } catch (error) {

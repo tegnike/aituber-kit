@@ -36,8 +36,6 @@ jest.mock('react-i18next', () => ({
         MemoryRestore: '記憶を復元',
         MemoryRestoreInfo: 'ローカルファイルから記憶を復元します。',
         MemoryRestoreSelect: 'ファイルを選択',
-        StatusOn: '状態：ON',
-        StatusOff: '状態：OFF',
         OpenAIAPIKeyLabel: 'OpenAI APIキー',
         APIKeyInstruction: 'APIキーを入力してください。',
       }
@@ -85,9 +83,9 @@ describe('MemorySettings Component', () => {
       settingsStore.setState({ memoryEnabled: false })
       const element = React.createElement(MemorySettings)
       render(element)
-      // 「長期記憶にも保存する」もOFFなので、2つの「状態：OFF」がある
-      const offButtons = screen.getAllByText('状態：OFF')
-      expect(offButtons.length).toBeGreaterThanOrEqual(1)
+      const switches = screen.getAllByRole('switch')
+      expect(switches.length).toBeGreaterThanOrEqual(1)
+      expect(switches[0]).toHaveAttribute('aria-checked', 'false')
     })
 
     it('should toggle memory enabled state on click', () => {
@@ -95,9 +93,9 @@ describe('MemorySettings Component', () => {
       const element = React.createElement(MemorySettings)
       render(element)
 
-      // 最初の「状態：OFF」ボタン（長期記憶のトグル）をクリック
-      const toggleButtons = screen.getAllByText('状態：OFF')
-      fireEvent.click(toggleButtons[0])
+      // 最初のトグルスイッチ（長期記憶のトグル）をクリック
+      const switches = screen.getAllByRole('switch')
+      fireEvent.click(switches[0])
 
       expect(settingsStore.getState().memoryEnabled).toBe(true)
     })
@@ -134,14 +132,14 @@ describe('MemorySettings Component', () => {
       expect(settingsStore.getState().memorySimilarityThreshold).toBe(0.8)
     })
 
-    it('should enforce min/max range (0.5-0.9)', () => {
+    it('should enforce min/max range (0.1-0.95)', () => {
       settingsStore.setState({ memoryEnabled: true })
       const element = React.createElement(MemorySettings)
       render(element)
 
       const slider = screen.getByRole('slider', { name: /類似度閾値/i })
-      expect(slider).toHaveAttribute('min', '0.5')
-      expect(slider).toHaveAttribute('max', '0.9')
+      expect(slider).toHaveAttribute('min', '0.1')
+      expect(slider).toHaveAttribute('max', '0.95')
     })
   })
 
@@ -319,9 +317,10 @@ describe('MemorySettings Component', () => {
 
       // ON/OFFトグルは表示されるべき
       expect(screen.getByText('メモリ機能を有効にする')).toBeInTheDocument()
-      // 「長期記憶にも保存する」もOFFなので、複数の「状態：OFF」がある
-      const offButtons = screen.getAllByText('状態：OFF')
-      expect(offButtons.length).toBeGreaterThanOrEqual(1)
+      // トグルスイッチが表示されている
+      const switches = screen.getAllByRole('switch')
+      expect(switches.length).toBeGreaterThanOrEqual(1)
+      expect(switches[0]).toHaveAttribute('aria-checked', 'false')
 
       // 長期記憶の詳細設定は非表示
       expect(screen.queryByText('類似度閾値')).not.toBeInTheDocument()

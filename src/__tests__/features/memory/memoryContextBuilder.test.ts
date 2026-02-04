@@ -248,7 +248,7 @@ describe('MemoryContextBuilder', () => {
           createMemoryRecord({
             id: `id-${i}`,
             content: `メッセージ${i}: これは非常に長いテストメッセージです。メモリコンテキストのトークン制限をテストするために使用します。`,
-            timestamp: `2025-01-${String(i + 1).padStart(2, '0')}T12:00:00Z`,
+            timestamp: `2025-01-${String((i % 28) + 1).padStart(2, '0')}T12:00:00Z`,
           })
         )
       }

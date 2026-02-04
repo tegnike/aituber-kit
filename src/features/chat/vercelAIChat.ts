@@ -7,6 +7,10 @@ import {
 } from '@/features/constants/settings'
 import settingsStore from '../stores/settings'
 
+// 推論/思考チャンクを通常テキストと区別するためのマーカー
+// null byteプレフィックスはLLMテキスト出力に現れないため安全
+export const THINKING_MARKER = '\x00THINK:'
+
 const getAIConfig = () => {
   const ss = settingsStore.getState()
   // AIServiceとして扱う（より広い型）
@@ -29,6 +33,9 @@ const getAIConfig = () => {
     useSearchGrounding: ss.useSearchGrounding,
     temperature: ss.temperature,
     maxTokens: ss.maxTokens,
+    reasoningMode: ss.reasoningMode,
+    reasoningEffort: ss.reasoningEffort,
+    reasoningTokenBudget: ss.reasoningTokenBudget,
     customApiUrl: ss.customApiUrl,
     customApiHeaders: ss.customApiHeaders,
     customApiBody: ss.customApiBody,
@@ -63,6 +70,9 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     useSearchGrounding,
     temperature,
     maxTokens,
+    reasoningMode,
+    reasoningEffort,
+    reasoningTokenBudget,
     customApiUrl,
     customApiHeaders,
     customApiBody,
@@ -106,6 +116,9 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         useSearchGrounding,
         temperature,
         maxTokens,
+        reasoningMode,
+        reasoningEffort,
+        reasoningTokenBudget,
       })
     }
 
@@ -148,6 +161,9 @@ export async function getVercelAIChatResponseStream(
     useSearchGrounding,
     temperature,
     maxTokens,
+    reasoningMode,
+    reasoningEffort,
+    reasoningTokenBudget,
     customApiUrl,
     customApiHeaders,
     customApiBody,
@@ -190,6 +206,9 @@ export async function getVercelAIChatResponseStream(
       useSearchGrounding,
       temperature,
       maxTokens,
+      reasoningMode,
+      reasoningEffort,
+      reasoningTokenBudget,
     })
   }
 
@@ -267,6 +286,8 @@ export async function getVercelAIChatResponseStream(
 
                   if (data.type === 'text-delta' && data.delta) {
                     controller.enqueue(data.delta)
+                  } else if (data.type === 'reasoning-delta' && data.delta) {
+                    controller.enqueue(THINKING_MARKER + data.delta)
                   } else if (
                     data.type === 'tool-input-start' &&
                     data.toolName

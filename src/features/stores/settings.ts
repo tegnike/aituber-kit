@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
 import { isDemoMode } from '@/utils/demoMode'
@@ -17,6 +18,13 @@ import {
 } from '@/features/kiosk/kioskTypes'
 import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
+  DEFAULT_PROMPT_EVALUATE,
+  DEFAULT_PROMPT_CONTINUATION,
+  DEFAULT_PROMPT_SLEEP,
+  DEFAULT_PROMPT_NEW_TOPIC,
+  DEFAULT_PROMPT_SELECT_COMMENT,
+} from '@/lib/mastra/defaultPrompts'
+import {
   AIService,
   AIVoice,
   Language,
@@ -28,8 +36,12 @@ import {
   AudioModeInputType,
   SpeechRecognitionMode,
   WhisperTranscriptionModel,
+  ReasoningEffort,
 } from '../constants/settings'
-import { googleSearchGroundingModels } from '../constants/aiModels'
+import {
+  googleSearchGroundingModels,
+  defaultModels,
+} from '../constants/aiModels'
 import { migrateOpenAIModelName } from '@/utils/modelMigration'
 
 export type googleSearchGroundingModelKey =
@@ -139,6 +151,7 @@ interface Integrations {
   difyUrl: string
   difyConversationId: string
   youtubeMode: boolean
+  youtubeCommentSource: 'youtube-api' | 'onecomme'
   youtubeLiveId: string
   youtubePlaying: boolean
   youtubeNextPageToken: string
@@ -146,10 +159,20 @@ interface Integrations {
   youtubeNoCommentCount: number
   youtubeSleepMode: boolean
   conversationContinuityMode: boolean
+  conversationContinuityNewTopicThreshold: number
+  conversationContinuitySleepThreshold: number
+  conversationContinuityPromptEvaluate: string
+  conversationContinuityPromptContinuation: string
+  conversationContinuityPromptSelectComment: string
+  conversationContinuityPromptNewTopic: string
+  conversationContinuityPromptSleep: string
+  onecommePort: number
+  youtubeCommentInterval: number
 }
 
 interface Character {
   characterName: string
+  userDisplayName: string
   characterPreset1: string
   characterPreset2: string
   characterPreset3: string
@@ -179,6 +202,14 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  selectedPNGTuberPath: string
+  pngTuberSensitivity: number
+  pngTuberChromaKeyEnabled: boolean
+  pngTuberChromaKeyColor: string
+  pngTuberChromaKeyTolerance: number
+  pngTuberScale: number
+  pngTuberOffsetX: number
+  pngTuberOffsetY: number
 }
 
 // Preset question type
@@ -210,6 +241,10 @@ interface General {
   useVideoAsBackground: boolean
   temperature: number
   maxTokens: number
+  reasoningMode: boolean
+  reasoningEffort: ReasoningEffort
+  reasoningTokenBudget: number
+  showThinkingText: boolean
   noSpeechTimeout: number
   showSilenceProgressBar: boolean
   continuousMicListeningMode: boolean
@@ -228,7 +263,7 @@ interface General {
 }
 
 interface ModelType {
-  modelType: 'vrm' | 'live2d'
+  modelType: 'vrm' | 'live2d' | 'pngtuber'
 }
 
 // Presence detection sensitivity type
@@ -288,7 +323,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   selectAIService:
     (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai',
   selectAIModel: migrateOpenAIModelName(
-    process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gpt-4.1'
+    process.env.NEXT_PUBLIC_SELECT_AI_MODEL ||
+      defaultModels[
+        (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'openai'
+      ]
   ),
   localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
   selectVoice: (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
@@ -389,6 +427,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   difyUrl: '',
   difyConversationId: '',
   youtubeMode: process.env.NEXT_PUBLIC_YOUTUBE_MODE === 'true' ? true : false,
+  youtubeCommentSource:
+    (process.env.NEXT_PUBLIC_YOUTUBE_COMMENT_SOURCE as
+      | 'youtube-api'
+      | 'onecomme') || 'youtube-api',
   youtubeLiveId: process.env.NEXT_PUBLIC_YOUTUBE_LIVE_ID || '',
   youtubePlaying: false,
   youtubeNextPageToken: '',
@@ -396,9 +438,37 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   youtubeNoCommentCount: 0,
   youtubeSleepMode: false,
   conversationContinuityMode: false,
+  conversationContinuityNewTopicThreshold:
+    parseInt(
+      process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_NEW_TOPIC_THRESHOLD || '3'
+    ) || 3,
+  conversationContinuitySleepThreshold:
+    parseInt(
+      process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_SLEEP_THRESHOLD || '6'
+    ) || 6,
+  conversationContinuityPromptEvaluate:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_EVALUATE ||
+    DEFAULT_PROMPT_EVALUATE,
+  conversationContinuityPromptContinuation:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_CONTINUATION ||
+    DEFAULT_PROMPT_CONTINUATION,
+  conversationContinuityPromptSelectComment:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SELECT_COMMENT ||
+    DEFAULT_PROMPT_SELECT_COMMENT,
+  conversationContinuityPromptNewTopic:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_NEW_TOPIC ||
+    DEFAULT_PROMPT_NEW_TOPIC,
+  conversationContinuityPromptSleep:
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SLEEP ||
+    DEFAULT_PROMPT_SLEEP,
+  onecommePort:
+    parseInt(process.env.NEXT_PUBLIC_ONECOMME_PORT || '11180') || 11180,
+  youtubeCommentInterval:
+    parseInt(process.env.NEXT_PUBLIC_YOUTUBE_COMMENT_INTERVAL || '10') || 10,
 
   // Character
   characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
+  userDisplayName: process.env.NEXT_PUBLIC_USER_DISPLAY_NAME || 'YOU',
   characterPreset1: process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
   characterPreset2: process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
   characterPreset3: process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
@@ -481,6 +551,12 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     process.env.NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND === 'true',
   temperature: parseFloat(process.env.NEXT_PUBLIC_TEMPERATURE || '1.0') || 1.0,
   maxTokens: parseInt(process.env.NEXT_PUBLIC_MAX_TOKENS || '4096') || 4096,
+  reasoningMode: process.env.NEXT_PUBLIC_REASONING_MODE === 'true',
+  reasoningEffort:
+    (process.env.NEXT_PUBLIC_REASONING_EFFORT as ReasoningEffort) || 'medium',
+  reasoningTokenBudget:
+    parseInt(process.env.NEXT_PUBLIC_REASONING_TOKEN_BUDGET || '8192') || 8192,
+  showThinkingText: process.env.NEXT_PUBLIC_SHOW_THINKING_TEXT === 'true',
   noSpeechTimeout:
     parseFloat(process.env.NEXT_PUBLIC_NO_SPEECH_TIMEOUT || '5.0') || 5.0,
   showSilenceProgressBar:
@@ -551,7 +627,28 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     0.1,
 
   // Settings
-  modelType: (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d') || 'vrm',
+  modelType:
+    (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d' | 'pngtuber') ||
+    'vrm',
+  selectedPNGTuberPath:
+    process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
+  pngTuberSensitivity:
+    parseInt(process.env.NEXT_PUBLIC_PNGTUBER_SENSITIVITY || '50', 10) || 50,
+  pngTuberChromaKeyEnabled:
+    process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_ENABLED === 'true',
+  pngTuberChromaKeyColor:
+    process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_COLOR || '#00FF00',
+  pngTuberChromaKeyTolerance:
+    parseInt(
+      process.env.NEXT_PUBLIC_PNGTUBER_CHROMA_KEY_TOLERANCE || '50',
+      10
+    ) || 50,
+  pngTuberScale:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_SCALE || '1.0') || 1.0,
+  pngTuberOffsetX:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_X || '0') || 0,
+  pngTuberOffsetY:
+    parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
 
   // Memory settings
   memoryEnabled:
@@ -663,213 +760,252 @@ const getInitialValuesFromEnv = (): SettingsState => ({
 })
 
 const settingsStore = create<SettingsState>()(
-  persist((set, get) => getInitialValuesFromEnv(), {
-    name: 'aitube-kit-settings',
-    onRehydrateStorage: () => (state) => {
-      // Migrate OpenAI model names when loading from storage
-      if (state && state.selectAIService === 'openai' && state.selectAIModel) {
-        const migratedModel = migrateOpenAIModelName(state.selectAIModel)
-        if (migratedModel !== state.selectAIModel) {
-          state.selectAIModel = migratedModel
+  exclusivityMiddleware(
+    persist((set, get) => getInitialValuesFromEnv(), {
+      name: 'aitube-kit-settings',
+      onRehydrateStorage: () => (state) => {
+        // Migrate OpenAI model names when loading from storage
+        if (
+          state &&
+          state.selectAIService === 'openai' &&
+          state.selectAIModel
+        ) {
+          const migratedModel = migrateOpenAIModelName(state.selectAIModel)
+          if (migratedModel !== state.selectAIModel) {
+            state.selectAIModel = migratedModel
+          }
         }
-      }
 
-      // Force disable WebSocket-related features in demo mode
-      if (state && isDemoMode()) {
-        state.realtimeAPIMode = false
-        state.audioMode = false
-      }
+        // Force disable WebSocket-related features in demo mode
+        if (state && isDemoMode()) {
+          state.realtimeAPIMode = false
+          state.audioMode = false
+        }
 
-      // Override with environment variables if the option is enabled
-      if (
-        state &&
-        process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES === 'true'
-      ) {
-        const envValues = getInitialValuesFromEnv()
-        Object.assign(state, envValues)
-      }
-    },
-    partialize: (state) => ({
-      openaiKey: state.openaiKey,
-      anthropicKey: state.anthropicKey,
-      googleKey: state.googleKey,
-      azureKey: state.azureKey,
-      xaiKey: state.xaiKey,
-      groqKey: state.groqKey,
-      cohereKey: state.cohereKey,
-      mistralaiKey: state.mistralaiKey,
-      perplexityKey: state.perplexityKey,
-      fireworksKey: state.fireworksKey,
-      difyKey: state.difyKey,
-      deepseekKey: state.deepseekKey,
-      openrouterKey: state.openrouterKey,
-      lmstudioKey: state.lmstudioKey,
-      ollamaKey: state.ollamaKey,
-      koeiromapKey: state.koeiromapKey,
-      youtubeApiKey: state.youtubeApiKey,
-      elevenlabsApiKey: state.elevenlabsApiKey,
-      azureEndpoint: state.azureEndpoint,
-      selectAIService: state.selectAIService,
-      selectAIModel: state.selectAIModel,
-      localLlmUrl: state.localLlmUrl,
-      selectVoice: state.selectVoice,
-      koeiroParam: state.koeiroParam,
-      googleTtsType: state.googleTtsType,
-      voicevoxSpeaker: state.voicevoxSpeaker,
-      voicevoxSpeed: state.voicevoxSpeed,
-      voicevoxPitch: state.voicevoxPitch,
-      voicevoxIntonation: state.voicevoxIntonation,
-      voicevoxServerUrl: state.voicevoxServerUrl,
-      aivisSpeechSpeaker: state.aivisSpeechSpeaker,
-      aivisSpeechSpeed: state.aivisSpeechSpeed,
-      aivisSpeechPitch: state.aivisSpeechPitch,
-      aivisSpeechIntonationScale: state.aivisSpeechIntonationScale,
-      aivisSpeechServerUrl: state.aivisSpeechServerUrl,
-      aivisSpeechTempoDynamics: state.aivisSpeechTempoDynamics,
-      aivisSpeechPrePhonemeLength: state.aivisSpeechPrePhonemeLength,
-      aivisSpeechPostPhonemeLength: state.aivisSpeechPostPhonemeLength,
-      aivisCloudApiKey: state.aivisCloudApiKey,
-      aivisCloudModelUuid: state.aivisCloudModelUuid,
-      aivisCloudStyleId: state.aivisCloudStyleId,
-      aivisCloudStyleName: state.aivisCloudStyleName,
-      aivisCloudUseStyleName: state.aivisCloudUseStyleName,
-      aivisCloudSpeed: state.aivisCloudSpeed,
-      aivisCloudPitch: state.aivisCloudPitch,
-      aivisCloudIntonationScale: state.aivisCloudIntonationScale,
-      aivisCloudTempoDynamics: state.aivisCloudTempoDynamics,
-      aivisCloudPrePhonemeLength: state.aivisCloudPrePhonemeLength,
-      aivisCloudPostPhonemeLength: state.aivisCloudPostPhonemeLength,
-      stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
-      stylebertvits2ModelId: state.stylebertvits2ModelId,
-      stylebertvits2ApiKey: state.stylebertvits2ApiKey,
-      stylebertvits2Style: state.stylebertvits2Style,
-      stylebertvits2SdpRatio: state.stylebertvits2SdpRatio,
-      stylebertvits2Length: state.stylebertvits2Length,
-      gsviTtsServerUrl: state.gsviTtsServerUrl,
-      gsviTtsModelId: state.gsviTtsModelId,
-      gsviTtsBatchSize: state.gsviTtsBatchSize,
-      gsviTtsSpeechRate: state.gsviTtsSpeechRate,
-      elevenlabsVoiceId: state.elevenlabsVoiceId,
-      cartesiaVoiceId: state.cartesiaVoiceId,
-      difyUrl: state.difyUrl,
-      difyConversationId: state.difyConversationId,
-      youtubeLiveId: state.youtubeLiveId,
-      characterName: state.characterName,
-      characterPreset1: state.characterPreset1,
-      characterPreset2: state.characterPreset2,
-      characterPreset3: state.characterPreset3,
-      characterPreset4: state.characterPreset4,
-      characterPreset5: state.characterPreset5,
-      customPresetName1: state.customPresetName1,
-      customPresetName2: state.customPresetName2,
-      customPresetName3: state.customPresetName3,
-      customPresetName4: state.customPresetName4,
-      customPresetName5: state.customPresetName5,
-      selectedPresetIndex: state.selectedPresetIndex,
-      showAssistantText: state.showAssistantText,
-      showCharacterName: state.showCharacterName,
-      systemPrompt: state.systemPrompt,
-      selectLanguage: state.selectLanguage,
-      changeEnglishToJapanese: state.changeEnglishToJapanese,
-      includeTimestampInUserMessage: state.includeTimestampInUserMessage,
-      externalLinkageMode: state.externalLinkageMode,
-      realtimeAPIMode: state.realtimeAPIMode,
-      realtimeAPIModeContentType: state.realtimeAPIModeContentType,
-      realtimeAPIModeVoice: state.realtimeAPIModeVoice,
-      audioMode: state.audioMode,
-      audioModeInputType: state.audioModeInputType,
-      audioModeVoice: state.audioModeVoice,
-      messageReceiverEnabled: state.messageReceiverEnabled,
-      clientId: state.clientId,
-      useSearchGrounding: state.useSearchGrounding,
-      openaiTTSVoice: state.openaiTTSVoice,
-      openaiTTSModel: state.openaiTTSModel,
-      openaiTTSSpeed: state.openaiTTSSpeed,
-      azureTTSKey: state.azureTTSKey,
-      azureTTSEndpoint: state.azureTTSEndpoint,
-      selectedVrmPath: state.selectedVrmPath,
-      selectedLive2DPath: state.selectedLive2DPath,
-      fixedCharacterPosition: state.fixedCharacterPosition,
-      characterPosition: state.characterPosition,
-      characterRotation: state.characterRotation,
-      lightingIntensity: state.lightingIntensity,
-      nijivoiceApiKey: state.nijivoiceApiKey,
-      nijivoiceActorId: state.nijivoiceActorId,
-      nijivoiceSpeed: state.nijivoiceSpeed,
-      nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
-      nijivoiceSoundDuration: state.nijivoiceSoundDuration,
-      modelType: state.modelType,
-      neutralEmotions: state.neutralEmotions,
-      happyEmotions: state.happyEmotions,
-      sadEmotions: state.sadEmotions,
-      angryEmotions: state.angryEmotions,
-      relaxedEmotions: state.relaxedEmotions,
-      surprisedEmotions: state.surprisedEmotions,
-      idleMotionGroup: state.idleMotionGroup,
-      neutralMotionGroup: state.neutralMotionGroup,
-      happyMotionGroup: state.happyMotionGroup,
-      sadMotionGroup: state.sadMotionGroup,
-      angryMotionGroup: state.angryMotionGroup,
-      relaxedMotionGroup: state.relaxedMotionGroup,
-      surprisedMotionGroup: state.surprisedMotionGroup,
-      maxPastMessages: state.maxPastMessages,
-      useVideoAsBackground: state.useVideoAsBackground,
-      showQuickMenu: state.showQuickMenu,
-      temperature: state.temperature,
-      maxTokens: state.maxTokens,
-      noSpeechTimeout: state.noSpeechTimeout,
-      showSilenceProgressBar: state.showSilenceProgressBar,
-      continuousMicListeningMode: state.continuousMicListeningMode,
-      presetQuestions: state.presetQuestions,
-      showPresetQuestions: state.showPresetQuestions,
-      speechRecognitionMode: state.speechRecognitionMode,
-      whisperTranscriptionModel: state.whisperTranscriptionModel,
-      customApiUrl: state.customApiUrl,
-      customApiHeaders: state.customApiHeaders,
-      customApiBody: state.customApiBody,
-      customApiStream: state.customApiStream,
-      includeSystemMessagesInCustomApi: state.includeSystemMessagesInCustomApi,
-      customApiIncludeMimeType: state.customApiIncludeMimeType,
-      initialSpeechTimeout: state.initialSpeechTimeout,
-      chatLogWidth: state.chatLogWidth,
-      imageDisplayPosition: state.imageDisplayPosition,
-      multiModalMode: state.multiModalMode,
-      multiModalAiDecisionPrompt: state.multiModalAiDecisionPrompt,
-      enableMultiModal: state.enableMultiModal,
-      colorTheme: state.colorTheme,
-      customModel: state.customModel,
-      memoryEnabled: state.memoryEnabled,
-      memorySimilarityThreshold: state.memorySimilarityThreshold,
-      memorySearchLimit: state.memorySearchLimit,
-      memoryMaxContextTokens: state.memoryMaxContextTokens,
-      presenceDetectionEnabled: state.presenceDetectionEnabled,
-      presenceGreetingMessage: state.presenceGreetingMessage,
-      presenceDepartureTimeout: state.presenceDepartureTimeout,
-      presenceCooldownTime: state.presenceCooldownTime,
-      presenceDetectionSensitivity: state.presenceDetectionSensitivity,
-      presenceDebugMode: state.presenceDebugMode,
-      // Idle mode settings
-      idleModeEnabled: state.idleModeEnabled,
-      idlePhrases: state.idlePhrases,
-      idlePlaybackMode: state.idlePlaybackMode,
-      idleInterval: state.idleInterval,
-      idleDefaultEmotion: state.idleDefaultEmotion,
-      idleTimePeriodEnabled: state.idleTimePeriodEnabled,
-      idleTimePeriodMorning: state.idleTimePeriodMorning,
-      idleTimePeriodAfternoon: state.idleTimePeriodAfternoon,
-      idleTimePeriodEvening: state.idleTimePeriodEvening,
-      idleAiGenerationEnabled: state.idleAiGenerationEnabled,
-      idleAiPromptTemplate: state.idleAiPromptTemplate,
-      // Kiosk mode settings (kioskTemporaryUnlock is NOT persisted)
-      kioskModeEnabled: state.kioskModeEnabled,
-      kioskPasscode: state.kioskPasscode,
-      kioskGuidanceMessage: state.kioskGuidanceMessage,
-      kioskGuidanceTimeout: state.kioskGuidanceTimeout,
-      kioskMaxInputLength: state.kioskMaxInputLength,
-      kioskNgWords: state.kioskNgWords,
-      kioskNgWordEnabled: state.kioskNgWordEnabled,
-    }),
-  })
+        // Override with environment variables if the option is enabled
+        if (
+          state &&
+          process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES === 'true'
+        ) {
+          const envValues = getInitialValuesFromEnv()
+          Object.assign(state, envValues)
+        }
+      },
+      partialize: (state) => ({
+        openaiKey: state.openaiKey,
+        anthropicKey: state.anthropicKey,
+        googleKey: state.googleKey,
+        azureKey: state.azureKey,
+        xaiKey: state.xaiKey,
+        groqKey: state.groqKey,
+        cohereKey: state.cohereKey,
+        mistralaiKey: state.mistralaiKey,
+        perplexityKey: state.perplexityKey,
+        fireworksKey: state.fireworksKey,
+        difyKey: state.difyKey,
+        deepseekKey: state.deepseekKey,
+        openrouterKey: state.openrouterKey,
+        lmstudioKey: state.lmstudioKey,
+        ollamaKey: state.ollamaKey,
+        koeiromapKey: state.koeiromapKey,
+        youtubeApiKey: state.youtubeApiKey,
+        elevenlabsApiKey: state.elevenlabsApiKey,
+        azureEndpoint: state.azureEndpoint,
+        selectAIService: state.selectAIService,
+        selectAIModel: state.selectAIModel,
+        localLlmUrl: state.localLlmUrl,
+        selectVoice: state.selectVoice,
+        koeiroParam: state.koeiroParam,
+        googleTtsType: state.googleTtsType,
+        voicevoxSpeaker: state.voicevoxSpeaker,
+        voicevoxSpeed: state.voicevoxSpeed,
+        voicevoxPitch: state.voicevoxPitch,
+        voicevoxIntonation: state.voicevoxIntonation,
+        voicevoxServerUrl: state.voicevoxServerUrl,
+        aivisSpeechSpeaker: state.aivisSpeechSpeaker,
+        aivisSpeechSpeed: state.aivisSpeechSpeed,
+        aivisSpeechPitch: state.aivisSpeechPitch,
+        aivisSpeechIntonationScale: state.aivisSpeechIntonationScale,
+        aivisSpeechServerUrl: state.aivisSpeechServerUrl,
+        aivisSpeechTempoDynamics: state.aivisSpeechTempoDynamics,
+        aivisSpeechPrePhonemeLength: state.aivisSpeechPrePhonemeLength,
+        aivisSpeechPostPhonemeLength: state.aivisSpeechPostPhonemeLength,
+        aivisCloudApiKey: state.aivisCloudApiKey,
+        aivisCloudModelUuid: state.aivisCloudModelUuid,
+        aivisCloudStyleId: state.aivisCloudStyleId,
+        aivisCloudStyleName: state.aivisCloudStyleName,
+        aivisCloudUseStyleName: state.aivisCloudUseStyleName,
+        aivisCloudSpeed: state.aivisCloudSpeed,
+        aivisCloudPitch: state.aivisCloudPitch,
+        aivisCloudIntonationScale: state.aivisCloudIntonationScale,
+        aivisCloudTempoDynamics: state.aivisCloudTempoDynamics,
+        aivisCloudPrePhonemeLength: state.aivisCloudPrePhonemeLength,
+        aivisCloudPostPhonemeLength: state.aivisCloudPostPhonemeLength,
+        stylebertvits2ServerUrl: state.stylebertvits2ServerUrl,
+        stylebertvits2ModelId: state.stylebertvits2ModelId,
+        stylebertvits2ApiKey: state.stylebertvits2ApiKey,
+        stylebertvits2Style: state.stylebertvits2Style,
+        stylebertvits2SdpRatio: state.stylebertvits2SdpRatio,
+        stylebertvits2Length: state.stylebertvits2Length,
+        gsviTtsServerUrl: state.gsviTtsServerUrl,
+        gsviTtsModelId: state.gsviTtsModelId,
+        gsviTtsBatchSize: state.gsviTtsBatchSize,
+        gsviTtsSpeechRate: state.gsviTtsSpeechRate,
+        elevenlabsVoiceId: state.elevenlabsVoiceId,
+        cartesiaVoiceId: state.cartesiaVoiceId,
+        difyUrl: state.difyUrl,
+        difyConversationId: state.difyConversationId,
+        youtubeMode: state.youtubeMode,
+        youtubeLiveId: state.youtubeLiveId,
+        youtubeCommentSource: state.youtubeCommentSource,
+        onecommePort: state.onecommePort,
+        youtubeCommentInterval: state.youtubeCommentInterval,
+        conversationContinuityMode: state.conversationContinuityMode,
+        conversationContinuityNewTopicThreshold:
+          state.conversationContinuityNewTopicThreshold,
+        conversationContinuitySleepThreshold:
+          state.conversationContinuitySleepThreshold,
+        conversationContinuityPromptEvaluate:
+          state.conversationContinuityPromptEvaluate,
+        conversationContinuityPromptContinuation:
+          state.conversationContinuityPromptContinuation,
+        conversationContinuityPromptSelectComment:
+          state.conversationContinuityPromptSelectComment,
+        conversationContinuityPromptNewTopic:
+          state.conversationContinuityPromptNewTopic,
+        conversationContinuityPromptSleep:
+          state.conversationContinuityPromptSleep,
+        characterName: state.characterName,
+        userDisplayName: state.userDisplayName,
+        characterPreset1: state.characterPreset1,
+        characterPreset2: state.characterPreset2,
+        characterPreset3: state.characterPreset3,
+        characterPreset4: state.characterPreset4,
+        characterPreset5: state.characterPreset5,
+        customPresetName1: state.customPresetName1,
+        customPresetName2: state.customPresetName2,
+        customPresetName3: state.customPresetName3,
+        customPresetName4: state.customPresetName4,
+        customPresetName5: state.customPresetName5,
+        selectedPresetIndex: state.selectedPresetIndex,
+        showAssistantText: state.showAssistantText,
+        showCharacterName: state.showCharacterName,
+        systemPrompt: state.systemPrompt,
+        selectLanguage: state.selectLanguage,
+        changeEnglishToJapanese: state.changeEnglishToJapanese,
+        includeTimestampInUserMessage: state.includeTimestampInUserMessage,
+        externalLinkageMode: state.externalLinkageMode,
+        realtimeAPIMode: state.realtimeAPIMode,
+        realtimeAPIModeContentType: state.realtimeAPIModeContentType,
+        realtimeAPIModeVoice: state.realtimeAPIModeVoice,
+        audioMode: state.audioMode,
+        audioModeInputType: state.audioModeInputType,
+        audioModeVoice: state.audioModeVoice,
+        messageReceiverEnabled: state.messageReceiverEnabled,
+        clientId: state.clientId,
+        useSearchGrounding: state.useSearchGrounding,
+        openaiTTSVoice: state.openaiTTSVoice,
+        openaiTTSModel: state.openaiTTSModel,
+        openaiTTSSpeed: state.openaiTTSSpeed,
+        azureTTSKey: state.azureTTSKey,
+        azureTTSEndpoint: state.azureTTSEndpoint,
+        selectedVrmPath: state.selectedVrmPath,
+        selectedLive2DPath: state.selectedLive2DPath,
+        fixedCharacterPosition: state.fixedCharacterPosition,
+        characterPosition: state.characterPosition,
+        characterRotation: state.characterRotation,
+        lightingIntensity: state.lightingIntensity,
+        nijivoiceApiKey: state.nijivoiceApiKey,
+        nijivoiceActorId: state.nijivoiceActorId,
+        nijivoiceSpeed: state.nijivoiceSpeed,
+        nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
+        nijivoiceSoundDuration: state.nijivoiceSoundDuration,
+        modelType: state.modelType,
+        selectedPNGTuberPath: state.selectedPNGTuberPath,
+        pngTuberSensitivity: state.pngTuberSensitivity,
+        pngTuberChromaKeyEnabled: state.pngTuberChromaKeyEnabled,
+        pngTuberChromaKeyColor: state.pngTuberChromaKeyColor,
+        pngTuberChromaKeyTolerance: state.pngTuberChromaKeyTolerance,
+        pngTuberScale: state.pngTuberScale,
+        pngTuberOffsetX: state.pngTuberOffsetX,
+        pngTuberOffsetY: state.pngTuberOffsetY,
+        neutralEmotions: state.neutralEmotions,
+        happyEmotions: state.happyEmotions,
+        sadEmotions: state.sadEmotions,
+        angryEmotions: state.angryEmotions,
+        relaxedEmotions: state.relaxedEmotions,
+        surprisedEmotions: state.surprisedEmotions,
+        idleMotionGroup: state.idleMotionGroup,
+        neutralMotionGroup: state.neutralMotionGroup,
+        happyMotionGroup: state.happyMotionGroup,
+        sadMotionGroup: state.sadMotionGroup,
+        angryMotionGroup: state.angryMotionGroup,
+        relaxedMotionGroup: state.relaxedMotionGroup,
+        surprisedMotionGroup: state.surprisedMotionGroup,
+        maxPastMessages: state.maxPastMessages,
+        useVideoAsBackground: state.useVideoAsBackground,
+        showQuickMenu: state.showQuickMenu,
+        temperature: state.temperature,
+        maxTokens: state.maxTokens,
+        reasoningMode: state.reasoningMode,
+        reasoningEffort: state.reasoningEffort,
+        reasoningTokenBudget: state.reasoningTokenBudget,
+        showThinkingText: state.showThinkingText,
+        noSpeechTimeout: state.noSpeechTimeout,
+        showSilenceProgressBar: state.showSilenceProgressBar,
+        continuousMicListeningMode: state.continuousMicListeningMode,
+        presetQuestions: state.presetQuestions,
+        showPresetQuestions: state.showPresetQuestions,
+        speechRecognitionMode: state.speechRecognitionMode,
+        whisperTranscriptionModel: state.whisperTranscriptionModel,
+        customApiUrl: state.customApiUrl,
+        customApiHeaders: state.customApiHeaders,
+        customApiBody: state.customApiBody,
+        customApiStream: state.customApiStream,
+        includeSystemMessagesInCustomApi:
+          state.includeSystemMessagesInCustomApi,
+        customApiIncludeMimeType: state.customApiIncludeMimeType,
+        initialSpeechTimeout: state.initialSpeechTimeout,
+        chatLogWidth: state.chatLogWidth,
+        imageDisplayPosition: state.imageDisplayPosition,
+        multiModalMode: state.multiModalMode,
+        multiModalAiDecisionPrompt: state.multiModalAiDecisionPrompt,
+        enableMultiModal: state.enableMultiModal,
+        colorTheme: state.colorTheme,
+        customModel: state.customModel,
+        memoryEnabled: state.memoryEnabled,
+        memorySimilarityThreshold: state.memorySimilarityThreshold,
+        memorySearchLimit: state.memorySearchLimit,
+        memoryMaxContextTokens: state.memoryMaxContextTokens,
+        presenceDetectionEnabled: state.presenceDetectionEnabled,
+        presenceGreetingMessage: state.presenceGreetingMessage,
+        presenceDepartureTimeout: state.presenceDepartureTimeout,
+        presenceCooldownTime: state.presenceCooldownTime,
+        presenceDetectionSensitivity: state.presenceDetectionSensitivity,
+        presenceDebugMode: state.presenceDebugMode,
+        // Idle mode settings
+        idleModeEnabled: state.idleModeEnabled,
+        idlePhrases: state.idlePhrases,
+        idlePlaybackMode: state.idlePlaybackMode,
+        idleInterval: state.idleInterval,
+        idleDefaultEmotion: state.idleDefaultEmotion,
+        idleTimePeriodEnabled: state.idleTimePeriodEnabled,
+        idleTimePeriodMorning: state.idleTimePeriodMorning,
+        idleTimePeriodAfternoon: state.idleTimePeriodAfternoon,
+        idleTimePeriodEvening: state.idleTimePeriodEvening,
+        idleAiGenerationEnabled: state.idleAiGenerationEnabled,
+        idleAiPromptTemplate: state.idleAiPromptTemplate,
+        // Kiosk mode settings (kioskTemporaryUnlock is NOT persisted)
+        kioskModeEnabled: state.kioskModeEnabled,
+        kioskPasscode: state.kioskPasscode,
+        kioskGuidanceMessage: state.kioskGuidanceMessage,
+        kioskGuidanceTimeout: state.kioskGuidanceTimeout,
+        kioskMaxInputLength: state.kioskMaxInputLength,
+        kioskNgWords: state.kioskNgWords,
+        kioskNgWordEnabled: state.kioskNgWordEnabled,
+      }),
+    })
+  )
 )
 
 export default settingsStore
