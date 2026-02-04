@@ -51,8 +51,7 @@ certificates
 # Live2D files
 public/live2d/*
 !public/live2d/nike01
-public/scripts/*
-!public/scripts/.gitkeep
+public/scripts/live2dcubismcore.min.js
 
 # VRM files
 /public/vrm/*
