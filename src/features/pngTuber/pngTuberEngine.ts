@@ -36,6 +36,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
 
   // 音声関連
   private audioContext: AudioContext | null = null
+  private audioWorkletReady: Promise<void> | null = null
   private workletNode: AudioWorkletNode | null = null
   private currentSource: AudioBufferSourceNode | null = null
   private volume = 0
@@ -192,15 +193,19 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    * AudioContextを初期化（TTS音声用）
    */
   async initAudioContext(): Promise<void> {
-    if (this.audioContext) return
+    if (this.audioWorkletReady) {
+      await this.audioWorkletReady
+      return
+    }
 
     this.audioContext = new AudioContext()
 
     // AudioWorkletを登録
     if (this.audioContext.audioWorklet) {
-      await this.audioContext.audioWorklet.addModule(
+      this.audioWorkletReady = this.audioContext.audioWorklet.addModule(
         '/scripts/volume-analyzer-worklet.js'
       )
+      await this.audioWorkletReady
     }
   }
 
@@ -1048,6 +1053,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     if (this.audioContext) {
       this.audioContext.close().catch(() => {})
       this.audioContext = null
+      this.audioWorkletReady = null
     }
 
     if (this.resizeObserver) {
