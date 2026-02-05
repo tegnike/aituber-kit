@@ -62,8 +62,11 @@ export interface IdleModeSettings {
   // Time period greeting settings (optional feature)
   idleTimePeriodEnabled: boolean
   idleTimePeriodMorning: string
+  idleTimePeriodMorningEmotion: EmotionType
   idleTimePeriodAfternoon: string
+  idleTimePeriodAfternoonEmotion: EmotionType
   idleTimePeriodEvening: string
+  idleTimePeriodEveningEmotion: EmotionType
 
   // AI generation settings (optional feature)
   idleAiGenerationEnabled: boolean
@@ -79,8 +82,11 @@ export const DEFAULT_IDLE_CONFIG: IdleModeSettings = {
   idleDefaultEmotion: 'neutral',
   idleTimePeriodEnabled: false,
   idleTimePeriodMorning: 'おはようございます！',
+  idleTimePeriodMorningEmotion: 'happy',
   idleTimePeriodAfternoon: 'こんにちは！',
+  idleTimePeriodAfternoonEmotion: 'happy',
   idleTimePeriodEvening: 'こんばんは！',
+  idleTimePeriodEveningEmotion: 'relaxed',
   idleAiGenerationEnabled: false,
   idleAiPromptTemplate:
     '展示会の来場者に向けて、親しみやすい一言を生成してください。',

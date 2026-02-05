@@ -724,12 +724,18 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   idleTimePeriodMorning:
     process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_MORNING ||
     DEFAULT_IDLE_CONFIG.idleTimePeriodMorning,
+  idleTimePeriodMorningEmotion:
+    DEFAULT_IDLE_CONFIG.idleTimePeriodMorningEmotion,
   idleTimePeriodAfternoon:
     process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_AFTERNOON ||
     DEFAULT_IDLE_CONFIG.idleTimePeriodAfternoon,
+  idleTimePeriodAfternoonEmotion:
+    DEFAULT_IDLE_CONFIG.idleTimePeriodAfternoonEmotion,
   idleTimePeriodEvening:
     process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_EVENING ||
     DEFAULT_IDLE_CONFIG.idleTimePeriodEvening,
+  idleTimePeriodEveningEmotion:
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEveningEmotion,
   idleAiGenerationEnabled:
     process.env.NEXT_PUBLIC_IDLE_AI_GENERATION_ENABLED === 'true' ||
     DEFAULT_IDLE_CONFIG.idleAiGenerationEnabled,
@@ -1051,8 +1057,11 @@ const settingsStore = create<SettingsState>()(
         idleDefaultEmotion: state.idleDefaultEmotion,
         idleTimePeriodEnabled: state.idleTimePeriodEnabled,
         idleTimePeriodMorning: state.idleTimePeriodMorning,
+        idleTimePeriodMorningEmotion: state.idleTimePeriodMorningEmotion,
         idleTimePeriodAfternoon: state.idleTimePeriodAfternoon,
+        idleTimePeriodAfternoonEmotion: state.idleTimePeriodAfternoonEmotion,
         idleTimePeriodEvening: state.idleTimePeriodEvening,
+        idleTimePeriodEveningEmotion: state.idleTimePeriodEveningEmotion,
         idleAiGenerationEnabled: state.idleAiGenerationEnabled,
         idleAiPromptTemplate: state.idleAiPromptTemplate,
         // Kiosk mode settings (kioskTemporaryUnlock is NOT persisted)

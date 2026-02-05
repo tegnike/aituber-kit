@@ -37,13 +37,21 @@ const IdleSettings = () => {
   const idlePhrases = settingsStore((s) => s.idlePhrases)
   const idlePlaybackMode = settingsStore((s) => s.idlePlaybackMode)
   const idleInterval = settingsStore((s) => s.idleInterval)
-  const idleDefaultEmotion = settingsStore((s) => s.idleDefaultEmotion)
   const idleTimePeriodEnabled = settingsStore((s) => s.idleTimePeriodEnabled)
   const idleTimePeriodMorning = settingsStore((s) => s.idleTimePeriodMorning)
+  const idleTimePeriodMorningEmotion = settingsStore(
+    (s) => s.idleTimePeriodMorningEmotion
+  )
   const idleTimePeriodAfternoon = settingsStore(
     (s) => s.idleTimePeriodAfternoon
   )
+  const idleTimePeriodAfternoonEmotion = settingsStore(
+    (s) => s.idleTimePeriodAfternoonEmotion
+  )
   const idleTimePeriodEvening = settingsStore((s) => s.idleTimePeriodEvening)
+  const idleTimePeriodEveningEmotion = settingsStore(
+    (s) => s.idleTimePeriodEveningEmotion
+  )
   const idleAiGenerationEnabled = settingsStore(
     (s) => s.idleAiGenerationEnabled
   )
@@ -82,14 +90,6 @@ const IdleSettings = () => {
   ) => {
     settingsStore.setState({
       idlePlaybackMode: e.target.value as IdlePlaybackMode,
-    })
-  }
-
-  const handleDefaultEmotionChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    settingsStore.setState({
-      idleDefaultEmotion: e.target.value as EmotionType,
     })
   }
 
@@ -223,101 +223,158 @@ const IdleSettings = () => {
           </div>
         </div>
 
-        {/* 再生モード */}
+        {/* 発話ソース */}
         <div className="my-6">
-          <div className="my-4 text-xl font-bold">{t('IdlePlaybackMode')}</div>
+          <div className="my-4 text-xl font-bold">{t('IdleSpeechSource')}</div>
           <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('IdlePlaybackModeInfo')}
+            {t('IdleSpeechSourceInfo')}
           </div>
           <div className="my-4">
             <select
-              value={idlePlaybackMode}
-              onChange={handlePlaybackModeChange}
-              aria-label={t('IdlePlaybackMode')}
-              className="w-40 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+              value={
+                idleTimePeriodEnabled
+                  ? 'timePeriod'
+                  : idleAiGenerationEnabled
+                    ? 'aiGeneration'
+                    : 'phraseList'
+              }
+              onChange={(e) => {
+                const value = e.target.value
+                settingsStore.setState({
+                  idleTimePeriodEnabled: value === 'timePeriod',
+                  idleAiGenerationEnabled: value === 'aiGeneration',
+                })
+              }}
+              aria-label={t('IdleSpeechSource')}
+              className="w-auto px-4 py-2 bg-white border border-gray-300 rounded-lg"
             >
-              <option value="sequential">{t('IdlePlaybackSequential')}</option>
-              <option value="random">{t('IdlePlaybackRandom')}</option>
+              <option value="phraseList">
+                {t('IdleSpeechSourcePhraseList')}
+              </option>
+              <option value="timePeriod">{t('IdleTimePeriodEnabled')}</option>
+              <option value="aiGeneration">
+                {t('IdleAiGenerationEnabled')}
+              </option>
             </select>
           </div>
-        </div>
 
-        {/* デフォルト感情 */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">
-            {t('IdleDefaultEmotion')}
-          </div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('IdleDefaultEmotionInfo')}
-          </div>
-          <div className="my-4">
-            <select
-              value={idleDefaultEmotion}
-              onChange={handleDefaultEmotionChange}
-              aria-label={t('IdleDefaultEmotion')}
-              className="w-40 px-4 py-2 bg-white border border-gray-300 rounded-lg"
-            >
-              {EMOTION_OPTIONS.map((emotion) => (
-                <option key={emotion} value={emotion}>
-                  {t(`Emotion_${emotion}`)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* 発話リスト */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">{t('IdlePhrases')}</div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('IdlePhrasesInfo')}
-          </div>
-
-          {/* 既存の発話リスト */}
-          {idlePhrases.length > 0 && (
-            <div className="my-4 space-y-2">
-              {idlePhrases.map((phrase, index) => (
-                <div
-                  key={phrase.id}
-                  className="flex items-center gap-2 p-2 bg-white border border-gray-300 rounded-lg"
+          {/* 発話リスト（phraseList選択時） */}
+          {!idleTimePeriodEnabled && !idleAiGenerationEnabled && (
+            <div className="my-4 space-y-4">
+              {/* 再生モード */}
+              <div>
+                <div className="my-2 text-sm font-medium">
+                  {t('IdlePlaybackMode')}
+                </div>
+                <div className="my-1 text-xs text-gray-500">
+                  {t('IdlePlaybackModeInfo')}
+                </div>
+                <select
+                  value={idlePlaybackMode}
+                  onChange={handlePlaybackModeChange}
+                  aria-label={t('IdlePlaybackMode')}
+                  className="w-40 px-4 py-2 bg-white border border-gray-300 rounded-lg"
                 >
-                  <div className="flex flex-col gap-1">
-                    <button
-                      onClick={() => handleMovePhrase(phrase.id, 'up')}
-                      disabled={index === 0}
-                      className="px-2 py-0.5 text-xs bg-gray-100 rounded disabled:opacity-30"
-                      aria-label={t('IdleMoveUp')}
-                    >
-                      ▲
-                    </button>
-                    <button
-                      onClick={() => handleMovePhrase(phrase.id, 'down')}
-                      disabled={index === idlePhrases.length - 1}
-                      className="px-2 py-0.5 text-xs bg-gray-100 rounded disabled:opacity-30"
-                      aria-label={t('IdleMoveDown')}
-                    >
-                      ▼
-                    </button>
+                  <option value="sequential">
+                    {t('IdlePlaybackSequential')}
+                  </option>
+                  <option value="random">{t('IdlePlaybackRandom')}</option>
+                </select>
+              </div>
+
+              {/* 発話リスト */}
+              <div>
+                <div className="my-2 text-sm font-medium">
+                  {t('IdlePhrases')}
+                </div>
+                <div className="my-1 text-xs text-gray-500">
+                  {t('IdlePhrasesInfo')}
+                </div>
+
+                {/* 既存の発話リスト */}
+                {idlePhrases.length > 0 && (
+                  <div className="my-4 space-y-2">
+                    {idlePhrases.map((phrase, index) => (
+                      <div
+                        key={phrase.id}
+                        className="flex items-center gap-2 p-2 bg-white border border-gray-300 rounded-lg"
+                      >
+                        <div className="flex flex-col gap-1">
+                          <button
+                            onClick={() => handleMovePhrase(phrase.id, 'up')}
+                            disabled={index === 0}
+                            className="px-2 py-0.5 text-xs bg-gray-100 rounded disabled:opacity-30"
+                            aria-label={t('IdleMoveUp')}
+                          >
+                            ▲
+                          </button>
+                          <button
+                            onClick={() => handleMovePhrase(phrase.id, 'down')}
+                            disabled={index === idlePhrases.length - 1}
+                            className="px-2 py-0.5 text-xs bg-gray-100 rounded disabled:opacity-30"
+                            aria-label={t('IdleMoveDown')}
+                          >
+                            ▼
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={phrase.text}
+                          onChange={(e) =>
+                            handlePhraseTextChange(phrase.id, e.target.value)
+                          }
+                          className="flex-1 px-3 py-1 border border-gray-200 rounded"
+                          aria-label={t('IdlePhraseText')}
+                        />
+                        <select
+                          value={phrase.emotion}
+                          onChange={(e) =>
+                            handlePhraseEmotionChange(
+                              phrase.id,
+                              e.target.value as EmotionType
+                            )
+                          }
+                          className="w-28 px-2 py-1 border border-gray-200 rounded"
+                          aria-label={t('IdlePhraseEmotion')}
+                        >
+                          {EMOTION_OPTIONS.map((emotion) => (
+                            <option key={emotion} value={emotion}>
+                              {t(`Emotion_${emotion}`)}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={() => handleDeletePhrase(phrase.id)}
+                          className="px-3 py-1 text-red-500 hover:bg-red-50 rounded"
+                          aria-label={t('IdleDeletePhrase')}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
                   </div>
+                )}
+
+                {/* 新規発話追加 */}
+                <div className="my-4 flex items-center gap-2">
                   <input
                     type="text"
-                    value={phrase.text}
-                    onChange={(e) =>
-                      handlePhraseTextChange(phrase.id, e.target.value)
-                    }
-                    className="flex-1 px-3 py-1 border border-gray-200 rounded"
-                    aria-label={t('IdlePhraseText')}
+                    value={newPhraseText}
+                    onChange={(e) => setNewPhraseText(e.target.value)}
+                    placeholder={t('IdlePhraseTextPlaceholder')}
+                    className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                        handleAddPhrase()
+                      }
+                    }}
                   />
                   <select
-                    value={phrase.emotion}
+                    value={newPhraseEmotion}
                     onChange={(e) =>
-                      handlePhraseEmotionChange(
-                        phrase.id,
-                        e.target.value as EmotionType
-                      )
+                      setNewPhraseEmotion(e.target.value as EmotionType)
                     }
-                    className="w-28 px-2 py-1 border border-gray-200 rounded"
-                    aria-label={t('IdlePhraseEmotion')}
+                    className="w-28 px-2 py-2 bg-white border border-gray-300 rounded-lg"
                   >
                     {EMOTION_OPTIONS.map((emotion) => (
                       <option key={emotion} value={emotion}>
@@ -325,68 +382,15 @@ const IdleSettings = () => {
                       </option>
                     ))}
                   </select>
-                  <button
-                    onClick={() => handleDeletePhrase(phrase.id)}
-                    className="px-3 py-1 text-red-500 hover:bg-red-50 rounded"
-                    aria-label={t('IdleDeletePhrase')}
-                  >
-                    ✕
-                  </button>
+                  <TextButton onClick={handleAddPhrase}>
+                    {t('IdleAddPhrase')}
+                  </TextButton>
                 </div>
-              ))}
+              </div>
             </div>
           )}
 
-          {/* 新規発話追加 */}
-          <div className="my-4 flex items-center gap-2">
-            <input
-              type="text"
-              value={newPhraseText}
-              onChange={(e) => setNewPhraseText(e.target.value)}
-              placeholder={t('IdlePhraseTextPlaceholder')}
-              className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-                  handleAddPhrase()
-                }
-              }}
-            />
-            <select
-              value={newPhraseEmotion}
-              onChange={(e) =>
-                setNewPhraseEmotion(e.target.value as EmotionType)
-              }
-              className="w-28 px-2 py-2 bg-white border border-gray-300 rounded-lg"
-            >
-              {EMOTION_OPTIONS.map((emotion) => (
-                <option key={emotion} value={emotion}>
-                  {t(`Emotion_${emotion}`)}
-                </option>
-              ))}
-            </select>
-            <TextButton onClick={handleAddPhrase}>
-              {t('IdleAddPhrase')}
-            </TextButton>
-          </div>
-        </div>
-
-        {/* 時間帯別挨拶設定 */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">
-            {t('IdleTimePeriodEnabled')}
-          </div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('IdleTimePeriodEnabledInfo')}
-          </div>
-          <div className="my-2">
-            <ToggleSwitch
-              enabled={idleTimePeriodEnabled}
-              onChange={(v) =>
-                settingsStore.setState({ idleTimePeriodEnabled: v })
-              }
-            />
-          </div>
-
+          {/* 時間帯別挨拶（timePeriod選択時） */}
           {idleTimePeriodEnabled && (
             <div className="my-4 space-y-4">
               {/* 朝（5:00-10:59） */}
@@ -395,15 +399,33 @@ const IdleSettings = () => {
                   {t('IdleTimePeriodMorning')}
                   <span className="ml-2 text-gray-500">(5:00-10:59)</span>
                 </div>
-                <input
-                  type="text"
-                  value={idleTimePeriodMorning}
-                  onChange={(e) =>
-                    handleTimePeriodChange('morning', e.target.value)
-                  }
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg"
-                  aria-label={t('IdleTimePeriodMorning')}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={idleTimePeriodMorning}
+                    onChange={(e) =>
+                      handleTimePeriodChange('morning', e.target.value)
+                    }
+                    className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                    aria-label={t('IdleTimePeriodMorning')}
+                  />
+                  <select
+                    value={idleTimePeriodMorningEmotion}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        idleTimePeriodMorningEmotion: e.target
+                          .value as EmotionType,
+                      })
+                    }
+                    className="w-28 px-2 py-2 border border-gray-300 rounded-lg"
+                  >
+                    {EMOTION_OPTIONS.map((emotion) => (
+                      <option key={emotion} value={emotion}>
+                        {t(`Emotion_${emotion}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
               {/* 昼（11:00-16:59） */}
               <div>
@@ -411,15 +433,33 @@ const IdleSettings = () => {
                   {t('IdleTimePeriodAfternoon')}
                   <span className="ml-2 text-gray-500">(11:00-16:59)</span>
                 </div>
-                <input
-                  type="text"
-                  value={idleTimePeriodAfternoon}
-                  onChange={(e) =>
-                    handleTimePeriodChange('afternoon', e.target.value)
-                  }
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg"
-                  aria-label={t('IdleTimePeriodAfternoon')}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={idleTimePeriodAfternoon}
+                    onChange={(e) =>
+                      handleTimePeriodChange('afternoon', e.target.value)
+                    }
+                    className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                    aria-label={t('IdleTimePeriodAfternoon')}
+                  />
+                  <select
+                    value={idleTimePeriodAfternoonEmotion}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        idleTimePeriodAfternoonEmotion: e.target
+                          .value as EmotionType,
+                      })
+                    }
+                    className="w-28 px-2 py-2 border border-gray-300 rounded-lg"
+                  >
+                    {EMOTION_OPTIONS.map((emotion) => (
+                      <option key={emotion} value={emotion}>
+                        {t(`Emotion_${emotion}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
               {/* 夕（17:00-4:59） */}
               <div>
@@ -427,37 +467,38 @@ const IdleSettings = () => {
                   {t('IdleTimePeriodEvening')}
                   <span className="ml-2 text-gray-500">(17:00-4:59)</span>
                 </div>
-                <input
-                  type="text"
-                  value={idleTimePeriodEvening}
-                  onChange={(e) =>
-                    handleTimePeriodChange('evening', e.target.value)
-                  }
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg"
-                  aria-label={t('IdleTimePeriodEvening')}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={idleTimePeriodEvening}
+                    onChange={(e) =>
+                      handleTimePeriodChange('evening', e.target.value)
+                    }
+                    className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg"
+                    aria-label={t('IdleTimePeriodEvening')}
+                  />
+                  <select
+                    value={idleTimePeriodEveningEmotion}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        idleTimePeriodEveningEmotion: e.target
+                          .value as EmotionType,
+                      })
+                    }
+                    className="w-28 px-2 py-2 border border-gray-300 rounded-lg"
+                  >
+                    {EMOTION_OPTIONS.map((emotion) => (
+                      <option key={emotion} value={emotion}>
+                        {t(`Emotion_${emotion}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           )}
-        </div>
 
-        {/* AIランダム発話設定 */}
-        <div className="my-6">
-          <div className="my-4 text-xl font-bold">
-            {t('IdleAiGenerationEnabled')}
-          </div>
-          <div className="my-2 text-sm whitespace-pre-wrap">
-            {t('IdleAiGenerationEnabledInfo')}
-          </div>
-          <div className="my-2">
-            <ToggleSwitch
-              enabled={idleAiGenerationEnabled}
-              onChange={(v) =>
-                settingsStore.setState({ idleAiGenerationEnabled: v })
-              }
-            />
-          </div>
-
+          {/* AI自動生成（aiGeneration選択時） */}
           {idleAiGenerationEnabled && (
             <div className="my-4">
               <div className="my-2 text-sm font-medium">

@@ -27,8 +27,11 @@ jest.mock('@/features/stores/settings', () => {
         idleDefaultEmotion: 'neutral',
         idleTimePeriodEnabled: false,
         idleTimePeriodMorning: 'おはようございます！',
+        idleTimePeriodMorningEmotion: 'happy',
         idleTimePeriodAfternoon: 'こんにちは！',
+        idleTimePeriodAfternoonEmotion: 'happy',
         idleTimePeriodEvening: 'こんばんは！',
+        idleTimePeriodEveningEmotion: 'relaxed',
         idleAiGenerationEnabled: false,
         idleAiPromptTemplate:
           '展示会の来場者に向けて、親しみやすい一言を生成してください。',
@@ -61,8 +64,11 @@ const createDefaultState = (overrides = {}) => ({
   idleDefaultEmotion: 'neutral' as const,
   idleTimePeriodEnabled: false,
   idleTimePeriodMorning: 'おはようございます！',
+  idleTimePeriodMorningEmotion: 'happy' as const,
   idleTimePeriodAfternoon: 'こんにちは！',
+  idleTimePeriodAfternoonEmotion: 'happy' as const,
   idleTimePeriodEvening: 'こんばんは！',
+  idleTimePeriodEveningEmotion: 'relaxed' as const,
   idleAiGenerationEnabled: false,
   idleAiPromptTemplate:
     '展示会の来場者に向けて、親しみやすい一言を生成してください。',
@@ -225,19 +231,27 @@ describe('IdleSettings Component', () => {
     })
   })
 
-  describe('Default emotion', () => {
-    it('should render default emotion selector', () => {
+  describe('Time period emotions', () => {
+    it('should render per-period emotion selectors when time period is enabled', () => {
+      mockSettingsStore.mockImplementation((selector) => {
+        const state = createDefaultState({ idleTimePeriodEnabled: true })
+        return selector(state as any)
+      })
       render(<IdleSettings />)
-      expect(screen.getByText('IdleDefaultEmotion')).toBeInTheDocument()
+      expect(screen.getByLabelText('IdleTimePeriodMorning')).toBeInTheDocument()
+      expect(
+        screen.getByLabelText('IdleTimePeriodAfternoon')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByLabelText('IdleTimePeriodEvening')
+      ).toBeInTheDocument()
     })
 
-    it('should update default emotion when changed', () => {
+    it('should not render time period inputs when time period is disabled', () => {
       render(<IdleSettings />)
-      const select = screen.getByLabelText('IdleDefaultEmotion')
-      fireEvent.change(select, { target: { value: 'happy' } })
-      expect(mockSetState).toHaveBeenCalledWith({
-        idleDefaultEmotion: 'happy',
-      })
+      expect(
+        screen.queryByLabelText('IdleTimePeriodMorning')
+      ).not.toBeInTheDocument()
     })
   })
 })

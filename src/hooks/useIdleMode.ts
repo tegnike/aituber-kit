@@ -69,13 +69,21 @@ export function useIdleMode({
   const idlePhrases = settingsStore((s) => s.idlePhrases)
   const idlePlaybackMode = settingsStore((s) => s.idlePlaybackMode)
   const idleInterval = settingsStore((s) => s.idleInterval)
-  const idleDefaultEmotion = settingsStore((s) => s.idleDefaultEmotion)
   const idleTimePeriodEnabled = settingsStore((s) => s.idleTimePeriodEnabled)
   const idleTimePeriodMorning = settingsStore((s) => s.idleTimePeriodMorning)
+  const idleTimePeriodMorningEmotion = settingsStore(
+    (s) => s.idleTimePeriodMorningEmotion
+  )
   const idleTimePeriodAfternoon = settingsStore(
     (s) => s.idleTimePeriodAfternoon
   )
+  const idleTimePeriodAfternoonEmotion = settingsStore(
+    (s) => s.idleTimePeriodAfternoonEmotion
+  )
   const idleTimePeriodEvening = settingsStore((s) => s.idleTimePeriodEvening)
+  const idleTimePeriodEveningEmotion = settingsStore(
+    (s) => s.idleTimePeriodEveningEmotion
+  )
   const idleAiGenerationEnabled = settingsStore(
     (s) => s.idleAiGenerationEnabled
   )
@@ -139,19 +147,23 @@ export function useIdleMode({
     if (idleTimePeriodEnabled) {
       const period = getTimePeriod()
       let text: string
+      let emotion: EmotionType
       switch (period) {
         case 'morning':
           text = idleTimePeriodMorning
+          emotion = idleTimePeriodMorningEmotion
           break
         case 'afternoon':
           text = idleTimePeriodAfternoon
+          emotion = idleTimePeriodAfternoonEmotion
           break
         case 'evening':
           text = idleTimePeriodEvening
+          emotion = idleTimePeriodEveningEmotion
           break
       }
       if (text) {
-        return { text, emotion: idleDefaultEmotion }
+        return { text, emotion }
       }
     }
 
@@ -187,9 +199,11 @@ export function useIdleMode({
     idlePlaybackMode,
     idleTimePeriodEnabled,
     idleTimePeriodMorning,
+    idleTimePeriodMorningEmotion,
     idleTimePeriodAfternoon,
+    idleTimePeriodAfternoonEmotion,
     idleTimePeriodEvening,
-    idleDefaultEmotion,
+    idleTimePeriodEveningEmotion,
     idleAiGenerationEnabled,
   ])
 
