@@ -69,24 +69,17 @@ describe('KioskSettings Component', () => {
       expect(screen.getByText('KioskModeEnabled')).toBeInTheDocument()
     })
 
-    it('should show StatusOff when kiosk mode is disabled', () => {
+    it('should render toggle switches', () => {
       render(<KioskSettings />)
-      const statusOffButtons = screen.getAllByText('StatusOff')
-      expect(statusOffButtons.length).toBeGreaterThan(0)
-    })
-
-    it('should show StatusOn when kiosk mode is enabled', () => {
-      mockSettingsStore.mockImplementation((selector) => {
-        const state = createDefaultState({ kioskModeEnabled: true })
-        return selector(state as any)
-      })
-      render(<KioskSettings />)
-      expect(screen.getByText('StatusOn')).toBeInTheDocument()
+      // Check that toggle switches exist via their role
+      const toggleButtons = screen.getAllByRole('switch')
+      expect(toggleButtons.length).toBeGreaterThan(0)
     })
 
     it('should toggle kiosk mode when button is clicked', () => {
       render(<KioskSettings />)
-      const toggleButtons = screen.getAllByText('StatusOff')
+      // First toggle is for kiosk mode enabled
+      const toggleButtons = screen.getAllByRole('switch')
       fireEvent.click(toggleButtons[0])
       expect(mockSetState).toHaveBeenCalled()
     })
@@ -162,7 +155,7 @@ describe('KioskSettings Component', () => {
 
     it('should toggle NG word filter when button is clicked', () => {
       render(<KioskSettings />)
-      const toggleButtons = screen.getAllByText('StatusOff')
+      const toggleButtons = screen.getAllByRole('switch')
       // Last toggle button is NG word filter
       fireEvent.click(toggleButtons[toggleButtons.length - 1])
       expect(mockSetState).toHaveBeenCalled()

@@ -7,6 +7,7 @@ import {
   PresenceError,
   DetectionResult,
 } from '@/features/presence/presenceTypes'
+import { IdlePhrase } from '@/features/idle/idleTypes'
 
 /**
  * Sensitivity to detection interval mapping (ms)
@@ -20,9 +21,8 @@ const SENSITIVITY_INTERVALS = {
 interface UsePresenceDetectionProps {
   onPersonDetected?: () => void
   onPersonDeparted?: () => void
-  onGreetingStart?: (message: string) => void
+  onGreetingStart?: (phrase: IdlePhrase) => void
   onGreetingComplete?: () => void
-  onInterruptGreeting?: () => void
 }
 
 interface UsePresenceDetectionReturn {
@@ -45,11 +45,10 @@ export function usePresenceDetection({
   onPersonDeparted,
   onGreetingStart,
   onGreetingComplete,
-  onInterruptGreeting,
 }: UsePresenceDetectionProps): UsePresenceDetectionReturn {
   // ----- 設定の取得 -----
-  const presenceGreetingMessage = settingsStore(
-    (s) => s.presenceGreetingMessage
+  const presenceGreetingPhrases = settingsStore(
+    (s) => s.presenceGreetingPhrases
   )
   const presenceDepartureTimeout = settingsStore(
     (s) => s.presenceDepartureTimeout
@@ -58,7 +57,13 @@ export function usePresenceDetection({
   const presenceDetectionSensitivity = settingsStore(
     (s) => s.presenceDetectionSensitivity
   )
+  const presenceDetectionThreshold = settingsStore(
+    (s) => s.presenceDetectionThreshold
+  )
   const presenceDebugMode = settingsStore((s) => s.presenceDebugMode)
+  const presenceSelectedCameraId = settingsStore(
+    (s) => s.presenceSelectedCameraId
+  )
 
   // ----- 状態 -----
   const [presenceState, setPresenceState] = useState<PresenceState>('idle')
@@ -77,6 +82,7 @@ export function usePresenceDetection({
   const cooldownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isInCooldownRef = useRef(false)
   const lastFaceDetectedRef = useRef(false)
+  const detectionStartTimeRef = useRef<number | null>(null)
   const modelLoadedRef = useRef(false)
 
   // Callback refs to avoid stale closures
@@ -85,7 +91,6 @@ export function usePresenceDetection({
     onPersonDeparted,
     onGreetingStart,
     onGreetingComplete,
-    onInterruptGreeting,
   })
 
   // Update callback refs in useEffect to avoid accessing refs during render
@@ -95,7 +100,6 @@ export function usePresenceDetection({
       onPersonDeparted,
       onGreetingStart,
       onGreetingComplete,
-      onInterruptGreeting,
     }
   })
 
@@ -123,6 +127,15 @@ export function usePresenceDetection({
     [logDebug]
   )
 
+  // ----- ランダム選択ヘルパー -----
+  const selectRandomPhrase = useCallback(
+    (phrases: IdlePhrase[]): IdlePhrase | null => {
+      if (!phrases || phrases.length === 0) return null
+      return phrases[Math.floor(Math.random() * phrases.length)]
+    },
+    []
+  )
+
   // ----- モデルロード -----
   const loadModels = useCallback(async () => {
     if (modelLoadedRef.current) return
@@ -146,8 +159,13 @@ export function usePresenceDetection({
   // ----- カメラストリーム取得 -----
   const getCameraStream = useCallback(async () => {
     try {
+      // カメラ制約を構築
+      const videoConstraints: MediaTrackConstraints = presenceSelectedCameraId
+        ? { deviceId: { exact: presenceSelectedCameraId } }
+        : { facingMode: 'user' }
+
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' },
+        video: videoConstraints,
       })
       streamRef.current = stream
 
@@ -156,7 +174,9 @@ export function usePresenceDetection({
         await videoRef.current.play()
       }
 
-      logDebug('Camera stream acquired')
+      logDebug(
+        `Camera stream acquired${presenceSelectedCameraId ? ` (deviceId: ${presenceSelectedCameraId})` : ' (default)'}`
+      )
       return stream
     } catch (err) {
       const mediaError = err as Error & { name?: string }
@@ -178,6 +198,12 @@ export function usePresenceDetection({
           code: 'CAMERA_NOT_AVAILABLE',
           message: 'カメラが利用できません',
         }
+      } else if (mediaError.name === 'OverconstrainedError') {
+        // 指定されたカメラが見つからない場合
+        presenceError = {
+          code: 'CAMERA_NOT_AVAILABLE',
+          message: '指定されたカメラが見つかりません。設定を確認してください。',
+        }
       } else {
         presenceError = {
           code: 'CAMERA_NOT_AVAILABLE',
@@ -190,7 +216,7 @@ export function usePresenceDetection({
       homeStore.setState({ presenceError })
       throw err
     }
-  }, [logDebug])
+  }, [logDebug, presenceSelectedCameraId])
 
   // ----- カメラストリーム解放 -----
   const releaseStream = useCallback(() => {
@@ -222,11 +248,6 @@ export function usePresenceDetection({
   const handleDeparture = useCallback(() => {
     logDebug('Person departed')
 
-    // greeting中の離脱は発話中断
-    if (presenceState === 'greeting') {
-      callbackRefs.current.onInterruptGreeting?.()
-    }
-
     callbackRefs.current.onPersonDeparted?.()
     transitionState('idle')
 
@@ -239,7 +260,7 @@ export function usePresenceDetection({
       isInCooldownRef.current = false
       logDebug('Cooldown ended')
     }, presenceCooldownTime * 1000)
-  }, [presenceState, presenceCooldownTime, transitionState, logDebug])
+  }, [presenceCooldownTime, transitionState, logDebug])
 
   // ----- 顔検出実行 -----
   const detectFace = useCallback(async () => {
@@ -267,29 +288,54 @@ export function usePresenceDetection({
       setDetectionResult(result)
 
       // 検出状態の変化を処理
-      if (faceDetected && !lastFaceDetectedRef.current) {
-        // 顔を検出開始
-        lastFaceDetectedRef.current = true
-
+      if (faceDetected) {
         // 離脱タイマーをクリア
         if (departureTimeoutRef.current) {
           clearTimeout(departureTimeoutRef.current)
           departureTimeoutRef.current = null
         }
 
-        // クールダウン中でなく、idle状態の場合のみ状態遷移
-        if (!isInCooldownRef.current && presenceState === 'idle') {
-          logDebug('Face detected')
-          callbackRefs.current.onPersonDetected?.()
-          transitionState('detected')
+        if (!lastFaceDetectedRef.current) {
+          // 顔を検出開始 - タイマー開始
+          lastFaceDetectedRef.current = true
+          detectionStartTimeRef.current = Date.now()
+          logDebug('Face detection started, waiting for threshold...')
+        }
 
-          // 即座にgreeting状態に遷移し、挨拶を開始
-          transitionState('greeting')
-          callbackRefs.current.onGreetingStart?.(presenceGreetingMessage)
+        // クールダウン中でなく、idle状態の場合のみ閾値チェック
+        if (!isInCooldownRef.current && presenceState === 'idle') {
+          const elapsedTime = detectionStartTimeRef.current
+            ? (Date.now() - detectionStartTimeRef.current) / 1000
+            : 0
+
+          // 閾値が0または経過時間が閾値を超えた場合に来場者検知
+          if (
+            presenceDetectionThreshold <= 0 ||
+            elapsedTime >= presenceDetectionThreshold
+          ) {
+            logDebug(
+              `Face confirmed after ${elapsedTime.toFixed(1)}s (threshold: ${presenceDetectionThreshold}s)`
+            )
+            callbackRefs.current.onPersonDetected?.()
+            transitionState('detected')
+
+            // フレーズをランダム選択して挨拶を開始
+            const selectedPhrase = selectRandomPhrase(presenceGreetingPhrases)
+            if (selectedPhrase) {
+              transitionState('greeting')
+              callbackRefs.current.onGreetingStart?.(selectedPhrase)
+            } else {
+              // フレーズが無い場合は即座にconversation-readyに遷移
+              transitionState('conversation-ready')
+              callbackRefs.current.onGreetingComplete?.()
+            }
+          }
         }
       } else if (!faceDetected && lastFaceDetectedRef.current) {
-        // 顔が消えた
+        // 顔が消えた - 検出タイマーをリセット
         lastFaceDetectedRef.current = false
+        detectionStartTimeRef.current = null
+        logDebug('Face lost, detection timer reset')
 
         // 離脱判定タイマー開始
         if (!departureTimeoutRef.current && presenceState !== 'idle') {
@@ -305,8 +351,10 @@ export function usePresenceDetection({
   }, [
     isDetecting,
     presenceState,
-    presenceGreetingMessage,
+    presenceGreetingPhrases,
+    selectRandomPhrase,
     presenceDepartureTimeout,
+    presenceDetectionThreshold,
     handleDeparture,
     transitionState,
     logDebug,
@@ -362,6 +410,7 @@ export function usePresenceDetection({
     transitionState('idle')
     setDetectionResult(null)
     lastFaceDetectedRef.current = false
+    detectionStartTimeRef.current = null
 
     if (cooldownTimeoutRef.current) {
       clearTimeout(cooldownTimeoutRef.current)

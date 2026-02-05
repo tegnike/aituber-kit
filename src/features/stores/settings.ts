@@ -11,6 +11,8 @@ import {
 import {
   IdleModeSettings,
   DEFAULT_IDLE_CONFIG,
+  IdlePhrase,
+  createIdlePhrase,
 } from '@/features/idle/idleTypes'
 import {
   KioskModeSettings,
@@ -271,11 +273,15 @@ export type PresenceDetectionSensitivity = 'low' | 'medium' | 'high'
 
 interface PresenceDetectionSettings {
   presenceDetectionEnabled: boolean
-  presenceGreetingMessage: string
+  presenceGreetingPhrases: IdlePhrase[]
   presenceDepartureTimeout: number
   presenceCooldownTime: number
   presenceDetectionSensitivity: PresenceDetectionSensitivity
+  presenceDetectionThreshold: number
   presenceDebugMode: boolean
+  presenceDeparturePhrases: IdlePhrase[]
+  presenceClearChatOnDeparture: boolean
+  presenceSelectedCameraId: string // 空文字列の場合はデフォルトカメラを使用
 }
 
 export type SettingsState = APIKeys &
@@ -667,18 +673,31 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Presence detection settings
   presenceDetectionEnabled:
     process.env.NEXT_PUBLIC_PRESENCE_DETECTION_ENABLED === 'true',
-  presenceGreetingMessage:
-    process.env.NEXT_PUBLIC_PRESENCE_GREETING_MESSAGE ||
-    'いらっしゃいませ！何かお手伝いできることはありますか？',
+  presenceGreetingPhrases: (() => {
+    const msg =
+      process.env.NEXT_PUBLIC_PRESENCE_GREETING_MESSAGE ||
+      'いらっしゃいませ！何かお手伝いできることはありますか？'
+    return [createIdlePhrase(msg, 'happy', 0)]
+  })(),
   presenceDepartureTimeout:
-    parseInt(process.env.NEXT_PUBLIC_PRESENCE_DEPARTURE_TIMEOUT || '') || 3,
+    parseInt(process.env.NEXT_PUBLIC_PRESENCE_DEPARTURE_TIMEOUT || '') || 7,
   presenceCooldownTime:
     parseInt(process.env.NEXT_PUBLIC_PRESENCE_COOLDOWN_TIME || '') || 5,
   presenceDetectionSensitivity:
     (process.env
       .NEXT_PUBLIC_PRESENCE_DETECTION_SENSITIVITY as PresenceDetectionSensitivity) ||
     'medium',
+  presenceDetectionThreshold:
+    parseFloat(process.env.NEXT_PUBLIC_PRESENCE_DETECTION_THRESHOLD || '') || 0,
   presenceDebugMode: process.env.NEXT_PUBLIC_PRESENCE_DEBUG_MODE === 'true',
+  presenceDeparturePhrases: (() => {
+    const msg = process.env.NEXT_PUBLIC_PRESENCE_DEPARTURE_MESSAGE || ''
+    return msg ? [createIdlePhrase(msg, 'neutral', 0)] : []
+  })(),
+  presenceClearChatOnDeparture:
+    process.env.NEXT_PUBLIC_PRESENCE_CLEAR_CHAT_ON_DEPARTURE !== 'false',
+  presenceSelectedCameraId:
+    process.env.NEXT_PUBLIC_PRESENCE_SELECTED_CAMERA_ID || '',
 
   // Idle mode settings
   idleModeEnabled:
@@ -789,6 +808,43 @@ const settingsStore = create<SettingsState>()(
         ) {
           const envValues = getInitialValuesFromEnv()
           Object.assign(state, envValues)
+        }
+
+        // Migration from old presence message format to new phrase array format
+        if (state) {
+          const anyState = state as any
+          // presenceGreetingMessage -> presenceGreetingPhrases
+          if (typeof anyState.presenceGreetingMessage === 'string') {
+            // Empty string means "no greeting" intent, so set empty array
+            if (!state.presenceGreetingPhrases?.length) {
+              state.presenceGreetingPhrases = anyState.presenceGreetingMessage
+                ? [
+                    createIdlePhrase(
+                      anyState.presenceGreetingMessage,
+                      'happy',
+                      0
+                    ),
+                  ]
+                : []
+            }
+            delete anyState.presenceGreetingMessage
+          }
+          // presenceDepartureMessage -> presenceDeparturePhrases
+          if (typeof anyState.presenceDepartureMessage === 'string') {
+            // Empty string means "no departure message" intent, so set empty array
+            if (!state.presenceDeparturePhrases?.length) {
+              state.presenceDeparturePhrases = anyState.presenceDepartureMessage
+                ? [
+                    createIdlePhrase(
+                      anyState.presenceDepartureMessage,
+                      'neutral',
+                      0
+                    ),
+                  ]
+                : []
+            }
+            delete anyState.presenceDepartureMessage
+          }
         }
       },
       partialize: (state) => ({
@@ -978,11 +1034,15 @@ const settingsStore = create<SettingsState>()(
         memorySearchLimit: state.memorySearchLimit,
         memoryMaxContextTokens: state.memoryMaxContextTokens,
         presenceDetectionEnabled: state.presenceDetectionEnabled,
-        presenceGreetingMessage: state.presenceGreetingMessage,
+        presenceGreetingPhrases: state.presenceGreetingPhrases,
         presenceDepartureTimeout: state.presenceDepartureTimeout,
         presenceCooldownTime: state.presenceCooldownTime,
         presenceDetectionSensitivity: state.presenceDetectionSensitivity,
+        presenceDetectionThreshold: state.presenceDetectionThreshold,
         presenceDebugMode: state.presenceDebugMode,
+        presenceDeparturePhrases: state.presenceDeparturePhrases,
+        presenceClearChatOnDeparture: state.presenceClearChatOnDeparture,
+        presenceSelectedCameraId: state.presenceSelectedCameraId,
         // Idle mode settings
         idleModeEnabled: state.idleModeEnabled,
         idlePhrases: state.idlePhrases,

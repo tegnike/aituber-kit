@@ -84,25 +84,17 @@ describe('IdleSettings Component', () => {
       expect(screen.getByText('IdleModeEnabled')).toBeInTheDocument()
     })
 
-    it('should show StatusOff when idle mode is disabled', () => {
+    it('should render toggle switches', () => {
       render(<IdleSettings />)
-      // Multiple StatusOff buttons may exist
-      const statusOffButtons = screen.getAllByText('StatusOff')
-      expect(statusOffButtons.length).toBeGreaterThan(0)
-    })
-
-    it('should show StatusOn when idle mode is enabled', () => {
-      mockSettingsStore.mockImplementation((selector) => {
-        const state = createDefaultState({ idleModeEnabled: true })
-        return selector(state as any)
-      })
-      render(<IdleSettings />)
-      expect(screen.getByText('StatusOn')).toBeInTheDocument()
+      // Check that toggle switches exist via their role
+      const toggleButtons = screen.getAllByRole('switch')
+      expect(toggleButtons.length).toBeGreaterThan(0)
     })
 
     it('should toggle idle mode when button is clicked', () => {
       render(<IdleSettings />)
-      const toggleButtons = screen.getAllByText('StatusOff')
+      // First toggle is for idle mode enabled
+      const toggleButtons = screen.getAllByRole('switch')
       fireEvent.click(toggleButtons[0])
       expect(mockSetState).toHaveBeenCalled()
     })

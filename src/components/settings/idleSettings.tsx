@@ -346,7 +346,7 @@ const IdleSettings = () => {
               placeholder={t('IdlePhraseTextPlaceholder')}
               className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg"
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                   handleAddPhrase()
                 }
               }}

@@ -11,6 +11,7 @@ import { renderHook, act } from '@testing-library/react'
 import { usePresenceDetection } from '@/hooks/usePresenceDetection'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
+import { createIdlePhrase } from '@/features/idle/idleTypes'
 
 // Mock face-api.js
 const mockDetectSingleFace = jest.fn()
@@ -29,6 +30,11 @@ jest.mock(
   { virtual: true }
 )
 
+// Default greeting phrases for tests
+const defaultGreetingPhrases = [
+  createIdlePhrase('いらっしゃいませ！', 'happy', 0),
+]
+
 // Mock stores
 jest.mock('@/features/stores/settings', () => ({
   __esModule: true,
@@ -36,22 +42,42 @@ jest.mock('@/features/stores/settings', () => ({
     jest.fn((selector) => {
       const state = {
         presenceDetectionEnabled: true,
-        presenceGreetingMessage: 'いらっしゃいませ！',
+        presenceGreetingPhrases: [
+          {
+            id: 'test-1',
+            text: 'いらっしゃいませ！',
+            emotion: 'happy',
+            order: 0,
+          },
+        ],
         presenceDepartureTimeout: 3,
         presenceCooldownTime: 5,
         presenceDetectionSensitivity: 'medium' as const,
+        presenceDetectionThreshold: 0,
         presenceDebugMode: false,
+        presenceDeparturePhrases: [],
+        presenceClearChatOnDeparture: true,
       }
       return selector ? selector(state) : state
     }),
     {
       getState: jest.fn(() => ({
         presenceDetectionEnabled: true,
-        presenceGreetingMessage: 'いらっしゃいませ！',
+        presenceGreetingPhrases: [
+          {
+            id: 'test-1',
+            text: 'いらっしゃいませ！',
+            emotion: 'happy',
+            order: 0,
+          },
+        ],
         presenceDepartureTimeout: 3,
         presenceCooldownTime: 5,
         presenceDetectionSensitivity: 'medium',
+        presenceDetectionThreshold: 0,
         presenceDebugMode: false,
+        presenceDeparturePhrases: [],
+        presenceClearChatOnDeparture: true,
       })),
       setState: jest.fn(),
     }
@@ -225,7 +251,6 @@ describe('Task 5.1: システム統合テスト - メインページへのフッ
       const onPersonDeparted = jest.fn()
       const onGreetingStart = jest.fn()
       const onGreetingComplete = jest.fn()
-      const onInterruptGreeting = jest.fn()
 
       const { result } = renderHook(() =>
         usePresenceDetection({
@@ -233,7 +258,6 @@ describe('Task 5.1: システム統合テスト - メインページへのフッ
           onPersonDeparted,
           onGreetingStart,
           onGreetingComplete,
-          onInterruptGreeting,
         })
       )
 
@@ -276,19 +300,23 @@ describe('Task 5.1: システム統合テスト - メインページへのフッ
 })
 
 describe('Task 5.2: i18n翻訳キーの統合', () => {
-  it('設定ストアからpresenceGreetingMessageを取得できる', () => {
-    const message = (settingsStore as any).getState().presenceGreetingMessage
-    expect(message).toBe('いらっしゃいませ！')
+  it('設定ストアからpresenceGreetingPhrasesを取得できる', () => {
+    const phrases = (settingsStore as any).getState().presenceGreetingPhrases
+    expect(phrases).toBeDefined()
+    expect(phrases.length).toBeGreaterThan(0)
+    expect(phrases[0].text).toBe('いらっしゃいませ！')
   })
 
   it('設定ストアからpresence関連の設定を取得できる', () => {
     const state = (settingsStore as any).getState()
 
     expect(state.presenceDetectionEnabled).toBeDefined()
-    expect(state.presenceGreetingMessage).toBeDefined()
+    expect(state.presenceGreetingPhrases).toBeDefined()
     expect(state.presenceDepartureTimeout).toBeDefined()
     expect(state.presenceCooldownTime).toBeDefined()
     expect(state.presenceDetectionSensitivity).toBeDefined()
     expect(state.presenceDebugMode).toBeDefined()
+    expect(state.presenceDeparturePhrases).toBeDefined()
+    expect(state.presenceClearChatOnDeparture).toBeDefined()
   })
 })
