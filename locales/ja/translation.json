@@ -588,7 +588,7 @@
   "IdleAiGenerationEnabled": "AI自動生成",
   "IdleAiGenerationEnabledInfo": "発話リストが空の場合、AIが自動でメッセージを生成します。",
   "IdleAiPromptTemplate": "生成プロンプト",
-  "IdleAiPromptTemplateHint": "AIにメッセージ生成を依頼する際のプロンプトを設定します。",
+  "IdleAiPromptTemplateHint": "キャラクターの口調や、どのようなメッセージを生成するかを指定します。",
   "IdleAiPromptTemplatePlaceholder": "展示会の来場者に向けて、親しみやすい一言を生成してください。",
   "Emotion_neutral": "通常",
   "Emotion_happy": "嬉しい",

@@ -5,6 +5,7 @@ import { speakCharacter } from '@/features/messages/speakCharacter'
 import { SpeakQueue } from '@/features/messages/speakQueue'
 import { IdlePhrase, EmotionType } from '@/features/idle/idleTypes'
 import { Talk } from '@/features/messages/messages'
+import { generateIdleAIPhrase } from '@/features/idle/generateIdleAIPhrase'
 
 /**
  * アイドル状態の型定義
@@ -169,11 +170,7 @@ export function useIdleMode({
 
     // 発話リストが空の場合
     if (idlePhrases.length === 0) {
-      // AI生成機能が有効な場合は後で処理（タスク3.6で実装）
-      if (idleAiGenerationEnabled) {
-        // TODO: AI生成処理（タスク3.6で実装）
-        return null
-      }
+      // AI生成モードの場合はtriggerSpeech側で非同期処理する
       return null
     }
 
@@ -208,16 +205,35 @@ export function useIdleMode({
   ])
 
   // ----- 発話実行 -----
-  const triggerSpeech = useCallback(() => {
+  const triggerSpeech = useCallback(async () => {
     if (!canSpeak()) {
       return
     }
 
-    const phrase = selectPhrase()
+    let phrase: { text: string; emotion: EmotionType } | null = null
+
+    // AI自動生成モードの場合
+    let isAiGenerated = false
+    if (idleAiGenerationEnabled && !idleTimePeriodEnabled) {
+      const ss = settingsStore.getState()
+      phrase = await generateIdleAIPhrase(ss.idleAiPromptTemplate)
+      isAiGenerated = true
+    } else {
+      phrase = selectPhrase()
+    }
+
     if (!phrase) {
       // セリフがない場合はスキップしてタイマーリセット
       setSecondsUntilNextSpeech(idleInterval)
       return
+    }
+
+    // AI生成の場合はchatLogにアシスタントメッセージとして追加
+    if (isAiGenerated) {
+      homeStore.getState().upsertMessage({
+        role: 'assistant',
+        content: phrase.text,
+      })
     }
 
     // 状態を speaking に変更
@@ -249,7 +265,13 @@ export function useIdleMode({
         callbackRefs.current.onIdleSpeechComplete?.()
       }
     )
-  }, [canSpeak, selectPhrase, idleInterval])
+  }, [
+    canSpeak,
+    selectPhrase,
+    idleInterval,
+    idleAiGenerationEnabled,
+    idleTimePeriodEnabled,
+  ])
 
   // ----- タイマーリセット -----
   const resetTimer = useCallback(() => {
