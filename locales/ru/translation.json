@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "Вы уверены, что хотите удалить все воспоминания? Это действие нельзя отменить.",
   "MemoryCount": "Количество сохраненных воспоминаний",
   "MemoryCountValue": "{{count}} элементов",
-  "MemoryAPIKeyWarning": "Функция памяти недоступна, поскольку ключ API OpenAI не настроен.",
+  "MemoryAPIKeyWarning": "Функция долгосрочной памяти недоступна, поскольку ключ API OpenAI не настроен.",
   "MemoryRestore": "Восстановить память",
   "MemoryRestoreInfo": "Восстановите историю разговоров из файлов журнала разговоров (chat-log-*.json) в папке logs.",
   "MemoryRestoreSelect": "Выбрать файл",

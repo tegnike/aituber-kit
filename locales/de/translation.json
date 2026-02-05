@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "Sind Sie sicher, dass Sie alle Erinnerungen löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
   "MemoryCount": "Anzahl gespeicherter Erinnerungen",
   "MemoryCountValue": "{{count}} Einträge",
-  "MemoryAPIKeyWarning": "Die Gedächtnisfunktion ist nicht verfügbar, da kein OpenAI API-Schlüssel konfiguriert ist.",
+  "MemoryAPIKeyWarning": "Die Langzeitgedächtnisfunktion ist nicht verfügbar, da kein OpenAI API-Schlüssel konfiguriert ist.",
   "MemoryRestore": "Gedächtnis wiederherstellen",
   "MemoryRestoreInfo": "Stellen Sie den Gesprächsverlauf aus Gesprächsprotokolldateien (chat-log-*.json) im logs-Ordner wieder her.",
   "MemoryRestoreSelect": "Datei auswählen",

@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "您確定要刪除所有記憶嗎？此操作無法撤消。",
   "MemoryCount": "已保存記憶數量",
   "MemoryCountValue": "{{count}}條",
-  "MemoryAPIKeyWarning": "由於未設定OpenAI API金鑰，記憶功能不可用。",
+  "MemoryAPIKeyWarning": "由於未設定OpenAI API金鑰，長期記憶功能不可用。",
   "MemoryRestore": "恢復記憶",
   "MemoryRestoreInfo": "從logs資料夾中的對話日誌檔案（chat-log-*.json）恢復對話歷史。",
   "MemoryRestoreSelect": "選擇檔案",

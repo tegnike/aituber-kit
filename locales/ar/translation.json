@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "هل أنت متأكد من حذف جميع الذكريات؟ لا يمكن التراجع عن هذا الإجراء.",
   "MemoryCount": "عدد الذكريات المخزنة",
   "MemoryCountValue": "{{count}} عنصر",
-  "MemoryAPIKeyWarning": "وظيفة الذاكرة غير متاحة لأن مفتاح API الخاص بـ OpenAI غير مكوّن.",
+  "MemoryAPIKeyWarning": "وظيفة الذاكرة طويلة المدى غير متاحة لأن مفتاح API الخاص بـ OpenAI غير مكوّن.",
   "MemoryRestore": "استعادة الذاكرة",
   "MemoryRestoreInfo": "استعادة سجل المحادثات من ملفات سجل المحادثات (chat-log-*.json) في مجلد logs.",
   "MemoryRestoreSelect": "اختر ملف",

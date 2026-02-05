@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "Are you sure you want to delete all memories? This action cannot be undone.",
   "MemoryCount": "Stored Memory Count",
   "MemoryCountValue": "{{count}} items",
-  "MemoryAPIKeyWarning": "Memory function is not available because OpenAI API key is not set.",
+  "MemoryAPIKeyWarning": "Long-term memory function is not available because OpenAI API key is not set.",
   "MemoryRestore": "Restore Memory",
   "MemoryRestoreInfo": "Restore conversation history from conversation log files (chat-log-*.json) in the logs folder.",
   "MemoryRestoreSelect": "Select File",

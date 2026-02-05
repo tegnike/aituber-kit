@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "¿Está seguro de que desea eliminar todos los recuerdos? Esta acción no se puede deshacer.",
   "MemoryCount": "Número de recuerdos almacenados",
   "MemoryCountValue": "{{count}} elementos",
-  "MemoryAPIKeyWarning": "La función de memoria no está disponible porque no se ha configurado la clave API de OpenAI.",
+  "MemoryAPIKeyWarning": "La función de memoria a largo plazo no está disponible porque no se ha configurado la clave API de OpenAI.",
   "MemoryRestore": "Restaurar memoria",
   "MemoryRestoreInfo": "Restaure el historial de conversaciones desde archivos de registro de conversación (chat-log-*.json) en la carpeta logs.",
   "MemoryRestoreSelect": "Seleccionar archivo",

@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "Bạn có chắc chắn muốn xóa tất cả ký ức không? Hành động này không thể hoàn tác.",
   "MemoryCount": "Số lượng ký ức đã lưu",
   "MemoryCountValue": "{{count}} mục",
-  "MemoryAPIKeyWarning": "Chức năng bộ nhớ không khả dụng vì khóa API của OpenAI chưa được cấu hình.",
+  "MemoryAPIKeyWarning": "Chức năng bộ nhớ dài hạn không khả dụng vì khóa API của OpenAI chưa được cấu hình.",
   "MemoryRestore": "Khôi phục bộ nhớ",
   "MemoryRestoreInfo": "Khôi phục lịch sử hội thoại từ các tệp nhật ký hội thoại (chat-log-*.json) trong thư mục logs.",
   "MemoryRestoreSelect": "Chọn tệp",

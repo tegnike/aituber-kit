@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "정말로 모든 기억을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
   "MemoryCount": "저장된 기억 개수",
   "MemoryCountValue": "{{count}}개",
-  "MemoryAPIKeyWarning": "OpenAI API 키가 설정되지 않아 메모리 기능을 사용할 수 없습니다.",
+  "MemoryAPIKeyWarning": "OpenAI API 키가 설정되지 않아 장기 기억 기능을 사용할 수 없습니다.",
   "MemoryRestore": "기억 복원",
   "MemoryRestoreInfo": "logs 폴더 내의 대화 로그 파일(chat-log-*.json)에서 대화 기록을 복원합니다.",
   "MemoryRestoreSelect": "파일 선택",

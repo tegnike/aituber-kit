@@ -502,7 +502,7 @@
   "MemoryClearConfirm": "क्या आप सभी यादें हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।",
   "MemoryCount": "संग्रहीत यादों की संख्या",
   "MemoryCountValue": "{{count}} आइटम",
-  "MemoryAPIKeyWarning": "मेमोरी फ़ंक्शन उपलब्ध नहीं है क्योंकि OpenAI API कुंजी कॉन्फ़िगर नहीं है।",
+  "MemoryAPIKeyWarning": "दीर्घकालिक मेमोरी फ़ंक्शन उपलब्ध नहीं है क्योंकि OpenAI API कुंजी कॉन्फ़िगर नहीं है।",
   "MemoryRestore": "मेमोरी पुनर्स्थापित करें",
   "MemoryRestoreInfo": "logs फ़ोल्डर में वार्तालाप लॉग फ़ाइलों (chat-log-*.json) से वार्तालाप इतिहास पुनर्स्थापित करें।",
   "MemoryRestoreSelect": "फ़ाइल चुनें",
