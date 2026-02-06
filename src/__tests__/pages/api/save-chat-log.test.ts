@@ -15,11 +15,11 @@ jest.mock('@supabase/supabase-js', () => ({
 }))
 
 const mockIsDemoMode = jest.fn(() => false)
-jest.mock('@/utils/demoMode', () => ({
-  isDemoMode: () => mockIsDemoMode(),
-  createDemoModeErrorResponse: (feature: string) => ({
-    error: 'feature_disabled_in_demo_mode',
-    message: `The feature "${feature}" is disabled in demo mode.`,
+jest.mock('@/utils/restrictedMode', () => ({
+  isRestrictedMode: () => mockIsDemoMode(),
+  createRestrictedModeErrorResponse: (feature: string) => ({
+    error: 'feature_disabled_in_restricted_mode',
+    message: `The feature "${feature}" is disabled in restricted mode.`,
   }),
 }))
 
@@ -77,7 +77,7 @@ describe('/api/save-chat-log', () => {
     expect(res._json).toEqual({ message: 'Method not allowed' })
   })
 
-  it('should return 403 when demo mode is active', async () => {
+  it('should return 403 when restricted mode is active', async () => {
     mockIsDemoMode.mockReturnValue(true)
 
     const req = createMockReq({
@@ -91,8 +91,8 @@ describe('/api/save-chat-log', () => {
 
     expect(res._status).toBe(403)
     expect(res._json).toEqual({
-      error: 'feature_disabled_in_demo_mode',
-      message: 'The feature "save-chat-log" is disabled in demo mode.',
+      error: 'feature_disabled_in_restricted_mode',
+      message: 'The feature "save-chat-log" is disabled in restricted mode.',
     })
   })
 

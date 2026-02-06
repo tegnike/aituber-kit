@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import formidable from 'formidable'
 import fs from 'fs'
 import path from 'path'
-import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
+import {
+  isRestrictedMode,
+  createRestrictedModeErrorResponse,
+} from '@/utils/restrictedMode'
 
 export const config = {
   api: {
@@ -23,8 +26,10 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  if (isDemoMode()) {
-    return res.status(403).json(createDemoModeErrorResponse('upload-vrm-list'))
+  if (isRestrictedMode()) {
+    return res
+      .status(403)
+      .json(createRestrictedModeErrorResponse('upload-vrm-list'))
   }
 
   const form = formidable(formOptions)

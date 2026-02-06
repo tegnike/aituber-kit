@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
-import { isDemoMode } from '@/utils/demoMode'
+import { isRestrictedMode } from '@/utils/restrictedMode'
 import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
@@ -524,7 +524,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   showQuickMenu: process.env.NEXT_PUBLIC_SHOW_QUICK_MENU === 'true',
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   realtimeAPIMode:
-    !isDemoMode() &&
+    !isRestrictedMode() &&
     ((process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
       ['openai', 'azure'].includes(
         process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
@@ -537,7 +537,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   realtimeAPIModeVoice:
     (process.env.NEXT_PUBLIC_REALTIME_API_MODE_VOICE as RealtimeAPIModeVoice) ||
     'shimmer',
-  audioMode: !isDemoMode() && process.env.NEXT_PUBLIC_AUDIO_MODE === 'true',
+  audioMode:
+    !isRestrictedMode() && process.env.NEXT_PUBLIC_AUDIO_MODE === 'true',
   audioModeInputType:
     (process.env.NEXT_PUBLIC_AUDIO_MODE_INPUT_TYPE as AudioModeInputType) ||
     'input_text',
@@ -801,8 +802,8 @@ const settingsStore = create<SettingsState>()(
           }
         }
 
-        // Force disable WebSocket-related features in demo mode
-        if (state && isDemoMode()) {
+        // Force disable WebSocket-related features in restricted mode
+        if (state && isRestrictedMode()) {
           state.realtimeAPIMode = false
           state.audioMode = false
         }

@@ -6,13 +6,13 @@
 
 import { renderHook, act } from '@testing-library/react'
 
-// Mock useDemoMode
-jest.mock('@/utils/demoMode', () => ({
-  isDemoMode: jest.fn(() => false),
+// Mock useRestrictedMode
+jest.mock('@/utils/restrictedMode', () => ({
+  isRestrictedMode: jest.fn(() => false),
 }))
 
-jest.mock('@/hooks/useDemoMode', () => ({
-  useDemoMode: jest.fn(() => ({ isDemoMode: false })),
+jest.mock('@/hooks/useRestrictedMode', () => ({
+  useRestrictedMode: jest.fn(() => ({ isRestrictedMode: false })),
 }))
 
 // Mock settingsStore

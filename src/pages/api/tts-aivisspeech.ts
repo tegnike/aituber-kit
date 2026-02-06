@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
-import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
+import {
+  isRestrictedMode,
+  createRestrictedModeErrorResponse,
+} from '@/utils/restrictedMode'
 
 type Data = {
   audio?: ArrayBuffer
@@ -11,8 +14,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  if (isDemoMode()) {
-    return res.status(403).json(createDemoModeErrorResponse('tts-aivisspeech'))
+  if (isRestrictedMode()) {
+    return res
+      .status(403)
+      .json(createRestrictedModeErrorResponse('tts-aivisspeech'))
   }
 
   const {

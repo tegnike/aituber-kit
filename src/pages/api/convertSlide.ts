@@ -12,7 +12,10 @@ import { z } from 'zod'
 
 import { AIService } from '@/features/constants/settings'
 import { isMultiModalModel } from '@/features/constants/aiModels'
-import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
+import {
+  isRestrictedMode,
+  createRestrictedModeErrorResponse,
+} from '@/utils/restrictedMode'
 
 type AIServiceConfig = Record<AIService, () => any>
 
@@ -252,8 +255,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  if (isDemoMode()) {
-    return res.status(403).json(createDemoModeErrorResponse('convert-slide'))
+  if (isRestrictedMode()) {
+    return res
+      .status(403)
+      .json(createRestrictedModeErrorResponse('convert-slide'))
   }
 
   const form = formidable({ multiples: true })
