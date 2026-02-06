@@ -24,6 +24,7 @@ import { YoutubeManager } from '@/components/youtubeManager'
 import { MemoryServiceInitializer } from '@/components/memoryServiceInitializer'
 import toastStore from '@/features/stores/toast'
 import { usePresetLoader } from '@/features/presets/usePresetLoader'
+import { useLive2DEnabled } from '@/hooks/useLive2DEnabled'
 
 const Home = () => {
   const webcamStatus = homeStore((s) => s.webcamStatus)
@@ -38,6 +39,7 @@ const Home = () => {
         : `url(${buildUrl(backgroundImageUrl)})`
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
   const modelType = settingsStore((s) => s.modelType)
+  const { isLive2DEnabled } = useLive2DEnabled()
   const characterPreset1 = settingsStore((s) => s.characterPreset1)
   const characterPreset2 = settingsStore((s) => s.characterPreset2)
   const characterPreset3 = settingsStore((s) => s.characterPreset3)
@@ -110,7 +112,7 @@ const Home = () => {
       <Introduction />
       {modelType === 'vrm' ? (
         <VrmViewer />
-      ) : modelType === 'live2d' ? (
+      ) : modelType === 'live2d' && isLive2DEnabled ? (
         <Live2DViewer />
       ) : (
         <PNGTuberViewer />
