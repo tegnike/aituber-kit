@@ -41,7 +41,7 @@ const Log = () => {
           />
           <h2 className="text-2xl font-bold">{t('ConversationHistory')}</h2>
         </div>
-        <div className="my-2">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           {selectAIService !== 'dify'
             ? t('ConversationHistoryInfo', { count: maxPastMessages })
             : t('DifyInfo2')}

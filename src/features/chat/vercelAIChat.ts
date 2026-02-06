@@ -7,6 +7,10 @@ import {
 } from '@/features/constants/settings'
 import settingsStore from '../stores/settings'
 
+// 推論/思考チャンクを通常テキストと区別するためのマーカー
+// null byteプレフィックスはLLMテキスト出力に現れないため安全
+export const THINKING_MARKER = '\x00THINK:'
+
 const getAIConfig = () => {
   const ss = settingsStore.getState()
   // AIServiceとして扱う（より広い型）
@@ -29,6 +33,9 @@ const getAIConfig = () => {
     useSearchGrounding: ss.useSearchGrounding,
     temperature: ss.temperature,
     maxTokens: ss.maxTokens,
+    reasoningMode: ss.reasoningMode,
+    reasoningEffort: ss.reasoningEffort,
+    reasoningTokenBudget: ss.reasoningTokenBudget,
     customApiUrl: ss.customApiUrl,
     customApiHeaders: ss.customApiHeaders,
     customApiBody: ss.customApiBody,
@@ -63,6 +70,9 @@ export async function getVercelAIChatResponse(messages: Message[]) {
     useSearchGrounding,
     temperature,
     maxTokens,
+    reasoningMode,
+    reasoningEffort,
+    reasoningTokenBudget,
     customApiUrl,
     customApiHeaders,
     customApiBody,
@@ -106,6 +116,9 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         useSearchGrounding,
         temperature,
         maxTokens,
+        reasoningMode,
+        reasoningEffort,
+        reasoningTokenBudget,
       })
     }
 
@@ -148,6 +161,9 @@ export async function getVercelAIChatResponseStream(
     useSearchGrounding,
     temperature,
     maxTokens,
+    reasoningMode,
+    reasoningEffort,
+    reasoningTokenBudget,
     customApiUrl,
     customApiHeaders,
     customApiBody,
@@ -190,6 +206,9 @@ export async function getVercelAIChatResponseStream(
       useSearchGrounding,
       temperature,
       maxTokens,
+      reasoningMode,
+      reasoningEffort,
+      reasoningTokenBudget,
     })
   }
 
@@ -200,6 +219,9 @@ export async function getVercelAIChatResponseStream(
     },
     body: JSON.stringify(requestData),
   })
+
+  const contentType = response.headers.get('content-type') || ''
+  const isPlainTextStream = contentType.includes('text/plain')
 
   try {
     if (!response.ok) {
@@ -228,72 +250,77 @@ export async function getVercelAIChatResponseStream(
             const { done, value } = await reader.read()
             if (done) break
 
-            buffer += decoder.decode(value, { stream: true })
+            const decodedChunk = decoder.decode(value, { stream: true })
+
+            if (isPlainTextStream) {
+              if (decodedChunk) {
+                controller.enqueue(decodedChunk)
+              }
+              continue
+            }
+
+            buffer += decodedChunk
             const lines = buffer.split('\n')
             buffer = lines.pop() || ''
 
             for (const line of lines) {
-              if (line.startsWith('0:')) {
-                const content = line.substring(2).trim()
-                const decodedContent = JSON.parse(content)
-                controller.enqueue(decodedContent)
-              } else if (line.startsWith('data:')) {
-                // OpenAI API形式のストリームデータに対応
-                const content = line.substring(5).trim() // 'data:' プレフィックスを除去
-                if (content === '[DONE]') continue // 終了マーカーは無視
+              // AI SDK UI Message Stream Protocol (SSE JSON形式)
+              // https://ai-sdk.dev/docs/ai-sdk-ui/stream-protocol
+              //
+              // 主なイベントタイプ:
+              // - start, finish, abort: メッセージ制御
+              // - text-start, text-delta, text-end: テキストコンテンツ
+              // - reasoning-start, reasoning-delta, reasoning-end: 推論コンテンツ
+              // - tool-input-start, tool-input-delta, tool-input-available: ツール入力
+              // - tool-output-available: ツール出力
+              // - source-url, source-document, file: ソース参照
+              // - start-step, finish-step: ステップ制御
+              // - error: エラー
+              // - data-*: カスタムデータ
+              if (line.startsWith('data:')) {
+                const content = line.substring(5).trim()
+                if (content === '[DONE]') continue
 
                 try {
                   const data = JSON.parse(content)
-                  const text = data.choices?.[0]?.delta?.content
-                  if (text) {
-                    controller.enqueue(text)
-                  }
-                } catch (error) {
-                  console.error('Error parsing JSON:', error)
-                }
-              } else if (line.startsWith('3:')) {
-                const content = line.substring(2).trim()
-                const decodedContent = JSON.parse(content)
 
-                console.error(
-                  `Error fetching ${selectAIService} API response:`,
-                  decodedContent
-                )
-                toastStore.getState().addToast({
-                  message: decodedContent,
-                  type: 'error',
-                  tag: 'vercel-api-error',
-                })
-              } else if (line.startsWith('9:')) {
-                // Anthropicのツール呼び出し情報を処理
-                const content = line.substring(2).trim()
-                try {
-                  const decodedContent = JSON.parse(content)
-                  if (decodedContent.toolName) {
-                    console.log(`Tool called: ${decodedContent.toolName}`)
+                  if (data.type === 'text-delta' && data.delta) {
+                    controller.enqueue(data.delta)
+                  } else if (data.type === 'reasoning-delta' && data.delta) {
+                    controller.enqueue(THINKING_MARKER + data.delta)
+                  } else if (
+                    data.type === 'tool-input-start' &&
+                    data.toolName
+                  ) {
+                    console.log(`Tool called: ${data.toolName}`)
                     const message = i18next.t('Toasts.UsingTool', {
-                      toolName: decodedContent.toolName,
+                      toolName: data.toolName,
                     })
                     toastStore.getState().addToast({
                       message,
                       type: 'tool',
-                      tag: `vercel-tool-info-${decodedContent.toolName}`,
+                      tag: `vercel-tool-info-${data.toolName}`,
                       duration: 3000,
                     })
+                  } else if (data.type === 'error') {
+                    console.error(
+                      `Error fetching ${selectAIService} API response:`,
+                      data.errorText || data
+                    )
+                    toastStore.getState().addToast({
+                      message: data.errorText || 'Unknown error',
+                      type: 'error',
+                      tag: 'vercel-api-error',
+                    })
                   }
+                  // その他のイベント（start, finish, text-start, text-end等）は無視
                 } catch (error) {
-                  console.error('Error parsing tool call JSON:', error)
+                  console.error('Error parsing SSE JSON:', error)
                 }
-              } else if (line.startsWith('e:') || line.startsWith('d:')) {
-                continue
-              } else if (line.match(/^([a-z]|\d):/)) {
-                // これらは通常、ストリームの終了やメタデータを示すものであり、コンテンツではない
-                continue
               } else if (line.trim() !== '') {
                 // Ollamaなど、JSONLフォーマットのストリーミングデータに対応
                 try {
                   const data = JSON.parse(line)
-                  // Ollama形式: {"message":{"role":"assistant","content":"テキスト"}}
                   if (data.message?.content) {
                     controller.enqueue(data.message.content)
                   }
@@ -302,6 +329,10 @@ export async function getVercelAIChatResponseStream(
                 }
               }
             }
+          }
+
+          if (isPlainTextStream && buffer) {
+            controller.enqueue(buffer)
           }
         } catch (error) {
           console.error(

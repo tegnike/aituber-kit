@@ -52,8 +52,7 @@ certificates
 # Live2D files
 public/live2d/*
 !public/live2d/nike01
-public/scripts/*
-!public/scripts/.gitkeep
+public/scripts/live2dcubismcore.min.js
 
 # VRM files
 /public/vrm/*
@@ -70,8 +69,17 @@ public/scripts/*
 !/public/backgrounds/bg-c.png
 !/public/backgrounds/AITuber.png
 
+# PNGTuber files
+public/pngtuber/*
+!public/pngtuber/nike01
+!public/pngtuber/nike02
+
 /public/images/uploaded/*
 !/public/images/placed/.keep
 
 .claude/
 
+.kiro/specs/*
+
+# Playwright reports
+/reports

@@ -54,8 +54,9 @@ export default async function handler(
     )
     await fs.promises.copyFile(file.filepath, newPath)
 
+    const filename = file.originalFilename || 'background' + extension
     res.status(200).json({
-      path: `/backgrounds/${file.originalFilename}`,
+      path: `/backgrounds/${filename}`,
     })
   } catch (error) {
     res.status(500).json({ error: 'Failed to upload file' })

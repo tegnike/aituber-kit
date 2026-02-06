@@ -234,7 +234,9 @@ const Images = () => {
     <div className="space-y-6">
       <div>
         <h3 className="text-xl font-bold mb-4">{t('ImageSettings')}</h3>
-        <p className="text-sm mb-4">{t('ImageSettingsDescription')}</p>
+        <p className="my-2 text-sm whitespace-pre-wrap">
+          {t('ImageSettingsDescription')}
+        </p>
       </div>
 
       {/* Upload Section */}
@@ -357,7 +359,9 @@ const Images = () => {
       {/* Layer Order Management */}
       <div className="border border-white rounded-lg p-4">
         <h4 className="font-semibold mb-4">{t('LayerOrder')}</h4>
-        <p className="text-s mb-4">{t('LayerOrderDescription')}</p>
+        <p className="my-2 text-sm whitespace-pre-wrap">
+          {t('LayerOrderDescription')}
+        </p>
 
         {layerItems.length === 1 ? (
           <div className="space-y-3">

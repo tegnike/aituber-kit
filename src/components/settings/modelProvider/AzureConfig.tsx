@@ -4,9 +4,9 @@ import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../../textButton'
+import { ToggleSwitch } from '../../toggleSwitch'
 import { ApiKeyInput } from './ApiKeyInput'
 import { MultiModalToggle } from './MultiModalToggle'
-import { defaultModels } from '@/features/constants/aiModels'
 import {
   RealtimeAPIModeContentType,
   RealtimeAPIModeVoice,
@@ -33,20 +33,7 @@ export const AzureConfig = ({
   const { t } = useTranslation()
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
-    settingsStore.setState({
-      realtimeAPIMode: newMode,
-    })
-    if (newMode) {
-      settingsStore.setState({
-        audioMode: false,
-        speechRecognitionMode: 'browser',
-        selectAIModel: defaultModels.openaiRealtime,
-        initialSpeechTimeout: 0,
-        noSpeechTimeout: 0,
-        showSilenceProgressBar: false,
-        continuousMicListeningMode: false,
-      })
-    }
+    settingsStore.setState({ realtimeAPIMode: newMode })
   }, [])
 
   const handleUpdate = useCallback(() => {
@@ -76,7 +63,7 @@ export const AzureConfig = ({
 
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('AzureEndpoint')}</div>
-        <div className="my-4">
+        <div className="my-2 text-sm whitespace-pre-wrap">
           Chat API ex.
           https://RESOURCE_NAME.openai.azure.com/openai/deployments/
           DEPLOYMENT_NAME/chat/completions?api-version=API_VERSION
@@ -98,11 +85,10 @@ export const AzureConfig = ({
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
         <div className="my-2">
-          <TextButton
-            onClick={() => handleRealtimeAPIModeChange(!realtimeAPIMode)}
-          >
-            {realtimeAPIMode ? t('StatusOn') : t('StatusOff')}
-          </TextButton>
+          <ToggleSwitch
+            enabled={realtimeAPIMode}
+            onChange={handleRealtimeAPIModeChange}
+          />
         </div>
 
         {realtimeAPIMode && (
@@ -149,7 +135,9 @@ export const AzureConfig = ({
             </select>
 
             <div className="my-4">
-              <div className="my-4">{t('UpdateRealtimeAPISettingsInfo')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('UpdateRealtimeAPISettingsInfo')}
+              </div>
               <TextButton onClick={handleUpdate}>
                 {t('UpdateRealtimeAPISettings')}
               </TextButton>

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import {
@@ -92,39 +92,16 @@ const Voice = () => {
   const openaiTTSSpeed = settingsStore((s) => s.openaiTTSSpeed)
   const azureTTSKey = settingsStore((s) => s.azureTTSKey)
   const azureTTSEndpoint = settingsStore((s) => s.azureTTSEndpoint)
-  const nijivoiceApiKey = settingsStore((s) => s.nijivoiceApiKey)
-  const nijivoiceActorId = settingsStore((s) => s.nijivoiceActorId)
-  const nijivoiceSpeed = settingsStore((s) => s.nijivoiceSpeed)
-  const nijivoiceEmotionalLevel = settingsStore(
-    (s) => s.nijivoiceEmotionalLevel
-  )
-  const nijivoiceSoundDuration = settingsStore((s) => s.nijivoiceSoundDuration)
-
   const { t } = useTranslation()
-  const [nijivoiceSpeakers, setNijivoiceSpeakers] = useState<Array<any>>([])
-  const [prevNijivoiceActorId, setPrevNijivoiceActorId] = useState<string>('')
   const [speakers_aivis, setSpeakers_aivis] = useState<Array<any>>([])
+  const [speakers_voicevox, setSpeakers_voicevox] = useState<Array<any>>([])
   const [customVoiceText, setCustomVoiceText] = useState<string>('')
   const [isUpdatingSpeakers, setIsUpdatingSpeakers] = useState<boolean>(false)
   const [speakersUpdateError, setSpeakersUpdateError] = useState<string>('')
-
-  // にじボイスの話者一覧を取得する関数
-  const fetchNijivoiceSpeakers = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `/api/get-nijivoice-actors?apiKey=${nijivoiceApiKey}`
-      )
-      const data = await response.json()
-      if (data.voiceActors) {
-        const sortedActors = data.voiceActors.sort(
-          (a: any, b: any) => a.id - b.id
-        )
-        setNijivoiceSpeakers(sortedActors)
-      }
-    } catch (error) {
-      console.error('Failed to fetch nijivoice speakers:', error)
-    }
-  }, [nijivoiceApiKey])
+  const [isUpdatingVoicevoxSpeakers, setIsUpdatingVoicevoxSpeakers] =
+    useState<boolean>(false)
+  const [voicevoxSpeakersUpdateError, setVoicevoxSpeakersUpdateError] =
+    useState<string>('')
 
   // AIVISの話者一覧を取得する関数
   const fetchAivisSpeakers = async () => {
@@ -137,12 +114,16 @@ const Voice = () => {
     }
   }
 
-  // コンポーネントマウント時またはにじボイス選択時に話者一覧を取得
-  useEffect(() => {
-    if (selectVoice === 'nijivoice') {
-      fetchNijivoiceSpeakers()
+  // VOICEVOXの話者一覧を取得する関数
+  const fetchVoicevoxSpeakers = async () => {
+    try {
+      const response = await fetch('/speakers.json')
+      const data = await response.json()
+      setSpeakers_voicevox(data)
+    } catch (error) {
+      console.error('Failed to fetch VOICEVOX speakers:', error)
     }
-  }, [selectVoice, nijivoiceApiKey, fetchNijivoiceSpeakers])
+  }
 
   // コンポーネントマウント時またはAIVIS選択時に話者一覧を取得
   useEffect(() => {
@@ -151,29 +132,12 @@ const Voice = () => {
     }
   }, [selectVoice])
 
-  // nijivoiceActorIdが変更された時にrecommendedVoiceSpeedを設定する処理を追加
+  // コンポーネントマウント時またはVOICEVOX選択時に話者一覧を取得
   useEffect(() => {
-    if (
-      selectVoice === 'nijivoice' &&
-      nijivoiceActorId &&
-      nijivoiceActorId !== prevNijivoiceActorId
-    ) {
-      // 現在選択されていキャラクターを探す
-      const selectedActor = nijivoiceSpeakers.find(
-        (actor) => actor.id === nijivoiceActorId
-      )
-
-      // キャラクターが見つかり、recommendedVoiceSpeedが設定されている場合
-      if (selectedActor?.recommendedVoiceSpeed) {
-        settingsStore.setState({
-          nijivoiceSpeed: selectedActor.recommendedVoiceSpeed,
-        })
-      }
-
-      // 前回の選択を更新
-      setPrevNijivoiceActorId(nijivoiceActorId)
+    if (selectVoice === 'voicevox') {
+      fetchVoicevoxSpeakers()
     }
-  }, [nijivoiceActorId, nijivoiceSpeakers, prevNijivoiceActorId, selectVoice])
+  }, [selectVoice])
 
   // 追加: realtimeAPIMode または audioMode が true の場合にメッセージを表示
   if (realtimeAPIMode || audioMode) {
@@ -199,7 +163,9 @@ const Voice = () => {
       <div className="mb-4 text-xl font-bold">
         {t('SyntheticVoiceEngineChoice')}
       </div>
-      <div>{t('VoiceEngineInstruction')}</div>
+      <div className="my-2 text-sm whitespace-pre-wrap">
+        {t('VoiceEngineInstruction')}
+      </div>
       <div className="my-2">
         <select
           value={selectVoice}
@@ -219,17 +185,16 @@ const Voice = () => {
           <option value="cartesia">{t('UsingCartesia')}</option>
           <option value="openai">{t('UsingOpenAITTS')}</option>
           <option value="azure">{t('UsingAzureTTS')}</option>
-          <option value="nijivoice">{t('UsingNijiVoice')}</option>
         </select>
       </div>
 
-      <div className="mt-10">
+      <div className="border-t border-gray-300 pt-6 my-6">
         <div className="mb-4 text-xl font-bold">{t('VoiceAdjustment')}</div>
         {(() => {
           if (selectVoice === 'koeiromap') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('KoeiromapInfo')}
                   <br />
                   <Link
@@ -342,7 +307,7 @@ const Voice = () => {
           } else if (selectVoice === 'voicevox') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('VoiceVoxInfo')}
                   <br />
                   <Link
@@ -365,7 +330,7 @@ const Voice = () => {
                   />
                 </div>
                 <div className="mt-4 font-bold">{t('SpeakerSelection')}</div>
-                <div className="flex items-center">
+                <div className="space-y-3">
                   <select
                     value={voicevoxSpeaker}
                     onChange={(e) =>
@@ -376,12 +341,70 @@ const Voice = () => {
                     className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
                   >
                     <option value="">{t('Select')}</option>
-                    {speakers.map((speaker) => (
+                    {(speakers_voicevox.length > 0
+                      ? speakers_voicevox
+                      : speakers
+                    ).map((speaker) => (
                       <option key={speaker.id} value={speaker.id}>
                         {speaker.speaker}
                       </option>
                     ))}
                   </select>
+
+                  <button
+                    onClick={async () => {
+                      setIsUpdatingVoicevoxSpeakers(true)
+                      setVoicevoxSpeakersUpdateError('')
+                      try {
+                        const response = await fetch(
+                          '/api/update-voicevox-speakers?serverUrl=' +
+                            encodeURIComponent(voicevoxServerUrl)
+                        )
+                        if (response.ok) {
+                          const updatedSpeakersResponse = await fetch(
+                            `/speakers.json?ts=${Date.now()}`
+                          )
+                          const updatedSpeakers =
+                            await updatedSpeakersResponse.json()
+                          setSpeakers_voicevox(updatedSpeakers)
+                        } else {
+                          setVoicevoxSpeakersUpdateError(
+                            '話者リストの更新に失敗しました'
+                          )
+                        }
+                      } catch (error) {
+                        setVoicevoxSpeakersUpdateError(
+                          'ネットワークエラーが発生しました'
+                        )
+                      } finally {
+                        setIsUpdatingVoicevoxSpeakers(false)
+                      }
+                    }}
+                    disabled={isUpdatingVoicevoxSpeakers}
+                    className="w-full px-4 py-2 text-sm font-medium text-theme bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                    {isUpdatingVoicevoxSpeakers
+                      ? '更新中...'
+                      : t('UpdateSpeakerList')}
+                  </button>
+                  {voicevoxSpeakersUpdateError && (
+                    <div className="mt-2 text-red-600 text-sm">
+                      {voicevoxSpeakersUpdateError}
+                    </div>
+                  )}
                 </div>
                 <div className="mt-6 font-bold">
                   <div className="select-none">
@@ -438,7 +461,7 @@ const Voice = () => {
           } else if (selectVoice === 'google') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('GoogleTTSInfo')}
                   {t('AuthFileInstruction')}
                   <br />
@@ -472,7 +495,7 @@ const Voice = () => {
           } else if (selectVoice === 'stylebertvits2') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('StyleBertVITS2Info')}
                   <br />
                   <Link
@@ -581,7 +604,7 @@ const Voice = () => {
           } else if (selectVoice === 'aivis_speech') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('AivisSpeechInfo')}
                   <br />
                   <Link
@@ -631,11 +654,11 @@ const Voice = () => {
                       try {
                         const response = await fetch(
                           '/api/update-aivis-speakers?serverUrl=' +
-                            aivisSpeechServerUrl
+                            encodeURIComponent(aivisSpeechServerUrl)
                         )
                         if (response.ok) {
                           const updatedSpeakersResponse = await fetch(
-                            '/speakers_aivis.json'
+                            `/speakers_aivis.json?ts=${Date.now()}`
                           )
                           const updatedSpeakers =
                             await updatedSpeakersResponse.json()
@@ -783,7 +806,7 @@ const Voice = () => {
           } else if (selectVoice === 'aivis_cloud_api') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('AivisCloudAPIInfo')}
                   <br />
                   <Link
@@ -979,7 +1002,9 @@ const Voice = () => {
           } else if (selectVoice === 'gsvitts') {
             return (
               <>
-                <div>{t('GSVITTSInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('GSVITTSInfo')}
+                </div>
                 <div className="mt-4 font-bold">{t('GSVITTSServerUrl')}</div>
                 <div className="mt-2">
                   <input
@@ -1041,7 +1066,7 @@ const Voice = () => {
           } else if (selectVoice === 'elevenlabs') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('ElevenLabsInfo')}
                   <br />
                   <Link
@@ -1065,7 +1090,7 @@ const Voice = () => {
                   />
                 </div>
                 <div className="mt-4 font-bold">{t('ElevenLabsVoiceId')}</div>
-                <div className="mt-2">
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('ElevenLabsVoiceIdInfo')}
                   <br />
                   <Link
@@ -1092,7 +1117,7 @@ const Voice = () => {
           } else if (selectVoice === 'cartesia') {
             return (
               <>
-                <div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('CartesiaInfo')}
                   <br />
                   <Link
@@ -1116,7 +1141,7 @@ const Voice = () => {
                   />
                 </div>
                 <div className="mt-4 font-bold">{t('CartesiaVoiceId')}</div>
-                <div className="mt-2">
+                <div className="my-2 text-sm whitespace-pre-wrap">
                   {t('CartesiaVoiceIdInfo')}
                   <br />
                   <Link
@@ -1143,7 +1168,9 @@ const Voice = () => {
           } else if (selectVoice === 'openai') {
             return (
               <>
-                <div>{t('OpenAITTSInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('OpenAITTSInfo')}
+                </div>
                 <div className="mt-4 font-bold">{t('OpenAIAPIKeyLabel')}</div>
                 <div className="mt-2">
                   <input
@@ -1220,7 +1247,9 @@ const Voice = () => {
           } else if (selectVoice === 'azure') {
             return (
               <>
-                <div>{t('AzureTTSInfo')}</div>
+                <div className="my-2 text-sm whitespace-pre-wrap">
+                  {t('AzureTTSInfo')}
+                </div>
                 <div className="mt-4 font-bold">{t('AzureAPIKeyLabel')}</div>
                 <div className="mt-2">
                   <input
@@ -1282,97 +1311,6 @@ const Voice = () => {
                   onChange={(e) => {
                     settingsStore.setState({
                       openaiTTSSpeed: Number(e.target.value),
-                    })
-                  }}
-                />
-              </>
-            )
-          } else if (selectVoice === 'nijivoice') {
-            return (
-              <>
-                <div>{t('NijiVoiceInfo')}</div>
-                <Link
-                  url="https://app.nijivoice.com/"
-                  label="https://app.nijivoice.com/"
-                />
-                <div className="mt-4 font-bold">{t('NijiVoiceApiKey')}</div>
-                <div className="mt-2">
-                  <input
-                    className="text-ellipsis px-4 py-2 w-full bg-white hover:bg-white-hover rounded-lg"
-                    type="text"
-                    placeholder="..."
-                    value={nijivoiceApiKey}
-                    onChange={(e) =>
-                      settingsStore.setState({
-                        nijivoiceApiKey: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="mt-4 font-bold">{t('NijiVoiceActorId')}</div>
-                <div className="mt-2">
-                  <select
-                    value={nijivoiceActorId}
-                    onChange={(e) => {
-                      settingsStore.setState({
-                        nijivoiceActorId: e.target.value,
-                      })
-                    }}
-                    className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg"
-                  >
-                    <option value="">{t('Select')}</option>
-                    {nijivoiceSpeakers.map((actor) => (
-                      <option key={actor.id} value={actor.id}>
-                        {actor.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mt-4 font-bold">
-                  {t('NijiVoiceSpeed')}: {nijivoiceSpeed}
-                </div>
-                <input
-                  type="range"
-                  min={0.4}
-                  max={3.0}
-                  step={0.1}
-                  value={nijivoiceSpeed}
-                  className="mt-2 mb-4 input-range"
-                  onChange={(e) => {
-                    settingsStore.setState({
-                      nijivoiceSpeed: Number(e.target.value),
-                    })
-                  }}
-                />
-                <div className="mt-4 font-bold">
-                  {t('NijiVoiceEmotionalLevel')}: {nijivoiceEmotionalLevel}
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1.5}
-                  step={0.1}
-                  value={nijivoiceEmotionalLevel}
-                  className="mt-2 mb-4 input-range"
-                  onChange={(e) => {
-                    settingsStore.setState({
-                      nijivoiceEmotionalLevel: Number(e.target.value),
-                    })
-                  }}
-                />
-                <div className="mt-4 font-bold">
-                  {t('NijiVoiceSoundDuration')}: {nijivoiceSoundDuration}
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1.7}
-                  step={0.1}
-                  value={nijivoiceSoundDuration}
-                  className="mt-2 mb-4 input-range"
-                  onChange={(e) => {
-                    settingsStore.setState({
-                      nijivoiceSoundDuration: Number(e.target.value),
                     })
                   }}
                 />

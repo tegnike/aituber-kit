@@ -1,6 +1,11 @@
 import { useMemo } from 'react'
 import settingsStore from '@/features/stores/settings'
-import { isMultiModalModelWithToggle } from '@/features/constants/aiModels'
+import {
+  isMultiModalModelWithToggle,
+  isReasoningModel,
+  getReasoningEfforts,
+  needsReasoningTokenBudget,
+} from '@/features/constants/aiModels'
 
 export const useModelProviderState = () => {
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
@@ -33,6 +38,10 @@ export const useModelProviderState = () => {
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
+  const reasoningMode = settingsStore((s) => s.reasoningMode)
+  const reasoningEffort = settingsStore((s) => s.reasoningEffort)
+  const reasoningTokenBudget = settingsStore((s) => s.reasoningTokenBudget)
+  const showThinkingText = settingsStore((s) => s.showThinkingText)
   const multiModalMode = settingsStore((s) => s.multiModalMode)
   const multiModalAiDecisionPrompt = settingsStore(
     (s) => s.multiModalAiDecisionPrompt
@@ -66,6 +75,22 @@ export const useModelProviderState = () => {
     [selectAIService, selectAIModel, enableMultiModal, customModel]
   )
 
+  const isReasoningSupported = useMemo(
+    () => isReasoningModel(selectAIService, selectAIModel, customModel),
+    [selectAIService, selectAIModel, customModel]
+  )
+
+  const availableReasoningEfforts = useMemo(
+    () => getReasoningEfforts(selectAIService, selectAIModel, customModel),
+    [selectAIService, selectAIModel, customModel]
+  )
+
+  const showReasoningTokenBudget = useMemo(
+    () =>
+      needsReasoningTokenBudget(selectAIService, selectAIModel, customModel),
+    [selectAIService, selectAIModel, customModel]
+  )
+
   return {
     externalLinkageMode,
     realtimeAPIMode,
@@ -93,6 +118,10 @@ export const useModelProviderState = () => {
     maxPastMessages,
     temperature,
     maxTokens,
+    reasoningMode,
+    reasoningEffort,
+    reasoningTokenBudget,
+    showThinkingText,
     multiModalMode,
     multiModalAiDecisionPrompt,
     enableMultiModal,
@@ -109,5 +138,8 @@ export const useModelProviderState = () => {
     includeSystemMessagesInCustomApi,
     customApiIncludeMimeType,
     isMultiModalSupported,
+    isReasoningSupported,
+    availableReasoningEfforts,
+    showReasoningTokenBudget,
   }
 }

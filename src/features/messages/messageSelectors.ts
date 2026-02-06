@@ -41,9 +41,14 @@ export const messageSelectors = {
       .map((message, index) => {
         // 最後のメッセージだけそのまま利用する（= 最後のメッセージだけマルチモーダルの対象となる）
         const isLastMessage = index === messages.length - 1
-        const messageText = Array.isArray(message.content)
+        let messageText = Array.isArray(message.content)
           ? message.content[0].text
           : message.content || ''
+
+        // userメッセージにuserNameがある場合、コンテンツの先頭にコメント主名を付与
+        if (message.role === 'user' && message.userName) {
+          messageText = `[${message.userName}さんのコメント] ${messageText}`
+        }
 
         let content: Message['content']
         if (includeTimestamp) {
@@ -57,7 +62,14 @@ export const messageSelectors = {
             ]
           }
         } else {
-          content = isLastMessage ? message.content : messageText
+          if (isLastMessage && Array.isArray(message.content)) {
+            content = [
+              { type: 'text', text: messageText },
+              { type: 'image', image: message.content[1].image },
+            ]
+          } else {
+            content = messageText
+          }
         }
 
         return {

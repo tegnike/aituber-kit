@@ -38,7 +38,8 @@
 
 <h3 align="center">
    <a href="../README.md">日本語</a>｜
-   <a href="./README_zh.md">中文</a>｜
+   <a href="./README_zh-CN.md">简体中文</a>｜
+   <a href="./README_zh-TW.md">繁體中文</a>｜
    <a href="./README_ko.md">한국어</a>｜
    <a href="./README_pl.md">Polski</a>
 </h3>
@@ -118,8 +119,8 @@ For detailed usage and configuration instructions, please visit the [Documentati
 
 ### Development Environment
 
-- Node.js: ^20.0.0
-- npm: ^10.0.0
+- Node.js: ^25.2.1
+- npm: ^11.6.2
 
 ### Installation Steps
 
@@ -321,7 +322,6 @@ If you want to improve code or add new features, please make changes in your for
 This project has adopted a **custom license** from version v2.0.0 onwards.
 
 - **Free Use**
-
   - Free for personal use, educational purposes, and non-profit purposes that are not for commercial purposes.
 
 - **Commercial License**
