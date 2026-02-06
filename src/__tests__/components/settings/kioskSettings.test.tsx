@@ -101,7 +101,48 @@ describe('KioskSettings Component', () => {
       render(<KioskSettings />)
       const input = screen.getByLabelText('KioskPasscode')
       fireEvent.change(input, { target: { value: '1234' } })
+      // ローカルstate方式に変更: changeではstoreに保存しない
+      // blurで保存される
+      fireEvent.blur(input)
       expect(mockSetState).toHaveBeenCalledWith({ kioskPasscode: '1234' })
+    })
+
+    it('should show error message for invalid passcode', () => {
+      render(<KioskSettings />)
+      const input = screen.getByLabelText('KioskPasscode')
+      fireEvent.change(input, { target: { value: '12' } })
+      expect(screen.getByText('KioskPasscodeInvalid')).toBeInTheDocument()
+    })
+
+    it('should not save invalid passcode to store on blur', () => {
+      render(<KioskSettings />)
+      const input = screen.getByLabelText('KioskPasscode')
+      fireEvent.change(input, { target: { value: '12' } })
+      fireEvent.blur(input)
+      // 無効なパスコードではstoreに保存されない（kioskPasscodeキーでの呼び出しがない）
+      const passcodeCall = mockSetState.mock.calls.find(
+        (call: any[]) => call[0] && 'kioskPasscode' in call[0]
+      )
+      expect(passcodeCall).toBeUndefined()
+    })
+
+    it('should save valid passcode to store on blur', () => {
+      render(<KioskSettings />)
+      const input = screen.getByLabelText('KioskPasscode')
+      fireEvent.change(input, { target: { value: 'abcd1234' } })
+      fireEvent.blur(input)
+      expect(mockSetState).toHaveBeenCalledWith({ kioskPasscode: 'abcd1234' })
+    })
+
+    it('should clear error when valid passcode is entered', () => {
+      render(<KioskSettings />)
+      const input = screen.getByLabelText('KioskPasscode')
+      // まず無効な値を入力
+      fireEvent.change(input, { target: { value: '12' } })
+      expect(screen.getByText('KioskPasscodeInvalid')).toBeInTheDocument()
+      // 有効な値に修正
+      fireEvent.change(input, { target: { value: '1234' } })
+      expect(screen.queryByText('KioskPasscodeInvalid')).not.toBeInTheDocument()
     })
   })
 

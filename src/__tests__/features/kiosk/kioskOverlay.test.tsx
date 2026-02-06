@@ -78,6 +78,15 @@ jest.mock('@/hooks/useEscLongPress', () => ({
   },
 }))
 
+// Mock useMultiTap
+let multiTapCallback: (() => void) | null = null
+jest.mock('@/hooks/useMultiTap', () => ({
+  useMultiTap: (callback: () => void) => {
+    multiTapCallback = callback
+    return { ref: { current: null } }
+  },
+}))
+
 // Import component after mocks
 import { KioskOverlay } from '@/features/kiosk/kioskOverlay'
 
@@ -90,6 +99,7 @@ describe('KioskOverlay', () => {
     mockUseFullscreen.isFullscreen = false
     mockUseFullscreen.isSupported = true
     escLongPressCallback = null
+    multiTapCallback = null
   })
 
   describe('Rendering', () => {
@@ -254,6 +264,31 @@ describe('KioskOverlay', () => {
       })
 
       expect(mockUseKioskMode.temporaryUnlock).toHaveBeenCalled()
+    })
+  })
+
+  describe('Multi-tap zone', () => {
+    it('renders multi-tap zone element', () => {
+      render(<KioskOverlay />)
+
+      expect(
+        document.querySelector('[data-testid="kiosk-multi-tap-zone"]')
+      ).toBeInTheDocument()
+    })
+
+    it('opens passcode dialog on multi-tap', async () => {
+      render(<KioskOverlay />)
+
+      // Simulate multi-tap callback
+      await act(async () => {
+        if (multiTapCallback) {
+          multiTapCallback()
+        }
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('パスコード入力')).toBeInTheDocument()
+      })
     })
   })
 })

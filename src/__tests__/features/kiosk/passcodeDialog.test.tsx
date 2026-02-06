@@ -51,6 +51,7 @@ describe('PasscodeDialog Component', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     jest.useFakeTimers()
+    localStorage.clear()
   })
 
   afterEach(() => {

@@ -95,66 +95,67 @@ src/
 
 **ファクトリーパターン**: `aiChatFactory.ts` → 設定に基づきプロバイダーを自動選択
 
-| ルーティング | 対応プロバイダー |
-|---|---|
+| ルーティング                      | 対応プロバイダー                                                                                                                          |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `vercelAIChat.ts` (Vercel AI SDK) | openai, anthropic, google, azure, xai, groq, cohere, mistralai, perplexity, fireworks, deepseek, openrouter, lmstudio, ollama, custom-api |
-| `openAIAudioChat.ts` | openai（audioMode時） |
-| `difyChat.ts` | dify |
+| `openAIAudioChat.ts`              | openai（audioMode時）                                                                                                                     |
+| `difyChat.ts`                     | dify                                                                                                                                      |
 
 **サーバー側**: `/api/ai/vercel.ts`（Edge Runtime、`createAIRegistry`で動的プロバイダー登録）
 
 **モデル管理** (`/src/features/constants/aiModels.ts`):
+
 - `ModelInfo` 属性ベース管理（multiModal, reasoningEfforts, reasoningTokenBudget）
 - `modelDefinitions` マスターデータから `aiModels`, `defaultModels`, `multiModalModels` を導出
 - ヘルパー関数群: `isMultiModalModel()`, `isReasoningModel()`, `isSearchGroundingModel()` 等
 
 ### 音声合成（TTS）- 11エンジン
 
-| エンジン | synthesizeファイル | APIルート |
-|---|---|---|
-| VOICEVOX | `synthesizeVoiceVoicevox.ts` | `/api/tts-voicevox` |
-| AivisSpeech | `synthesizeVoiceAivisSpeech.ts` | `/api/tts-aivisspeech` |
-| Aivis Cloud API | `synthesizeVoiceAivisCloudApi.ts` | `/api/tts-aivis-cloud-api` |
-| Koeiromap | `synthesizeVoiceKoeiromap.ts` | `/api/tts-koeiromap` |
-| Google TTS | `synthesizeVoiceGoogle.ts` | `/api/tts-google` |
-| Style-Bert-VITS2 | `synthesizeStyleBertVITS2.ts` | `/api/stylebertvits2` |
-| GSVI TTS | `synthesizeVoiceGSVI.ts` | 直接呼び出し |
-| ElevenLabs | `synthesizeVoiceElevenlabs.ts` | `/api/elevenLabs` |
-| Cartesia | `synthesizeVoiceCartesia.ts` | `/api/cartesia` |
-| OpenAI TTS | `synthesizeVoiceOpenAI.ts` | `/api/openAITTS` |
-| Azure OpenAI TTS | `synthesizeVoiceAzureOpenAI.ts` | `/api/azureOpenAITTS` |
+| エンジン         | synthesizeファイル                | APIルート                  |
+| ---------------- | --------------------------------- | -------------------------- |
+| VOICEVOX         | `synthesizeVoiceVoicevox.ts`      | `/api/tts-voicevox`        |
+| AivisSpeech      | `synthesizeVoiceAivisSpeech.ts`   | `/api/tts-aivisspeech`     |
+| Aivis Cloud API  | `synthesizeVoiceAivisCloudApi.ts` | `/api/tts-aivis-cloud-api` |
+| Koeiromap        | `synthesizeVoiceKoeiromap.ts`     | `/api/tts-koeiromap`       |
+| Google TTS       | `synthesizeVoiceGoogle.ts`        | `/api/tts-google`          |
+| Style-Bert-VITS2 | `synthesizeStyleBertVITS2.ts`     | `/api/stylebertvits2`      |
+| GSVI TTS         | `synthesizeVoiceGSVI.ts`          | 直接呼び出し               |
+| ElevenLabs       | `synthesizeVoiceElevenlabs.ts`    | `/api/elevenLabs`          |
+| Cartesia         | `synthesizeVoiceCartesia.ts`      | `/api/cartesia`            |
+| OpenAI TTS       | `synthesizeVoiceOpenAI.ts`        | `/api/openAITTS`           |
+| Azure OpenAI TTS | `synthesizeVoiceAzureOpenAI.ts`   | `/api/azureOpenAITTS`      |
 
 ### 音声認識（STT）- 3モード
 
-| モード | フック | 技術 |
-|---|---|---|
-| ブラウザ | `useBrowserSpeechRecognition.ts` | Web Speech API |
-| Whisper | `useWhisperRecognition.ts` | OpenAI Whisper API |
-| リアルタイムAPI | `useRealtimeVoiceAPI.ts` | OpenAI Realtime API + Web Speech API併用 |
+| モード          | フック                           | 技術                                     |
+| --------------- | -------------------------------- | ---------------------------------------- |
+| ブラウザ        | `useBrowserSpeechRecognition.ts` | Web Speech API                           |
+| Whisper         | `useWhisperRecognition.ts`       | OpenAI Whisper API                       |
+| リアルタイムAPI | `useRealtimeVoiceAPI.ts`         | OpenAI Realtime API + Web Speech API併用 |
 
 統合フック: `useVoiceRecognition.ts` が設定に基づき自動選択
 
 ### キャラクターモデル - 3タイプ
 
-| タイプ | 技術 | 主要ファイル |
-|---|---|---|
-| VRM (3D) | Three.js + @pixiv/three-vrm | `features/vrmViewer/model.ts`, `viewer.ts` |
+| タイプ      | 技術                          | 主要ファイル                                         |
+| ----------- | ----------------------------- | ---------------------------------------------------- |
+| VRM (3D)    | Three.js + @pixiv/three-vrm   | `features/vrmViewer/model.ts`, `viewer.ts`           |
 | Live2D (2D) | pixi.js + pixi-live2d-display | `components/Live2DComponent.tsx`, `live2DViewer.tsx` |
-| PNGTuber | Canvas描画 | `features/pngTuber/pngTuberEngine.ts` |
+| PNGTuber    | Canvas描画                    | `features/pngTuber/pngTuberEngine.ts`                |
 
 **発話フロー**: `speakCharacter()` → `SpeakQueue`（シングルトン、セッションID管理） → モデル別再生
 
 ### 状態管理（Zustand ストア）
 
-| ストア | ファイル | 永続化 | 役割 |
-|---|---|---|---|
-| settingsStore | `features/stores/settings.ts` | ○ | 全設定（APIKeys, ModelProvider, Character, General等） |
-| homeStore | `features/stores/home.ts` | △ | チャットログ、ビューアインスタンス、処理状態 |
-| menuStore | `features/stores/menu.ts` | × | UI表示状態、アクティブタブ |
-| slideStore | `features/stores/slide.ts` | △ | スライド再生状態 |
-| toastStore | `features/stores/toast.ts` | × | 通知管理 |
-| imagesStore | `features/stores/images.ts` | △ | 画像配置・レイヤー管理 |
-| websocketStore | `features/stores/websocketStore.ts` | × | WebSocket接続管理 |
+| ストア         | ファイル                            | 永続化 | 役割                                                   |
+| -------------- | ----------------------------------- | ------ | ------------------------------------------------------ |
+| settingsStore  | `features/stores/settings.ts`       | ○      | 全設定（APIKeys, ModelProvider, Character, General等） |
+| homeStore      | `features/stores/home.ts`           | △      | チャットログ、ビューアインスタンス、処理状態           |
+| menuStore      | `features/stores/menu.ts`           | ×      | UI表示状態、アクティブタブ                             |
+| slideStore     | `features/stores/slide.ts`          | △      | スライド再生状態                                       |
+| toastStore     | `features/stores/toast.ts`          | ×      | 通知管理                                               |
+| imagesStore    | `features/stores/images.ts`         | △      | 画像配置・レイヤー管理                                 |
+| websocketStore | `features/stores/websocketStore.ts` | ×      | WebSocket接続管理                                      |
 
 **排他制御システム** (`exclusionMiddleware.ts` + `exclusionRules.ts`):
 17のルールで設定間の相互排他性を保証（例: realtimeAPIMode ON → audioMode OFF）
@@ -162,37 +163,45 @@ src/
 ### 特殊機能
 
 #### Realtime API (`components/useRealtimeAPI.tsx`)
+
 - OpenAI/Azure Realtime APIへのWebSocket接続
 - PCM16音声フォーマット、function calling対応
 - 対応モデル: `gpt-realtime`, `gpt-realtime-mini`
 
 #### RAG/長期記憶 (`features/memory/`)
+
 - IndexedDB + OpenAI `text-embedding-3-small`（1536次元）
 - コサイン類似度ベースの検索 → システムプロンプトに自動追記
 - ファイルベースのバックアップ/復元対応
 
 #### YouTube連携 (`features/youtube/`)
+
 - YouTube Data API v3 / わんコメ（OneComme）の2ソース
 - Mastraワークフローによる会話継続モード（状態評価→継続/新トピック/スリープ分岐）
 
 #### キオスクモード (`features/kiosk/`)
+
 - デジタルサイネージ向けフルスクリーン表示
 - パスコード認証、NGワードフィルタ、入力長制限、ガイダンスメッセージ
 
 #### 人感検知 (`hooks/usePresenceDetection.ts`)
+
 - face-api.js（TinyFaceDetectorモデル）によるカメラ顔検出
 - 状態遷移: idle → detected → greeting → conversation-ready → idle
 - 感度設定（low:500ms/medium:300ms/high:150ms）、挨拶/離脱フレーズ
 
 #### アイドルモード (`features/idle/`, `hooks/useIdleMode.ts`)
+
 - 3つの発話ソース: 定型フレーズ、時間帯別挨拶、AI自動生成
 - インターバル（10-300秒）でキャラクターが自動発話
 
 #### スライド機能 (`features/slide/`)
+
 - Marpit（Markdown→HTML+CSS）形式のプレゼンテーション
 - 自動再生モード（スクリプト読み上げ→次スライド遷移）
 
 #### AIエージェント/ツール
+
 - Realtime API: function calling（`realtimeAPITools.json/tsx`、現在: 天気取得）
 - Vercel AI SDK: ツールイベント処理（`tool-input-*`, `tool-output-available`）
 - Mastra: YouTube会話継続ワークフロー（`/src/lib/mastra/`）

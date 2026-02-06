@@ -12,6 +12,8 @@ import { ToggleSwitch } from '../toggleSwitch'
 import {
   clampKioskMaxInputLength,
   parseNgWords,
+  isValidPasscode,
+  KIOSK_PASSCODE_MIN_LENGTH,
   KIOSK_MAX_INPUT_LENGTH_MIN,
   KIOSK_MAX_INPUT_LENGTH_MAX,
 } from '@/features/kiosk/kioskTypes'
@@ -28,15 +30,36 @@ const KioskSettings = () => {
 
   // Local state for NG words input
   const [ngWordsInput, setNgWordsInput] = useState('')
+  const [passcodeInput, setPasscodeInput] = useState('')
+  const [passcodeError, setPasscodeError] = useState<string | null>(null)
 
   // Sync NG words from store to local state
   useEffect(() => {
     setNgWordsInput(kioskNgWords.join(', '))
   }, [kioskNgWords])
 
+  useEffect(() => {
+    setPasscodeInput(kioskPasscode)
+  }, [kioskPasscode])
+
   // Handlers
   const handlePasscodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    settingsStore.setState({ kioskPasscode: e.target.value })
+    const value = e.target.value
+    setPasscodeInput(value)
+    if (value.length > 0 && !isValidPasscode(value)) {
+      setPasscodeError(t('KioskPasscodeInvalid'))
+    } else {
+      setPasscodeError(null)
+    }
+  }
+
+  const handlePasscodeBlur = () => {
+    if (isValidPasscode(passcodeInput)) {
+      settingsStore.setState({ kioskPasscode: passcodeInput })
+      setPasscodeError(null)
+    } else if (passcodeInput.length > 0) {
+      setPasscodeError(t('KioskPasscodeInvalid'))
+    }
   }
 
   const handleMaxInputLengthChange = (
@@ -109,12 +132,16 @@ const KioskSettings = () => {
           <div className="my-4">
             <input
               type="text"
-              value={kioskPasscode}
+              value={passcodeInput}
               onChange={handlePasscodeChange}
+              onBlur={handlePasscodeBlur}
               aria-label={t('KioskPasscode')}
               className="w-48 px-4 py-2 bg-white border border-gray-300 rounded-lg font-mono"
               autoComplete="off"
             />
+            {passcodeError && (
+              <p className="mt-1 text-sm text-red-600">{passcodeError}</p>
+            )}
           </div>
         </div>
 

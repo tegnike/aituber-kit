@@ -508,9 +508,7 @@ export function useBrowserSpeechRecognition(
           (settingsStore.getState().continuousMicListeningMode ||
             isKeyboardTriggered.current)
         ) {
-          console.log(
-            'No speech detected, will restart via onend handler...'
-          )
+          console.log('No speech detected, will restart via onend handler...')
           // onendハンドラが自動的に再起動する
         } else {
           console.log(

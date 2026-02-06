@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { useKioskMode } from '@/hooks/useKioskMode'
 import { useFullscreen } from '@/hooks/useFullscreen'
 import { useEscLongPress } from '@/hooks/useEscLongPress'
+import { useMultiTap } from '@/hooks/useMultiTap'
 import { PasscodeDialog } from './passcodeDialog'
 import settingsStore from '@/features/stores/settings'
 
@@ -25,6 +26,16 @@ export const KioskOverlay: React.FC = () => {
 
   // Handle Esc long press to show passcode dialog
   useEscLongPress(
+    useCallback(() => {
+      if (isKioskMode && !isTemporaryUnlocked) {
+        setShowPasscodeDialog(true)
+      }
+    }, [isKioskMode, isTemporaryUnlocked]),
+    { enabled: isKioskMode && !isTemporaryUnlocked }
+  )
+
+  // Handle multi-tap to show passcode dialog (for touch devices)
+  const { ref: multiTapRef } = useMultiTap(
     useCallback(() => {
       if (isKioskMode && !isTemporaryUnlocked) {
         setShowPasscodeDialog(true)
@@ -80,6 +91,13 @@ export const KioskOverlay: React.FC = () => {
             </button>
           </div>
         )}
+        {/* Multi-tap zone for touch devices */}
+        <div
+          ref={multiTapRef}
+          data-testid="kiosk-multi-tap-zone"
+          className="absolute top-0 right-0 w-20 h-20 pointer-events-auto"
+          style={{ opacity: 0 }}
+        />
       </div>
 
       {/* Passcode dialog */}

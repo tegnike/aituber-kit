@@ -7,6 +7,13 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import {
+  getLockoutState,
+  setLockoutState,
+  clearLockoutState,
+  isLockedOut as checkIsLockedOut,
+  RECOVERY_THRESHOLD,
+} from './kioskLockout'
 
 export interface PasscodeDialogProps {
   isOpen: boolean
@@ -32,6 +39,20 @@ export const PasscodeDialog: React.FC<PasscodeDialogProps> = ({
   const [attempts, setAttempts] = useState(0)
   const [isLocked, setIsLocked] = useState(false)
   const [lockoutCountdown, setLockoutCountdown] = useState(0)
+  const [totalFailures, setTotalFailures] = useState(0)
+
+  // Restore lockout state when dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      const state = getLockoutState()
+      setTotalFailures(state.totalFailures)
+      if (checkIsLockedOut()) {
+        setIsLocked(true)
+        const remaining = Math.ceil((state.lockoutUntil! - Date.now()) / 1000)
+        setLockoutCountdown(remaining > 0 ? remaining : 0)
+      }
+    }
+  }, [isOpen])
 
   // Focus input when dialog opens
   useEffect(() => {
@@ -50,6 +71,11 @@ export const PasscodeDialog: React.FC<PasscodeDialogProps> = ({
           setIsLocked(false)
           setAttempts(0)
           setError(null)
+          const state = getLockoutState()
+          setLockoutState({
+            lockoutUntil: null,
+            totalFailures: state.totalFailures,
+          })
           return 0
         }
         return prev - 1
@@ -96,6 +122,8 @@ export const PasscodeDialog: React.FC<PasscodeDialogProps> = ({
 
     if (passcode === correctPasscode) {
       // Success
+      clearLockoutState()
+      setTotalFailures(0)
       setAttempts(0)
       setPasscode('')
       setError(null)
@@ -106,17 +134,31 @@ export const PasscodeDialog: React.FC<PasscodeDialogProps> = ({
       setAttempts(newAttempts)
       setPasscode('')
 
+      const newTotalFailures = totalFailures + 1
+      setTotalFailures(newTotalFailures)
+
       if (newAttempts >= MAX_ATTEMPTS) {
         // Lockout
+        const lockoutUntil = Date.now() + LOCKOUT_DURATION * 1000
         setIsLocked(true)
         setLockoutCountdown(LOCKOUT_DURATION)
         setError(t('Kiosk.PasscodeLocked'))
+        setLockoutState({ lockoutUntil, totalFailures: newTotalFailures })
       } else {
         // Show remaining attempts
         setError(t('Kiosk.PasscodeIncorrect'))
+        setLockoutState({ lockoutUntil: null, totalFailures: newTotalFailures })
       }
     }
-  }, [passcode, correctPasscode, attempts, isLocked, onSuccess, t])
+  }, [
+    passcode,
+    correctPasscode,
+    attempts,
+    isLocked,
+    totalFailures,
+    onSuccess,
+    t,
+  ])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -167,6 +209,12 @@ export const PasscodeDialog: React.FC<PasscodeDialogProps> = ({
         {!isLocked && attempts > 0 && remainingAttempts > 0 && (
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             {t('Kiosk.PasscodeRemainingAttempts', { count: remainingAttempts })}
+          </p>
+        )}
+
+        {totalFailures >= RECOVERY_THRESHOLD && (
+          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            {t('Kiosk.RecoveryHint')}
           </p>
         )}
 

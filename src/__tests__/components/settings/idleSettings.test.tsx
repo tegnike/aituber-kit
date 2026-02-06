@@ -242,9 +242,7 @@ describe('IdleSettings Component', () => {
       expect(
         screen.getByLabelText('IdleTimePeriodAfternoon')
       ).toBeInTheDocument()
-      expect(
-        screen.getByLabelText('IdleTimePeriodEvening')
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('IdleTimePeriodEvening')).toBeInTheDocument()
     })
 
     it('should not render time period inputs when time period is disabled', () => {
