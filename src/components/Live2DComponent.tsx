@@ -101,35 +101,6 @@ const Live2DComponent = (): JSX.Element => {
     }
   }, [model, app, fixPosition, unfixPosition, resetPosition])
 
-  useEffect(() => {
-    initApp()
-    return () => {
-      if (modelRef.current) {
-        modelRef.current.destroy()
-        modelRef.current = null
-      }
-      if (app) {
-        app.destroy(true)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (app && selectedLive2DPath) {
-      // 既存のモデルがある場合は先に削除
-      if (modelRef.current) {
-        app.stage.removeChild(modelRef.current as unknown as DisplayObject)
-        modelRef.current.destroy()
-        modelRef.current = null
-        setModel(null)
-      }
-      // ステージをクリア
-      app.stage.removeChildren()
-      // 新しいモデルを読み込む
-      loadLive2DModel(app, selectedLive2DPath)
-    }
-  }, [app, selectedLive2DPath])
-
   const initApp = () => {
     if (!canvasContainerRef.current) return
 
@@ -177,6 +148,35 @@ const Live2DComponent = (): JSX.Element => {
       console.error('Failed to load Live2D model:', error)
     }
   }
+
+  useEffect(() => {
+    initApp()
+    return () => {
+      if (modelRef.current) {
+        modelRef.current.destroy()
+        modelRef.current = null
+      }
+      if (app) {
+        app.destroy(true)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (app && selectedLive2DPath) {
+      // 既存のモデルがある場合は先に削除
+      if (modelRef.current) {
+        app.stage.removeChild(modelRef.current as unknown as DisplayObject)
+        modelRef.current.destroy()
+        modelRef.current = null
+        setModel(null)
+      }
+      // ステージをクリア
+      app.stage.removeChildren()
+      // 新しいモデルを読み込む
+      loadLive2DModel(app, selectedLive2DPath)
+    }
+  }, [app, selectedLive2DPath])
 
   // 2点間の距離を計算する関数
   const getDistance = (touch1: Touch, touch2: Touch): number => {

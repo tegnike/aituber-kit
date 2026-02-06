@@ -43,15 +43,14 @@ const useExternalLinkage = ({ handleReceiveTextFromWs }: Params) => {
   useEffect(() => {
     if (receivedMessages.length > 0) {
       const message = receivedMessages[0]
-      if (
+      const processedMessage =
         message.role === 'output' ||
         message.role === 'executing' ||
         message.role === 'console'
-      ) {
-        message.role = 'code'
-      }
+          ? { ...message, role: 'code' }
+          : message
       setTmpMessages((prev) => prev.slice(1))
-      processMessage(message)
+      processMessage(processedMessage)
     }
   }, [receivedMessages, processMessage])
 
