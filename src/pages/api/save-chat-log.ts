@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
 import { Message } from '@/features/messages/messages'
+import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
 
 // Supabaseクライアントの初期化
 let supabase: SupabaseClient | null = null
@@ -19,6 +20,10 @@ export default async function handler(
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' })
+  }
+
+  if (isDemoMode()) {
+    return res.status(403).json(createDemoModeErrorResponse('save-chat-log'))
   }
 
   try {

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
+import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
 
 type Data = {
   audio?: ArrayBuffer
@@ -10,6 +11,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if (isDemoMode()) {
+    return res.status(403).json(createDemoModeErrorResponse('tts-voicevox'))
+  }
+
   const { text, speaker, speed, pitch, intonation, serverUrl } = req.body
   const apiUrl =
     serverUrl || process.env.VOICEVOX_SERVER_URL || 'http://localhost:50021'

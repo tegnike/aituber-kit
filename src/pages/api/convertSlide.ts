@@ -12,6 +12,7 @@ import { z } from 'zod'
 
 import { AIService } from '@/features/constants/settings'
 import { isMultiModalModel } from '@/features/constants/aiModels'
+import { isDemoMode, createDemoModeErrorResponse } from '@/utils/demoMode'
 
 type AIServiceConfig = Record<AIService, () => any>
 
@@ -247,6 +248,14 @@ export async function createSlideLine(
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  if (isDemoMode()) {
+    return res.status(403).json(createDemoModeErrorResponse('convert-slide'))
+  }
+
   const form = formidable({ multiples: true })
 
   form.parse(req, async (err, fields, files) => {

@@ -23,6 +23,7 @@ import { buildUrl } from '@/utils/buildUrl'
 import { YoutubeManager } from '@/components/youtubeManager'
 import { MemoryServiceInitializer } from '@/components/memoryServiceInitializer'
 import toastStore from '@/features/stores/toast'
+import { usePresetLoader } from '@/features/presets/usePresetLoader'
 
 const Home = () => {
   const webcamStatus = homeStore((s) => s.webcamStatus)
@@ -43,6 +44,7 @@ const Home = () => {
   const characterPreset4 = settingsStore((s) => s.characterPreset4)
   const characterPreset5 = settingsStore((s) => s.characterPreset5)
   const { t } = useTranslation()
+  usePresetLoader()
   const characterPresets = useMemo(
     () => [
       { key: 'characterPreset1', value: characterPreset1 },
