@@ -1,364 +1,195 @@
-# AITuberKit
+# DHGSVR25 講義解説生成システム
 
-<img style="max-width: 100%;" src="./public/ogp.png">
+> **本リポジトリは [AITuber-kit](https://github.com/tegnike/aituber-kit) をベースにした講義解説生成システムです。**
+>
+> A web application for chatting with AI characters that anyone can easily set up and deploy.
 
-<p align="center"><strong>AIキャラ構築のオールインワンツールキット</strong></p>
+![AITuber.png](public/backgrounds/AITuber.png)
 
-**お知らせ: 本プロジェクトはバージョン v2.0.0 以降、カスタムライセンスを採用しています。商用目的でご利用の場合は、[利用規約](#利用規約) セクションをご確認ください。**
+## デモ・リンク
 
-<p align="center">
-   <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/tegnike/aituber-kit"></a>
-   <a href="https://github.com/tegnike/aituber-kit"><img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/tegnike/aituber-kit"></a>
-   <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/tegnike/aituber-kit?sort=semver&color=orange">
-   <a href="https://github.com/tegnike/aituber-kit/blob/main/LICENSE"><img alt="License: Custom" src="https://img.shields.io/badge/License-Custom-blue"></a>
-</p>
-<p align="center">
-   <a href="https://github.com/tegnike/aituber-kit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tegnike/aituber-kit"></a>
-   <a href="https://github.com/tegnike/aituber-kit/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/tegnike/aituber-kit"></a>
-   <a href="https://github.com/tegnike/aituber-kit/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/tegnike/aituber-kit"></a>
-   <a href="https://github.com/tegnike/aituber-kit/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/tegnike/aituber-kit"></a>
-   <a href="https://coderabbit.ai/tegnike/aituber-kit"><img alt="CodeRabbit Pull Request Reviews" src="https://img.shields.io/coderabbit/prs/github/tegnike/aituber-kit?utm_source=oss&utm_medium=github&utm_campaign=tegnike%2Faituber-kit&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews"></a>
-</p>
-<p align="center">
-   <a href="https://x.com/tegnike"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-tegnike-1DA1F2?logo=x&style=flat&logoColor=white"/></a>
-   <a href="https://discord.gg/5rHEue52nZ"><img alt="Discord" src="https://img.shields.io/badge/Discord-AITuberKit-7289DA?logo=discord&style=flat&logoColor=white"/></a>
-   <a href="https://github.com/sponsors/tegnike"><img alt="GitHub Sponsor" src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=flat&logo=github"/></a>
-   <a href="https://deepwiki.com/tegnike/aituber-kit"><img src="https://img.shields.io/badge/DeepWiki-tegnike%2Faituber--kit-blue.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAyCAYAAAAnWDnqAAAAAXNSR0IArs4c6QAAA05JREFUaEPtmUtyEzEQhtWTQyQLHNak2AB7ZnyXZMEjXMGeK/AIi+QuHrMnbChYY7MIh8g01fJoopFb0uhhEqqcbWTp06/uv1saEDv4O3n3dV60RfP947Mm9/SQc0ICFQgzfc4CYZoTPAswgSJCCUJUnAAoRHOAUOcATwbmVLWdGoH//PB8mnKqScAhsD0kYP3j/Yt5LPQe2KvcXmGvRHcDnpxfL2zOYJ1mFwrryWTz0advv1Ut4CJgf5uhDuDj5eUcAUoahrdY/56ebRWeraTjMt/00Sh3UDtjgHtQNHwcRGOC98BJEAEymycmYcWwOprTgcB6VZ5JK5TAJ+fXGLBm3FDAmn6oPPjR4rKCAoJCal2eAiQp2x0vxTPB3ALO2CRkwmDy5WohzBDwSEFKRwPbknEggCPB/imwrycgxX2NzoMCHhPkDwqYMr9tRcP5qNrMZHkVnOjRMWwLCcr8ohBVb1OMjxLwGCvjTikrsBOiA6fNyCrm8V1rP93iVPpwaE+gO0SsWmPiXB+jikdf6SizrT5qKasx5j8ABbHpFTx+vFXp9EnYQmLx02h1QTTrl6eDqxLnGjporxl3NL3agEvXdT0WmEost648sQOYAeJS9Q7bfUVoMGnjo4AZdUMQku50McDcMWcBPvr0SzbTAFDfvJqwLzgxwATnCgnp4wDl6Aa+Ax283gghmj+vj7feE2KBBRMW3FzOpLOADl0Isb5587h/U4gGvkt5v60Z1VLG8BhYjbzRwyQZemwAd6cCR5/XFWLYZRIMpX39AR0tjaGGiGzLVyhse5C9RKC6ai42ppWPKiBagOvaYk8lO7DajerabOZP46Lby5wKjw1HCRx7p9sVMOWGzb/vA1hwiWc6jm3MvQDTogQkiqIhJV0nBQBTU+3okKCFDy9WwferkHjtxib7t3xIUQtHxnIwtx4mpg26/HfwVNVDb4oI9RHmx5WGelRVlrtiw43zboCLaxv46AZeB3IlTkwouebTr1y2NjSpHz68WNFjHvupy3q8TFn3Hos2IAk4Ju5dCo8B3wP7VPr/FGaKiG+T+v+TQqIrOqMTL1VdWV1DdmcbO8KXBz6esmYWYKPwDL5b5FA1a0hwapHiom0r/cKaoqr+27/XcrS5UwSMbQAAAABJRU5ErkJggg==" alt="DeepWiki"></a>
-</p>
+- **デモサイト**: https://aituberkit.shirai.as/
+- **開発ブログ**: https://j.aicu.ai/s260103
+- **GitHub**: https://github.com/kaitas/aituber-kit
+- 動画版（上のデモの録画）: https://youtu.be/NiWHolT5HVI
 
-<div align="center">
-   <h3>
-      🌟 <a href="https://aituberkit.com">デモサイトへ</a> 🌟
-   </h3>
-</div>
-
-<div align="center">
-   <h3>
-      📚 <a href="https://docs.aituberkit.com/">ドキュメントサイトへ</a> 📚
-   </h3>
-</div>
-
-<h3 align="center">
-   <a href="./docs/README_en.md">English</a>｜
-   <a href="./docs/README_zh-CN.md">简体中文</a>｜
-   <a href="./docs/README_zh-TW.md">繁體中文</a>｜
-   <a href="./docs/README_ko.md">한국어</a>｜
-   <a href="./docs/README_pl.md">Polski</a>
-</h3>
+<a href="https://www.youtube.com/watch?feature=player_embedded&v=NiWHolT5HVI" target="_blank">
+ <img src="https://img.youtube.com/vi/NiWHolT5HVI/mqdefault.jpg" alt="Watch the video" width="240" height="180" border="10" />
+</a>
 
 ## 概要
 
-AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。<br>
-豊富なAIサービス、キャラクターモデル、音声合成エンジンに対応し、高いカスタマイズ性を備えた対話機能とAITuber配信機能を中心に、様々な拡張モードを提供しています。
+AIキャラクター「LuC4（全力肯定彼氏くん）」が講義スライドを自動でプレゼンテーションするシステムです。
 
-<img src="./docs/images/architecture.svg" alt="AITuberKit Architecture">
-
-詳細な使用方法や設定方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
-
-## 主な機能
-
-### 1. AIキャラとの対話
-
-- 各種LLMのAPIキーを使って、AIキャラクターと簡単に会話可能
-- マルチモーダル対応で、カメラからの映像やアップロードした画像を認識して回答を生成
-- 直近の会話文を記憶として保持
-- RAGベースの長期記憶で、過去の会話をコンテキストに活用
-
-### 2. AITuber配信
-
-- YouTubeの配信コメントを取得して、AIキャラクターが自動で応答
-- コメント取得元にYouTube API / わんコメ(OneComme)を選択可能
-- 会話継続モードでコメントがなくても自発的に発言可能
-- コメント取得間隔やユーザー表示名のカスタマイズに対応
-
-### 3. その他の機能
-
-- **外部連携モード**: WebSocketでサーバーアプリと連携し、より高度な機能を実現
-- **スライドモード**: AIキャラクターがスライドを自動で発表するモード
-- **Realtime API**: OpenAIのRealtime APIを使用した低遅延対話と関数実行
-- **オーディオモード**: OpenAIのAudio API機能を活用した自然な音声対話
-- **メッセージ受信機能**: 専用APIを通じて外部から指示を受け付け、AIキャラクターに発言させることが可能
-- **Reasoningモード**: AIの思考プロセスを表示し、推論パラメータを設定可能
-
-## 対応モデル・サービス
-
-### キャラクターモデル
-
-- **3Dモデル**: VRMファイル
-- **2Dモデル**: Live2Dファイル（Cubism 3以降）
-- **動くPngTuber**: 動画ベースのキャラクター表示
-
-### 対応LLM
-
-- OpenAI
-- Anthropic
-- Google Gemini
-- Azure OpenAI
-- Groq
-- Cohere
-- Mistral AI
-- Perplexity
-- Fireworks
-- LM Studio
-- Ollama
-- Dify
-- xAI
-- DeepSeek
-- OpenRouter
-
-### 対応音声合成エンジン
-
-- VOICEVOX
-- Koeiromap
-- Google Text-to-Speech
-- Style-Bert-VITS2
-- AivisSpeech
-- Aivis Cloud API
-- Cartesia
-- GSVI TTS
-- ElevenLabs
-- OpenAI
-- Azure OpenAI
+- **プレゼンター**: LuC4 - https://luc4.aicu.jp/
+- **制作**: AICU Inc.
+- **講義**: DHGSVR25（人工現実2025）
 
 ## クイックスタート
 
-### 開発環境
+### 必要環境
 
-- Node.js: ^25.2.1
-- npm: ^11.6.2
+- Node.js 20.0.0 以上
+- npm 10.0.0 以上
 
-### インストール手順
-
-1. リポジトリをローカルにクローンします。
+### インストール
 
 ```bash
-git clone https://github.com/tegnike/aituber-kit.git
-```
-
-2. フォルダを開きます。
-
-```bash
+# リポジトリをクローン
+git clone https://github.com/kaitas/aituber-kit.git
 cd aituber-kit
-```
 
-3. パッケージインストールします。
-
-```bash
-npm install
-```
-
-4. 必要に応じて.envファイルを作成します。
-
-```bash
+# 環境変数ファイルを作成
 cp .env.example .env
-```
 
-5. 開発モードでアプリケーションを起動します。
+# .env を編集してAPIキーを設定（どれか1つでOK）
+# OPENAI_API_KEY=sk-xxxxx
+# ANTHROPIC_API_KEY=sk-ant-xxxxx
+# GOOGLE_API_KEY=AIzaxxxxx
 
-```bash
+# パッケージインストール
+npm install
+
+# 開発サーバー起動
 npm run dev
 ```
 
-6. URLを開きます。[http://localhost:3000](http://localhost:3000)
+ブラウザで http://localhost:3000 を開く
 
-詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
+### その他のコマンド
 
-## ⚠️ セキュリティに関する重要な注意事項
+```bash
+npm run build    # 本番用ビルド
+npm run lint     # コード品質チェック
+npm test         # テスト実行
+```
 
-このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
+## おすすめ環境変数設定
 
-- **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
+Vercel などにデプロイする際の推奨設定です（APIキー除く）。
 
-### 本番環境での利用について
+### 基本設定
 
-本番環境で利用する場合は、以下のいずれかの対応を推奨します：
+| 環境変数名                        | 値      | 説明                     |
+| --------------------------------- | ------- | ------------------------ |
+| `NEXT_PUBLIC_SELECT_LANGUAGE`     | `ja`    | 言語設定                 |
+| `NEXT_PUBLIC_SHOW_INTRODUCTION`   | `false` | 初回ダイアログ非表示     |
+| `NEXT_PUBLIC_SHOW_CONTROL_PANEL`  | `false` | コントロールパネル非表示 |
+| `NEXT_PUBLIC_SHOW_ASSISTANT_TEXT` | `true`  | 字幕表示                 |
 
-1. **バックエンドサーバーの実装**: APIキーの管理をサーバーサイドで行い、クライアントからの直接的なAPIアクセスを避ける
-2. **利用者への適切な説明**: 各利用者が自身のAPIキーを使用する場合は、セキュリティ上の注意点について説明する
-3. **アクセス制限の実装**: 必要に応じて、適切な認証・認可の仕組みを実装する
+### キャラクター設定
 
-## スポンサー募集
+| 環境変数名                             | 値                       | 説明            |
+| -------------------------------------- | ------------------------ | --------------- |
+| `NEXT_PUBLIC_CHARACTER_NAME`           | `全力肯定彼氏くん[LuC4]` | キャラクター名  |
+| `NEXT_PUBLIC_MODEL_TYPE`               | `vrm`                    | モデルタイプ    |
+| `NEXT_PUBLIC_SELECTED_VRM_PATH`        | `/vrm/LuC4.vrm`          | VRMファイルパス |
+| `NEXT_PUBLIC_FIXED_CHARACTER_POSITION` | `true`                   | 位置固定        |
+| `NEXT_PUBLIC_CHARACTER_POSITION_X`     | `0.200`                  | X座標           |
+| `NEXT_PUBLIC_CHARACTER_POSITION_Y`     | `1.616`                  | Y座標           |
+| `NEXT_PUBLIC_CHARACTER_POSITION_Z`     | `1.455`                  | Z座標           |
+| `NEXT_PUBLIC_CHARACTER_SCALE`          | `1.000`                  | スケール        |
 
-開発を継続するためにスポンサーの方を募集しています。<br>
-あなたの支援は、AITuberKitの開発と改善に大きく貢献します。
+### AI設定
 
-[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/tegnike)
+| 環境変数名                      | 値                 | 説明             |
+| ------------------------------- | ------------------ | ---------------- |
+| `NEXT_PUBLIC_SELECT_AI_SERVICE` | `google`           | AIサービス       |
+| `NEXT_PUBLIC_SELECT_AI_MODEL`   | `gemini-2.0-flash` | AIモデル         |
+| `NEXT_PUBLIC_MAX_PAST_MESSAGES` | `10`               | 会話履歴保持数   |
+| `NEXT_PUBLIC_TEMPERATURE`       | `0.7`              | 応答のランダム性 |
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/fdanv1k6iz)
+### 音声設定
 
-### 協力者の皆様（ご支援いただいた順）
+| 環境変数名                    | 値                | 説明             |
+| ----------------------------- | ----------------- | ---------------- |
+| `NEXT_PUBLIC_SELECT_VOICE`    | `google`          | 音声合成エンジン |
+| `NEXT_PUBLIC_GOOGLE_TTS_TYPE` | `ja-JP-Neural2-B` | 音声タイプ       |
 
-<p>
-  <a href="https://github.com/morioki3" title="morioki3">
-    <img src="https://github.com/morioki3.png" width="40" height="40" alt="morioki3">
-  </a>
-  <a href="https://github.com/hodachi-axcxept" title="hodachi-axcxept">
-    <img src="https://github.com/hodachi-axcxept.png" width="40" height="40" alt="hodachi-axcxept">
-  </a>
-  <a href="https://github.com/coderabbitai" title="coderabbitai">
-    <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
-  </a>
-  <a href="https://github.com/wmoto-ai" title="wmoto-ai">
-    <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
-  </a>
-  <a href="https://github.com/JunzoKamahara" title="JunzoKamahara">
-    <img src="https://github.com/JunzoKamahara.png" width="40" height="40" alt="JunzoKamahara">
-  </a>
-  <a href="https://github.com/darkgaldragon" title="darkgaldragon">
-    <img src="https://github.com/darkgaldragon.png" width="40" height="40" alt="darkgaldragon">
-  </a>
-  <a href="https://github.com/usagi917" title="usagi917">
-    <img src="https://github.com/usagi917.png" width="40" height="40" alt="usagi917">
-  </a>
-  <a href="https://github.com/ochisamu" title="ochisamu">
-    <img src="https://github.com/ochisamu.png" width="40" height="40" alt="ochisamu">
-  </a>
-  <a href="https://github.com/mo0013" title="mo0013">
-    <img src="https://github.com/mo0013.png" width="40" height="40" alt="mo0013">
-  </a>
-  <a href="https://github.com/tsubouchi" title="tsubouchi">
-    <img src="https://github.com/tsubouchi.png" width="40" height="40" alt="tsubouchi">
-  </a>
-  <a href="https://github.com/bunkaich" title="bunkaich">
-    <img src="https://github.com/bunkaich.png" width="40" height="40" alt="bunkaich">
-  </a>
-  <a href="https://github.com/seiki-aliveland" title="seiki-aliveland">
-    <img src="https://github.com/seiki-aliveland.png" width="40" height="40" alt="seiki-aliveland">
-  </a>
-  <a href="https://github.com/rossy8417" title="rossy8417">
-    <img src="https://github.com/rossy8417.png" width="40" height="40" alt="rossy8417">
-  </a>
-  <a href="https://github.com/gijigae" title="gijigae">
-    <img src="https://github.com/gijigae.png" width="40" height="40" alt="gijigae">
-  </a>
-  <a href="https://github.com/takm-reason" title="takm-reason">
-    <img src="https://github.com/takm-reason.png" width="40" height="40" alt="takm-reason">
-  </a>
-  <a href="https://github.com/haoling" title="haoling">
-    <img src="https://github.com/haoling.png" width="40" height="40" alt="haoling">
-  </a>
-  <a href="https://github.com/FoundD-oka" title="FoundD-oka">
-    <img src="https://github.com/FoundD-oka.png" width="40" height="40" alt="FoundD-oka">
-  </a>
-  <a href="https://github.com/terisuke" title="terisuke">
-    <img src="https://github.com/terisuke.png" width="40" height="40" alt="terisuke">
-  </a>
-  <a href="https://github.com/konpeita" title="konpeita">
-    <img src="https://github.com/konpeita.png" width="40" height="40" alt="konpeita">
-  </a>
-  <a href="https://github.com/MojaX2" title="MojaX2">
-    <img src="https://github.com/MojaX2.png" width="40" height="40" alt="MojaX2">
-  </a>
-  <a href="https://github.com/micchi99" title="micchi99">
-    <img src="https://github.com/micchi99.png" width="40" height="40" alt="micchi99">
-  </a>
-  <a href="https://github.com/nekomeowww" title="nekomeowww">
-    <img src="https://github.com/nekomeowww.png" width="40" height="40" alt="nekomeowww">
-  </a>
-  <a href="https://github.com/yfuku" title="yfuku">
-    <img src="https://github.com/yfuku.png" width="40" height="40" alt="yfuku">
-  </a>
-  <a href="https://x.com/8484ff_42" title="8484ff_42">
-    <img src="https://pbs.twimg.com/profile_images/1869378029786656768/m_K1Cjqx_normal.jpg" width="40" height="40" alt="8484ff_42">
-  </a>
-  <a href="https://github.com/sher1ock-jp" title="sher1ock-jp">
-    <img src="https://github.com/sher1ock-jp.png" width="40" height="40" alt="sher1ock-jp">
-  </a>
-  <a href="https://github.com/uwaguchi" title="uwaguchi">
-    <img src="https://github.com/uwaguchi.png" width="40" height="40" alt="uwaguchi">
-  </a>
-  <a href="https://x.com/M1RA_A_Project" title="M1RA_A_Project">
-    <img src="https://pbs.twimg.com/profile_images/2013543177253249025/AKHpzZde_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
-  </a>
-  <a href="https://github.com/teruPP" title="teruPP">
-    <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
-  </a>
-  <a href="https://github.com/aituber-akari" title="aituber-akari">
-    <img src="https://github.com/aituber-akari.png" width="40" height="40" alt="aituber-akari">
-  </a>
-  <a href="https://github.com/harumeri" title="harumeri">
-    <img src="https://github.com/harumeri.png" width="40" height="40" alt="harumeri">
-  </a>
-  <a href="https://github.com/spring-hh" title="spring-hh">
-    <img src="https://github.com/spring-hh.png" width="40" height="40" alt="spring-hh">
-  </a>
-  <a href="https://github.com/dotneet" title="dotneet">
-    <img src="https://github.com/dotneet.png" width="40" height="40" alt="dotneet">
-  </a>
-  <a href="https://github.com/schroneko" title="schroneko">
-    <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
-  </a>
-  <a href="https://github.com/ParachutePenguin" title="ParachutePenguin">
-    <img src="https://github.com/ParachutePenguin.png" width="40" height="40" alt="ParachutePenguin">
-  </a>
-  <a href="https://github.com/eruma" title="eruma">
-    <img src="https://github.com/eruma.png" width="40" height="40" alt="eruma">
-  </a>
-  <a href="https://x.com/_cityside" title="_cityside">
-    <img src="https://pbs.twimg.com/profile_images/1987812690254082048/KyWdQTT4_400x400.jpg" width="40" height="40" alt="_cityside">
-  </a>
-</p>
+### スライドモード設定
 
-他、プライベートスポンサー 複数名
+| 環境変数名                       | 値           | 説明               |
+| -------------------------------- | ------------ | ------------------ |
+| `NEXT_PUBLIC_SLIDE_MODE`         | `true`       | スライドモード有効 |
+| `NEXT_PUBLIC_DEFAULT_SLIDE_DOCS` | `DHGSVR25-3` | デフォルトスライド |
 
-## Star History
+### アナリティクス・通知
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
-
-## 謝辞
-
-本プロジェクトは、pixiv株式会社が公開する [ChatVRM](https://github.com/pixiv/ChatVRM) をフォークして開発されています。素晴らしいオープンソースプロジェクトを公開してくださったpixiv株式会社に深く感謝いたします。
-
-## 貢献
-
-AITuberKitの発展にご協力いただき、ありがとうございます。コミュニティからの貢献を歓迎しています。
-
-### イシューの報告
-
-バグを見つけたり、新機能のアイデアがある場合は、GitHubの[Issues](https://github.com/tegnike/aituber-kit/issues)ページからぜひ教えてください。
-
-イシューを作成する際に、以下の情報を含めていただけると対応がスムーズになります：
-
-- 問題や新機能の詳細な説明
-- 再現手順（バグの場合）
-- 期待される動作と実際の動作
-- 使用環境（ブラウザ、OS、Node.jsのバージョンなど）
-- スクリーンショットや動画（可能であれば）
-
-### プルリクエスト
-
-コードの改善や新機能の追加をしたい場合は、フォークしたリポジトリで変更を加え、プルリクエストを作成してください。
-
-- 1つのプルリクエストでは、1つの機能または修正に焦点を当てるようにしてください。
-- プルリクエストの説明には、変更内容と理由を書いてください。
-- マージ先のブランチは必ず `develop` に設定してください。
-- コンフリクトは無理に解消しなくても問題ありません。開発チームが対応します。
-
-## 利用規約
-
-### ライセンス
-
-本プロジェクトは、バージョン v2.0.0 以降、**カスタムライセンス**を採用しています。
-
-- **無償利用**
-  - 営利目的以外での個人利用、教育目的、非営利目的での使用は無償で利用可能です。
-
-- **商用ライセンス**
-  - 商用目的での使用に関しては、別途商用ライセンスの取得が必要です。
-  - 詳細は、[ライセンスについて](./docs/license.md)をご確認ください。
+| 環境変数名                      | 値                            | 説明                |
+| ------------------------------- | ----------------------------- | ------------------- |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | `G-XXXXXXXXXX`                | Google Analytics ID |
+| `SLACK_WEBHOOK_URL`             | `https://hooks.slack.com/...` | Slack通知URL        |
 
 ### その他
 
-- [ロゴの利用規約](./docs/logo_licence.md)
-- [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)
+| 環境変数名                                       | 値                         | 説明         |
+| ------------------------------------------------ | -------------------------- | ------------ |
+| `NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES` | `true`                     | 環境変数優先 |
+| `NEXT_PUBLIC_BACKGROUND_IMAGE_PATH`              | `/backgrounds/AITuber.png` | 背景画像     |
 
-## 優先実装について
+## 講義スライド
 
-本プロジェクトでは、有償での機能優先実装を受け付けています。
+| 回    | タイトル                | フォルダ                     |
+| ----- | ----------------------- | ---------------------------- |
+| 第3回 | Webポートフォリオの制作 | `/public/slides/DHGSVR25-3/` |
 
-- 企業や個人の方から要望のあった機能を、優先的に実装することが可能です。
-- 実装された機能は、本OSSプロジェクトの一部として公開されます。
-- 料金は機能の複雑さや実装に要する時間に応じて個別見積もりとなります。
-- この優先実装は商用ライセンスとは別の取り組みです。実装された機能を商用利用する場合は、別途商用ライセンスの取得が必要です。
+### スライド構成
 
-詳細については、support@aituberkit.com までお問い合わせください。
+```
+/public/slides/DHGSVR25-{回}/
+├── slides.md           # Marp形式スライド
+├── scripts.json        # セリフデータ（感情タグ付き）
+├── audio/              # 事前生成音声（MP3）
+├── supplement.txt      # Q&A用補足情報
+├── theme.css           # カスタムテーマ
+└── DHGS25Slides{n}.png # スライド画像
+```
+
+## プレゼンテーションモード
+
+1. 設定画面（⚙️）を開く
+2. **スライドモード** をオン
+3. スライドフォルダを選択
+4. **開始** をクリック
+
+LuC4が自動でスライドを説明します。
+
+### 機能
+
+- 事前生成MP3音声の再生
+- 句読点で分割された字幕表示
+- Google Analytics でページ閲覧トラッキング
+- 最終ページ到達時の Slack 通知
+- Ctrl+H でUIを非表示
+
+## 本家 AITuber-kit について
+
+詳細な機能、設定、カスタマイズについては本家リポジトリを参照してください。
+
+- **GitHub**: https://github.com/tegnike/aituber-kit
+- **ドキュメント**: https://docs.aituberkit.com/
+- **デモサイト**: https://aituberkit.com
+
+### 主な機能
+
+- AIキャラクターとの対話
+- VRM/Live2D キャラクターモデル
+- 複数のLLMプロバイダー対応
+- 多彩な音声合成エンジン
+
+## ライセンス
+
+本家 AITuber-kit のライセンスに準拠します。
+
+- 非商用利用: 無料
+- 商用利用: 別途ライセンス必要
+
+詳細: https://github.com/tegnike/aituber-kit/blob/main/LICENSE
+
+## リンク
+
+- **デモサイト**: https://aituberkit.shirai.as/
+- **開発ブログ**: http://j.aicu.ai/s260103
+- **本家 AITuber-kit**: https://github.com/tegnike/aituber-kit
+- **LuC4 公式**: https://luc4.aicu.jp/
+- **AICU Inc.**: https://corp.aicu.ai/

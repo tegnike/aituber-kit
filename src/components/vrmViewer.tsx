@@ -1,9 +1,37 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 
 export default function VrmViewer() {
+  // Ctrl+S でカメラ位置を保存してログ出力
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault()
+        const { viewer } = homeStore.getState()
+        viewer.saveCameraPosition()
+        const { characterPosition, characterRotation } =
+          settingsStore.getState()
+
+        // 環境変数用の文字列を生成
+        const envConfig = `NEXT_PUBLIC_CHARACTER_POSITION_X=${characterPosition.x.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_POSITION_Y=${characterPosition.y.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_POSITION_Z=${characterPosition.z.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_SCALE=${characterPosition.scale.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_ROTATION_X=${characterRotation.x.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_ROTATION_Y=${characterRotation.y.toFixed(3)}
+NEXT_PUBLIC_CHARACTER_ROTATION_Z=${characterRotation.z.toFixed(3)}`
+
+        // コンソールに出力
+        console.log('📍 Character Position Saved:')
+        console.log(envConfig)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (canvas) {
       const { viewer } = homeStore.getState()

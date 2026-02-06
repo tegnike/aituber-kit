@@ -18,6 +18,36 @@ import {
 } from '@/features/memory/memoryStoreSync'
 import { THINKING_MARKER } from '@/features/chat/vercelAIChat'
 
+// 自由会話モードの会話をSlackに報告
+const reportConversationToSlack = async (
+  userMessage: string,
+  assistantMessage: string
+): Promise<void> => {
+  const sls = slideStore.getState()
+
+  // 自由会話モードでなければスキップ
+  if (!sls.freeConversationMode) return
+
+  try {
+    await fetch('/api/slack-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slideDocs: sls.selectedSlideDocs,
+        userMessage,
+        assistantMessage,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        timestamp: new Date().toLocaleString('ja-JP', {
+          timeZone: 'Asia/Tokyo',
+        }),
+      }),
+    })
+    console.log('%c📨 Slack conversation reported', 'color: #e01e5a')
+  } catch (error) {
+    console.error('Failed to report conversation to Slack:', error)
+  }
+}
+
 // セッションIDを生成する関数
 const generateSessionId = () => generateMessageId()
 

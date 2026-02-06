@@ -17,11 +17,12 @@ const CharacterPresetMenu = () => {
   const store = settingsStore()
   const selectedPresetIndex = store.selectedPresetIndex
   const showQuickMenu = store.showQuickMenu
+  const showControlPanel = store.showControlPanel
 
   const { placedImages, reorderAllLayers, getAllLayerItems } = useImagesStore()
 
-  // コンポーネントが非表示設定の場合は何も表示しない
-  if (!showQuickMenu) {
+  // コンポーネントが非表示設定の場合、またはコントロールパネル非表示時は何も表示しない
+  if (!showQuickMenu || !showControlPanel) {
     return null
   }
 

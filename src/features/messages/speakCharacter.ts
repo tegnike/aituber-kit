@@ -17,6 +17,7 @@ import { synthesizeVoiceAzureOpenAIApi } from './synthesizeVoiceAzureOpenAI'
 import toastStore from '@/features/stores/toast'
 import i18next from 'i18next'
 import { SpeakQueue } from './speakQueue'
+import { synthesizeVoiceAicuApi } from './synthesizeVoiceAicu'
 import { Live2DHandler } from './live2dHandler'
 import { PNGTuberHandler } from '@/features/pngTuber/pngTuberHandler'
 import {
@@ -176,6 +177,8 @@ async function synthesizeVoice(
           ss.openaiTTSVoice,
           ss.openaiTTSSpeed
         )
+      case 'aicu':
+        return await synthesizeVoiceAicuApi(talk, ss.aicuSlug)
       default:
         return null
     }
@@ -378,6 +381,7 @@ export const testVoice = async (voiceType: AIVoice, customText?: string) => {
     cartesia: 'Cartesiaを使用します',
     openai: 'OpenAI TTSを使用します',
     azure: 'Azure TTSを使用します',
+    aicu: 'AICU TTSを使用します',
   }
 
   const message = customText || defaultMessages[voiceType]

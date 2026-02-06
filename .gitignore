@@ -45,6 +45,7 @@ certificates
 
 /public/slides/*
 !/public/slides/demo/
+!/public/slides/DHGSVR25-3/
 
 /logs/*
 
@@ -61,10 +62,12 @@ public/scripts/live2dcubismcore.min.js
 !/public/vrm/nikechan_v1.vrm
 !/public/vrm/nikechan_v2.vrm
 !/public/vrm/nikechan_v2_outerwear.vrm
+!/public/vrm/LuC4.vrm
 
 # Background files
 /public/backgrounds/*
 !/public/backgrounds/bg-c.png
+!/public/backgrounds/AITuber.png
 
 # PNGTuber files
 public/pngtuber/*
@@ -74,7 +77,7 @@ public/pngtuber/*
 /public/images/uploaded/*
 !/public/images/placed/.keep
 
-.claude/settings.local.json
+.claude/
 
 .kiro/specs/*
 
