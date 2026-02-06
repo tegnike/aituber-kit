@@ -19,7 +19,6 @@ import {
   KioskModeSettings,
   DEFAULT_KIOSK_CONFIG,
 } from '@/features/kiosk/kioskTypes'
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
   DEFAULT_PROMPT_EVALUATE,
   DEFAULT_PROMPT_CONTINUATION,
@@ -476,11 +475,11 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Character
   characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
   userDisplayName: process.env.NEXT_PUBLIC_USER_DISPLAY_NAME || 'YOU',
-  characterPreset1: process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
-  characterPreset2: process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
-  characterPreset3: process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
-  characterPreset4: process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
-  characterPreset5: process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
+  characterPreset1: process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || '',
+  characterPreset2: process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || '',
+  characterPreset3: process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || '',
+  characterPreset4: process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || '',
+  characterPreset5: process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || '',
   customPresetName1: process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME1 || 'Preset 1',
   customPresetName2: process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME2 || 'Preset 2',
   customPresetName3: process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME3 || 'Preset 3',
@@ -494,7 +493,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   systemPrompt:
     process.env.NEXT_PUBLIC_SYSTEM_PROMPT ||
     process.env.NEXT_PUBLIC_CHARACTER_PRESET1 ||
-    SYSTEM_PROMPT,
+    '',
   selectedVrmPath:
     process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
   selectedLive2DPath:
