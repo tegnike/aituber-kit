@@ -3,15 +3,10 @@ import { useTranslation } from 'react-i18next'
 import Image from 'next/image'
 
 import settingsStore from '@/features/stores/settings'
+import toastStore from '@/features/stores/toast'
 import { ToggleSwitch } from '../toggleSwitch'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
-import {
-  DEFAULT_PROMPT_EVALUATE,
-  DEFAULT_PROMPT_CONTINUATION,
-  DEFAULT_PROMPT_SLEEP,
-  DEFAULT_PROMPT_NEW_TOPIC,
-  DEFAULT_PROMPT_SELECT_COMMENT,
-} from '@/lib/mastra/defaultPrompts'
+import { loadPreset } from '@/features/presets/presetLoader'
 
 const YouTube = () => {
   const [showAdvancedPrompts, setShowAdvancedPrompts] = useState(false)
@@ -321,12 +316,22 @@ const YouTube = () => {
                       />
                       <button
                         className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
-                        onClick={() =>
-                          settingsStore.setState({
-                            conversationContinuityPromptEvaluate:
-                              DEFAULT_PROMPT_EVALUATE,
-                          })
-                        }
+                        onClick={async () => {
+                          const content = await loadPreset(
+                            'youtube-prompt-evaluate.txt'
+                          )
+                          if (content) {
+                            settingsStore.setState({
+                              conversationContinuityPromptEvaluate: content,
+                            })
+                          } else {
+                            toastStore.getState().addToast({
+                              message: t('Toasts.PresetLoadFailed'),
+                              type: 'error',
+                              tag: 'preset-load-error',
+                            })
+                          }
+                        }}
                       >
                         {t('ResetToDefault')}
                       </button>
@@ -351,12 +356,22 @@ const YouTube = () => {
                       />
                       <button
                         className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
-                        onClick={() =>
-                          settingsStore.setState({
-                            conversationContinuityPromptContinuation:
-                              DEFAULT_PROMPT_CONTINUATION,
-                          })
-                        }
+                        onClick={async () => {
+                          const content = await loadPreset(
+                            'youtube-prompt-continuation.txt'
+                          )
+                          if (content) {
+                            settingsStore.setState({
+                              conversationContinuityPromptContinuation: content,
+                            })
+                          } else {
+                            toastStore.getState().addToast({
+                              message: t('Toasts.PresetLoadFailed'),
+                              type: 'error',
+                              tag: 'preset-load-error',
+                            })
+                          }
+                        }}
                       >
                         {t('ResetToDefault')}
                       </button>
@@ -381,12 +396,23 @@ const YouTube = () => {
                       />
                       <button
                         className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
-                        onClick={() =>
-                          settingsStore.setState({
-                            conversationContinuityPromptSelectComment:
-                              DEFAULT_PROMPT_SELECT_COMMENT,
-                          })
-                        }
+                        onClick={async () => {
+                          const content = await loadPreset(
+                            'youtube-prompt-select-comment.txt'
+                          )
+                          if (content) {
+                            settingsStore.setState({
+                              conversationContinuityPromptSelectComment:
+                                content,
+                            })
+                          } else {
+                            toastStore.getState().addToast({
+                              message: t('Toasts.PresetLoadFailed'),
+                              type: 'error',
+                              tag: 'preset-load-error',
+                            })
+                          }
+                        }}
                       >
                         {t('ResetToDefault')}
                       </button>
@@ -411,12 +437,22 @@ const YouTube = () => {
                       />
                       <button
                         className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
-                        onClick={() =>
-                          settingsStore.setState({
-                            conversationContinuityPromptNewTopic:
-                              DEFAULT_PROMPT_NEW_TOPIC,
-                          })
-                        }
+                        onClick={async () => {
+                          const content = await loadPreset(
+                            'youtube-prompt-new-topic.txt'
+                          )
+                          if (content) {
+                            settingsStore.setState({
+                              conversationContinuityPromptNewTopic: content,
+                            })
+                          } else {
+                            toastStore.getState().addToast({
+                              message: t('Toasts.PresetLoadFailed'),
+                              type: 'error',
+                              tag: 'preset-load-error',
+                            })
+                          }
+                        }}
                       >
                         {t('ResetToDefault')}
                       </button>
@@ -440,12 +476,22 @@ const YouTube = () => {
                       />
                       <button
                         className="mt-2 px-3 py-1 text-sm rounded-lg bg-white hover:bg-white-hover"
-                        onClick={() =>
-                          settingsStore.setState({
-                            conversationContinuityPromptSleep:
-                              DEFAULT_PROMPT_SLEEP,
-                          })
-                        }
+                        onClick={async () => {
+                          const content = await loadPreset(
+                            'youtube-prompt-sleep.txt'
+                          )
+                          if (content) {
+                            settingsStore.setState({
+                              conversationContinuityPromptSleep: content,
+                            })
+                          } else {
+                            toastStore.getState().addToast({
+                              message: t('Toasts.PresetLoadFailed'),
+                              type: 'error',
+                              tag: 'preset-load-error',
+                            })
+                          }
+                        }}
                       >
                         {t('ResetToDefault')}
                       </button>

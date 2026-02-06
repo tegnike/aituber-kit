@@ -19,13 +19,6 @@ import {
   DEFAULT_KIOSK_CONFIG,
 } from '@/features/kiosk/kioskTypes'
 import {
-  DEFAULT_PROMPT_EVALUATE,
-  DEFAULT_PROMPT_CONTINUATION,
-  DEFAULT_PROMPT_SLEEP,
-  DEFAULT_PROMPT_NEW_TOPIC,
-  DEFAULT_PROMPT_SELECT_COMMENT,
-} from '@/lib/mastra/defaultPrompts'
-import {
   AIService,
   AIVoice,
   Language,
@@ -452,20 +445,15 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_SLEEP_THRESHOLD || '6'
     ) || 6,
   conversationContinuityPromptEvaluate:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_EVALUATE ||
-    DEFAULT_PROMPT_EVALUATE,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_EVALUATE || '',
   conversationContinuityPromptContinuation:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_CONTINUATION ||
-    DEFAULT_PROMPT_CONTINUATION,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_CONTINUATION || '',
   conversationContinuityPromptSelectComment:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SELECT_COMMENT ||
-    DEFAULT_PROMPT_SELECT_COMMENT,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SELECT_COMMENT || '',
   conversationContinuityPromptNewTopic:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_NEW_TOPIC ||
-    DEFAULT_PROMPT_NEW_TOPIC,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_NEW_TOPIC || '',
   conversationContinuityPromptSleep:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SLEEP ||
-    DEFAULT_PROMPT_SLEEP,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SLEEP || '',
   onecommePort:
     parseInt(process.env.NEXT_PUBLIC_ONECOMME_PORT || '11180') || 11180,
   youtubeCommentInterval:
@@ -602,8 +590,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       : 'ai-decide'
   })(),
   multiModalAiDecisionPrompt:
-    process.env.NEXT_PUBLIC_MULTIMODAL_AI_DECISION_PROMPT ||
-    'あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。',
+    process.env.NEXT_PUBLIC_MULTIMODAL_AI_DECISION_PROMPT || '',
   enableMultiModal: process.env.NEXT_PUBLIC_ENABLE_MULTIMODAL !== 'false',
   colorTheme:
     (process.env.NEXT_PUBLIC_COLOR_THEME as
@@ -744,9 +731,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   idleAiGenerationEnabled:
     process.env.NEXT_PUBLIC_IDLE_AI_GENERATION_ENABLED === 'true' ||
     DEFAULT_IDLE_CONFIG.idleAiGenerationEnabled,
-  idleAiPromptTemplate:
-    process.env.NEXT_PUBLIC_IDLE_AI_PROMPT_TEMPLATE ||
-    DEFAULT_IDLE_CONFIG.idleAiPromptTemplate,
+  idleAiPromptTemplate: process.env.NEXT_PUBLIC_IDLE_AI_PROMPT_TEMPLATE || '',
 
   // Kiosk mode settings
   kioskModeEnabled:

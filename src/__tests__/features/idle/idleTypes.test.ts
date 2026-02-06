@@ -144,9 +144,7 @@ describe('Idle Mode Types', () => {
 
     it('should have AI generation disabled by default', () => {
       expect(DEFAULT_IDLE_CONFIG.idleAiGenerationEnabled).toBe(false)
-      expect(DEFAULT_IDLE_CONFIG.idleAiPromptTemplate).toBe(
-        '展示会の来場者に向けて、親しみやすい一言を生成してください。'
-      )
+      expect(DEFAULT_IDLE_CONFIG.idleAiPromptTemplate).toBe('')
     })
   })
 })

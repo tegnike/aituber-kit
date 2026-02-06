@@ -88,8 +88,7 @@ export const DEFAULT_IDLE_CONFIG: IdleModeSettings = {
   idleTimePeriodEvening: 'こんばんは！',
   idleTimePeriodEveningEmotion: 'relaxed',
   idleAiGenerationEnabled: false,
-  idleAiPromptTemplate:
-    '展示会の来場者に向けて、親しみやすい一言を生成してください。',
+  idleAiPromptTemplate: '',
 }
 
 // Interval validation constants

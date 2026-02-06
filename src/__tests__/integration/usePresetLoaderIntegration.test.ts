@@ -16,6 +16,13 @@ describe('Preset Loader Integration Tests', () => {
       characterPreset3: '',
       characterPreset4: '',
       characterPreset5: '',
+      idleAiPromptTemplate: '',
+      conversationContinuityPromptEvaluate: '',
+      conversationContinuityPromptContinuation: '',
+      conversationContinuityPromptSleep: '',
+      conversationContinuityPromptNewTopic: '',
+      conversationContinuityPromptSelectComment: '',
+      multiModalAiDecisionPrompt: '',
     })
   })
 
@@ -60,6 +67,25 @@ describe('Preset Loader Integration Tests', () => {
         expect(mockFetch).toHaveBeenCalledWith(`/presets/preset${i}.txt`)
       }
     })
+
+    it('should handle prompt preset filenames', async () => {
+      const promptFiles = [
+        'idle-ai-prompt-template.txt',
+        'youtube-prompt-evaluate.txt',
+        'multimodal-ai-decision-prompt.txt',
+      ]
+
+      for (const filename of promptFiles) {
+        mockFetch.mockResolvedValueOnce({
+          ok: true,
+          text: () => Promise.resolve(`Content of ${filename}`),
+        })
+
+        const result = await loadPreset(filename)
+        expect(result).toBe(`Content of ${filename}`)
+        expect(mockFetch).toHaveBeenCalledWith(`/presets/${filename}`)
+      }
+    })
   })
 
   describe('Full E2E: usePresetLoader -> fetch -> store', () => {
@@ -71,6 +97,16 @@ describe('Preset Loader Integration Tests', () => {
           '/presets/preset3.txt': 'You are a creative writer.',
           '/presets/preset4.txt': 'You are a code reviewer.',
           '/presets/preset5.txt': 'You are a language tutor.',
+          '/presets/idle-ai-prompt-template.txt': 'Idle AI template content',
+          '/presets/youtube-prompt-evaluate.txt': 'Evaluate prompt content',
+          '/presets/youtube-prompt-continuation.txt':
+            'Continuation prompt content',
+          '/presets/youtube-prompt-sleep.txt': 'Sleep prompt content',
+          '/presets/youtube-prompt-new-topic.txt': 'New topic prompt content',
+          '/presets/youtube-prompt-select-comment.txt':
+            'Select comment prompt content',
+          '/presets/multimodal-ai-decision-prompt.txt':
+            'Multimodal decision prompt content',
         }
         if (content[url]) {
           return Promise.resolve({
@@ -85,7 +121,9 @@ describe('Preset Loader Integration Tests', () => {
 
       await waitFor(() => {
         const state = settingsStore.getState()
-        expect(state.characterPreset5).toBe('You are a language tutor.')
+        expect(state.multiModalAiDecisionPrompt).toBe(
+          'Multimodal decision prompt content'
+        )
       })
 
       const state = settingsStore.getState()
@@ -94,6 +132,25 @@ describe('Preset Loader Integration Tests', () => {
       expect(state.characterPreset3).toBe('You are a creative writer.')
       expect(state.characterPreset4).toBe('You are a code reviewer.')
       expect(state.characterPreset5).toBe('You are a language tutor.')
+      expect(state.idleAiPromptTemplate).toBe('Idle AI template content')
+      expect(state.conversationContinuityPromptEvaluate).toBe(
+        'Evaluate prompt content'
+      )
+      expect(state.conversationContinuityPromptContinuation).toBe(
+        'Continuation prompt content'
+      )
+      expect(state.conversationContinuityPromptSleep).toBe(
+        'Sleep prompt content'
+      )
+      expect(state.conversationContinuityPromptNewTopic).toBe(
+        'New topic prompt content'
+      )
+      expect(state.conversationContinuityPromptSelectComment).toBe(
+        'Select comment prompt content'
+      )
+      expect(state.multiModalAiDecisionPrompt).toBe(
+        'Multimodal decision prompt content'
+      )
     })
 
     it('should preserve existing presets and only load missing ones', async () => {
@@ -103,6 +160,7 @@ describe('Preset Loader Integration Tests', () => {
         characterPreset3: 'Another custom preset',
         characterPreset4: '',
         characterPreset5: '',
+        idleAiPromptTemplate: 'Custom idle template',
       })
 
       mockFetch.mockImplementation((url: string) => {
@@ -123,6 +181,7 @@ describe('Preset Loader Integration Tests', () => {
       // Existing values preserved
       expect(state.characterPreset1).toBe('Custom user preset')
       expect(state.characterPreset3).toBe('Another custom preset')
+      expect(state.idleAiPromptTemplate).toBe('Custom idle template')
       // Missing values loaded from files
       expect(state.characterPreset2).toBe('File: /presets/preset2.txt')
       expect(state.characterPreset4).toBe('File: /presets/preset4.txt')
@@ -146,7 +205,7 @@ describe('Preset Loader Integration Tests', () => {
       renderHook(() => usePresetLoader())
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(5)
+        expect(mockFetch).toHaveBeenCalledTimes(12)
       })
 
       const state = settingsStore.getState()

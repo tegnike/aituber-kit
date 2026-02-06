@@ -135,9 +135,7 @@ describe('Settings Store - Idle Mode Settings', () => {
 
     it('should have default prompt template', () => {
       const state = settingsStore.getState()
-      expect(state.idleAiPromptTemplate).toBe(
-        '展示会の来場者に向けて、親しみやすい一言を生成してください。'
-      )
+      expect(state.idleAiPromptTemplate).toBe('')
     })
 
     it('should be updatable', () => {

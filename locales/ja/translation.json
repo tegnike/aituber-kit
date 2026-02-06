@@ -293,7 +293,8 @@
     "PositionReset": "キャラクターの位置をリセットしました",
     "PositionActionFailed": "位置操作に失敗しました",
     "MicrophonePermissionDenied": "マイクへのアクセス許可が拒否されました",
-    "CameraPermissionMessage": "カメラの使用を許可してください。"
+    "CameraPermissionMessage": "カメラの使用を許可してください。",
+    "PresetLoadFailed": "プリセットの読み込みに失敗しました"
   },
   "ContinuousMic": "常時マイク入力",
   "ContinuousMicActive": "常時マイク入力中",

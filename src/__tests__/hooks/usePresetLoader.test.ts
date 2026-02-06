@@ -10,6 +10,26 @@ jest.mock('@/features/presets/presetLoader', () => ({
 // Import after mock setup
 import { usePresetLoader } from '@/features/presets/usePresetLoader'
 
+const PROMPT_PRESET_KEYS = [
+  'idleAiPromptTemplate',
+  'conversationContinuityPromptEvaluate',
+  'conversationContinuityPromptContinuation',
+  'conversationContinuityPromptSleep',
+  'conversationContinuityPromptNewTopic',
+  'conversationContinuityPromptSelectComment',
+  'multiModalAiDecisionPrompt',
+] as const
+
+const PROMPT_PRESET_FILES = [
+  'idle-ai-prompt-template.txt',
+  'youtube-prompt-evaluate.txt',
+  'youtube-prompt-continuation.txt',
+  'youtube-prompt-sleep.txt',
+  'youtube-prompt-new-topic.txt',
+  'youtube-prompt-select-comment.txt',
+  'multimodal-ai-decision-prompt.txt',
+]
+
 describe('usePresetLoader', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -19,6 +39,13 @@ describe('usePresetLoader', () => {
       characterPreset3: '',
       characterPreset4: '',
       characterPreset5: '',
+      idleAiPromptTemplate: '',
+      conversationContinuityPromptEvaluate: '',
+      conversationContinuityPromptContinuation: '',
+      conversationContinuityPromptSleep: '',
+      conversationContinuityPromptNewTopic: '',
+      conversationContinuityPromptSelectComment: '',
+      multiModalAiDecisionPrompt: '',
     })
   })
 
@@ -37,7 +64,7 @@ describe('usePresetLoader', () => {
     renderHook(() => usePresetLoader())
 
     await waitFor(() => {
-      expect(mockLoadPreset).toHaveBeenCalledTimes(5)
+      expect(mockLoadPreset).toHaveBeenCalledTimes(12)
     })
 
     expect(mockLoadPreset).toHaveBeenCalledWith('preset1.txt')
@@ -65,7 +92,7 @@ describe('usePresetLoader', () => {
     renderHook(() => usePresetLoader())
 
     await waitFor(() => {
-      expect(mockLoadPreset).toHaveBeenCalledTimes(3)
+      expect(mockLoadPreset).toHaveBeenCalledTimes(10)
     })
 
     // Should skip preset1 and preset3 since they have existing values
@@ -86,7 +113,7 @@ describe('usePresetLoader', () => {
     renderHook(() => usePresetLoader())
 
     await waitFor(() => {
-      expect(mockLoadPreset).toHaveBeenCalledTimes(5)
+      expect(mockLoadPreset).toHaveBeenCalledTimes(12)
     })
 
     const state = settingsStore.getState()
@@ -106,7 +133,7 @@ describe('usePresetLoader', () => {
     renderHook(() => usePresetLoader())
 
     await waitFor(() => {
-      expect(mockLoadPreset).toHaveBeenCalledTimes(5)
+      expect(mockLoadPreset).toHaveBeenCalledTimes(12)
     })
 
     const state = settingsStore.getState()
@@ -123,7 +150,7 @@ describe('usePresetLoader', () => {
     renderHook(() => usePresetLoader())
 
     await waitFor(() => {
-      expect(mockLoadPreset).toHaveBeenCalledTimes(5)
+      expect(mockLoadPreset).toHaveBeenCalledTimes(12)
     })
 
     // Empty string is falsy, so setState should not be called
@@ -137,12 +164,108 @@ describe('usePresetLoader', () => {
     const { rerender } = renderHook(() => usePresetLoader())
 
     await waitFor(() => {
-      expect(mockLoadPreset).toHaveBeenCalledTimes(5)
+      expect(mockLoadPreset).toHaveBeenCalledTimes(12)
     })
 
     rerender()
 
-    // Should still be 5 calls total, not 10
-    expect(mockLoadPreset).toHaveBeenCalledTimes(5)
+    // Should still be 12 calls total, not 24
+    expect(mockLoadPreset).toHaveBeenCalledTimes(12)
+  })
+
+  describe('prompt presets', () => {
+    it('should load prompt presets from txt files when store values are empty', async () => {
+      mockLoadPreset.mockImplementation((filename: string) => {
+        const presets: Record<string, string> = {
+          'idle-ai-prompt-template.txt': 'Idle AI template',
+          'youtube-prompt-evaluate.txt': 'Evaluate prompt',
+          'youtube-prompt-continuation.txt': 'Continuation prompt',
+          'youtube-prompt-sleep.txt': 'Sleep prompt',
+          'youtube-prompt-new-topic.txt': 'New topic prompt',
+          'youtube-prompt-select-comment.txt': 'Select comment prompt',
+          'multimodal-ai-decision-prompt.txt': 'Multimodal decision prompt',
+        }
+        return Promise.resolve(presets[filename] || null)
+      })
+
+      renderHook(() => usePresetLoader())
+
+      await waitFor(() => {
+        expect(mockLoadPreset).toHaveBeenCalledTimes(12)
+      })
+
+      PROMPT_PRESET_FILES.forEach((filename) => {
+        expect(mockLoadPreset).toHaveBeenCalledWith(filename)
+      })
+
+      const state = settingsStore.getState()
+      expect(state.idleAiPromptTemplate).toBe('Idle AI template')
+      expect(state.conversationContinuityPromptEvaluate).toBe('Evaluate prompt')
+      expect(state.conversationContinuityPromptContinuation).toBe(
+        'Continuation prompt'
+      )
+      expect(state.conversationContinuityPromptSleep).toBe('Sleep prompt')
+      expect(state.conversationContinuityPromptNewTopic).toBe(
+        'New topic prompt'
+      )
+      expect(state.conversationContinuityPromptSelectComment).toBe(
+        'Select comment prompt'
+      )
+      expect(state.multiModalAiDecisionPrompt).toBe(
+        'Multimodal decision prompt'
+      )
+    })
+
+    it('should not overwrite existing prompt preset values', async () => {
+      settingsStore.setState({
+        idleAiPromptTemplate: 'Custom idle template',
+        conversationContinuityPromptEvaluate: 'Custom evaluate',
+      })
+
+      mockLoadPreset.mockResolvedValue('File content')
+
+      renderHook(() => usePresetLoader())
+
+      await waitFor(() => {
+        const state = settingsStore.getState()
+        expect(state.multiModalAiDecisionPrompt).toBe('File content')
+      })
+
+      expect(mockLoadPreset).not.toHaveBeenCalledWith(
+        'idle-ai-prompt-template.txt'
+      )
+      expect(mockLoadPreset).not.toHaveBeenCalledWith(
+        'youtube-prompt-evaluate.txt'
+      )
+
+      const state = settingsStore.getState()
+      expect(state.idleAiPromptTemplate).toBe('Custom idle template')
+      expect(state.conversationContinuityPromptEvaluate).toBe('Custom evaluate')
+    })
+
+    it('should not overwrite values set during async loading (race condition guard)', async () => {
+      mockLoadPreset.mockImplementation((filename: string) => {
+        if (filename === 'idle-ai-prompt-template.txt') {
+          // Simulate user editing the store while the file is being fetched
+          settingsStore.setState({
+            idleAiPromptTemplate: 'User edited value',
+          })
+          return Promise.resolve('File content')
+        }
+        return Promise.resolve(null)
+      })
+
+      renderHook(() => usePresetLoader())
+
+      await waitFor(() => {
+        expect(mockLoadPreset).toHaveBeenCalledWith(
+          'idle-ai-prompt-template.txt'
+        )
+      })
+
+      // User's edit should be preserved, not overwritten by file content
+      const state = settingsStore.getState()
+      expect(state.idleAiPromptTemplate).toBe('User edited value')
+    })
   })
 })
