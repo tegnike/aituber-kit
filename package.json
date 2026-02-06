@@ -114,7 +114,7 @@
     "web-streams-polyfill": "^4.2.0"
   },
   "engines": {
-    "node": "^25.2.1"
+    "node": "20.x"
   },
   "volta": {
     "node": "25.2.1",
