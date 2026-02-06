@@ -90,6 +90,32 @@ cp .env.example .env  # 環境変数を設定
 
 **設定画面の項目を追加・更新した場合は、必要に応じて新しい環境変数を`.env.example`の適切な項目に追加してください。**
 
+## AICU TTS 統合状況
+
+### 概要
+
+AICU TTS (`api.aicu.ai`) のクライアント実装は完了済み。現在は Google TTS (`NEXT_PUBLIC_SELECT_VOICE="google"`) で運用中。
+AICU TTSへの切り替え検証中。
+
+- **APIサーバー側repo**: [aicuai/platform-api-aicu-ai](https://github.com/aicuai/platform-api-aicu-ai)
+- **Issue**: aicuai/platform-api-aicu-ai#22
+
+### クライアント側ファイル
+
+| ファイル | 役割 |
+|---------|------|
+| `src/features/messages/synthesizeVoiceAicu.ts` | 合成関数（フロントエンド） |
+| `src/pages/api/tts-aicu.ts` | APIルート → `api.aicu.ai/api/v1/tts/generate` |
+| `src/components/slides.tsx` (L88) | スライド音声取得 → `api.aicu.ai/v1/audio` |
+| `src/components/settings/voice.tsx` | 設定UI |
+
+### 未解決事項
+
+- エンドポイントURLの統一（`/api/v1/` vs `/v1/`、Vercel版 vs Workers版）
+- `AICU_API_KEY` の設定フロー
+- slug（キャラクターID）管理 — デフォルト `luc4`
+- `public/slides/DHGSVR25-3/test-workers-api.js` — 開発用ベンチマークスクリプト（未追跡）
+
 ## ライセンスについて
 
 - v2.0.0以降は独自ライセンス
