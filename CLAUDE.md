@@ -34,7 +34,7 @@ npm install           # 依存関係をインストール
 cp .env.example .env  # 環境変数を設定
 ```
 
-**動作要件**: Node.js `^25.2.1`、npm `^11.6.2`（Voltaで管理）
+**動作要件**: Node.js `24.x`、npm `^11.6.2`
 
 ## アーキテクチャ
 

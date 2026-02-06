@@ -115,10 +115,6 @@
     "web-streams-polyfill": "^4.2.0"
   },
   "engines": {
-    "node": ">=20"
-  },
-  "volta": {
-    "node": "25.2.1",
-    "npm": "11.6.2"
+    "node": "24.x"
   }
 }

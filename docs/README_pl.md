@@ -119,7 +119,7 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 
 ### Środowisko programistyczne
 
-- Node.js: ^25.2.1
+- Node.js: 24.x
 - npm: ^11.6.2
 
 ### Instrukcje instalacji

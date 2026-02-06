@@ -119,7 +119,7 @@ For detailed usage and configuration instructions, please visit the [Documentati
 
 ### Development Environment
 
-- Node.js: ^25.2.1
+- Node.js: 24.x
 - npm: ^11.6.2
 
 ### Installation Steps
