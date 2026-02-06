@@ -13,11 +13,6 @@ import {
 } from '@/lib/api-services/vercelAi'
 import { buildReasoningProviderOptions } from '@/lib/api-services/providerOptionsBuilder'
 import { googleSearchGroundingModels } from '@/features/constants/aiModels'
-import {
-  isRestrictedMode,
-  createRestrictedModeErrorResponse,
-} from '@/utils/restrictedMode'
-
 export const config = {
   runtime: 'edge',
 }
@@ -31,16 +26,6 @@ export default async function handler(req: NextRequest) {
       }),
       {
         status: 405,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
-  }
-
-  if (isRestrictedMode()) {
-    return new Response(
-      JSON.stringify(createRestrictedModeErrorResponse('ai-api')),
-      {
-        status: 403,
         headers: { 'Content-Type': 'application/json' },
       }
     )

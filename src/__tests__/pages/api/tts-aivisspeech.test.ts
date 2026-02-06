@@ -7,15 +7,6 @@ jest.mock('axios', () => ({
   post: (...args: unknown[]) => mockAxiosPost(...args),
 }))
 
-const mockIsDemoMode = jest.fn(() => false)
-jest.mock('@/utils/restrictedMode', () => ({
-  isRestrictedMode: () => mockIsDemoMode(),
-  createRestrictedModeErrorResponse: (feature: string) => ({
-    error: 'feature_disabled_in_restricted_mode',
-    message: `The feature "${feature}" is disabled in restricted mode.`,
-  }),
-}))
-
 import type { NextApiRequest, NextApiResponse } from 'next'
 import handler from '@/pages/api/tts-aivisspeech'
 
@@ -57,35 +48,11 @@ function createMockRes() {
 describe('/api/tts-aivisspeech', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockIsDemoMode.mockReturnValue(false)
     jest.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   afterEach(() => {
     jest.restoreAllMocks()
-  })
-
-  it('should return 403 when restricted mode is active', async () => {
-    mockIsDemoMode.mockReturnValue(true)
-
-    const req = createMockReq({
-      body: {
-        text: 'test',
-        speaker: 1,
-        speed: 1,
-        pitch: 0,
-        intonationScale: 1,
-      },
-    })
-    const res = createMockRes()
-
-    await handler(req, res)
-
-    expect(res._status).toBe(403)
-    expect(res._json).toEqual({
-      error: 'feature_disabled_in_restricted_mode',
-      message: 'The feature "tts-aivisspeech" is disabled in restricted mode.',
-    })
   })
 
   it('should call audio_query and synthesis endpoints', async () => {

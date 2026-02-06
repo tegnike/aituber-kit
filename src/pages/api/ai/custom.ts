@@ -1,10 +1,6 @@
 import { Message } from '@/features/messages/messages'
 import { NextRequest } from 'next/server'
 import { handleCustomApi } from '@/lib/api-services/customApi'
-import {
-  isRestrictedMode,
-  createRestrictedModeErrorResponse,
-} from '@/utils/restrictedMode'
 
 export const config = {
   runtime: 'edge',
@@ -21,13 +17,6 @@ export default async function handler(req: NextRequest) {
         status: 405,
         headers: { 'Content-Type': 'application/json' },
       }
-    )
-  }
-
-  if (isRestrictedMode()) {
-    return new Response(
-      JSON.stringify(createRestrictedModeErrorResponse('custom-api')),
-      { status: 403, headers: { 'Content-Type': 'application/json' } }
     )
   }
 

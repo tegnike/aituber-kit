@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
-import { isRestrictedMode } from '@/utils/restrictedMode'
 import { isLive2DEnabled } from '@/utils/live2dRestriction'
 import {
   MemoryConfig,
@@ -524,12 +523,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   showQuickMenu: process.env.NEXT_PUBLIC_SHOW_QUICK_MENU === 'true',
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   realtimeAPIMode:
-    !isRestrictedMode() &&
-    ((process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
-      ['openai', 'azure'].includes(
-        process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
-      )) ||
-      false),
+    process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
+    ['openai', 'azure'].includes(
+      process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
+    ),
   realtimeAPIModeContentType:
     (process.env
       .NEXT_PUBLIC_REALTIME_API_MODE_CONTENT_TYPE as RealtimeAPIModeContentType) ||
@@ -537,8 +534,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   realtimeAPIModeVoice:
     (process.env.NEXT_PUBLIC_REALTIME_API_MODE_VOICE as RealtimeAPIModeVoice) ||
     'shimmer',
-  audioMode:
-    !isRestrictedMode() && process.env.NEXT_PUBLIC_AUDIO_MODE === 'true',
+  audioMode: process.env.NEXT_PUBLIC_AUDIO_MODE === 'true',
   audioModeInputType:
     (process.env.NEXT_PUBLIC_AUDIO_MODE_INPUT_TYPE as AudioModeInputType) ||
     'input_text',
@@ -808,12 +804,6 @@ const settingsStore = create<SettingsState>()(
           if (migratedModel !== state.selectAIModel) {
             state.selectAIModel = migratedModel
           }
-        }
-
-        // Force disable WebSocket-related features in restricted mode
-        if (state && isRestrictedMode()) {
-          state.realtimeAPIMode = false
-          state.audioMode = false
         }
 
         // Force modelType away from live2d when Live2D is not enabled

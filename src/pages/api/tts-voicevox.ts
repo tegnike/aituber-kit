@@ -1,9 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
-import {
-  isRestrictedMode,
-  createRestrictedModeErrorResponse,
-} from '@/utils/restrictedMode'
 
 type Data = {
   audio?: ArrayBuffer
@@ -14,12 +10,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  if (isRestrictedMode()) {
-    return res
-      .status(403)
-      .json(createRestrictedModeErrorResponse('tts-voicevox'))
-  }
-
   const { text, speaker, speed, pitch, intonation, serverUrl } = req.body
   const apiUrl =
     serverUrl || process.env.VOICEVOX_SERVER_URL || 'http://localhost:50021'
