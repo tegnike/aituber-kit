@@ -54,10 +54,16 @@ const KioskSettings = () => {
   }
 
   const handlePasscodeBlur = () => {
-    if (isValidPasscode(passcodeInput)) {
-      settingsStore.setState({ kioskPasscode: passcodeInput })
+    const trimmed = passcodeInput.trim()
+    if (trimmed.length === 0) {
+      setPasscodeError(t('KioskPasscodeInvalid'))
+      setPasscodeInput(kioskPasscode)
+      return
+    }
+    if (isValidPasscode(trimmed)) {
+      settingsStore.setState({ kioskPasscode: trimmed })
       setPasscodeError(null)
-    } else if (passcodeInput.length > 0) {
+    } else {
       setPasscodeError(t('KioskPasscodeInvalid'))
     }
   }

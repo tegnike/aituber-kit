@@ -320,7 +320,7 @@ const YouTube = () => {
                           const content = await loadPreset(
                             'youtube-prompt-evaluate.txt'
                           )
-                          if (content) {
+                          if (content !== null) {
                             settingsStore.setState({
                               conversationContinuityPromptEvaluate: content,
                             })
@@ -360,7 +360,7 @@ const YouTube = () => {
                           const content = await loadPreset(
                             'youtube-prompt-continuation.txt'
                           )
-                          if (content) {
+                          if (content !== null) {
                             settingsStore.setState({
                               conversationContinuityPromptContinuation: content,
                             })
@@ -400,7 +400,7 @@ const YouTube = () => {
                           const content = await loadPreset(
                             'youtube-prompt-select-comment.txt'
                           )
-                          if (content) {
+                          if (content !== null) {
                             settingsStore.setState({
                               conversationContinuityPromptSelectComment:
                                 content,
@@ -441,7 +441,7 @@ const YouTube = () => {
                           const content = await loadPreset(
                             'youtube-prompt-new-topic.txt'
                           )
-                          if (content) {
+                          if (content !== null) {
                             settingsStore.setState({
                               conversationContinuityPromptNewTopic: content,
                             })
@@ -480,7 +480,7 @@ const YouTube = () => {
                           const content = await loadPreset(
                             'youtube-prompt-sleep.txt'
                           )
-                          if (content) {
+                          if (content !== null) {
                             settingsStore.setState({
                               conversationContinuityPromptSleep: content,
                             })

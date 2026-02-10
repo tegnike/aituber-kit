@@ -125,7 +125,9 @@ const PresenceSettings = () => {
         video: true,
       })
       // すぐに解放
-      tempStream.getTracks().forEach((track) => track.stop())
+      tempStream.getTracks().forEach((track) => {
+        track.stop()
+      })
 
       // デバイス一覧を取得
       const devices = await navigator.mediaDevices.enumerateDevices()

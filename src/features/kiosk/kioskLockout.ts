@@ -16,12 +16,19 @@ export function getLockoutState(): KioskLockoutState {
     const raw = localStorage.getItem(LOCKOUT_STORAGE_KEY)
     if (!raw) return { ...DEFAULT_STATE }
     const parsed = JSON.parse(raw)
-    return {
-      lockoutUntil:
-        typeof parsed.lockoutUntil === 'number' ? parsed.lockoutUntil : null,
-      totalFailures:
-        typeof parsed.totalFailures === 'number' ? parsed.totalFailures : 0,
-    }
+    const lockoutUntil =
+      typeof parsed.lockoutUntil === 'number' &&
+      Number.isFinite(parsed.lockoutUntil) &&
+      parsed.lockoutUntil > 0
+        ? parsed.lockoutUntil
+        : null
+    const totalFailures =
+      typeof parsed.totalFailures === 'number' &&
+      Number.isFinite(parsed.totalFailures) &&
+      parsed.totalFailures >= 0
+        ? Math.floor(parsed.totalFailures)
+        : 0
+    return { lockoutUntil, totalFailures }
   } catch {
     return { ...DEFAULT_STATE }
   }
@@ -44,10 +51,6 @@ export function clearLockoutState(): void {
 }
 
 export function isLockedOut(): boolean {
-  try {
-    const state = getLockoutState()
-    return state.lockoutUntil !== null && state.lockoutUntil > Date.now()
-  } catch {
-    return false
-  }
+  const state = getLockoutState()
+  return state.lockoutUntil !== null && state.lockoutUntil > Date.now()
 }

@@ -37,6 +37,7 @@ const Live2DComponent = (): JSX.Element => {
   console.log('Live2DComponent rendering')
 
   const canvasContainerRef = useRef<HTMLCanvasElement>(null)
+  const appRef = useRef<Application | null>(null)
   const [app, setApp] = useState<Application | null>(null)
   const [model, setModel] = useState<InstanceType<typeof Live2DModel> | null>(
     null
@@ -112,6 +113,7 @@ const Live2DComponent = (): JSX.Element => {
       antialias: true,
     })
 
+    appRef.current = app
     setApp(app)
   }
 
@@ -156,8 +158,9 @@ const Live2DComponent = (): JSX.Element => {
         modelRef.current.destroy()
         modelRef.current = null
       }
-      if (app) {
-        app.destroy(true)
+      if (appRef.current) {
+        appRef.current.destroy(true)
+        appRef.current = null
       }
     }
   }, [])

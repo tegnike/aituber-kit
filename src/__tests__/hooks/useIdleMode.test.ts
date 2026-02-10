@@ -76,11 +76,14 @@ function setupSettingsMock(overrides = {}) {
     idleAiPromptTemplate: '',
     ...overrides,
   }
-  const mockSettingsStore = settingsStore as unknown as jest.Mock
+  const mockSettingsStore = settingsStore as unknown as jest.Mock & {
+    getState: jest.Mock
+  }
   mockSettingsStore.mockImplementation(
     (selector: (state: typeof defaultState) => unknown) =>
       selector ? selector(defaultState) : defaultState
   )
+  mockSettingsStore.getState.mockReturnValue(defaultState)
 }
 
 // Helper function to setup mock home

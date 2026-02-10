@@ -64,6 +64,13 @@ export const Menu = () => {
     showControlPanel && (!isKioskMode || isTemporaryUnlocked)
 
   const [showSettings, setShowSettings] = useState(false)
+
+  // キオスクモードで設定アクセス権が剥奪された場合に自動クローズ
+  useEffect(() => {
+    if (!canAccessSettings) {
+      setShowSettings(false)
+    }
+  }, [canAccessSettings])
   // 会話ログ表示モード
   const CHAT_LOG_MODE = {
     HIDDEN: 0, // 非表示

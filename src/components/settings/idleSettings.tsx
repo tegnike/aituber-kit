@@ -109,9 +109,9 @@ const IdleSettings = () => {
   }
 
   const handleDeletePhrase = (id: string) => {
-    settingsStore.setState({
-      idlePhrases: idlePhrases.filter((p) => p.id !== id),
-    })
+    const remaining = idlePhrases.filter((p) => p.id !== id)
+    const reindexed = remaining.map((p, i) => ({ ...p, order: i }))
+    settingsStore.setState({ idlePhrases: reindexed })
   }
 
   const handlePhraseTextChange = (id: string, text: string) => {

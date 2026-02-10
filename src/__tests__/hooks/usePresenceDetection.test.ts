@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { renderHook, act, waitFor } from '@testing-library/react'
+import type React from 'react'
 import { usePresenceDetection } from '@/hooks/usePresenceDetection'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'

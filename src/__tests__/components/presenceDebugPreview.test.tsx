@@ -5,6 +5,13 @@
  * Requirements: 5.3
  */
 
+// Mock ResizeObserver for jsdom
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import PresenceDebugPreview from '@/components/presenceDebugPreview'

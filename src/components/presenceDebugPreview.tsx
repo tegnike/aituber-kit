@@ -38,13 +38,14 @@ const PresenceDebugPreview = ({
       }
     }
 
+    const resizeObserver = new ResizeObserver(updateDimensions)
+    resizeObserver.observe(video)
     video.addEventListener('loadedmetadata', updateDimensions)
-    video.addEventListener('resize', updateDimensions)
     updateDimensions()
 
     return () => {
+      resizeObserver.disconnect()
       video.removeEventListener('loadedmetadata', updateDimensions)
-      video.removeEventListener('resize', updateDimensions)
     }
   }, [videoRef])
 
