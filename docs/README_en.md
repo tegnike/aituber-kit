@@ -2,6 +2,8 @@
 
 <img style="max-width: 100%;" src="../public/ogp.png">
 
+<p align="center"><strong>All-in-One Toolkit for Building AI Characters</strong></p>
+
 **Notice: This project has adopted a custom license from version v2.0.0 onwards. If you are using it for commercial purposes, please check the [Terms of Use](#terms-of-use) section.**
 
 <p align="center">
@@ -46,16 +48,12 @@
 
 ## Overview
 
-AITuberKit is an open-source toolkit that allows anyone to easily build a web application for chatting with AI characters. It features various extensions centered around interaction with AI characters and AITuber streaming functionality.
-It supports a wide range of AI services, character models, and voice synthesis engines, with high customization options centered around dialogue and AITuber streaming functionality.
+AITuberKit is an open-source toolkit that allows anyone to easily build a web application for chatting with AI characters.
+It supports a wide range of AI services, character models, and voice synthesis engines, with high customization options centered around dialogue and AITuber streaming functionality, along with various extension modes.
 
 <img src="./images/architecture_en.svg" alt="AITuberKit Architecture">
 
 For detailed usage and configuration instructions, please visit the [Documentation Site](https://docs.aituberkit.com/en/).
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
 
 ## Main Features
 
@@ -64,19 +62,31 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - Easy conversation with AI characters using API keys for various LLMs
 - Multimodal support for recognizing camera footage and uploaded images to generate responses
 - Retention of recent conversations as memory
+- RAG-based long-term memory that utilizes past conversations as context
 
 ### 2. AITuber Streaming
 
 - Retrieves YouTube stream comments for automatic responses from AI characters
+- Choose between YouTube API / OneComme (WanKome) as comment source
 - Conversation continuation mode allows spontaneous speech even without comments
-- Feature to ignore comments starting with "#"
+- Customizable comment retrieval interval and user display name
 
-### 3. Other Features
+### 3. Demo Terminal & Digital Signage
+
+- **Demo Terminal Mode**: Fullscreen display for digital signage. Supports passcode authentication, NG word filter, and input length restrictions
+- **Presence Detection**: Automatic visitor detection via camera face detection. Supports automatic greeting and farewell phrase playback
+- **Idle Mode**: Characters speak automatically when conversation pauses. Supports three sources: fixed phrases, time-based greetings, and AI-generated content
+
+### 4. Advanced Dialogue Modes
+
+- **Realtime API**: Low-latency dialogue and function execution using OpenAI's Realtime API
+- **Audio Mode**: Natural voice dialogue utilizing OpenAI's Audio API features
+- **Reasoning Mode**: Display AI's thinking process and configure reasoning parameters
+
+### 5. Integration & Extension
 
 - **External Integration Mode**: Connect with server applications via WebSocket for advanced functionality
 - **Slide Mode**: Mode where AI characters automatically present slides
-- **Realtime API**: Low-latency dialogue and function execution using OpenAI's Realtime API
-- **Audio Mode**: Natural voice dialogue utilizing OpenAI's Audio API features
 - **Message Reception Function**: Accept instructions from external sources through a dedicated API to make AI characters speak
 
 ## Supported Models & Services
@@ -85,6 +95,7 @@ For detailed usage and configuration instructions, please visit the [Documentati
 
 - **3D Models**: VRM files
 - **2D Models**: Live2D files (Cubism 3 and later)
+- **Motion PNGTuber**: Video-based character display ([MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber))
 
 ### Supported LLMs
 
@@ -97,8 +108,12 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - Mistral AI
 - Perplexity
 - Fireworks
-- Local LLM
+- LM Studio
+- Ollama
 - Dify
+- xAI
+- DeepSeek
+- OpenRouter
 
 ### Supported Voice Synthesis Engines
 
@@ -113,7 +128,6 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - ElevenLabs
 - OpenAI
 - Azure OpenAI
-- Niji Voice
 
 ## Quick Start
 
@@ -142,21 +156,43 @@ cd aituber-kit
 npm install
 ```
 
-4. Start the application in development mode.
-
-```bash
-npm run dev
-```
-
-5. Open the URL: [http://localhost:3000](http://localhost:3000)
-
-6. Create a .env file as needed.
+4. Create a .env file as needed.
 
 ```bash
 cp .env.example .env
 ```
 
+5. Start the application in development mode.
+
+```bash
+npm run dev
+```
+
+6. Open the URL: [http://localhost:3000](http://localhost:3000)
+
 For detailed configuration and usage instructions, please visit the [Documentation Site](https://docs.aituberkit.com/en/).
+
+### Running with Docker
+
+1. Create a `.env` file.
+
+```bash
+cp .env.example .env
+```
+
+2. Start with Docker Compose.
+
+```bash
+docker compose up -d
+```
+
+3. Open the URL: [http://localhost:3000](http://localhost:3000)
+
+To stop:
+
+```bash
+docker compose down
+```
 
 ## ⚠️ Important Security Notice
 
@@ -192,9 +228,6 @@ Your support greatly contributes to the development and improvement of AITuberKi
   </a>
   <a href="https://github.com/coderabbitai" title="coderabbitai">
     <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
-  </a>
-  <a href="https://github.com/ai-bootcamp-tokyo" title="ai-bootcamp-tokyo">
-    <img src="https://github.com/ai-bootcamp-tokyo.png" width="40" height="40" alt="ai-bootcamp-tokyo">
   </a>
   <a href="https://github.com/wmoto-ai" title="wmoto-ai">
     <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
@@ -266,7 +299,7 @@ Your support greatly contributes to the development and improvement of AITuberKi
     <img src="https://github.com/uwaguchi.png" width="40" height="40" alt="uwaguchi">
   </a>
   <a href="https://x.com/M1RA_A_Project" title="M1RA_A_Project">
-    <img src="https://pbs.twimg.com/profile_images/1903385253504507904/ceBSG9Wl_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
+    <img src="https://pbs.twimg.com/profile_images/2013543177253249025/AKHpzZde_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
   </a>
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
@@ -286,9 +319,29 @@ Your support greatly contributes to the development and improvement of AITuberKi
   <a href="https://github.com/schroneko" title="schroneko">
     <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
   </a>
+  <a href="https://github.com/ParachutePenguin" title="ParachutePenguin">
+    <img src="https://github.com/ParachutePenguin.png" width="40" height="40" alt="ParachutePenguin">
+  </a>
+  <a href="https://github.com/eruma" title="eruma">
+    <img src="https://github.com/eruma.png" width="40" height="40" alt="eruma">
+  </a>
+  <a href="https://x.com/_cityside" title="_cityside">
+    <img src="https://pbs.twimg.com/profile_images/1987812690254082048/KyWdQTT4_400x400.jpg" width="40" height="40" alt="_cityside">
+  </a>
+  <a href="https://github.com/nyapan-mohy" title="nyapan-mohy">
+    <img src="https://github.com/nyapan-mohy.png" width="40" height="40" alt="nyapan-mohy">
+  </a>
 </p>
 
 Plus multiple private sponsors
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
+## Acknowledgments
+
+This project was developed as a fork of [ChatVRM](https://github.com/pixiv/ChatVRM) published by pixiv Inc. We deeply appreciate pixiv Inc. for publishing such a wonderful open-source project.
 
 ## Contributing
 

@@ -2,6 +2,8 @@
 
 <img style="max-width: 100%;" src="../public/ogp.png">
 
+<p align="center"><strong>构建AI角色的一站式工具包</strong></p>
+
 **通知：本项目从版本v2.0.0开始采用自定义许可证。如果您出于商业目的使用，请查看[使用条款](#使用条款)部分。**
 
 <p align="center">
@@ -53,10 +55,6 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 
 有关详细使用方法和配置说明，请访问[文档网站](https://docs.aituberkit.com/zh/)。
 
-## Star历史
-
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
-
 ## 主要功能
 
 ### 1. 与AI角色交互
@@ -64,19 +62,31 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 - 使用各种LLM的API密钥轻松与AI角色对话
 - 支持多模态，可识别摄像头画面和上传的图像生成回答
 - 保留最近的对话作为记忆
+- 基于RAG的长期记忆，将过去的对话作为上下文活用
 
 ### 2. AITuber直播
 
 - 获取YouTube直播评论，AI角色自动回应
+- 评论获取来源可选择YouTube API / 完コメ(OneComme)
 - 对话持续模式下即使没有评论也能自发发言
-- 以"#"开头的评论不会被读取的功能
+- 支持评论获取间隔和用户显示名称的自定义
 
-### 3. 其他功能
+### 3. 演示终端·数字标牌
+
+- **演示终端模式**：数字标牌用全屏显示。支持密码认证、NG词过滤、输入长度限制
+- **人体感应检测**：通过摄像头面部检测自动检测访客。支持问候·告别语句自动播放
+- **空闲模式**：对话中断时角色自动发言。支持固定短语、按时间段问候、AI自动生成3种来源
+
+### 4. 高级对话模式
+
+- **Realtime API**：使用OpenAI的Realtime API实现低延迟对话和函数执行
+- **音频模式**：利用OpenAI的Audio API功能实现自然语音对话
+- **Reasoning模式**：显示AI的思考过程，可设置推理参数
+
+### 5. 集成·扩展
 
 - **外部集成模式**：通过WebSocket与服务器应用程序连接，实现更高级的功能
 - **幻灯片模式**：AI角色自动展示幻灯片的模式
-- **实时API**：使用OpenAI的Realtime API实现低延迟对话和函数执行
-- **音频模式**：利用OpenAI的Audio API功能实现自然语音对话
 - **消息接收功能**：通过专用API接受外部指令，让AI角色发言
 
 ## 支持的模型和服务
@@ -85,6 +95,7 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 
 - **3D模型**：VRM文件
 - **2D模型**：Live2D文件（Cubism 3及以后版本）
+- **动态PNGTuber**：基于视频的角色显示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
 
 ### 支持的LLM
 
@@ -97,8 +108,12 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 - Mistral AI
 - Perplexity
 - Fireworks
-- 本地LLM
+- LM Studio
+- Ollama
 - Dify
+- xAI
+- DeepSeek
+- OpenRouter
 
 ### 支持的语音合成引擎
 
@@ -113,7 +128,6 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 - ElevenLabs
 - OpenAI
 - Azure OpenAI
-- Niji Voice
 
 ## 快速开始
 
@@ -142,18 +156,40 @@ cd aituber-kit
 npm install
 ```
 
-4. 在开发模式下启动应用程序。
+4. 根据需要创建.env文件。
+
+```bash
+cp .env.example .env
+```
+
+5. 在开发模式下启动应用程序。
 
 ```bash
 npm run dev
 ```
 
-5. 打开URL：[http://localhost:3000](http://localhost:3000)
+6. 打开URL：[http://localhost:3000](http://localhost:3000)
 
-6. 根据需要创建.env文件。
+### 使用Docker启动
+
+1. 创建`.env`文件。
 
 ```bash
 cp .env.example .env
+```
+
+2. 使用Docker Compose启动。
+
+```bash
+docker compose up -d
+```
+
+3. 打开URL：[http://localhost:3000](http://localhost:3000)
+
+停止时：
+
+```bash
+docker compose down
 ```
 
 有关详细配置和使用说明，请访问[文档网站](https://docs.aituberkit.com/zh/)。
@@ -192,9 +228,6 @@ cp .env.example .env
   </a>
   <a href="https://github.com/coderabbitai" title="coderabbitai">
     <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
-  </a>
-  <a href="https://github.com/ai-bootcamp-tokyo" title="ai-bootcamp-tokyo">
-    <img src="https://github.com/ai-bootcamp-tokyo.png" width="40" height="40" alt="ai-bootcamp-tokyo">
   </a>
   <a href="https://github.com/wmoto-ai" title="wmoto-ai">
     <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
@@ -266,7 +299,7 @@ cp .env.example .env
     <img src="https://github.com/uwaguchi.png" width="40" height="40" alt="uwaguchi">
   </a>
   <a href="https://x.com/M1RA_A_Project" title="M1RA_A_Project">
-    <img src="https://pbs.twimg.com/profile_images/1903385253504507904/ceBSG9Wl_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
+    <img src="https://pbs.twimg.com/profile_images/2013543177253249025/AKHpzZde_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
   </a>
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
@@ -286,9 +319,29 @@ cp .env.example .env
   <a href="https://github.com/schroneko" title="schroneko">
     <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
   </a>
+  <a href="https://github.com/ParachutePenguin" title="ParachutePenguin">
+    <img src="https://github.com/ParachutePenguin.png" width="40" height="40" alt="ParachutePenguin">
+  </a>
+  <a href="https://github.com/eruma" title="eruma">
+    <img src="https://github.com/eruma.png" width="40" height="40" alt="eruma">
+  </a>
+  <a href="https://x.com/_cityside" title="_cityside">
+    <img src="https://pbs.twimg.com/profile_images/1987812690254082048/KyWdQTT4_400x400.jpg" width="40" height="40" alt="_cityside">
+  </a>
+  <a href="https://github.com/nyapan-mohy" title="nyapan-mohy">
+    <img src="https://github.com/nyapan-mohy.png" width="40" height="40" alt="nyapan-mohy">
+  </a>
 </p>
 
 此外还有多位私人赞助者
+
+## Star历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
+## 致谢
+
+本项目是基于pixiv株式会社公开的[ChatVRM](https://github.com/pixiv/ChatVRM)进行fork开发的。衷心感谢pixiv株式会社公开如此出色的开源项目。
 
 ## 贡献
 

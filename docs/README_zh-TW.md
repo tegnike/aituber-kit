@@ -2,6 +2,8 @@
 
 <img style="max-width: 100%;" src="../public/ogp.png">
 
+<p align="center"><strong>建構AI角色的一站式工具包</strong></p>
+
 **通知：本專案從版本v2.0.0開始採用自定義許可證。如果您出於商業目的使用，請查看[使用條款](#使用條款)部分。**
 
 <p align="center">
@@ -53,10 +55,6 @@ AITuberKit 是一個開源工具包，任何人都可以輕鬆構建能與 AI �
 
 有關詳細使用方法和配置說明，請訪問[文檔網站](https://docs.aituberkit.com/zh/)。
 
-## Star 歷史
-
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
-
 ## 主要功能
 
 ### 1. 與 AI 角色互動
@@ -64,19 +62,31 @@ AITuberKit 是一個開源工具包，任何人都可以輕鬆構建能與 AI �
 - 使用各種 LLM 的 API 金鑰輕鬆與 AI 角色對話
 - 支援多模態，可識別攝影機畫面和上傳的圖像生成回答
 - 保留最近的對話作為記憶
+- 基於RAG的長期記憶，將過去的對話作為上下文活用
 
 ### 2. AITuber 直播
 
 - 取得 YouTube 直播評論，AI 角色自動回應
+- 評論取得來源可選擇 YouTube API / 完コメ(OneComme)
 - 對話持續模式下即使沒有評論也能自發發言
-- 以"#"開頭的評論不會被讀取的功能
+- 支援評論取得間隔和使用者顯示名稱的自訂
 
-### 3. 其他功能
+### 3. 展示終端·數位看板
+
+- **展示終端模式**：數位看板用全螢幕顯示。支援密碼驗證、NG詞過濾、輸入長度限制
+- **人體感應偵測**：透過攝影機臉部偵測自動偵測訪客。支援問候·告別語句自動播放
+- **閒置模式**：對話中斷時角色自動發言。支援固定短語、按時段問候、AI自動生成3種來源
+
+### 4. 進階對話模式
+
+- **Realtime API**：使用 OpenAI 的 Realtime API 實現低延遲對話和函數執行
+- **音訊模式**：利用 OpenAI 的 Audio API 功能實現自然語音對話
+- **Reasoning 模式**：顯示AI的思考過程，可設定推理參數
+
+### 5. 整合·擴展
 
 - **外部整合模式**：透過 WebSocket 與伺服器應用程式連接，實現更進階的功能
 - **幻燈片模式**：AI 角色自動展示幻燈片的模式
-- **即時 API**：使用 OpenAI 的 Realtime API 實現低延遲對話和函數執行
-- **音訊模式**：利用 OpenAI 的 Audio API 功能實現自然語音對話
 - **訊息接收功能**：透過專用 API 接受外部指令，讓 AI 角色發言
 
 ## 支援的模型與服務
@@ -85,6 +95,7 @@ AITuberKit 是一個開源工具包，任何人都可以輕鬆構建能與 AI �
 
 - **3D 模型**：VRM 檔案
 - **2D 模型**：Live2D 檔案（Cubism 3 及以後版本）
+- **動態 PNGTuber**：基於影片的角色顯示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
 
 ### 支援的 LLM
 
@@ -97,8 +108,12 @@ AITuberKit 是一個開源工具包，任何人都可以輕鬆構建能與 AI �
 - Mistral AI
 - Perplexity
 - Fireworks
-- 本地 LLM
+- LM Studio
+- Ollama
 - Dify
+- xAI
+- DeepSeek
+- OpenRouter
 
 ### 支援的語音合成引擎
 
@@ -113,7 +128,6 @@ AITuberKit 是一個開源工具包，任何人都可以輕鬆構建能與 AI �
 - ElevenLabs
 - OpenAI
 - Azure OpenAI
-- Niji Voice
 
 ## 快速開始
 
@@ -142,18 +156,40 @@ cd aituber-kit
 npm install
 ```
 
-4.  在開發模式下啟動應用程式。
+4.  根據需要建立 .env 檔案。
+
+```bash
+cp .env.example .env
+```
+
+5.  在開發模式下啟動應用程式。
 
 ```bash
 npm run dev
 ```
 
-5.  開啟網址：[http://localhost:3000](http://localhost:3000)
+6.  開啟網址：[http://localhost:3000](http://localhost:3000)
 
-6.  根據需要建立 .env 檔案。
+### 使用 Docker 啟動
+
+1. 建立 `.env` 檔案。
 
 ```bash
 cp .env.example .env
+```
+
+2. 使用 Docker Compose 啟動。
+
+```bash
+docker compose up -d
+```
+
+3. 開啟網址：[http://localhost:3000](http://localhost:3000)
+
+停止時：
+
+```bash
+docker compose down
 ```
 
 有關詳細配置和使用說明，請訪問[文件網站](https://docs.aituberkit.com/zh/)。
@@ -192,9 +228,6 @@ cp .env.example .env
   </a>
   <a href="https://github.com/coderabbitai" title="coderabbitai">
     <img src="https://github.com/coderabbitai.png" width="40" height="40" alt="coderabbitai">
-  </a>
-  <a href="https://github.com/ai-bootcamp-tokyo" title="ai-bootcamp-tokyo">
-    <img src="https://github.com/ai-bootcamp-tokyo.png" width="40" height="40" alt="ai-bootcamp-tokyo">
   </a>
   <a href="https://github.com/wmoto-ai" title="wmoto-ai">
     <img src="https://github.com/wmoto-ai.png" width="40" height="40" alt="wmoto-ai">
@@ -266,7 +299,7 @@ cp .env.example .env
     <img src="https://github.com/uwaguchi.png" width="40" height="40" alt="uwaguchi">
   </a>
   <a href="https://x.com/M1RA_A_Project" title="M1RA_A_Project">
-    <img src="https://pbs.twimg.com/profile_images/1903385253504507904/ceBSG9Wl_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
+    <img src="https://pbs.twimg.com/profile_images/2013543177253249025/AKHpzZde_400x400.jpg" width="40" height="40" alt="M1RA_A_Project">
   </a>
   <a href="https://github.com/teruPP" title="teruPP">
     <img src="https://github.com/teruPP.png" width="40" height="40" alt="teruPP">
@@ -286,9 +319,29 @@ cp .env.example .env
   <a href="https://github.com/schroneko" title="schroneko">
     <img src="https://github.com/schroneko.png" width="40" height="40" alt="schroneko">
   </a>
+  <a href="https://github.com/ParachutePenguin" title="ParachutePenguin">
+    <img src="https://github.com/ParachutePenguin.png" width="40" height="40" alt="ParachutePenguin">
+  </a>
+  <a href="https://github.com/eruma" title="eruma">
+    <img src="https://github.com/eruma.png" width="40" height="40" alt="eruma">
+  </a>
+  <a href="https://x.com/_cityside" title="_cityside">
+    <img src="https://pbs.twimg.com/profile_images/1987812690254082048/KyWdQTT4_400x400.jpg" width="40" height="40" alt="_cityside">
+  </a>
+  <a href="https://github.com/nyapan-mohy" title="nyapan-mohy">
+    <img src="https://github.com/nyapan-mohy.png" width="40" height="40" alt="nyapan-mohy">
+  </a>
 </p>
 
 此外還有多位私人贊助者
+
+## Star 歷史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+
+## 致謝
+
+本專案是基於 pixiv 株式會社公開的 [ChatVRM](https://github.com/pixiv/ChatVRM) 進行 fork 開發的。衷心感謝 pixiv 株式會社公開如此出色的開源專案。
 
 ## 貢獻
 
