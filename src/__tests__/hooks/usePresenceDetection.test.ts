@@ -10,7 +10,7 @@ import homeStore from '@/features/stores/home'
 // Mock face-api.js - detectSingleFace returns a Promise that resolves to detection result
 const mockDetectSingleFace = jest.fn()
 jest.mock(
-  'face-api.js',
+  '@vladmandic/face-api',
   () => ({
     nets: {
       tinyFaceDetector: {
@@ -155,7 +155,7 @@ describe('usePresenceDetection - Task 3.1: カメラストリーム取得とモ�
 
   describe('face-api.jsのTinyFaceDetectorモデルをロードする', () => {
     it('startDetection呼び出し時にモデルがロードされる', async () => {
-      const faceapi = jest.requireMock('face-api.js')
+      const faceapi = jest.requireMock('@vladmandic/face-api')
       const { result } = renderHook(() => usePresenceDetection({}))
 
       await act(async () => {
@@ -208,7 +208,7 @@ describe('usePresenceDetection - Task 3.1: カメラストリーム取得とモ�
 
   describe('モデルロード失敗時のエラーハンドリング', () => {
     it('モデルロード失敗時にMODEL_LOAD_FAILEDエラーが設定される', async () => {
-      const faceapi = jest.requireMock('face-api.js')
+      const faceapi = jest.requireMock('@vladmandic/face-api')
       faceapi.nets.tinyFaceDetector.loadFromUri.mockRejectedValueOnce(
         new Error('Model load failed')
       )
