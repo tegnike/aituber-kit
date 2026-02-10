@@ -21,8 +21,6 @@ export class Viewer {
   private _cameraControls?: OrbitControls
   private _directionalLight?: THREE.DirectionalLight
   private _ambientLight?: THREE.AmbientLight
-  private _animationFrameId: number | null = null
-  private _resizeHandler: (() => void) | null = null
 
   constructor() {
     this.isReady = false
@@ -89,11 +87,6 @@ export class Viewer {
    * Reactで管理しているCanvasを後から設定する
    */
   public setup(canvas: HTMLCanvasElement) {
-    // 既存のレンダラーがあれば先にクリーンアップ
-    if (this._renderer) {
-      this.dispose()
-    }
-
     const parentElement = canvas.parentElement
     const width = parentElement?.clientWidth || canvas.width
     const height = parentElement?.clientHeight || canvas.height
@@ -126,10 +119,9 @@ export class Viewer {
       }
     })
 
-    this._resizeHandler = () => {
+    window.addEventListener('resize', () => {
       this.resize()
-    }
-    window.addEventListener('resize', this._resizeHandler)
+    })
     this.isReady = true
     this.update()
 
@@ -183,7 +175,7 @@ export class Viewer {
   }
 
   public update = () => {
-    this._animationFrameId = requestAnimationFrame(this.update)
+    requestAnimationFrame(this.update)
     const delta = this._clock.getDelta()
     // update vrm components
     if (this.model) {
@@ -280,41 +272,6 @@ export class Viewer {
       this._cameraControls.enabled = true
     }
     this.resetCamera()
-  }
-
-  /**
-   * リソースを解放する（モデル切り替え時に呼ばれる）
-   */
-  public dispose() {
-    // アニメーションループを停止
-    if (this._animationFrameId !== null) {
-      cancelAnimationFrame(this._animationFrameId)
-      this._animationFrameId = null
-    }
-
-    // VRMモデルをアンロード
-    this.unloadVRM()
-
-    // OrbitControlsを破棄
-    if (this._cameraControls) {
-      this._cameraControls.dispose()
-      this._cameraControls = undefined
-    }
-
-    // WebGLレンダラーを破棄（WebGLコンテキストを解放）
-    if (this._renderer) {
-      this._renderer.dispose()
-      this._renderer = undefined
-    }
-
-    // リサイズリスナーを削除
-    if (this._resizeHandler) {
-      window.removeEventListener('resize', this._resizeHandler)
-      this._resizeHandler = null
-    }
-
-    this._camera = undefined
-    this.isReady = false
   }
 
   /**
