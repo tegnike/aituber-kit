@@ -8,6 +8,7 @@ import settingsStore, { SettingsState } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
+import { useLive2DEnabled } from '@/hooks/useLive2DEnabled'
 
 // Character型の定義
 type Character = Pick<
@@ -342,6 +343,7 @@ const Live2DSettingsForm = () => {
 
 const Character = () => {
   const { t, i18n } = useTranslation()
+  const { isLive2DEnabled } = useLive2DEnabled()
   const {
     characterName,
     selectedVrmPath,
@@ -468,12 +470,14 @@ const Character = () => {
         console.error('Error fetching VRM list:', error)
       })
 
-    fetch('/api/get-live2d-list')
-      .then((res) => res.json())
-      .then((models) => setLive2dModels(models))
-      .catch((error) => {
-        console.error('Error fetching Live2D list:', error)
-      })
+    if (isLive2DEnabled) {
+      fetch('/api/get-live2d-list')
+        .then((res) => res.json())
+        .then((models) => setLive2dModels(models))
+        .catch((error) => {
+          console.error('Error fetching Live2D list:', error)
+        })
+    }
 
     fetch('/api/get-pngtuber-list')
       .then((res) => res.json())
@@ -600,16 +604,18 @@ const Character = () => {
           >
             VRM
           </button>
-          <button
-            className={`px-4 py-2 rounded-lg mr-2 ${
-              modelType === 'live2d'
-                ? 'bg-primary text-theme'
-                : 'bg-white hover:bg-white-hover'
-            }`}
-            onClick={() => settingsStore.setState({ modelType: 'live2d' })}
-          >
-            Live2D
-          </button>
+          {isLive2DEnabled && (
+            <button
+              className={`px-4 py-2 rounded-lg mr-2 ${
+                modelType === 'live2d'
+                  ? 'bg-primary text-theme'
+                  : 'bg-white hover:bg-white-hover'
+              }`}
+              onClick={() => settingsStore.setState({ modelType: 'live2d' })}
+            >
+              Live2D
+            </button>
+          )}
           <button
             className={`px-4 py-2 rounded-lg ${
               modelType === 'pngtuber'
@@ -663,7 +669,7 @@ const Character = () => {
           </>
         )}
 
-        {modelType === 'live2d' && (
+        {modelType === 'live2d' && isLive2DEnabled && (
           <>
             <div className="my-2 text-sm whitespace-pre-wrap">
               {t('Live2D.FileInfo')}

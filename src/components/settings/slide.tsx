@@ -25,14 +25,12 @@ const Slide = () => {
   const [updateKey, setUpdateKey] = useState(0)
 
   useEffect(() => {
-    if (slideMode) {
-      // フォルダリストを取得
-      fetch('/api/getSlideFolders')
-        .then((response) => response.json())
-        .then((data) => setSlideFolders(data))
-        .catch((error) => console.error('Error fetching slide folders:', error))
-    }
-  }, [slideMode, updateKey])
+    // フォルダリストを取得
+    fetch('/api/getSlideFolders')
+      .then((response) => response.json())
+      .then((data) => setSlideFolders(data))
+      .catch((error) => console.error('Error fetching slide folders:', error))
+  }, [updateKey])
 
   const handleFolderUpdate = () => {
     setUpdateKey((prevKey) => prevKey + 1) // 更新トリガー
@@ -81,60 +79,56 @@ const Slide = () => {
           }
         />
       </div>
-      {slideMode && (
-        <>
-          <div className="mt-6 mb-4 text-xl font-bold">
-            {t('SelectedSlideDocs')}
-          </div>
-          {/* プルダウンと編集ボタンを横並びにする */}
-          <div className="flex items-center gap-2">
-            <select
-              id="folder-select"
-              className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
-              value={selectedSlideDocs || ''}
-              onChange={handleFolderChange}
-              key={updateKey}
+      <div className="mt-6 mb-4 text-xl font-bold">
+        {t('SelectedSlideDocs')}
+      </div>
+      {/* プルダウンと編集ボタンを横並びにする */}
+      <div className="flex items-center gap-2">
+        <select
+          id="folder-select"
+          className="px-4 py-2 bg-white hover:bg-white-hover rounded-lg w-full md:w-1/2"
+          value={selectedSlideDocs || ''}
+          onChange={handleFolderChange}
+          key={updateKey}
+        >
+          <option value="">{t('PleaseSelectSlide')}</option>
+          {slideFolders.map((folder) => (
+            <option key={folder} value={folder}>
+              {folder}
+            </option>
+          ))}
+        </select>
+        {/* 編集ページへのリンクボタン */}
+        {selectedSlideDocs && ( // スライドが選択されている場合のみ表示
+          <Link
+            href={`/slide-editor/${selectedSlideDocs}`}
+            passHref
+            legacyBehavior
+          >
+            <a
+              target="_blank" // 新しいタブで開く
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl text-theme font-bold transition-colors duration-200 whitespace-nowrap"
             >
-              <option value="">{t('PleaseSelectSlide')}</option>
-              {slideFolders.map((folder) => (
-                <option key={folder} value={folder}>
-                  {folder}
-                </option>
-              ))}
-            </select>
-            {/* 編集ページへのリンクボタン */}
-            {selectedSlideDocs && ( // スライドが選択されている場合のみ表示
-              <Link
-                href={`/slide-editor/${selectedSlideDocs}`}
-                passHref
-                legacyBehavior
-              >
-                <a
-                  target="_blank" // 新しいタブで開く
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-3 py-2 text-sm bg-primary hover:bg-primary-hover rounded-3xl text-theme font-bold transition-colors duration-200 whitespace-nowrap"
-                >
-                  {t('EditSlideScripts')}
-                  <Image
-                    src="/images/icons/external-link.svg"
-                    alt="open in new tab"
-                    width={16}
-                    height={16}
-                    className="ml-1"
-                  />
-                </a>
-              </Link>
-            )}
-          </div>
-          {isMultiModalAvailable(
-            selectAIService,
-            selectAIModel,
-            enableMultiModal,
-            multiModalMode,
-            customModel
-          ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
-        </>
-      )}
+              {t('EditSlideScripts')}
+              <Image
+                src="/images/icons/external-link.svg"
+                alt="open in new tab"
+                width={16}
+                height={16}
+                className="ml-1"
+              />
+            </a>
+          </Link>
+        )}
+      </div>
+      {isMultiModalAvailable(
+        selectAIService,
+        selectAIModel,
+        enableMultiModal,
+        multiModalMode,
+        customModel
+      ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
     </>
   )
 }

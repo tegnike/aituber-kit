@@ -187,6 +187,12 @@ export function useBrowserSpeechRecognition(
     }
     isStartingRef.current = true
 
+    // 保留中の再起動タイマーをキャンセル (onendハンドラとの競合状態防止)
+    if (restartTimeoutRef.current) {
+      clearTimeout(restartTimeoutRef.current)
+      restartTimeoutRef.current = null
+    }
+
     try {
       const hasPermission = await checkMicrophonePermission()
       if (!hasPermission) {
@@ -235,6 +241,25 @@ export function useBrowserSpeechRecognition(
       setUserMessage('')
 
       try {
+        // 音声認識がまだ動作中の場合は、onendを待つ
+        if (recognitionActiveRef.current) {
+          console.log('Recognition still active, waiting for onend...')
+          await new Promise<void>((resolve) => {
+            let timeoutId: NodeJS.Timeout
+            const onEndHandler = () => {
+              clearTimeout(timeoutId)
+              recognition.removeEventListener('end', onEndHandler)
+              resolve()
+            }
+            timeoutId = setTimeout(() => {
+              recognition.removeEventListener('end', onEndHandler)
+              console.log('Recognition active wait timeout, forcing resolve')
+              resolve()
+            }, 500)
+            recognition.addEventListener('end', onEndHandler)
+          })
+        }
+
         recognition.start()
         console.log('Recognition started successfully')
         // リスニング状態を更新
@@ -475,61 +500,23 @@ export function useBrowserSpeechRecognition(
           }
         }
 
-        // 音声が既に検出されている場合、または初期タイムアウトに達していない場合は再起動
-        console.log(
-          'No speech detected, automatically restarting recognition...'
-        )
-
-        // 少し遅延を入れてから再起動
-        setTimeout(() => {
-          if (
-            isListeningRef.current &&
-            !homeStore.getState().chatProcessing &&
-            // 常時マイクモードがオンの場合のみ再起動
-            (settingsStore.getState().continuousMicListeningMode ||
-              isKeyboardTriggered.current)
-          ) {
-            try {
-              // 明示的に停止してから再開
-              try {
-                newRecognition.stop()
-                // 少し待ってから再開
-                setTimeout(() => {
-                  newRecognition.start()
-                  console.log(
-                    'Recognition automatically restarted after no-speech timeout'
-                  )
-                }, 100)
-              } catch (stopError) {
-                // stop()でエラーが出た場合は直接start()を試みる
-                newRecognition.start()
-                console.log(
-                  'Recognition automatically restarted without stopping'
-                )
-              }
-            } catch (restartError) {
-              console.error(
-                'Failed to restart recognition after no-speech:',
-                restartError
-              )
-              isListeningRef.current = false
-              setIsListening(false)
-            }
-          } else {
-            console.log(
-              '音声認識の再起動をスキップします（常時マイクモードがオフまたは他の条件を満たさない）'
-            )
-            console.log('isListeningRef.current', isListeningRef.current)
-            console.log(
-              '!homeStore.getState().isSpeaking',
-              !homeStore.getState().isSpeaking
-            )
-            console.log(
-              '!homeStore.getState().chatProcessing',
-              !homeStore.getState().chatProcessing
-            )
-          }
-        }, 2000)
+        // 音声が既に検出されている場合、または初期タイムアウトに達していない場合は
+        // onendハンドラに再起動を委ねる（直接start()を呼ぶと競合状態が発生するため）
+        if (
+          isListeningRef.current &&
+          !homeStore.getState().chatProcessing &&
+          (settingsStore.getState().continuousMicListeningMode ||
+            isKeyboardTriggered.current)
+        ) {
+          console.log('No speech detected, will restart via onend handler...')
+          // onendハンドラが自動的に再起動する
+        } else {
+          console.log(
+            '音声認識の再起動をスキップします（常時マイクモードがオフまたは他の条件を満たさない）'
+          )
+          isListeningRef.current = false
+          setIsListening(false)
+        }
       } else {
         // その他のエラーの場合は通常の終了処理
         clearSilenceDetection()

@@ -1,5 +1,5 @@
-# ベースイメージとしてNode.js 20を使用
-FROM node:20
+# ベースイメージとしてNode.js 24を使用
+FROM node:24
 
 # 必要なシステムライブラリをインストール
 RUN apt-get update && apt-get install -y \
