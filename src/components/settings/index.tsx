@@ -316,7 +316,7 @@ const Main = () => {
 const Footer = () => {
   return (
     <footer className="absolute py-1 bg-[#413D43] text-center text-theme font-Montserrat bottom-0 w-full">
-      powered by ChatVRM from Pixiv / ver. 2.38.0
+      powered by ChatVRM from Pixiv / ver. 2.40.0
     </footer>
   )
 }
