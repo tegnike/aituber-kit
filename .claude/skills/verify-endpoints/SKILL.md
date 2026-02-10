@@ -45,7 +45,7 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ --max-time 5
 | Fireworks    | `FIREWORKS_API_KEY`                      |
 | DeepSeek     | `DEEPSEEK_API_KEY`                       |
 | OpenRouter   | `OPENROUTER_API_KEY`                     |
-| Dify         | `DIFY_API_KEY` + `DIFY_URL`             |
+| Dify         | `DIFY_API_KEY` + `DIFY_URL`              |
 | OpenAI TTS   | `OPENAI_TTS_KEY` または `OPENAI_API_KEY` |
 | Azure TTS    | `AZURE_TTS_KEY` + `AZURE_TTS_ENDPOINT`   |
 | ElevenLabs   | `ELEVENLABS_API_KEY`                     |
@@ -80,20 +80,20 @@ curl -s -w "\n%{http_code}" -X POST http://localhost:3000/api/ai/vercel/ \
 
 #### 各プロバイダーのデフォルトモデル
 
-| サービス名 | aiService    | デフォルトモデル                                     |
-| ---------- | ------------ | ---------------------------------------------------- |
-| OpenAI     | `openai`     | `gpt-4.1-mini`                                       |
-| Anthropic  | `anthropic`  | `claude-sonnet-4-5`                                  |
-| Google     | `google`     | `gemini-2.5-flash`                                   |
-| Azure      | `azure`      | ※ endpointのdeployment名を使用                       |
-| xAI        | `xai`        | `grok-4`                                             |
-| Groq       | `groq`       | `llama-3.3-70b-versatile`                            |
-| Cohere     | `cohere`     | `command-a-03-2025`                                  |
-| Mistral AI | `mistralai`  | `mistral-large-latest`                               |
-| Perplexity | `perplexity` | `sonar-pro`                                          |
-| Fireworks  | `fireworks`  | `accounts/fireworks/models/llama-v3p3-70b-instruct`  |
-| DeepSeek   | `deepseek`   | `deepseek-chat`                                      |
-| OpenRouter | `openrouter` | `openai/gpt-4.1-mini`                                |
+| サービス名 | aiService    | デフォルトモデル                                    |
+| ---------- | ------------ | --------------------------------------------------- |
+| OpenAI     | `openai`     | `gpt-4.1-mini`                                      |
+| Anthropic  | `anthropic`  | `claude-sonnet-4-5`                                 |
+| Google     | `google`     | `gemini-2.5-flash`                                  |
+| Azure      | `azure`      | ※ endpointのdeployment名を使用                      |
+| xAI        | `xai`        | `grok-4`                                            |
+| Groq       | `groq`       | `llama-3.3-70b-versatile`                           |
+| Cohere     | `cohere`     | `command-a-03-2025`                                 |
+| Mistral AI | `mistralai`  | `mistral-large-latest`                              |
+| Perplexity | `perplexity` | `sonar-pro`                                         |
+| Fireworks  | `fireworks`  | `accounts/fireworks/models/llama-v3p3-70b-instruct` |
+| DeepSeek   | `deepseek`   | `deepseek-chat`                                     |
+| OpenRouter | `openrouter` | `openai/gpt-4.1-mini`                               |
 
 **判定基準：**
 
@@ -481,21 +481,21 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:1234/v1/models --max-tim
 
 ## AIチャットエンドポイント（ストリーミング）
 
-| プロバイダー | モデル            | ステータス  | 詳細                     |
-| ------------ | ----------------- | ----------- | ------------------------ |
-| OpenAI       | gpt-4.1-mini      | ✅ 成功     | text-delta イベント確認  |
-| Anthropic    | claude-sonnet-4-5 | ✅ 成功     | text-delta イベント確認  |
-| Google       | gemini-2.5-flash  | ❌ 失敗     | ストリームが空           |
-| ...          | ...               | ...         | ...                      |
+| プロバイダー | モデル            | ステータス | 詳細                    |
+| ------------ | ----------------- | ---------- | ----------------------- |
+| OpenAI       | gpt-4.1-mini      | ✅ 成功    | text-delta イベント確認 |
+| Anthropic    | claude-sonnet-4-5 | ✅ 成功    | text-delta イベント確認 |
+| Google       | gemini-2.5-flash  | ❌ 失敗    | ストリームが空          |
+| ...          | ...               | ...        | ...                     |
 
 ## Reasoningストリーミング
 
-| プロバイダー | モデル                    | ステータス  | reasoning-delta数 | 詳細                    |
-| ------------ | ------------------------- | ----------- | ----------------- | ----------------------- |
-| OpenAI       | o4-mini                   | ✅ 成功     | 45                | reasoning-delta確認済み |
-| Anthropic    | claude-3-7-sonnet-latest  | ✅ 成功     | 12                | reasoning-delta確認済み |
-| Google       | gemini-2.5-flash          | ❌ 失敗     | 0                 | reasoning-delta未検出   |
-| ...          | ...                       | ...         | ...               | ...                     |
+| プロバイダー | モデル                   | ステータス | reasoning-delta数 | 詳細                    |
+| ------------ | ------------------------ | ---------- | ----------------- | ----------------------- |
+| OpenAI       | o4-mini                  | ✅ 成功    | 45                | reasoning-delta確認済み |
+| Anthropic    | claude-3-7-sonnet-latest | ✅ 成功    | 12                | reasoning-delta確認済み |
+| Google       | gemini-2.5-flash         | ❌ 失敗    | 0                 | reasoning-delta未検出   |
+| ...          | ...                      | ...        | ...               | ...                     |
 
 ## TTSエンドポイント
 
@@ -517,10 +517,10 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:1234/v1/models --max-tim
 
 ## その他
 
-| エンドポイント | ステータス  | 詳細                         |
-| -------------- | ----------- | ---------------------------- |
-| Embedding      | ✅ 成功     | 200 OK                       |
-| Custom API     | ⏭️ スキップ | 外部URL未指定のためスキップ   |
+| エンドポイント | ステータス  | 詳細                        |
+| -------------- | ----------- | --------------------------- |
+| Embedding      | ✅ 成功     | 200 OK                      |
+| Custom API     | ⏭️ スキップ | 外部URL未指定のためスキップ |
 
 ## エラー詳細
 

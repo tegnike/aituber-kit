@@ -91,6 +91,8 @@ export interface DisabledConditions {
   speechRecognitionModeSwitcher: boolean
   voiceSettings: boolean
   temperatureMaxTokens: boolean
+  idleModeEnabled: boolean
+  presenceDetectionEnabled: boolean
 }
 
 export function computeDisabledConditions(
@@ -111,5 +113,15 @@ export function computeDisabledConditions(
     speechRecognitionModeSwitcher: state.realtimeAPIMode || state.audioMode,
     voiceSettings: state.realtimeAPIMode || state.audioMode,
     temperatureMaxTokens: state.realtimeAPIMode || state.audioMode,
+    idleModeEnabled:
+      state.realtimeAPIMode ||
+      state.audioMode ||
+      state.externalLinkageMode ||
+      state.slideMode,
+    presenceDetectionEnabled:
+      state.realtimeAPIMode ||
+      state.audioMode ||
+      state.externalLinkageMode ||
+      state.slideMode,
   }
 }

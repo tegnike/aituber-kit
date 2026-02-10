@@ -1,114 +1,200 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
-  <!-- 背景 -->
-  <rect width="900" height="765" fill="#f8f9fa"/>
-  
-  <!-- タイトル -->
-  <text x="450" y="60" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#333">AITuberKit</text>
-  
-  <!-- Core Processing Flow -->
-  <rect x="30" y="100" width="840" height="140" rx="10" ry="10" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
-  <text x="450" y="125" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1565c0">Core Processing Flow</text>
-  
-  <!-- Elements in Core Processing Flow -->
-  <rect x="70" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
-  <text x="130" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Input</text>
-  <text x="130" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Text/Voice</text>
-  
-  <rect x="230" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
-  <text x="290" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">AI Processing</text>
-  <text x="290" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">LLM Service</text>
-  
-  <rect x="390" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
-
-  <text x="450" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Stream Processing</text>
-  <text x="450" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Response Analysis</text>
-  <text x="450" y="205" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Optimization</text>
-  
-  <rect x="550" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
-  <text x="610" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Voice Synthesis</text>
-  <text x="610" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">TTS</text>
-  
-  <rect x="710" y="140" width="120" height="70" rx="5" ry="5" fill="#bbdefb" stroke="#64b5f6" stroke-width="1.5"/>
-  <text x="770" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Output</text>
-  <text x="770" y="185" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Motion/Speech</text>
-
-  <!-- Arrows -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 790">
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L9,3 z" fill="#2196f3"/>
     </marker>
   </defs>
-  
-  <line x1="190" y1="175" x2="220" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="350" y1="175" x2="380" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="510" y1="175" x2="540" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="670" y1="175" x2="700" y2="175" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
-  
-  <!-- AI Services -->
-  <rect x="30" y="280" width="260" height="190" rx="10" ry="10" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
-  <text x="160" y="305" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#2e7d32">AI Services</text>
-  
-  <text x="50" y="330" font-family="Arial, sans-serif" font-size="14" fill="#333">OpenAI (GPT-4o, etc.)</text>
-  <text x="50" y="355" font-family="Arial, sans-serif" font-size="14" fill="#333">Anthropic Claude</text>
-  <text x="50" y="380" font-family="Arial, sans-serif" font-size="14" fill="#333">Google Gemini</text>
-  <text x="50" y="405" font-family="Arial, sans-serif" font-size="14" fill="#333">Azure OpenAI</text>
-  <text x="50" y="455" font-family="Arial, sans-serif" font-size="14" fill="#333">Local LLM (Ollama, etc.)</text>
-  <text x="50" y="430" font-family="Arial, sans-serif" font-size="14" fill="#333">Others (Groq, Cohere, etc.)</text>
-  
-  <!-- Character Models -->
-  <rect x="320" y="280" width="260" height="190" rx="10" ry="10" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
-  <text x="450" y="305" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#e65100">Character Models</text>
-  
-  <rect x="340" y="325" width="100" height="125" rx="5" ry="5" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1.5"/>
-  <text x="390" y="345" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">VRM</text>
-  <text x="390" y="370" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">3D Models</text>
-  <text x="390" y="390" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">VRM 0.0/1.0</text>
-  <text x="390" y="410" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Position</text>
-  <text x="390" y="430" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Lip Sync</text>
-  
-  <rect x="460" y="325" width="100" height="125" rx="5" ry="5" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1.5"/>
-  <text x="510" y="345" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Live2D</text>
-  <text x="510" y="370" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">2D Models</text>
-  <text x="510" y="390" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Cubism 3+</text>
-  <text x="510" y="410" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Expression</text>
-  <text x="510" y="430" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Motion</text>
-  
-  <!-- Voice Synthesis Engines -->
-  <rect x="610" y="280" width="260" height="190" rx="10" ry="10" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2"/>
-  <text x="740" y="305" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#6a1b9a">Voice Synthesis Engines</text>
-  
-  <text x="630" y="330" font-family="Arial, sans-serif" font-size="14" fill="#333">VOICEVOX</text>
-  <text x="630" y="355" font-family="Arial, sans-serif" font-size="14" fill="#333">Koeiromap</text>
-  <text x="630" y="380" font-family="Arial, sans-serif" font-size="14" fill="#333">Google Text-to-Speech</text>
-  <text x="630" y="405" font-family="Arial, sans-serif" font-size="14" fill="#333">OpenAI/Azure TTS</text>
-  <text x="630" y="430" font-family="Arial, sans-serif" font-size="14" fill="#333">ElevenLabs</text>
-  <text x="630" y="455" font-family="Arial, sans-serif" font-size="14" fill="#333">Others (Style-Bert-VITS2, etc.)</text>
-  
-  <!-- Extension Modes -->
-  <rect x="30" y="510" width="840" height="160" rx="10" ry="10" fill="#e1f5fe" stroke="#00bcd4" stroke-width="2"/>
-  <text x="450" y="535" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#0277bd">Extension Modes</text>
-  
-  <rect x="50" y="550" width="180" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
-  <text x="140" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Youtube Mode</text>
-  <text x="140" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Live Stream Comment Retrieval</text>
-  <text x="140" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Conversation Continuation</text>
-  <text x="140" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Comment Filtering</text>
-  
-  <rect x="250" y="550" width="180" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
-  <text x="340" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">External Integration Mode</text>
-  <text x="340" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">WebSocket Communication</text>
-  <text x="340" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">External App Integration</text>
-  <text x="340" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Custom Emotion Control</text>
-  
-  <rect x="450" y="550" width="180" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
-  <text x="540" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Slide Mode</text>
-  <text x="540" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Automatic Slide Presentation</text>
-  <text x="540" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">PDF Conversion</text>
-  <text x="540" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">QA Function</text>
-  
-  <rect x="650" y="550" width="200" height="100" rx="5" ry="5" fill="#b3e5fc" stroke="#4fc3f7" stroke-width="1.5"/>
-  <text x="750" y="570" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Realtime API Mode</text>
-  <text x="750" y="595" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Low Latency via WebSocket</text>
-  <text x="750" y="615" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Function Execution</text>
-  <text x="750" y="635" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">OpenAI/Azure Support</text>
+
+  <!-- Background -->
+  <rect width="960" height="790" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="480" y="38" font-family="Arial, sans-serif" font-size="26" font-weight="bold" text-anchor="middle" fill="#1a1a2e">AITuberKit</text>
+  <text x="480" y="62" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#888">— System Architecture Overview —</text>
+  <line x1="350" y1="72" x2="610" y2="72" stroke="#2196f3" stroke-width="2" stroke-opacity="0.3"/>
+
+  <!-- ===== Core Processing Flow ===== -->
+  <rect x="30" y="90" width="900" height="155" rx="12" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
+  <text x="480" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#1565c0">Core Processing Flow</text>
+
+  <!-- Box 1: Input -->
+  <rect x="70" y="125" width="140" height="80" rx="8" fill="white" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="140" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Input</text>
+  <text x="140" y="170" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Text / Voice</text>
+  <text x="140" y="188" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Camera / Image</text>
+
+  <!-- Box 2: AI Processing -->
+  <rect x="240" y="125" width="140" height="80" rx="8" fill="white" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="310" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">AI Processing</text>
+  <text x="310" y="170" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">LLM Response</text>
+  <text x="310" y="188" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Multi-modal Support</text>
+
+  <!-- Box 3: Response Processing -->
+  <rect x="410" y="125" width="140" height="80" rx="8" fill="white" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="480" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Response</text>
+  <text x="480" y="170" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Stream Analysis</text>
+  <text x="480" y="188" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Emotion Extraction</text>
+
+  <!-- Box 4: Voice Synthesis -->
+  <rect x="580" y="125" width="140" height="80" rx="8" fill="white" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="650" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Voice Synthesis</text>
+  <text x="650" y="170" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">TTS Conversion</text>
+  <text x="650" y="188" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Lip Sync</text>
+
+  <!-- Box 5: Character Output -->
+  <rect x="750" y="125" width="140" height="80" rx="8" fill="white" stroke="#64b5f6" stroke-width="1.5"/>
+  <text x="820" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#333">Character Output</text>
+  <text x="820" y="170" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Expression / Motion</text>
+  <text x="820" y="188" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">VRM / Live2D / PNG</text>
+
+  <!-- Flow Arrows -->
+  <line x1="210" y1="165" x2="230" y2="165" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="380" y1="165" x2="400" y2="165" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="550" y1="165" x2="570" y2="165" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="720" y1="165" x2="740" y2="165" stroke="#2196f3" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ===== AI Services ===== -->
+  <rect x="30" y="265" width="290" height="190" rx="12" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+  <text x="108" y="290" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#2e7d32">AI Services</text>
+  <rect x="175" y="276" width="70" height="20" rx="10" fill="#4caf50"/>
+  <text x="210" y="290" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">16 providers</text>
+
+  <circle cx="50" cy="311" r="3" fill="#66bb6a"/>
+  <text x="62" y="315" font-family="Arial, sans-serif" font-size="13" fill="#333">OpenAI</text>
+  <circle cx="50" cy="335" r="3" fill="#66bb6a"/>
+  <text x="62" y="339" font-family="Arial, sans-serif" font-size="13" fill="#333">Anthropic</text>
+  <circle cx="50" cy="359" r="3" fill="#66bb6a"/>
+  <text x="62" y="363" font-family="Arial, sans-serif" font-size="13" fill="#333">Google Gemini</text>
+  <circle cx="50" cy="383" r="3" fill="#66bb6a"/>
+  <text x="62" y="387" font-family="Arial, sans-serif" font-size="13" fill="#333">DeepSeek</text>
+  <circle cx="50" cy="407" r="3" fill="#66bb6a"/>
+  <text x="62" y="411" font-family="Arial, sans-serif" font-size="13" fill="#333">Azure OpenAI</text>
+  <text x="62" y="440" font-family="Arial, sans-serif" font-size="12" font-style="italic" fill="#888">and 11 more...</text>
+
+  <!-- ===== Voice Synthesis Engines ===== -->
+  <rect x="335" y="265" width="270" height="190" rx="12" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2"/>
+  <text x="418" y="290" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#6a1b9a">TTS Engines</text>
+  <rect x="488" y="276" width="65" height="20" rx="10" fill="#9c27b0"/>
+  <text x="520" y="290" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="white">11 engines</text>
+
+  <circle cx="355" cy="311" r="3" fill="#ab47bc"/>
+  <text x="367" y="315" font-family="Arial, sans-serif" font-size="13" fill="#333">VOICEVOX</text>
+  <circle cx="355" cy="335" r="3" fill="#ab47bc"/>
+  <text x="367" y="339" font-family="Arial, sans-serif" font-size="13" fill="#333">AivisSpeech</text>
+  <circle cx="355" cy="359" r="3" fill="#ab47bc"/>
+  <text x="367" y="363" font-family="Arial, sans-serif" font-size="13" fill="#333">ElevenLabs</text>
+  <circle cx="355" cy="383" r="3" fill="#ab47bc"/>
+  <text x="367" y="387" font-family="Arial, sans-serif" font-size="13" fill="#333">OpenAI TTS</text>
+  <circle cx="355" cy="407" r="3" fill="#ab47bc"/>
+  <text x="367" y="411" font-family="Arial, sans-serif" font-size="13" fill="#333">Google TTS</text>
+  <text x="367" y="440" font-family="Arial, sans-serif" font-size="12" font-style="italic" fill="#888">and 6 more...</text>
+
+  <!-- ===== Character Models ===== -->
+  <rect x="620" y="265" width="310" height="87" rx="12" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+  <text x="725" y="287" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#e65100">Character Models</text>
+  <rect x="815" y="274" width="45" height="18" rx="9" fill="#ff9800"/>
+  <text x="837" y="287" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">3 types</text>
+
+  <rect x="632" y="296" width="90" height="45" rx="6" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1"/>
+  <text x="677" y="314" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">VRM</text>
+  <text x="677" y="332" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">3D Model</text>
+
+  <rect x="730" y="296" width="90" height="45" rx="6" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1"/>
+  <text x="775" y="314" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Live2D</text>
+  <text x="775" y="332" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">2D Model</text>
+
+  <rect x="828" y="296" width="90" height="45" rx="6" fill="#ffe0b2" stroke="#ffb74d" stroke-width="1"/>
+  <text x="873" y="314" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">PNGTuber</text>
+  <text x="873" y="332" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Video-based</text>
+
+  <!-- ===== Speech Recognition ===== -->
+  <rect x="620" y="362" width="310" height="93" rx="12" fill="#e8eaf6" stroke="#3f51b5" stroke-width="2"/>
+  <text x="725" y="385" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#283593">Speech Recognition</text>
+  <rect x="848" y="372" width="60" height="18" rx="9" fill="#3f51b5"/>
+  <text x="878" y="385" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">3 modes</text>
+
+  <circle cx="640" cy="406" r="3" fill="#5c6bc0"/>
+  <text x="652" y="410" font-family="Arial, sans-serif" font-size="13" fill="#333">Browser (Web Speech API)</text>
+  <circle cx="640" cy="428" r="3" fill="#5c6bc0"/>
+  <text x="652" y="432" font-family="Arial, sans-serif" font-size="13" fill="#333">Whisper (OpenAI API)</text>
+  <circle cx="640" cy="450" r="3" fill="#5c6bc0"/>
+  <text x="652" y="454" font-family="Arial, sans-serif" font-size="13" fill="#333">Realtime API (Low Latency)</text>
+
+  <!-- ===== Extension Modes ===== -->
+  <rect x="30" y="475" width="900" height="140" rx="12" fill="#e0f7fa" stroke="#00bcd4" stroke-width="2"/>
+  <text x="480" y="500" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#00838f">Extension Modes</text>
+
+  <!-- Card 1: YouTube Mode -->
+  <rect x="45" y="512" width="162" height="88" rx="8" fill="white" stroke="#4dd0e1" stroke-width="1.5"/>
+  <text x="126" y="530" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">YouTube Mode</text>
+  <text x="126" y="548" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Live Comment Response</text>
+  <text x="126" y="564" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Conversation Continuation</text>
+  <text x="126" y="580" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">YouTube API / OneComme</text>
+
+  <!-- Card 2: Demo Terminal Mode -->
+  <rect x="222" y="512" width="162" height="88" rx="8" fill="white" stroke="#4dd0e1" stroke-width="1.5"/>
+  <text x="303" y="530" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Demo Terminal</text>
+  <text x="303" y="548" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Digital Signage</text>
+  <text x="303" y="564" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Passcode Auth</text>
+  <text x="303" y="580" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">NG Word Filter</text>
+
+  <!-- Card 3: Slide Mode -->
+  <rect x="399" y="512" width="162" height="88" rx="8" fill="white" stroke="#4dd0e1" stroke-width="1.5"/>
+  <text x="480" y="530" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Slide Mode</text>
+  <text x="480" y="548" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Auto Presentation</text>
+  <text x="480" y="564" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Script Narration</text>
+  <text x="480" y="580" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Markdown Format</text>
+
+  <!-- Card 4: External Integration -->
+  <rect x="576" y="512" width="162" height="88" rx="8" fill="white" stroke="#4dd0e1" stroke-width="1.5"/>
+  <text x="657" y="530" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">External Integration</text>
+  <text x="657" y="548" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">WebSocket</text>
+  <text x="657" y="564" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Message Receive API</text>
+  <text x="657" y="580" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Custom Emotion Control</text>
+
+  <!-- Card 5: Idle Mode -->
+  <rect x="753" y="512" width="162" height="88" rx="8" fill="white" stroke="#4dd0e1" stroke-width="1.5"/>
+  <text x="834" y="530" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Idle Mode</text>
+  <text x="834" y="548" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Auto Speech</text>
+  <text x="834" y="564" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Time-based Greetings</text>
+  <text x="834" y="580" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">AI Auto Generation</text>
+
+  <!-- ===== Advanced Features ===== -->
+  <rect x="30" y="630" width="900" height="140" rx="12" fill="#ede7f6" stroke="#673ab7" stroke-width="2"/>
+  <text x="480" y="655" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#4527a0">Advanced Features</text>
+
+  <!-- Card 1: Realtime API -->
+  <rect x="45" y="667" width="162" height="88" rx="8" fill="white" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="126" y="685" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Realtime API</text>
+  <text x="126" y="703" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Low Latency WebSocket</text>
+  <text x="126" y="719" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Function Calling</text>
+  <text x="126" y="735" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">OpenAI / Azure</text>
+
+  <!-- Card 2: Audio Mode -->
+  <rect x="222" y="667" width="162" height="88" rx="8" fill="white" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="303" y="685" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Audio Mode</text>
+  <text x="303" y="703" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">OpenAI Audio API</text>
+  <text x="303" y="719" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Natural Voice Dialog</text>
+  <text x="303" y="735" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Unified Voice I/O</text>
+
+  <!-- Card 3: Reasoning Mode -->
+  <rect x="399" y="667" width="162" height="88" rx="8" fill="white" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="480" y="685" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Reasoning Mode</text>
+  <text x="480" y="703" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Thinking Process Display</text>
+  <text x="480" y="719" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Reasoning Parameters</text>
+  <text x="480" y="735" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Token Budget Control</text>
+
+  <!-- Card 4: RAG / Long-term Memory -->
+  <rect x="576" y="667" width="162" height="88" rx="8" fill="white" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="657" y="685" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">RAG / Memory</text>
+  <text x="657" y="703" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">IndexedDB + Embedding</text>
+  <text x="657" y="719" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Cosine Similarity Search</text>
+  <text x="657" y="735" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Auto Context Retrieval</text>
+
+  <!-- Card 5: Presence Detection -->
+  <rect x="753" y="667" width="162" height="88" rx="8" fill="white" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="834" y="685" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#333">Presence Detection</text>
+  <text x="834" y="703" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Camera Face Detection</text>
+  <text x="834" y="719" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">Auto Greeting / Farewell</text>
+  <text x="834" y="735" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#555">3-level Sensitivity</text>
 </svg>

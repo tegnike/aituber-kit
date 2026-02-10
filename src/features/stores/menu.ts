@@ -11,6 +11,9 @@ type SettingsTabKey =
   | 'slide'
   | 'images'
   | 'memory'
+  | 'presence'
+  | 'idle'
+  | 'kiosk'
   | 'other'
 interface MenuState {
   showWebcam: boolean

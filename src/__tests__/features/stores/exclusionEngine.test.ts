@@ -33,6 +33,9 @@ function createBaseState(
     multiModalMode: 'ai-decide',
     enableMultiModal: true,
     customModel: false,
+    idleModeEnabled: false,
+    presenceDetectionEnabled: false,
+    kioskModeEnabled: false,
     ...overrides,
   } as SettingsState
 }
@@ -417,6 +420,23 @@ describe('排他エンジン (computeExclusions)', () => {
       // カスケード Rule 4: モデル復元
       expect(corrections.selectAIModel).toBe(defaultModels.openai)
     })
+
+    it('externalLinkageMode ON → realtimeAPIMode OFF + idleModeEnabled OFF + presenceDetectionEnabled OFF のカスケード', () => {
+      const prev = createBaseState({
+        realtimeAPIMode: true,
+        idleModeEnabled: true,
+        presenceDetectionEnabled: true,
+        selectAIModel: defaultModels.openaiRealtime,
+        selectAIService: 'openai',
+      })
+      const incoming = { externalLinkageMode: true }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.realtimeAPIMode).toBe(false)
+      expect(corrections.idleModeEnabled).toBe(false)
+      expect(corrections.presenceDetectionEnabled).toBe(false)
+      expect(corrections.selectAIModel).toBe(defaultModels.openai)
+    })
   })
 
   describe('無関係なsetStateが排他ルールを発火しないテスト', () => {
@@ -481,6 +501,87 @@ describe('排他エンジン (computeExclusions)', () => {
       const { corrections } = computeExclusions(incoming, prev)
 
       expect(corrections.selectAIModel).toBe(defaultModels.azure)
+    })
+  })
+
+  describe('Rule 14: realtimeAPI-on-disableIdlePresence', () => {
+    it('realtimeAPIMode ON で idleModeEnabled, presenceDetectionEnabled が OFF', () => {
+      const prev = createBaseState({
+        idleModeEnabled: true,
+        presenceDetectionEnabled: true,
+      })
+      const incoming = { realtimeAPIMode: true }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.idleModeEnabled).toBe(false)
+      expect(corrections.presenceDetectionEnabled).toBe(false)
+    })
+
+    it('realtimeAPIMode OFF では idleModeEnabled に影響しない', () => {
+      const prev = createBaseState({ idleModeEnabled: true })
+      const incoming = { realtimeAPIMode: false }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.idleModeEnabled).toBeUndefined()
+    })
+  })
+
+  describe('Rule 15: audioMode-on-disableIdlePresence', () => {
+    it('audioMode ON で idleModeEnabled, presenceDetectionEnabled が OFF', () => {
+      const prev = createBaseState({
+        idleModeEnabled: true,
+        presenceDetectionEnabled: true,
+      })
+      const incoming = { audioMode: true }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.idleModeEnabled).toBe(false)
+      expect(corrections.presenceDetectionEnabled).toBe(false)
+    })
+  })
+
+  describe('Rule 16: externalLinkage-on-disableIdlePresence', () => {
+    it('externalLinkageMode ON で idleModeEnabled, presenceDetectionEnabled が OFF', () => {
+      const prev = createBaseState({
+        idleModeEnabled: true,
+        presenceDetectionEnabled: true,
+      })
+      const incoming = { externalLinkageMode: true }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.idleModeEnabled).toBe(false)
+      expect(corrections.presenceDetectionEnabled).toBe(false)
+    })
+  })
+
+  describe('Rule 17: slideMode-on-disableIdlePresence', () => {
+    it('slideMode ON で idleModeEnabled, presenceDetectionEnabled が OFF', () => {
+      const prev = createBaseState({
+        idleModeEnabled: true,
+        presenceDetectionEnabled: true,
+      })
+      const incoming = { slideMode: true }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.idleModeEnabled).toBe(false)
+      expect(corrections.presenceDetectionEnabled).toBe(false)
+    })
+  })
+
+  describe('新モード間の非排他', () => {
+    it('idleModeEnabled + presenceDetectionEnabled + kioskModeEnabled の同時有効が維持される', () => {
+      const prev = createBaseState()
+      const incoming = {
+        idleModeEnabled: true,
+        presenceDetectionEnabled: true,
+        kioskModeEnabled: true,
+      }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      // 3モード間では排他しないので補正なし
+      expect(corrections.idleModeEnabled).toBeUndefined()
+      expect(corrections.presenceDetectionEnabled).toBeUndefined()
+      expect(corrections.kioskModeEnabled).toBeUndefined()
     })
   })
 
@@ -553,5 +654,39 @@ describe('disabled条件 (computeDisabledConditions)', () => {
     expect(conditions.voiceSettings).toBe(false)
     expect(conditions.temperatureMaxTokens).toBe(false)
     expect(conditions.slideMode).toBe(false)
+    expect(conditions.idleModeEnabled).toBe(false)
+    expect(conditions.presenceDetectionEnabled).toBe(false)
+  })
+
+  it('realtimeAPIMode ON で idleModeEnabled, presenceDetectionEnabled が disabled', () => {
+    const state = createBaseState({ realtimeAPIMode: true })
+    const conditions = computeDisabledConditions(state)
+
+    expect(conditions.idleModeEnabled).toBe(true)
+    expect(conditions.presenceDetectionEnabled).toBe(true)
+  })
+
+  it('audioMode ON で idleModeEnabled, presenceDetectionEnabled が disabled', () => {
+    const state = createBaseState({ audioMode: true })
+    const conditions = computeDisabledConditions(state)
+
+    expect(conditions.idleModeEnabled).toBe(true)
+    expect(conditions.presenceDetectionEnabled).toBe(true)
+  })
+
+  it('externalLinkageMode ON で idleModeEnabled, presenceDetectionEnabled が disabled', () => {
+    const state = createBaseState({ externalLinkageMode: true })
+    const conditions = computeDisabledConditions(state)
+
+    expect(conditions.idleModeEnabled).toBe(true)
+    expect(conditions.presenceDetectionEnabled).toBe(true)
+  })
+
+  it('slideMode ON で idleModeEnabled, presenceDetectionEnabled が disabled', () => {
+    const state = createBaseState({ slideMode: true })
+    const conditions = computeDisabledConditions(state)
+
+    expect(conditions.idleModeEnabled).toBe(true)
+    expect(conditions.presenceDetectionEnabled).toBe(true)
   })
 })

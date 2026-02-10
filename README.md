@@ -71,14 +71,23 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - 会話継続モードでコメントがなくても自発的に発言可能
 - コメント取得間隔やユーザー表示名のカスタマイズに対応
 
-### 3. その他の機能
+### 3. デモ端末・デジタルサイネージ
+
+- **デモ端末モード**: デジタルサイネージ向けフルスクリーン表示。パスコード認証、NGワードフィルタ、入力長制限に対応
+- **人感検知**: カメラ顔検出による来場者の自動検知。挨拶・お別れフレーズの自動再生に対応
+- **アイドルモード**: 会話が途絶えた際にキャラクターが自動発話。定型フレーズ、時間帯別挨拶、AI自動生成の3ソースに対応
+
+### 4. 高度な対話モード
+
+- **Realtime API**: OpenAIのRealtime APIを使用した低遅延対話と関数実行
+- **オーディオモード**: OpenAIのAudio API機能を活用した自然な音声対話
+- **Reasoningモード**: AIの思考プロセスを表示し、推論パラメータを設定可能
+
+### 5. 連携・拡張
 
 - **外部連携モード**: WebSocketでサーバーアプリと連携し、より高度な機能を実現
 - **スライドモード**: AIキャラクターがスライドを自動で発表するモード
-- **Realtime API**: OpenAIのRealtime APIを使用した低遅延対話と関数実行
-- **オーディオモード**: OpenAIのAudio API機能を活用した自然な音声対話
 - **メッセージ受信機能**: 専用APIを通じて外部から指示を受け付け、AIキャラクターに発言させることが可能
-- **Reasoningモード**: AIの思考プロセスを表示し、推論パラメータを設定可能
 
 ## 対応モデル・サービス
 
@@ -86,7 +95,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 - **3Dモデル**: VRMファイル
 - **2Dモデル**: Live2Dファイル（Cubism 3以降）
-- **動くPngTuber**: 動画ベースのキャラクター表示
+- **動くPngTuber**: 動画ベースのキャラクター表示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
 
 ### 対応LLM
 
@@ -124,7 +133,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 ### 開発環境
 
-- Node.js: ^25.2.1
+- Node.js: 24.x
 - npm: ^11.6.2
 
 ### インストール手順
@@ -162,6 +171,28 @@ npm run dev
 6. URLを開きます。[http://localhost:3000](http://localhost:3000)
 
 詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
+
+### Dockerで起動する場合
+
+1. `.env`ファイルを作成します。
+
+```bash
+cp .env.example .env
+```
+
+2. Docker Composeで起動します。
+
+```bash
+docker compose up -d
+```
+
+3. URLを開きます。[http://localhost:3000](http://localhost:3000)
+
+停止する場合:
+
+```bash
+docker compose down
+```
 
 ## ⚠️ セキュリティに関する重要な注意事項
 
@@ -296,6 +327,9 @@ npm run dev
   </a>
   <a href="https://x.com/_cityside" title="_cityside">
     <img src="https://pbs.twimg.com/profile_images/1987812690254082048/KyWdQTT4_400x400.jpg" width="40" height="40" alt="_cityside">
+  </a>
+  <a href="https://github.com/nyapan-mohy" title="nyapan-mohy">
+    <img src="https://github.com/nyapan-mohy.png" width="40" height="40" alt="nyapan-mohy">
   </a>
 </p>
 

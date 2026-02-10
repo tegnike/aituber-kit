@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import {
+  isRestrictedMode,
+  createRestrictedModeErrorResponse,
+} from '@/utils/restrictedMode'
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,6 +12,12 @@ export default async function handler(
 ) {
   if (req.method !== 'DELETE') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  if (isRestrictedMode()) {
+    return res
+      .status(403)
+      .json(createRestrictedModeErrorResponse('delete-image'))
   }
 
   const { filename } = req.body

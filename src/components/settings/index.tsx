@@ -16,6 +16,9 @@ import Other from './other'
 import SpeechInput from './speechInput'
 import Images from './images'
 import MemorySettings from './memorySettings'
+import PresenceSettings from './presenceSettings'
+import IdleSettings from './idleSettings'
+import KioskSettings from './kioskSettings'
 
 type Props = {
   onClickClose: () => void
@@ -56,9 +59,12 @@ type TabKey =
   | 'youtube'
   | 'slide'
   | 'images'
+  | 'memory'
+  | 'presence'
+  | 'idle'
+  | 'kiosk'
   | 'other'
   | 'speechInput'
-  | 'memory'
 
 // アイコンのパスマッピング
 const tabIconMapping: Record<TabKey, string> = {
@@ -70,9 +76,12 @@ const tabIconMapping: Record<TabKey, string> = {
   youtube: '/images/setting-icons/youtube-settings.svg',
   slide: '/images/setting-icons/slide-settings.svg',
   images: '/images/setting-icons/image-settings.svg',
+  memory: '/images/setting-icons/memory-settings.svg',
+  presence: '/images/setting-icons/presence-settings.svg',
+  idle: '/images/setting-icons/idle-settings.svg',
+  kiosk: '/images/setting-icons/kiosk-settings.svg',
   other: '/images/setting-icons/other-settings.svg',
   speechInput: '/images/setting-icons/microphone-settings.svg',
-  memory: '/images/setting-icons/memory-settings.svg',
 }
 
 const Main = () => {
@@ -148,6 +157,18 @@ const Main = () => {
       label: t('MemorySettings'),
     },
     {
+      key: 'presence',
+      label: t('PresenceSettings'),
+    },
+    {
+      key: 'idle',
+      label: t('IdleSettings'),
+    },
+    {
+      key: 'kiosk',
+      label: t('KioskSettings'),
+    },
+    {
       key: 'other',
       label: t('OtherSettings'),
     },
@@ -173,6 +194,12 @@ const Main = () => {
         return <Images />
       case 'memory':
         return <MemorySettings />
+      case 'presence':
+        return <PresenceSettings />
+      case 'idle':
+        return <IdleSettings />
+      case 'kiosk':
+        return <KioskSettings />
       case 'other':
         return <Other />
       case 'speechInput':

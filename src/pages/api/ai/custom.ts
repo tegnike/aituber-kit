@@ -41,15 +41,35 @@ export default async function handler(req: NextRequest) {
   } catch (error) {
     console.error('Error in Custom API call:', error)
 
+    if (error instanceof Response) {
+      return error
+    }
+
+    if (error instanceof Error) {
+      const isClientError =
+        error instanceof TypeError ||
+        error.message.includes('Invalid URL') ||
+        error.message.includes('customApiUrl')
+      return new Response(
+        JSON.stringify({
+          error: error.message,
+          errorCode: isClientError
+            ? 'CustomAPIInvalidRequest'
+            : 'CustomAPIError',
+        }),
+        {
+          status: isClientError ? 400 : 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
     return new Response(
       JSON.stringify({
         error: 'Unexpected Error',
         errorCode: 'CustomAPIError',
       }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     )
   }
 }

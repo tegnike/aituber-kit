@@ -3,18 +3,21 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
+import { isLive2DEnabled } from '@/utils/live2dRestriction'
 import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
 } from '@/features/memory/memoryTypes'
-import { SYSTEM_PROMPT } from '@/features/constants/systemPromptConstants'
 import {
-  DEFAULT_PROMPT_EVALUATE,
-  DEFAULT_PROMPT_CONTINUATION,
-  DEFAULT_PROMPT_SLEEP,
-  DEFAULT_PROMPT_NEW_TOPIC,
-  DEFAULT_PROMPT_SELECT_COMMENT,
-} from '@/lib/mastra/defaultPrompts'
+  IdleModeSettings,
+  DEFAULT_IDLE_CONFIG,
+  IdlePhrase,
+  createIdlePhrase,
+} from '@/features/idle/idleTypes'
+import {
+  KioskModeSettings,
+  DEFAULT_KIOSK_CONFIG,
+} from '@/features/kiosk/kioskTypes'
 import {
   AIService,
   AIVoice,
@@ -131,6 +134,11 @@ interface ModelProvider extends Live2DSettings {
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
+  nijivoiceApiKey: string
+  nijivoiceActorId: string
+  nijivoiceSpeed: number
+  nijivoiceEmotionalLevel: number
+  nijivoiceSoundDuration: number
 }
 
 interface Integrations {
@@ -252,13 +260,32 @@ interface ModelType {
   modelType: 'vrm' | 'live2d' | 'pngtuber'
 }
 
+// Presence detection sensitivity type
+export type PresenceDetectionSensitivity = 'low' | 'medium' | 'high'
+
+interface PresenceDetectionSettings {
+  presenceDetectionEnabled: boolean
+  presenceGreetingPhrases: IdlePhrase[]
+  presenceDepartureTimeout: number
+  presenceCooldownTime: number
+  presenceDetectionSensitivity: PresenceDetectionSensitivity
+  presenceDetectionThreshold: number
+  presenceDebugMode: boolean
+  presenceDeparturePhrases: IdlePhrase[]
+  presenceClearChatOnDeparture: boolean
+  presenceSelectedCameraId: string // 空文字列の場合はデフォルトカメラを使用
+}
+
 export type SettingsState = APIKeys &
   ModelProvider &
   Integrations &
   Character &
   General &
   ModelType &
-  MemoryConfig
+  MemoryConfig &
+  PresenceDetectionSettings &
+  IdleModeSettings &
+  KioskModeSettings
 
 // Function to get initial values from environment variables
 const getInitialValuesFromEnv = (): SettingsState => ({
@@ -418,20 +445,15 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_SLEEP_THRESHOLD || '6'
     ) || 6,
   conversationContinuityPromptEvaluate:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_EVALUATE ||
-    DEFAULT_PROMPT_EVALUATE,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_EVALUATE || '',
   conversationContinuityPromptContinuation:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_CONTINUATION ||
-    DEFAULT_PROMPT_CONTINUATION,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_CONTINUATION || '',
   conversationContinuityPromptSelectComment:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SELECT_COMMENT ||
-    DEFAULT_PROMPT_SELECT_COMMENT,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SELECT_COMMENT || '',
   conversationContinuityPromptNewTopic:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_NEW_TOPIC ||
-    DEFAULT_PROMPT_NEW_TOPIC,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_NEW_TOPIC || '',
   conversationContinuityPromptSleep:
-    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SLEEP ||
-    DEFAULT_PROMPT_SLEEP,
+    process.env.NEXT_PUBLIC_CONVERSATION_CONTINUITY_PROMPT_SLEEP || '',
   onecommePort:
     parseInt(process.env.NEXT_PUBLIC_ONECOMME_PORT || '11180') || 11180,
   youtubeCommentInterval:
@@ -440,11 +462,11 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Character
   characterName: process.env.NEXT_PUBLIC_CHARACTER_NAME || 'CHARACTER',
   userDisplayName: process.env.NEXT_PUBLIC_USER_DISPLAY_NAME || 'YOU',
-  characterPreset1: process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || SYSTEM_PROMPT,
-  characterPreset2: process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || SYSTEM_PROMPT,
-  characterPreset3: process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || SYSTEM_PROMPT,
-  characterPreset4: process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || SYSTEM_PROMPT,
-  characterPreset5: process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || SYSTEM_PROMPT,
+  characterPreset1: process.env.NEXT_PUBLIC_CHARACTER_PRESET1 || '',
+  characterPreset2: process.env.NEXT_PUBLIC_CHARACTER_PRESET2 || '',
+  characterPreset3: process.env.NEXT_PUBLIC_CHARACTER_PRESET3 || '',
+  characterPreset4: process.env.NEXT_PUBLIC_CHARACTER_PRESET4 || '',
+  characterPreset5: process.env.NEXT_PUBLIC_CHARACTER_PRESET5 || '',
   customPresetName1: process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME1 || 'Preset 1',
   customPresetName2: process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME2 || 'Preset 2',
   customPresetName3: process.env.NEXT_PUBLIC_CUSTOM_PRESET_NAME3 || 'Preset 3',
@@ -458,7 +480,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   systemPrompt:
     process.env.NEXT_PUBLIC_SYSTEM_PROMPT ||
     process.env.NEXT_PUBLIC_CHARACTER_PRESET1 ||
-    SYSTEM_PROMPT,
+    '',
   selectedVrmPath:
     process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
   selectedLive2DPath:
@@ -489,11 +511,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   showQuickMenu: process.env.NEXT_PUBLIC_SHOW_QUICK_MENU === 'true',
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   realtimeAPIMode:
-    (process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
-      ['openai', 'azure'].includes(
-        process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
-      )) ||
-    false,
+    process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
+    ['openai', 'azure'].includes(
+      process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService
+    ),
   realtimeAPIModeContentType:
     (process.env
       .NEXT_PUBLIC_REALTIME_API_MODE_CONTENT_TYPE as RealtimeAPIModeContentType) ||
@@ -569,8 +590,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
       : 'ai-decide'
   })(),
   multiModalAiDecisionPrompt:
-    process.env.NEXT_PUBLIC_MULTIMODAL_AI_DECISION_PROMPT ||
-    'あなたは画像がユーザーの質問や会話の文脈に関連するかどうかを判断するアシスタントです。直近の会話履歴とユーザーメッセージを考慮して、「はい」または「いいえ」のみで答えてください。',
+    process.env.NEXT_PUBLIC_MULTIMODAL_AI_DECISION_PROMPT || '',
   enableMultiModal: process.env.NEXT_PUBLIC_ENABLE_MULTIMODAL !== 'false',
   colorTheme:
     (process.env.NEXT_PUBLIC_COLOR_THEME as
@@ -584,10 +604,30 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Custom model toggle
   customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
+  // NijiVoice settings
+  nijivoiceApiKey: '',
+  nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
+  nijivoiceSpeed:
+    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SPEED || '1.0') || 1.0,
+  nijivoiceEmotionalLevel:
+    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_EMOTIONAL_LEVEL || '0.1') ||
+    0.1,
+  nijivoiceSoundDuration:
+    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
+    0.1,
+
   // Settings
-  modelType:
-    (process.env.NEXT_PUBLIC_MODEL_TYPE as 'vrm' | 'live2d' | 'pngtuber') ||
-    'vrm',
+  modelType: (() => {
+    const envType = process.env.NEXT_PUBLIC_MODEL_TYPE as
+      | 'vrm'
+      | 'live2d'
+      | 'pngtuber'
+      | undefined
+    if (envType === 'live2d' && !isLive2DEnabled()) {
+      return 'vrm'
+    }
+    return envType || 'vrm'
+  })(),
   selectedPNGTuberPath:
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
   pngTuberSensitivity:
@@ -616,11 +656,106 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_MEMORY_SIMILARITY_THRESHOLD || '') ||
     DEFAULT_MEMORY_CONFIG.memorySimilarityThreshold,
   memorySearchLimit:
-    parseInt(process.env.NEXT_PUBLIC_MEMORY_SEARCH_LIMIT || '', 10) ||
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_SEARCH_LIMIT || '') ||
     DEFAULT_MEMORY_CONFIG.memorySearchLimit,
   memoryMaxContextTokens:
-    parseInt(process.env.NEXT_PUBLIC_MEMORY_MAX_CONTEXT_TOKENS || '', 10) ||
+    parseInt(process.env.NEXT_PUBLIC_MEMORY_MAX_CONTEXT_TOKENS || '') ||
     DEFAULT_MEMORY_CONFIG.memoryMaxContextTokens,
+
+  // Presence detection settings
+  presenceDetectionEnabled:
+    process.env.NEXT_PUBLIC_PRESENCE_DETECTION_ENABLED === 'true',
+  presenceGreetingPhrases: (() => {
+    const msg =
+      process.env.NEXT_PUBLIC_PRESENCE_GREETING_MESSAGE ||
+      'いらっしゃいませ！何かお手伝いできることはありますか？'
+    return [createIdlePhrase(msg, 'happy', 0)]
+  })(),
+  presenceDepartureTimeout:
+    parseInt(process.env.NEXT_PUBLIC_PRESENCE_DEPARTURE_TIMEOUT || '') || 7,
+  presenceCooldownTime:
+    parseInt(process.env.NEXT_PUBLIC_PRESENCE_COOLDOWN_TIME || '') || 5,
+  presenceDetectionSensitivity:
+    (process.env
+      .NEXT_PUBLIC_PRESENCE_DETECTION_SENSITIVITY as PresenceDetectionSensitivity) ||
+    'medium',
+  presenceDetectionThreshold:
+    parseFloat(process.env.NEXT_PUBLIC_PRESENCE_DETECTION_THRESHOLD || '') || 0,
+  presenceDebugMode: process.env.NEXT_PUBLIC_PRESENCE_DEBUG_MODE === 'true',
+  presenceDeparturePhrases: (() => {
+    const msg = process.env.NEXT_PUBLIC_PRESENCE_DEPARTURE_MESSAGE || ''
+    return msg ? [createIdlePhrase(msg, 'neutral', 0)] : []
+  })(),
+  presenceClearChatOnDeparture:
+    process.env.NEXT_PUBLIC_PRESENCE_CLEAR_CHAT_ON_DEPARTURE !== 'false',
+  presenceSelectedCameraId:
+    process.env.NEXT_PUBLIC_PRESENCE_SELECTED_CAMERA_ID || '',
+
+  // Idle mode settings
+  idleModeEnabled:
+    process.env.NEXT_PUBLIC_IDLE_MODE_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleModeEnabled,
+  idlePhrases: DEFAULT_IDLE_CONFIG.idlePhrases,
+  idlePlaybackMode:
+    (process.env.NEXT_PUBLIC_IDLE_PLAYBACK_MODE as 'sequential' | 'random') ||
+    DEFAULT_IDLE_CONFIG.idlePlaybackMode,
+  idleInterval:
+    parseInt(process.env.NEXT_PUBLIC_IDLE_INTERVAL || '') ||
+    DEFAULT_IDLE_CONFIG.idleInterval,
+  idleDefaultEmotion:
+    (process.env.NEXT_PUBLIC_IDLE_DEFAULT_EMOTION as
+      | 'neutral'
+      | 'happy'
+      | 'sad'
+      | 'angry'
+      | 'relaxed'
+      | 'surprised') || DEFAULT_IDLE_CONFIG.idleDefaultEmotion,
+  idleTimePeriodEnabled:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEnabled,
+  idleTimePeriodMorning:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_MORNING ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodMorning,
+  idleTimePeriodMorningEmotion:
+    DEFAULT_IDLE_CONFIG.idleTimePeriodMorningEmotion,
+  idleTimePeriodAfternoon:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_AFTERNOON ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodAfternoon,
+  idleTimePeriodAfternoonEmotion:
+    DEFAULT_IDLE_CONFIG.idleTimePeriodAfternoonEmotion,
+  idleTimePeriodEvening:
+    process.env.NEXT_PUBLIC_IDLE_TIME_PERIOD_EVENING ||
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEvening,
+  idleTimePeriodEveningEmotion:
+    DEFAULT_IDLE_CONFIG.idleTimePeriodEveningEmotion,
+  idleAiGenerationEnabled:
+    process.env.NEXT_PUBLIC_IDLE_AI_GENERATION_ENABLED === 'true' ||
+    DEFAULT_IDLE_CONFIG.idleAiGenerationEnabled,
+  idleAiPromptTemplate: process.env.NEXT_PUBLIC_IDLE_AI_PROMPT_TEMPLATE || '',
+
+  // Kiosk mode settings
+  kioskModeEnabled:
+    process.env.NEXT_PUBLIC_KIOSK_MODE_ENABLED === 'true' ||
+    DEFAULT_KIOSK_CONFIG.kioskModeEnabled,
+  kioskPasscode:
+    process.env.NEXT_PUBLIC_KIOSK_PASSCODE ||
+    DEFAULT_KIOSK_CONFIG.kioskPasscode,
+  kioskMaxInputLength:
+    parseInt(process.env.NEXT_PUBLIC_KIOSK_MAX_INPUT_LENGTH || '') ||
+    DEFAULT_KIOSK_CONFIG.kioskMaxInputLength,
+  kioskNgWords: process.env.NEXT_PUBLIC_KIOSK_NG_WORDS
+    ? process.env.NEXT_PUBLIC_KIOSK_NG_WORDS.split(',').map((w) => w.trim())
+    : DEFAULT_KIOSK_CONFIG.kioskNgWords,
+  kioskNgWordEnabled:
+    process.env.NEXT_PUBLIC_KIOSK_NG_WORD_ENABLED === 'true' ||
+    DEFAULT_KIOSK_CONFIG.kioskNgWordEnabled,
+  kioskGuidanceMessage:
+    process.env.NEXT_PUBLIC_KIOSK_GUIDANCE_MESSAGE ||
+    DEFAULT_KIOSK_CONFIG.kioskGuidanceMessage,
+  kioskGuidanceTimeout:
+    parseInt(process.env.NEXT_PUBLIC_KIOSK_GUIDANCE_TIMEOUT || '') ||
+    DEFAULT_KIOSK_CONFIG.kioskGuidanceTimeout,
+  kioskTemporaryUnlock: DEFAULT_KIOSK_CONFIG.kioskTemporaryUnlock,
 
   // Live2D settings
   neutralEmotions: process.env.NEXT_PUBLIC_NEUTRAL_EMOTIONS?.split(',') || [],
@@ -656,6 +791,11 @@ const settingsStore = create<SettingsState>()(
           }
         }
 
+        // Force modelType away from live2d when Live2D is not enabled
+        if (state && !isLive2DEnabled() && state.modelType === 'live2d') {
+          state.modelType = 'vrm'
+        }
+
         // Override with environment variables if the option is enabled
         if (
           state &&
@@ -663,6 +803,43 @@ const settingsStore = create<SettingsState>()(
         ) {
           const envValues = getInitialValuesFromEnv()
           Object.assign(state, envValues)
+        }
+
+        // Migration from old presence message format to new phrase array format
+        if (state) {
+          const anyState = state as any
+          // presenceGreetingMessage -> presenceGreetingPhrases
+          if (typeof anyState.presenceGreetingMessage === 'string') {
+            // Empty string means "no greeting" intent, so set empty array
+            if (!state.presenceGreetingPhrases?.length) {
+              state.presenceGreetingPhrases = anyState.presenceGreetingMessage
+                ? [
+                    createIdlePhrase(
+                      anyState.presenceGreetingMessage,
+                      'happy',
+                      0
+                    ),
+                  ]
+                : []
+            }
+            delete anyState.presenceGreetingMessage
+          }
+          // presenceDepartureMessage -> presenceDeparturePhrases
+          if (typeof anyState.presenceDepartureMessage === 'string') {
+            // Empty string means "no departure message" intent, so set empty array
+            if (!state.presenceDeparturePhrases?.length) {
+              state.presenceDeparturePhrases = anyState.presenceDepartureMessage
+                ? [
+                    createIdlePhrase(
+                      anyState.presenceDepartureMessage,
+                      'neutral',
+                      0
+                    ),
+                  ]
+                : []
+            }
+            delete anyState.presenceDepartureMessage
+          }
         }
       },
       partialize: (state) => ({
@@ -789,6 +966,11 @@ const settingsStore = create<SettingsState>()(
         characterPosition: state.characterPosition,
         characterRotation: state.characterRotation,
         lightingIntensity: state.lightingIntensity,
+        nijivoiceApiKey: state.nijivoiceApiKey,
+        nijivoiceActorId: state.nijivoiceActorId,
+        nijivoiceSpeed: state.nijivoiceSpeed,
+        nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
+        nijivoiceSoundDuration: state.nijivoiceSoundDuration,
         modelType: state.modelType,
         selectedPNGTuberPath: state.selectedPNGTuberPath,
         pngTuberSensitivity: state.pngTuberSensitivity,
@@ -846,6 +1028,39 @@ const settingsStore = create<SettingsState>()(
         memorySimilarityThreshold: state.memorySimilarityThreshold,
         memorySearchLimit: state.memorySearchLimit,
         memoryMaxContextTokens: state.memoryMaxContextTokens,
+        presenceDetectionEnabled: state.presenceDetectionEnabled,
+        presenceGreetingPhrases: state.presenceGreetingPhrases,
+        presenceDepartureTimeout: state.presenceDepartureTimeout,
+        presenceCooldownTime: state.presenceCooldownTime,
+        presenceDetectionSensitivity: state.presenceDetectionSensitivity,
+        presenceDetectionThreshold: state.presenceDetectionThreshold,
+        presenceDebugMode: state.presenceDebugMode,
+        presenceDeparturePhrases: state.presenceDeparturePhrases,
+        presenceClearChatOnDeparture: state.presenceClearChatOnDeparture,
+        presenceSelectedCameraId: state.presenceSelectedCameraId,
+        // Idle mode settings
+        idleModeEnabled: state.idleModeEnabled,
+        idlePhrases: state.idlePhrases,
+        idlePlaybackMode: state.idlePlaybackMode,
+        idleInterval: state.idleInterval,
+        idleDefaultEmotion: state.idleDefaultEmotion,
+        idleTimePeriodEnabled: state.idleTimePeriodEnabled,
+        idleTimePeriodMorning: state.idleTimePeriodMorning,
+        idleTimePeriodMorningEmotion: state.idleTimePeriodMorningEmotion,
+        idleTimePeriodAfternoon: state.idleTimePeriodAfternoon,
+        idleTimePeriodAfternoonEmotion: state.idleTimePeriodAfternoonEmotion,
+        idleTimePeriodEvening: state.idleTimePeriodEvening,
+        idleTimePeriodEveningEmotion: state.idleTimePeriodEveningEmotion,
+        idleAiGenerationEnabled: state.idleAiGenerationEnabled,
+        idleAiPromptTemplate: state.idleAiPromptTemplate,
+        // Kiosk mode settings (kioskTemporaryUnlock is NOT persisted)
+        kioskModeEnabled: state.kioskModeEnabled,
+        kioskPasscode: state.kioskPasscode,
+        kioskGuidanceMessage: state.kioskGuidanceMessage,
+        kioskGuidanceTimeout: state.kioskGuidanceTimeout,
+        kioskMaxInputLength: state.kioskMaxInputLength,
+        kioskNgWords: state.kioskNgWords,
+        kioskNgWordEnabled: state.kioskNgWordEnabled,
       }),
     })
   )
