@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
@@ -42,6 +42,14 @@ export default function VrmViewer() {
           }
         }
       })
+    }
+  }, [])
+
+  // アンマウント時にWebGLリソースを解放
+  useEffect(() => {
+    return () => {
+      const { viewer } = homeStore.getState()
+      viewer.dispose()
     }
   }, [])
 

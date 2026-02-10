@@ -1,4 +1,4 @@
-import { Application, Ticker, DisplayObject } from 'pixi.js'
+import { Application, Ticker, DisplayObject, settings, ENV } from 'pixi.js'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch/cubism4'
 import homeStore from '@/features/stores/home'
@@ -104,6 +104,12 @@ const Live2DComponent = (): JSX.Element => {
 
   const initApp = () => {
     if (!canvasContainerRef.current) return
+
+    // WebGL Legacyモードを使用してcheckMaxIfStatementsInShaderのエラーを回避
+    // 他のWebGLコンテキスト(Three.js VRM等)の解放タイミングにより
+    // MAX_TEXTURE_IMAGE_UNITSが0を返す場合がある
+    // Live2Dは独自シェーダーを使うためバッチレンダリング最適化は不要
+    settings.PREFER_ENV = ENV.WEBGL_LEGACY
 
     const app = new Application({
       width: window.innerWidth,
