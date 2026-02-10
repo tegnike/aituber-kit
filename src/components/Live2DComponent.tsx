@@ -105,16 +105,24 @@ const Live2DComponent = (): JSX.Element => {
   const initApp = () => {
     if (!canvasContainerRef.current) return
 
-    const app = new Application({
-      width: window.innerWidth,
-      height: window.innerHeight,
-      view: canvasContainerRef.current,
-      backgroundAlpha: 0,
-      antialias: true,
-    })
+    // Ensure canvas has valid dimensions for WebGL context creation
+    const width = window.innerWidth || 1
+    const height = window.innerHeight || 1
 
-    appRef.current = app
-    setApp(app)
+    try {
+      const app = new Application({
+        width,
+        height,
+        view: canvasContainerRef.current,
+        backgroundAlpha: 0,
+        antialias: true,
+      })
+
+      appRef.current = app
+      setApp(app)
+    } catch (error) {
+      console.error('Failed to initialize PIXI Application:', error)
+    }
   }
 
   const loadLive2DModel = async (
@@ -143,7 +151,9 @@ const Live2DComponent = (): JSX.Element => {
 
       modelRef.current = newModel
       setModel(newModel)
-      // Don't set live2dViewer here, it will be set in the useEffect with position controls
+      // Set live2dViewer immediately so Live2DHandler can use it.
+      // The useEffect will later enrich it with position controls via Object.assign.
+      homeStore.setState({ live2dViewer: newModel })
 
       await Live2DHandler.resetToIdle()
     } catch (error) {
@@ -152,21 +162,29 @@ const Live2DComponent = (): JSX.Element => {
   }
 
   useEffect(() => {
-    initApp()
+    // Use requestAnimationFrame to defer initialization.
+    // This prevents WebGL context conflicts in React Strict Mode,
+    // where the first mount's rAF is cancelled during cleanup.
+    const rafId = requestAnimationFrame(() => {
+      initApp()
+    })
     return () => {
+      cancelAnimationFrame(rafId)
       if (modelRef.current) {
         modelRef.current.destroy()
         modelRef.current = null
       }
       if (appRef.current) {
-        appRef.current.destroy(true)
+        appRef.current.destroy()
         appRef.current = null
       }
+      setApp(null)
+      setModel(null)
     }
   }, [])
 
   useEffect(() => {
-    if (app && selectedLive2DPath) {
+    if (app?.stage && selectedLive2DPath) {
       // 既存のモデルがある場合は先に削除
       if (modelRef.current) {
         app.stage.removeChild(modelRef.current as unknown as DisplayObject)
