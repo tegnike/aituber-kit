@@ -13,12 +13,8 @@ import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import CharacterPresetMenu from '@/components/characterPresetMenu'
 import ImageOverlay from '@/components/ImageOverlay'
+import PresenceManager from '@/components/presenceManager'
 import IdleManager from '@/components/idleManager'
-import dynamic from 'next/dynamic'
-
-const PresenceManager = dynamic(() => import('@/components/presenceManager'), {
-  ssr: false,
-})
 import { KioskOverlay } from '@/features/kiosk/kioskOverlay'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'

@@ -16,7 +16,7 @@ import { createIdlePhrase } from '@/features/idle/idleTypes'
 // Mock face-api.js
 const mockDetectSingleFace = jest.fn()
 jest.mock(
-  '@vladmandic/face-api',
+  'face-api.js',
   () => ({
     nets: {
       tinyFaceDetector: {
@@ -227,7 +227,7 @@ describe('Task 5.1: システム統合テスト - メインページへのフッ
     })
 
     it('モデルロード失敗時にMODEL_LOAD_FAILEDエラーが設定される', async () => {
-      const faceapi = jest.requireMock('@vladmandic/face-api')
+      const faceapi = jest.requireMock('face-api.js')
       faceapi.nets.tinyFaceDetector.loadFromUri.mockRejectedValueOnce(
         new Error('Model load failed')
       )

@@ -186,7 +186,7 @@ src/
 
 #### 人感検知 (`hooks/usePresenceDetection.ts`)
 
-- @vladmandic/face-api（TinyFaceDetectorモデル）によるカメラ顔検出
+- face-api.js（TinyFaceDetectorモデル）によるカメラ顔検出
 - 状態遷移: idle → detected → greeting → conversation-ready → idle
 - 感度設定（low:500ms/medium:300ms/high:150ms）、挨拶/離脱フレーズ
 
