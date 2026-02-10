@@ -172,6 +172,28 @@ npm run dev
 
 詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
+### Dockerで起動する場合
+
+1. `.env`ファイルを作成します。
+
+```bash
+cp .env.example .env
+```
+
+2. Docker Composeで起動します。
+
+```bash
+docker compose up -d
+```
+
+3. URLを開きます。[http://localhost:3000](http://localhost:3000)
+
+停止する場合:
+
+```bash
+docker compose down
+```
+
 ## ⚠️ セキュリティに関する重要な注意事項
 
 このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
