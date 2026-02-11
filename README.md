@@ -331,6 +331,9 @@ docker compose down
   <a href="https://github.com/nyapan-mohy" title="nyapan-mohy">
     <img src="https://github.com/nyapan-mohy.png" width="40" height="40" alt="nyapan-mohy">
   </a>
+  <a href="https://github.com/hattoritatsuya" title="hattoritatsuya">
+    <img src="https://github.com/hattoritatsuya.png" width="40" height="40" alt="hattoritatsuya">
+  </a>
 </p>
 
 他、プライベートスポンサー 複数名
