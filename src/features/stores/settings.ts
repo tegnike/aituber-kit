@@ -134,11 +134,6 @@ interface ModelProvider extends Live2DSettings {
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
-  nijivoiceApiKey: string
-  nijivoiceActorId: string
-  nijivoiceSpeed: number
-  nijivoiceEmotionalLevel: number
-  nijivoiceSoundDuration: number
 }
 
 interface Integrations {
@@ -604,18 +599,6 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Custom model toggle
   customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
-  // NijiVoice settings
-  nijivoiceApiKey: '',
-  nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
-  nijivoiceSpeed:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SPEED || '1.0') || 1.0,
-  nijivoiceEmotionalLevel:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_EMOTIONAL_LEVEL || '0.1') ||
-    0.1,
-  nijivoiceSoundDuration:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
-    0.1,
-
   // Settings
   modelType: (() => {
     const envType = process.env.NEXT_PUBLIC_MODEL_TYPE as
@@ -966,11 +949,6 @@ const settingsStore = create<SettingsState>()(
         characterPosition: state.characterPosition,
         characterRotation: state.characterRotation,
         lightingIntensity: state.lightingIntensity,
-        nijivoiceApiKey: state.nijivoiceApiKey,
-        nijivoiceActorId: state.nijivoiceActorId,
-        nijivoiceSpeed: state.nijivoiceSpeed,
-        nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
-        nijivoiceSoundDuration: state.nijivoiceSoundDuration,
         modelType: state.modelType,
         selectedPNGTuberPath: state.selectedPNGTuberPath,
         pngTuberSensitivity: state.pngTuberSensitivity,
