@@ -5,7 +5,7 @@
  * APIルートがアセット一覧を返せない。このスクリプトがビルド前に実行され、
  * src/constants/assetManifest.json にアセット情報を書き出す。
  *
- * フィルタリングはclean-assets.jsと同じロジック:
+ * フィルタリングはbuild-cloudflare.jsの退避ロジックと同等:
  * - git追跡ファイルのみ対象
  * - 25MB超のファイルを除外
  * - 非ASCIIファイル名を除外
@@ -27,7 +27,7 @@ const MAX_SIZE = 25 * 1024 * 1024
 // eslint-disable-next-line no-control-regex
 const NON_ASCII_RE = /[^\x00-\x7F]/
 
-// --- 共通フィルタリング（clean-assets.jsと同じロジック） ---
+// --- 共通フィルタリング（build-cloudflare.jsの退避ロジックと同等） ---
 
 function shouldInclude(filePath) {
   const fullPath = path.join(projectRoot, filePath)
