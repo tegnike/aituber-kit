@@ -201,6 +201,56 @@ docker compose up -d
 docker compose down
 ```
 
+## デプロイ
+
+### Vercel
+
+1. [Vercel](https://vercel.com/)のアカウントを作成し、GitHubリポジトリをインポートします。
+
+2. Vercelのダッシュボードで環境変数を設定します。必要なAPIキー（`OPENAI_API_KEY`等）を追加してください。設定可能な環境変数は`.env.example`を参照してください。
+
+3. デプロイは`main`ブランチへのプッシュ時に自動で実行されます。
+
+### Cloudflare Workers
+
+Cloudflare Workersへのデプロイに対応しています。[OpenNext](https://opennext.js.org/)を使用してCloudflare Workers上でNext.jsアプリケーションを実行します。
+
+1. [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)をインストールし、Cloudflareアカウントにログインします。
+
+2. `wrangler.jsonc`のプロジェクト名を必要に応じて変更します。
+
+3. 環境変数を設定します。
+
+   - **フロントエンド設定（`NEXT_PUBLIC_*`）**: `.env`ファイルに記述します。ビルド時にクライアントコードに埋め込まれます。
+   - **サーバーサイドAPIキー（`OPENAI_API_KEY`等）**: Wranglerシークレットとして設定します。
+
+```bash
+cp .env.example .env
+# .envを編集してNEXT_PUBLIC_*の値を設定
+
+# サーバーサイドのAPIキーはWranglerシークレットとして設定
+npx wrangler secret put OPENAI_API_KEY
+```
+
+必要なAPIキーごとに`wrangler secret put`を繰り返してください。
+
+4. ローカルプレビューで動作確認します。
+
+```bash
+npm run preview:cloudflare
+```
+
+5. 本番環境にデプロイします。
+
+```bash
+npm run deploy:cloudflare
+```
+
+**注意事項:**
+
+- ビルド時に`NEXT_PUBLIC_RESTRICTED_MODE=true`が自動設定され、ファイルシステムAPIが無効化されます。アセット一覧はビルド時に生成されるマニフェストから提供されます。
+- `public/`配下の25MB超のファイルや非ASCIIファイル名のファイルはデプロイ対象から自動除外されます。
+
 ## ⚠️ セキュリティに関する重要な注意事項
 
 このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
