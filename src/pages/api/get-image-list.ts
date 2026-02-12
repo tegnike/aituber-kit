@@ -1,11 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (isRestrictedMode()) {
+    return res.status(200).json([])
+  }
+
   try {
     const imagesDir = path.join(process.cwd(), 'public/images/uploaded')
 

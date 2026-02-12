@@ -15,7 +15,10 @@
     "desktop": "NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=\"\" run-p dev electron",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "build:cloudflare": "node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js",
+    "preview:cloudflare": "node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js && wrangler dev",
+    "deploy:cloudflare": "node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js && wrangler deploy"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.2",
@@ -41,6 +44,7 @@
     "@marp-team/marp-core": "^3.9.0",
     "@marp-team/marpit": "^3.2.0",
     "@mastra/core": "^1.1.0",
+    "@opennextjs/cloudflare": "^1.16.4",
     "@openrouter/ai-sdk-provider": "^2.1.1",
     "@pixiv/three-vrm": "^3.4.4",
     "@supabase/supabase-js": "^2.89.0",
@@ -78,6 +82,7 @@
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
     "@gltf-transform/core": "^2.4.6",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
     "@types/dom-speech-recognition": "^0.0.1",
@@ -112,7 +117,8 @@
     "ts-jest": "^29.4.6",
     "typescript": "5.0.2",
     "wait-on": "^7.2.0",
-    "web-streams-polyfill": "^4.2.0"
+    "web-streams-polyfill": "^4.2.0",
+    "wrangler": "^4.64.0"
   },
   "engines": {
     "node": "24.x"

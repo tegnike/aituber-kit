@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs/promises'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
 
 type ResponseData = {
   content?: string
@@ -12,6 +13,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+  if (isRestrictedMode()) {
+    return res.status(200).json({ content: '' })
+  }
+
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' })
   }

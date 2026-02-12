@@ -80,3 +80,6 @@ public/pngtuber/*
 
 # Playwright reports
 /reports
+
+# Cloudflare
+.open-next

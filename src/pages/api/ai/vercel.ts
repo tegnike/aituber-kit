@@ -1,5 +1,5 @@
 import { Message } from '@/features/messages/messages'
-import { NextRequest } from 'next/server'
+import { NextApiRequest, NextApiResponse } from 'next'
 import {
   VercelAIService,
   isVercelCloudAIService,
@@ -13,22 +13,24 @@ import {
 } from '@/lib/api-services/vercelAi'
 import { buildReasoningProviderOptions } from '@/lib/api-services/providerOptionsBuilder'
 import { googleSearchGroundingModels } from '@/features/constants/aiModels'
+import { pipeResponse } from '@/utils/pipeResponse'
+
 export const config = {
-  runtime: 'edge',
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
 }
 
-export default async function handler(req: NextRequest) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
-    return new Response(
-      JSON.stringify({
-        error: 'Method Not Allowed',
-        errorCode: 'METHOD_NOT_ALLOWED',
-      }),
-      {
-        status: 405,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return res
+      .status(405)
+      .json({ error: 'Method Not Allowed', errorCode: 'METHOD_NOT_ALLOWED' })
   }
 
   const {
@@ -46,7 +48,7 @@ export default async function handler(req: NextRequest) {
     reasoningMode = false,
     reasoningEffort = 'medium',
     reasoningTokenBudget = 8192,
-  } = await req.json()
+  } = req.body
 
   // APIキーの取得と検証
   let aiApiKey = apiKey
@@ -60,29 +62,19 @@ export default async function handler(req: NextRequest) {
         ''
     }
     if (!aiApiKey) {
-      return new Response(
-        JSON.stringify({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
+      return res
+        .status(400)
+        .json({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' })
     }
   }
 
   // ローカルLLMのURL検証
   if (isVercelLocalAIService(aiService) && aiService !== 'custom-api') {
     if (!localLlmUrl) {
-      return new Response(
-        JSON.stringify({
-          error: 'Empty Local LLM URL',
-          errorCode: 'EmptyLocalLLMURL',
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
+      return res.status(400).json({
+        error: 'Empty Local LLM URL',
+        errorCode: 'EmptyLocalLLMURL',
+      })
     }
   }
 
@@ -100,16 +92,10 @@ export default async function handler(req: NextRequest) {
 
   // モデル名のバリデーション
   if (isVercelCloudAIService(aiService) && !modifiedModel) {
-    return new Response(
-      JSON.stringify({
-        error: 'Invalid AI service or model',
-        errorCode: 'AIInvalidProperty',
-      }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return res.status(400).json({
+      error: 'Invalid AI service or model',
+      errorCode: 'AIInvalidProperty',
+    })
   }
 
   try {
@@ -121,16 +107,10 @@ export default async function handler(req: NextRequest) {
     })
 
     if (!registry) {
-      return new Response(
-        JSON.stringify({
-          error: 'Invalid AI service',
-          errorCode: 'InvalidAIService',
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
+      return res.status(400).json({
+        error: 'Invalid AI service',
+        errorCode: 'InvalidAIService',
+      })
     }
 
     // メッセージの修正
@@ -170,8 +150,9 @@ export default async function handler(req: NextRequest) {
     )
 
     // ストリーミングレスポンスまたは一括レスポンスの生成
+    let response: Response
     if (stream) {
-      return await streamAiText({
+      response = await streamAiText({
         model: modifiedModel,
         registry,
         service: aiService as VercelAIService,
@@ -182,7 +163,7 @@ export default async function handler(req: NextRequest) {
         providerOptions,
       })
     } else {
-      return await generateAiText({
+      response = await generateAiText({
         model: modifiedModel,
         registry,
         service: aiService as VercelAIService,
@@ -192,18 +173,14 @@ export default async function handler(req: NextRequest) {
         providerOptions,
       })
     }
+
+    return pipeResponse(response, res)
   } catch (error) {
     console.error('Error in AI API call:', error)
 
-    return new Response(
-      JSON.stringify({
-        error: 'Unexpected Error',
-        errorCode: 'AIAPIError',
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return res.status(500).json({
+      error: 'Unexpected Error',
+      errorCode: 'AIAPIError',
+    })
   }
 }

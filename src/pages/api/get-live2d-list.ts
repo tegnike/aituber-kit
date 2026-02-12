@@ -5,6 +5,7 @@ import {
   isLive2DEnabled,
   createLive2DRestrictionErrorResponse,
 } from '@/utils/live2dRestriction'
+import { isRestrictedMode } from '@/utils/restrictedMode'
 
 interface Live2DModelInfo {
   path: string
@@ -17,6 +18,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (isRestrictedMode()) {
+    return res.status(200).json([])
+  }
+
   if (!isLive2DEnabled()) {
     return res.status(403).json(createLive2DRestrictionErrorResponse())
   }

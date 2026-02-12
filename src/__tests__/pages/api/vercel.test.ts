@@ -5,38 +5,44 @@ import {
   generateAiText,
 } from '@/lib/api-services/vercelAi'
 import { modifyMessages } from '@/lib/api-services/utils'
+import { createMocks } from 'node-mocks-http'
 
-class TestResponse {
-  public status: number
-  private readonly body: any
-
-  constructor(body?: any, init: { status?: number } = {}) {
-    this.body = body
-    this.status = init.status ?? 200
-  }
-
-  async json() {
-    if (typeof this.body === 'string') {
-      return this.body ? JSON.parse(this.body) : null
-    }
-    return this.body
-  }
-
-  async text() {
-    if (typeof this.body === 'string') {
-      return this.body
-    }
-    if (this.body === undefined || this.body === null) {
-      return ''
-    }
-    return JSON.stringify(this.body)
-  }
-}
-
+// テスト環境でResponseが未定義の場合のポリフィル
 if (typeof global.Response === 'undefined') {
-  // @ts-expect-error – provide a minimal Response polyfill for handler tests
-  global.Response = TestResponse
+  class MockResponse {
+    public status: number
+    public headers: Map<string, string>
+    private readonly _body: any
+    constructor(body?: any, init: { status?: number; headers?: any } = {}) {
+      this._body = body
+      this.status = init.status ?? 200
+      this.headers = new Map(Object.entries(init.headers || {}))
+    }
+    async json() {
+      return typeof this._body === 'string'
+        ? JSON.parse(this._body)
+        : this._body
+    }
+    async text() {
+      if (typeof this._body === 'string') return this._body
+      if (this._body == null) return ''
+      return JSON.stringify(this._body)
+    }
+  }
+  // @ts-expect-error – provide Response polyfill for test environment
+  global.Response = MockResponse
 }
+
+jest.mock('@/utils/pipeResponse', () => ({
+  pipeResponse: jest.fn(async (response: any, res: any) => {
+    res.status(response.status)
+    const text = await response.text()
+    if (text) {
+      res.write(text)
+    }
+    res.end()
+  }),
+}))
 
 const mockRegistry = {
   languageModel: jest.fn().mockReturnValue('mock-model'),
@@ -67,11 +73,6 @@ const mockModifyMessages = modifyMessages as jest.MockedFunction<
   typeof modifyMessages
 >
 
-const buildRequest = (body: any): any => ({
-  method: 'POST',
-  json: async () => body,
-})
-
 const originalEnv = { ...process.env }
 
 describe('/api/ai/vercel handler', () => {
@@ -86,9 +87,10 @@ describe('/api/ai/vercel handler', () => {
   })
 
   it('rejects non-POST requests', async () => {
-    const res = await handler({ method: 'GET' } as any)
-    expect(res.status).toBe(405)
-    await expect(res.json()).resolves.toEqual({
+    const { req, res } = createMocks({ method: 'GET' })
+    await handler(req as any, res as any)
+    expect(res._getStatusCode()).toBe(405)
+    expect(res._getJSONData()).toEqual({
       error: 'Method Not Allowed',
       errorCode: 'METHOD_NOT_ALLOWED',
     })
@@ -98,8 +100,9 @@ describe('/api/ai/vercel handler', () => {
     delete process.env.OPENAI_KEY
     delete process.env.OPENAI_API_KEY
 
-    const res = await handler(
-      buildRequest({
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
         messages: [],
         apiKey: '',
         aiService: 'openai',
@@ -107,19 +110,21 @@ describe('/api/ai/vercel handler', () => {
         stream: true,
         temperature: 1,
         maxTokens: 10,
-      })
-    )
+      },
+    })
 
-    expect(res.status).toBe(400)
-    await expect(res.json()).resolves.toEqual({
+    await handler(req as any, res as any)
+    expect(res._getStatusCode()).toBe(400)
+    expect(res._getJSONData()).toEqual({
       error: 'Empty API Key',
       errorCode: 'EmptyAPIKey',
     })
   })
 
   it('returns 400 when local services lack a URL', async () => {
-    const res = await handler(
-      buildRequest({
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
         messages: [],
         apiKey: '',
         aiService: 'ollama',
@@ -128,11 +133,12 @@ describe('/api/ai/vercel handler', () => {
         stream: true,
         temperature: 1,
         maxTokens: 10,
-      })
-    )
+      },
+    })
 
-    expect(res.status).toBe(400)
-    await expect(res.json()).resolves.toEqual({
+    await handler(req as any, res as any)
+    expect(res._getStatusCode()).toBe(400)
+    expect(res._getJSONData()).toEqual({
       error: 'Empty Local LLM URL',
       errorCode: 'EmptyLocalLLMURL',
     })
@@ -147,8 +153,9 @@ describe('/api/ai/vercel handler', () => {
     const streamResponse = new Response('stream', { status: 200 })
     mockStreamAiText.mockResolvedValue(streamResponse)
 
-    const res = await handler(
-      buildRequest({
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
         messages: [],
         apiKey: '',
         aiService: 'google',
@@ -160,8 +167,10 @@ describe('/api/ai/vercel handler', () => {
         azureEndpoint: '',
         useSearchGrounding: true,
         dynamicRetrievalThreshold: 0.42,
-      })
-    )
+      },
+    })
+
+    await handler(req as any, res as any)
 
     expect(mockCreateAIRegistry).toHaveBeenCalledWith('google', {
       apiKey: 'env-google',
@@ -180,7 +189,6 @@ describe('/api/ai/vercel handler', () => {
         dynamicRetrievalConfig: { dynamicThreshold: 0.42 },
       },
     })
-    expect(res).toBe(streamResponse)
   })
 
   it('calls generateAiText for azure requests using deployment name', async () => {
@@ -189,8 +197,9 @@ describe('/api/ai/vercel handler', () => {
     const generateResponse = new Response('done', { status: 200 })
     mockGenerateAiText.mockResolvedValue(generateResponse)
 
-    const res = await handler(
-      buildRequest({
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
         messages: [],
         apiKey: 'azure-key',
         aiService: 'azure',
@@ -200,8 +209,10 @@ describe('/api/ai/vercel handler', () => {
         maxTokens: 256,
         azureEndpoint:
           'https://my-resource.openai.azure.com/openai/deployments/my-deploy/chat/completions?api-version=2024-05-01-preview',
-      })
-    )
+      },
+    })
+
+    await handler(req as any, res as any)
 
     expect(mockCreateAIRegistry).toHaveBeenCalledWith('azure', {
       apiKey: 'azure-key',
@@ -216,6 +227,5 @@ describe('/api/ai/vercel handler', () => {
       temperature: 0.3,
       maxTokens: 256,
     })
-    expect(res).toBe(generateResponse)
   })
 })

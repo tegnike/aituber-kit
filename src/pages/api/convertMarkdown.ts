@@ -2,11 +2,16 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { Marpit } from '@marp-team/marpit'
 import fs from 'fs/promises'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (isRestrictedMode()) {
+    return res.status(200).json({ html: '', css: '' })
+  }
+
   if (req.method === 'POST') {
     const { slideName } = req.body as { slideName: string }
 

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
 
 interface PNGTuberModelInfo {
   path: string
@@ -20,6 +21,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (isRestrictedMode()) {
+    return res.status(200).json([])
+  }
+
   const pngtuberDir = path.join(process.cwd(), 'public/pngtuber')
 
   try {
