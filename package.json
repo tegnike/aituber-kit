@@ -16,9 +16,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "build:cloudflare": "node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js",
-    "preview:cloudflare": "node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js && wrangler dev",
-    "deploy:cloudflare": "node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js && wrangler deploy"
+    "build:cloudflare": "node scripts/generate-asset-manifest.js && node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js",
+    "preview:cloudflare": "node scripts/generate-asset-manifest.js && node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js && wrangler dev",
+    "deploy:cloudflare": "node scripts/generate-asset-manifest.js && node scripts/patch-opennext-canvas.js && NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build && node scripts/clean-assets.js && wrangler deploy"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.2",

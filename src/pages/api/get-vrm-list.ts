@@ -2,13 +2,14 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
 import { isRestrictedMode } from '@/utils/restrictedMode'
+import assetManifest from '@/constants/assetManifest.json'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (isRestrictedMode()) {
-    return res.status(200).json([])
+    return res.status(200).json(assetManifest.vrm)
   }
 
   const vrmDir = path.join(process.cwd(), 'public/vrm')
