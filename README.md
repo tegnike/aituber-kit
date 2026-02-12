@@ -170,6 +170,13 @@ npm run dev
 
 6. URLを開きます。[http://localhost:3000](http://localhost:3000)
 
+### かんたん起動
+
+初回セットアップ完了後は、起動スクリプトをダブルクリックするだけで起動できます。
+
+- **Windows**: `LAUNCH.bat` をダブルクリック
+- **macOS**: `LAUNCH.command` をダブルクリック
+
 詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
 ### Dockerで起動する場合
