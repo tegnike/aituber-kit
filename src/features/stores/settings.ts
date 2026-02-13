@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
-import { isLive2DEnabled } from '@/utils/live2dRestriction'
 import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
@@ -600,17 +599,12 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
   // Settings
-  modelType: (() => {
-    const envType = process.env.NEXT_PUBLIC_MODEL_TYPE as
+  modelType:
+    (process.env.NEXT_PUBLIC_MODEL_TYPE as
       | 'vrm'
       | 'live2d'
       | 'pngtuber'
-      | undefined
-    if (envType === 'live2d' && !isLive2DEnabled()) {
-      return 'vrm'
-    }
-    return envType || 'vrm'
-  })(),
+      | undefined) || 'vrm',
   selectedPNGTuberPath:
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
   pngTuberSensitivity:
@@ -772,11 +766,6 @@ const settingsStore = create<SettingsState>()(
           if (migratedModel !== state.selectAIModel) {
             state.selectAIModel = migratedModel
           }
-        }
-
-        // Force modelType away from live2d when Live2D is not enabled
-        if (state && !isLive2DEnabled() && state.modelType === 'live2d') {
-          state.modelType = 'vrm'
         }
 
         // Override with environment variables if the option is enabled

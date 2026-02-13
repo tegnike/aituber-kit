@@ -604,18 +604,16 @@ const Character = () => {
           >
             VRM
           </button>
-          {isLive2DEnabled && (
-            <button
-              className={`px-4 py-2 rounded-lg mr-2 ${
-                modelType === 'live2d'
-                  ? 'bg-primary text-theme'
-                  : 'bg-white hover:bg-white-hover'
-              }`}
-              onClick={() => settingsStore.setState({ modelType: 'live2d' })}
-            >
-              Live2D
-            </button>
-          )}
+          <button
+            className={`px-4 py-2 rounded-lg mr-2 ${
+              modelType === 'live2d'
+                ? 'bg-primary text-theme'
+                : 'bg-white hover:bg-white-hover'
+            }`}
+            onClick={() => settingsStore.setState({ modelType: 'live2d' })}
+          >
+            Live2D
+          </button>
           <button
             className={`px-4 py-2 rounded-lg ${
               modelType === 'pngtuber'
@@ -667,6 +665,14 @@ const Character = () => {
               </TextButton>
             </div>
           </>
+        )}
+
+        {modelType === 'live2d' && !isLive2DEnabled && (
+          <div className="my-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="text-sm whitespace-pre-wrap text-yellow-800">
+              {t('Live2D.SetupInfo')}
+            </div>
+          </div>
         )}
 
         {modelType === 'live2d' && isLive2DEnabled && (

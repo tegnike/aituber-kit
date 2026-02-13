@@ -341,6 +341,7 @@
   "StyleName": "スタイル名",
   "StyleNamePlaceholder": "例: ノーマル",
   "Live2D": {
+    "SetupInfo": "Live2D機能を使用するには、以下の設定が必要です。\n\n1. Live2D Cubism Core のスクリプトファイル（live2dcubismcore.min.js）を public/scripts/ に配置してください。\n2. 環境変数 NEXT_PUBLIC_LIVE2D_ENABLED=true を .env ファイルに設定してください。\n\n設定後、アプリケーションを再起動すると Live2D モデルが使用可能になります。",
     "FileInfo": "使用したいLive2Dモデルのフォルダを、public/live2d に配置してください。このフォルダの直下にmodel3.jsonファイルが存在する必要があります。\n選択肢に表示されない場合は、画面を再読込するかフォルダのパスが正しいか確認してください。",
     "Info": "感情とモーションを指定できます。\n各感情はプロンプトで制御しています。詳しくは「AI設定 => キャラクター設定」をご覧ください。",
     "Emotions": "表情設定",
