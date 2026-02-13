@@ -721,9 +721,16 @@ export const handleSendChatFn =
       homeStore.setState({ chatProcessing: true })
 
       if (wsManager?.websocket?.readyState === WebSocket.OPEN) {
+        const userMessageContent: Message['content'] = modalImage
+          ? [
+              { type: 'text' as const, text: newMessage },
+              { type: 'image' as const, image: modalImage },
+            ]
+          : newMessage
+
         homeStore.getState().upsertMessage({
           role: 'user',
-          content: newMessage,
+          content: userMessageContent,
           timestamp: timestamp,
           userName: userName,
         })
@@ -734,9 +741,18 @@ export const handleSendChatFn =
           timestamp: timestamp,
         }).catch(() => {})
 
-        wsManager.websocket.send(
-          JSON.stringify({ content: newMessage, type: 'chat' })
-        )
+        const wsPayload: { content: string; type: string; image?: string } = {
+          content: newMessage,
+          type: 'chat',
+        }
+        if (modalImage) {
+          wsPayload.image = modalImage
+        }
+        wsManager.websocket.send(JSON.stringify(wsPayload))
+
+        if (modalImage) {
+          homeStore.setState({ modalImage: '' })
+        }
       } else {
         toastStore.getState().addToast({
           message: i18next.t('NotConnectedToExternalAssistant'),
@@ -916,7 +932,8 @@ export const handleReceiveTextFromWsFn =
     text: string,
     role?: string,
     emotion: EmotionType = 'neutral',
-    type?: string
+    type?: string,
+    image?: string
   ) => {
     const sessionId = generateSessionId()
     if (text === null || role === undefined) return
@@ -947,18 +964,39 @@ export const handleReceiveTextFromWsFn =
         // 既存のメッセージに追加（IDを維持）
         const lastMessage = hs.chatLog[hs.chatLog.length - 1]
         const lastContent =
-          typeof lastMessage.content === 'string' ? lastMessage.content : ''
+          typeof lastMessage.content === 'string'
+            ? lastMessage.content
+            : Array.isArray(lastMessage.content)
+              ? lastMessage.content[0].text
+              : ''
+
+        const appendedText = lastContent + text
+        const appendedContent: Message['content'] = Array.isArray(
+          lastMessage.content
+        )
+          ? [
+              { type: 'text' as const, text: appendedText },
+              lastMessage.content[1],
+            ]
+          : appendedText
 
         homeStore.getState().upsertMessage({
           id: lastMessage.id,
           role: role,
-          content: lastContent + text,
+          content: appendedContent,
         })
       } else {
         // 新しいメッセージを追加（新規IDを生成）
+        const messageContent: Message['content'] = image
+          ? [
+              { type: 'text' as const, text: text },
+              { type: 'image' as const, image: image },
+            ]
+          : text
+
         homeStore.getState().upsertMessage({
           role: role,
-          content: text,
+          content: messageContent,
         })
         wsManager?.setTextBlockStarted(true)
       }
