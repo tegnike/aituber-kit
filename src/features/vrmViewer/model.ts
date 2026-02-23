@@ -19,6 +19,7 @@ export class Model {
   public vrm?: VRM | null
   public mixer?: THREE.AnimationMixer
   public emoteController?: EmoteController
+  public currentAction?: THREE.AnimationAction
 
   private _lookAtTargetParent: THREE.Object3D
   private _lipSync?: LipSync
@@ -68,6 +69,7 @@ export class Model {
 
     const clip = vrmAnimation.createAnimationClip(vrm)
     const action = mixer.clipAction(clip)
+    this.currentAction = action
     action.play()
   }
 

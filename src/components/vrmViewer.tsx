@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
+import PoseTestButton from './poseTestButton'
 
 export default function VrmViewer() {
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
@@ -33,6 +35,12 @@ export default function VrmViewer() {
           const blob = new Blob([file], { type: 'application/octet-stream' })
           const url = window.URL.createObjectURL(blob)
           viewer.loadVrm(url)
+        } else if (file_type === 'vrma') {
+          const blob = new Blob([file], { type: 'application/octet-stream' })
+          const url = window.URL.createObjectURL(blob)
+          loadVRMAnimation(url).then((vrma) => {
+            if (vrma) viewer.model?.loadAnimation(vrma)
+          })
         } else if (file.type.startsWith('image/')) {
           const reader = new FileReader()
           reader.readAsDataURL(file)
@@ -46,8 +54,11 @@ export default function VrmViewer() {
   }, [])
 
   return (
-    <div className={'absolute top-0 left-0 w-screen h-[100svh] z-5'}>
-      <canvas ref={canvasRef} className={'h-full w-full'}></canvas>
-    </div>
+    <>
+      <div className={'absolute top-0 left-0 w-screen h-[100svh] z-5'}>
+        <canvas ref={canvasRef} className={'h-full w-full'}></canvas>
+      </div>
+      <PoseTestButton />
+    </>
   )
 }
