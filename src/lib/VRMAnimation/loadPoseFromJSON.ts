@@ -48,10 +48,7 @@ export async function loadPoseFromJSON(
         times,
         values
       )
-      animation.humanoidTracks.rotation.set(
-        boneName as VRMHumanBoneName,
-        track
-      )
+      animation.humanoidTracks.rotation.set(boneName as VRMHumanBoneName, track)
     }
 
     // hipsのtranslationはスケール差で位置ずれするため除外し、位置はidleに任せる
