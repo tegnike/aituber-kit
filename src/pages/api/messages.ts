@@ -8,6 +8,7 @@ interface ReceivedMessage {
   type: MessageType
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
+  image?: string
 }
 
 interface MessageQueue {
@@ -29,7 +30,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === 'POST') {
-    const { messages, systemPrompt, useCurrentSystemPrompt } = req.body
+    const { messages, systemPrompt, useCurrentSystemPrompt, image } = req.body
 
     if (!Array.isArray(messages) || messages.length === 0) {
       res.status(400).json({ error: 'Messages array is required' })
@@ -61,6 +62,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
         type,
         systemPrompt,
         useCurrentSystemPrompt,
+        image,
       })
     })
     messagesPerClient[clientId].lastAccessed = timestamp

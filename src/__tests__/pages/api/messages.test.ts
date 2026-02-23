@@ -278,6 +278,103 @@ describe('/api/messages', () => {
         })
       )
     })
+
+    it('should include image field in messages when provided', () => {
+      const testImage = 'data:image/png;base64,iVBORw0KGgo='
+
+      handler(
+        createMockReq({
+          method: 'POST',
+          query: { clientId: 'client1', type: 'ai_generate' },
+          body: {
+            messages: ['describe this image'],
+            image: testImage,
+          },
+        }),
+        createMockRes()
+      )
+
+      const getRes = createMockRes()
+      handler(
+        createMockReq({
+          method: 'GET',
+          query: { clientId: 'client1' },
+        }),
+        getRes
+      )
+
+      const messages = (getRes._json as { messages: unknown[] }).messages
+      expect(messages).toHaveLength(1)
+      expect(messages[0]).toEqual(
+        expect.objectContaining({
+          message: 'describe this image',
+          type: 'ai_generate',
+          image: testImage,
+        })
+      )
+    })
+
+    it('should not include image field when not provided', () => {
+      handler(
+        createMockReq({
+          method: 'POST',
+          query: { clientId: 'client1' },
+          body: { messages: ['hello'] },
+        }),
+        createMockRes()
+      )
+
+      const getRes = createMockRes()
+      handler(
+        createMockReq({
+          method: 'GET',
+          query: { clientId: 'client1' },
+        }),
+        getRes
+      )
+
+      const messages = (getRes._json as { messages: unknown[] }).messages
+      expect(messages[0]).toEqual(
+        expect.objectContaining({
+          message: 'hello',
+          image: undefined,
+        })
+      )
+    })
+
+    it('should apply the same image to all messages in a single POST', () => {
+      const testImage = 'data:image/jpeg;base64,/9j/4AAQ='
+
+      handler(
+        createMockReq({
+          method: 'POST',
+          query: { clientId: 'client1', type: 'ai_generate' },
+          body: {
+            messages: ['msg1', 'msg2'],
+            image: testImage,
+          },
+        }),
+        createMockRes()
+      )
+
+      const getRes = createMockRes()
+      handler(
+        createMockReq({
+          method: 'GET',
+          query: { clientId: 'client1' },
+        }),
+        getRes
+      )
+
+      const messages = (getRes._json as { messages: unknown[] }).messages
+      expect(messages).toHaveLength(2)
+      expect(messages[0]).toEqual(
+        expect.objectContaining({ message: 'msg1', image: testImage })
+      )
+      expect(messages[1]).toEqual(
+        expect.objectContaining({ message: 'msg2', image: testImage })
+      )
+    })
   })
 
   describe('GET', () => {
