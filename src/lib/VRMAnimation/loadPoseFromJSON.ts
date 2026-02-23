@@ -54,7 +54,8 @@ export async function loadPoseFromJSON(
       )
     }
 
-    if (boneData.translation) {
+    // hipsのtranslationはスケール差で位置ずれするため除外し、位置はidleに任せる
+    if (boneData.translation && boneName !== 'hips') {
       const times = new Float32Array(boneData.translation.times)
       const values = new Float32Array(boneData.translation.values.flat())
       const track = new THREE.VectorKeyframeTrack(

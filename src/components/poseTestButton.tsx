@@ -26,11 +26,29 @@ export default function PoseTestButton() {
 
       // thinkポーズをNormalで再生
       const poseClip = pose.createAnimationClip(model.vrm)
+      // 現在のhips位置をキャプチャしてthink clipに焼き込み、位置ズレを防ぐ
+      const hipsNode = model.vrm.humanoid.getNormalizedBoneNode('hips')
+      if (hipsNode) {
+        const pos = hipsNode.position
+        poseClip.tracks.push(
+          new THREE.VectorKeyframeTrack(
+            `${hipsNode.name}.position`,
+            [0],
+            [pos.x, pos.y, pos.z]
+          )
+        )
+      }
       const poseAction = model.mixer.clipAction(poseClip)
 
       // idle_loopのadditive版を作成（restポーズからの差分＝揺れだけが加算される）
       const additiveClip = idleVrma.createAnimationClip(model.vrm)
       THREE.AnimationUtils.makeClipAdditive(additiveClip)
+      // hipsのpositionトラックを除去して位置を固定
+      if (hipsNode) {
+        additiveClip.tracks = additiveClip.tracks.filter(
+          (track) => track.name !== `${hipsNode.name}.position`
+        )
+      }
       additiveClip.name = 'idle_additive'
       const additiveAction = model.mixer.clipAction(additiveClip)
       additiveAction.blendMode = THREE.AdditiveAnimationBlendMode
