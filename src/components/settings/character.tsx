@@ -4,7 +4,10 @@ import Image from 'next/image'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore, { SettingsState } from '@/features/stores/settings'
+import settingsStore, {
+  SettingsState,
+  PoseConfigItem,
+} from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
@@ -31,6 +34,241 @@ type Character = Pick<
   | 'selectedVrmPath'
   | 'selectedLive2DPath'
 >
+
+interface PoseFile {
+  name: string
+  path: string
+}
+
+const PoseConfigSettings = () => {
+  const poseConfigs = settingsStore((s) => s.poseConfigs)
+  const [poseFiles, setPoseFiles] = useState<PoseFile[]>([])
+  const [newLabel, setNewLabel] = useState('')
+  const [newJson, setNewJson] = useState('')
+  const [newSeqLabel, setNewSeqLabel] = useState('')
+  const [selectedSeqJsons, setSelectedSeqJsons] = useState<string[]>([])
+  const [newSwitchDuration, setNewSwitchDuration] = useState(0.5)
+
+  useEffect(() => {
+    fetch('/api/get-pose-list')
+      .then((res) => res.json())
+      .then((files: PoseFile[]) => setPoseFiles(files))
+      .catch((error) => {
+        console.error('Error fetching pose list:', error)
+      })
+  }, [])
+
+  const handleDelete = (id: string) => {
+    settingsStore.setState({
+      poseConfigs: poseConfigs.filter((p) => p.id !== id),
+    })
+  }
+
+  const handleMove = (id: string, direction: 'up' | 'down') => {
+    const index = poseConfigs.findIndex((p) => p.id === id)
+    if (index === -1) return
+    if (direction === 'up' && index === 0) return
+    if (direction === 'down' && index === poseConfigs.length - 1) return
+
+    const newConfigs = [...poseConfigs]
+    const swapIndex = direction === 'up' ? index - 1 : index + 1
+    ;[newConfigs[index], newConfigs[swapIndex]] = [
+      newConfigs[swapIndex],
+      newConfigs[index],
+    ]
+    settingsStore.setState({ poseConfigs: newConfigs })
+  }
+
+  const handleAddPose = () => {
+    if (!newLabel.trim() || !newJson) return
+    const id = `pose_${Date.now()}`
+    const newConfig: PoseConfigItem = {
+      id,
+      label: newLabel.trim(),
+      json: newJson,
+    }
+    settingsStore.setState({
+      poseConfigs: [...poseConfigs, newConfig],
+    })
+    setNewLabel('')
+    setNewJson('')
+  }
+
+  const handleAddSequence = () => {
+    if (!newSeqLabel.trim() || selectedSeqJsons.length < 2) return
+    const id = `seq_${Date.now()}`
+    const newConfig: PoseConfigItem = {
+      id,
+      label: newSeqLabel.trim(),
+      sequence: selectedSeqJsons,
+      switchDuration: newSwitchDuration,
+    }
+    settingsStore.setState({
+      poseConfigs: [...poseConfigs, newConfig],
+    })
+    setNewSeqLabel('')
+    setSelectedSeqJsons([])
+    setNewSwitchDuration(0.5)
+  }
+
+  const toggleSeqJson = (jsonPath: string) => {
+    setSelectedSeqJsons((prev) =>
+      prev.includes(jsonPath)
+        ? prev.filter((p) => p !== jsonPath)
+        : [...prev, jsonPath]
+    )
+  }
+
+  return (
+    <div className="my-6">
+      <div className="text-xl font-bold mb-4">ポーズ設定</div>
+      <div className="mb-4 text-sm">
+        ポーズ調整モードで表示されるポーズの追加・削除・並べ替えができます。
+      </div>
+
+      {/* 既存ポーズ一覧 */}
+      {poseConfigs.length > 0 && (
+        <div className="space-y-2 mb-6">
+          {poseConfigs.map((config, index) => (
+            <div
+              key={config.id}
+              className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="font-bold text-sm truncate">{config.label}</div>
+                <div className="text-xs text-gray-500 truncate">
+                  {'json' in config
+                    ? config.json
+                    : `シーケンス: ${config.sequence.join(', ')} (${config.switchDuration}秒)`}
+                </div>
+              </div>
+              <div className="flex gap-1 shrink-0">
+                <button
+                  onClick={() => handleMove(config.id, 'up')}
+                  disabled={index === 0}
+                  className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded disabled:opacity-30"
+                >
+                  ▲
+                </button>
+                <button
+                  onClick={() => handleMove(config.id, 'down')}
+                  disabled={index === poseConfigs.length - 1}
+                  className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded disabled:opacity-30"
+                >
+                  ▼
+                </button>
+                <button
+                  onClick={() => handleDelete(config.id)}
+                  className="px-2 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-600 rounded"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 通常ポーズ追加 */}
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+        <div className="font-bold text-sm mb-2">通常ポーズを追加</div>
+        <div className="flex gap-2 items-end">
+          <div className="flex-1">
+            <label className="block text-xs mb-1">ラベル</label>
+            <input
+              type="text"
+              value={newLabel}
+              onChange={(e) => setNewLabel(e.target.value)}
+              placeholder="例: Think"
+              className="w-full px-3 py-2 bg-white rounded-lg text-sm"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-xs mb-1">JSONファイル</label>
+            <select
+              value={newJson}
+              onChange={(e) => setNewJson(e.target.value)}
+              className="w-full px-3 py-2 bg-white rounded-lg text-sm"
+            >
+              <option value="">選択してください</option>
+              {poseFiles.map((f) => (
+                <option key={f.path} value={f.path}>
+                  {f.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={handleAddPose}
+            disabled={!newLabel.trim() || !newJson}
+            className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
+          >
+            追加
+          </button>
+        </div>
+      </div>
+
+      {/* シーケンス追加 */}
+      <div className="p-4 bg-gray-50 rounded-lg">
+        <div className="font-bold text-sm mb-2">シーケンスポーズを追加</div>
+        <div className="mb-3">
+          <label className="block text-xs mb-1">ラベル</label>
+          <input
+            type="text"
+            value={newSeqLabel}
+            onChange={(e) => setNewSeqLabel(e.target.value)}
+            placeholder="例: Wave"
+            className="w-full px-3 py-2 bg-white rounded-lg text-sm"
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-xs mb-1">
+            JSONファイル（2つ以上選択）
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {poseFiles.map((f) => (
+              <label
+                key={f.path}
+                className="flex items-center gap-1 px-2 py-1 bg-white rounded text-sm cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedSeqJsons.includes(f.path)}
+                  onChange={() => toggleSeqJson(f.path)}
+                  className="h-4 w-4"
+                />
+                {f.name}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div className="flex gap-2 items-end">
+          <div>
+            <label className="block text-xs mb-1">遷移時間（秒）</label>
+            <input
+              type="number"
+              value={newSwitchDuration}
+              onChange={(e) =>
+                setNewSwitchDuration(parseFloat(e.target.value) || 0.5)
+              }
+              min="0.1"
+              max="5"
+              step="0.1"
+              className="w-24 px-3 py-2 bg-white rounded-lg text-sm"
+            />
+          </div>
+          <button
+            onClick={handleAddSequence}
+            disabled={!newSeqLabel.trim() || selectedSeqJsons.length < 2}
+            className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
+          >
+            追加
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const emotionFields = [
   {
@@ -957,6 +1195,7 @@ const Character = () => {
               enabled={poseAdjustMode}
               onChange={(v) => settingsStore.setState({ poseAdjustMode: v })}
             />
+            <PoseConfigSettings />
           </div>
         )}
 

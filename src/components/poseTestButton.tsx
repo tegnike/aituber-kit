@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import * as THREE from 'three'
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import type { PoseConfigItem } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import { createSequenceClip } from '@/lib/VRMAnimation/createSequenceClip'
 import { loadPoseFromJSON } from '@/lib/VRMAnimation/loadPoseFromJSON'
@@ -19,7 +21,7 @@ function usePoseToggle() {
   const poseStateRef = useRef<PoseState | null>(null)
 
   const applyPose = useCallback(
-    async (poseName: string, poseConfig: PoseConfig) => {
+    async (poseName: string, poseConfig: PoseConfigItem) => {
       const { viewer } = homeStore.getState()
       const model = viewer.model
       if (!model?.vrm || !model.mixer) return
@@ -156,29 +158,6 @@ function usePoseToggle() {
   return { activePose, applyPose, resetToIdle }
 }
 
-type PoseConfig =
-  | { name: string; label: string; json: string }
-  | {
-      name: string
-      label: string
-      sequence: string[]
-      switchDuration?: number
-    }
-
-const POSES: PoseConfig[] = [
-  { name: 'think', label: 'Think', json: '/think.json' },
-  { name: 'cheer', label: 'Cheer', json: '/cheer.json' },
-  { name: 'cross', label: 'Cross', json: '/cross.json' },
-  { name: 'cover_mouth', label: 'Cover Mouth', json: '/cover_mouth.json' },
-  { name: 'finger_touch', label: 'Finger Touch', json: '/finger_touch.json' },
-  {
-    name: 'wave',
-    label: 'Wave',
-    sequence: ['/wave1.json', '/wave2.json'],
-    switchDuration: 0.5,
-  },
-]
-
 async function fetchCurrentOffset(jsonPath: string): Promise<number> {
   try {
     const res = await fetch(buildUrl(jsonPath))
@@ -191,6 +170,7 @@ async function fetchCurrentOffset(jsonPath: string): Promise<number> {
 
 export default function PoseTestButton() {
   const { activePose, applyPose, resetToIdle } = usePoseToggle()
+  const poseConfigs = settingsStore((s) => s.poseConfigs)
   const [angleDeg, setAngleDeg] = useState(0)
   const [savedAngleDeg, setSavedAngleDeg] = useState(0)
   const [saving, setSaving] = useState(false)
@@ -209,7 +189,7 @@ export default function PoseTestButton() {
   )
 
   const handlePoseClick = useCallback(
-    async (poseConfig: PoseConfig) => {
+    async (poseConfig: PoseConfigItem) => {
       if ('json' in poseConfig) {
         const currentOffset = await fetchCurrentOffset(poseConfig.json)
         setAngleDeg(currentOffset)
@@ -222,13 +202,13 @@ export default function PoseTestButton() {
       if (viewer.model) {
         viewer.model.poseYRotationOffset = 0
       }
-      applyPose(poseConfig.name, poseConfig)
+      applyPose(poseConfig.id, poseConfig)
     },
     [applyPose]
   )
 
   const handleSave = useCallback(async () => {
-    const pose = POSES.find((p) => p.name === activePose)
+    const pose = poseConfigs.find((p) => p.id === activePose)
     if (!pose || !('json' in pose)) return
 
     setSaving(true)
@@ -252,7 +232,7 @@ export default function PoseTestButton() {
         }
         // JSONが更新されたのでポーズを再読み込み
         applyPose('__reload__', pose)
-        setTimeout(() => applyPose(pose.name, pose), 100)
+        setTimeout(() => applyPose(pose.id, pose), 100)
       } else {
         toastStore.getState().addToast({
           message: '保存に失敗しました',
@@ -263,7 +243,7 @@ export default function PoseTestButton() {
     } finally {
       setSaving(false)
     }
-  }, [activePose, angleDeg, applyPose])
+  }, [activePose, angleDeg, applyPose, poseConfigs])
 
   // コンポーネントアンマウント時（設定でOFFにした時）にidleに戻す
   const resetToIdleRef = useRef(resetToIdle)
@@ -277,7 +257,7 @@ export default function PoseTestButton() {
       <div className="flex gap-3 mr-4">
         {/* 調整パネル（シーケンスでない通常ポーズのみ表示） */}
         {activePose &&
-          POSES.find((p) => p.name === activePose && 'json' in p) && (
+          poseConfigs.find((p) => p.id === activePose && 'json' in p) && (
             <div className="bg-black/70 backdrop-blur-sm rounded-2xl p-4 text-white shadow-xl w-64 self-center">
               <div className="text-sm font-bold mb-2">
                 Y軸回転: {angleDeg > 0 ? '+' : ''}
@@ -320,17 +300,17 @@ export default function PoseTestButton() {
 
         {/* ポーズボタン群（縦並び） */}
         <div className="flex flex-col gap-2">
-          {POSES.map((pose) => (
+          {poseConfigs.map((pose) => (
             <button
-              key={pose.name}
+              key={pose.id}
               onClick={() => handlePoseClick(pose)}
               className={`rounded-xl px-4 py-2 font-bold text-white shadow-lg text-sm ${
-                activePose === pose.name
+                activePose === pose.id
                   ? 'bg-secondary hover:bg-secondary-hover'
                   : 'bg-primary hover:bg-primary-hover active:bg-primary-press'
               }`}
             >
-              {activePose === pose.name ? 'Idle' : pose.label}
+              {activePose === pose.id ? 'Idle' : pose.label}
             </button>
           ))}
         </div>

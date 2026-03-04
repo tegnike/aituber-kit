@@ -199,7 +199,13 @@ interface Character {
   pngTuberScale: number
   pngTuberOffsetX: number
   pngTuberOffsetY: number
+  poseConfigs: PoseConfigItem[]
 }
+
+// Pose config item type
+export type PoseConfigItem =
+  | { id: string; label: string; json: string }
+  | { id: string; label: string; sequence: string[]; switchDuration: number }
 
 // Preset question type
 export interface PresetQuestion {
@@ -626,6 +632,23 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_X || '0') || 0,
   pngTuberOffsetY:
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
+  poseConfigs: [
+    { id: 'think', label: 'Think', json: '/think.json' },
+    { id: 'cheer', label: 'Cheer', json: '/cheer.json' },
+    { id: 'cross', label: 'Cross', json: '/cross.json' },
+    { id: 'cover_mouth', label: 'Cover Mouth', json: '/cover_mouth.json' },
+    {
+      id: 'finger_touch',
+      label: 'Finger Touch',
+      json: '/finger_touch.json',
+    },
+    {
+      id: 'wave',
+      label: 'Wave',
+      sequence: ['/wave1.json', '/wave2.json'],
+      switchDuration: 0.5,
+    },
+  ],
 
   // Memory settings
   memoryEnabled:
@@ -949,6 +972,7 @@ const settingsStore = create<SettingsState>()(
         pngTuberScale: state.pngTuberScale,
         pngTuberOffsetX: state.pngTuberOffsetX,
         pngTuberOffsetY: state.pngTuberOffsetY,
+        poseConfigs: state.poseConfigs,
         neutralEmotions: state.neutralEmotions,
         happyEmotions: state.happyEmotions,
         sadEmotions: state.sadEmotions,
