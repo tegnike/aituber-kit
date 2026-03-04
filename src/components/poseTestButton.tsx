@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import * as THREE from 'three'
 import homeStore from '@/features/stores/home'
 import toastStore from '@/features/stores/toast'
+import { createSequenceClip } from '@/lib/VRMAnimation/createSequenceClip'
 import { loadPoseFromJSON } from '@/lib/VRMAnimation/loadPoseFromJSON'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
@@ -18,7 +19,7 @@ function usePoseToggle() {
   const poseStateRef = useRef<PoseState | null>(null)
 
   const applyPose = useCallback(
-    async (poseName: string, jsonPath: string) => {
+    async (poseName: string, poseConfig: PoseConfig) => {
       const { viewer } = homeStore.getState()
       const model = viewer.model
       if (!model?.vrm || !model.mixer) return
@@ -35,50 +36,106 @@ function usePoseToggle() {
         poseStateRef.current.additiveAction.fadeOut(FADE_DURATION)
       }
 
-      const [pose, idleVrma] = await Promise.all([
-        loadPoseFromJSON(buildUrl(jsonPath)),
-        loadVRMAnimation(buildUrl('/idle_loop.vrma')),
-      ])
-      if (!pose || !idleVrma) return
+      const isSequence = 'sequence' in poseConfig
+      let poseClip: THREE.AnimationClip
 
-      // ポーズclip作成 + hips位置焼き込み
-      const poseClip = pose.createAnimationClip(model.vrm)
-      const hipsNode = model.vrm.humanoid.getNormalizedBoneNode('hips')
-      if (hipsNode) {
-        const pos = hipsNode.position
-        poseClip.tracks.push(
-          new THREE.VectorKeyframeTrack(
-            `${hipsNode.name}.position`,
-            [0],
-            [pos.x, pos.y, pos.z]
+      if (isSequence) {
+        // シーケンス: 複数ポーズを結合したループクリップを作成
+        const [poses, idleVrma] = await Promise.all([
+          Promise.all(
+            poseConfig.sequence.map((p) => loadPoseFromJSON(buildUrl(p)))
+          ),
+          loadVRMAnimation(buildUrl('/idle_loop.vrma')),
+        ])
+        if (poses.some((p) => !p) || !idleVrma) return
+
+        poseClip = createSequenceClip(
+          poses.filter((p): p is NonNullable<typeof p> => p !== null),
+          model.vrm,
+          poseConfig.switchDuration ?? 0.5
+        )
+        // hips位置を固定（通常ポーズと同様）
+        const hipsNode = model.vrm.humanoid.getNormalizedBoneNode('hips')
+        if (hipsNode) {
+          const pos = hipsNode.position
+          poseClip.tracks.push(
+            new THREE.VectorKeyframeTrack(
+              `${hipsNode.name}.position`,
+              [0],
+              [pos.x, pos.y, pos.z]
+            )
           )
-        )
+        }
+        poseClip.name = `sequence_${poseName}`
+        const poseAction = model.mixer.clipAction(poseClip)
+        poseAction.loop = THREE.LoopRepeat
+
+        // idle_loopのadditive版
+        const additiveClip = idleVrma.createAnimationClip(model.vrm)
+        THREE.AnimationUtils.makeClipAdditive(additiveClip)
+        if (hipsNode) {
+          additiveClip.tracks = additiveClip.tracks.filter(
+            (track) => track.name !== `${hipsNode.name}.position`
+          )
+        }
+        additiveClip.name = `idle_additive_${poseName}`
+        const additiveAction = model.mixer.clipAction(additiveClip)
+        additiveAction.blendMode = THREE.AdditiveAnimationBlendMode
+
+        if (!poseStateRef.current && model.currentAction) {
+          model.currentAction.fadeOut(FADE_DURATION)
+        }
+
+        poseAction.reset().fadeIn(FADE_DURATION).play()
+        additiveAction.reset().fadeIn(FADE_DURATION).play()
+
+        poseStateRef.current = { poseAction, additiveAction }
+        setActivePose(poseName)
+      } else {
+        // 通常ポーズ: 既存ロジック
+        const [pose, idleVrma] = await Promise.all([
+          loadPoseFromJSON(buildUrl(poseConfig.json)),
+          loadVRMAnimation(buildUrl('/idle_loop.vrma')),
+        ])
+        if (!pose || !idleVrma) return
+
+        poseClip = pose.createAnimationClip(model.vrm)
+        const hipsNode = model.vrm.humanoid.getNormalizedBoneNode('hips')
+        if (hipsNode) {
+          const pos = hipsNode.position
+          poseClip.tracks.push(
+            new THREE.VectorKeyframeTrack(
+              `${hipsNode.name}.position`,
+              [0],
+              [pos.x, pos.y, pos.z]
+            )
+          )
+        }
+        poseClip.name = `pose_${poseName}`
+        const poseAction = model.mixer.clipAction(poseClip)
+
+        // idle_loopのadditive版（揺れだけ加算）
+        const additiveClip = idleVrma.createAnimationClip(model.vrm)
+        THREE.AnimationUtils.makeClipAdditive(additiveClip)
+        if (hipsNode) {
+          additiveClip.tracks = additiveClip.tracks.filter(
+            (track) => track.name !== `${hipsNode.name}.position`
+          )
+        }
+        additiveClip.name = `idle_additive_${poseName}`
+        const additiveAction = model.mixer.clipAction(additiveClip)
+        additiveAction.blendMode = THREE.AdditiveAnimationBlendMode
+
+        if (!poseStateRef.current && model.currentAction) {
+          model.currentAction.fadeOut(FADE_DURATION)
+        }
+
+        poseAction.reset().fadeIn(FADE_DURATION).play()
+        additiveAction.reset().fadeIn(FADE_DURATION).play()
+
+        poseStateRef.current = { poseAction, additiveAction }
+        setActivePose(poseName)
       }
-      poseClip.name = `pose_${poseName}`
-      const poseAction = model.mixer.clipAction(poseClip)
-
-      // idle_loopのadditive版（揺れだけ加算）
-      const additiveClip = idleVrma.createAnimationClip(model.vrm)
-      THREE.AnimationUtils.makeClipAdditive(additiveClip)
-      if (hipsNode) {
-        additiveClip.tracks = additiveClip.tracks.filter(
-          (track) => track.name !== `${hipsNode.name}.position`
-        )
-      }
-      additiveClip.name = `idle_additive_${poseName}`
-      const additiveAction = model.mixer.clipAction(additiveClip)
-      additiveAction.blendMode = THREE.AdditiveAnimationBlendMode
-
-      // 元のidleをfadeOut（別ポーズからの切り替え時はすでにfadeOut済み）
-      if (!poseStateRef.current && model.currentAction) {
-        model.currentAction.fadeOut(FADE_DURATION)
-      }
-
-      poseAction.reset().fadeIn(FADE_DURATION).play()
-      additiveAction.reset().fadeIn(FADE_DURATION).play()
-
-      poseStateRef.current = { poseAction, additiveAction }
-      setActivePose(poseName)
     },
     [activePose]
   )
@@ -104,16 +161,27 @@ function usePoseToggle() {
   return { activePose, applyPose, resetToIdle }
 }
 
-const POSES = [
+type PoseConfig =
+  | { name: string; label: string; json: string }
+  | {
+      name: string
+      label: string
+      sequence: string[]
+      switchDuration?: number
+    }
+
+const POSES: PoseConfig[] = [
   { name: 'think', label: 'Think', json: '/think.json' },
   { name: 'cheer', label: 'Cheer', json: '/cheer.json' },
   { name: 'cross', label: 'Cross', json: '/cross.json' },
   { name: 'cover_mouth', label: 'Cover Mouth', json: '/cover_mouth.json' },
   { name: 'finger_touch', label: 'Finger Touch', json: '/finger_touch.json' },
-  { name: 'wave1', label: 'Wave 1', json: '/wave1.json' },
-  { name: 'wave1_bk', label: 'Wave 1 BK', json: '/wave1_bk.json' },
-  { name: 'wave2', label: 'Wave 2', json: '/wave2.json' },
-  { name: 'wave2_bk', label: 'Wave 2 BK', json: '/wave2_bk.json' },
+  {
+    name: 'wave',
+    label: 'Wave',
+    sequence: ['/wave1.json', '/wave2.json'],
+    switchDuration: 0.5,
+  },
 ]
 
 async function fetchCurrentOffset(jsonPath: string): Promise<number> {
@@ -146,22 +214,27 @@ export default function PoseTestButton() {
   )
 
   const handlePoseClick = useCallback(
-    async (poseName: string, jsonPath: string) => {
-      const currentOffset = await fetchCurrentOffset(jsonPath)
-      setAngleDeg(currentOffset)
-      setSavedAngleDeg(currentOffset)
+    async (poseConfig: PoseConfig) => {
+      if ('json' in poseConfig) {
+        const currentOffset = await fetchCurrentOffset(poseConfig.json)
+        setAngleDeg(currentOffset)
+        setSavedAngleDeg(currentOffset)
+      } else {
+        setAngleDeg(0)
+        setSavedAngleDeg(0)
+      }
       const { viewer } = homeStore.getState()
       if (viewer.model) {
         viewer.model.poseYRotationOffset = 0
       }
-      applyPose(poseName, jsonPath)
+      applyPose(poseConfig.name, poseConfig)
     },
     [applyPose]
   )
 
   const handleSave = useCallback(async () => {
     const pose = POSES.find((p) => p.name === activePose)
-    if (!pose) return
+    if (!pose || !('json' in pose)) return
 
     setSaving(true)
     try {
@@ -183,8 +256,8 @@ export default function PoseTestButton() {
           viewer.model.poseYRotationOffset = 0
         }
         // JSONが更新されたのでポーズを再読み込み
-        applyPose('__reload__', pose.json)
-        setTimeout(() => applyPose(pose.name, pose.json), 100)
+        applyPose('__reload__', pose)
+        setTimeout(() => applyPose(pose.name, pose), 100)
       } else {
         toastStore.getState().addToast({
           message: '保存に失敗しました',
@@ -207,8 +280,9 @@ export default function PoseTestButton() {
   return (
     <div className="fixed top-0 right-0 bottom-0 z-50 flex items-center">
       <div className="flex gap-3 mr-4">
-        {/* 調整パネル */}
-        {activePose && (
+        {/* 調整パネル（シーケンスでない通常ポーズのみ表示） */}
+        {activePose &&
+          POSES.find((p) => p.name === activePose && 'json' in p) && (
           <div className="bg-black/70 backdrop-blur-sm rounded-2xl p-4 text-white shadow-xl w-64 self-center">
             <div className="text-sm font-bold mb-2">
               Y軸回転: {angleDeg > 0 ? '+' : ''}
@@ -254,7 +328,7 @@ export default function PoseTestButton() {
           {POSES.map((pose) => (
             <button
               key={pose.name}
-              onClick={() => handlePoseClick(pose.name, pose.json)}
+              onClick={() => handlePoseClick(pose)}
               className={`rounded-xl px-4 py-2 font-bold text-white shadow-lg text-sm ${
                 activePose === pose.name
                   ? 'bg-secondary hover:bg-secondary-hover'
