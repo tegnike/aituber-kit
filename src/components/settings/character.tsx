@@ -955,9 +955,7 @@ const Character = () => {
             </div>
             <ToggleSwitch
               enabled={poseAdjustMode}
-              onChange={(v) =>
-                settingsStore.setState({ poseAdjustMode: v })
-              }
+              onChange={(v) => settingsStore.setState({ poseAdjustMode: v })}
             />
           </div>
         )}
