@@ -53,12 +53,14 @@ export default function VrmViewer() {
     }
   }, [])
 
+  const poseAdjustMode = settingsStore((s) => s.poseAdjustMode)
+
   return (
     <>
       <div className={'absolute top-0 left-0 w-screen h-[100svh] z-5'}>
         <canvas ref={canvasRef} className={'h-full w-full'}></canvas>
       </div>
-      <PoseTestButton />
+      {poseAdjustMode && <PoseTestButton />}
     </>
   )
 }

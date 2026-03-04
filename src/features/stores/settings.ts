@@ -190,6 +190,7 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  poseAdjustMode: boolean
   selectedPNGTuberPath: string
   pngTuberSensitivity: number
   pngTuberChromaKeyEnabled: boolean
@@ -494,6 +495,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   },
   lightingIntensity:
     parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
+  poseAdjustMode: false,
 
   // General
   selectLanguage: (process.env.NEXT_PUBLIC_SELECT_LANGUAGE as Language) || 'ja',

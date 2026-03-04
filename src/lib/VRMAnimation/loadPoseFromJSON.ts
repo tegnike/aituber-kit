@@ -23,6 +23,7 @@ interface PoseJSON {
     string,
     { times: number[]; values: number[]; interpolation: string }
   >
+  yRotationOffsetDeg?: number
 }
 
 export async function loadPoseFromJSON(
@@ -64,6 +65,24 @@ export async function loadPoseFromJSON(
         boneName as VRMHumanBoneName,
         track
       )
+    }
+  }
+
+  // yRotationOffsetDegが設定されている場合、hipsのrotationにY軸回転を適用
+  if (json.yRotationOffsetDeg && json.yRotationOffsetDeg !== 0) {
+    const hipsTrack = animation.humanoidTracks.rotation.get('hips' as VRMHumanBoneName)
+    if (hipsTrack) {
+      const rad = (json.yRotationOffsetDeg * Math.PI) / 180
+      const delta = new THREE.Quaternion(0, Math.sin(rad / 2), 0, Math.cos(rad / 2))
+      const values = hipsTrack.values
+      for (let i = 0; i < values.length; i += 4) {
+        const orig = new THREE.Quaternion(values[i], values[i + 1], values[i + 2], values[i + 3])
+        orig.premultiply(delta).normalize()
+        values[i] = orig.x
+        values[i + 1] = orig.y
+        values[i + 2] = orig.z
+        values[i + 3] = orig.w
+      }
     }
   }
 

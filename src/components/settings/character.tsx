@@ -369,6 +369,7 @@ const Character = () => {
     customPresetName5,
     selectedPresetIndex,
     lightingIntensity,
+    poseAdjustMode,
   } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
@@ -942,6 +943,21 @@ const Character = () => {
                 }
               }}
               className="mt-2 mb-4 input-range"
+            />
+          </div>
+        )}
+
+        {modelType === 'vrm' && (
+          <div className="my-6">
+            <div className="text-xl font-bold mb-4">ポーズ角度調整</div>
+            <div className="mb-4 text-sm">
+              ONにすると画面上にポーズ調整UIが表示されます。ポーズごとのY軸回転を微調整できます。
+            </div>
+            <ToggleSwitch
+              enabled={poseAdjustMode}
+              onChange={(v) =>
+                settingsStore.setState({ poseAdjustMode: v })
+              }
             />
           </div>
         )}

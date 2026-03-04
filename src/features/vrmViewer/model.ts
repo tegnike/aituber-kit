@@ -20,9 +20,11 @@ export class Model {
   public mixer?: THREE.AnimationMixer
   public emoteController?: EmoteController
   public currentAction?: THREE.AnimationAction
+  public poseYRotationOffset: number = 0
 
   private _lookAtTargetParent: THREE.Object3D
   private _lipSync?: LipSync
+  private _yOffsetQuat = new THREE.Quaternion()
 
   constructor(lookAtTargetParent: THREE.Object3D) {
     this._lookAtTargetParent = lookAtTargetParent
@@ -115,6 +117,18 @@ export class Model {
 
     this.emoteController?.update(delta)
     this.mixer?.update(delta)
+
+    if (this.poseYRotationOffset !== 0 && this.vrm) {
+      const hipsNode = this.vrm.humanoid.getNormalizedBoneNode('hips')
+      if (hipsNode) {
+        this._yOffsetQuat.setFromAxisAngle(
+          new THREE.Vector3(0, 1, 0),
+          this.poseYRotationOffset
+        )
+        hipsNode.quaternion.premultiply(this._yOffsetQuat)
+      }
+    }
+
     this.vrm?.update(delta)
   }
 }
