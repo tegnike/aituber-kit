@@ -1,24 +1,12 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import * as THREE from 'three'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import type { PoseConfigItem } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
-import { createSequenceClip } from '@/lib/VRMAnimation/createSequenceClip'
-import { loadPoseFromJSON } from '@/lib/VRMAnimation/loadPoseFromJSON'
-import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
-
-const FADE_DURATION = 0.5
-
-interface PoseState {
-  poseAction: THREE.AnimationAction
-  additiveAction: THREE.AnimationAction
-}
 
 function usePoseToggle() {
   const [activePose, setActivePose] = useState<string | null>(null)
-  const poseStateRef = useRef<PoseState | null>(null)
 
   const applyPose = useCallback(
     async (poseName: string, poseConfig: PoseConfigItem) => {
@@ -32,107 +20,8 @@ function usePoseToggle() {
         return
       }
 
-      // 別のポーズ中ならまずそれをクリア
-      if (poseStateRef.current) {
-        poseStateRef.current.poseAction.fadeOut(FADE_DURATION)
-        poseStateRef.current.additiveAction.fadeOut(FADE_DURATION)
-      }
-
-      const isSequence = 'sequence' in poseConfig
-      let poseClip: THREE.AnimationClip
-
-      if (isSequence) {
-        const [poses, idleVrma] = await Promise.all([
-          Promise.all(
-            poseConfig.sequence.map((p) => loadPoseFromJSON(buildUrl(p)))
-          ),
-          loadVRMAnimation(buildUrl('/idle_loop.vrma')),
-        ])
-        if (poses.some((p) => !p) || !idleVrma) return
-
-        poseClip = createSequenceClip(
-          poses.filter((p): p is NonNullable<typeof p> => p !== null),
-          model.vrm,
-          poseConfig.switchDuration ?? 0.5
-        )
-        const hipsNode = model.vrm.humanoid.getNormalizedBoneNode('hips')
-        if (hipsNode) {
-          const pos = hipsNode.position
-          poseClip.tracks.push(
-            new THREE.VectorKeyframeTrack(
-              `${hipsNode.name}.position`,
-              [0],
-              [pos.x, pos.y, pos.z]
-            )
-          )
-        }
-        poseClip.name = `sequence_${poseName}`
-        const poseAction = model.mixer.clipAction(poseClip)
-        poseAction.loop = THREE.LoopRepeat
-
-        const additiveClip = idleVrma.createAnimationClip(model.vrm)
-        THREE.AnimationUtils.makeClipAdditive(additiveClip)
-        if (hipsNode) {
-          additiveClip.tracks = additiveClip.tracks.filter(
-            (track) => track.name !== `${hipsNode.name}.position`
-          )
-        }
-        additiveClip.name = `idle_additive_${poseName}`
-        const additiveAction = model.mixer.clipAction(additiveClip)
-        additiveAction.blendMode = THREE.AdditiveAnimationBlendMode
-
-        if (!poseStateRef.current && model.currentAction) {
-          model.currentAction.fadeOut(FADE_DURATION)
-        }
-
-        poseAction.reset().fadeIn(FADE_DURATION).play()
-        additiveAction.reset().fadeIn(FADE_DURATION).play()
-
-        poseStateRef.current = { poseAction, additiveAction }
-        setActivePose(poseName)
-      } else {
-        const [pose, idleVrma] = await Promise.all([
-          loadPoseFromJSON(buildUrl(poseConfig.json)),
-          loadVRMAnimation(buildUrl('/idle_loop.vrma')),
-        ])
-        if (!pose || !idleVrma) return
-
-        poseClip = pose.createAnimationClip(model.vrm)
-        const hipsNode = model.vrm.humanoid.getNormalizedBoneNode('hips')
-        if (hipsNode) {
-          const pos = hipsNode.position
-          poseClip.tracks.push(
-            new THREE.VectorKeyframeTrack(
-              `${hipsNode.name}.position`,
-              [0],
-              [pos.x, pos.y, pos.z]
-            )
-          )
-        }
-        poseClip.name = `pose_${poseName}`
-        const poseAction = model.mixer.clipAction(poseClip)
-
-        const additiveClip = idleVrma.createAnimationClip(model.vrm)
-        THREE.AnimationUtils.makeClipAdditive(additiveClip)
-        if (hipsNode) {
-          additiveClip.tracks = additiveClip.tracks.filter(
-            (track) => track.name !== `${hipsNode.name}.position`
-          )
-        }
-        additiveClip.name = `idle_additive_${poseName}`
-        const additiveAction = model.mixer.clipAction(additiveClip)
-        additiveAction.blendMode = THREE.AdditiveAnimationBlendMode
-
-        if (!poseStateRef.current && model.currentAction) {
-          model.currentAction.fadeOut(FADE_DURATION)
-        }
-
-        poseAction.reset().fadeIn(FADE_DURATION).play()
-        additiveAction.reset().fadeIn(FADE_DURATION).play()
-
-        poseStateRef.current = { poseAction, additiveAction }
-        setActivePose(poseName)
-      }
+      await model.poseManager.applyPose(model, poseName, poseConfig)
+      setActivePose(poseName)
     },
     [activePose]
   )
@@ -142,16 +31,7 @@ function usePoseToggle() {
     const model = viewer.model
     if (!model?.mixer) return
 
-    model.poseYRotationOffset = 0
-
-    if (poseStateRef.current) {
-      poseStateRef.current.poseAction.fadeOut(FADE_DURATION)
-      poseStateRef.current.additiveAction.fadeOut(FADE_DURATION)
-      poseStateRef.current = null
-    }
-    if (model.currentAction) {
-      model.currentAction.reset().fadeIn(FADE_DURATION).play()
-    }
+    model.poseManager.resetToIdle(model)
     setActivePose(null)
   }, [])
 

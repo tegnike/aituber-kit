@@ -129,6 +129,10 @@ const extractEmotion = (
   // 先頭のスペースを無視して、感情タグを検出
   const emotionMatch = text.match(/^\s*\[(.*?)\]/)
   if (emotionMatch?.[0]) {
+    // モーションタグは感情タグとして扱わない
+    if (/^\s*\[motion:/.test(text)) {
+      return { emotionTag: '', remainingText: text }
+    }
     return {
       emotionTag: emotionMatch[0].trim(), // タグ自体の前後のスペースは除去
       // 先頭のスペースも含めて削除し、さらに前後のスペースを除去
@@ -138,6 +142,26 @@ const extractEmotion = (
     }
   }
   return { emotionTag: '', remainingText: text }
+}
+
+/**
+ * テキストからモーションタグ `[motion:xxx]` を抽出する
+ * @param text 入力テキスト
+ * @returns モーションタグと残りのテキスト
+ */
+const extractMotionTag = (
+  text: string
+): { motionTag: string; remainingText: string } => {
+  const motionMatch = text.match(/^\s*\[motion:([a-zA-Z0-9_-]+)\]/)
+  if (motionMatch?.[0]) {
+    return {
+      motionTag: motionMatch[1],
+      remainingText: text
+        .slice(text.indexOf(motionMatch[0]) + motionMatch[0].length)
+        .trimStart(),
+    }
+  }
+  return { motionTag: '', remainingText: text }
 }
 
 /**
@@ -167,13 +191,15 @@ const extractSentence = (
  * @param emotionTag 感情タグ (例: "[neutral]")
  * @param currentAssistantMessageListRef アシスタントメッセージリストの参照
  * @param currentSlideMessagesRef スライドメッセージリストの参照
+ * @param motionTag モーションタグ (例: "think")
  */
 const handleSpeakAndStateUpdate = (
   sessionId: string,
   sentence: string,
   emotionTag: string,
   currentAssistantMessageListRef: { current: string[] },
-  currentSlideMessagesRef: { current: string[] }
+  currentSlideMessagesRef: { current: string[] },
+  motionTag?: string
 ) => {
   const hs = homeStore.getState()
   const emotion = emotionTag.includes('[')
@@ -193,7 +219,7 @@ const handleSpeakAndStateUpdate = (
 
   speakCharacter(
     sessionId,
-    { message: sentence, emotion: emotion },
+    { message: sentence, emotion: emotion, motion: motionTag || undefined },
     () => {
       hs.incrementChatProcessingCount()
       currentSlideMessagesRef.current.push(sentence)
@@ -277,8 +303,10 @@ export const speakMessageHandler = async (receivedMessage: string) => {
         const prevLocalRemaining = localRemaining
         const { emotionTag, remainingText: textAfterEmotion } =
           extractEmotion(localRemaining)
+        const { motionTag, remainingText: textAfterMotion } =
+          extractMotionTag(textAfterEmotion)
         const { sentence, remainingText: textAfterSentence } =
-          extractSentence(textAfterEmotion)
+          extractSentence(textAfterMotion)
 
         if (sentence) {
           assistantMessageListRef.current.push(sentence)
@@ -289,7 +317,8 @@ export const speakMessageHandler = async (receivedMessage: string) => {
             sentence,
             emotionTag,
             assistantMessageListRef,
-            currentSlideMessagesRef
+            currentSlideMessagesRef,
+            motionTag || undefined
           )
           localRemaining = textAfterSentence
         } else {
@@ -305,7 +334,8 @@ export const speakMessageHandler = async (receivedMessage: string) => {
               finalSentence,
               emotionTag,
               assistantMessageListRef,
-              currentSlideMessagesRef
+              currentSlideMessagesRef,
+              motionTag || undefined
             )
             localRemaining = ''
           } else {
@@ -396,6 +426,7 @@ export const processAIResponse = async (messages: Message[]) => {
   let currentMessageId: string | null = null
   let currentMessageContent = ''
   let currentEmotionTag = ''
+  let currentMotionTag = ''
   let isCodeBlock = false
   let codeBlockContent = ''
   let currentThinkingContent = ''
@@ -497,6 +528,7 @@ export const processAIResponse = async (messages: Message[]) => {
             codeBlockContent = ''
             isCodeBlock = false
             currentEmotionTag = ''
+            currentMotionTag = ''
 
             currentMessageId = generateMessageId()
             currentMessageContent = ''
@@ -529,8 +561,13 @@ export const processAIResponse = async (messages: Message[]) => {
                 remainingText: textAfterEmotion,
               } = extractEmotion(textToProcessBeforeCode)
               if (extractedEmotion) currentEmotionTag = extractedEmotion
+              const {
+                motionTag: extractedMotion,
+                remainingText: textAfterMotion,
+              } = extractMotionTag(textAfterEmotion)
+              if (extractedMotion) currentMotionTag = extractedMotion
               const { sentence, remainingText: textAfterSentence } =
-                extractSentence(textAfterEmotion)
+                extractSentence(textAfterMotion)
 
               if (sentence) {
                 handleSpeakAndStateUpdate(
@@ -538,10 +575,14 @@ export const processAIResponse = async (messages: Message[]) => {
                   sentence,
                   currentEmotionTag,
                   assistantMessageListRef,
-                  currentSlideMessagesRef
+                  currentSlideMessagesRef,
+                  currentMotionTag || undefined
                 )
                 textToProcessBeforeCode = textAfterSentence
-                if (!textAfterSentence) currentEmotionTag = ''
+                if (!textAfterSentence) {
+                  currentEmotionTag = ''
+                  currentMotionTag = ''
+                }
               } else {
                 receivedChunksForSpeech =
                   textToProcessBeforeCode + receivedChunksForSpeech
@@ -578,9 +619,14 @@ export const processAIResponse = async (messages: Message[]) => {
               remainingText: textAfterEmotion,
             } = extractEmotion(processableTextForSpeech)
             if (extractedEmotion) currentEmotionTag = extractedEmotion
+            const {
+              motionTag: extractedMotion,
+              remainingText: textAfterMotion,
+            } = extractMotionTag(textAfterEmotion)
+            if (extractedMotion) currentMotionTag = extractedMotion
 
             const { sentence, remainingText: textAfterSentence } =
-              extractSentence(textAfterEmotion)
+              extractSentence(textAfterMotion)
 
             if (sentence) {
               handleSpeakAndStateUpdate(
@@ -588,10 +634,14 @@ export const processAIResponse = async (messages: Message[]) => {
                 sentence,
                 currentEmotionTag,
                 assistantMessageListRef,
-                currentSlideMessagesRef
+                currentSlideMessagesRef,
+                currentMotionTag || undefined
               )
               processableTextForSpeech = textAfterSentence
-              if (!textAfterSentence) currentEmotionTag = ''
+              if (!textAfterSentence) {
+                currentEmotionTag = ''
+                currentMotionTag = ''
+              }
             } else {
               receivedChunksForSpeech =
                 processableTextForSpeech + receivedChunksForSpeech
@@ -623,13 +673,19 @@ export const processAIResponse = async (messages: Message[]) => {
             const { emotionTag: extractedEmotion, remainingText: finalText } =
               extractEmotion(finalSentence)
             if (extractedEmotion) currentEmotionTag = extractedEmotion
+            const {
+              motionTag: extractedMotion,
+              remainingText: finalTextAfterMotion,
+            } = extractMotionTag(finalText)
+            if (extractedMotion) currentMotionTag = extractedMotion
 
             handleSpeakAndStateUpdate(
               sessionId,
-              finalText,
+              finalTextAfterMotion,
               currentEmotionTag,
               assistantMessageListRef,
-              currentSlideMessagesRef
+              currentSlideMessagesRef,
+              currentMotionTag || undefined
             )
           } else {
             console.warn(
@@ -893,6 +949,17 @@ export const handleSendChatFn =
 
       if (modalImage) {
         homeStore.setState({ modalImage: '' })
+      }
+
+      // ポーズ設定からモーションタグ情報をシステムプロンプトに追加
+      const poseConfigs = ss.poseConfigs
+      if (poseConfigs.length > 0) {
+        const motionIds = poseConfigs.map((p) => p.id).join(', ')
+        systemPrompt +=
+          '\n\nモーションタグを使うことで、キャラクターのポーズを制御できます。' +
+          `利用可能なモーション: ${motionIds}\n` +
+          '書式: [motion:モーション名]  例: [motion:think]\n' +
+          '感情タグと併用可能です。例: [happy][motion:cheer]やったー！'
       }
 
       // IndexedDBから関連する過去の記憶を検索してsystemPromptに追加
