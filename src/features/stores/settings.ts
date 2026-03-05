@@ -204,8 +204,8 @@ interface Character {
 
 // Pose config item type
 export type PoseConfigItem =
-  | { id: string; label: string; json: string }
-  | { id: string; label: string; sequence: string[]; switchDuration: number }
+  | { id: string; json: string }
+  | { id: string; sequence: string[]; switchDuration: number }
 
 // Preset question type
 export interface PresetQuestion {
@@ -633,18 +633,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   pngTuberOffsetY:
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
   poseConfigs: [
-    { id: 'think', label: 'Think', json: '/think.json' },
-    { id: 'cheer', label: 'Cheer', json: '/cheer.json' },
-    { id: 'cross', label: 'Cross', json: '/cross.json' },
-    { id: 'cover_mouth', label: 'Cover Mouth', json: '/cover_mouth.json' },
-    {
-      id: 'finger_touch',
-      label: 'Finger Touch',
-      json: '/finger_touch.json',
-    },
+    { id: 'think', json: '/think.json' },
+    { id: 'cheer', json: '/cheer.json' },
+    { id: 'cross', json: '/cross.json' },
+    { id: 'cover_mouth', json: '/cover_mouth.json' },
+    { id: 'finger_touch', json: '/finger_touch.json' },
     {
       id: 'wave',
-      label: 'Wave',
       sequence: ['/wave1.json', '/wave2.json'],
       switchDuration: 0.5,
     },

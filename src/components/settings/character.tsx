@@ -43,9 +43,9 @@ interface PoseFile {
 const PoseConfigSettings = () => {
   const poseConfigs = settingsStore((s) => s.poseConfigs)
   const [poseFiles, setPoseFiles] = useState<PoseFile[]>([])
-  const [newLabel, setNewLabel] = useState('')
+  const [newId, setNewId] = useState('')
   const [newJson, setNewJson] = useState('')
-  const [newSeqLabel, setNewSeqLabel] = useState('')
+  const [newSeqId, setNewSeqId] = useState('')
   const [selectedSeqJsons, setSelectedSeqJsons] = useState<string[]>([])
   const [newSwitchDuration, setNewSwitchDuration] = useState(0.5)
 
@@ -80,33 +80,29 @@ const PoseConfigSettings = () => {
   }
 
   const handleAddPose = () => {
-    if (!newLabel.trim() || !newJson) return
-    const id = `pose_${Date.now()}`
+    if (!newId.trim() || !newJson) return
     const newConfig: PoseConfigItem = {
-      id,
-      label: newLabel.trim(),
+      id: newId.trim(),
       json: newJson,
     }
     settingsStore.setState({
       poseConfigs: [...poseConfigs, newConfig],
     })
-    setNewLabel('')
+    setNewId('')
     setNewJson('')
   }
 
   const handleAddSequence = () => {
-    if (!newSeqLabel.trim() || selectedSeqJsons.length < 2) return
-    const id = `seq_${Date.now()}`
+    if (!newSeqId.trim() || selectedSeqJsons.length < 2) return
     const newConfig: PoseConfigItem = {
-      id,
-      label: newSeqLabel.trim(),
+      id: newSeqId.trim(),
       sequence: selectedSeqJsons,
       switchDuration: newSwitchDuration,
     }
     settingsStore.setState({
       poseConfigs: [...poseConfigs, newConfig],
     })
-    setNewSeqLabel('')
+    setNewSeqId('')
     setSelectedSeqJsons([])
     setNewSwitchDuration(0.5)
   }
@@ -135,7 +131,7 @@ const PoseConfigSettings = () => {
               className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg"
             >
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-sm truncate">{config.label}</div>
+                <div className="font-bold text-sm truncate">{config.id}</div>
                 <div className="text-xs text-gray-500 truncate">
                   {'json' in config
                     ? config.json
@@ -174,12 +170,12 @@ const PoseConfigSettings = () => {
         <div className="font-bold text-sm mb-2">通常ポーズを追加</div>
         <div className="flex gap-2 items-end">
           <div className="flex-1">
-            <label className="block text-xs mb-1">ラベル</label>
+            <label className="block text-xs mb-1">ID</label>
             <input
               type="text"
-              value={newLabel}
-              onChange={(e) => setNewLabel(e.target.value)}
-              placeholder="例: Think"
+              value={newId}
+              onChange={(e) => setNewId(e.target.value)}
+              placeholder="例: think"
               className="w-full px-3 py-2 bg-white rounded-lg text-sm"
             />
           </div>
@@ -200,7 +196,7 @@ const PoseConfigSettings = () => {
           </div>
           <button
             onClick={handleAddPose}
-            disabled={!newLabel.trim() || !newJson}
+            disabled={!newId.trim() || !newJson}
             className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
           >
             追加
@@ -212,12 +208,12 @@ const PoseConfigSettings = () => {
       <div className="p-4 bg-gray-50 rounded-lg">
         <div className="font-bold text-sm mb-2">シーケンスポーズを追加</div>
         <div className="mb-3">
-          <label className="block text-xs mb-1">ラベル</label>
+          <label className="block text-xs mb-1">ID</label>
           <input
             type="text"
-            value={newSeqLabel}
-            onChange={(e) => setNewSeqLabel(e.target.value)}
-            placeholder="例: Wave"
+            value={newSeqId}
+            onChange={(e) => setNewSeqId(e.target.value)}
+            placeholder="例: wave"
             className="w-full px-3 py-2 bg-white rounded-lg text-sm"
           />
         </div>
@@ -259,11 +255,76 @@ const PoseConfigSettings = () => {
           </div>
           <button
             onClick={handleAddSequence}
-            disabled={!newSeqLabel.trim() || selectedSeqJsons.length < 2}
+            disabled={!newSeqId.trim() || selectedSeqJsons.length < 2}
             className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
           >
             追加
           </button>
+        </div>
+      </div>
+
+      {/* モーションタグ参照 */}
+      {poseConfigs.length > 0 && (
+        <MotionTagReference poseConfigs={poseConfigs} />
+      )}
+    </div>
+  )
+}
+
+const KNOWN_MOTION_DESCRIPTIONS: Record<string, { ja: string; en: string }> = {
+  think: { ja: '考えるポーズ', en: 'thinking pose' },
+  cheer: { ja: '応援', en: 'cheering' },
+  cross: { ja: '腕組み', en: 'arms crossed' },
+  cover_mouth: { ja: '口を覆う', en: 'covering mouth' },
+  finger_touch: { ja: '指合わせ', en: 'finger touching' },
+  wave: { ja: '手振り', en: 'waving' },
+}
+
+const MotionTagReference = ({
+  poseConfigs,
+}: {
+  poseConfigs: PoseConfigItem[]
+}) => {
+  const { i18n } = useTranslation()
+  const [copied, setCopied] = useState(false)
+  const isJa = i18n.language === 'ja'
+
+  const motionList = poseConfigs
+    .map((p) => {
+      const desc = KNOWN_MOTION_DESCRIPTIONS[p.id]
+      const label = desc ? (isJa ? desc.ja : desc.en) : ''
+      return isJa ? `${p.id}（${label}）` : `${p.id} (${label})`
+    })
+    .join(isJa ? '、' : ', ')
+  const tagFormat = `[motion:{${poseConfigs.map((p) => p.id).join('|')}}]`
+  const fullText = isJa
+    ? `利用可能なモーション: ${motionList}\nモーションタグの書式: ${tagFormat}`
+    : `Available motions: ${motionList}\nMotion tag format: ${tagFormat}`
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(fullText).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+      <div className="font-bold text-sm mb-2">モーションタグ</div>
+      <div className="text-xs text-gray-500 mb-2">
+        システムプロンプトに貼り付けると、AIがモーションを使えるようになります。
+      </div>
+      <div
+        onClick={handleCopy}
+        className="px-3 py-2 bg-white rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+      >
+        <code className="block text-xs break-all select-all whitespace-pre-wrap">
+          {fullText}
+        </code>
+        <div className="text-right mt-1">
+          <span className="text-xs text-gray-400">
+            {copied ? '✓ copied' : 'click to copy'}
+          </span>
         </div>
       </div>
     </div>

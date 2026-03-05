@@ -101,7 +101,7 @@ export default function PoseTestButton() {
 
       if (res.ok) {
         toastStore.getState().addToast({
-          message: `${pose.label}: Y軸 ${angleDeg > 0 ? '+' : ''}${angleDeg}° 保存完了`,
+          message: `${pose.id}: Y軸 ${angleDeg > 0 ? '+' : ''}${angleDeg}° 保存完了`,
           type: 'success',
           tag: 'pose-rotation-save',
         })
@@ -190,7 +190,7 @@ export default function PoseTestButton() {
                   : 'bg-primary hover:bg-primary-hover active:bg-primary-press'
               }`}
             >
-              {activePose === pose.id ? 'Idle' : pose.label}
+              {activePose === pose.id ? 'Idle' : pose.id}
             </button>
           ))}
         </div>
