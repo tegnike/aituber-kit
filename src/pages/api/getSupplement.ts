@@ -24,9 +24,11 @@ export default async function handler(
         message: 'Bad Request: Missing or invalid slideName query parameter',
       })
     }
-    const content =
-      (assetManifest.slides.supplements as Record<string, string>)[slideName] ??
-      ''
+    const supplements =
+      (assetManifest.slides?.supplements as
+        | Record<string, string>
+        | undefined) ?? {}
+    const content = supplements[slideName] ?? ''
     return res.status(200).json({ content })
   }
 

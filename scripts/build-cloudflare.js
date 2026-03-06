@@ -214,9 +214,12 @@ function main() {
     console.log('\n=== Running build pipeline ===')
     run('node scripts/generate-asset-manifest.js')
     run('node scripts/patch-opennext-canvas.js')
-    run(
-      'NEXT_PUBLIC_RESTRICTED_MODE=true npx @opennextjs/cloudflare build'
-    )
+    run('npx @opennextjs/cloudflare build', {
+      env: {
+        ...process.env,
+        NEXT_PUBLIC_RESTRICTED_MODE: 'true',
+      },
+    })
 
     // 後続処理
     if (doPreview) {

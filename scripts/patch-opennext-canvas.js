@@ -2,6 +2,14 @@
  * @opennextjs/cloudflare の esbuild 設定にcanvasをexternalとして追加するパッチ。
  * canvasはネイティブ.nodeバイナリを含むため、Cloudflare Workersではバンドルできない。
  * Restricted Modeではcanvasを使用するAPIルートは無効化されるため、問題なし。
+ *
+ * 注意: このスクリプトは @opennextjs/cloudflare の内部ファイル(bundle-server.js)に
+ * 依存した文字列置換パッチです。パッケージのバージョンアップで内部構造が変わった場合、
+ * パッチが失敗する可能性があります。
+ * next.config.js の serverExternalPackages でcanvasを指定する方法も検討しましたが、
+ * @opennextjs/cloudflare のesbuildステップには反映されないため、このパッチが必要です。
+ * また、Cloudflare Workers (workerd) 環境ではCanvas APIはサポートされていないため、
+ * canvasの外部化はビルドエラー回避のみを目的としています。
  */
 const fs = require('fs')
 const path = require('path')
