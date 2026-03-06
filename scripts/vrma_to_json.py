@@ -161,6 +161,10 @@ def parse_vrma(path: str) -> dict:
             t = track["times"][-1]
             if t > duration:
                 duration = t
+    if look_at_track and look_at_track["times"]:
+        t = look_at_track["times"][-1]
+        if t > duration:
+            duration = t
 
     # hipsの基準位置
     rest_hips_position = None

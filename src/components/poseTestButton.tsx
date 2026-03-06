@@ -7,6 +7,11 @@ import { buildUrl } from '@/utils/buildUrl'
 
 function usePoseToggle() {
   const [activePose, setActivePose] = useState<string | null>(null)
+  const activePoseRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    activePoseRef.current = activePose
+  }, [activePose])
 
   const applyPose = useCallback(
     async (poseName: string, poseConfig: PoseConfigItem) => {
@@ -15,7 +20,7 @@ function usePoseToggle() {
       if (!model?.vrm || !model.mixer) return
 
       // 既に同じポーズならidleに戻す
-      if (activePose === poseName) {
+      if (activePoseRef.current === poseName) {
         resetToIdle()
         return
       }
@@ -23,7 +28,7 @@ function usePoseToggle() {
       await model.poseManager.applyPose(model, poseName, poseConfig)
       setActivePose(poseName)
     },
-    [activePose]
+    []
   )
 
   const resetToIdle = useCallback(() => {
@@ -82,7 +87,11 @@ export default function PoseTestButton() {
       if (viewer.model) {
         viewer.model.poseYRotationOffset = 0
       }
-      applyPose(poseConfig.id, poseConfig)
+      try {
+        await applyPose(poseConfig.id, poseConfig)
+      } catch (e) {
+        console.error('Failed to apply pose:', e)
+      }
     },
     [applyPose]
   )

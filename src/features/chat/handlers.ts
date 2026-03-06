@@ -130,7 +130,7 @@ const extractEmotion = (
   const emotionMatch = text.match(/^\s*\[(.*?)\]/)
   if (emotionMatch?.[0]) {
     // モーションタグは感情タグとして扱わない
-    if (/^\s*\[motion:/.test(text)) {
+    if (/^\s*\[motion:/i.test(text)) {
       return { emotionTag: '', remainingText: text }
     }
     return {
@@ -152,7 +152,7 @@ const extractEmotion = (
 const extractMotionTag = (
   text: string
 ): { motionTag: string; remainingText: string } => {
-  const motionMatch = text.match(/^\s*\[motion:([^\]\s]+)\]/)
+  const motionMatch = text.match(/^\s*\[motion:([^\]\s]+)\]/i)
   if (motionMatch?.[0]) {
     return {
       motionTag: motionMatch[1],

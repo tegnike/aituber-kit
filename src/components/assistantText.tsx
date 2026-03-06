@@ -1,7 +1,13 @@
 import settingsStore from '@/features/stores/settings'
 import { EMOTIONS } from '@/features/messages/messages'
 
-const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]`, 'gi')
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+const emotionPattern = new RegExp(
+  `\\[(${EMOTIONS.map(escapeRegExp).join('|')})\\]`,
+  'gi'
+)
 
 export const AssistantText = ({ message }: { message: string }) => {
   const characterName = settingsStore((s) => s.characterName)

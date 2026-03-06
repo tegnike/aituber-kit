@@ -67,7 +67,7 @@ export class SpeakQueue {
     } else {
       hs.viewer.model?.stopSpeaking()
       if (hs.viewer.model?.poseManager?.isActive) {
-        hs.viewer.model.poseManager.resetToIdle(hs.viewer.model)
+        hs.viewer.model?.poseManager?.resetToIdle(hs.viewer.model)
       }
     }
     homeStore.setState({ isSpeaking: false })
@@ -170,7 +170,7 @@ export class SpeakQueue {
       } else {
         await hs.viewer.model?.playEmotion('neutral')
         if (hs.viewer.model?.poseManager?.isActive) {
-          hs.viewer.model.poseManager.resetToIdle(hs.viewer.model)
+          hs.viewer.model?.poseManager?.resetToIdle(hs.viewer.model)
         }
       }
     }

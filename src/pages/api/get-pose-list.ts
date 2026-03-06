@@ -35,8 +35,8 @@ export default async function handler(
             path: `/poses/${file}`,
           })
         }
-      } catch {
-        // JSON解析エラーはスキップ
+      } catch (error) {
+        console.warn(`Skip invalid pose JSON: ${file}`, error)
       }
     }
 

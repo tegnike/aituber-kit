@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { VRM, VRMHumanBoneName } from '@pixiv/three-vrm'
-import { VRMAnimation } from './VRMAnimation'
+import { VRMAnimation } from '@/lib/VRMAnimation/VRMAnimation'
 
 /**
  * 複数のVRMAnimationポーズを時間軸に並べた1つのループ用AnimationClipを作成する。

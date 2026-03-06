@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
-import PoseTestButton from './poseTestButton'
+import PoseTestButton from '@/components/poseTestButton'
 
 export default function VrmViewer() {
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
@@ -41,6 +41,9 @@ export default function VrmViewer() {
           loadVRMAnimation(url)
             .then((vrma) => {
               if (vrma) viewer.model?.loadAnimation(vrma)
+            })
+            .catch((error) => {
+              console.error('Failed to load VRMA:', error)
             })
             .finally(() => URL.revokeObjectURL(url))
         } else if (file.type.startsWith('image/')) {
