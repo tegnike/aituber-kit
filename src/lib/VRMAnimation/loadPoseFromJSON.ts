@@ -26,6 +26,32 @@ interface PoseJSON {
   yRotationOffsetDeg?: number
 }
 
+function convertWebPoseToVrma(webPose: {
+  pose: Record<string, { rotation?: number[] }>
+}): PoseJSON {
+  const bones: Record<string, PoseBoneData> = {}
+  const boneNames: string[] = []
+  for (const [boneName, boneData] of Object.entries(webPose.pose)) {
+    if (boneData.rotation) {
+      boneNames.push(boneName)
+      bones[boneName] = {
+        rotation: {
+          times: [0],
+          values: [boneData.rotation],
+          interpolation: 'LINEAR',
+        },
+      }
+    }
+  }
+  return {
+    specVersion: '1.0',
+    duration: 0,
+    restHipsPosition: [0, 0, 0],
+    boneNames: boneNames.sort(),
+    bones,
+  }
+}
+
 export async function loadPoseFromJSON(
   url: string
 ): Promise<VRMAnimation | null> {
@@ -33,7 +59,13 @@ export async function loadPoseFromJSON(
   try {
     const response = await fetch(url)
     if (!response.ok) return null
-    json = await response.json()
+    const raw = await response.json()
+    // VRM Web Pose形式の場合は変換
+    if (raw.version && raw.pose && !raw.specVersion) {
+      json = convertWebPoseToVrma(raw)
+    } else {
+      json = raw
+    }
   } catch {
     console.error(`Failed to load pose JSON: ${url}`)
     return null

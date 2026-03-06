@@ -29,7 +29,7 @@ export default async function handler(
         const content = await fs.promises.readFile(filePath, 'utf-8')
         const json = JSON.parse(content)
 
-        if (json.specVersion && json.bones) {
+        if ((json.specVersion && json.bones) || (json.version && json.pose)) {
           poseFiles.push({
             name: file.replace('.json', ''),
             path: `/poses/${file}`,
