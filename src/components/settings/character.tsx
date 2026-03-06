@@ -198,7 +198,13 @@ const PoseConfigSettings = () => {
             </label>
             <select
               value={newJson}
-              onChange={(e) => setNewJson(e.target.value)}
+              onChange={(e) => {
+                setNewJson(e.target.value)
+                if (e.target.value && !newId.trim()) {
+                  const fileName = e.target.value.split('/').pop() ?? ''
+                  setNewId(fileName.replace('.json', ''))
+                }
+              }}
               className="w-full px-3 py-2 bg-white rounded-lg text-sm"
             >
               <option value="">{isJa ? '選択してください' : 'Select'}</option>
@@ -211,7 +217,11 @@ const PoseConfigSettings = () => {
           </div>
           <button
             onClick={handleAddPose}
-            disabled={!newId.trim() || !newJson}
+            disabled={
+              !newId.trim() ||
+              !newJson ||
+              poseConfigs.some((p) => p.id === newId.trim())
+            }
             className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
           >
             {isJa ? '追加' : 'Add'}
