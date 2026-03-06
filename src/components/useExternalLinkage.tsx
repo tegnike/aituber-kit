@@ -12,6 +12,7 @@ interface TmpMessage {
   role: string
   emotion: EmotionType
   type: string
+  image?: string
 }
 
 interface Params {
@@ -19,7 +20,8 @@ interface Params {
     text: string,
     role?: string,
     emotion?: EmotionType,
-    type?: string
+    type?: string,
+    image?: string
   ) => Promise<void>
 }
 
@@ -34,7 +36,8 @@ const useExternalLinkage = ({ handleReceiveTextFromWs }: Params) => {
         message.text,
         message.role,
         message.emotion,
-        message.type
+        message.type,
+        message.image
       )
     },
     [handleReceiveTextFromWs]

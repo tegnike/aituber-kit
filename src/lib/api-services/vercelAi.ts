@@ -10,7 +10,6 @@ import { createDeepSeek } from '@ai-sdk/deepseek'
 import { createPerplexity } from '@ai-sdk/perplexity'
 import { createFireworks } from '@ai-sdk/fireworks'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
-import { createOllama } from 'ollama-ai-provider'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import {
   streamText,
@@ -109,8 +108,9 @@ export function createAIRegistry(
       }) as unknown as ReturnType<typeof createOpenAI>
       break
     case 'ollama':
-      providers.ollama = createOllama({
-        baseURL: params.baseURL ?? '',
+      providers.ollama = createOpenAICompatible({
+        name: 'ollama',
+        baseURL: (params.baseURL ?? '').replace(/\/+$/, '') + '/v1',
       }) as unknown as ReturnType<typeof createOpenAI>
       break
     case 'custom-api':

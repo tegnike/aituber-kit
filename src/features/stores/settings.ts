@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
-import { isLive2DEnabled } from '@/utils/live2dRestriction'
 import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
@@ -134,11 +133,6 @@ interface ModelProvider extends Live2DSettings {
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
-  nijivoiceApiKey: string
-  nijivoiceActorId: string
-  nijivoiceSpeed: number
-  nijivoiceEmotionalLevel: number
-  nijivoiceSoundDuration: number
 }
 
 interface Integrations {
@@ -604,30 +598,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Custom model toggle
   customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
-  // NijiVoice settings
-  nijivoiceApiKey: '',
-  nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
-  nijivoiceSpeed:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SPEED || '1.0') || 1.0,
-  nijivoiceEmotionalLevel:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_EMOTIONAL_LEVEL || '0.1') ||
-    0.1,
-  nijivoiceSoundDuration:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
-    0.1,
-
   // Settings
-  modelType: (() => {
-    const envType = process.env.NEXT_PUBLIC_MODEL_TYPE as
+  modelType:
+    (process.env.NEXT_PUBLIC_MODEL_TYPE as
       | 'vrm'
       | 'live2d'
       | 'pngtuber'
-      | undefined
-    if (envType === 'live2d' && !isLive2DEnabled()) {
-      return 'vrm'
-    }
-    return envType || 'vrm'
-  })(),
+      | undefined) || 'vrm',
   selectedPNGTuberPath:
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
   pngTuberSensitivity:
@@ -789,11 +766,6 @@ const settingsStore = create<SettingsState>()(
           if (migratedModel !== state.selectAIModel) {
             state.selectAIModel = migratedModel
           }
-        }
-
-        // Force modelType away from live2d when Live2D is not enabled
-        if (state && !isLive2DEnabled() && state.modelType === 'live2d') {
-          state.modelType = 'vrm'
         }
 
         // Override with environment variables if the option is enabled
@@ -966,11 +938,6 @@ const settingsStore = create<SettingsState>()(
         characterPosition: state.characterPosition,
         characterRotation: state.characterRotation,
         lightingIntensity: state.lightingIntensity,
-        nijivoiceApiKey: state.nijivoiceApiKey,
-        nijivoiceActorId: state.nijivoiceActorId,
-        nijivoiceSpeed: state.nijivoiceSpeed,
-        nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
-        nijivoiceSoundDuration: state.nijivoiceSoundDuration,
         modelType: state.modelType,
         selectedPNGTuberPath: state.selectedPNGTuberPath,
         pngTuberSensitivity: state.pngTuberSensitivity,

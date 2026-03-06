@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent, useEffect } from 'react'
+import { useState, useRef, KeyboardEvent, useEffect } from 'react'
 import { IconButton } from '@/components/iconButton'
 import settingsStore from '@/features/stores/settings'
 import { useTranslation } from 'react-i18next'
@@ -9,6 +9,7 @@ interface RequestBody {
   messages: string[]
   systemPrompt?: string
   useCurrentSystemPrompt: boolean
+  image?: string
 }
 
 const SendMessage = () => {
@@ -31,6 +32,8 @@ const SendMessage = () => {
   const [useCurrentSystemPrompt, setUseCurrentSystemPrompt] = useState(false)
   const [baseUrl, setBaseUrl] = useState('')
   const [activeTab, setActiveTab] = useState<SendType>('direct_send')
+  const [attachedImage, setAttachedImage] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -71,6 +74,9 @@ const SendMessage = () => {
       messages: messages.filter((msg) => msg.trim()),
       useCurrentSystemPrompt: useCurrentSystemPrompt,
       ...(useCurrentSystemPrompt ? {} : { systemPrompt: systemPrompt }),
+      ...(attachedImage && type !== 'direct_send'
+        ? { image: attachedImage }
+        : {}),
     }
 
     try {
@@ -102,11 +108,13 @@ const SendMessage = () => {
           setAiResponse(JSON.stringify(data, null, 2))
           setAiMessages(Array(1).fill(''))
           setAiFieldCount(1)
+          setAttachedImage('')
           break
         case 'user_input':
           setUserInputResponse(JSON.stringify(data, null, 2))
           setUserInputMessages(Array(1).fill(''))
           setUserInputFieldCount(1)
+          setAttachedImage('')
           break
       }
     } catch (error) {
@@ -163,6 +171,23 @@ const SendMessage = () => {
     }
   }
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = reader.result as string
+      setAttachedImage(result)
+    }
+    reader.readAsDataURL(file)
+
+    // 同じファイルを再選択できるようにリセット
+    e.target.value = ''
+  }
+
   const copyToClipboard = async (text: string, event: React.MouseEvent) => {
     try {
       await navigator.clipboard.writeText(text)
@@ -198,9 +223,9 @@ const SendMessage = () => {
       case 'direct_send':
         return `curl -X POST -H "Content-Type: application/json" -d '{"messages": ["こんにちは、今日もいい天気ですね。", "今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=direct_send'`
       case 'ai_generate':
-        return `curl -X POST -H "Content-Type: application/json" -d '{"systemPrompt": "You are a helpful assistant.", "useCurrentSystemPrompt": false, "messages": ["今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=ai_generate'`
+        return `curl -X POST -H "Content-Type: application/json" -d '{"systemPrompt": "You are a helpful assistant.", "useCurrentSystemPrompt": false, "messages": ["この画像について説明してください。"], "image": "data:image/png;base64,..."}' '${baseUrl}/api/messages/?clientId=${clientId}&type=ai_generate'`
       case 'user_input':
-        return `curl -X POST -H "Content-Type: application/json" -d '{"messages": ["こんにちは、今日もいい天気ですね。", "今日の予定を教えてください。"]}' '${baseUrl}/api/messages/?clientId=${clientId}&type=user_input'`
+        return `curl -X POST -H "Content-Type: application/json" -d '{"messages": ["この画像について教えてください。"], "image": "data:image/png;base64,..."}' '${baseUrl}/api/messages/?clientId=${clientId}&type=user_input'`
       default:
         return ''
     }
@@ -486,6 +511,63 @@ const SendMessage = () => {
             <div className="mb-6">
               <div className="font-bold mb-3">Messages</div>
               {renderMessageFields()}
+
+              {/* 画像添付 (ai_generate / user_input のみ) */}
+              {activeTab !== 'direct_send' && (
+                <div className="mt-4">
+                  <div className="font-bold mb-2">
+                    {t('SendMessage.imageLabel')}
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                  />
+                  {attachedImage ? (
+                    <div className="flex items-start gap-3">
+                      <div className="relative inline-block">
+                        <img
+                          src={attachedImage}
+                          alt="attached"
+                          className="max-h-32 rounded-lg border border-slate-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setAttachedImage('')}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md transition-colors duration-200"
+                        >
+                          x
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-2 px-4 py-2 border border-dashed border-slate-300 hover:border-indigo-400 hover:bg-indigo-50 rounded-xl text-sm text-gray-600 transition-colors duration-200"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      {t('SendMessage.selectImage')}
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div className="flex justify-between mt-4">
                 <IconButton
                   iconName="24/Add"
