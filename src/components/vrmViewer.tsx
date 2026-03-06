@@ -38,9 +38,11 @@ export default function VrmViewer() {
         } else if (file_type === 'vrma') {
           const blob = new Blob([file], { type: 'application/octet-stream' })
           const url = window.URL.createObjectURL(blob)
-          loadVRMAnimation(url).then((vrma) => {
-            if (vrma) viewer.model?.loadAnimation(vrma)
-          })
+          loadVRMAnimation(url)
+            .then((vrma) => {
+              if (vrma) viewer.model?.loadAnimation(vrma)
+            })
+            .finally(() => URL.revokeObjectURL(url))
         } else if (file.type.startsWith('image/')) {
           const reader = new FileReader()
           reader.readAsDataURL(file)

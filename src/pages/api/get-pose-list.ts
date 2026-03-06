@@ -11,6 +11,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
   const posesDir = path.join(process.cwd(), 'public', 'poses')
 
   try {
@@ -37,7 +41,14 @@ export default async function handler(
     }
 
     res.status(200).json(poseFiles)
-  } catch (error) {
+  } catch (error: unknown) {
+    if (
+      error instanceof Error &&
+      'code' in error &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT'
+    ) {
+      return res.status(200).json([])
+    }
     console.error('Error reading pose files:', error)
     res.status(500).json({ error: 'Failed to get pose file list' })
   }

@@ -38,7 +38,7 @@ TYPE_SIZES = {
 def read_glb(path: str) -> tuple[dict, bytes]:
     """GLBファイルからJSONチャンクとBINチャンクを読み出す"""
     with open(path, "rb") as f:
-        magic, version, length = struct.unpack("<III", f.read(12))
+        magic, _version, length = struct.unpack("<III", f.read(12))
         if magic != 0x46546C67:  # 'glTF'
             raise ValueError(f"Not a valid GLB file: {path}")
 
@@ -67,7 +67,7 @@ def read_accessor(json_data: dict, bin_data: bytes, accessor_index: int) -> list
     offset = buffer_view.get("byteOffset", 0) + accessor.get("byteOffset", 0)
     count = accessor["count"]
 
-    fmt_char, byte_size = COMPONENT_TYPES[accessor["componentType"]]
+    fmt_char, _byte_size = COMPONENT_TYPES[accessor["componentType"]]
     elem_size = TYPE_SIZES[accessor["type"]]
 
     total = count * elem_size
@@ -156,6 +156,11 @@ def parse_vrma(path: str) -> dict:
                 t = track["times"][-1]
                 if t > duration:
                     duration = t
+    for track in expression_tracks.values():
+        if track["times"]:
+            t = track["times"][-1]
+            if t > duration:
+                duration = t
 
     # hipsの基準位置
     rest_hips_position = None

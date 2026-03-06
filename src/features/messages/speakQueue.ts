@@ -66,7 +66,7 @@ export class SpeakQueue {
       PNGTuberHandler.stopSpeaking()
     } else {
       hs.viewer.model?.stopSpeaking()
-      if (hs.viewer.model?.poseManager.isActive) {
+      if (hs.viewer.model?.poseManager?.isActive) {
         hs.viewer.model.poseManager.resetToIdle(hs.viewer.model)
       }
     }
@@ -169,7 +169,7 @@ export class SpeakQueue {
         await PNGTuberHandler.resetToIdle()
       } else {
         await hs.viewer.model?.playEmotion('neutral')
-        if (hs.viewer.model?.poseManager.isActive) {
+        if (hs.viewer.model?.poseManager?.isActive) {
           hs.viewer.model.poseManager.resetToIdle(hs.viewer.model)
         }
       }

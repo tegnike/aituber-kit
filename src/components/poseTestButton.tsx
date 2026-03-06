@@ -111,8 +111,8 @@ export default function PoseTestButton() {
           viewer.model.poseYRotationOffset = 0
         }
         // JSONが更新されたのでポーズを再読み込み
-        applyPose('__reload__', pose)
-        setTimeout(() => applyPose(pose.id, pose), 100)
+        await applyPose('__reload__', pose)
+        await applyPose(pose.id, pose)
       } else {
         toastStore.getState().addToast({
           message: '保存に失敗しました',
@@ -120,6 +120,13 @@ export default function PoseTestButton() {
           tag: 'pose-rotation-save',
         })
       }
+    } catch (e) {
+      console.error('Failed to save pose rotation:', e)
+      toastStore.getState().addToast({
+        message: '保存に失敗しました',
+        type: 'error',
+        tag: 'pose-rotation-save',
+      })
     } finally {
       setSaving(false)
     }

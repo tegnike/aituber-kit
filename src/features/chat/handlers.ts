@@ -152,7 +152,7 @@ const extractEmotion = (
 const extractMotionTag = (
   text: string
 ): { motionTag: string; remainingText: string } => {
-  const motionMatch = text.match(/^\s*\[motion:([a-zA-Z0-9_-]+)\]/)
+  const motionMatch = text.match(/^\s*\[motion:([^\]\s]+)\]/)
   if (motionMatch?.[0]) {
     return {
       motionTag: motionMatch[1],

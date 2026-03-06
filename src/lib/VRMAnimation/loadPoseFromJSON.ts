@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { VRMHumanBoneName } from '@pixiv/three-vrm'
-import { VRMAnimation } from './VRMAnimation'
+import { VRMAnimation } from '@/lib/VRMAnimation/VRMAnimation'
 
 interface PoseTrackData {
   times: number[]
@@ -29,8 +29,15 @@ interface PoseJSON {
 export async function loadPoseFromJSON(
   url: string
 ): Promise<VRMAnimation | null> {
-  const response = await fetch(url)
-  const json: PoseJSON = await response.json()
+  let json: PoseJSON
+  try {
+    const response = await fetch(url)
+    if (!response.ok) return null
+    json = await response.json()
+  } catch {
+    console.error(`Failed to load pose JSON: ${url}`)
+    return null
+  }
 
   const animation = new VRMAnimation()
   animation.duration = json.duration

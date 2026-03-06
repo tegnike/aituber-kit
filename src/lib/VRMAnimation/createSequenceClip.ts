@@ -18,18 +18,22 @@ export function createSequenceClip(
   const metaVersion = vrm.meta.metaVersion
   const totalDuration = switchDuration * poses.length
 
-  // 全ポーズに登場するボーン名を集める
-  const allBoneNames = new Set<VRMHumanBoneName>()
+  // 全ポーズに登場するボーン名を集める（rotation + translation）
+  const allRotationBones = new Set<VRMHumanBoneName>()
+  const allTranslationBones = new Set<VRMHumanBoneName>()
   for (const pose of poses) {
     for (const name of pose.humanoidTracks.rotation.keys()) {
-      allBoneNames.add(name)
+      allRotationBones.add(name)
+    }
+    for (const name of pose.humanoidTracks.translation.keys()) {
+      allTranslationBones.add(name)
     }
   }
 
   const tracks: THREE.KeyframeTrack[] = []
 
   // rotationトラック
-  for (const boneName of allBoneNames) {
+  for (const boneName of allRotationBones) {
     const nodeName = humanoid.getNormalizedBoneNode(boneName)?.name
     if (!nodeName) continue
 
@@ -70,6 +74,40 @@ export function createSequenceClip(
 
     tracks.push(
       new THREE.QuaternionKeyframeTrack(`${nodeName}.quaternion`, times, values)
+    )
+  }
+
+  // translationトラック
+  for (const boneName of allTranslationBones) {
+    const nodeName = humanoid.getNormalizedBoneNode(boneName)?.name
+    if (!nodeName) continue
+
+    const times: number[] = []
+    const values: number[] = []
+
+    for (let i = 0; i < poses.length; i++) {
+      times.push(i * switchDuration)
+      const track = poses[i].humanoidTracks.translation.get(boneName)
+      if (track) {
+        const v = track.values
+        values.push(v[0], v[1], v[2])
+      } else {
+        values.push(0, 0, 0)
+      }
+    }
+
+    // ループ用: 最初のポーズと同じ値を末尾に追加
+    times.push(totalDuration)
+    const firstTrack = poses[0].humanoidTracks.translation.get(boneName)
+    if (firstTrack) {
+      const v = firstTrack.values
+      values.push(v[0], v[1], v[2])
+    } else {
+      values.push(0, 0, 0)
+    }
+
+    tracks.push(
+      new THREE.VectorKeyframeTrack(`${nodeName}.position`, times, values)
     )
   }
 

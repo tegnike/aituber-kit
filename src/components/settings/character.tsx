@@ -83,6 +83,8 @@ const PoseConfigSettings = () => {
 
   const handleAddPose = () => {
     if (!newId.trim() || !newJson) return
+    const id = newId.trim()
+    if (poseConfigs.some((p) => p.id === id)) return
     const newConfig: PoseConfigItem = {
       id: newId.trim(),
       json: newJson,
@@ -96,10 +98,13 @@ const PoseConfigSettings = () => {
 
   const handleAddSequence = () => {
     if (!newSeqId.trim() || selectedSeqJsons.length < 2) return
+    const seqId = newSeqId.trim()
+    if (poseConfigs.some((p) => p.id === seqId)) return
+    const clampedDuration = Math.min(5, Math.max(0.1, newSwitchDuration))
     const newConfig: PoseConfigItem = {
-      id: newSeqId.trim(),
+      id: seqId,
       sequence: selectedSeqJsons,
-      switchDuration: newSwitchDuration,
+      switchDuration: clampedDuration,
     }
     settingsStore.setState({
       poseConfigs: [...poseConfigs, newConfig],
@@ -341,7 +346,13 @@ const MotionTagReference = ({
         </code>
         <div className="text-right mt-1">
           <span className="text-xs text-gray-400">
-            {copied ? '✓ copied' : 'click to copy'}
+            {copied
+              ? isJa
+                ? '✓ コピー済み'
+                : '✓ copied'
+              : isJa
+                ? 'クリックでコピー'
+                : 'click to copy'}
           </span>
         </div>
       </div>

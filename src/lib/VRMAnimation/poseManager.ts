@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import type { Model } from '@/features/vrmViewer/model'
 import type { PoseConfigItem } from '@/features/stores/settings'
-import { createSequenceClip } from './createSequenceClip'
-import { loadPoseFromJSON } from './loadPoseFromJSON'
-import { loadVRMAnimation } from './loadVRMAnimation'
+import { createSequenceClip } from '@/lib/VRMAnimation/createSequenceClip'
+import { loadPoseFromJSON } from '@/lib/VRMAnimation/loadPoseFromJSON'
+import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import { buildUrl } from '@/utils/buildUrl'
 
 const FADE_DURATION = 0.5
@@ -15,6 +15,7 @@ interface PoseState {
 
 export class PoseManager {
   private poseState: PoseState | null = null
+  private applyRequestId = 0
 
   async applyPose(
     model: Model,
@@ -23,11 +24,7 @@ export class PoseManager {
   ): Promise<void> {
     if (!model.vrm || !model.mixer) return
 
-    // 既存ポーズをフェードアウト
-    if (this.poseState) {
-      this.poseState.poseAction.fadeOut(FADE_DURATION)
-      this.poseState.additiveAction.fadeOut(FADE_DURATION)
-    }
+    const requestId = ++this.applyRequestId
 
     const isSequence = 'sequence' in poseConfig
     let poseClip: THREE.AnimationClip
@@ -40,6 +37,13 @@ export class PoseManager {
         loadVRMAnimation(buildUrl('/idle_loop.vrma')),
       ])
       if (poses.some((p) => !p) || !idleVrma) return
+      if (requestId !== this.applyRequestId) return
+
+      // 既存ポーズをフェードアウト（非同期ロード成功後）
+      if (this.poseState) {
+        this.poseState.poseAction.fadeOut(FADE_DURATION)
+        this.poseState.additiveAction.fadeOut(FADE_DURATION)
+      }
 
       poseClip = createSequenceClip(
         poses.filter((p): p is NonNullable<typeof p> => p !== null),
@@ -86,6 +90,13 @@ export class PoseManager {
         loadVRMAnimation(buildUrl('/idle_loop.vrma')),
       ])
       if (!pose || !idleVrma) return
+      if (requestId !== this.applyRequestId) return
+
+      // 既存ポーズをフェードアウト（非同期ロード成功後）
+      if (this.poseState) {
+        this.poseState.poseAction.fadeOut(FADE_DURATION)
+        this.poseState.additiveAction.fadeOut(FADE_DURATION)
+      }
 
       poseClip = pose.createAnimationClip(model.vrm)
       const hipsNode = model.vrm.humanoid.getNormalizedBoneNode('hips')

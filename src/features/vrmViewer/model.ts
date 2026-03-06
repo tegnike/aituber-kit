@@ -94,7 +94,9 @@ export class Model {
         .getState()
         .poseConfigs.find((p) => p.id === talk.motion)
       if (poseConfig) {
-        this.poseManager.applyPose(this, talk.motion, poseConfig)
+        void this.poseManager
+          .applyPose(this, talk.motion, poseConfig)
+          .catch((e) => console.error('Failed to apply pose:', e))
       }
     }
 

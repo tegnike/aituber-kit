@@ -148,7 +148,7 @@ const Chat = ({
   const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'gi')
   const processedMessage = message
     .replace(emotionPattern, '')
-    .replace(/\[motion:[^\]]*\]\s*/g, '')
+    .replace(/\[motion:[^\]]*\]\s*/gi, '')
 
   const roleColor =
     role !== 'user' ? 'bg-secondary text-theme ' : 'bg-base-light text-primary'

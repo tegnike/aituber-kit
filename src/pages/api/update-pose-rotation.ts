@@ -32,7 +32,7 @@ export default async function handler(
   const publicDir = path.normalize(path.join(process.cwd(), 'public'))
   const filePath = path.normalize(path.join(publicDir, jsonPath))
 
-  if (!filePath.startsWith(publicDir)) {
+  if (!filePath.startsWith(publicDir + path.sep)) {
     return res.status(403).json({ error: 'Access denied' })
   }
 
@@ -40,7 +40,7 @@ export default async function handler(
     const content = await fs.readFile(filePath, 'utf-8')
     const json = JSON.parse(content)
     json.yRotationOffsetDeg = angleDeg
-    await fs.writeFile(filePath, JSON.stringify(json))
+    await fs.writeFile(filePath, JSON.stringify(json, null, 2))
     return res.status(200).json({ message: 'Pose rotation updated' })
   } catch (e) {
     console.error('Failed to update pose rotation:', e)

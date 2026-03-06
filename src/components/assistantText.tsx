@@ -1,4 +1,7 @@
 import settingsStore from '@/features/stores/settings'
+import { EMOTIONS } from '@/features/messages/messages'
+
+const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]`, 'gi')
 
 export const AssistantText = ({ message }: { message: string }) => {
   const characterName = settingsStore((s) => s.characterName)
@@ -23,7 +26,9 @@ export const AssistantText = ({ message }: { message: string }) => {
           )}
           <div className="px-6 py-4">
             <div className="line-clamp-4 text-secondary font-bold">
-              {message.replace(/\[[^\]]*\]/g, '')}
+              {message
+                .replace(emotionPattern, '')
+                .replace(/\[motion:[^\]]*\]/gi, '')}
             </div>
           </div>
         </div>
