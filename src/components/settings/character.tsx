@@ -4,7 +4,10 @@ import Image from 'next/image'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore, { SettingsState } from '@/features/stores/settings'
+import settingsStore, {
+  SettingsState,
+  PoseConfigItem,
+} from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
@@ -31,6 +34,345 @@ type Character = Pick<
   | 'selectedVrmPath'
   | 'selectedLive2DPath'
 >
+
+interface PoseFile {
+  name: string
+  path: string
+}
+
+const PoseConfigSettings = () => {
+  const { i18n } = useTranslation()
+  const isJa = i18n.language === 'ja'
+  const poseConfigs = settingsStore((s) => s.poseConfigs)
+  const [poseFiles, setPoseFiles] = useState<PoseFile[]>([])
+  const [newId, setNewId] = useState('')
+  const [newJson, setNewJson] = useState('')
+  const [newSeqId, setNewSeqId] = useState('')
+  const [selectedSeqJsons, setSelectedSeqJsons] = useState<string[]>([])
+  const [newSwitchDuration, setNewSwitchDuration] = useState(0.5)
+
+  useEffect(() => {
+    fetch('/api/get-pose-list')
+      .then((res) => res.json())
+      .then((files: PoseFile[]) => setPoseFiles(files))
+      .catch((error) => {
+        console.error('Error fetching pose list:', error)
+      })
+  }, [])
+
+  const handleDelete = (id: string) => {
+    settingsStore.setState({
+      poseConfigs: poseConfigs.filter((p) => p.id !== id),
+    })
+  }
+
+  const handleMove = (id: string, direction: 'up' | 'down') => {
+    const index = poseConfigs.findIndex((p) => p.id === id)
+    if (index === -1) return
+    if (direction === 'up' && index === 0) return
+    if (direction === 'down' && index === poseConfigs.length - 1) return
+
+    const newConfigs = [...poseConfigs]
+    const swapIndex = direction === 'up' ? index - 1 : index + 1
+    ;[newConfigs[index], newConfigs[swapIndex]] = [
+      newConfigs[swapIndex],
+      newConfigs[index],
+    ]
+    settingsStore.setState({ poseConfigs: newConfigs })
+  }
+
+  const handleAddPose = () => {
+    if (!newId.trim() || !newJson) return
+    const id = newId.trim()
+    if (poseConfigs.some((p) => p.id === id)) return
+    const newConfig: PoseConfigItem = {
+      id: newId.trim(),
+      json: newJson,
+    }
+    settingsStore.setState({
+      poseConfigs: [...poseConfigs, newConfig],
+    })
+    setNewId('')
+    setNewJson('')
+  }
+
+  const handleAddSequence = () => {
+    if (!newSeqId.trim() || selectedSeqJsons.length < 2) return
+    const seqId = newSeqId.trim()
+    if (poseConfigs.some((p) => p.id === seqId)) return
+    const clampedDuration = Math.min(5, Math.max(0.1, newSwitchDuration))
+    const newConfig: PoseConfigItem = {
+      id: seqId,
+      sequence: selectedSeqJsons,
+      switchDuration: clampedDuration,
+    }
+    settingsStore.setState({
+      poseConfigs: [...poseConfigs, newConfig],
+    })
+    setNewSeqId('')
+    setSelectedSeqJsons([])
+    setNewSwitchDuration(0.5)
+  }
+
+  const toggleSeqJson = (jsonPath: string) => {
+    setSelectedSeqJsons((prev) =>
+      prev.includes(jsonPath)
+        ? prev.filter((p) => p !== jsonPath)
+        : [...prev, jsonPath]
+    )
+  }
+
+  return (
+    <div className="my-6">
+      <div className="text-xl font-bold mb-4">
+        {isJa ? 'ポーズ設定' : 'Pose Settings'}
+      </div>
+      <div className="mb-4 text-sm">
+        {isJa
+          ? 'ポーズ調整モードで表示されるポーズの追加・削除・並べ替えができます。'
+          : 'Add, remove, and reorder poses displayed in pose adjustment mode.'}
+      </div>
+
+      {/* 既存ポーズ一覧 */}
+      {poseConfigs.length > 0 && (
+        <div className="space-y-2 mb-6">
+          {poseConfigs.map((config, index) => (
+            <div
+              key={config.id}
+              className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="font-bold text-sm truncate">{config.id}</div>
+                <div className="text-xs text-gray-500 truncate">
+                  {'json' in config
+                    ? config.json
+                    : `${isJa ? 'シーケンス' : 'Sequence'}: ${config.sequence.join(', ')} (${config.switchDuration}${isJa ? '秒' : 's'})`}
+                </div>
+              </div>
+              <div className="flex gap-1 shrink-0">
+                <button
+                  onClick={() => handleMove(config.id, 'up')}
+                  disabled={index === 0}
+                  className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded disabled:opacity-30"
+                >
+                  ▲
+                </button>
+                <button
+                  onClick={() => handleMove(config.id, 'down')}
+                  disabled={index === poseConfigs.length - 1}
+                  className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded disabled:opacity-30"
+                >
+                  ▼
+                </button>
+                <button
+                  onClick={() => handleDelete(config.id)}
+                  className="px-2 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-600 rounded"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 通常ポーズ追加 */}
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+        <div className="font-bold text-sm mb-2">
+          {isJa ? '通常ポーズを追加' : 'Add Pose'}
+        </div>
+        <div className="flex gap-2 items-end">
+          <div className="flex-1">
+            <label className="block text-xs mb-1">ID</label>
+            <input
+              type="text"
+              value={newId}
+              onChange={(e) => setNewId(e.target.value)}
+              placeholder={isJa ? '例: think' : 'e.g. think'}
+              className="w-full px-3 py-2 bg-white rounded-lg text-sm"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-xs mb-1">
+              {isJa ? 'JSONファイル' : 'JSON File'}
+            </label>
+            <select
+              value={newJson}
+              onChange={(e) => {
+                setNewJson(e.target.value)
+                if (e.target.value && !newId.trim()) {
+                  const fileName = e.target.value.split('/').pop() ?? ''
+                  setNewId(fileName.replace('.json', ''))
+                }
+              }}
+              className="w-full px-3 py-2 bg-white rounded-lg text-sm"
+            >
+              <option value="">{isJa ? '選択してください' : 'Select'}</option>
+              {poseFiles.map((f) => (
+                <option key={f.path} value={f.path}>
+                  {f.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={handleAddPose}
+            disabled={
+              !newId.trim() ||
+              !newJson ||
+              poseConfigs.some((p) => p.id === newId.trim())
+            }
+            className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
+          >
+            {isJa ? '追加' : 'Add'}
+          </button>
+        </div>
+      </div>
+
+      {/* シーケンス追加 */}
+      <div className="p-4 bg-gray-50 rounded-lg">
+        <div className="font-bold text-sm mb-2">
+          {isJa ? 'シーケンスポーズを追加' : 'Add Sequence Pose'}
+        </div>
+        <div className="mb-3">
+          <label className="block text-xs mb-1">ID</label>
+          <input
+            type="text"
+            value={newSeqId}
+            onChange={(e) => setNewSeqId(e.target.value)}
+            placeholder={isJa ? '例: wave' : 'e.g. wave'}
+            className="w-full px-3 py-2 bg-white rounded-lg text-sm"
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-xs mb-1">
+            {isJa ? 'JSONファイル（2つ以上選択）' : 'JSON Files (select 2+)'}
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {poseFiles.map((f) => (
+              <label
+                key={f.path}
+                className="flex items-center gap-1 px-2 py-1 bg-white rounded text-sm cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedSeqJsons.includes(f.path)}
+                  onChange={() => toggleSeqJson(f.path)}
+                  className="h-4 w-4"
+                />
+                {f.name}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div className="flex gap-2 items-end">
+          <div>
+            <label className="block text-xs mb-1">
+              {isJa ? '遷移時間（秒）' : 'Transition (sec)'}
+            </label>
+            <input
+              type="number"
+              value={newSwitchDuration}
+              onChange={(e) =>
+                setNewSwitchDuration(parseFloat(e.target.value) || 0.5)
+              }
+              min="0.1"
+              max="5"
+              step="0.1"
+              className="w-24 px-3 py-2 bg-white rounded-lg text-sm"
+            />
+          </div>
+          <button
+            onClick={handleAddSequence}
+            disabled={!newSeqId.trim() || selectedSeqJsons.length < 2}
+            className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
+          >
+            {isJa ? '追加' : 'Add'}
+          </button>
+        </div>
+      </div>
+
+      {/* モーションタグ参照 */}
+      {poseConfigs.length > 0 && (
+        <MotionTagReference poseConfigs={poseConfigs} />
+      )}
+    </div>
+  )
+}
+
+const KNOWN_MOTION_DESCRIPTIONS: Record<string, { ja: string; en: string }> = {
+  think: { ja: '考え中、悩んでいる', en: 'thinking, pondering' },
+  cheer: { ja: '応援、喜び、やったー', en: 'cheering, joy' },
+  cross: { ja: '拒否、ダメ、バツ', en: 'rejection, no' },
+  mouth_cover: { ja: '驚き、口を覆う', en: 'surprise, covering mouth' },
+  crossed_arms: { ja: '自信、不満、腕組み', en: 'confidence, arms crossed' },
+  bow: { ja: 'お辞儀、感謝、謝罪', en: 'bow, gratitude, apology' },
+  shrug: { ja: 'お手上げ、分からない', en: 'shrug, no idea' },
+  shy: { ja: '照れ、恥ずかしい', en: 'shy, embarrassed' },
+  wave: { ja: '手を振る、挨拶', en: 'waving, greeting' },
+  clap: { ja: '拍手、称賛', en: 'clapping, applause' },
+}
+
+const MotionTagReference = ({
+  poseConfigs,
+}: {
+  poseConfigs: PoseConfigItem[]
+}) => {
+  const { i18n } = useTranslation()
+  const [copied, setCopied] = useState(false)
+  const isJa = i18n.language === 'ja'
+
+  const motionList = poseConfigs
+    .map((p) => {
+      const desc = KNOWN_MOTION_DESCRIPTIONS[p.id]
+      const label = desc ? (isJa ? desc.ja : desc.en) : p.id
+      return isJa ? `- ${p.id}: ${label}` : `- ${p.id}: ${label}`
+    })
+    .join('\n')
+  const tagFormat = '[motion:モーション名]'
+  const fullText = isJa
+    ? `モーションタグを使ってキャラクターにポーズを取らせることができます。\n利用可能なモーションとその意味は以下の通りです。\n${motionList}\n\nモーションタグの書式: ${tagFormat}\n感情タグと併用可能です。モーションは会話の内容に合った場面でのみ使い、毎回使う必要はありません。`
+    : `You can use motion tags to make the character pose.\nAvailable motions:\n${motionList}\n\nMotion tag format: [motion:motionName]\nCan be combined with emotion tags. Use motions only when appropriate, not every time.`
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(fullText).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+      <div className="font-bold text-sm mb-2">
+        {isJa ? 'モーションタグ' : 'Motion Tags'}
+      </div>
+      <div className="text-xs text-gray-500 mb-2">
+        {isJa
+          ? 'システムプロンプトに貼り付けると、AIがモーションを使えるようになります。'
+          : 'Paste into the system prompt to enable AI-controlled motions.'}
+      </div>
+      <div
+        onClick={handleCopy}
+        className="px-3 py-2 bg-white rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+      >
+        <code className="block text-xs break-all select-all whitespace-pre-wrap">
+          {fullText}
+        </code>
+        <div className="text-right mt-1">
+          <span className="text-xs text-gray-400">
+            {copied
+              ? isJa
+                ? '✓ コピー済み'
+                : '✓ copied'
+              : isJa
+                ? 'クリックでコピー'
+                : 'click to copy'}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const emotionFields = [
   {
@@ -369,6 +711,7 @@ const Character = () => {
     customPresetName5,
     selectedPresetIndex,
     lightingIntensity,
+    poseAdjustMode,
   } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
@@ -943,6 +1286,20 @@ const Character = () => {
               }}
               className="mt-2 mb-4 input-range"
             />
+          </div>
+        )}
+
+        {modelType === 'vrm' && (
+          <div className="my-6">
+            <div className="text-xl font-bold mb-4">ポーズ角度調整</div>
+            <div className="mb-4 text-sm">
+              ONにすると画面上にポーズ調整UIが表示されます。ポーズごとのY軸回転を微調整できます。
+            </div>
+            <ToggleSwitch
+              enabled={poseAdjustMode}
+              onChange={(v) => settingsStore.setState({ poseAdjustMode: v })}
+            />
+            <PoseConfigSettings />
           </div>
         )}
 

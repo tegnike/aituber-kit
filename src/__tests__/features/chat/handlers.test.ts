@@ -215,6 +215,7 @@ describe('handlers', () => {
         slideMode: false,
         systemPrompt: 'テストプロンプト',
         includeTimestampInUserMessage: false,
+        poseConfigs: [],
       })
 
       const handleSendChat = handleSendChatFn()

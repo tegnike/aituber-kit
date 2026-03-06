@@ -190,6 +190,7 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  poseAdjustMode: boolean
   selectedPNGTuberPath: string
   pngTuberSensitivity: number
   pngTuberChromaKeyEnabled: boolean
@@ -198,7 +199,13 @@ interface Character {
   pngTuberScale: number
   pngTuberOffsetX: number
   pngTuberOffsetY: number
+  poseConfigs: PoseConfigItem[]
 }
+
+// Pose config item type
+export type PoseConfigItem =
+  | { id: string; json: string }
+  | { id: string; sequence: string[]; switchDuration: number }
 
 // Preset question type
 export interface PresetQuestion {
@@ -494,6 +501,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   },
   lightingIntensity:
     parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
+  poseAdjustMode: false,
 
   // General
   selectLanguage: (process.env.NEXT_PUBLIC_SELECT_LANGUAGE as Language) || 'ja',
@@ -624,6 +632,26 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_X || '0') || 0,
   pngTuberOffsetY:
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
+  poseConfigs: [
+    { id: 'think', json: '/poses/think.json' },
+    { id: 'cheer', json: '/poses/cheer.json' },
+    { id: 'cross', json: '/poses/cross.json' },
+    { id: 'mouth_cover', json: '/poses/mouth_cover.json' },
+    { id: 'crossed_arms', json: '/poses/crossed_arms.json' },
+    { id: 'bow', json: '/poses/bow.json' },
+    { id: 'shrug', json: '/poses/shrug.json' },
+    { id: 'shy', json: '/poses/shy.json' },
+    {
+      id: 'wave',
+      sequence: ['/poses/wave1.json', '/poses/wave2.json'],
+      switchDuration: 0.5,
+    },
+    {
+      id: 'clap',
+      sequence: ['/poses/clap1.json', '/poses/clap2.json'],
+      switchDuration: 0.2,
+    },
+  ],
 
   // Memory settings
   memoryEnabled:
@@ -947,6 +975,7 @@ const settingsStore = create<SettingsState>()(
         pngTuberScale: state.pngTuberScale,
         pngTuberOffsetX: state.pngTuberOffsetX,
         pngTuberOffsetY: state.pngTuberOffsetY,
+        poseConfigs: state.poseConfigs,
         neutralEmotions: state.neutralEmotions,
         happyEmotions: state.happyEmotions,
         sadEmotions: state.sadEmotions,

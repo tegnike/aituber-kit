@@ -146,7 +146,9 @@ const Chat = ({
   const [isLocalExpanded, setIsLocalExpanded] = useState(false)
   const isThinkingExpanded = showThinkingText || isLocalExpanded
   const emotionPattern = new RegExp(`\\[(${EMOTIONS.join('|')})\\]\\s*`, 'gi')
-  const processedMessage = message.replace(emotionPattern, '')
+  const processedMessage = message
+    .replace(emotionPattern, '')
+    .replace(/\[motion:[^\]]*\]\s*/gi, '')
 
   const roleColor =
     role !== 'user' ? 'bg-secondary text-theme ' : 'bg-base-light text-primary'
