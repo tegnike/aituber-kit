@@ -1,1 +1,469 @@
-{"specVersion":"1.0","duration":0,"restHipsPosition":[0,0.8500000238418579,0],"boneNames":["chest","head","hips","leftEye","leftFoot","leftHand","leftIndexDistal","leftIndexIntermediate","leftIndexProximal","leftLittleDistal","leftLittleIntermediate","leftLittleProximal","leftLowerArm","leftLowerLeg","leftMiddleDistal","leftMiddleIntermediate","leftMiddleProximal","leftRingDistal","leftRingIntermediate","leftRingProximal","leftShoulder","leftThumbDistal","leftThumbMetacarpal","leftThumbProximal","leftToes","leftUpperArm","leftUpperLeg","neck","rightEye","rightFoot","rightHand","rightIndexDistal","rightIndexIntermediate","rightIndexProximal","rightLittleDistal","rightLittleIntermediate","rightLittleProximal","rightLowerArm","rightLowerLeg","rightMiddleDistal","rightMiddleIntermediate","rightMiddleProximal","rightRingDistal","rightRingIntermediate","rightRingProximal","rightShoulder","rightThumbDistal","rightThumbMetacarpal","rightThumbProximal","rightToes","rightUpperArm","rightUpperLeg","spine"],"bones":{"hips":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"},"translation":{"times":[0],"values":[[0,0.908076286315918,0.003576065180823207]],"interpolation":"LINEAR"}},"spine":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"chest":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"neck":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"head":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftEye":{"rotation":{"times":[0],"values":[[0.0004148061270825565,0.002542580012232065,-0.0000010546812063694233,0.9999966621398926]],"interpolation":"LINEAR"}},"rightEye":{"rotation":{"times":[0],"values":[[0.0004148061270825565,0.002542580012232065,-0.0000010546812063694233,0.9999966621398926]],"interpolation":"LINEAR"}},"leftUpperLeg":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftLowerLeg":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftFoot":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftToes":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightUpperLeg":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightLowerLeg":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightFoot":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightToes":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftShoulder":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftUpperArm":{"rotation":{"times":[0],"values":[[-0.26266413927078247,-0.3105439245700836,-0.3595770001411438,0.8398061394691467]],"interpolation":"LINEAR"}},"leftLowerArm":{"rotation":{"times":[0],"values":[[0.1446152627468109,-0.8373784422874451,-0.0897102802991867,0.5194572806358337]],"interpolation":"LINEAR"}},"leftHand":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightShoulder":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightUpperArm":{"rotation":{"times":[0],"values":[[-0.14547273516654968,0.3595559597015381,0.33033615350723267,0.8604854345321655]],"interpolation":"LINEAR"}},"rightLowerArm":{"rotation":{"times":[0],"values":[[0.12997078895568848,0.8874900937080383,-0.046452172100543976,0.4396715760231018]],"interpolation":"LINEAR"}},"rightHand":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftThumbMetacarpal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftThumbProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftThumbDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftIndexProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftIndexIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftIndexDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftMiddleProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftMiddleIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftMiddleDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftRingProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftRingIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftRingDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftLittleProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftLittleIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"leftLittleDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightThumbMetacarpal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightThumbProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightThumbDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightIndexProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightIndexIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightIndexDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightMiddleProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightMiddleIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightMiddleDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightRingProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightRingIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightRingDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightLittleProximal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightLittleIntermediate":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}},"rightLittleDistal":{"rotation":{"times":[0],"values":[[0,0,0,1]],"interpolation":"LINEAR"}}},"yRotationOffsetDeg":8.3}
+{
+  "specVersion": "1.0",
+  "duration": 0,
+  "restHipsPosition": [0, 0.8500000238418579, 0],
+  "boneNames": [
+    "chest",
+    "head",
+    "hips",
+    "leftEye",
+    "leftFoot",
+    "leftHand",
+    "leftIndexDistal",
+    "leftIndexIntermediate",
+    "leftIndexProximal",
+    "leftLittleDistal",
+    "leftLittleIntermediate",
+    "leftLittleProximal",
+    "leftLowerArm",
+    "leftLowerLeg",
+    "leftMiddleDistal",
+    "leftMiddleIntermediate",
+    "leftMiddleProximal",
+    "leftRingDistal",
+    "leftRingIntermediate",
+    "leftRingProximal",
+    "leftShoulder",
+    "leftThumbDistal",
+    "leftThumbMetacarpal",
+    "leftThumbProximal",
+    "leftToes",
+    "leftUpperArm",
+    "leftUpperLeg",
+    "neck",
+    "rightEye",
+    "rightFoot",
+    "rightHand",
+    "rightIndexDistal",
+    "rightIndexIntermediate",
+    "rightIndexProximal",
+    "rightLittleDistal",
+    "rightLittleIntermediate",
+    "rightLittleProximal",
+    "rightLowerArm",
+    "rightLowerLeg",
+    "rightMiddleDistal",
+    "rightMiddleIntermediate",
+    "rightMiddleProximal",
+    "rightRingDistal",
+    "rightRingIntermediate",
+    "rightRingProximal",
+    "rightShoulder",
+    "rightThumbDistal",
+    "rightThumbMetacarpal",
+    "rightThumbProximal",
+    "rightToes",
+    "rightUpperArm",
+    "rightUpperLeg",
+    "spine"
+  ],
+  "bones": {
+    "hips": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      },
+      "translation": {
+        "times": [0],
+        "values": [[0, 0.908076286315918, 0.003576065180823207]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "spine": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "chest": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "neck": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "head": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftEye": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.0004148061270825565, 0.002542580012232065,
+            -0.0000010546812063694233, 0.9999966621398926
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightEye": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.0004148061270825565, 0.002542580012232065,
+            -0.0000010546812063694233, 0.9999966621398926
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftUpperLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLowerLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftFoot": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftToes": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightUpperLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLowerLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightFoot": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightToes": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftShoulder": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftUpperArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.26266413927078247, -0.3105439245700836, -0.3595770001411438,
+            0.8398061394691467
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLowerArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.1446152627468109, -0.8373784422874451, -0.0897102802991867,
+            0.5194572806358337
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftHand": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightShoulder": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightUpperArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.14547273516654968, 0.3595559597015381, 0.33033615350723267,
+            0.8604854345321655
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLowerArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.12997078895568848, 0.8874900937080383, -0.046452172100543976,
+            0.4396715760231018
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightHand": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftThumbMetacarpal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftThumbProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftThumbDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftIndexProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftIndexIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftIndexDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftMiddleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftMiddleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftMiddleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftRingProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftRingIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftRingDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLittleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLittleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLittleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightThumbMetacarpal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightThumbProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightThumbDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightIndexProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightIndexIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightIndexDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightMiddleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightMiddleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightMiddleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightRingProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightRingIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightRingDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLittleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLittleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLittleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    }
+  },
+  "yRotationOffsetDeg": 8.3
+}

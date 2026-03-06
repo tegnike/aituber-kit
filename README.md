@@ -220,7 +220,6 @@ Cloudflare Workersへのデプロイに対応しています。[OpenNext](https:
 2. `wrangler.jsonc`のプロジェクト名を必要に応じて変更します。
 
 3. 環境変数を設定します。
-
    - **フロントエンド設定（`NEXT_PUBLIC_*`）**: `.env`ファイルに記述します。ビルド時にクライアントコードに埋め込まれます。
    - **サーバーサイドAPIキー（`OPENAI_API_KEY`等）**: Wranglerシークレットとして設定します。
 
