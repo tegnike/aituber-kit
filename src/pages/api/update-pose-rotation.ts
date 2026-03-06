@@ -25,13 +25,12 @@ export default async function handler(
     return res.status(400).json({ error: 'Invalid parameters' })
   }
 
-  const filename = path.basename(jsonPath)
-  if (!filename.endsWith('.json')) {
+  if (!jsonPath.endsWith('.json')) {
     return res.status(400).json({ error: 'Only .json files are allowed' })
   }
 
   const publicDir = path.normalize(path.join(process.cwd(), 'public'))
-  const filePath = path.normalize(path.join(publicDir, filename))
+  const filePath = path.normalize(path.join(publicDir, jsonPath))
 
   if (!filePath.startsWith(publicDir)) {
     return res.status(403).json({ error: 'Access denied' })

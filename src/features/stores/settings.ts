@@ -633,14 +633,14 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   pngTuberOffsetY:
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
   poseConfigs: [
-    { id: 'think', json: '/think.json' },
-    { id: 'cheer', json: '/cheer.json' },
-    { id: 'cross', json: '/cross.json' },
-    { id: 'cover_mouth', json: '/cover_mouth.json' },
-    { id: 'finger_touch', json: '/finger_touch.json' },
+    { id: 'think', json: '/poses/think.json' },
+    { id: 'cheer', json: '/poses/cheer.json' },
+    { id: 'cross', json: '/poses/cross.json' },
+    { id: 'cover_mouth', json: '/poses/cover_mouth.json' },
+    { id: 'finger_touch', json: '/poses/finger_touch.json' },
     {
       id: 'wave',
-      sequence: ['/wave1.json', '/wave2.json'],
+      sequence: ['/poses/wave1.json', '/poses/wave2.json'],
       switchDuration: 0.5,
     },
   ],

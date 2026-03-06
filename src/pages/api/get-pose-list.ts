@@ -11,24 +11,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const publicDir = path.join(process.cwd(), 'public')
+  const posesDir = path.join(process.cwd(), 'public', 'poses')
 
   try {
-    const files = await fs.promises.readdir(publicDir)
+    const files = await fs.promises.readdir(posesDir)
     const jsonFiles = files.filter((file) => file.endsWith('.json'))
 
     const poseFiles: PoseListItem[] = []
 
     for (const file of jsonFiles) {
       try {
-        const filePath = path.join(publicDir, file)
+        const filePath = path.join(posesDir, file)
         const content = await fs.promises.readFile(filePath, 'utf-8')
         const json = JSON.parse(content)
 
         if (json.specVersion && json.bones) {
           poseFiles.push({
             name: file.replace('.json', ''),
-            path: `/${file}`,
+            path: `/poses/${file}`,
           })
         }
       } catch {
