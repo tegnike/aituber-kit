@@ -164,17 +164,17 @@ export default function PoseTestButton() {
               </div>
               <input
                 type="range"
-                min="-15"
-                max="15"
+                min="-90"
+                max="90"
                 step="0.1"
                 value={angleDeg}
                 onChange={(e) => handleAngleChange(parseFloat(e.target.value))}
                 className="w-full mb-2 accent-white"
               />
               <div className="flex justify-between text-xs text-gray-400 mb-3">
-                <span>-15°</span>
+                <span>-90°</span>
                 <span>0°</span>
-                <span>+15°</span>
+                <span>+90°</span>
               </div>
               <div className="flex gap-2">
                 <button

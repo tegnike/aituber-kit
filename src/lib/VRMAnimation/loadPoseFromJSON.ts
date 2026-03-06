@@ -63,6 +63,7 @@ export async function loadPoseFromJSON(
     // VRM Web Pose形式の場合は変換
     if (raw.version && raw.pose && !raw.specVersion) {
       json = convertWebPoseToVrma(raw)
+      json.yRotationOffsetDeg = raw.yRotationOffsetDeg
     } else {
       json = raw
     }
@@ -109,10 +110,22 @@ export async function loadPoseFromJSON(
 
   // yRotationOffsetDegが設定されている場合、hipsのrotationにY軸回転を適用
   if (json.yRotationOffsetDeg && json.yRotationOffsetDeg !== 0) {
-    const hipsTrack = animation.humanoidTracks.rotation.get(
+    let hipsTrack = animation.humanoidTracks.rotation.get(
       'hips' as VRMHumanBoneName
     )
-    if (hipsTrack) {
+    if (!hipsTrack) {
+      // hipsトラックが無い場合（VRM Web Pose等）、identity quaternionで作成
+      hipsTrack = new THREE.VectorKeyframeTrack(
+        'hips.quaternion',
+        new Float32Array([0]),
+        new Float32Array([0, 0, 0, 1])
+      )
+      animation.humanoidTracks.rotation.set(
+        'hips' as VRMHumanBoneName,
+        hipsTrack
+      )
+    }
+    {
       const rad = (json.yRotationOffsetDeg * Math.PI) / 180
       const delta = new THREE.Quaternion(
         0,
