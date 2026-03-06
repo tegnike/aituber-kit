@@ -41,6 +41,8 @@ interface PoseFile {
 }
 
 const PoseConfigSettings = () => {
+  const { i18n } = useTranslation()
+  const isJa = i18n.language === 'ja'
   const poseConfigs = settingsStore((s) => s.poseConfigs)
   const [poseFiles, setPoseFiles] = useState<PoseFile[]>([])
   const [newId, setNewId] = useState('')
@@ -117,9 +119,13 @@ const PoseConfigSettings = () => {
 
   return (
     <div className="my-6">
-      <div className="text-xl font-bold mb-4">ポーズ設定</div>
+      <div className="text-xl font-bold mb-4">
+        {isJa ? 'ポーズ設定' : 'Pose Settings'}
+      </div>
       <div className="mb-4 text-sm">
-        ポーズ調整モードで表示されるポーズの追加・削除・並べ替えができます。
+        {isJa
+          ? 'ポーズ調整モードで表示されるポーズの追加・削除・並べ替えができます。'
+          : 'Add, remove, and reorder poses displayed in pose adjustment mode.'}
       </div>
 
       {/* 既存ポーズ一覧 */}
@@ -135,7 +141,7 @@ const PoseConfigSettings = () => {
                 <div className="text-xs text-gray-500 truncate">
                   {'json' in config
                     ? config.json
-                    : `シーケンス: ${config.sequence.join(', ')} (${config.switchDuration}秒)`}
+                    : `${isJa ? 'シーケンス' : 'Sequence'}: ${config.sequence.join(', ')} (${config.switchDuration}${isJa ? '秒' : 's'})`}
                 </div>
               </div>
               <div className="flex gap-1 shrink-0">
@@ -167,7 +173,9 @@ const PoseConfigSettings = () => {
 
       {/* 通常ポーズ追加 */}
       <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-        <div className="font-bold text-sm mb-2">通常ポーズを追加</div>
+        <div className="font-bold text-sm mb-2">
+          {isJa ? '通常ポーズを追加' : 'Add Pose'}
+        </div>
         <div className="flex gap-2 items-end">
           <div className="flex-1">
             <label className="block text-xs mb-1">ID</label>
@@ -175,18 +183,22 @@ const PoseConfigSettings = () => {
               type="text"
               value={newId}
               onChange={(e) => setNewId(e.target.value)}
-              placeholder="例: think"
+              placeholder={isJa ? '例: think' : 'e.g. think'}
               className="w-full px-3 py-2 bg-white rounded-lg text-sm"
             />
           </div>
           <div className="flex-1">
-            <label className="block text-xs mb-1">JSONファイル</label>
+            <label className="block text-xs mb-1">
+              {isJa ? 'JSONファイル' : 'JSON File'}
+            </label>
             <select
               value={newJson}
               onChange={(e) => setNewJson(e.target.value)}
               className="w-full px-3 py-2 bg-white rounded-lg text-sm"
             >
-              <option value="">選択してください</option>
+              <option value="">
+                {isJa ? '選択してください' : 'Select'}
+              </option>
               {poseFiles.map((f) => (
                 <option key={f.path} value={f.path}>
                   {f.name}
@@ -199,27 +211,29 @@ const PoseConfigSettings = () => {
             disabled={!newId.trim() || !newJson}
             className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
           >
-            追加
+            {isJa ? '追加' : 'Add'}
           </button>
         </div>
       </div>
 
       {/* シーケンス追加 */}
       <div className="p-4 bg-gray-50 rounded-lg">
-        <div className="font-bold text-sm mb-2">シーケンスポーズを追加</div>
+        <div className="font-bold text-sm mb-2">
+          {isJa ? 'シーケンスポーズを追加' : 'Add Sequence Pose'}
+        </div>
         <div className="mb-3">
           <label className="block text-xs mb-1">ID</label>
           <input
             type="text"
             value={newSeqId}
             onChange={(e) => setNewSeqId(e.target.value)}
-            placeholder="例: wave"
+            placeholder={isJa ? '例: wave' : 'e.g. wave'}
             className="w-full px-3 py-2 bg-white rounded-lg text-sm"
           />
         </div>
         <div className="mb-3">
           <label className="block text-xs mb-1">
-            JSONファイル（2つ以上選択）
+            {isJa ? 'JSONファイル（2つ以上選択）' : 'JSON Files (select 2+)'}
           </label>
           <div className="flex flex-wrap gap-2">
             {poseFiles.map((f) => (
@@ -240,7 +254,9 @@ const PoseConfigSettings = () => {
         </div>
         <div className="flex gap-2 items-end">
           <div>
-            <label className="block text-xs mb-1">遷移時間（秒）</label>
+            <label className="block text-xs mb-1">
+              {isJa ? '遷移時間（秒）' : 'Transition (sec)'}
+            </label>
             <input
               type="number"
               value={newSwitchDuration}
@@ -258,7 +274,7 @@ const PoseConfigSettings = () => {
             disabled={!newSeqId.trim() || selectedSeqJsons.length < 2}
             className="px-4 py-2 bg-primary text-theme rounded-lg text-sm font-bold disabled:opacity-40"
           >
-            追加
+            {isJa ? '追加' : 'Add'}
           </button>
         </div>
       </div>
@@ -310,9 +326,13 @@ const MotionTagReference = ({
 
   return (
     <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-      <div className="font-bold text-sm mb-2">モーションタグ</div>
+      <div className="font-bold text-sm mb-2">
+        {isJa ? 'モーションタグ' : 'Motion Tags'}
+      </div>
       <div className="text-xs text-gray-500 mb-2">
-        システムプロンプトに貼り付けると、AIがモーションを使えるようになります。
+        {isJa
+          ? 'システムプロンプトに貼り付けると、AIがモーションを使えるようになります。'
+          : 'Paste into the system prompt to enable AI-controlled motions.'}
       </div>
       <div
         onClick={handleCopy}
