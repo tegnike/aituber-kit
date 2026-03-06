@@ -220,7 +220,6 @@ Cloudflare Workersへのデプロイに対応しています。[OpenNext](https:
 2. `wrangler.jsonc`のプロジェクト名を必要に応じて変更します。
 
 3. 環境変数を設定します。
-
    - **フロントエンド設定（`NEXT_PUBLIC_*`）**: `.env`ファイルに記述します。ビルド時にクライアントコードに埋め込まれます。
    - **サーバーサイドAPIキー（`OPENAI_API_KEY`等）**: Wranglerシークレットとして設定します。
 
@@ -390,6 +389,9 @@ npm run deploy:cloudflare
   </a>
   <a href="https://github.com/hattoritatsuya" title="hattoritatsuya">
     <img src="https://github.com/hattoritatsuya.png" width="40" height="40" alt="hattoritatsuya">
+  </a>
+  <a href="https://github.com/sa1p" title="sa1p">
+    <img src="https://github.com/sa1p.png" width="40" height="40" alt="sa1p">
   </a>
 </p>
 
