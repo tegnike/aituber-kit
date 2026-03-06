@@ -636,12 +636,20 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     { id: 'think', json: '/poses/think.json' },
     { id: 'cheer', json: '/poses/cheer.json' },
     { id: 'cross', json: '/poses/cross.json' },
-    { id: 'cover_mouth', json: '/poses/cover_mouth.json' },
-    { id: 'finger_touch', json: '/poses/finger_touch.json' },
+    { id: 'mouth_cover', json: '/poses/mouth_cover.json' },
+    { id: 'crossed_arms', json: '/poses/crossed_arms.json' },
+    { id: 'bow', json: '/poses/bow.json' },
+    { id: 'shrug', json: '/poses/shrug.json' },
+    { id: 'shy', json: '/poses/shy.json' },
     {
       id: 'wave',
       sequence: ['/poses/wave1.json', '/poses/wave2.json'],
       switchDuration: 0.5,
+    },
+    {
+      id: 'clap',
+      sequence: ['/poses/clap1.json', '/poses/clap2.json'],
+      switchDuration: 0.2,
     },
   ],
 

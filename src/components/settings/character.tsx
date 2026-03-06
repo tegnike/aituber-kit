@@ -301,12 +301,16 @@ const PoseConfigSettings = () => {
 }
 
 const KNOWN_MOTION_DESCRIPTIONS: Record<string, { ja: string; en: string }> = {
-  think: { ja: '考えるポーズ', en: 'thinking pose' },
-  cheer: { ja: '応援', en: 'cheering' },
-  cross: { ja: '腕組み', en: 'arms crossed' },
-  cover_mouth: { ja: '口を覆う', en: 'covering mouth' },
-  finger_touch: { ja: '指合わせ', en: 'finger touching' },
-  wave: { ja: '手振り', en: 'waving' },
+  think: { ja: '考え中、悩んでいる', en: 'thinking, pondering' },
+  cheer: { ja: '応援、喜び、やったー', en: 'cheering, joy' },
+  cross: { ja: '拒否、ダメ、バツ', en: 'rejection, no' },
+  mouth_cover: { ja: '驚き、口を覆う', en: 'surprise, covering mouth' },
+  crossed_arms: { ja: '自信、不満、腕組み', en: 'confidence, arms crossed' },
+  bow: { ja: 'お辞儀、感謝、謝罪', en: 'bow, gratitude, apology' },
+  shrug: { ja: 'お手上げ、分からない', en: 'shrug, no idea' },
+  shy: { ja: '照れ、恥ずかしい', en: 'shy, embarrassed' },
+  wave: { ja: '手を振る、挨拶', en: 'waving, greeting' },
+  clap: { ja: '拍手、称賛', en: 'clapping, applause' },
 }
 
 const MotionTagReference = ({
@@ -321,14 +325,14 @@ const MotionTagReference = ({
   const motionList = poseConfigs
     .map((p) => {
       const desc = KNOWN_MOTION_DESCRIPTIONS[p.id]
-      const label = desc ? (isJa ? desc.ja : desc.en) : ''
-      return isJa ? `${p.id}（${label}）` : `${p.id} (${label})`
+      const label = desc ? (isJa ? desc.ja : desc.en) : p.id
+      return isJa ? `- ${p.id}: ${label}` : `- ${p.id}: ${label}`
     })
-    .join(isJa ? '、' : ', ')
-  const tagFormat = `[motion:{${poseConfigs.map((p) => p.id).join('|')}}]`
+    .join('\n')
+  const tagFormat = '[motion:モーション名]'
   const fullText = isJa
-    ? `利用可能なモーション: ${motionList}\nモーションタグの書式: ${tagFormat}`
-    : `Available motions: ${motionList}\nMotion tag format: ${tagFormat}`
+    ? `モーションタグを使ってキャラクターにポーズを取らせることができます。\n利用可能なモーションとその意味は以下の通りです。\n${motionList}\n\nモーションタグの書式: ${tagFormat}\n感情タグと併用可能です。モーションは会話の内容に合った場面でのみ使い、毎回使う必要はありません。`
+    : `You can use motion tags to make the character pose.\nAvailable motions:\n${motionList}\n\nMotion tag format: [motion:motionName]\nCan be combined with emotion tags. Use motions only when appropriate, not every time.`
 
   const handleCopy = () => {
     navigator.clipboard.writeText(fullText).then(() => {
