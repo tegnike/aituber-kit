@@ -196,9 +196,7 @@ const PoseConfigSettings = () => {
               onChange={(e) => setNewJson(e.target.value)}
               className="w-full px-3 py-2 bg-white rounded-lg text-sm"
             >
-              <option value="">
-                {isJa ? '選択してください' : 'Select'}
-              </option>
+              <option value="">{isJa ? '選択してください' : 'Select'}</option>
               {poseFiles.map((f) => (
                 <option key={f.path} value={f.path}>
                   {f.name}
