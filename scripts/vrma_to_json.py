@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
 VRMA (VRM Animation) ファイルからボーン情報を抽出してJSONに変換するCLIツール
+https://www.vrmwebpose.app/ で作成したVRMAファイルを解析して、ボーンのアニメーションデータをJSON形式で出力します。
+作成したjsonは public/poses/ 以下に配置する必要があります。
 
 Usage:
     python vrma_to_json.py input.vrma                    # 標準出力にJSON表示
