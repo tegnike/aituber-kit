@@ -118,6 +118,11 @@ const KioskSettings = () => {
           <div className="my-2 text-sm whitespace-pre-wrap">
             {t('KioskModeEnabledInfo')}
           </div>
+          <div className="my-4 p-4 bg-red-50 border-2 border-red-300 rounded-lg">
+            <p className="text-sm text-red-700 font-bold whitespace-pre-wrap">
+              {t('KioskModeWarning')}
+            </p>
+          </div>
           <div className="my-2">
             <ToggleSwitch
               enabled={kioskModeEnabled}
