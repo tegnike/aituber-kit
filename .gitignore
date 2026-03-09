@@ -84,3 +84,7 @@ public/pngtuber/*
 # Cloudflare
 .open-next
 .public-stash
+
+lp/*
+promo-video/*
+.claude/skills/remotion-*
