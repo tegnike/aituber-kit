@@ -32,7 +32,7 @@
   "OneCommeConnectionError": "わんコメへの接続に失敗しました。わんコメが起動しているか確認してください。",
   "YoutubeCommentInterval": "コメント取得間隔（秒）",
   "ConversationContinuityMode": "会話継続モード（ベータ版）",
-  "ConversationContinuityModeInfo": "コメントが無いときにAIが自ら会話を継続しようとするモードです。マルチモーダル対応モデルが選択されている場合のみ有効です。",
+  "ConversationContinuityModeInfo": "コメントが無いときにAIが自ら会話を継続しようとするモードです。スライドモード、外部連携モード、またはDifyが選択されている場合は使用できません。",
   "ConversationContinuityModeInfo2": "一度の回答で複数回LLMを呼び出すため、API利用料が増える可能性があります。ご注意ください。",
   "ConversationContinuityModeInfo3": "選択されたモデルによっては、安定的に動作しない場合があります。",
   "ConversationContinuityNewTopicThreshold": "新トピック生成までの回数",
