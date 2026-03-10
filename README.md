@@ -175,7 +175,7 @@ npm run dev
 初回セットアップ完了後は、起動スクリプトをダブルクリックするだけで起動できます。
 
 - **Windows**: `LAUNCH.bat` をダブルクリック
-- **macOS**: `LAUNCH.command` をダブルクリック
+- **macOS**: `LAUNCH.command` をダブルクリック（実行権限がない場合は `chmod +x LAUNCH.command` を実行してください）
 
 詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
@@ -209,7 +209,7 @@ docker compose down
 
 2. Vercelのダッシュボードで環境変数を設定します。必要なAPIキー（`OPENAI_API_KEY`等）を追加してください。設定可能な環境変数は`.env.example`を参照してください。
 
-3. デプロイは`main`ブランチへのプッシュ時に自動で実行されます。
+3. デプロイはプロジェクト設定のProduction Branchへのプッシュ時に自動で実行されます（デフォルトは`main`ブランチ）。
 
 ### Cloudflare Workers
 
@@ -389,6 +389,9 @@ npm run deploy:cloudflare
   </a>
   <a href="https://github.com/hattoritatsuya" title="hattoritatsuya">
     <img src="https://github.com/hattoritatsuya.png" width="40" height="40" alt="hattoritatsuya">
+  </a>
+  <a href="https://github.com/sa1p" title="sa1p">
+    <img src="https://github.com/sa1p.png" width="40" height="40" alt="sa1p">
   </a>
 </p>
 

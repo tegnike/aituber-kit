@@ -19,12 +19,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (isRestrictedMode()) {
-    return res.status(200).json(assetManifest.live2d)
-  }
-
   if (!isLive2DEnabled()) {
     return res.status(403).json(createLive2DRestrictionErrorResponse())
+  }
+
+  if (isRestrictedMode()) {
+    return res.status(200).json(assetManifest.live2d)
   }
 
   const live2dDir = path.join(process.cwd(), 'public/live2d')

@@ -24,9 +24,23 @@ export default async function handler(
         message: 'Bad Request: Missing or invalid slideName query parameter',
       })
     }
-    const content =
-      (assetManifest.slides.supplements as Record<string, string>)[slideName] ??
-      ''
+    const sanitizedSlideName = path
+      .normalize(slideName)
+      .replace(/^(\.\.(\/|\\|$))+/, '')
+    if (
+      /[\\/:\*\?"<>\|]/.test(sanitizedSlideName) ||
+      sanitizedSlideName.includes('..')
+    ) {
+      return res.status(400).json({
+        message:
+          'Bad Request: Invalid slideName contains invalid characters or path traversal attempts.',
+      })
+    }
+    const supplements =
+      (assetManifest.slides?.supplements as
+        | Record<string, string>
+        | undefined) ?? {}
+    const content = supplements[sanitizedSlideName] ?? ''
     return res.status(200).json({ content })
   }
 
