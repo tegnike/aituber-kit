@@ -19,12 +19,12 @@ interface MessageQueue {
 let messagesPerClient: { [clientId: string]: MessageQueue } = {}
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5 // 5分
-const MAX_IMAGE_CHARS = 2_000_000 // 約1.5MBのbase64画像に相当
+const MAX_IMAGE_CHARS = 10_000_000 // 約7.5MBのbase64画像に相当
 
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '3mb',
+      sizeLimit: '10mb',
     },
   },
 }
