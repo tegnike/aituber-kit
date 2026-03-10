@@ -323,7 +323,7 @@ export const speakMessageHandler = async (receivedMessage: string) => {
           localRemaining = textAfterSentence
         } else {
           if (localRemaining === prevLocalRemaining && localRemaining) {
-            const finalSentence = localRemaining
+            const finalSentence = textAfterMotion || localRemaining
             assistantMessageListRef.current.push(finalSentence)
             const aiText = emotionTag
               ? `${emotionTag} ${finalSentence}`

@@ -98,6 +98,9 @@ export class Model {
           .applyPose(this, talk.motion, poseConfig)
           .catch((e) => console.error('Failed to apply pose:', e))
       }
+    } else if (this.poseManager.isActive) {
+      // モーション指定なしの発話ではアクティブなポーズをリセット
+      this.poseManager.resetToIdle(this)
     }
 
     await new Promise((resolve) => {
@@ -109,10 +112,6 @@ export class Model {
         isNeedDecode
       )
     })
-
-    if (talk.motion) {
-      this.poseManager.resetToIdle(this)
-    }
   }
 
   /**
@@ -120,7 +119,6 @@ export class Model {
    */
   public stopSpeaking() {
     this._lipSync?.stopCurrentPlayback()
-    this.poseManager.resetToIdle(this)
   }
 
   /**

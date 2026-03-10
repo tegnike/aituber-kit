@@ -16,6 +16,7 @@ interface PoseState {
 export class PoseManager {
   private poseState: PoseState | null = null
   private applyRequestId = 0
+  private currentPoseName: string | null = null
 
   async applyPose(
     model: Model,
@@ -23,6 +24,9 @@ export class PoseManager {
     poseConfig: PoseConfigItem
   ): Promise<void> {
     if (!model.vrm || !model.mixer) return
+
+    // 同じポーズが既にアクティブなら何もしない
+    if (this.currentPoseName === poseName && this.poseState) return
 
     const requestId = ++this.applyRequestId
 
@@ -84,6 +88,7 @@ export class PoseManager {
       additiveAction.reset().fadeIn(FADE_DURATION).play()
 
       this.poseState = { poseAction, additiveAction }
+      this.currentPoseName = poseName
     } else {
       const [pose, idleVrma] = await Promise.all([
         loadPoseFromJSON(buildUrl(poseConfig.json)),
@@ -132,6 +137,7 @@ export class PoseManager {
       additiveAction.reset().fadeIn(FADE_DURATION).play()
 
       this.poseState = { poseAction, additiveAction }
+      this.currentPoseName = poseName
     }
   }
 
@@ -144,6 +150,7 @@ export class PoseManager {
       this.poseState.poseAction.fadeOut(FADE_DURATION)
       this.poseState.additiveAction.fadeOut(FADE_DURATION)
       this.poseState = null
+      this.currentPoseName = null
     }
     if (model.currentAction) {
       model.currentAction.reset().fadeIn(FADE_DURATION).play()
