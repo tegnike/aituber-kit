@@ -68,10 +68,14 @@ function removeEmptyDirs(dir) {
 
 // --- 退避・復元ロジック ---
 
+let isRestoring = false
+
 /**
  * .public-stash/からpublic/へファイルを復元
  */
 function restoreStash() {
+  if (isRestoring) return 0
+  isRestoring = true
   if (!fs.existsSync(stashDir)) return 0
 
   let count = 0

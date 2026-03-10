@@ -19,6 +19,7 @@ interface MessageQueue {
 let messagesPerClient: { [clientId: string]: MessageQueue } = {}
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5 // 5分
+const MAX_IMAGE_CHARS = 2_000_000 // 約1.5MBのbase64画像に相当
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const clientId = req.query.clientId as string
@@ -42,6 +43,14 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     }
     if (useCurrentSystemPrompt && typeof useCurrentSystemPrompt !== 'boolean') {
       res.status(400).json({ error: 'useCurrentSystemPrompt is not a boolean' })
+      return
+    }
+    if (image !== undefined && image !== null && typeof image !== 'string') {
+      res.status(400).json({ error: 'Image is not a string' })
+      return
+    }
+    if (typeof image === 'string' && image.length > MAX_IMAGE_CHARS) {
+      res.status(413).json({ error: 'Image payload is too large' })
       return
     }
 

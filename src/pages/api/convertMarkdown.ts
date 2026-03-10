@@ -14,15 +14,16 @@ export default async function handler(
       return res.status(405).json({ message: 'Method not allowed' })
     }
     const { slideName } = req.body as { slideName: string }
-    if (!slideName) {
+    if (!slideName || typeof slideName !== 'string') {
       return res.status(400).json({ message: 'slideName is required' })
     }
-    const rendered = (
-      assetManifest.slides.rendered as Record<
-        string,
-        { html: string; css: string }
-      >
-    )[slideName]
+    const renderedMap = assetManifest.slides.rendered as Record<
+      string,
+      { html: string; css: string }
+    >
+    const rendered = Object.hasOwn(renderedMap, slideName)
+      ? renderedMap[slideName]
+      : undefined
     return res.status(200).json(rendered ?? { html: '', css: '' })
   }
 

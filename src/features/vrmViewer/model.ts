@@ -109,6 +109,10 @@ export class Model {
         isNeedDecode
       )
     })
+
+    if (talk.motion) {
+      this.poseManager.resetToIdle(this)
+    }
   }
 
   /**
@@ -116,6 +120,7 @@ export class Model {
    */
   public stopSpeaking() {
     this._lipSync?.stopCurrentPlayback()
+    this.poseManager.resetToIdle(this)
   }
 
   /**

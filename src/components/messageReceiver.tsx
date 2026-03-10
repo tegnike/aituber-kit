@@ -64,9 +64,10 @@ const MessageReceiver = () => {
                 // webcamStatusまたはcaptureStatusがtrueの場合、画像が取得されるまで待機
                 if (hs.webcamStatus || hs.captureStatus) {
                   // 画像が取得されるまで待つ
+                  let checkImage: ReturnType<typeof setInterval> | undefined
                   capturedImage = await Promise.race([
                     new Promise<string>((resolve) => {
-                      const checkImage = setInterval(() => {
+                      checkImage = setInterval(() => {
                         const currentModalImage =
                           homeStore.getState().modalImage
                         if (currentModalImage) {
@@ -76,10 +77,10 @@ const MessageReceiver = () => {
                       }, 100)
                     }),
                     new Promise<string>((_, reject) =>
-                      setTimeout(
-                        () => reject(new Error('Image capture timeout')),
-                        CAPTURE_TIMEOUT
-                      )
+                      setTimeout(() => {
+                        if (checkImage) clearInterval(checkImage)
+                        reject(new Error('Image capture timeout'))
+                      }, CAPTURE_TIMEOUT)
                     ),
                   ])
                 } else {
