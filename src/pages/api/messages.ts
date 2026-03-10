@@ -60,7 +60,10 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).json({ error: 'Image is not a string' })
       return
     }
-    if (typeof sanitizedImage === 'string' && sanitizedImage.length > MAX_IMAGE_CHARS) {
+    if (
+      typeof sanitizedImage === 'string' &&
+      sanitizedImage.length > MAX_IMAGE_CHARS
+    ) {
       res.status(413).json({ error: 'Image payload is too large' })
       return
     }
