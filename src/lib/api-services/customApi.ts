@@ -149,11 +149,83 @@ export async function handleCustomApi(
   }
 
   if (stream) {
-    // ストリーミングレスポンスをそのまま返す
-    return new Response(apiResponse.body, {
+    // ストリーミングレスポンスを正規化して返す
+    // SSEの行をVercel AI SDK形式（text-delta + delta）に変換する
+    let buffer = ''
+    const encoder = new TextEncoder()
+    const decoder = new TextDecoder()
+
+    const transformStream = new TransformStream({
+      transform(chunk, controller) {
+        buffer += decoder.decode(chunk, { stream: true })
+        const lines = buffer.split('\n')
+        // 最後の要素は不完全な行の可能性があるのでバッファに残す
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (!line.startsWith('data:')) {
+            controller.enqueue(encoder.encode(line + '\n'))
+            continue
+          }
+
+          const content = line.substring(5).trim()
+          if (!content || content === '[DONE]') {
+            controller.enqueue(encoder.encode(line + '\n'))
+            continue
+          }
+
+          try {
+            const data = JSON.parse(content)
+
+            // 既にVercel AI SDK形式（deltaフィールドあり）ならそのまま
+            if (data.delta !== undefined) {
+              controller.enqueue(encoder.encode(line + '\n'))
+              continue
+            }
+
+            // payload.textフォーマットをdeltaフォーマットに変換
+            if (data.payload?.text !== undefined) {
+              const normalized = {
+                type: data.type || 'text-delta',
+                delta: data.payload.text,
+              }
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify(normalized)}\n`)
+              )
+              continue
+            }
+
+            // OpenAI互換形式（choices[].delta.content）の変換
+            if (data.choices?.[0]?.delta?.content !== undefined) {
+              const normalized = {
+                type: 'text-delta',
+                delta: data.choices[0].delta.content,
+              }
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify(normalized)}\n`)
+              )
+              continue
+            }
+
+            // その他の形式はそのまま
+            controller.enqueue(encoder.encode(line + '\n'))
+          } catch {
+            // JSONパース失敗時はそのまま
+            controller.enqueue(encoder.encode(line + '\n'))
+          }
+        }
+      },
+      flush(controller) {
+        // 残りのバッファを処理
+        if (buffer.trim()) {
+          controller.enqueue(encoder.encode(buffer + '\n'))
+        }
+      },
+    })
+
+    return new Response(apiResponse.body!.pipeThrough(transformStream), {
       headers: {
-        'Content-Type':
-          apiResponse.headers.get('Content-Type') || 'text/event-stream',
+        'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
       },
