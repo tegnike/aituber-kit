@@ -10,8 +10,7 @@ aituber-kitのリリースバージョンに合わせて、VitePressドキュメ
 
 ## 前提条件
 
-- aituber-kitリポジトリ: `/Users/user/WorkSpace/aituber-kit`
-- docsリポジトリ: `/Users/user/WorkSpace/aituber-kit-docs`
+- docsリポジトリ: `./aituber-kit-docs`
 - ドキュメントは3言語: 日本語（`/guide/`）、英語（`/en/guide/`）、中国語（`/zh/guide/`）
 - 日本語がマスター言語。日本語を先に更新し、その後en/zhに翻訳する
 
@@ -23,10 +22,10 @@ aituber-kitのリリースバージョンに合わせて、VitePressドキュメ
 
 ```bash
 # docsの現在のバージョンを確認
-grep "const version" /Users/user/WorkSpace/aituber-kit-docs/.vitepress/theme/DocVersion.vue
+grep "const version" ./aituber-kit-docs/.vitepress/theme/DocVersion.vue
 
 # aituber-kitの利用可能なタグを確認
-cd /Users/user/WorkSpace/aituber-kit && git tag --sort=-v:refname | head -10
+git tag --sort=-v:refname | head -10
 ```
 
 複数バージョンの差がある場合は、**1バージョンずつ順番に**更新する。各バージョンでビルドが通る状態を保つ。
@@ -37,18 +36,17 @@ cd /Users/user/WorkSpace/aituber-kit && git tag --sort=-v:refname | head -10
 
 #### 主要な情報ソース
 
-| ソースファイル | 確認内容 |
-|---|---|
-| `.env.example` | 新規・変更・削除された環境変数 |
-| `src/features/constants/aiModels.ts` | AIモデルリストの変更 |
+| ソースファイル                       | 確認内容                                   |
+| ------------------------------------ | ------------------------------------------ |
+| `.env.example`                       | 新規・変更・削除された環境変数             |
+| `src/features/constants/aiModels.ts` | AIモデルリストの変更                       |
 | `src/features/constants/settings.ts` | 設定型の追加・変更（AIService, AIVoice等） |
-| `src/components/settings/` | 設定UIの変更（新タブ、新セクション） |
-| `src/features/stores/settings.ts` | ストアの新規設定項目 |
-| `src/pages/api/` | 新規APIルート |
+| `src/components/settings/`           | 設定UIの変更（新タブ、新セクション）       |
+| `src/features/stores/settings.ts`    | ストアの新規設定項目                       |
+| `src/pages/api/`                     | 新規APIルート                              |
 
 ```bash
 # .env.exampleの差分（最も重要）
-cd /Users/user/WorkSpace/aituber-kit
 diff <(git show v{前バージョン}:.env.example) <(git show v{対象バージョン}:.env.example)
 
 # 特定バージョンのファイル内容を確認
@@ -75,22 +73,22 @@ git diff v{前バージョン}..v{対象バージョン} -- src/components/setti
 
 #### 更新対象ファイルの対応表
 
-| カテゴリ | ドキュメントファイル |
-|---|---|
-| クイックスタート | `guide/quickstart.md` |
-| キャラクター共通 | `guide/character/common.md` |
-| VRM設定 | `guide/character/vrm.md` |
-| Live2D設定 | `guide/character/live2d.md` |
-| PNGTuber設定 | `guide/character/pngtuber.md` |
-| AI共通設定 | `guide/ai/common.md` |
-| AIサービス設定 | `guide/ai/model-provider.md` |
-| 合成音声設定 | `guide/voice-settings.md` |
-| YouTube設定 | `guide/youtube-settings.md` |
-| 会話履歴 | `guide/conversation-history.md` |
-| 記憶設定 | `guide/memory-settings.md` |
-| 環境変数一覧 | `guide/environment-variables.md` |
-| 基本設定 | `guide/basic-settings.md` |
-| その他 | `guide/other/advanced-settings.md` |
+| カテゴリ         | ドキュメントファイル               |
+| ---------------- | ---------------------------------- |
+| クイックスタート | `guide/quickstart.md`              |
+| キャラクター共通 | `guide/character/common.md`        |
+| VRM設定          | `guide/character/vrm.md`           |
+| Live2D設定       | `guide/character/live2d.md`        |
+| PNGTuber設定     | `guide/character/pngtuber.md`      |
+| AI共通設定       | `guide/ai/common.md`               |
+| AIサービス設定   | `guide/ai/model-provider.md`       |
+| 合成音声設定     | `guide/voice-settings.md`          |
+| YouTube設定      | `guide/youtube-settings.md`        |
+| 会話履歴         | `guide/conversation-history.md`    |
+| 記憶設定         | `guide/memory-settings.md`         |
+| 環境変数一覧     | `guide/environment-variables.md`   |
+| 基本設定         | `guide/basic-settings.md`          |
+| その他           | `guide/other/advanced-settings.md` |
 
 #### 更新ルール
 
@@ -111,7 +109,7 @@ git diff v{前バージョン}..v{対象バージョン} -- src/components/setti
 ### Step 4: ビルド検証
 
 ```bash
-cd /Users/user/WorkSpace/aituber-kit-docs && npm run docs:build
+cd ./aituber-kit-docs && npm run docs:build
 ```
 
 ビルドが成功することを必ず確認する。デッドリンクがある場合はエラーになるので修正する。
@@ -122,7 +120,7 @@ cd /Users/user/WorkSpace/aituber-kit-docs && npm run docs:build
 
 ```bash
 # .env.exampleから新規変数を抽出し、docsに記載があるか確認
-cd /Users/user/WorkSpace/aituber-kit-docs
+cd ./aituber-kit-docs
 for var in NEXT_PUBLIC_NEW_VAR1 NEXT_PUBLIC_NEW_VAR2; do
   count=$(grep -rl "$var" guide/ | wc -l | tr -d ' ')
   if [ "$count" = "0" ]; then
@@ -184,7 +182,7 @@ done
 
 #### スクリーンショットの配置ルール
 
-- 画像は `/Users/user/WorkSpace/aituber-kit-docs/public/images/` に配置する
+- 画像は `./aituber-kit-docs/public/images/` に配置する
 - ファイル名は `{カテゴリ}_{ランダム5文字}.png` の形式（例: `vrm_pose_a3b2c.png`）
 - 画像は3言語で共有するため、UI上のテキストが特定言語に依存しない状態が望ましい（日本語UIでも可）
 - ユーザーが画像を配置後、ドキュメント内に `![説明文](/images/ファイル名)` を追記する
@@ -192,7 +190,7 @@ done
 ### Step 9: 最終ビルド検証とコミット
 
 ```bash
-cd /Users/user/WorkSpace/aituber-kit-docs && npm run docs:build
+cd ./aituber-kit-docs && npm run docs:build
 ```
 
 ビルド成功を確認後、コミットする。コミットメッセージの形式:
@@ -210,6 +208,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ### AIモデルリストの更新
 
 `aiModels.ts` の `modelDefinitions` を読み、以下を更新:
+
 - `guide/ai/model-provider.md` のモデルリスト
 - 概要セクションのプロバイダー説明文
 - `guide/environment-variables.md` のデフォルトモデル名
