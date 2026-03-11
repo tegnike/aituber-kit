@@ -2,7 +2,7 @@
 
 <img style="max-width: 100%;" src="./public/ogp.png">
 
-<p align="center"><strong>あなただけのAIキャラクターを、すぐに。</strong></p>
+<p align="center"><strong>AIキャラ構築のオールインワンツールキット</strong></p>
 
 **お知らせ: 本プロジェクトはバージョン v2.0.0 以降、カスタムライセンスを採用しています。商用目的でご利用の場合は、[利用規約](#利用規約) セクションをご確認ください。**
 
@@ -28,7 +28,7 @@
 
 <div align="center">
    <h3>
-      🌟 <a href="https://aituberkit.com">公式サイトへ</a> 🌟
+      🌟 <a href="https://aituberkit.com">デモサイトへ</a> 🌟
    </h3>
 </div>
 
@@ -49,7 +49,7 @@
 ## 概要
 
 AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWebアプリケーションを構築できるオープンソースのツールキットです。<br>
-16種類のAI、11種類の音声合成、3種類のキャラクターモデルに対応。YouTube配信、展示会・イベント、カフェ、デジタルサイネージ、プレゼンなど、あらゆるシーンで活用できます。
+豊富なAIサービス、キャラクターモデル、音声合成エンジンに対応し、高いカスタマイズ性を備えた対話機能とAITuber配信機能を中心に、様々な拡張モードを提供しています。
 
 <img src="./docs/images/architecture.svg" alt="AITuberKit Architecture">
 
@@ -97,10 +97,6 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - **2Dモデル**: Live2Dファイル（Cubism 3以降）
 - **動くPngTuber**: 動画ベースのキャラクター表示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
 
-### 多言語対応
-
-日本語、英語、簡体中国語、繁体中国語、韓国語、ベトナム語、フランス語、スペイン語、ポルトガル語、ドイツ語、ロシア語、イタリア語、アラビア語、ヒンディー語、ポーランド語、タイ語の16言語に対応しています。
-
 ### 対応LLM
 
 - OpenAI
@@ -118,7 +114,6 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - xAI
 - DeepSeek
 - OpenRouter
-- Custom API
 
 ### 対応音声合成エンジン
 
