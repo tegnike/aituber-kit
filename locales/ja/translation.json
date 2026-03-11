@@ -180,6 +180,8 @@
   "CreatorDescription": "作成者: ニケ",
   "Documentation": "ドキュメント",
   "DocumentationDescription": "AITuberKitの詳細な使い方やチュートリアルは下記のURLからご覧ください。",
+  "Promotion": "プロモーション",
+  "PromotionDescription": "AITuberKitの機能紹介や導入事例は下記のプロモーションサイトからご覧ください。",
   "Language": "言語設定",
   "UsingGSVITTS": "GSVI TTSを使用する",
   "GSVITTSInfo": "GSVI TTS設定",

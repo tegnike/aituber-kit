@@ -38,6 +38,12 @@
    </h3>
 </div>
 
+<div align="center">
+   <h3>
+      🚀 <a href="https://promotion.aituberkit.com/">プロモーションサイトへ</a> 🚀
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="./docs/README_en.md">English</a>｜
    <a href="./docs/README_zh-CN.md">简体中文</a>｜
@@ -85,15 +91,15 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 ### 5. 連携・拡張
 
-- **外部連携モード**: WebSocketでサーバーアプリと連携し、より高度な機能を実現
+- **外部連携モード**: WebSocketでサーバーアプリと連携し、テキストや画像のやり取りを含むより高度な機能を実現
 - **スライドモード**: AIキャラクターがスライドを自動で発表するモード
-- **メッセージ受信機能**: 専用APIを通じて外部から指示を受け付け、AIキャラクターに発言させることが可能
+- **メッセージ受信機能**: 専用APIを通じて外部からテキストや画像を受け付け、AIキャラクターに発言させることが可能
 
 ## 対応モデル・サービス
 
 ### キャラクターモデル
 
-- **3Dモデル**: VRMファイル
+- **3Dモデル**: VRMファイル（モーションタグによるポーズ・ジェスチャー制御に対応）
 - **2Dモデル**: Live2Dファイル（Cubism 3以降）
 - **動くPngTuber**: 動画ベースのキャラクター表示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
 

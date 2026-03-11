@@ -37,7 +37,7 @@ const Description = () => {
               href="https://twitter.com/tegnike"
               className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
-              Twitter: @tegnike
+              X(Twitter): @tegnike
             </a>
           </div>
         </div>
@@ -68,6 +68,22 @@ const Description = () => {
               className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
             >
               https://docs.aituberkit.com/
+            </a>
+          </div>
+        </div>
+        <div className="mt-10">
+          <div className="mb-4 text-xl font-bold">{t('Promotion')}</div>
+          <div className="my-2 text-sm whitespace-pre-wrap">
+            {t('PromotionDescription')}
+          </div>
+          <div className="my-2 text-sm whitespace-pre-wrap">
+            <a
+              href="https://promotion.aituberkit.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black hover:text-gray-800 hover:underline transition-all duration-300 ease-in-out"
+            >
+              https://promotion.aituberkit.com/
             </a>
           </div>
         </div>
