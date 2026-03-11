@@ -88,3 +88,8 @@ public/pngtuber/*
 lp/*
 promo-video/*
 .claude/skills/remotion-*
+
+# Local caches
+.mypy_cache
+.swc
+.wrangler
