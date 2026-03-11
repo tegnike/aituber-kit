@@ -11,6 +11,8 @@ import { VRMLookAtSmootherLoaderPlugin } from '@/lib/VRMLookAtSmootherLoaderPlug
 import { LipSync } from '../lipSync/lipSync'
 import { EmoteController } from '../emoteController/emoteController'
 import { Talk } from '../messages/messages'
+import { PoseManager } from '@/lib/VRMAnimation/poseManager'
+import settingsStore from '@/features/stores/settings'
 
 /**
  * 3Dキャラクターを管理するクラス
@@ -19,13 +21,18 @@ export class Model {
   public vrm?: VRM | null
   public mixer?: THREE.AnimationMixer
   public emoteController?: EmoteController
+  public currentAction?: THREE.AnimationAction
+  public poseYRotationOffset: number = 0
+  public poseManager: PoseManager
 
   private _lookAtTargetParent: THREE.Object3D
   private _lipSync?: LipSync
+  private _yOffsetQuat = new THREE.Quaternion()
 
   constructor(lookAtTargetParent: THREE.Object3D) {
     this._lookAtTargetParent = lookAtTargetParent
     this._lipSync = new LipSync(new AudioContext(), { forceStart: true })
+    this.poseManager = new PoseManager()
   }
 
   public async loadVRM(url: string): Promise<void> {
@@ -68,6 +75,7 @@ export class Model {
 
     const clip = vrmAnimation.createAnimationClip(vrm)
     const action = mixer.clipAction(clip)
+    this.currentAction = action
     action.play()
   }
 
@@ -80,6 +88,21 @@ export class Model {
     isNeedDecode: boolean = true
   ) {
     this.emoteController?.playEmotion(talk.emotion)
+
+    if (talk.motion) {
+      const poseConfig = settingsStore
+        .getState()
+        .poseConfigs.find((p) => p.id === talk.motion)
+      if (poseConfig) {
+        void this.poseManager
+          .applyPose(this, talk.motion, poseConfig)
+          .catch((e) => console.error('Failed to apply pose:', e))
+      }
+    } else if (this.poseManager.isActive) {
+      // モーション指定なしの発話ではアクティブなポーズをリセット
+      this.poseManager.resetToIdle(this)
+    }
+
     await new Promise((resolve) => {
       this._lipSync?.playFromArrayBuffer(
         buffer,
@@ -113,6 +136,18 @@ export class Model {
 
     this.emoteController?.update(delta)
     this.mixer?.update(delta)
+
+    if (this.poseYRotationOffset !== 0 && this.vrm) {
+      const hipsNode = this.vrm.humanoid.getNormalizedBoneNode('hips')
+      if (hipsNode) {
+        this._yOffsetQuat.setFromAxisAngle(
+          new THREE.Vector3(0, 1, 0),
+          this.poseYRotationOffset
+        )
+        hipsNode.quaternion.premultiply(this._yOffsetQuat)
+      }
+    }
+
     this.vrm?.update(delta)
   }
 }

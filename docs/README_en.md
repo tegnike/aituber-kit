@@ -38,6 +38,12 @@
    </h3>
 </div>
 
+<div align="center">
+   <h3>
+      🚀 <a href="https://promotion.aituberkit.com/">Promotion Site</a> 🚀
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="../README.md">日本語</a>｜
    <a href="./README_zh-CN.md">简体中文</a>｜
@@ -85,15 +91,15 @@ For detailed usage and configuration instructions, please visit the [Documentati
 
 ### 5. Integration & Extension
 
-- **External Integration Mode**: Connect with server applications via WebSocket for advanced functionality
+- **External Integration Mode**: Connect with server applications via WebSocket for advanced functionality including text and image exchange
 - **Slide Mode**: Mode where AI characters automatically present slides
-- **Message Reception Function**: Accept instructions from external sources through a dedicated API to make AI characters speak
+- **Message Reception Function**: Accept text and images from external sources through a dedicated API to make AI characters speak
 
 ## Supported Models & Services
 
 ### Character Models
 
-- **3D Models**: VRM files
+- **3D Models**: VRM files (supports pose and gesture control via motion tags)
 - **2D Models**: Live2D files (Cubism 3 and later)
 - **Motion PNGTuber**: Video-based character display ([MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber))
 
@@ -170,6 +176,13 @@ npm run dev
 
 6. Open the URL: [http://localhost:3000](http://localhost:3000)
 
+### Quick Launch
+
+After the initial setup is complete, you can launch by simply double-clicking the launch script.
+
+- **Windows**: Double-click `LAUNCH.bat`
+- **macOS**: Double-click `LAUNCH.command` (if you don't have execution permission, run `chmod +x LAUNCH.command`)
+
 For detailed configuration and usage instructions, please visit the [Documentation Site](https://docs.aituberkit.com/en/).
 
 ### Running with Docker
@@ -193,6 +206,55 @@ To stop:
 ```bash
 docker compose down
 ```
+
+## Deployment
+
+### Vercel
+
+1. Create a [Vercel](https://vercel.com/) account and import your GitHub repository.
+
+2. Set environment variables in the Vercel dashboard. Add the necessary API keys (e.g., `OPENAI_API_KEY`). Refer to `.env.example` for available environment variables.
+
+3. Deployment is automatically executed when pushing to the Production Branch in your project settings (default is the `main` branch).
+
+### Cloudflare Workers
+
+Deployment to Cloudflare Workers is supported. Use [OpenNext](https://opennext.js.org/) to run the Next.js application on Cloudflare Workers.
+
+1. Install the [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) and log in to your Cloudflare account.
+
+2. Change the project name in `wrangler.jsonc` as needed.
+
+3. Set environment variables.
+   - **Frontend settings (`NEXT_PUBLIC_*`)**: Write them in the `.env` file. They are embedded in the client code at build time.
+   - **Server-side API keys (`OPENAI_API_KEY`, etc.)**: Set them as Wrangler secrets.
+
+```bash
+cp .env.example .env
+# Edit .env to set NEXT_PUBLIC_* values
+
+# Set server-side API keys as Wrangler secrets
+npx wrangler secret put OPENAI_API_KEY
+```
+
+Repeat `wrangler secret put` for each required API key.
+
+4. Verify operation with local preview.
+
+```bash
+npm run preview:cloudflare
+```
+
+5. Deploy to production.
+
+```bash
+npm run deploy:cloudflare
+```
+
+**Notes:**
+
+- `NEXT_PUBLIC_RESTRICTED_MODE=true` is automatically set at build time, disabling file system APIs. Asset lists are provided from manifests generated at build time.
+- Files exceeding 25MB or with non-ASCII filenames under `public/` are automatically excluded from deployment.
 
 ## ⚠️ Important Security Notice
 
@@ -330,6 +392,12 @@ Your support greatly contributes to the development and improvement of AITuberKi
   </a>
   <a href="https://github.com/nyapan-mohy" title="nyapan-mohy">
     <img src="https://github.com/nyapan-mohy.png" width="40" height="40" alt="nyapan-mohy">
+  </a>
+  <a href="https://github.com/hattoritatsuya" title="hattoritatsuya">
+    <img src="https://github.com/hattoritatsuya.png" width="40" height="40" alt="hattoritatsuya">
+  </a>
+  <a href="https://github.com/sa1p" title="sa1p">
+    <img src="https://github.com/sa1p.png" width="40" height="40" alt="sa1p">
   </a>
 </p>
 

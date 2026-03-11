@@ -39,11 +39,11 @@ export interface SearchOptions {
 }
 
 /**
- * メモリ設定の型定義
+ * 記憶設定の型定義
  * settingsStoreに保存される設定値
  */
 export interface MemoryConfig {
-  /** メモリ機能の有効/無効 */
+  /** 記憶機能の有効/無効 */
   memoryEnabled: boolean
   /** 類似度閾値 (0.1-0.95) */
   memorySimilarityThreshold: number
@@ -54,7 +54,7 @@ export interface MemoryConfig {
 }
 
 /**
- * デフォルトのメモリ設定
+ * デフォルトの記憶設定
  */
 export const DEFAULT_MEMORY_CONFIG: MemoryConfig = {
   memoryEnabled: false,

@@ -17,7 +17,7 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
-        MemorySettings: 'メモリ設定',
+        MemorySettings: '記憶設定',
         MemoryEnabled: 'メモリ機能を有効にする',
         MemoryEnabledInfo:
           'メモリ機能を有効にすると、過去の会話を記憶してコンテキストに追加します。',

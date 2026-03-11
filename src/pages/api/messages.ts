@@ -8,6 +8,7 @@ interface ReceivedMessage {
   type: MessageType
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
+  image?: string
 }
 
 interface MessageQueue {
@@ -18,6 +19,15 @@ interface MessageQueue {
 let messagesPerClient: { [clientId: string]: MessageQueue } = {}
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5 // 5分
+const MAX_IMAGE_CHARS = 10_000_000 // 約7.5MBのbase64画像に相当
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+}
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const clientId = req.query.clientId as string
@@ -29,7 +39,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === 'POST') {
-    const { messages, systemPrompt, useCurrentSystemPrompt } = req.body
+    const { messages, systemPrompt, useCurrentSystemPrompt, image } = req.body
 
     if (!Array.isArray(messages) || messages.length === 0) {
       res.status(400).json({ error: 'Messages array is required' })
@@ -41,6 +51,20 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     }
     if (useCurrentSystemPrompt && typeof useCurrentSystemPrompt !== 'boolean') {
       res.status(400).json({ error: 'useCurrentSystemPrompt is not a boolean' })
+      return
+    }
+    // nullをundefinedに正規化
+    const sanitizedImage =
+      image === null || image === undefined ? undefined : image
+    if (sanitizedImage !== undefined && typeof sanitizedImage !== 'string') {
+      res.status(400).json({ error: 'Image is not a string' })
+      return
+    }
+    if (
+      typeof sanitizedImage === 'string' &&
+      sanitizedImage.length > MAX_IMAGE_CHARS
+    ) {
+      res.status(413).json({ error: 'Image payload is too large' })
       return
     }
 
@@ -61,6 +85,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
         type,
         systemPrompt,
         useCurrentSystemPrompt,
+        image: sanitizedImage,
       })
     })
     messagesPerClient[clientId].lastAccessed = timestamp

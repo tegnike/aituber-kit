@@ -14,19 +14,22 @@ class ReceivedMessage {
   type: 'direct_send' | 'ai_generate' | 'user_input'
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
+  image?: string
 
   constructor(
     timestamp: number,
     message: string,
     type: 'direct_send' | 'ai_generate' | 'user_input',
     systemPrompt?: string,
-    useCurrentSystemPrompt?: boolean
+    useCurrentSystemPrompt?: boolean,
+    image?: string
   ) {
     this.timestamp = timestamp
     this.message = message
     this.type = type
     this.systemPrompt = systemPrompt
     this.useCurrentSystemPrompt = useCurrentSystemPrompt
+    this.image = image
   }
 }
 
@@ -46,43 +49,49 @@ const MessageReceiver = () => {
             await speakMessageHandler(message.message)
             break
           case 'ai_generate': {
-            let capturedImage = ''
-            const CAPTURE_TIMEOUT = 10000 // 10秒のタイムアウト
+            // 外部画像が提供された場合はそれを使用、なければカメラキャプチャ
+            let capturedImage = message.image || ''
 
-            try {
-              // キャプチャをトリガー
-              if (!hs.modalImage) {
-                homeStore.setState({ triggerShutter: true })
-              }
+            if (!capturedImage) {
+              const CAPTURE_TIMEOUT = 10000 // 10秒のタイムアウト
 
-              // webcamStatusまたはcaptureStatusがtrueの場合、画像が取得されるまで待機
-              if (hs.webcamStatus || hs.captureStatus) {
-                // 画像が取得されるまで待つ
-                capturedImage = await Promise.race([
-                  new Promise<string>((resolve) => {
-                    const checkImage = setInterval(() => {
-                      const currentModalImage = homeStore.getState().modalImage
-                      if (currentModalImage) {
-                        clearInterval(checkImage)
-                        resolve(currentModalImage)
-                      }
-                    }, 100)
-                  }),
-                  new Promise<string>((_, reject) =>
-                    setTimeout(
-                      () => reject(new Error('Image capture timeout')),
-                      CAPTURE_TIMEOUT
-                    )
-                  ),
-                ])
-              } else {
-                // 既存の modalImage があれば使用
-                capturedImage = hs.modalImage || ''
+              try {
+                // キャプチャをトリガー
+                if (!hs.modalImage) {
+                  homeStore.setState({ triggerShutter: true })
+                }
+
+                // webcamStatusまたはcaptureStatusがtrueの場合、画像が取得されるまで待機
+                if (hs.webcamStatus || hs.captureStatus) {
+                  // 画像が取得されるまで待つ
+                  let checkImage: ReturnType<typeof setInterval> | undefined
+                  capturedImage = await Promise.race([
+                    new Promise<string>((resolve) => {
+                      checkImage = setInterval(() => {
+                        const currentModalImage =
+                          homeStore.getState().modalImage
+                        if (currentModalImage) {
+                          clearInterval(checkImage)
+                          resolve(currentModalImage)
+                        }
+                      }, 100)
+                    }),
+                    new Promise<string>((_, reject) =>
+                      setTimeout(() => {
+                        if (checkImage) clearInterval(checkImage)
+                        reject(new Error('Image capture timeout'))
+                      }, CAPTURE_TIMEOUT)
+                    ),
+                  ])
+                } else {
+                  // 既存の modalImage があれば使用
+                  capturedImage = hs.modalImage || ''
+                }
+              } catch (error) {
+                console.error('Failed to capture image:', error)
+                // エラー時は画像なしで続行
+                capturedImage = ''
               }
-            } catch (error) {
-              console.error('Failed to capture image:', error)
-              // エラー時は画像なしで続行
-              capturedImage = ''
             }
 
             const conversationHistory = [
@@ -122,43 +131,44 @@ const MessageReceiver = () => {
             break
           }
           case 'user_input': {
-            let capturedImage = ''
-            const CAPTURE_TIMEOUT = 10000 // 10秒のタイムアウト
+            if (message.image) {
+              // 外部画像をmodalImageにセット
+              homeStore.setState({ modalImage: message.image })
+            } else {
+              const CAPTURE_TIMEOUT = 10000 // 10秒のタイムアウト
 
-            try {
-              // キャプチャをトリガー
-              if (!hs.modalImage) {
-                homeStore.setState({ triggerShutter: true })
-              }
+              try {
+                // キャプチャをトリガー
+                if (!hs.modalImage) {
+                  homeStore.setState({ triggerShutter: true })
+                }
 
-              // webcamStatusまたはcaptureStatusがtrueの場合、画像が取得されるまで待機
-              if (hs.webcamStatus || hs.captureStatus) {
-                // 画像が取得されるまで待つ
-                capturedImage = await Promise.race([
-                  new Promise<string>((resolve) => {
-                    const checkImage = setInterval(() => {
-                      const currentModalImage = homeStore.getState().modalImage
-                      if (currentModalImage) {
-                        clearInterval(checkImage)
-                        resolve(currentModalImage)
-                      }
-                    }, 100)
-                  }),
-                  new Promise<string>((_, reject) =>
-                    setTimeout(
-                      () => reject(new Error('Image capture timeout')),
-                      CAPTURE_TIMEOUT
-                    )
-                  ),
-                ])
-              } else {
-                // 既存の modalImage があれば使用
-                capturedImage = hs.modalImage || ''
+                // webcamStatusまたはcaptureStatusがtrueの場合、画像が取得されるまで待機
+                if (hs.webcamStatus || hs.captureStatus) {
+                  // 画像が取得されるまで待つ
+                  let checkImage: ReturnType<typeof setInterval> | undefined
+                  await Promise.race([
+                    new Promise<string>((resolve) => {
+                      checkImage = setInterval(() => {
+                        const currentModalImage =
+                          homeStore.getState().modalImage
+                        if (currentModalImage) {
+                          clearInterval(checkImage)
+                          resolve(currentModalImage)
+                        }
+                      }, 100)
+                    }),
+                    new Promise<string>((_, reject) =>
+                      setTimeout(() => {
+                        if (checkImage) clearInterval(checkImage)
+                        reject(new Error('Image capture timeout'))
+                      }, CAPTURE_TIMEOUT)
+                    ),
+                  ])
+                }
+              } catch (error) {
+                console.error('Failed to capture image:', error)
               }
-            } catch (error) {
-              console.error('Failed to capture image:', error)
-              // エラー時は画像なしで続行
-              capturedImage = ''
             }
 
             // handleSendChatFnを使用してメッセージを送信

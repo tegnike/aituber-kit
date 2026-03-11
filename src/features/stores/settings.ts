@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
-import { isLive2DEnabled } from '@/utils/live2dRestriction'
 import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
@@ -134,11 +133,6 @@ interface ModelProvider extends Live2DSettings {
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
-  nijivoiceApiKey: string
-  nijivoiceActorId: string
-  nijivoiceSpeed: number
-  nijivoiceEmotionalLevel: number
-  nijivoiceSoundDuration: number
 }
 
 interface Integrations {
@@ -196,6 +190,7 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  poseAdjustMode: boolean
   selectedPNGTuberPath: string
   pngTuberSensitivity: number
   pngTuberChromaKeyEnabled: boolean
@@ -204,7 +199,13 @@ interface Character {
   pngTuberScale: number
   pngTuberOffsetX: number
   pngTuberOffsetY: number
+  poseConfigs: PoseConfigItem[]
 }
+
+// Pose config item type
+export type PoseConfigItem =
+  | { id: string; json: string }
+  | { id: string; sequence: string[]; switchDuration: number }
 
 // Preset question type
 export interface PresetQuestion {
@@ -500,6 +501,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   },
   lightingIntensity:
     parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
+  poseAdjustMode: false,
 
   // General
   selectLanguage: (process.env.NEXT_PUBLIC_SELECT_LANGUAGE as Language) || 'ja',
@@ -604,30 +606,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   // Custom model toggle
   customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
-  // NijiVoice settings
-  nijivoiceApiKey: '',
-  nijivoiceActorId: process.env.NEXT_PUBLIC_NIJIVOICE_ACTOR_ID || '',
-  nijivoiceSpeed:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SPEED || '1.0') || 1.0,
-  nijivoiceEmotionalLevel:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_EMOTIONAL_LEVEL || '0.1') ||
-    0.1,
-  nijivoiceSoundDuration:
-    parseFloat(process.env.NEXT_PUBLIC_NIJIVOICE_SOUND_DURATION || '0.1') ||
-    0.1,
-
   // Settings
-  modelType: (() => {
-    const envType = process.env.NEXT_PUBLIC_MODEL_TYPE as
+  modelType:
+    (process.env.NEXT_PUBLIC_MODEL_TYPE as
       | 'vrm'
       | 'live2d'
       | 'pngtuber'
-      | undefined
-    if (envType === 'live2d' && !isLive2DEnabled()) {
-      return 'vrm'
-    }
-    return envType || 'vrm'
-  })(),
+      | undefined) || 'vrm',
   selectedPNGTuberPath:
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
   pngTuberSensitivity:
@@ -647,6 +632,26 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_X || '0') || 0,
   pngTuberOffsetY:
     parseFloat(process.env.NEXT_PUBLIC_PNGTUBER_OFFSET_Y || '0') || 0,
+  poseConfigs: [
+    { id: 'think', json: '/poses/think.json' },
+    { id: 'cheer', json: '/poses/cheer.json' },
+    { id: 'cross', json: '/poses/cross.json' },
+    { id: 'mouth_cover', json: '/poses/mouth_cover.json' },
+    { id: 'crossed_arms', json: '/poses/crossed_arms.json' },
+    { id: 'bow', json: '/poses/bow.json' },
+    { id: 'shrug', json: '/poses/shrug.json' },
+    { id: 'shy', json: '/poses/shy.json' },
+    {
+      id: 'wave',
+      sequence: ['/poses/wave1.json', '/poses/wave2.json'],
+      switchDuration: 0.5,
+    },
+    {
+      id: 'clap',
+      sequence: ['/poses/clap1.json', '/poses/clap2.json'],
+      switchDuration: 0.2,
+    },
+  ],
 
   // Memory settings
   memoryEnabled:
@@ -789,11 +794,6 @@ const settingsStore = create<SettingsState>()(
           if (migratedModel !== state.selectAIModel) {
             state.selectAIModel = migratedModel
           }
-        }
-
-        // Force modelType away from live2d when Live2D is not enabled
-        if (state && !isLive2DEnabled() && state.modelType === 'live2d') {
-          state.modelType = 'vrm'
         }
 
         // Override with environment variables if the option is enabled
@@ -966,11 +966,6 @@ const settingsStore = create<SettingsState>()(
         characterPosition: state.characterPosition,
         characterRotation: state.characterRotation,
         lightingIntensity: state.lightingIntensity,
-        nijivoiceApiKey: state.nijivoiceApiKey,
-        nijivoiceActorId: state.nijivoiceActorId,
-        nijivoiceSpeed: state.nijivoiceSpeed,
-        nijivoiceEmotionalLevel: state.nijivoiceEmotionalLevel,
-        nijivoiceSoundDuration: state.nijivoiceSoundDuration,
         modelType: state.modelType,
         selectedPNGTuberPath: state.selectedPNGTuberPath,
         pngTuberSensitivity: state.pngTuberSensitivity,
@@ -980,6 +975,7 @@ const settingsStore = create<SettingsState>()(
         pngTuberScale: state.pngTuberScale,
         pngTuberOffsetX: state.pngTuberOffsetX,
         pngTuberOffsetY: state.pngTuberOffsetY,
+        poseConfigs: state.poseConfigs,
         neutralEmotions: state.neutralEmotions,
         happyEmotions: state.happyEmotions,
         sadEmotions: state.sadEmotions,

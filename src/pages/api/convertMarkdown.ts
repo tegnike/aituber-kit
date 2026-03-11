@@ -2,11 +2,31 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { Marpit } from '@marp-team/marpit'
 import fs from 'fs/promises'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
+import assetManifest from '@/constants/assetManifest.json'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (isRestrictedMode()) {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ message: 'Method not allowed' })
+    }
+    const { slideName } = req.body as { slideName: string }
+    if (!slideName || typeof slideName !== 'string') {
+      return res.status(400).json({ message: 'slideName is required' })
+    }
+    const renderedMap = assetManifest.slides.rendered as Record<
+      string,
+      { html: string; css: string }
+    >
+    const rendered = Object.hasOwn(renderedMap, slideName)
+      ? renderedMap[slideName]
+      : undefined
+    return res.status(200).json(rendered ?? { html: '', css: '' })
+  }
+
   if (req.method === 'POST') {
     const { slideName } = req.body as { slideName: string }
 

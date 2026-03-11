@@ -38,6 +38,12 @@
    </h3>
 </div>
 
+<div align="center">
+   <h3>
+      🚀 <a href="https://promotion.aituberkit.com/">プロモーションサイトへ</a> 🚀
+   </h3>
+</div>
+
 <h3 align="center">
    <a href="./docs/README_en.md">English</a>｜
    <a href="./docs/README_zh-CN.md">简体中文</a>｜
@@ -85,15 +91,15 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 
 ### 5. 連携・拡張
 
-- **外部連携モード**: WebSocketでサーバーアプリと連携し、より高度な機能を実現
+- **外部連携モード**: WebSocketでサーバーアプリと連携し、テキストや画像のやり取りを含むより高度な機能を実現
 - **スライドモード**: AIキャラクターがスライドを自動で発表するモード
-- **メッセージ受信機能**: 専用APIを通じて外部から指示を受け付け、AIキャラクターに発言させることが可能
+- **メッセージ受信機能**: 専用APIを通じて外部からテキストや画像を受け付け、AIキャラクターに発言させることが可能
 
 ## 対応モデル・サービス
 
 ### キャラクターモデル
 
-- **3Dモデル**: VRMファイル
+- **3Dモデル**: VRMファイル（モーションタグによるポーズ・ジェスチャー制御に対応）
 - **2Dモデル**: Live2Dファイル（Cubism 3以降）
 - **動くPngTuber**: 動画ベースのキャラクター表示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
 
@@ -170,6 +176,13 @@ npm run dev
 
 6. URLを開きます。[http://localhost:3000](http://localhost:3000)
 
+### かんたん起動
+
+初回セットアップ完了後は、起動スクリプトをダブルクリックするだけで起動できます。
+
+- **Windows**: `LAUNCH.bat` をダブルクリック
+- **macOS**: `LAUNCH.command` をダブルクリック（実行権限がない場合は `chmod +x LAUNCH.command` を実行してください）
+
 詳細な設定方法や使用方法については、[ドキュメントサイト](https://docs.aituberkit.com/)をご覧ください。
 
 ### Dockerで起動する場合
@@ -193,6 +206,55 @@ docker compose up -d
 ```bash
 docker compose down
 ```
+
+## デプロイ
+
+### Vercel
+
+1. [Vercel](https://vercel.com/)のアカウントを作成し、GitHubリポジトリをインポートします。
+
+2. Vercelのダッシュボードで環境変数を設定します。必要なAPIキー（`OPENAI_API_KEY`等）を追加してください。設定可能な環境変数は`.env.example`を参照してください。
+
+3. デプロイはプロジェクト設定のProduction Branchへのプッシュ時に自動で実行されます（デフォルトは`main`ブランチ）。
+
+### Cloudflare Workers
+
+Cloudflare Workersへのデプロイに対応しています。[OpenNext](https://opennext.js.org/)を使用してCloudflare Workers上でNext.jsアプリケーションを実行します。
+
+1. [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)をインストールし、Cloudflareアカウントにログインします。
+
+2. `wrangler.jsonc`のプロジェクト名を必要に応じて変更します。
+
+3. 環境変数を設定します。
+   - **フロントエンド設定（`NEXT_PUBLIC_*`）**: `.env`ファイルに記述します。ビルド時にクライアントコードに埋め込まれます。
+   - **サーバーサイドAPIキー（`OPENAI_API_KEY`等）**: Wranglerシークレットとして設定します。
+
+```bash
+cp .env.example .env
+# .envを編集してNEXT_PUBLIC_*の値を設定
+
+# サーバーサイドのAPIキーはWranglerシークレットとして設定
+npx wrangler secret put OPENAI_API_KEY
+```
+
+必要なAPIキーごとに`wrangler secret put`を繰り返してください。
+
+4. ローカルプレビューで動作確認します。
+
+```bash
+npm run preview:cloudflare
+```
+
+5. 本番環境にデプロイします。
+
+```bash
+npm run deploy:cloudflare
+```
+
+**注意事項:**
+
+- ビルド時に`NEXT_PUBLIC_RESTRICTED_MODE=true`が自動設定され、ファイルシステムAPIが無効化されます。アセット一覧はビルド時に生成されるマニフェストから提供されます。
+- `public/`配下の25MB超のファイルや非ASCIIファイル名のファイルはデプロイ対象から自動除外されます。
 
 ## ⚠️ セキュリティに関する重要な注意事項
 
@@ -330,6 +392,12 @@ docker compose down
   </a>
   <a href="https://github.com/nyapan-mohy" title="nyapan-mohy">
     <img src="https://github.com/nyapan-mohy.png" width="40" height="40" alt="nyapan-mohy">
+  </a>
+  <a href="https://github.com/hattoritatsuya" title="hattoritatsuya">
+    <img src="https://github.com/hattoritatsuya.png" width="40" height="40" alt="hattoritatsuya">
+  </a>
+  <a href="https://github.com/sa1p" title="sa1p">
+    <img src="https://github.com/sa1p.png" width="40" height="40" alt="sa1p">
   </a>
 </p>
 

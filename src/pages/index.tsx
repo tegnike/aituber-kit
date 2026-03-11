@@ -110,12 +110,12 @@ const Home = () => {
     <div className="h-[100svh] bg-cover" style={backgroundStyle}>
       <Meta />
       <Introduction />
-      {modelType === 'vrm' ? (
-        <VrmViewer />
-      ) : modelType === 'live2d' && isLive2DEnabled ? (
+      {modelType === 'live2d' && isLive2DEnabled ? (
         <Live2DViewer />
-      ) : (
+      ) : modelType === 'pngtuber' ? (
         <PNGTuberViewer />
+      ) : (
+        <VrmViewer />
       )}
       <Form />
       <Menu />

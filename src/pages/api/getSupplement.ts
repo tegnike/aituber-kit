@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs/promises'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
+import assetManifest from '@/constants/assetManifest.json'
 
 type ResponseData = {
   content?: string
@@ -12,6 +14,36 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+  if (isRestrictedMode()) {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ message: 'Method Not Allowed' })
+    }
+    const { slideName } = req.query
+    if (typeof slideName !== 'string' || !slideName) {
+      return res.status(400).json({
+        message: 'Bad Request: Missing or invalid slideName query parameter',
+      })
+    }
+    const sanitizedSlideName = path
+      .normalize(slideName)
+      .replace(/^(\.\.(\/|\\|$))+/, '')
+    if (
+      /[\\/:\*\?"<>\|]/.test(sanitizedSlideName) ||
+      sanitizedSlideName.includes('..')
+    ) {
+      return res.status(400).json({
+        message:
+          'Bad Request: Invalid slideName contains invalid characters or path traversal attempts.',
+      })
+    }
+    const supplements =
+      (assetManifest.slides?.supplements as
+        | Record<string, string>
+        | undefined) ?? {}
+    const content = supplements[sanitizedSlideName] ?? ''
+    return res.status(200).json({ content })
+  }
+
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' })
   }

@@ -2,20 +2,17 @@ import { Message } from '@/features/messages/messages'
 
 /**
  * AIサービスとモデルに応じてメッセージを修正する
+ *
+ * 連続する同一ロールのメッセージを結合し、user/assistant交互ルールを保証する。
+ * LM StudioやOllamaなどのローカルLLMは厳密な交互ルールを要求するため、
+ * 全サービスで正規化を適用する。
  */
 export function modifyMessages(
   aiService: string,
   model: string,
   messages: Message[]
 ): Message[] {
-  if (
-    aiService === 'anthropic' ||
-    aiService === 'perplexity' ||
-    (aiService === 'deepseek' && model === 'deepseek-reasoner')
-  ) {
-    return modifyAnthropicMessages(messages)
-  }
-  return messages
+  return modifyAnthropicMessages(messages)
 }
 
 /**

@@ -1,34 +1,24 @@
-import { NextRequest } from 'next/server'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { pipeResponse } from '@/utils/pipeResponse'
 
-export const config = {
-  runtime: 'edge',
-}
-
-export default async function handler(req: NextRequest) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
-    return new Response(
-      JSON.stringify({
-        error: 'DifyMethod Not Allowed',
-        errorCode: 'MethodNotAllowed',
-      }),
-      {
-        status: 405,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return res.status(405).json({
+      error: 'DifyMethod Not Allowed',
+      errorCode: 'MethodNotAllowed',
+    })
   }
 
-  const { query, apiKey, url, conversationId, stream } = await req.json()
+  const { query, apiKey, url, conversationId, stream } = req.body
 
   const difyKey = apiKey || process.env.DIFY_KEY || process.env.DIFY_API_KEY
   if (!difyKey) {
-    return new Response(
-      JSON.stringify({ error: 'Dify Empty API Key', errorCode: 'EmptyAPIKey' }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return res
+      .status(400)
+      .json({ error: 'Dify Empty API Key', errorCode: 'EmptyAPIKey' })
   }
   const cleanUrl = (url: string) => {
     const trimmedUrl = url.replace(/\/$/, '')
@@ -44,16 +34,10 @@ export default async function handler(req: NextRequest) {
       : ''
 
   if (!difyUrl) {
-    return new Response(
-      JSON.stringify({
-        error: 'Dify Empty URL',
-        errorCode: 'AIInvalidProperty',
-      }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return res.status(400).json({
+      error: 'Dify Empty URL',
+      errorCode: 'AIInvalidProperty',
+    })
   }
 
   const headers = {
@@ -77,39 +61,26 @@ export default async function handler(req: NextRequest) {
     })
 
     if (!response.ok) {
-      return new Response(
-        JSON.stringify({
-          error: 'Dify API request failed',
-          errorCode: 'AIAPIError',
-        }),
-        {
-          status: response.status,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
+      return res.status(response.status).json({
+        error: 'Dify API request failed',
+        errorCode: 'AIAPIError',
+      })
     }
 
     if (stream) {
-      return new Response(response.body, {
+      const streamResponse = new Response(response.body, {
         headers: { 'Content-Type': 'text/event-stream' },
       })
+      return pipeResponse(streamResponse, res)
     } else {
       const data = await response.json()
-      return new Response(JSON.stringify(data), {
-        headers: { 'Content-Type': 'application/json' },
-      })
+      return res.status(200).json(data)
     }
   } catch (error) {
     console.error('Error in Dify API call:', error)
-    return new Response(
-      JSON.stringify({
-        error: 'Dify Internal Server Error',
-        errorCode: 'AIAPIError',
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
+    return res.status(500).json({
+      error: 'Dify Internal Server Error',
+      errorCode: 'AIAPIError',
+    })
   }
 }

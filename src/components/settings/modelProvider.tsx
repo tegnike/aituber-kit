@@ -102,7 +102,7 @@ const ModelProvider = () => {
                 <br />
                 {selectAIService === 'ollama' && (
                   <>
-                    ex. http://localhost:11434/api
+                    ex. http://localhost:11434
                     <br />
                   </>
                 )}
@@ -570,7 +570,7 @@ const ModelProvider = () => {
       )}
 
       {state.isMultiModalSupported && (
-        <div className="border-t border-gray-300 pt-6 my-6">
+        <div className="pt-6 my-6">
           <div className="my-4 text-xl font-bold">
             {t('ImageDisplayPosition')}
           </div>

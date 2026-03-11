@@ -1,5 +1,6 @@
 import {
   handleSendChatFn,
+  handleReceiveTextFromWsFn,
   processAIResponse,
 } from '../../../features/chat/handlers'
 import { getAIChatResponseStream } from '../../../features/chat/aiChatFactory'
@@ -79,6 +80,7 @@ describe('handlers', () => {
       })
       ;(homeStore.getState as jest.Mock).mockReturnValue({
         chatLog: [],
+        modalImage: '',
         upsertMessage: jest.fn(),
       })
 
@@ -95,6 +97,49 @@ describe('handlers', () => {
           content: 'テストメッセージ',
         })
       )
+    })
+
+    it('externalLinkageModeがtrueで画像がある場合、WebSocketペイロードにimageを含める', async () => {
+      const mockWebSocket = {
+        readyState: WebSocket.OPEN,
+        send: jest.fn(),
+      }
+      const mockWsManager = {
+        websocket: mockWebSocket,
+      }
+      ;(webSocketStore.getState as jest.Mock).mockReturnValue({
+        wsManager: mockWsManager,
+      })
+      ;(settingsStore.getState as jest.Mock).mockReturnValue({
+        externalLinkageMode: true,
+      })
+      const mockUpsertMessage = jest.fn()
+      ;(homeStore.getState as jest.Mock).mockReturnValue({
+        chatLog: [],
+        modalImage: 'data:image/png;base64,iVBORw0KGgo=',
+        upsertMessage: mockUpsertMessage,
+      })
+
+      const handleSendChat = handleSendChatFn()
+      await handleSendChat('画像付きメッセージ')
+
+      expect(mockWebSocket.send).toHaveBeenCalledWith(
+        JSON.stringify({
+          content: '画像付きメッセージ',
+          type: 'chat',
+          image: 'data:image/png;base64,iVBORw0KGgo=',
+        })
+      )
+      expect(mockUpsertMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          role: 'user',
+          content: [
+            { type: 'text', text: '画像付きメッセージ' },
+            { type: 'image', image: 'data:image/png;base64,iVBORw0KGgo=' },
+          ],
+        })
+      )
+      expect(homeStore.setState).toHaveBeenCalledWith({ modalImage: '' })
     })
 
     it('externalLinkageModeがtrueだがWebSocketが接続されていない場合、エラーを表示する', async () => {
@@ -170,6 +215,7 @@ describe('handlers', () => {
         slideMode: false,
         systemPrompt: 'テストプロンプト',
         includeTimestampInUserMessage: false,
+        poseConfigs: [],
       })
 
       const handleSendChat = handleSendChatFn()
@@ -189,6 +235,114 @@ describe('handlers', () => {
             content: 'テストプロンプト',
           }),
         ])
+      )
+    })
+  })
+
+  describe('handleReceiveTextFromWsFn', () => {
+    it('画像付きメッセージを受信した場合、マルチモーダル形式で格納する', async () => {
+      const mockUpsertMessage = jest.fn()
+      const mockWsManager = {
+        textBlockStarted: false,
+        setTextBlockStarted: jest.fn(),
+      }
+      ;(settingsStore.getState as jest.Mock).mockReturnValue({
+        externalLinkageMode: true,
+      })
+      ;(homeStore.getState as jest.Mock).mockReturnValue({
+        chatLog: [],
+        upsertMessage: mockUpsertMessage,
+      })
+      ;(webSocketStore.getState as jest.Mock).mockReturnValue({
+        wsManager: mockWsManager,
+      })
+
+      const handleReceiveTextFromWs = handleReceiveTextFromWsFn()
+      await handleReceiveTextFromWs(
+        'テスト応答',
+        'assistant',
+        'happy',
+        undefined,
+        'data:image/png;base64,iVBORw0KGgo='
+      )
+
+      expect(mockUpsertMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          role: 'assistant',
+          content: [
+            { type: 'text', text: 'テスト応答' },
+            { type: 'image', image: 'data:image/png;base64,iVBORw0KGgo=' },
+          ],
+        })
+      )
+    })
+
+    it('画像なしメッセージを受信した場合、テキストのみで格納する', async () => {
+      const mockUpsertMessage = jest.fn()
+      const mockWsManager = {
+        textBlockStarted: false,
+        setTextBlockStarted: jest.fn(),
+      }
+      ;(settingsStore.getState as jest.Mock).mockReturnValue({
+        externalLinkageMode: true,
+      })
+      ;(homeStore.getState as jest.Mock).mockReturnValue({
+        chatLog: [],
+        upsertMessage: mockUpsertMessage,
+      })
+      ;(webSocketStore.getState as jest.Mock).mockReturnValue({
+        wsManager: mockWsManager,
+      })
+
+      const handleReceiveTextFromWs = handleReceiveTextFromWsFn()
+      await handleReceiveTextFromWs('テスト応答', 'assistant', 'neutral')
+
+      expect(mockUpsertMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          role: 'assistant',
+          content: 'テスト応答',
+        })
+      )
+    })
+
+    it('ストリーミング追記時にマルチモーダルコンテンツの画像を保持する', async () => {
+      const mockUpsertMessage = jest.fn()
+      const mockWsManager = {
+        textBlockStarted: true,
+        setTextBlockStarted: jest.fn(),
+      }
+      ;(settingsStore.getState as jest.Mock).mockReturnValue({
+        externalLinkageMode: true,
+      })
+      ;(homeStore.getState as jest.Mock).mockReturnValue({
+        chatLog: [
+          {
+            id: 'msg-1',
+            role: 'assistant',
+            content: [
+              { type: 'text', text: '最初のチャンク' },
+              { type: 'image', image: 'data:image/png;base64,abc123' },
+            ],
+          },
+        ],
+        upsertMessage: mockUpsertMessage,
+      })
+      ;(webSocketStore.getState as jest.Mock).mockReturnValue({
+        wsManager: mockWsManager,
+      })
+
+      const handleReceiveTextFromWs = handleReceiveTextFromWsFn()
+      await handleReceiveTextFromWs('追加テキスト', 'assistant', 'happy')
+
+      expect(mockUpsertMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'msg-1',
+          role: 'assistant',
+          content: [
+            { type: 'text', text: '最初のチャンク追加テキスト' },
+            { type: 'image', image: 'data:image/png;base64,abc123' },
+          ],
+        })
       )
     })
   })

@@ -1,0 +1,519 @@
+{
+  "specVersion": "1.0",
+  "duration": 0,
+  "restHipsPosition": [0, 0.8500000238418579, 0],
+  "boneNames": [
+    "chest",
+    "head",
+    "hips",
+    "leftEye",
+    "leftFoot",
+    "leftHand",
+    "leftIndexDistal",
+    "leftIndexIntermediate",
+    "leftIndexProximal",
+    "leftLittleDistal",
+    "leftLittleIntermediate",
+    "leftLittleProximal",
+    "leftLowerArm",
+    "leftLowerLeg",
+    "leftMiddleDistal",
+    "leftMiddleIntermediate",
+    "leftMiddleProximal",
+    "leftRingDistal",
+    "leftRingIntermediate",
+    "leftRingProximal",
+    "leftShoulder",
+    "leftThumbDistal",
+    "leftThumbMetacarpal",
+    "leftThumbProximal",
+    "leftToes",
+    "leftUpperArm",
+    "leftUpperLeg",
+    "neck",
+    "rightEye",
+    "rightFoot",
+    "rightHand",
+    "rightIndexDistal",
+    "rightIndexIntermediate",
+    "rightIndexProximal",
+    "rightLittleDistal",
+    "rightLittleIntermediate",
+    "rightLittleProximal",
+    "rightLowerArm",
+    "rightLowerLeg",
+    "rightMiddleDistal",
+    "rightMiddleIntermediate",
+    "rightMiddleProximal",
+    "rightRingDistal",
+    "rightRingIntermediate",
+    "rightRingProximal",
+    "rightShoulder",
+    "rightThumbDistal",
+    "rightThumbMetacarpal",
+    "rightThumbProximal",
+    "rightToes",
+    "rightUpperArm",
+    "rightUpperLeg",
+    "spine"
+  ],
+  "bones": {
+    "hips": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      },
+      "translation": {
+        "times": [0],
+        "values": [[0, 0.9639430046081543, 0.0038643674924969673]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "spine": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "chest": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "neck": {
+      "rotation": {
+        "times": [0],
+        "values": [[0.05377187579870224, 0, 0, 0.9985532164573669]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "head": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.06607680022716522, 0.048224784433841705, 0.01579951122403145,
+            0.9965232610702515
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftEye": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.0031173850875347853, 0.0028412716928869486,
+            -0.000008857417014951352, 0.9999911189079285
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightEye": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.003117392072454095, 0.001894182525575161,
+            -0.000005904948920942843, 0.9999933242797852
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftUpperLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLowerLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftFoot": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftToes": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightUpperLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLowerLeg": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightFoot": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightToes": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftShoulder": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftUpperArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.20799405872821808, -0.1922130286693573, -0.6074977517127991,
+            0.7421180009841919
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLowerArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.2463674545288086, -0.3955816328525543, -0.7998359203338623,
+            0.3782601058483124
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftHand": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.18943838775157928, 0.0038829261902719736, -0.2807956635951996,
+            0.9408782124519348
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightShoulder": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightUpperArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.4088088870048523, -0.002201271476224065, 0.6252954006195068,
+            0.6647376418113708
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLowerArm": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.2197558432817459, 0.8287289142608643, 0.41284722089767456,
+            0.3073645234107971
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightHand": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.6081777811050415, 0.08485132455825806, 0.14157046377658844,
+            0.7764520645141602
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftThumbMetacarpal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftThumbProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.14343644678592682, 0.3215760588645935, -0.20415829122066498,
+            0.9134189486503601
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftThumbDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftIndexProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.01304837130010128, 0.0008841064991429448, -0.06759530305862427,
+            0.9976270794868469
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftIndexIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0.0030461701098829508, 0.9999953508377075]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftIndexDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, -0.054912686347961426, 0.9984911680221558]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftMiddleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.0006431296933442354, 0.021379657089710236, -0.0300609041005373,
+            0.9993191957473755
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftMiddleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, -0.06754638254642487, 0.9977161288261414]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftMiddleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, -0.05226093530654907, 0.9986334443092346]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftRingProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0.044027116149663925, 0, 0.999030351638794]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftRingIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftRingDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLittleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            -0.002643955172970891, 0.04481426253914833, -0.058836281299591064,
+            0.9972577095031738
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLittleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "leftLittleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightThumbMetacarpal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightThumbProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.06746359169483185, -0.2597874104976654, 0.02799752727150917,
+            0.9628994464874268
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightThumbDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightIndexProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.0015600206097587943, 0.1242426261305809, 0.012457958422601223,
+            0.9921724200248718
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightIndexIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightIndexDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightMiddleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [
+          [
+            0.0030009180773049593, 0.04977000132203102, 0.060111552476882935,
+            0.9969456195831299
+          ]
+        ],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightMiddleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightMiddleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightRingProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0.08749580383300781, 0.996164858341217]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightRingIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightRingDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLittleProximal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, -0.05779234319925308, 0, 0.9983286261558533]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLittleIntermediate": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    },
+    "rightLittleDistal": {
+      "rotation": {
+        "times": [0],
+        "values": [[0, 0, 0, 1]],
+        "interpolation": "LINEAR"
+      }
+    }
+  },
+  "yRotationOffsetDeg": 4.2
+}
