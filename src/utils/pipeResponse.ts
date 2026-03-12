@@ -13,6 +13,15 @@ export async function pipeResponse(
     res.setHeader(key, value)
   })
 
+  // SSEの場合、圧縮によるバッファリングを防ぐ
+  const contentType = response.headers.get('content-type') || ''
+  const isSSE = contentType.includes('text/event-stream')
+  if (isSSE) {
+    res.setHeader('Content-Encoding', 'none')
+    res.setHeader('X-Accel-Buffering', 'no')
+    res.flushHeaders()
+  }
+
   if (response.body) {
     const reader = response.body.getReader()
     try {
@@ -20,6 +29,10 @@ export async function pipeResponse(
         const { done, value } = await reader.read()
         if (done) break
         res.write(value)
+        // SSEではチャンクを即座にクライアントに送信する
+        if (isSSE && typeof (res as any).flush === 'function') {
+          ;(res as any).flush()
+        }
       }
     } catch (error) {
       console.error('Error while piping response body:', error)
