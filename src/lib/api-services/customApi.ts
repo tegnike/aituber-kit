@@ -195,6 +195,21 @@ export async function handleCustomApi(
               continue
             }
 
+            // OpenAI互換形式（choices[].delta.reasoning_content）の推論コンテンツ変換
+            if (data.choices?.[0]?.delta?.reasoning_content !== undefined) {
+              const normalized = {
+                type: 'reasoning-delta',
+                delta: data.choices[0].delta.reasoning_content,
+              }
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify(normalized)}\n`)
+              )
+              // contentも同時に存在する場合があるのでフォールスルー
+              if (data.choices[0].delta.content === undefined) {
+                continue
+              }
+            }
+
             // OpenAI互換形式（choices[].delta.content）の変換
             if (data.choices?.[0]?.delta?.content !== undefined) {
               const normalized = {
