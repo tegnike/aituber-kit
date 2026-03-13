@@ -33,6 +33,7 @@ const PROMPT_PRESETS: { key: string; filename: string }[] = [
 export function usePresetLoader(): void {
   useEffect(() => {
     const loadPresets = async () => {
+      const selectedIndex = settingsStore.getState().selectedPresetIndex
       for (let i = 1; i <= 5; i++) {
         const key = `characterPreset${i}` as keyof ReturnType<
           typeof settingsStore.getState
@@ -41,7 +42,13 @@ export function usePresetLoader(): void {
         if (current) continue
         const content = await loadPreset(`preset${i}.txt`)
         if (content) {
-          settingsStore.setState({ [`characterPreset${i}`]: content })
+          const update: Record<string, string> = {
+            [`characterPreset${i}`]: content,
+          }
+          if (selectedIndex === i - 1 && !settingsStore.getState().systemPrompt) {
+            update.systemPrompt = content
+          }
+          settingsStore.setState(update)
         }
       }
 
