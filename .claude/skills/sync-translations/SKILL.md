@@ -93,13 +93,13 @@ locales/ja/translation.json
 
 ### 対象ファイル
 
-| 言語             | ファイルパス             |
-| ---------------- | ------------------------ |
-| 英語             | `docs/README_en.md`      |
-| 中国語（簡体字） | `docs/README_zh-CN.md`   |
-| 中国語（繁体字） | `docs/README_zh-TW.md`   |
-| 韓国語           | `docs/README_ko.md`      |
-| ポーランド語     | `docs/README_pl.md`      |
+| 言語             | ファイルパス           |
+| ---------------- | ---------------------- |
+| 英語             | `docs/README_en.md`    |
+| 中国語（簡体字） | `docs/README_zh-CN.md` |
+| 中国語（繁体字） | `docs/README_zh-TW.md` |
+| 韓国語           | `docs/README_ko.md`    |
+| ポーランド語     | `docs/README_pl.md`    |
 
 ### 実行手順
 
