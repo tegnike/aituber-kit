@@ -30,12 +30,43 @@ export default async function handler(
     customApiIncludeMimeType = false,
   } = req.body
 
+  // サーバーサイド環境変数を優先（秘匿設定）
+  const apiUrl = process.env.CUSTOM_API_URL || customApiUrl
+
+  // ヘッダー: フロントエンド設定をベースに、サーバーサイド環境変数で上書きマージ
+  const frontHeaders = customApiHeaders === '' ? '{}' : customApiHeaders
+  const serverHeaders = process.env.CUSTOM_API_HEADERS || ''
+  let mergedHeaders = frontHeaders
+  if (serverHeaders) {
+    try {
+      const front = JSON.parse(frontHeaders)
+      const server = JSON.parse(serverHeaders)
+      mergedHeaders = JSON.stringify({ ...front, ...server })
+    } catch {
+      mergedHeaders = serverHeaders
+    }
+  }
+
+  // ボディ: フロントエンド設定をベースに、サーバーサイド環境変数で上書きマージ
+  const frontBody = customApiBody === '' ? '{}' : customApiBody
+  const serverBody = process.env.CUSTOM_API_BODY || ''
+  let mergedBody = frontBody
+  if (serverBody) {
+    try {
+      const front = JSON.parse(frontBody)
+      const server = JSON.parse(serverBody)
+      mergedBody = JSON.stringify({ ...front, ...server })
+    } catch {
+      mergedBody = serverBody
+    }
+  }
+
   try {
     const response = await handleCustomApi(
       messages,
-      customApiUrl,
-      customApiHeaders === '' ? '{}' : customApiHeaders,
-      customApiBody === '' ? '{}' : customApiBody,
+      apiUrl,
+      mergedHeaders,
+      mergedBody,
       stream,
       customApiIncludeMimeType
     )
