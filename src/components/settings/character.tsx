@@ -12,6 +12,7 @@ import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 import { useLive2DEnabled } from '@/hooks/useLive2DEnabled'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 // Character型の定義
 type Character = Pick<
@@ -686,6 +687,7 @@ const Live2DSettingsForm = () => {
 const Character = () => {
   const { t, i18n } = useTranslation()
   const { isLive2DEnabled } = useLive2DEnabled()
+  const { isRestrictedMode } = useRestrictedMode()
   const {
     characterName,
     selectedVrmPath,
@@ -1003,6 +1005,7 @@ const Character = () => {
                     fileInput.click()
                   }
                 }}
+                disabled={isRestrictedMode}
               >
                 {t('OpenVRM')}
               </TextButton>

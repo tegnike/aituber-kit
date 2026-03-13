@@ -12,9 +12,11 @@ import menuStore from '@/features/stores/menu'
 import toastStore from '@/features/stores/toast'
 import { IMAGE_CONSTANTS } from '@/constants/images'
 import { compressImageFile } from '@/utils/imageCompression'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 const Images = () => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<string>('')
 
@@ -271,7 +273,7 @@ const Images = () => {
                 fileInput.click()
               }
             }}
-            disabled={isUploading}
+            disabled={isUploading || isRestrictedMode}
           >
             {t('UploadImages')}
           </TextButton>
@@ -343,7 +345,12 @@ const Images = () => {
                         onClick={() =>
                           handleDeleteUploadedImage(image.filename)
                         }
-                        className="w-full text-xs py-1 px-2 rounded text-theme bg-secondary bg-opacity-20 hover:bg-secondary hover:bg-opacity-30"
+                        disabled={isRestrictedMode}
+                        className={`w-full text-xs py-1 px-2 rounded text-theme ${
+                          isRestrictedMode
+                            ? 'bg-secondary bg-opacity-20 opacity-50 cursor-not-allowed'
+                            : 'bg-secondary bg-opacity-20 hover:bg-secondary hover:bg-opacity-30'
+                        }`}
                       >
                         {t('Delete')}
                       </button>

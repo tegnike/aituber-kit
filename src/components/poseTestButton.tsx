@@ -4,6 +4,7 @@ import settingsStore from '@/features/stores/settings'
 import type { PoseConfigItem } from '@/features/stores/settings'
 import toastStore from '@/features/stores/toast'
 import { buildUrl } from '@/utils/buildUrl'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 function usePoseToggle() {
   const [activePose, setActivePose] = useState<string | null>(null)
@@ -56,6 +57,7 @@ async function fetchCurrentOffset(jsonPath: string): Promise<number> {
 export default function PoseTestButton() {
   const { activePose, applyPose, resetToIdle } = usePoseToggle()
   const poseConfigs = settingsStore((s) => s.poseConfigs)
+  const { isRestrictedMode } = useRestrictedMode()
   const [angleDeg, setAngleDeg] = useState(0)
   const [savedAngleDeg, setSavedAngleDeg] = useState(0)
   const [saving, setSaving] = useState(false)
@@ -151,8 +153,9 @@ export default function PoseTestButton() {
   return (
     <div className="fixed top-0 right-0 bottom-0 z-50 flex items-center">
       <div className="flex gap-3 mr-4">
-        {/* 調整パネル（シーケンスでない通常ポーズのみ表示） */}
-        {activePose &&
+        {/* 調整パネル（シーケンスでない通常ポーズのみ表示、制限モードでは非表示） */}
+        {!isRestrictedMode &&
+          activePose &&
           poseConfigs.find((p) => p.id === activePose && 'json' in p) && (
             <div className="bg-black/70 backdrop-blur-sm rounded-2xl p-4 text-white shadow-xl w-64 self-center">
               <div className="text-sm font-bold mb-2">
@@ -185,7 +188,7 @@ export default function PoseTestButton() {
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={angleDeg === savedAngleDeg || saving}
+                  disabled={angleDeg === savedAngleDeg || saving || isRestrictedMode}
                   className="flex-1 px-3 py-1.5 bg-primary hover:bg-primary-hover rounded-lg text-xs disabled:opacity-40"
                 >
                   {saving ? '保存中...' : '保存'}

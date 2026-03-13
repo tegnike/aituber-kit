@@ -7,6 +7,7 @@ import {
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import { Message } from '@/features/messages/messages'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 class ReceivedMessage {
   timestamp: number
@@ -36,6 +37,7 @@ class ReceivedMessage {
 const MessageReceiver = () => {
   const [lastTimestamp, setLastTimestamp] = useState(0)
   const clientId = settingsStore((state) => state.clientId)
+  const { isRestrictedMode } = useRestrictedMode()
   const handleSendChat = handleSendChatFn()
 
   const speakMessage = useCallback(
@@ -184,7 +186,7 @@ const MessageReceiver = () => {
   )
 
   useEffect(() => {
-    if (!clientId) return
+    if (!clientId || isRestrictedMode) return
 
     const fetchMessages = async () => {
       try {
@@ -210,7 +212,7 @@ const MessageReceiver = () => {
     const intervalId = setInterval(fetchMessages, 1000)
 
     return () => clearInterval(intervalId)
-  }, [clientId, lastTimestamp, speakMessage])
+  }, [clientId, isRestrictedMode, lastTimestamp, speakMessage])
 
   return <></>
 }

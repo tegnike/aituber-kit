@@ -9,9 +9,11 @@ import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 import { IMAGE_CONSTANTS } from '@/constants/images'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 const Based = () => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
@@ -182,7 +184,7 @@ const Based = () => {
               const path = e.target.value
               homeStore.setState({ backgroundImageUrl: path })
             }}
-            disabled={isLoading || isUploading}
+            disabled={isLoading || isUploading || isRestrictedMode}
           >
             <option value="/backgrounds/bg-c.png">
               {t('DefaultBackground')}
@@ -211,7 +213,7 @@ const Based = () => {
                 fileInput.click()
               }
             }}
-            disabled={isLoading || isUploading}
+            disabled={isLoading || isUploading || isRestrictedMode}
           >
             {isUploading ? t('Uploading') : t('UploadBackground')}
           </TextButton>

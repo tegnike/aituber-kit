@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
+import assetManifest from '@/constants/assetManifest.json'
 
 interface PoseListItem {
   name: string
@@ -13,6 +15,10 @@ export default async function handler(
 ) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  if (isRestrictedMode()) {
+    return res.status(200).json(assetManifest.poses)
   }
 
   const posesDir = path.join(process.cwd(), 'public', 'poses')

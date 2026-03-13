@@ -9,9 +9,11 @@ import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 import SlideConvert from './slideConvert'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 const Slide = () => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
@@ -122,13 +124,14 @@ const Slide = () => {
           </Link>
         )}
       </div>
-      {isMultiModalAvailable(
-        selectAIService,
-        selectAIModel,
-        enableMultiModal,
-        multiModalMode,
-        customModel
-      ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
+      {!isRestrictedMode &&
+        isMultiModalAvailable(
+          selectAIService,
+          selectAIModel,
+          enableMultiModal,
+          multiModalMode,
+          customModel
+        ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
     </>
   )
 }

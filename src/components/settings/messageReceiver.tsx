@@ -6,9 +6,11 @@ import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 import { v4 as uuidv4 } from 'uuid'
 import Link from 'next/link'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 const MessageReceiverSetting = () => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
   const { messageReceiverEnabled, clientId } = settingsStore()
   const [inputClientId, setInputClientId] = useState(clientId || '')
   const [isEditing, setIsEditing] = useState(false)
@@ -73,6 +75,7 @@ const MessageReceiverSetting = () => {
         <ToggleSwitch
           enabled={messageReceiverEnabled}
           onChange={() => toggleMessageReceiver()}
+          disabled={isRestrictedMode}
         />
       </div>
       {messageReceiverEnabled && (
