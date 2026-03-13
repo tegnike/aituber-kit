@@ -45,7 +45,10 @@ export function usePresetLoader(): void {
           const update: Record<string, string> = {
             [`characterPreset${i}`]: content,
           }
-          if (selectedIndex === i - 1 && !settingsStore.getState().systemPrompt) {
+          if (
+            selectedIndex === i - 1 &&
+            !settingsStore.getState().systemPrompt
+          ) {
             update.systemPrompt = content
           }
           settingsStore.setState(update)
