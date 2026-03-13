@@ -28,6 +28,7 @@ export default async function handler(
     customApiHeaders = '{}',
     customApiBody = '{}',
     customApiIncludeMimeType = false,
+    threadId,
   } = req.body
 
   // サーバーサイド環境変数を優先（秘匿設定）
@@ -58,6 +59,17 @@ export default async function handler(
       mergedBody = JSON.stringify({ ...front, ...server })
     } catch {
       mergedBody = serverBody
+    }
+  }
+
+  // threadIdをmergedBodyに注入
+  if (threadId) {
+    try {
+      const bodyObj = JSON.parse(mergedBody)
+      bodyObj.threadId = threadId
+      mergedBody = JSON.stringify(bodyObj)
+    } catch {
+      // JSON解析失敗時は注入をスキップ
     }
   }
 

@@ -6,6 +6,7 @@ import {
   AIService,
 } from '@/features/constants/settings'
 import settingsStore from '../stores/settings'
+import { getSessionId } from '@/utils/sessionId'
 
 // 推論/思考チャンクを通常テキストと区別するためのマーカー
 // null byteプレフィックスはLLMテキスト出力に現れないため安全
@@ -103,6 +104,7 @@ export async function getVercelAIChatResponse(messages: Message[]) {
         temperature,
         maxTokens,
         customApiIncludeMimeType,
+        threadId: getSessionId(),
         messages: filteredMessages, // フィルタリングされたメッセージを使用
       })
     } else {
@@ -193,6 +195,7 @@ export async function getVercelAIChatResponseStream(
       temperature,
       maxTokens,
       customApiIncludeMimeType,
+      threadId: getSessionId(),
       messages: filteredMessages, // フィルタリングされたメッセージを使用
     })
   } else {
