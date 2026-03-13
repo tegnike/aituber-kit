@@ -16,3 +16,12 @@ export const getSessionId = (): string => {
   }
   return sessionId
 }
+
+/**
+ * セッションIDをリセットする。
+ * 次回getSessionId()呼び出し時に新しいIDが生成される。
+ */
+export const resetSessionId = (): void => {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(LOCAL_STORAGE_KEY)
+}

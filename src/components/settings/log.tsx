@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
+import { resetSessionId } from '@/utils/sessionId'
 import { TextButton } from '../textButton'
 import { messageSelectors } from '@/features/messages/messageSelectors'
 
@@ -50,6 +51,7 @@ const Log = () => {
           onClick={() => {
             homeStore.setState({ chatLog: [] })
             settingsStore.setState({ difyConversationId: '' })
+            resetSessionId()
           }}
         >
           {t('ConversationHistoryReset')}

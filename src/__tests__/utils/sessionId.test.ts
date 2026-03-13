@@ -1,4 +1,4 @@
-import { getSessionId } from '@/utils/sessionId'
+import { getSessionId, resetSessionId } from '@/utils/sessionId'
 
 describe('getSessionId', () => {
   beforeEach(() => {
@@ -21,6 +21,19 @@ describe('getSessionId', () => {
   it('localStorageクリア後に新しい値を返す', () => {
     const id1 = getSessionId()
     localStorage.clear()
+    const id2 = getSessionId()
+    expect(id1).not.toBe(id2)
+  })
+})
+
+describe('resetSessionId', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('リセット後に新しいIDが生成される', () => {
+    const id1 = getSessionId()
+    resetSessionId()
     const id2 = getSessionId()
     expect(id1).not.toBe(id2)
   })

@@ -13,6 +13,7 @@ import homeStore, {
   setTargetLogFileName,
 } from '@/features/stores/home'
 import { TextButton } from '../textButton'
+import { resetSessionId } from '@/utils/sessionId'
 import { ToggleSwitch } from '../toggleSwitch'
 import { ApiKeyInput } from './modelProvider/ApiKeyInput'
 import { getMemoryService } from '@/features/memory/memoryService'
@@ -656,6 +657,7 @@ const MemorySettings = () => {
             onClick={async () => {
               homeStore.setState({ chatLog: [] })
               settingsStore.setState({ difyConversationId: '' })
+              resetSessionId()
               // IndexedDBの記憶もクリア
               try {
                 const memoryService = getMemoryService()
