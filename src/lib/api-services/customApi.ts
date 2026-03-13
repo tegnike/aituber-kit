@@ -238,7 +238,20 @@ export async function handleCustomApi(
       },
     })
 
-    return new Response(apiResponse.body!.pipeThrough(transformStream), {
+    if (!apiResponse.body) {
+      return new Response(
+        JSON.stringify({
+          error: 'Empty response body from Custom API',
+          errorCode: 'CustomAPIEmptyBody',
+        }),
+        {
+          status: 502,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
+    return new Response(apiResponse.body.pipeThrough(transformStream), {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',

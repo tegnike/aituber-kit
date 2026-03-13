@@ -17,7 +17,6 @@ export async function pipeResponse(
   const contentType = response.headers.get('content-type') || ''
   const isSSE = contentType.includes('text/event-stream')
   if (isSSE) {
-    res.setHeader('Content-Encoding', 'none')
     res.setHeader('X-Accel-Buffering', 'no')
     res.flushHeaders()
   }

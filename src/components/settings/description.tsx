@@ -90,12 +90,9 @@ const Description = () => {
 
         {process.env.NEXT_PUBLIC_DEMO_MODE === 'true' && (
           <div className="mt-10 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-            <p className="mb-1">これはAITuberKitのデモアプリです。</p>
-            <p className="mb-2">デモ版のため、一部の機能が制限されています。</p>
-            <p className="text-yellow-700">
-              ⚠
-              このアプリでは会話ログがサーバーに保存されるようになっています。ログは一部加工した上で公開される可能性があります。
-            </p>
+            <p className="mb-1">{t('DemoModeAppNotice')}</p>
+            <p className="mb-2">{t('DemoModeLimitedFeaturesNotice')}</p>
+            <p className="text-yellow-700">⚠ {t('DemoModeLogNotice')}</p>
           </div>
         )}
       </div>

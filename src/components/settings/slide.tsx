@@ -50,6 +50,14 @@ const Slide = () => {
     slideStore.setState({ currentSlide: 0 })
   }
 
+  const isSlideAvailable = isMultiModalAvailable(
+    selectAIService,
+    selectAIModel,
+    enableMultiModal,
+    multiModalMode,
+    customModel
+  )
+
   return (
     <>
       <div className="flex items-center mb-6">
@@ -70,15 +78,7 @@ const Slide = () => {
         <ToggleSwitch
           enabled={slideMode}
           onChange={() => toggleSlideMode()}
-          disabled={
-            !isMultiModalAvailable(
-              selectAIService,
-              selectAIModel,
-              enableMultiModal,
-              multiModalMode,
-              customModel
-            )
-          }
+          disabled={!isSlideAvailable}
         />
       </div>
       <div className="mt-6 mb-4 text-xl font-bold">
@@ -124,14 +124,9 @@ const Slide = () => {
           </Link>
         )}
       </div>
-      {!isRestrictedMode &&
-        isMultiModalAvailable(
-          selectAIService,
-          selectAIModel,
-          enableMultiModal,
-          multiModalMode,
-          customModel
-        ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
+      {!isRestrictedMode && isSlideAvailable && (
+        <SlideConvert onFolderUpdate={handleFolderUpdate} />
+      )}
     </>
   )
 }

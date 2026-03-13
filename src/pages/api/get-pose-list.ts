@@ -9,7 +9,12 @@ interface PoseListItem {
   path: string
 }
 
-const manifest = assetManifest as Record<string, unknown>
+interface AssetManifest {
+  poses?: PoseListItem[]
+  [key: string]: unknown
+}
+
+const manifest = assetManifest as AssetManifest
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,7 +25,16 @@ export default async function handler(
   }
 
   if (isRestrictedMode()) {
-    return res.status(200).json(manifest.poses ?? [])
+    const poses = Array.isArray(manifest.poses)
+      ? manifest.poses.filter(
+          (item): item is PoseListItem =>
+            typeof item === 'object' &&
+            item !== null &&
+            typeof item.name === 'string' &&
+            typeof item.path === 'string'
+        )
+      : []
+    return res.status(200).json(poses)
   }
 
   const posesDir = path.join(process.cwd(), 'public', 'poses')

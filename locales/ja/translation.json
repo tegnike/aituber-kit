@@ -642,5 +642,8 @@
   "KioskNgWordsPlaceholder": "例: 暴力, 差別, 不適切",
   "Characters": "文字",
   "DemoModeNotice": "デモ版ではこの機能は利用できません",
-  "DemoModeLocalTTSNotice": "デモ版ではローカルサーバーを使用するTTSは利用できません"
+  "DemoModeLocalTTSNotice": "デモ版ではローカルサーバーを使用するTTSは利用できません",
+  "DemoModeAppNotice": "これはAITuberKitのデモアプリです。",
+  "DemoModeLimitedFeaturesNotice": "デモ版のため、一部の機能が制限されています。",
+  "DemoModeLogNotice": "このアプリでは会話ログがサーバーに保存されるようになっています。ログは一部加工した上で公開される可能性があります。"
 }

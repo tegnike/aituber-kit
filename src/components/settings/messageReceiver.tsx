@@ -57,6 +57,12 @@ const MessageReceiverSetting = () => {
     }
   }, [messageReceiverEnabled, clientId, generateClientId])
 
+  useEffect(() => {
+    if (isRestrictedMode && messageReceiverEnabled) {
+      settingsStore.setState({ messageReceiverEnabled: false })
+    }
+  }, [isRestrictedMode, messageReceiverEnabled])
+
   const toggleMessageReceiver = () => {
     const newState = !messageReceiverEnabled
     settingsStore.setState({ messageReceiverEnabled: newState })

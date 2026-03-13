@@ -43,7 +43,8 @@ export default async function handler(
       const front = JSON.parse(frontHeaders)
       const server = JSON.parse(serverHeaders)
       mergedHeaders = JSON.stringify({ ...front, ...server })
-    } catch {
+    } catch (e) {
+      console.warn('Failed to parse/merge custom API headers:', e)
       mergedHeaders = serverHeaders
     }
   }
@@ -57,7 +58,8 @@ export default async function handler(
       const front = JSON.parse(frontBody)
       const server = JSON.parse(serverBody)
       mergedBody = JSON.stringify({ ...front, ...server })
-    } catch {
+    } catch (e) {
+      console.warn('Failed to parse/merge custom API body:', e)
       mergedBody = serverBody
     }
   }
@@ -68,8 +70,8 @@ export default async function handler(
       const bodyObj = JSON.parse(mergedBody)
       bodyObj.threadId = threadId
       mergedBody = JSON.stringify(bodyObj)
-    } catch {
-      // JSON解析失敗時は注入をスキップ
+    } catch (e) {
+      console.warn('Failed to inject threadId into mergedBody:', e)
     }
   }
 
