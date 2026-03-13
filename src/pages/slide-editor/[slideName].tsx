@@ -387,6 +387,7 @@ const SlideEditorPage: React.FC = () => {
         duration: 5000,
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- addToastはストアから取得した安定した関数
   }, [slideName, scripts, supplementContent])
 
   // 変更を元に戻す処理

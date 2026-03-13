@@ -596,7 +596,10 @@ const MemorySettings = () => {
             </div>
             {selectedFile && (
               <div className="mt-4 flex items-center gap-4">
-                <TextButton onClick={handleRestore} disabled={isRestoring || isRestrictedMode}>
+                <TextButton
+                  onClick={handleRestore}
+                  disabled={isRestoring || isRestrictedMode}
+                >
                   {isRestoring ? '...' : t('MemoryRestoreExecute')}
                 </TextButton>
                 {restoreMessage && (

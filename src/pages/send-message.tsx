@@ -528,6 +528,7 @@ const SendMessage = () => {
                   {attachedImage ? (
                     <div className="flex items-start gap-3">
                       <div className="relative inline-block">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- base64データURLのためnext/Image不適 */}
                         <img
                           src={attachedImage}
                           alt="attached"

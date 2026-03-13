@@ -188,7 +188,9 @@ export default function PoseTestButton() {
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={angleDeg === savedAngleDeg || saving || isRestrictedMode}
+                  disabled={
+                    angleDeg === savedAngleDeg || saving || isRestrictedMode
+                  }
                   className="flex-1 px-3 py-1.5 bg-primary hover:bg-primary-hover rounded-lg text-xs disabled:opacity-40"
                 >
                   {saving ? '保存中...' : '保存'}

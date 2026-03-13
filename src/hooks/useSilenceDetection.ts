@@ -184,6 +184,7 @@ export function useSilenceDetection({
         }
       }, 100) // 100msごとにチェック
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- transcriptRefはrefオブジェクトのため依存配列不要
     [onTextDetected, setUserMessage, speechDetectedRef, t]
   )
 

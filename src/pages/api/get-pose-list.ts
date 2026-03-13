@@ -9,6 +9,8 @@ interface PoseListItem {
   path: string
 }
 
+const manifest = assetManifest as Record<string, unknown>
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -18,7 +20,7 @@ export default async function handler(
   }
 
   if (isRestrictedMode()) {
-    return res.status(200).json(assetManifest.poses)
+    return res.status(200).json(manifest.poses ?? [])
   }
 
   const posesDir = path.join(process.cwd(), 'public', 'poses')
