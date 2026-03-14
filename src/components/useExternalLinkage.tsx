@@ -5,6 +5,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import webSocketStore from '@/features/stores/websocketStore'
 import { EmotionType } from '@/features/messages/messages'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 ///取得したコメントをストックするリストの作成（receivedMessages）
 interface TmpMessage {
@@ -27,6 +28,7 @@ interface Params {
 
 const useExternalLinkage = ({ handleReceiveTextFromWs }: Params) => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
   const [receivedMessages, setTmpMessages] = useState<TmpMessage[]>([])
 
@@ -59,7 +61,7 @@ const useExternalLinkage = ({ handleReceiveTextFromWs }: Params) => {
 
   useEffect(() => {
     const ss = settingsStore.getState()
-    if (!ss.externalLinkageMode) return
+    if (!ss.externalLinkageMode || isRestrictedMode) return
 
     const handleOpen = (event: Event) => {}
     const handleMessage = async (event: MessageEvent) => {
@@ -106,7 +108,7 @@ const useExternalLinkage = ({ handleReceiveTextFromWs }: Params) => {
       clearInterval(reconnectInterval)
       webSocketStore.getState().disconnect()
     }
-  }, [externalLinkageMode, t])
+  }, [externalLinkageMode, isRestrictedMode, t])
 
   return null
 }

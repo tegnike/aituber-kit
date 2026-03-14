@@ -292,6 +292,24 @@ const ModelProvider = () => {
                 </div>
               </div>
             )}
+            <div className="border-t border-gray-300 pt-6 my-6">
+              <div className="my-4 text-xl font-bold">
+                {t('ShowThinkingText')}
+              </div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('ShowThinkingTextInfo')}
+              </div>
+              <div className="my-2">
+                <ToggleSwitch
+                  enabled={state.showThinkingText}
+                  onChange={(v) =>
+                    settingsStore.setState({
+                      showThinkingText: v,
+                    })
+                  }
+                />
+              </div>
+            </div>
           </>
         )
 

@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { ToggleSwitch } from '../toggleSwitch'
 import { useCallback } from 'react'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 const SEND_EXAMPLE = `{
   "content": "ユーザーのメッセージ",
@@ -19,6 +20,7 @@ const RECEIVE_EXAMPLE = `{
 
 const ExternalLinkage = () => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
 
   const handleExternalLinkageModeChange = useCallback((newMode: boolean) => {
@@ -35,6 +37,7 @@ const ExternalLinkage = () => {
         <ToggleSwitch
           enabled={externalLinkageMode}
           onChange={handleExternalLinkageModeChange}
+          disabled={isRestrictedMode}
         />
       </div>
 

@@ -9,9 +9,11 @@ import slideStore from '@/features/stores/slide'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 import SlideConvert from './slideConvert'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 const Slide = () => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
@@ -48,6 +50,14 @@ const Slide = () => {
     slideStore.setState({ currentSlide: 0 })
   }
 
+  const isSlideAvailable = isMultiModalAvailable(
+    selectAIService,
+    selectAIModel,
+    enableMultiModal,
+    multiModalMode,
+    customModel
+  )
+
   return (
     <>
       <div className="flex items-center mb-6">
@@ -68,15 +78,7 @@ const Slide = () => {
         <ToggleSwitch
           enabled={slideMode}
           onChange={() => toggleSlideMode()}
-          disabled={
-            !isMultiModalAvailable(
-              selectAIService,
-              selectAIModel,
-              enableMultiModal,
-              multiModalMode,
-              customModel
-            )
-          }
+          disabled={!isSlideAvailable}
         />
       </div>
       <div className="mt-6 mb-4 text-xl font-bold">
@@ -122,13 +124,9 @@ const Slide = () => {
           </Link>
         )}
       </div>
-      {isMultiModalAvailable(
-        selectAIService,
-        selectAIModel,
-        enableMultiModal,
-        multiModalMode,
-        customModel
-      ) && <SlideConvert onFolderUpdate={handleFolderUpdate} />}
+      {!isRestrictedMode && isSlideAvailable && (
+        <SlideConvert onFolderUpdate={handleFolderUpdate} />
+      )}
     </>
   )
 }

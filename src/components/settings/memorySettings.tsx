@@ -13,12 +13,14 @@ import homeStore, {
   setTargetLogFileName,
 } from '@/features/stores/home'
 import { TextButton } from '../textButton'
+import { resetSessionId } from '@/utils/sessionId'
 import { ToggleSwitch } from '../toggleSwitch'
 import { ApiKeyInput } from './modelProvider/ApiKeyInput'
 import { getMemoryService } from '@/features/memory/memoryService'
 import { extractTextContent } from '@/features/memory/memoryStoreSync'
 import { Message } from '@/features/messages/messages'
 import { messageSelectors } from '@/features/messages/messageSelectors'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 /** Close icon SVG component */
 function CloseIcon(): JSX.Element {
@@ -43,6 +45,7 @@ function CloseIcon(): JSX.Element {
 
 const MemorySettings = () => {
   const { t } = useTranslation()
+  const { isRestrictedMode } = useRestrictedMode()
 
   // Settings store state
   const memoryEnabled = settingsStore((s) => s.memoryEnabled)
@@ -574,7 +577,7 @@ const MemorySettings = () => {
             <div className="flex items-center gap-4">
               <TextButton
                 onClick={handleFileSelectClick}
-                disabled={isRestoring}
+                disabled={isRestoring || isRestrictedMode}
               >
                 {t('MemoryRestoreSelect')}
               </TextButton>
@@ -593,7 +596,10 @@ const MemorySettings = () => {
             </div>
             {selectedFile && (
               <div className="mt-4 flex items-center gap-4">
-                <TextButton onClick={handleRestore} disabled={isRestoring}>
+                <TextButton
+                  onClick={handleRestore}
+                  disabled={isRestoring || isRestrictedMode}
+                >
                   {isRestoring ? '...' : t('MemoryRestoreExecute')}
                 </TextButton>
                 {restoreMessage && (
@@ -654,6 +660,7 @@ const MemorySettings = () => {
             onClick={async () => {
               homeStore.setState({ chatLog: [] })
               settingsStore.setState({ difyConversationId: '' })
+              resetSessionId()
               // IndexedDBの記憶もクリア
               try {
                 const memoryService = getMemoryService()

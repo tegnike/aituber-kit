@@ -11,6 +11,7 @@ import RealtimeAPITools from './realtimeAPITools'
 import RealtimeAPIToolsJson from './realtimeAPITools.json'
 import { AudioBufferManager } from '@/utils/audioBufferManager'
 import toastStore from '@/features/stores/toast'
+import { resetSessionId } from '@/utils/sessionId'
 
 interface Params {
   handleReceiveTextFromRt: (
@@ -223,6 +224,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
   const onOpen = useCallback(
     (event: Event) => {
       homeStore.setState({ chatLog: [] })
+      resetSessionId()
       sendSessionUpdate()
     },
     [sendSessionUpdate]
