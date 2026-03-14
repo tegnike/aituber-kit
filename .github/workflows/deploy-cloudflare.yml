@@ -53,8 +53,10 @@ jobs:
         run: npm ci
 
       - name: Setup environment variables
-        if: ${{ secrets.CLOUDFLARE_ENV_FILE != '' }}
-        run: echo "$CLOUDFLARE_ENV_FILE" > .env.local
+        run: |
+          if [ -n "$CLOUDFLARE_ENV_FILE" ]; then
+            echo "$CLOUDFLARE_ENV_FILE" > .env.local
+          fi
         env:
           CLOUDFLARE_ENV_FILE: ${{ secrets.CLOUDFLARE_ENV_FILE }}
 
