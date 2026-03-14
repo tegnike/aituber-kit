@@ -41,13 +41,13 @@ export default async function handler(
           'Content-Type': 'application/json',
           Accept: 'audio/wav',
         },
-        responseType: 'stream',
+        responseType: 'arraybuffer',
         timeout: 30000,
       }
     )
 
     res.setHeader('Content-Type', 'audio/wav')
-    synthesisResponse.data.pipe(res)
+    res.send(Buffer.from(synthesisResponse.data))
   } catch (error) {
     console.error('Error in VOICEVOX TTS:', error)
     res.status(500).json({ error: 'Internal Server Error' })

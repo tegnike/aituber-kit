@@ -124,7 +124,7 @@ export default async function handler(
           Authorization: `Bearer ${aivisCloudApiKey}`,
           'Content-Type': 'application/json',
         },
-        responseType: 'stream',
+        responseType: 'arraybuffer',
         timeout: 60000, // Aivis Cloud APIは生成に時間がかかる場合があるため60秒に設定
       }
     )
@@ -153,7 +153,7 @@ export default async function handler(
       )
     }
 
-    response.data.pipe(res)
+    res.send(Buffer.from(response.data))
   } catch (error: any) {
     console.error('Error in Aivis Cloud API TTS:', error)
 
