@@ -21,8 +21,6 @@ const nextConfig = {
         './logs/**/*',
         './reports/**/*',
         './coverage/**/*',
-        './docs/**/*',
-        './src/**/*',
       ],
     },
   }),
