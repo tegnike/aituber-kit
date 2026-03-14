@@ -12,9 +12,18 @@ const nextConfig = {
   // Cloudflare Workers向け
   ...(isRestrictedMode && {
     serverExternalPackages: ['openai', 'xxhash-wasm'],
-    // canvasネイティブモジュールをファイルトレースから除外
+    // Cloudflare Workers向け: 不要ファイルをファイルトレースから除外
     outputFileTracingExcludes: {
-      '*': ['./node_modules/canvas/**/*'],
+      '*': [
+        './node_modules/canvas/**/*',
+        './public/**/*',
+        './scripts/**/*',
+        './logs/**/*',
+        './reports/**/*',
+        './coverage/**/*',
+        './docs/**/*',
+        './src/**/*',
+      ],
     },
   }),
   env: {
