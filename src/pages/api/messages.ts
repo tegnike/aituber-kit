@@ -1,4 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import {
+  isRestrictedMode,
+  createRestrictedModeErrorResponse,
+} from '@/utils/restrictedMode'
 
 type MessageType = 'direct_send' | 'ai_generate' | 'user_input'
 
@@ -30,6 +34,10 @@ export const config = {
 }
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
+  if (isRestrictedMode()) {
+    return res.status(403).json(createRestrictedModeErrorResponse('messages'))
+  }
+
   const clientId = req.query.clientId as string
   const type = (req.query.type as MessageType) || 'direct_send'
 

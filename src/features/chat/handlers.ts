@@ -214,7 +214,7 @@ const handleSpeakAndStateUpdate = (
       ''
     ) === ''
   ) {
-    return
+    return false
   }
 
   speakCharacter(
@@ -235,6 +235,8 @@ const handleSpeakAndStateUpdate = (
       })
     }
   )
+
+  return true
 }
 
 /**
@@ -403,6 +405,33 @@ export const speakMessageHandler = async (receivedMessage: string) => {
 export const processAIResponse = async (messages: Message[]) => {
   const sessionId = generateSessionId()
   homeStore.setState({ chatProcessing: true })
+
+  // 思考中ポーズの適用
+  const ss = settingsStore.getState()
+  const shouldApplyThinkingPose =
+    ss.thinkingPoseEnabled && ss.modelType === 'vrm'
+  if (shouldApplyThinkingPose) {
+    const poseConfig = ss.poseConfigs.find((p) => p.id === ss.thinkingPoseId)
+    if (poseConfig) {
+      const model = homeStore.getState().viewer.model
+      if (model) {
+        void model.poseManager
+          .applyPose(model, ss.thinkingPoseId, poseConfig)
+          .catch((e: unknown) =>
+            console.error('Failed to apply thinking pose:', e)
+          )
+      }
+    }
+  }
+  const resetThinkingPose = () => {
+    if (shouldApplyThinkingPose) {
+      const model = homeStore.getState().viewer.model
+      if (model?.poseManager.isActive) {
+        model.poseManager.resetToIdle(model)
+      }
+    }
+  }
+
   let stream
 
   const currentSlideMessagesRef = { current: [] as string[] }
@@ -412,11 +441,13 @@ export const processAIResponse = async (messages: Message[]) => {
     stream = await getAIChatResponseStream(messages)
   } catch (e) {
     console.error(e)
+    resetThinkingPose()
     homeStore.setState({ chatProcessing: false })
     return
   }
 
   if (stream == null) {
+    resetThinkingPose()
     homeStore.setState({ chatProcessing: false })
     return
   }
@@ -430,6 +461,8 @@ export const processAIResponse = async (messages: Message[]) => {
   let isCodeBlock = false
   let codeBlockContent = ''
   let currentThinkingContent = ''
+  let hasSpeakBeenCalled = false
+  let didStreamProcessingFail = false
 
   try {
     while (true) {
@@ -570,14 +603,15 @@ export const processAIResponse = async (messages: Message[]) => {
                 extractSentence(textAfterMotion)
 
               if (sentence) {
-                handleSpeakAndStateUpdate(
-                  sessionId,
-                  sentence,
-                  currentEmotionTag,
-                  assistantMessageListRef,
-                  currentSlideMessagesRef,
-                  currentMotionTag || undefined
-                )
+                hasSpeakBeenCalled =
+                  handleSpeakAndStateUpdate(
+                    sessionId,
+                    sentence,
+                    currentEmotionTag,
+                    assistantMessageListRef,
+                    currentSlideMessagesRef,
+                    currentMotionTag || undefined
+                  ) || hasSpeakBeenCalled
                 textToProcessBeforeCode = textAfterSentence
                 if (!textAfterSentence) {
                   currentEmotionTag = ''
@@ -629,14 +663,15 @@ export const processAIResponse = async (messages: Message[]) => {
               extractSentence(textAfterMotion)
 
             if (sentence) {
-              handleSpeakAndStateUpdate(
-                sessionId,
-                sentence,
-                currentEmotionTag,
-                assistantMessageListRef,
-                currentSlideMessagesRef,
-                currentMotionTag || undefined
-              )
+              hasSpeakBeenCalled =
+                handleSpeakAndStateUpdate(
+                  sessionId,
+                  sentence,
+                  currentEmotionTag,
+                  assistantMessageListRef,
+                  currentSlideMessagesRef,
+                  currentMotionTag || undefined
+                ) || hasSpeakBeenCalled
               processableTextForSpeech = textAfterSentence
               if (!textAfterSentence) {
                 currentEmotionTag = ''
@@ -679,14 +714,15 @@ export const processAIResponse = async (messages: Message[]) => {
             } = extractMotionTag(finalText)
             if (extractedMotion) currentMotionTag = extractedMotion
 
-            handleSpeakAndStateUpdate(
-              sessionId,
-              finalTextAfterMotion,
-              currentEmotionTag,
-              assistantMessageListRef,
-              currentSlideMessagesRef,
-              currentMotionTag || undefined
-            )
+            hasSpeakBeenCalled =
+              handleSpeakAndStateUpdate(
+                sessionId,
+                finalTextAfterMotion,
+                currentEmotionTag,
+                assistantMessageListRef,
+                currentSlideMessagesRef,
+                currentMotionTag || undefined
+              ) || hasSpeakBeenCalled
           } else {
             console.warn(
               'Stream ended while still in code block state. Saving remaining code.',
@@ -719,11 +755,15 @@ export const processAIResponse = async (messages: Message[]) => {
       }
     }
   } catch (e) {
+    didStreamProcessingFail = true
     console.error('Error processing AI response stream:', e)
   } finally {
     reader.releaseLock()
   }
 
+  if (didStreamProcessingFail || !hasSpeakBeenCalled) {
+    resetThinkingPose()
+  }
   homeStore.setState({
     chatProcessing: false,
   })
@@ -985,6 +1025,13 @@ export const handleSendChatFn =
         await processAIResponse(messages)
       } catch (e) {
         console.error(e)
+        // 思考中ポーズのリセット
+        if (ss.thinkingPoseEnabled && ss.modelType === 'vrm') {
+          const model = homeStore.getState().viewer.model
+          if (model?.poseManager.isActive) {
+            model.poseManager.resetToIdle(model)
+          }
+        }
         homeStore.setState({ chatProcessing: false })
       }
     }

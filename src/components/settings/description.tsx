@@ -87,6 +87,14 @@ const Description = () => {
             </a>
           </div>
         </div>
+
+        {process.env.NEXT_PUBLIC_DEMO_MODE === 'true' && (
+          <div className="mt-10 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+            <p className="mb-1">{t('DemoModeAppNotice')}</p>
+            <p className="mb-2">{t('DemoModeLimitedFeaturesNotice')}</p>
+            <p className="text-yellow-700">⚠ {t('DemoModeLogNotice')}</p>
+          </div>
+        )}
       </div>
     </>
   )

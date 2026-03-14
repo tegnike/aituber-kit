@@ -92,15 +92,10 @@ export const Introduction = () => {
               label={'OpenAI API'}
             />
             {t('TechnologyIntroductionDescription5')}
-            <Link
-              url={
-                'https://developers.rinna.co.jp/product/#product=koeiromap-free'
-              }
-              label={'Koemotion'}
-            />
+            <Link url={'https://voicevox.hiroshiba.jp/'} label={'VOICEVOX'} />
             {t('TechnologyIntroductionDescription6')}
             <Link
-              url={'https://note.com/nike_cha_n/n/ne98acb25e00f'}
+              url={'https://docs.aituberkit.com/'}
               label={t('TechnologyIntroductionLink2')}
             />
             {t('TechnologyIntroductionDescription7')}
@@ -143,10 +138,15 @@ export const Introduction = () => {
 
         {selectLanguage === 'ja' && (
           <div className="mt-6">
-            <p>
-              You can select the language from the settings. Japanese, English,
-              Traditional Chinese and Korean are available.
-            </p>
+            <p>You can select the language from the settings.</p>
+          </div>
+        )}
+
+        {process.env.NEXT_PUBLIC_DEMO_MODE === 'true' && (
+          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+            <p className="mb-1">{t('DemoModeAppNotice')}</p>
+            <p className="mb-2">{t('DemoModeLimitedFeaturesNotice')}</p>
+            <p className="text-yellow-700">⚠ {t('DemoModeLogNotice')}</p>
           </div>
         )}
       </div>

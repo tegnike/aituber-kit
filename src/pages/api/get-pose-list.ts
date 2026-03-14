@@ -1,11 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { isRestrictedMode } from '@/utils/restrictedMode'
+import assetManifest from '@/constants/assetManifest.json'
 
 interface PoseListItem {
   name: string
   path: string
 }
+
+interface AssetManifest {
+  poses?: PoseListItem[]
+  [key: string]: unknown
+}
+
+const manifest = assetManifest as AssetManifest
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,6 +22,19 @@ export default async function handler(
 ) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  if (isRestrictedMode()) {
+    const poses = Array.isArray(manifest.poses)
+      ? manifest.poses.filter(
+          (item): item is PoseListItem =>
+            typeof item === 'object' &&
+            item !== null &&
+            typeof item.name === 'string' &&
+            typeof item.path === 'string'
+        )
+      : []
+    return res.status(200).json(poses)
   }
 
   const posesDir = path.join(process.cwd(), 'public', 'poses')

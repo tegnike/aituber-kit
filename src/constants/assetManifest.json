@@ -3,7 +3,9 @@
     "AvatarSample_A.vrm",
     "AvatarSample_B.vrm",
     "AvatarSample_C.vrm",
-    "nikechan_v1.vrm"
+    "nikechan_v1.vrm",
+    "nikechan_v2.vrm",
+    "nikechan_v2_outerwear.vrm"
   ],
   "backgrounds": ["bg-c.png"],
   "live2d": [
@@ -55,6 +57,22 @@
         "u": "u.png"
       }
     }
+  ],
+  "poses": [
+    { "name": "bow", "path": "/poses/bow.json" },
+    { "name": "cheer", "path": "/poses/cheer.json" },
+    { "name": "clap1", "path": "/poses/clap1.json" },
+    { "name": "clap2", "path": "/poses/clap2.json" },
+    { "name": "cover_mouth", "path": "/poses/cover_mouth.json" },
+    { "name": "cross", "path": "/poses/cross.json" },
+    { "name": "crossed_arms", "path": "/poses/crossed_arms.json" },
+    { "name": "finger_touch", "path": "/poses/finger_touch.json" },
+    { "name": "mouth_cover", "path": "/poses/mouth_cover.json" },
+    { "name": "shrug", "path": "/poses/shrug.json" },
+    { "name": "shy", "path": "/poses/shy.json" },
+    { "name": "think", "path": "/poses/think.json" },
+    { "name": "wave1", "path": "/poses/wave1.json" },
+    { "name": "wave2", "path": "/poses/wave2.json" }
   ],
   "slides": {
     "folders": ["demo"],

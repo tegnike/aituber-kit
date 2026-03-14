@@ -100,6 +100,9 @@
   "UploadBackground": "背景画像をアップロード",
   "DefaultBackground": "デフォルト背景",
   "GreenBackground": "グリーンバック",
+  "ThinkingPose": "思考中ポーズ",
+  "ThinkingPoseDescription": "ONにすると、メッセージ送信後にAIの応答が届くまでの間、指定のポーズを表示します。",
+  "ThinkingPoseSelect": "思考中に表示するポーズ",
   "CharacterSettingsPrompt": "キャラクタープロンプト",
   "CharacterSettingsInfo": "この値はシステムプロンプトとして設定されます。\n初期プロンプトを参考に、感情タグを指定することでキャラクターの表情やモーションを制御できます。例: [neutral]おはようございます！[happy]今日もお疲れ様です！",
   "CharacterpresetInfo": "プリセットを選択すると、キャラクタープロンプトが変更されます。\nCmd + Shift + 1~5 (Mac) / Ctrl + Shift + 1~5 (Windows)でショートカットが可能です。",
@@ -167,7 +170,7 @@
   "TechnologyIntroductionDescription4": "、 会話文生成には",
   "TechnologyIntroductionDescription5": "などの各種LLM、 音声合成には",
   "TechnologyIntroductionDescription6": "などの各種TTSを使用しています。 詳細はこちらの",
-  "TechnologyIntroductionLink2": "解説記事",
+  "TechnologyIntroductionLink2": "ドキュメント",
   "TechnologyIntroductionDescription7": "をご覧ください。",
   "SourceCodeDescription1": "このアプリのソースコードはGitHubで公開しています。自由に変更や改変可能です。",
   "SourceCodeDescription2": "商用利用に関しては、同リポジトリのREADMEをご覧ください。",
@@ -518,6 +521,7 @@
   "MemoryRestore": "記憶を復元",
   "MemoryRestoreInfo": "ローカルファイルから記憶を復元します。",
   "MemoryRestoreSelect": "ファイルを選択",
+  "MemoryRestoreExecute": "復元を実行",
   "MemoryRestoreConfirm": "この記憶データを復元しますか？既存の記憶はそのまま保持されます。",
   "MemoryRestoreSuccess": "記憶を復元しました",
   "MemoryRestoreError": "記憶の復元に失敗しました",
@@ -641,5 +645,8 @@
   "KioskNgWordsPlaceholder": "例: 暴力, 差別, 不適切",
   "Characters": "文字",
   "DemoModeNotice": "デモ版ではこの機能は利用できません",
-  "DemoModeLocalTTSNotice": "デモ版ではローカルサーバーを使用するTTSは利用できません"
+  "DemoModeLocalTTSNotice": "デモ版ではローカルサーバーを使用するTTSは利用できません",
+  "DemoModeAppNotice": "これはAITuberKitのデモアプリです。",
+  "DemoModeLimitedFeaturesNotice": "デモ版のため、一部の機能が制限されています。",
+  "DemoModeLogNotice": "このアプリでは会話ログがサーバーに保存されるようになっています。ログは一部加工した上で公開される可能性があります。"
 }

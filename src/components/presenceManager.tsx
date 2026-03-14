@@ -8,6 +8,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import { usePresenceDetection } from '@/hooks/usePresenceDetection'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
+import { resetSessionId } from '@/utils/sessionId'
 import { speakCharacter } from '@/features/messages/speakCharacter'
 import { Talk } from '@/features/messages/messages'
 import { IdlePhrase } from '@/features/idle/idleTypes'
@@ -86,6 +87,7 @@ const PresenceManager = () => {
           // onComplete - 発話完了後に会話履歴クリア
           if (ss.presenceClearChatOnDeparture) {
             homeStore.setState({ chatLog: [] })
+            resetSessionId()
           }
         }
       )
@@ -93,6 +95,7 @@ const PresenceManager = () => {
       // 離脱フレーズがない場合も、設定に応じてチャットをクリア
       if (ss.presenceClearChatOnDeparture) {
         homeStore.setState({ chatLog: [] })
+        resetSessionId()
       }
     }
   }, [])

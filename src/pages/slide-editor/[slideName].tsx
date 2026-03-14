@@ -4,6 +4,7 @@ import slideStore from '@/features/stores/slide'
 import SlideContent from '@/components/slideContent'
 import SlideControls from '@/components/slideControls'
 import toastStore from '@/features/stores/toast'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 // goToSlide関数はslides.tsxからインポートするか、ここで再定義
 export const goToSlide = (index: number) => {
@@ -16,6 +17,7 @@ const SlideEditorPage: React.FC = () => {
   const router = useRouter()
   const { slideName } = router.query
   const { addToast } = toastStore()
+  const { isRestrictedMode } = useRestrictedMode()
 
   const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
   const currentSlide = slideStore((state) => state.currentSlide)
@@ -385,6 +387,7 @@ const SlideEditorPage: React.FC = () => {
         duration: 5000,
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- addToastはストアから取得した安定した関数
   }, [slideName, scripts, supplementContent])
 
   // 変更を元に戻す処理
@@ -543,7 +546,8 @@ const SlideEditorPage: React.FC = () => {
                 }}
                 // onBlur は不要になったので削除
                 rows={4}
-                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200"
+                disabled={isRestrictedMode}
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   lineHeight: '1.5',
                   padding: '12px 16px',
@@ -569,7 +573,8 @@ const SlideEditorPage: React.FC = () => {
                 }}
                 // onBlur は不要になったので削除
                 rows={3}
-                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200"
+                disabled={isRestrictedMode}
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   lineHeight: '1.5',
                   padding: '12px 16px',
@@ -587,7 +592,8 @@ const SlideEditorPage: React.FC = () => {
                 value={supplementContent}
                 onChange={handleSupplementChange}
                 rows={5}
-                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200"
+                disabled={isRestrictedMode}
+                className="border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:bg-white rounded-xl w-full px-4 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   lineHeight: '1.5',
                   padding: '12px 16px',
@@ -604,11 +610,11 @@ const SlideEditorPage: React.FC = () => {
               <button
                 onClick={handleRevert}
                 className={`px-6 py-3 rounded-xl font-bold transition-colors duration-200 ${
-                  !isDirty
+                  !isDirty || isRestrictedMode
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                 }`}
-                disabled={!isDirty}
+                disabled={!isDirty || isRestrictedMode}
               >
                 元に戻す
               </button>
@@ -616,11 +622,11 @@ const SlideEditorPage: React.FC = () => {
               <button
                 onClick={handleSave}
                 className={`px-6 py-3 rounded-xl font-bold text-theme transition-colors duration-200 ${
-                  !slideName || !isDirty
+                  !slideName || !isDirty || isRestrictedMode
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-primary hover:bg-primary-hover'
                 }`}
-                disabled={!slideName || !isDirty}
+                disabled={!slideName || !isDirty || isRestrictedMode}
               >
                 {isDirty ? '変更を保存 *' : '保存済み'}
               </button>
