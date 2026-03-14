@@ -217,6 +217,7 @@ function main() {
   try {
     console.log('\n=== Running build pipeline ===')
     run('node scripts/generate-asset-manifest.js')
+    run('node scripts/patch-react-dom-server-edge.js')
     run('node scripts/patch-opennext-canvas.js')
     run('npx @opennextjs/cloudflare build', {
       env: {

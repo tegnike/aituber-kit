@@ -39,8 +39,6 @@ const nextConfig = {
       config.resolve.alias = {
         ...(config.resolve.alias ?? {}),
         canvas: false,
-        // React 18にはreact-dom/server.edgeが存在しないため、server.browserにエイリアス
-        'react-dom/server.edge': 'react-dom/server.browser',
       }
     }
     return config
