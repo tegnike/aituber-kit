@@ -714,6 +714,9 @@ const Character = () => {
     selectedPresetIndex,
     lightingIntensity,
     poseAdjustMode,
+    thinkingPoseEnabled,
+    thinkingPoseId,
+    poseConfigs,
   } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
@@ -1292,6 +1295,41 @@ const Character = () => {
           </div>
         )}
 
+        {modelType === 'vrm' && <PoseConfigSettings />}
+
+        {modelType === 'vrm' && (
+          <div className="my-6">
+            <div className="text-xl font-bold mb-4">{t('ThinkingPose')}</div>
+            <div className="mb-4 text-sm">{t('ThinkingPoseDescription')}</div>
+            <ToggleSwitch
+              enabled={thinkingPoseEnabled}
+              onChange={(v) =>
+                settingsStore.setState({ thinkingPoseEnabled: v })
+              }
+            />
+            {thinkingPoseEnabled && (
+              <div className="mt-4">
+                <div className="text-sm font-bold mb-2">
+                  {t('ThinkingPoseSelect')}
+                </div>
+                <select
+                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  value={thinkingPoseId}
+                  onChange={(e) =>
+                    settingsStore.setState({ thinkingPoseId: e.target.value })
+                  }
+                >
+                  {poseConfigs.map((pose) => (
+                    <option key={pose.id} value={pose.id}>
+                      {pose.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        )}
+
         {modelType === 'vrm' && (
           <div className="my-6">
             <div className="text-xl font-bold mb-4">ポーズ角度調整</div>
@@ -1302,7 +1340,6 @@ const Character = () => {
               enabled={poseAdjustMode}
               onChange={(v) => settingsStore.setState({ poseAdjustMode: v })}
             />
-            <PoseConfigSettings />
           </div>
         )}
 

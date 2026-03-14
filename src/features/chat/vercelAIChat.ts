@@ -292,14 +292,12 @@ export async function getVercelAIChatResponseStream(
                   } else if (data.type === 'reasoning-delta' && data.delta) {
                     controller.enqueue(THINKING_MARKER + data.delta)
                   } else if (
-                    (data.type === 'tool-input-start' &&
-                      data.toolName) ||
+                    (data.type === 'tool-input-start' && data.toolName) ||
                     ((data.type === 'tool-call-input-streaming-start' ||
                       data.type === 'tool-call') &&
                       data.payload?.toolName)
                   ) {
-                    const toolName =
-                      data.toolName || data.payload?.toolName
+                    const toolName = data.toolName || data.payload?.toolName
                     console.log(`Tool called: ${toolName}`)
                     const message = i18next.t('Toasts.UsingTool', {
                       toolName,
