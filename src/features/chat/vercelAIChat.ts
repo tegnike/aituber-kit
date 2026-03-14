@@ -292,17 +292,22 @@ export async function getVercelAIChatResponseStream(
                   } else if (data.type === 'reasoning-delta' && data.delta) {
                     controller.enqueue(THINKING_MARKER + data.delta)
                   } else if (
-                    data.type === 'tool-input-start' &&
-                    data.toolName
+                    (data.type === 'tool-input-start' &&
+                      data.toolName) ||
+                    ((data.type === 'tool-call-input-streaming-start' ||
+                      data.type === 'tool-call') &&
+                      data.payload?.toolName)
                   ) {
-                    console.log(`Tool called: ${data.toolName}`)
+                    const toolName =
+                      data.toolName || data.payload?.toolName
+                    console.log(`Tool called: ${toolName}`)
                     const message = i18next.t('Toasts.UsingTool', {
-                      toolName: data.toolName,
+                      toolName,
                     })
                     toastStore.getState().addToast({
                       message,
                       type: 'tool',
-                      tag: `vercel-tool-info-${data.toolName}`,
+                      tag: `vercel-tool-info-${toolName}`,
                       duration: 3000,
                     })
                   } else if (data.type === 'error') {
