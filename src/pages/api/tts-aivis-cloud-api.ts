@@ -153,7 +153,7 @@ export default async function handler(
       )
     }
 
-    res.send(Buffer.from(response.data))
+    res.end(Buffer.from(response.data))
   } catch (error: any) {
     console.error('Error in Aivis Cloud API TTS:', error)
 
