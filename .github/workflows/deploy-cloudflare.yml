@@ -52,6 +52,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup environment variables
+        if: ${{ secrets.CLOUDFLARE_ENV_FILE != '' }}
+        run: echo "$CLOUDFLARE_ENV_FILE" > .env.local
+        env:
+          CLOUDFLARE_ENV_FILE: ${{ secrets.CLOUDFLARE_ENV_FILE }}
+
       - name: Build for Cloudflare
         run: npm run build:cloudflare
 
