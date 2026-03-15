@@ -95,12 +95,13 @@ const Live2DComponent = (): JSX.Element => {
         fixPosition,
         unfixPosition,
         resetPosition,
+        saveModelPosition,
       })
       homeStore.setState({
         live2dViewer: viewerWithPositionControls,
       })
     }
-  }, [model, app, fixPosition, unfixPosition, resetPosition])
+  }, [model, app, fixPosition, unfixPosition, resetPosition, saveModelPosition])
 
   const initApp = () => {
     if (!canvasContainerRef.current) return

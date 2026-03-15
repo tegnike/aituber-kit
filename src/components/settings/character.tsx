@@ -1266,6 +1266,12 @@ const Character = () => {
               </div>
               <button
                 onClick={async () => {
+                  const { viewer, live2dViewer } = homeStore.getState()
+                  if (modelType === 'vrm' && viewer) {
+                    ;(viewer as any).saveCameraPosition()
+                  } else if (live2dViewer) {
+                    ;(live2dViewer as any).saveModelPosition?.()
+                  }
                   const settings = settingsStore.getState()
                   const pos = settings.characterPosition
                   const rot = settings.characterRotation
