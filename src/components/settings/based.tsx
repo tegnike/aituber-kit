@@ -157,7 +157,7 @@ const Based = () => {
       <div className="border-t border-gray-300 pt-6 my-6">
         <div className="my-4 text-xl font-bold">{t('UserDisplayName')}</div>
         <input
-          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
           type="text"
           placeholder={t('UserDisplayName')}
           value={settingsStore((s) => s.userDisplayName)}
@@ -178,7 +178,7 @@ const Based = () => {
 
         <div className="flex flex-col mb-4">
           <select
-            className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={backgroundImageUrl}
             onChange={(e) => {
               const path = e.target.value
@@ -266,7 +266,7 @@ const Based = () => {
 
         <div className="flex flex-col mb-4">
           <select
-            className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={colorTheme}
             onChange={(e) => {
               const theme = e.target.value as

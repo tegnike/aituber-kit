@@ -63,11 +63,20 @@ export const MessageInput = ({
   const [fileError, setFileError] = useState<string>('')
   const [showImageActions, setShowImageActions] = useState(false)
   const [inputValidationError, setInputValidationError] = useState<string>('')
+  const [isSmallScreen, setIsSmallScreen] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
 
   const { t } = useTranslation()
+
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 640px)')
+    setIsSmallScreen(!mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsSmallScreen(!e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
 
   // Kiosk mode input validation
   const { isKioskMode, validateInput, maxInputLength } = useKioskMode()
@@ -391,8 +400,8 @@ export const MessageInput = ({
     <div className="absolute bottom-0 z-20 w-screen">
       {showPermissionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl max-w-md">
-            <h3 className="text-xl font-bold mb-4">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl max-w-[calc(100vw-2rem)] sm:max-w-md">
+            <h3 className="text-lg sm:text-xl font-bold mb-4">
               {t('MicrophonePermission')}
             </h3>
             <p className="mb-4">{t('MicrophonePermissionMessage')}</p>
@@ -406,7 +415,7 @@ export const MessageInput = ({
         </div>
       )}
       <div className="bg-base-light text-black">
-        <div className="mx-auto max-w-4xl p-4 pb-3">
+        <div className="mx-auto max-w-4xl p-2 sm:p-4 pb-3">
           {/* プログレスバー - 設定に基づいて表示/非表示 */}
           {isMicRecording && showSilenceProgressBar && (
             <div className="w-full h-2 bg-gray-200 rounded-full mb-2 overflow-hidden">
@@ -542,7 +551,7 @@ export const MessageInput = ({
                     ? `${t('AnswerGenerating')}${loadingDots}`
                     : continuousMicListeningMode && isMicRecording
                       ? t('ListeningContinuously')
-                      : isMultiModalSupported
+                      : isMultiModalSupported && !isSmallScreen
                         ? `${t('EnterYourQuestion')} (${t('PasteImageSupported') || 'Paste image supported'})`
                         : t('EnterYourQuestion')
                 }
@@ -552,7 +561,7 @@ export const MessageInput = ({
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 disabled={chatProcessing || slidePlaying || realtimeAPIMode}
-                className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-theme-default font-bold disabled"
+                className="bg-white hover:bg-white-hover focus:bg-white disabled:bg-gray-100 disabled:text-primary-disabled rounded-2xl w-full px-4 text-sm sm:text-base text-theme-default font-bold disabled"
                 value={userMessage}
                 rows={rows}
                 maxLength={maxInputLength}

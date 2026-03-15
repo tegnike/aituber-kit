@@ -489,18 +489,33 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   selectedLive2DPath:
     process.env.NEXT_PUBLIC_SELECTED_LIVE2D_PATH ||
     '/live2d/nike01/nike01.model3.json',
-  fixedCharacterPosition: false,
-  characterPosition: {
-    x: 0,
-    y: 0,
-    z: 0,
-    scale: 1,
-  },
-  characterRotation: {
-    x: 0,
-    y: 0,
-    z: 0,
-  },
+  fixedCharacterPosition:
+    process.env.NEXT_PUBLIC_FIXED_CHARACTER_POSITION === 'true',
+  characterPosition: (() => {
+    const val = process.env.NEXT_PUBLIC_CHARACTER_POSITION || ''
+    const parts = val.split(',')
+    return parts.length >= 4
+      ? {
+          x: parseFloat(parts[0]) || 0,
+          y: parseFloat(parts[1]) || 0,
+          z: parseFloat(parts[2]) || 0,
+          scale: Number.isFinite(parseFloat(parts[3]))
+            ? parseFloat(parts[3])
+            : 1,
+        }
+      : { x: 0, y: 0, z: 0, scale: 1 }
+  })(),
+  characterRotation: (() => {
+    const val = process.env.NEXT_PUBLIC_CHARACTER_ROTATION || ''
+    const parts = val.split(',')
+    return parts.length >= 3
+      ? {
+          x: parseFloat(parts[0]) || 0,
+          y: parseFloat(parts[1]) || 0,
+          z: parseFloat(parts[2]) || 0,
+        }
+      : { x: 0, y: 0, z: 0 }
+  })(),
   lightingIntensity:
     parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
   poseAdjustMode: false,

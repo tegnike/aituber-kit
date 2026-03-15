@@ -35,7 +35,7 @@ export const ApiKeyInput = ({
         )}
       </div>
       <input
-        className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+        className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
         type="password"
         placeholder={placeholder}
         value={value}

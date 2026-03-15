@@ -925,7 +925,7 @@ const Character = () => {
       <div className="">
         <div className="mb-4 text-xl font-bold">{t('CharacterName')}</div>
         <input
-          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
           type="text"
           placeholder={t('CharacterName')}
           value={characterName}
@@ -977,7 +977,7 @@ const Character = () => {
         {modelType === 'vrm' && (
           <>
             <select
-              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={selectedVrmPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -1030,7 +1030,7 @@ const Character = () => {
               {t('Live2D.FileInfo')}
             </div>
             <select
-              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
               value={selectedLive2DPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -1069,7 +1069,7 @@ const Character = () => {
               {i18n.language === 'ja' ? ' を参照してください。' : '.'}
             </div>
             <select
-              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
               value={selectedPNGTuberPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -1260,6 +1260,41 @@ const Character = () => {
                 {t('ResetPosition')}
               </button>
             </div>
+            <div className="mt-4">
+              <div className="text-sm text-gray-600 mb-2">
+                {t('CopyEnvVarsInfo')}
+              </div>
+              <button
+                onClick={async () => {
+                  const settings = settingsStore.getState()
+                  const pos = settings.characterPosition
+                  const rot = settings.characterRotation
+                  const envText = [
+                    `NEXT_PUBLIC_FIXED_CHARACTER_POSITION="${settings.fixedCharacterPosition}"`,
+                    `NEXT_PUBLIC_CHARACTER_POSITION="${pos.x},${pos.y},${pos.z},${pos.scale}"`,
+                    `NEXT_PUBLIC_CHARACTER_ROTATION="${rot.x},${rot.y},${rot.z}"`,
+                  ].join('\n')
+                  try {
+                    await navigator.clipboard.writeText(envText)
+                    toastStore.getState().addToast({
+                      message: t('Toasts.EnvVarsCopied'),
+                      type: 'success',
+                      tag: 'env-vars-copied',
+                    })
+                  } catch (error) {
+                    console.error('Env vars copy failed:', error)
+                    toastStore.getState().addToast({
+                      message: t('Errors.UnexpectedError'),
+                      type: 'error',
+                      tag: 'env-vars-copy-failed',
+                    })
+                  }
+                }}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('CopyEnvVars')}
+              </button>
+            </div>
           </div>
         )}
 
@@ -1313,7 +1348,7 @@ const Character = () => {
                   {t('ThinkingPoseSelect')}
                 </div>
                 <select
-                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={thinkingPoseId}
                   onChange={(e) =>
                     settingsStore.setState({ thinkingPoseId: e.target.value })

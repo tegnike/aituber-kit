@@ -21,17 +21,17 @@ export const AssistantText = ({ message }: { message: string }) => {
 
   return (
     <div
-      className={`absolute bottom-0 left-0 ${shouldShowPresetQuestions ? 'md:mb-[180px] mb-[180px]' : 'md:mb-[96px] mb-[80px]'} w-full z-10`}
+      className={`absolute bottom-0 left-0 ${shouldShowPresetQuestions ? 'mb-[140px] sm:mb-[180px]' : 'mb-[64px] sm:mb-[80px]'} w-full z-10`}
     >
-      <div className="mx-auto max-w-4xl w-full p-4">
+      <div className="mx-auto max-w-4xl w-full p-2 sm:p-4">
         <div className="bg-white rounded-lg">
           {showCharacterName && (
-            <div className="px-6 py-2 bg-secondary rounded-t-lg text-theme font-bold tracking-wider">
+            <div className="px-3 sm:px-6 py-2 bg-secondary rounded-t-lg text-theme text-sm sm:text-base font-bold tracking-wider">
               {characterName}
             </div>
           )}
-          <div className="px-6 py-4">
-            <div className="line-clamp-4 text-secondary font-bold">
+          <div className="px-3 sm:px-6 py-4">
+            <div className="line-clamp-4 text-secondary text-sm sm:text-base font-bold">
               {message
                 .replace(emotionPattern, '')
                 .replace(/\[motion:[^\]]*\]/gi, '')}
