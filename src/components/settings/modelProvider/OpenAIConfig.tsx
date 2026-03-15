@@ -123,7 +123,7 @@ export const OpenAIConfig = ({
             {t('RealtimeAPIModeContentType')}
           </div>
           <select
-            className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={realtimeAPIModeContentType}
             onChange={(e) => {
               settingsStore.setState({
@@ -138,7 +138,7 @@ export const OpenAIConfig = ({
 
           <div className="my-4 font-bold">{t('RealtimeAPIModeVoice')}</div>
           <select
-            className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={realtimeAPIModeVoice}
             onChange={(e) => {
               settingsStore.setState({
@@ -159,7 +159,7 @@ export const OpenAIConfig = ({
           <div className="my-6">
             <div className="my-4 font-bold">{t('SelectModel')}</div>
             <select
-              className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={selectAIModel}
               onChange={(e) => handleModelChange(e.target.value)}
             >
@@ -188,7 +188,7 @@ export const OpenAIConfig = ({
             {t('RealtimeAPIModeContentType')}
           </div>
           <select
-            className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={audioModeInputType}
             onChange={(e) => {
               settingsStore.setState({
@@ -202,7 +202,7 @@ export const OpenAIConfig = ({
 
           <div className="my-4 font-bold">{t('RealtimeAPIModeVoice')}</div>
           <select
-            className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={audioModeVoice}
             onChange={(e) => {
               settingsStore.setState({
@@ -221,7 +221,7 @@ export const OpenAIConfig = ({
           <div className="my-6">
             <div className="my-4 font-bold">{t('SelectModel')}</div>
             <select
-              className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={selectAIModel}
               onChange={(e) => handleModelChange(e.target.value)}
             >

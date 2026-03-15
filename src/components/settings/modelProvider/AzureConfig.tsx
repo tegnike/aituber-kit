@@ -72,7 +72,7 @@ export const AzureConfig = ({
           api-version=API_VERSION&deployment=DEPLOYMENT_NAME
         </div>
         <input
-          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
           type="text"
           placeholder="..."
           value={azureEndpoint}
@@ -97,7 +97,7 @@ export const AzureConfig = ({
               {t('RealtimeAPIModeContentType')}
             </div>
             <select
-              className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={realtimeAPIModeContentType}
               onChange={(e) => {
                 settingsStore.setState({
@@ -112,7 +112,7 @@ export const AzureConfig = ({
 
             <div className="my-4 font-bold">{t('RealtimeAPIModeVoice')}</div>
             <select
-              className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={realtimeAPIModeVoice}
               onChange={(e) => {
                 settingsStore.setState({

@@ -234,7 +234,7 @@ export const Menu = () => {
         </div>
       )}
 
-      <div className="absolute z-15 m-6">
+      <div className="absolute z-15 m-3 sm:m-6">
         <div
           className="grid md:grid-flow-col gap-[8px] mb-10"
           style={{ width: 'max-content' }}

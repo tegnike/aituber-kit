@@ -62,7 +62,7 @@ export const GoogleConfig = ({
           </a>
         </div>
         <input
-          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
           type="password"
           placeholder="API Key"
           value={googleKey}
@@ -84,7 +84,7 @@ export const GoogleConfig = ({
           </div>
           {customModel ? (
             <input
-              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               type="text"
               placeholder={t('CustomModelPlaceholder')}
               value={selectAIModel}
@@ -99,7 +99,7 @@ export const GoogleConfig = ({
             />
           ) : (
             <select
-              className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={selectAIModel}
               onChange={(e) => handleModelChange(e.target.value)}
             >

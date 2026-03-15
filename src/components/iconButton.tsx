@@ -23,7 +23,7 @@ export const IconButton = ({
   return (
     <button
       {...rest}
-      className={`${backgroundColor} rounded-2xl text-sm p-2 text-center inline-flex items-center
+      className={`${backgroundColor} rounded-2xl text-sm p-2 min-w-[44px] min-h-[44px] justify-center text-center inline-flex items-center
         ${iconColor || 'text-theme'}
         ${rest.className}
       `}

@@ -54,10 +54,10 @@ export const PresetQuestionButtons = ({ onSelectQuestion }: Props) => {
 
   return (
     <div className="absolute bottom-[80px] z-20 w-full">
-      <div className="mx-auto max-w-4xl px-4" ref={containerRef}>
+      <div className="mx-auto max-w-4xl px-2 sm:px-4" ref={containerRef}>
         <div
           ref={contentRef}
-          className={`flex overflow-x-auto pb-4 gap-4 preset-questions-scroll ${
+          className={`flex overflow-x-auto pb-4 gap-2 sm:gap-4 preset-questions-scroll ${
             shouldCenter ? 'justify-center' : 'justify-start'
           }`}
         >
@@ -65,7 +65,7 @@ export const PresetQuestionButtons = ({ onSelectQuestion }: Props) => {
             <button
               key={question.id}
               onClick={() => handleQuestionClick(question.text)}
-              className="bg-white text-black rounded-2xl px-4 py-3 whitespace-nowrap hover:bg-gray-100 transition-colors shadow-md"
+              className="bg-white text-black rounded-2xl px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base whitespace-nowrap hover:bg-gray-100 transition-colors shadow-md"
             >
               {question.text}
             </button>

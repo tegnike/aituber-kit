@@ -925,7 +925,7 @@ const Character = () => {
       <div className="">
         <div className="mb-4 text-xl font-bold">{t('CharacterName')}</div>
         <input
-          className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+          className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
           type="text"
           placeholder={t('CharacterName')}
           value={characterName}
@@ -977,7 +977,7 @@ const Character = () => {
         {modelType === 'vrm' && (
           <>
             <select
-              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
               value={selectedVrmPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -1030,7 +1030,7 @@ const Character = () => {
               {t('Live2D.FileInfo')}
             </div>
             <select
-              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
               value={selectedLive2DPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -1069,7 +1069,7 @@ const Character = () => {
               {i18n.language === 'ja' ? ' を参照してください。' : '.'}
             </div>
             <select
-              className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg mb-2"
               value={selectedPNGTuberPath}
               onChange={(e) => {
                 const path = e.target.value
@@ -1339,7 +1339,7 @@ const Character = () => {
                   {t('ThinkingPoseSelect')}
                 </div>
                 <select
-                  className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                  className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
                   value={thinkingPoseId}
                   onChange={(e) =>
                     settingsStore.setState({ thinkingPoseId: e.target.value })

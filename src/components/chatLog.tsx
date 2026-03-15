@@ -79,7 +79,7 @@ export const ChatLog = () => {
       className="absolute h-[100svh] pb-16 z-10 max-w-full"
       style={{ width: `${chatLogWidth}px` }}
     >
-      <div className="max-h-full px-4 pt-24 pb-16 overflow-y-auto scroll-hidden">
+      <div className="max-h-full px-2 sm:px-4 pt-24 pb-16 overflow-y-auto scroll-hidden">
         {messages.map((msg, i) => {
           return (
             <div key={i} ref={messages.length - 1 === i ? chatScrollRef : null}>
@@ -153,24 +153,24 @@ const Chat = ({
   const roleColor =
     role !== 'user' ? 'bg-secondary text-theme ' : 'bg-base-light text-primary'
   const roleText = role !== 'user' ? 'text-secondary' : 'text-primary'
-  const offsetX = role === 'user' ? 'pl-10' : 'pr-10'
+  const offsetX = role === 'user' ? 'pl-4 sm:pl-10' : 'pr-4 sm:pr-10'
 
   return (
     <div className={`mx-auto ml-0 md:ml-10 lg:ml-20 my-4 ${offsetX}`}>
       {role === 'code' ? (
         <pre className="whitespace-pre-wrap break-words bg-[#1F2937] text-theme p-4 rounded-lg">
-          <code className="font-mono text-sm">{message}</code>
+          <code className="font-mono text-xs sm:text-sm">{message}</code>
         </pre>
       ) : (
         <>
           <div
-            className={`px-6 py-2 rounded-t-lg font-bold tracking-wider ${roleColor}`}
+            className={`px-3 sm:px-6 py-2 rounded-t-lg text-sm sm:text-base font-bold tracking-wider ${roleColor}`}
           >
             {role !== 'user'
               ? characterName || 'CHARACTER'
               : userName || userDisplayName || 'YOU'}
           </div>
-          <div className="px-6 py-4 bg-white rounded-b-lg">
+          <div className="px-3 sm:px-6 py-4 bg-white rounded-b-lg text-sm sm:text-base">
             {thinking && role !== 'user' && (
               <div className="mb-3">
                 <button
@@ -208,7 +208,7 @@ const ChatImage = ({
   imageUrl: string
   characterName: string
 }) => {
-  const offsetX = role === 'user' ? 'pl-40' : 'pr-40'
+  const offsetX = role === 'user' ? 'pl-16 sm:pl-40' : 'pr-16 sm:pr-40'
 
   return (
     <div className={`mx-auto ml-0 md:ml-10 lg:ml-20 my-4 ${offsetX}`}>
