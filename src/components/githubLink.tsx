@@ -3,7 +3,7 @@ import { buildUrl } from '@/utils/buildUrl'
 
 export const GitHubLink = () => {
   return (
-    <div className="absolute right-0 z-15 m-6">
+    <div className="absolute right-0 z-15 m-3 sm:m-6">
       <a
         draggable={false}
         href="https://github.com/tegnike/aituber-kit"

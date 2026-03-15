@@ -45,8 +45,8 @@ export const Introduction = () => {
   }
 
   return displayIntroduction && opened ? (
-    <div className="absolute z-40 w-full h-full px-6 py-10 bg-black/30 font-M_PLUS_2">
-      <div className="relative mx-auto my-auto max-w-3xl max-h-full p-6 overflow-y-auto bg-white rounded-2xl">
+    <div className="absolute z-40 w-full h-full px-3 sm:px-6 py-10 bg-black/30 font-M_PLUS_2">
+      <div className="relative mx-auto my-auto max-w-3xl max-h-full p-4 sm:p-6 overflow-y-auto bg-white rounded-2xl">
         <div className="sticky top-0 right-0 z-10 flex justify-end">
           <IconButton
             iconName="24/Close"

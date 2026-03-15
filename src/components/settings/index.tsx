@@ -38,7 +38,7 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   return (
     <>
       <GitHubLink />
-      <div className="absolute m-6 z-15">
+      <div className="absolute m-3 sm:m-6 z-15">
         <IconButton
           iconName="24/Close"
           isProcessing={false}
@@ -211,7 +211,7 @@ const Main = () => {
 
   return (
     <main className="max-h-full overflow-auto relative">
-      <div className="text-text1 max-w-5xl mx-auto px-6 py-20">
+      <div className="text-text1 max-w-5xl mx-auto px-3 sm:px-6 py-14 sm:py-20">
         <div className="md:flex">
           {/* デスクトップ版タブナビゲーション */}
           <div className="hidden md:block md:w-[25%] md:me-4 mb-4 md:mb-0 md:sticky md:top-20 md:self-start">
@@ -304,7 +304,7 @@ const Main = () => {
           </div>
 
           {/* タブコンテンツ */}
-          <div className="p-6 bg-gray-400 bg-opacity-20 text-medium rounded-lg w-full">
+          <div className="p-4 sm:p-6 bg-gray-400 bg-opacity-20 text-medium rounded-lg w-full">
             {renderTabContent()}
           </div>
         </div>
@@ -316,7 +316,7 @@ const Main = () => {
 const Footer = () => {
   return (
     <footer className="absolute py-1 bg-[#413D43] text-center text-theme font-Montserrat bottom-0 w-full">
-      powered by ChatVRM from Pixiv / ver. 2.42.1
+      powered by ChatVRM from Pixiv / ver. 2.43.0
     </footer>
   )
 }

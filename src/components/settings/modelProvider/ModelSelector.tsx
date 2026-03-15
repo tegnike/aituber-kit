@@ -54,7 +54,7 @@ export const ModelSelector = ({
         </div>
         {customModel ? (
           <input
-            className="text-ellipsis px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             type="text"
             placeholder={t('CustomModelPlaceholder')}
             value={selectedModel}
@@ -63,7 +63,7 @@ export const ModelSelector = ({
           />
         ) : (
           <select
-            className="px-4 py-2 w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            className="px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
             value={selectedModel}
             onChange={(e) => onModelChange(e.target.value)}
           >
