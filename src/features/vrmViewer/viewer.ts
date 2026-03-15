@@ -67,10 +67,12 @@ export class Viewer {
       this.model.vrm.scene.visible = false
       this._scene.add(this.model.vrm.scene)
 
-      const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
-      if (vrma) this.model.loadAnimation(vrma)
-
-      this.model.vrm.scene.visible = true
+      try {
+        const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
+        if (vrma) this.model.loadAnimation(vrma)
+      } finally {
+        this.model.vrm.scene.visible = true
+      }
 
       // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
       requestAnimationFrame(() => {

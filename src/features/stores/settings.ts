@@ -823,18 +823,6 @@ const settingsStore = create<SettingsState>()(
             }
           }
 
-          // Override with environment variables if the option is enabled
-          if (
-            state &&
-            process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES ===
-              'true'
-          ) {
-            const envValues = getInitialValuesFromEnv()
-            if (_settingsSet) {
-              _settingsSet(envValues)
-            }
-          }
-
           // Migration from old presence message format to new phrase array format
           if (state) {
             const anyState = state as any
@@ -870,6 +858,18 @@ const settingsStore = create<SettingsState>()(
                     : []
               }
               delete anyState.presenceDepartureMessage
+            }
+          }
+
+          // Override with environment variables if the option is enabled
+          if (
+            state &&
+            process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES ===
+              'true'
+          ) {
+            const envValues = getInitialValuesFromEnv()
+            if (_settingsSet) {
+              _settingsSet(envValues)
             }
           }
         },
