@@ -93,8 +93,6 @@
   "CurrentStatus": "현재 상태",
   "PositionFixed": "고정 중",
   "PositionNotFixed": "미고정",
-  "CopyEnvVars": "환경 변수 복사",
-  "CopyEnvVarsInfo": "현재 캐릭터 위치를 환경 변수 형식으로 클립보드에 복사합니다. .env 파일에 붙여넣어 사용할 수 있습니다.",
   "ChangeBackgroundImage": "배경 이미지 변경",
   "BackgroundSettings": "배경 설정",
   "BackgroundSettingsDescription": "애플리케이션의 배경 이미지를 업로드하고 선택할 수 있습니다.",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "캐릭터 위치 고정을 해제했습니다",
     "PositionReset": "캐릭터 위치가 재설정되었습니다",
     "PositionActionFailed": "위치 조작에 실패했습니다",
-    "EnvVarsCopied": "환경 변수를 클립보드에 복사했습니다",
     "MicrophonePermissionDenied": "마이크 접근 권한이 거부되었습니다",
     "CameraPermissionMessage": "카메라 사용을 허용해 주세요.",
     "PresetLoadFailed": "프리셋 로드에 실패했습니다"

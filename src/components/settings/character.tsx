@@ -1265,7 +1265,7 @@ const Character = () => {
                 {t('CopyEnvVarsInfo')}
               </div>
               <button
-                onClick={() => {
+                onClick={async () => {
                   const settings = settingsStore.getState()
                   const pos = settings.characterPosition
                   const rot = settings.characterRotation
@@ -1274,12 +1274,21 @@ const Character = () => {
                     `NEXT_PUBLIC_CHARACTER_POSITION="${pos.x},${pos.y},${pos.z},${pos.scale}"`,
                     `NEXT_PUBLIC_CHARACTER_ROTATION="${rot.x},${rot.y},${rot.z}"`,
                   ].join('\n')
-                  navigator.clipboard.writeText(envText)
-                  toastStore.getState().addToast({
-                    message: t('Toasts.EnvVarsCopied'),
-                    type: 'success',
-                    tag: 'env-vars-copied',
-                  })
+                  try {
+                    await navigator.clipboard.writeText(envText)
+                    toastStore.getState().addToast({
+                      message: t('Toasts.EnvVarsCopied'),
+                      type: 'success',
+                      tag: 'env-vars-copied',
+                    })
+                  } catch (error) {
+                    console.error('Env vars copy failed:', error)
+                    toastStore.getState().addToast({
+                      message: t('Errors.UnexpectedError'),
+                      type: 'error',
+                      tag: 'env-vars-copy-failed',
+                    })
+                  }
                 }}
                 className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
               >

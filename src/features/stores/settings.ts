@@ -499,7 +499,9 @@ const getInitialValuesFromEnv = (): SettingsState => ({
           x: parseFloat(parts[0]) || 0,
           y: parseFloat(parts[1]) || 0,
           z: parseFloat(parts[2]) || 0,
-          scale: parseFloat(parts[3]) || 1,
+          scale: Number.isFinite(parseFloat(parts[3]))
+            ? parseFloat(parts[3])
+            : 1,
         }
       : { x: 0, y: 0, z: 0, scale: 1 }
   })(),

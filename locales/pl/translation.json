@@ -93,8 +93,6 @@
   "CurrentStatus": "Aktualny stan",
   "PositionFixed": "Przytwierdzony",
   "PositionNotFixed": "Nieprzypięte",
-  "CopyEnvVars": "Kopiuj zmienne środowiskowe",
-  "CopyEnvVarsInfo": "Skopiuj aktualną pozycję postaci do schowka w formacie zmiennych środowiskowych. Wklej do pliku .env, aby użyć.",
   "ChangeBackgroundImage": "Zmień obraz tła",
   "BackgroundSettings": "Ustawienia tła",
   "BackgroundSettingsDescription": "Możesz przesłać i wybrać obraz tła dla aplikacji.",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "Odblokowano pozycję postaci",
     "PositionReset": "Pozycja postaci została zresetowana",
     "PositionActionFailed": "Nie udało się wykonać operacji na pozycji",
-    "EnvVarsCopied": "Skopiowano zmienne środowiskowe do schowka",
     "MicrophonePermissionDenied": "Dostęp do mikrofonu został odrzucony",
     "CameraPermissionMessage": "Proszę zezwolić na użycie kamery.",
     "PresetLoadFailed": "Nie udało się załadować presetu"

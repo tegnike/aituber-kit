@@ -93,8 +93,6 @@
   "CurrentStatus": "目前狀態",
   "PositionFixed": "固定中",
   "PositionNotFixed": "未固定",
-  "CopyEnvVars": "複製環境變數",
-  "CopyEnvVarsInfo": "將目前角色位置以環境變數格式複製到剪貼簿。可貼到.env檔案中使用。",
   "ChangeBackgroundImage": "更換背景圖片",
   "BackgroundSettings": "背景設定",
   "BackgroundSettingsDescription": "您可以上傳並選擇應用程式的背景圖片。",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "已解除角色位置的固定",
     "PositionReset": "已重置角色位置",
     "PositionActionFailed": "位置操作失敗",
-    "EnvVarsCopied": "已將環境變數複製到剪貼簿",
     "MicrophonePermissionDenied": "麥克風存取權限被拒絕",
     "CameraPermissionMessage": "請允許使用相機。",
     "PresetLoadFailed": "預設載入失敗"

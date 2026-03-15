@@ -93,8 +93,6 @@
   "CurrentStatus": "Estado actual",
   "PositionFixed": "Fijado",
   "PositionNotFixed": "No fijado",
-  "CopyEnvVars": "Copiar variables de entorno",
-  "CopyEnvVarsInfo": "Copiar la posición actual del personaje al portapapeles en formato de variable de entorno. Pégalo en tu archivo .env para usarlo.",
   "ChangeBackgroundImage": "Cambiar imagen de fondo",
   "BackgroundSettings": "Configuración de fondo",
   "BackgroundSettingsDescription": "Puede subir y seleccionar una imagen de fondo para la aplicación.",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "Se ha liberado la fijación de la posición del personaje",
     "PositionReset": "Se ha restablecido la posición del personaje",
     "PositionActionFailed": "Error al manipular la posición",
-    "EnvVarsCopied": "Variables de entorno copiadas al portapapeles",
     "MicrophonePermissionDenied": "Se denegó el permiso de acceso al micrófono",
     "CameraPermissionMessage": "Por favor, permita el uso de la cámara.",
     "PresetLoadFailed": "Error al cargar el preajuste"

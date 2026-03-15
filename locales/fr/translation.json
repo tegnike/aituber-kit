@@ -93,8 +93,6 @@
   "CurrentStatus": "État actuel",
   "PositionFixed": "Fixé",
   "PositionNotFixed": "Non fixé",
-  "CopyEnvVars": "Copier les variables d'env.",
-  "CopyEnvVarsInfo": "Copier la position actuelle du personnage dans le presse-papiers au format variable d'environnement. Collez dans votre fichier .env pour l'utiliser.",
   "ChangeBackgroundImage": "Changer l'image d'arrière-plan",
   "BackgroundSettings": "Paramètres d'arrière-plan",
   "BackgroundSettingsDescription": "Vous pouvez télécharger et sélectionner une image d'arrière-plan pour l'application.",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "La fixation de la position du personnage a été supprimée",
     "PositionReset": "La position du personnage a été réinitialisée",
     "PositionActionFailed": "Échec de l'opération de positionnement",
-    "EnvVarsCopied": "Variables d'environnement copiées dans le presse-papiers",
     "MicrophonePermissionDenied": "L'accès au microphone a été refusé",
     "CameraPermissionMessage": "Veuillez autoriser l'utilisation de la caméra.",
     "PresetLoadFailed": "Échec du chargement du préréglage"

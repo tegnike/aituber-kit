@@ -93,8 +93,6 @@
   "CurrentStatus": "वर्तमान स्थिति",
   "PositionFixed": "फिक्स किया हुआ",
   "PositionNotFixed": "अस्थिर",
-  "CopyEnvVars": "एनवायरनमेंट वेरिएबल कॉपी करें",
-  "CopyEnvVarsInfo": "वर्तमान कैरेक्टर पोजीशन को एनवायरनमेंट वेरिएबल फॉर्मेट में क्लिपबोर्ड पर कॉपी करें। उपयोग के लिए अपनी .env फ़ाइल में पेस्ट करें।",
   "ChangeBackgroundImage": "पृष्ठभूमि छवि बदलें",
   "BackgroundSettings": "पृष्ठभूमि सेटिंग्स",
   "BackgroundSettingsDescription": "आप एप्लिकेशन के लिए पृष्ठभूमि छवियां अपलोड और चयन कर सकते हैं।",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "चरित्र की स्थिति की लॉकिंग हटा दी गई है",
     "PositionReset": "पात्र की स्थिति रीसेट कर दी गई है",
     "PositionActionFailed": "स्थिति संचालन विफल रहा",
-    "EnvVarsCopied": "एनवायरनमेंट वेरिएबल क्लिपबोर्ड पर कॉपी किए गए",
     "MicrophonePermissionDenied": "माइक तक पहुंच की अनुमति अस्वीकृत कर दी गई है",
     "CameraPermissionMessage": "कृपया कैमरे के उपयोग की अनुमति दें।",
     "PresetLoadFailed": "प्रीसेट लोड करने में विफल"

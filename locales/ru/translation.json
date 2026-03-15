@@ -93,8 +93,6 @@
   "CurrentStatus": "Текущее состояние",
   "PositionFixed": "Закреплено",
   "PositionNotFixed": "Не закреплено",
-  "CopyEnvVars": "Копировать переменные окружения",
-  "CopyEnvVarsInfo": "Скопировать текущую позицию персонажа в буфер обмена в формате переменных окружения. Вставьте в файл .env для использования.",
   "ChangeBackgroundImage": "Изменить фоновое изображение",
   "BackgroundSettings": "Настройки фона",
   "BackgroundSettingsDescription": "Вы можете загрузить и выбрать фоновое изображение для приложения.",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "Фиксация позиции персонажа снята",
     "PositionReset": "Положение персонажа было сброшено",
     "PositionActionFailed": "Не удалось выполнить операцию с позицией",
-    "EnvVarsCopied": "Переменные окружения скопированы в буфер обмена",
     "MicrophonePermissionDenied": "Доступ к микрофону был отклонён",
     "CameraPermissionMessage": "Пожалуйста, разрешите использование камеры.",
     "PresetLoadFailed": "Не удалось загрузить пресет"

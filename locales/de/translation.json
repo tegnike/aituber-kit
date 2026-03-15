@@ -93,8 +93,6 @@
   "CurrentStatus": "Aktueller Zustand",
   "PositionFixed": "Fixiert",
   "PositionNotFixed": "Unbefestigt",
-  "CopyEnvVars": "Umgebungsvariablen kopieren",
-  "CopyEnvVarsInfo": "Aktuelle Charakterposition als Umgebungsvariablen in die Zwischenablage kopieren. Zum Verwenden in die .env-Datei einfügen.",
   "ChangeBackgroundImage": "Hintergrundbild ändern",
   "BackgroundSettings": "Hintergrundeinstellungen",
   "BackgroundSettingsDescription": "Sie können ein Hintergrundbild für die Anwendung hochladen und auswählen.",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "Die Position des Charakters wurde entsperrt",
     "PositionReset": "Die Position des Charakters wurde zurückgesetzt",
     "PositionActionFailed": "Positionsoperation fehlgeschlagen",
-    "EnvVarsCopied": "Umgebungsvariablen in die Zwischenablage kopiert",
     "MicrophonePermissionDenied": "Der Zugriff auf das Mikrofon wurde verweigert",
     "CameraPermissionMessage": "Bitte erlauben Sie die Verwendung der Kamera.",
     "PresetLoadFailed": "Voreinstellung konnte nicht geladen werden"

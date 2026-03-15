@@ -93,8 +93,6 @@
   "CurrentStatus": "Current status",
   "PositionFixed": "Fixing",
   "PositionNotFixed": "Unpinned",
-  "CopyEnvVars": "Copy Env Vars",
-  "CopyEnvVarsInfo": "Copy current character position to clipboard in environment variable format. Paste into your .env file to use.",
   "ChangeBackgroundImage": "Change Background Image",
   "BackgroundSettings": "Background Settings",
   "BackgroundSettingsDescription": "You can upload and select background images for the application.",
@@ -305,7 +303,6 @@
     "PositionUnfixed": "Character position lock has been released",
     "PositionReset": "Character position has been reset",
     "PositionActionFailed": "Failed to manipulate position",
-    "EnvVarsCopied": "Environment variables copied to clipboard",
     "MicrophonePermissionDenied": "Permission to access the microphone was denied",
     "CameraPermissionMessage": "Please allow the use of the camera.",
     "PresetLoadFailed": "Failed to load preset"
