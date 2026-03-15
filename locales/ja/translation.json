@@ -93,6 +93,8 @@
   "CurrentStatus": "現在の状態",
   "PositionFixed": "固定中",
   "PositionNotFixed": "未固定",
+  "CopyEnvVars": "環境変数をコピー",
+  "CopyEnvVarsInfo": "現在のキャラクター位置を環境変数の形式でクリップボードにコピーします。.envファイルに貼り付けて使用できます。",
   "ChangeBackgroundImage": "背景画像を変える",
   "BackgroundSettings": "背景設定",
   "BackgroundSettingsDescription": "アプリケーションの背景画像をアップロードして選択できます。",
@@ -303,6 +305,7 @@
     "PositionUnfixed": "キャラクターの位置の固定を解除しました",
     "PositionReset": "キャラクターの位置をリセットしました",
     "PositionActionFailed": "位置操作に失敗しました",
+    "EnvVarsCopied": "環境変数をクリップボードにコピーしました",
     "MicrophonePermissionDenied": "マイクへのアクセス許可が拒否されました",
     "CameraPermissionMessage": "カメラの使用を許可してください。",
     "PresetLoadFailed": "プリセットの読み込みに失敗しました"

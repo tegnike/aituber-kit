@@ -1260,6 +1260,32 @@ const Character = () => {
                 {t('ResetPosition')}
               </button>
             </div>
+            <div className="mt-4">
+              <div className="text-sm text-gray-600 mb-2">
+                {t('CopyEnvVarsInfo')}
+              </div>
+              <button
+                onClick={() => {
+                  const settings = settingsStore.getState()
+                  const pos = settings.characterPosition
+                  const rot = settings.characterRotation
+                  const envText = [
+                    `NEXT_PUBLIC_FIXED_CHARACTER_POSITION="${settings.fixedCharacterPosition}"`,
+                    `NEXT_PUBLIC_CHARACTER_POSITION="${pos.x},${pos.y},${pos.z},${pos.scale}"`,
+                    `NEXT_PUBLIC_CHARACTER_ROTATION="${rot.x},${rot.y},${rot.z}"`,
+                  ].join('\n')
+                  navigator.clipboard.writeText(envText)
+                  toastStore.getState().addToast({
+                    message: t('Toasts.EnvVarsCopied'),
+                    type: 'success',
+                    tag: 'env-vars-copied',
+                  })
+                }}
+                className="px-4 py-3 text-theme font-medium bg-primary hover:bg-primary-hover active:bg-primary-press rounded-lg transition-colors duration-200 md:rounded-full md:px-6 md:py-2"
+              >
+                {t('CopyEnvVars')}
+              </button>
+            </div>
           </div>
         )}
 

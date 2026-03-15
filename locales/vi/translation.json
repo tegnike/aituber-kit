@@ -93,6 +93,8 @@
   "CurrentStatus": "Trạng thái hiện tại",
   "PositionFixed": "Đang cố định",
   "PositionNotFixed": "Chưa cố định",
+  "CopyEnvVars": "Sao chép biến môi trường",
+  "CopyEnvVarsInfo": "Sao chép vị trí nhân vật hiện tại vào clipboard dưới dạng biến môi trường. Dán vào file .env để sử dụng.",
   "ChangeBackgroundImage": "Thay đổi hình nền",
   "BackgroundSettings": "Cài đặt hình nền",
   "BackgroundSettingsDescription": "Bạn có thể tải lên và chọn hình nền cho ứng dụng.",
@@ -303,6 +305,7 @@
     "PositionUnfixed": "Đã hủy cố định vị trí của nhân vật",
     "PositionReset": "Đã đặt lại vị trí của nhân vật",
     "PositionActionFailed": "Thao tác vị trí thất bại",
+    "EnvVarsCopied": "Đã sao chép biến môi trường vào clipboard",
     "MicrophonePermissionDenied": "Quyền truy cập micro đã bị từ chối",
     "CameraPermissionMessage": "Vui lòng cho phép sử dụng camera.",
     "PresetLoadFailed": "Không thể tải cài đặt sẵn"

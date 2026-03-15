@@ -93,6 +93,8 @@
   "CurrentStatus": "Stato attuale",
   "PositionFixed": "Bloccato",
   "PositionNotFixed": "Non fissato",
+  "CopyEnvVars": "Copia variabili d'ambiente",
+  "CopyEnvVarsInfo": "Copia la posizione attuale del personaggio negli appunti in formato variabile d'ambiente. Incolla nel file .env per utilizzarlo.",
   "ChangeBackgroundImage": "Cambia immagine di sfondo",
   "BackgroundSettings": "Impostazioni sfondo",
   "BackgroundSettingsDescription": "Puoi caricare e selezionare un'immagine di sfondo per l'applicazione.",
@@ -303,6 +305,7 @@
     "PositionUnfixed": "La posizione del personaggio è stata sbloccata",
     "PositionReset": "La posizione del personaggio è stata reimpostata",
     "PositionActionFailed": "Operazione di posizionamento non riuscita",
+    "EnvVarsCopied": "Variabili d'ambiente copiate negli appunti",
     "MicrophonePermissionDenied": "L'accesso al microfono è stato negato",
     "CameraPermissionMessage": "Consenti l'uso della fotocamera.",
     "PresetLoadFailed": "Impossibile caricare il preset"

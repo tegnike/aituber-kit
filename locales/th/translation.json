@@ -93,6 +93,8 @@
   "CurrentStatus": "สถานะปัจจุบัน",
   "PositionFixed": "กำลังล็อกอยู่",
   "PositionNotFixed": "ไม่ถูกตรึง",
+  "CopyEnvVars": "คัดลอกตัวแปรสภาพแวดล้อม",
+  "CopyEnvVarsInfo": "คัดลอกตำแหน่งตัวละครปัจจุบันไปยังคลิปบอร์ดในรูปแบบตัวแปรสภาพแวดล้อม วางในไฟล์ .env เพื่อใช้งาน",
   "ChangeBackgroundImage": "เปลี่ยนภาพพื้นหลัง",
   "BackgroundSettings": "การตั้งค่าพื้นหลัง",
   "BackgroundSettingsDescription": "คุณสามารถอัปโหลดและเลือกภาพพื้นหลังสำหรับแอปพลิเคชัน",
@@ -303,6 +305,7 @@
     "PositionUnfixed": "ปลดล็อกตำแหน่งตัวละครแล้ว",
     "PositionReset": "รีเซ็ตตำแหน่งตัวละครแล้ว",
     "PositionActionFailed": "การดำเนินการตำแหน่งล้มเหลว",
+    "EnvVarsCopied": "คัดลอกตัวแปรสภาพแวดล้อมไปยังคลิปบอร์ดแล้ว",
     "MicrophonePermissionDenied": "การอนุญาตเข้าถึงไมโครโฟนถูกปฏิเสธแล้ว",
     "CameraPermissionMessage": "โปรดอนุญาตการใช้กล้อง",
     "PresetLoadFailed": "โหลดพรีเซ็ตล้มเหลว"

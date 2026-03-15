@@ -93,6 +93,8 @@
   "CurrentStatus": "الحالة الحالية",
   "PositionFixed": "قيد التثبيت",
   "PositionNotFixed": "غير مثبت",
+  "CopyEnvVars": "نسخ متغيرات البيئة",
+  "CopyEnvVarsInfo": "نسخ موضع الشخصية الحالي إلى الحافظة بتنسيق متغيرات البيئة. الصقه في ملف .env للاستخدام.",
   "ChangeBackgroundImage": "تغيير صورة الخلفية",
   "BackgroundSettings": "إعدادات الخلفية",
   "BackgroundSettingsDescription": "يمكنك تحميل واختيار صورة خلفية للتطبيق.",
@@ -303,6 +305,7 @@
     "PositionUnfixed": "تم إلغاء تثبيت موقع الشخصية",
     "PositionReset": "تم إعادة تعيين موقع الشخصية",
     "PositionActionFailed": "فشل في عملية تحديد الموقع",
+    "EnvVarsCopied": "تم نسخ متغيرات البيئة إلى الحافظة",
     "MicrophonePermissionDenied": "تم رفض إذن الوصول إلى الميكروفون",
     "CameraPermissionMessage": "يرجى السماح باستخدام الكاميرا.",
     "PresetLoadFailed": "فشل تحميل الإعداد المسبق"
