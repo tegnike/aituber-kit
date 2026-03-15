@@ -799,80 +799,75 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   surprisedMotionGroup: process.env.NEXT_PUBLIC_SURPRISED_MOTION_GROUP || '',
 })
 
-let _settingsSet: ((partial: Partial<SettingsState>) => void) | null = null
+type PersistedSettingsState = Partial<SettingsState> & {
+  presenceGreetingMessage?: string
+  presenceDepartureMessage?: string
+}
+
+const migratePersistedSettings = (
+  state?: PersistedSettingsState
+): PersistedSettingsState | undefined => {
+  if (!state) return state
+
+  const migrated = { ...state }
+
+  if (
+    migrated.selectAIService === 'openai' &&
+    typeof migrated.selectAIModel === 'string'
+  ) {
+    migrated.selectAIModel = migrateOpenAIModelName(migrated.selectAIModel)
+  }
+
+  if (typeof migrated.presenceGreetingMessage === 'string') {
+    if (!migrated.presenceGreetingPhrases?.length) {
+      migrated.presenceGreetingPhrases = migrated.presenceGreetingMessage
+        ? [createIdlePhrase(migrated.presenceGreetingMessage, 'happy', 0)]
+        : []
+    }
+    delete migrated.presenceGreetingMessage
+  }
+
+  if (typeof migrated.presenceDepartureMessage === 'string') {
+    if (!migrated.presenceDeparturePhrases?.length) {
+      migrated.presenceDeparturePhrases = migrated.presenceDepartureMessage
+        ? [createIdlePhrase(migrated.presenceDepartureMessage, 'neutral', 0)]
+        : []
+    }
+    delete migrated.presenceDepartureMessage
+  }
+
+  return migrated
+}
+
+const mergePersistedSettings = (
+  persistedState: unknown,
+  currentState: SettingsState
+): SettingsState => {
+  const migratedState = migratePersistedSettings(
+    persistedState as PersistedSettingsState | undefined
+  )
+  const mergedState = {
+    ...currentState,
+    ...migratedState,
+  }
+
+  if (process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES === 'true') {
+    return {
+      ...mergedState,
+      ...getInitialValuesFromEnv(),
+    }
+  }
+
+  return mergedState
+}
 
 const settingsStore = create<SettingsState>()(
   exclusivityMiddleware(
     persist(
-      (set, get) => {
-        _settingsSet = set
-        return getInitialValuesFromEnv()
-      },
+      () => getInitialValuesFromEnv(),
       {
         name: 'aitube-kit-settings',
-        onRehydrateStorage: () => (state) => {
-          // Migrate OpenAI model names when loading from storage
-          if (
-            state &&
-            state.selectAIService === 'openai' &&
-            state.selectAIModel
-          ) {
-            const migratedModel = migrateOpenAIModelName(state.selectAIModel)
-            if (migratedModel !== state.selectAIModel) {
-              state.selectAIModel = migratedModel
-            }
-          }
-
-          // Migration from old presence message format to new phrase array format
-          if (state) {
-            const anyState = state as any
-            // presenceGreetingMessage -> presenceGreetingPhrases
-            if (typeof anyState.presenceGreetingMessage === 'string') {
-              // Empty string means "no greeting" intent, so set empty array
-              if (!state.presenceGreetingPhrases?.length) {
-                state.presenceGreetingPhrases = anyState.presenceGreetingMessage
-                  ? [
-                      createIdlePhrase(
-                        anyState.presenceGreetingMessage,
-                        'happy',
-                        0
-                      ),
-                    ]
-                  : []
-              }
-              delete anyState.presenceGreetingMessage
-            }
-            // presenceDepartureMessage -> presenceDeparturePhrases
-            if (typeof anyState.presenceDepartureMessage === 'string') {
-              // Empty string means "no departure message" intent, so set empty array
-              if (!state.presenceDeparturePhrases?.length) {
-                state.presenceDeparturePhrases =
-                  anyState.presenceDepartureMessage
-                    ? [
-                        createIdlePhrase(
-                          anyState.presenceDepartureMessage,
-                          'neutral',
-                          0
-                        ),
-                      ]
-                    : []
-              }
-              delete anyState.presenceDepartureMessage
-            }
-          }
-
-          // Override with environment variables if the option is enabled
-          if (
-            state &&
-            process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES ===
-              'true'
-          ) {
-            const envValues = getInitialValuesFromEnv()
-            if (_settingsSet) {
-              _settingsSet(envValues)
-            }
-          }
-        },
+        merge: mergePersistedSettings,
         partialize: (state) => ({
           openaiKey: state.openaiKey,
           anthropicKey: state.anthropicKey,
