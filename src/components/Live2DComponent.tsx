@@ -4,18 +4,22 @@ import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch/cubism4'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { Live2DHandler } from '@/features/messages/live2dHandler'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
+import { useIsMobileLayout } from '@/hooks/useIsMobileLayout'
+import { useIsDedicatedMobileWindow } from '@/hooks/useIsDedicatedMobileWindow'
 
 console.log('Live2DComponent module loaded')
 
 const setModelPosition = (
   app: Application,
-  model: InstanceType<typeof Live2DModel>
+  model: InstanceType<typeof Live2DModel>,
+  forceCenter = false
 ) => {
   const settings = settingsStore.getState()
 
   // If position is fixed and saved, restore it
   if (
+    !forceCenter &&
     settings.fixedCharacterPosition &&
     (settings.characterPosition.x !== 0 ||
       settings.characterPosition.y !== 0 ||
@@ -44,6 +48,9 @@ const Live2DComponent = (): JSX.Element => {
   )
   const modelRef = useRef<InstanceType<typeof Live2DModel> | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const isMobileLayout = useIsMobileLayout()
+  const isDedicatedMobileWindow = useIsDedicatedMobileWindow()
+  const isTouchMobileLayout = isMobileLayout && !isDedicatedMobileWindow
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const selectedLive2DPath = settingsStore((state) => state.selectedLive2DPath)
   // ピンチジェスチャー用の状態
@@ -84,7 +91,7 @@ const Live2DComponent = (): JSX.Element => {
       characterPosition: { x: 0, y: 0, z: 0, scale: 1 },
       characterRotation: { x: 0, y: 0, z: 0 },
     })
-    setModelPosition(app, model)
+    setModelPosition(app, model, true)
   }, [model, app])
 
   // Store position management functions in homeStore for access from settings
@@ -148,7 +155,7 @@ const Live2DComponent = (): JSX.Element => {
 
       currentApp.stage.addChild(newModel as unknown as DisplayObject)
       newModel.anchor.set(0.5, 0.5)
-      setModelPosition(currentApp, newModel)
+      setModelPosition(currentApp, newModel, isTouchMobileLayout)
 
       modelRef.current = newModel
       setModel(newModel)
@@ -198,7 +205,7 @@ const Live2DComponent = (): JSX.Element => {
       // 新しいモデルを読み込む
       loadLive2DModel(app, selectedLive2DPath)
     }
-  }, [app, selectedLive2DPath])
+  }, [app, selectedLive2DPath, isTouchMobileLayout])
 
   // 2点間の距離を計算する関数
   const getDistance = (touch1: Touch, touch2: Touch): number => {
@@ -213,6 +220,13 @@ const Live2DComponent = (): JSX.Element => {
     const canvas = canvasContainerRef.current
 
     const handlePointerDown = (event: PointerEvent) => {
+      if (isTouchMobileLayout) {
+        if (event.button !== 2) {
+          model.tap(event.clientX, event.clientY)
+        }
+        return
+      }
+
       const { fixedCharacterPosition } = settingsStore.getState()
 
       // Don't allow dragging if position is fixed
@@ -237,6 +251,7 @@ const Live2DComponent = (): JSX.Element => {
     }
 
     const handlePointerUp = () => {
+      if (isTouchMobileLayout) return
       setIsDragging(false)
       // Save position when dragging ends (if not fixed)
       if (!settingsStore.getState().fixedCharacterPosition) {
@@ -245,6 +260,7 @@ const Live2DComponent = (): JSX.Element => {
     }
 
     const handleWheel = (event: WheelEvent) => {
+      if (isTouchMobileLayout) return
       const { fixedCharacterPosition } = settingsStore.getState()
 
       // Don't allow scaling if position is fixed
@@ -292,6 +308,7 @@ const Live2DComponent = (): JSX.Element => {
 
     // タッチイベント処理
     const handleTouchStart = (event: TouchEvent) => {
+      if (isTouchMobileLayout) return
       const { fixedCharacterPosition } = settingsStore.getState()
 
       // Don't allow pinch if position is fixed
@@ -306,6 +323,7 @@ const Live2DComponent = (): JSX.Element => {
     }
 
     const handleTouchMove = (event: TouchEvent) => {
+      if (isTouchMobileLayout) return
       if (
         event.touches.length === 2 &&
         pinchDistance !== null &&
@@ -322,6 +340,7 @@ const Live2DComponent = (): JSX.Element => {
     }
 
     const handleTouchEnd = () => {
+      if (isTouchMobileLayout) return
       // ピンチ終了
       setPinchDistance(null)
       setInitialScale(null)
@@ -358,7 +377,14 @@ const Live2DComponent = (): JSX.Element => {
       canvas.removeEventListener('touchmove', handleTouchMove)
       canvas.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [model, isDragging, dragOffset, pinchDistance, initialScale])
+  }, [
+    model,
+    isDragging,
+    dragOffset,
+    pinchDistance,
+    initialScale,
+    isTouchMobileLayout,
+  ])
 
   useEffect(() => {
     if (!app || !model) return
@@ -371,7 +397,7 @@ const Live2DComponent = (): JSX.Element => {
         canvasContainerRef.current.clientHeight
       )
 
-      setModelPosition(app, model)
+      setModelPosition(app, model, isTouchMobileLayout)
     }, 250)
 
     window.addEventListener('resize', onResize)
@@ -380,7 +406,12 @@ const Live2DComponent = (): JSX.Element => {
       window.removeEventListener('resize', onResize)
       onResize.cancel() // クリーンアップ時にデバウンスをキャンセル
     }
-  }, [app, model])
+  }, [app, model, isTouchMobileLayout])
+
+  useEffect(() => {
+    if (!app || !model || !isTouchMobileLayout) return
+    setModelPosition(app, model, true)
+  }, [app, model, isTouchMobileLayout])
 
   return (
     <div className="w-screen h-screen">

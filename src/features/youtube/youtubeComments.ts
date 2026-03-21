@@ -2,6 +2,7 @@ import settingsStore from '@/features/stores/settings'
 import { processAIResponse } from '../chat/handlers'
 import homeStore from '@/features/stores/home'
 import { messageSelectors } from '../messages/messageSelectors'
+import { composeSystemPrompt } from '@/features/chat/systemPrompt'
 
 // getLiveChatId のキャッシュ（配信中にChat IDは変わらないため）
 let liveChatIdCache: { liveId: string; chatId: string } | null = null
@@ -168,7 +169,7 @@ const callContinuationApi = async (params: {
       temperature: ss.temperature,
       maxTokens: ss.maxTokens,
       chatLog,
-      systemPrompt: ss.systemPrompt,
+      systemPrompt: composeSystemPrompt(ss),
       youtubeComments,
       noCommentCount,
       continuationCount,

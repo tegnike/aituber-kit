@@ -21,6 +21,7 @@ type Character = Pick<
   | 'showAssistantText'
   | 'showCharacterName'
   | 'systemPrompt'
+  | 'personalizationPrompt'
   | 'characterPreset1'
   | 'characterPreset2'
   | 'characterPreset3'
@@ -33,6 +34,7 @@ type Character = Pick<
   | 'customPresetName5'
   | 'selectedPresetIndex'
   | 'selectedVrmPath'
+  | 'selectedVrchatModelPath'
   | 'selectedLive2DPath'
 >
 
@@ -701,6 +703,8 @@ const Character = () => {
     fixedCharacterPosition,
     selectAIService,
     systemPrompt,
+    personalizationPrompt,
+    selectedVrchatModelPath,
     characterPreset1,
     characterPreset2,
     characterPreset3,
@@ -719,6 +723,7 @@ const Character = () => {
     poseConfigs,
   } = settingsStore()
   const [vrmFiles, setVrmFiles] = useState<string[]>([])
+  const [vrchatModelFiles, setVrchatModelFiles] = useState<string[]>([])
   const [live2dModels, setLive2dModels] = useState<
     Array<{ path: string; name: string }>
   >([])
@@ -810,18 +815,34 @@ const Character = () => {
     customPresetName5,
   ]
 
+  const asStringArray = (value: unknown): string[] =>
+    Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
+
+  const asObjectArray = <T extends Record<string, unknown>>(
+    value: unknown
+  ): T[] => (Array.isArray(value) ? (value as T[]) : [])
+
   useEffect(() => {
     fetch('/api/get-vrm-list')
       .then((res) => res.json())
-      .then((files) => setVrmFiles(files))
+      .then((files) => setVrmFiles(asStringArray(files)))
       .catch((error) => {
         console.error('Error fetching VRM list:', error)
+      })
+
+    fetch('/api/get-vrchat-model-list')
+      .then((res) => res.json())
+      .then((files) => setVrchatModelFiles(asStringArray(files)))
+      .catch((error) => {
+        console.error('Error fetching VRChat model list:', error)
       })
 
     if (isLive2DEnabled) {
       fetch('/api/get-live2d-list')
         .then((res) => res.json())
-        .then((models) => setLive2dModels(models))
+        .then((models) =>
+          setLive2dModels(asObjectArray<Array<{ path: string; name: string }>[number]>(models))
+        )
         .catch((error) => {
           console.error('Error fetching Live2D list:', error)
         })
@@ -829,7 +850,13 @@ const Character = () => {
 
     fetch('/api/get-pngtuber-list')
       .then((res) => res.json())
-      .then((models) => setPngTuberModels(models))
+      .then((models) =>
+        setPngTuberModels(
+          asObjectArray<
+            Array<{ path: string; name: string; videoFile?: string }>[number]
+          >(models)
+        )
+      )
       .catch((error) => {
         console.error('Error fetching PNGTuber list:', error)
       })
@@ -886,16 +913,33 @@ const Character = () => {
   }
 
   const handleVrmUpload = async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
 
-    const response = await fetch('/api/upload-vrm-list', {
-      method: 'POST',
-      body: formData,
-    })
+      const response = await fetch('/api/upload-vrm-list', {
+        method: 'POST',
+        body: formData,
+      })
 
-    if (response.ok) {
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}))
+        const message =
+          typeof errorBody?.message === 'string'
+            ? errorBody.message
+            : 'Failed to upload VRM'
+        toastStore.getState().addToast({
+          message,
+          type: 'error',
+          tag: 'vrm-upload-error',
+        })
+        return
+      }
+
       const { path } = await response.json()
+      if (!path || typeof path !== 'string') {
+        throw new Error('Upload completed but VRM path is missing')
+      }
       settingsStore.setState({ selectedVrmPath: path })
       const { viewer } = homeStore.getState()
       viewer.loadVrm(path)
@@ -903,9 +947,49 @@ const Character = () => {
       // リストを更新
       fetch('/api/get-vrm-list')
         .then((res) => res.json())
-        .then((files) => setVrmFiles(files))
+        .then((files) => setVrmFiles(asStringArray(files)))
         .catch((error) => {
           console.error('Error fetching VRM list:', error)
+        })
+      toastStore.getState().addToast({
+        message:
+          i18n.language === 'ja'
+            ? 'VRMモデルを読み込みました'
+            : 'VRM model loaded',
+        type: 'success',
+        tag: 'vrm-upload-success',
+      })
+    } catch (error) {
+      console.error('VRM upload failed:', error)
+      toastStore.getState().addToast({
+        message:
+          i18n.language === 'ja'
+            ? 'VRMモデルのアップロードに失敗しました'
+            : 'Failed to upload VRM model',
+        type: 'error',
+        tag: 'vrm-upload-error',
+      })
+    }
+  }
+
+  const handleVrchatModelUpload = async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch('/api/upload-vrchat-model', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (response.ok) {
+      const { path } = await response.json()
+      settingsStore.setState({ selectedVrchatModelPath: path })
+
+      fetch('/api/get-vrchat-model-list')
+        .then((res) => res.json())
+        .then((files) => setVrchatModelFiles(asStringArray(files)))
+        .catch((error) => {
+          console.error('Error fetching VRChat model list:', error)
         })
     }
   }
@@ -1012,6 +1096,61 @@ const Character = () => {
               >
                 {t('OpenVRM')}
               </TextButton>
+            </div>
+
+            <div className="my-6 border-t border-gray-200 pt-4">
+              <div className="text-lg font-bold mb-2">
+                {i18n.language === 'ja'
+                  ? 'VRChatモデルアップロード'
+                  : 'VRChat Model Upload'}
+              </div>
+              <div className="text-sm mb-2 whitespace-pre-wrap">
+                {i18n.language === 'ja'
+                  ? 'VRM / VRCA / ZIP / GLB / GLTF を登録できます。VRM以外は表示用ではなく、キャラクター文脈の参照用として扱います。'
+                  : 'You can upload VRM / VRCA / ZIP / GLB / GLTF. Non-VRM assets are stored for character context reference and are not rendered.'}
+              </div>
+              <select
+                className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+                value={selectedVrchatModelPath}
+                onChange={(e) => {
+                  settingsStore.setState({
+                    selectedVrchatModelPath: e.target.value,
+                  })
+                }}
+              >
+                <option value="">
+                  {i18n.language === 'ja'
+                    ? '選択なし（未設定）'
+                    : 'None selected'}
+                </option>
+                {vrchatModelFiles.map((file) => (
+                  <option key={file} value={`/vrchat-models/${file}`}>
+                    {file}
+                  </option>
+                ))}
+              </select>
+              <div className="my-4">
+                <TextButton
+                  onClick={() => {
+                    const { fileInput } = menuStore.getState()
+                    if (fileInput) {
+                      fileInput.accept = '.vrm,.vrca,.zip,.glb,.gltf'
+                      fileInput.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0]
+                        if (file) {
+                          handleVrchatModelUpload(file)
+                        }
+                      }
+                      fileInput.click()
+                    }
+                  }}
+                  disabled={isRestrictedMode}
+                >
+                  {i18n.language === 'ja'
+                    ? 'VRChatモデルを追加'
+                    : 'Add VRChat Model'}
+                </TextButton>
+              </div>
             </div>
           </>
         )}
@@ -1498,6 +1637,27 @@ const Character = () => {
                   })}
                   className="px-3 py-2 bg-white border border-gray-300 rounded-md w-full h-64 text-sm"
                 />
+                <div className="pt-2">
+                  <div className="text-sm font-bold mb-2">
+                    {i18n.language === 'ja'
+                      ? 'パーソナライズ設定（応答前に毎回参照）'
+                      : 'Personalization (read before every response)'}
+                  </div>
+                  <textarea
+                    value={personalizationPrompt}
+                    onChange={(e) =>
+                      settingsStore.setState({
+                        personalizationPrompt: e.target.value,
+                      })
+                    }
+                    className="px-3 py-2 bg-white border border-gray-300 rounded-md w-full h-40 text-sm"
+                    placeholder={
+                      i18n.language === 'ja'
+                        ? '例: 口調、禁止事項、呼び方、配信中の振る舞い'
+                        : 'e.g. tone, forbidden topics, naming style, streaming behavior'
+                    }
+                  />
+                </div>
               </div>
             )
           })}

@@ -9,8 +9,10 @@ import { PresetQuestionButtons } from './presetQuestionButtons'
 import { SlideText } from './slideText'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
+import { useIsMobileLayout } from '@/hooks/useIsMobileLayout'
 
 export const Form = () => {
+  const isMobileLayout = useIsMobileLayout()
   const modalImage = homeStore((s) => s.modalImage)
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const captureStatus = homeStore((s) => s.captureStatus)
@@ -27,13 +29,13 @@ export const Form = () => {
   const handleSendChat = handleSendChatFn()
 
   useEffect(() => {
-    // テキストと画像がそろったら、チャットを送信
+    // 繝・く繧ｹ繝医→逕ｻ蜒上′縺昴ｍ縺｣縺溘ｉ縲√メ繝｣繝・ヨ繧帝∽ｿ｡
     if (delayedText && modalImage) {
       handleSendChat(delayedText)
       setDelayedText('')
     }
 
-    // コンポーネントがアンマウントされる際にpending操作をクリーンアップ
+    // 繧ｳ繝ｳ繝昴・繝阪Φ繝医′繧｢繝ｳ繝槭え繝ｳ繝医＆繧後ｋ髫帙↓pending謫堺ｽ懊ｒ繧ｯ繝ｪ繝ｼ繝ｳ繧｢繝・・
     return () => {
       if (delayedText) {
         setDelayedText('')
@@ -43,7 +45,7 @@ export const Form = () => {
 
   const hookSendChat = useCallback(
     (text: string) => {
-      // マルチモーダル機能が使用可能かチェック
+      // 繝槭Ν繝√Δ繝ｼ繝繝ｫ讖溯・縺御ｽｿ逕ｨ蜿ｯ閭ｽ縺九メ繧ｧ繝・け
       const isMultiModalSupported = isMultiModalAvailable(
         selectAIService as AIService,
         selectAIModel,
@@ -52,7 +54,7 @@ export const Form = () => {
         customModel
       )
 
-      // モードに基づいて画像キャプチャの必要性を判定
+      // 繝｢繝ｼ繝峨↓蝓ｺ縺･縺・※逕ｻ蜒上く繝｣繝励メ繝｣縺ｮ蠢・ｦ∵ｧ繧貞愛螳・
       let shouldCaptureImage = false
 
       if (isMultiModalSupported && (webcamStatus || captureStatus)) {
@@ -64,25 +66,25 @@ export const Form = () => {
             shouldCaptureImage = false
             break
           case 'ai-decide':
-            // AI判断モードの場合、とりあえず画像をキャプチャして、後でAIに判断させる
+            // AI蛻､譁ｭ繝｢繝ｼ繝峨・蝣ｴ蜷医√→繧翫≠縺医★逕ｻ蜒上ｒ繧ｭ繝｣繝励メ繝｣縺励※縲∝ｾ後〒AI縺ｫ蛻､譁ｭ縺輔○繧・
             shouldCaptureImage = true
             break
         }
       }
 
-      // 画像キャプチャが必要な場合
+      // 逕ｻ蜒上く繝｣繝励メ繝｣縺悟ｿ・ｦ√↑蝣ｴ蜷・
       if (shouldCaptureImage) {
-        // すでにmodalImageが存在する場合は、Webcamのキャプチャーをスキップ
+        // 縺吶〒縺ｫmodalImage縺悟ｭ伜惠縺吶ｋ蝣ｴ蜷医・縲仝ebcam縺ｮ繧ｭ繝｣繝励メ繝｣繝ｼ繧偵せ繧ｭ繝・・
         homeStore.setState((state) => {
           if (!state.modalImage) {
             return { ...state, triggerShutter: true }
           }
           return state
         })
-        // 画像が取得されるまで遅延させる
+        // 逕ｻ蜒上′蜿門ｾ励＆繧後ｋ縺ｾ縺ｧ驕・ｻｶ縺輔○繧・
         setDelayedText(text)
       } else {
-        // 画像キャプチャが不要な場合は直接送信
+        // 逕ｻ蜒上く繝｣繝励メ繝｣縺御ｸ崎ｦ√↑蝣ｴ蜷医・逶ｴ謗･騾∽ｿ｡
         handleSendChat(text)
       }
     },
@@ -106,7 +108,9 @@ export const Form = () => {
     <SlideText />
   ) : (
     <>
-      <PresetQuestionButtons onSelectQuestion={hookSendChat} />
+      {!isMobileLayout && (
+        <PresetQuestionButtons onSelectQuestion={hookSendChat} />
+      )}
       <MessageInputContainer onChatProcessStart={hookSendChat} />
     </>
   )

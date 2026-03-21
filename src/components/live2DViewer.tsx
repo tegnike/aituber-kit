@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
+import { useIsMobileLayout } from '@/hooks/useIsMobileLayout'
 
 const Live2DComponent = dynamic(
   () => {
@@ -40,6 +42,8 @@ export default function Live2DViewer() {
   const setIsCubismCoreLoaded = homeStore((s) => s.setIsCubismCoreLoaded)
   const isLive2dLoaded = homeStore((s) => s.isLive2dLoaded)
   const setIsLive2dLoaded = homeStore((s) => s.setIsLive2dLoaded)
+  const chatLogWidth = settingsStore((s) => s.chatLogWidth)
+  const isMobileLayout = useIsMobileLayout()
 
   // スクリプトの再読み込み処理
   const retryLoadScript = (scriptName: 'cubismcore' | 'live2d') => {
@@ -66,7 +70,14 @@ export default function Live2DViewer() {
 
   console.log('Rendering Live2DViewer')
   return (
-    <div className="fixed bottom-0 right-0 w-screen h-screen z-5">
+    <div
+      className="fixed inset-y-0 right-0 z-5"
+      data-no-window-drag="true"
+      style={{
+        left: isMobileLayout ? '0px' : `${chatLogWidth}px`,
+        width: isMobileLayout ? '100vw' : `calc(100vw - ${chatLogWidth}px)`,
+      }}
+    >
       <Script
         key={`cubismcore-${scriptLoadRetries.cubismcore}`}
         src="/scripts/live2dcubismcore.min.js"

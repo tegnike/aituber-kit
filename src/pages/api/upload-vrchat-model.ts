@@ -12,11 +12,10 @@ export const config = {
     bodyParser: false,
   },
 }
-
-const MAX_VRM_FILE_SIZE = 500 * 1024 * 1024
+const ACCEPTED_EXTENSIONS = ['.vrm', '.vrca', '.zip', '.glb', '.gltf']
 
 const formOptions = {
-  maxFileSize: MAX_VRM_FILE_SIZE,
+  maxFileSize: 300 * 1024 * 1024,
 }
 
 const sanitizeFilename = (filename: string): string =>
@@ -36,7 +35,7 @@ export default async function handler(
   if (isRestrictedMode()) {
     return res
       .status(403)
-      .json(createRestrictedModeErrorResponse('upload-vrm-list'))
+      .json(createRestrictedModeErrorResponse('upload-vrchat-model'))
   }
 
   const form = formidable(formOptions)
@@ -45,34 +44,34 @@ export default async function handler(
     const [, files] = await form.parse(req)
     const file = files.file?.[0]
 
-    if (!file) {
+    if (!file || !file.originalFilename) {
       return res.status(400).json({ error: 'No file uploaded' })
     }
 
-    const originalFilename = file.originalFilename || ''
-    if (!originalFilename.toLowerCase().endsWith('.vrm')) {
+    const originalName = sanitizeFilename(file.originalFilename)
+    const extension = path.extname(originalName).toLowerCase()
+    if (!ACCEPTED_EXTENSIONS.includes(extension)) {
       return res.status(400).json({
         error: 'Invalid file type',
-        message: 'Only VRM files can be uploaded',
+        message: `Allowed: ${ACCEPTED_EXTENSIONS.join(', ')}`,
       })
     }
 
-    const vrmDir = path.join(process.cwd(), 'public/vrm')
-    if (!fs.existsSync(vrmDir)) {
-      fs.mkdirSync(vrmDir, { recursive: true })
+    const modelDir = path.join(process.cwd(), 'public/vrchat-models')
+    if (!fs.existsSync(modelDir)) {
+      fs.mkdirSync(modelDir, { recursive: true })
     }
 
-    const safeFilename = sanitizeFilename(originalFilename || 'uploaded.vrm')
-    const finalFilename = `${Date.now()}_${safeFilename}`
-    const newPath = path.join(vrmDir, finalFilename)
-    await fs.promises.copyFile(file.filepath, newPath)
+    const finalName = `${Date.now()}_${originalName}`
+    const finalPath = path.join(modelDir, finalName)
+    await fs.promises.copyFile(file.filepath, finalPath)
 
-    res.status(200).json({
-      path: `/vrm/${finalFilename}`,
-      filename: finalFilename,
+    return res.status(200).json({
+      path: `/vrchat-models/${finalName}`,
+      filename: finalName,
     })
   } catch (error) {
-    console.error('Failed to upload VRM:', error)
-    res.status(500).json({ error: 'Failed to upload file' })
+    console.error('Failed to upload VRChat model:', error)
+    return res.status(500).json({ error: 'Failed to upload file' })
   }
 }

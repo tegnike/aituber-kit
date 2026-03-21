@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+﻿import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
@@ -175,7 +175,9 @@ interface Character {
   showAssistantText: boolean
   showCharacterName: boolean
   systemPrompt: string
+  personalizationPrompt: string
   selectedVrmPath: string
+  selectedVrchatModelPath: string
   selectedLive2DPath: string
   fixedCharacterPosition: boolean
   characterPosition: {
@@ -276,7 +278,7 @@ interface PresenceDetectionSettings {
   presenceDebugMode: boolean
   presenceDeparturePhrases: IdlePhrase[]
   presenceClearChatOnDeparture: boolean
-  presenceSelectedCameraId: string // 空文字列の場合はデフォルトカメラを使用
+  presenceSelectedCameraId: string // 遨ｺ譁・ｭ怜・縺ｮ蝣ｴ蜷医・繝・ヵ繧ｩ繝ｫ繝医き繝｡繝ｩ繧剃ｽｿ逕ｨ
 }
 
 export type SettingsState = APIKeys &
@@ -484,8 +486,11 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     process.env.NEXT_PUBLIC_SYSTEM_PROMPT ||
     process.env.NEXT_PUBLIC_CHARACTER_PRESET1 ||
     '',
+  personalizationPrompt: process.env.NEXT_PUBLIC_PERSONALIZATION_PROMPT || '',
   selectedVrmPath:
     process.env.NEXT_PUBLIC_SELECTED_VRM_PATH || '/vrm/nikechan_v1.vrm',
+  selectedVrchatModelPath:
+    process.env.NEXT_PUBLIC_SELECTED_VRCHAT_MODEL_PATH || '',
   selectedLive2DPath:
     process.env.NEXT_PUBLIC_SELECTED_LIVE2D_PATH ||
     '/live2d/nike01/nike01.model3.json',
@@ -693,7 +698,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   presenceGreetingPhrases: (() => {
     const msg =
       process.env.NEXT_PUBLIC_PRESENCE_GREETING_MESSAGE ||
-      'いらっしゃいませ！何かお手伝いできることはありますか？'
+      'Welcome back!'
     return [createIdlePhrase(msg, 'happy', 0)]
   })(),
   presenceDepartureTimeout:
@@ -851,6 +856,59 @@ const mergePersistedSettings = (
     ...migratedState,
   }
 
+  // Guard against invalid persisted values (null/object/string) for array fields.
+  const ensureArray = <T,>(value: unknown, fallback: T[]): T[] =>
+    Array.isArray(value) ? (value as T[]) : fallback
+
+  mergedState.presenceGreetingPhrases = ensureArray(
+    mergedState.presenceGreetingPhrases,
+    currentState.presenceGreetingPhrases
+  )
+  mergedState.presenceDeparturePhrases = ensureArray(
+    mergedState.presenceDeparturePhrases,
+    currentState.presenceDeparturePhrases
+  )
+  mergedState.idlePhrases = ensureArray(
+    mergedState.idlePhrases,
+    currentState.idlePhrases
+  )
+  mergedState.poseConfigs = ensureArray(
+    mergedState.poseConfigs,
+    currentState.poseConfigs
+  )
+  mergedState.presetQuestions = ensureArray(
+    mergedState.presetQuestions,
+    currentState.presetQuestions
+  )
+  mergedState.kioskNgWords = ensureArray(
+    mergedState.kioskNgWords,
+    currentState.kioskNgWords
+  )
+  mergedState.neutralEmotions = ensureArray(
+    mergedState.neutralEmotions,
+    currentState.neutralEmotions
+  )
+  mergedState.happyEmotions = ensureArray(
+    mergedState.happyEmotions,
+    currentState.happyEmotions
+  )
+  mergedState.sadEmotions = ensureArray(
+    mergedState.sadEmotions,
+    currentState.sadEmotions
+  )
+  mergedState.angryEmotions = ensureArray(
+    mergedState.angryEmotions,
+    currentState.angryEmotions
+  )
+  mergedState.relaxedEmotions = ensureArray(
+    mergedState.relaxedEmotions,
+    currentState.relaxedEmotions
+  )
+  mergedState.surprisedEmotions = ensureArray(
+    mergedState.surprisedEmotions,
+    currentState.surprisedEmotions
+  )
+
   if (process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES === 'true') {
     return {
       ...mergedState,
@@ -966,6 +1024,7 @@ const settingsStore = create<SettingsState>()(
         showAssistantText: state.showAssistantText,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
+        personalizationPrompt: state.personalizationPrompt,
         selectLanguage: state.selectLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         includeTimestampInUserMessage: state.includeTimestampInUserMessage,
@@ -985,6 +1044,7 @@ const settingsStore = create<SettingsState>()(
         azureTTSKey: state.azureTTSKey,
         azureTTSEndpoint: state.azureTTSEndpoint,
         selectedVrmPath: state.selectedVrmPath,
+        selectedVrchatModelPath: state.selectedVrchatModelPath,
         selectedLive2DPath: state.selectedLive2DPath,
         fixedCharacterPosition: state.fixedCharacterPosition,
         characterPosition: state.characterPosition,

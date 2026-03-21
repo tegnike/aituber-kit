@@ -16,7 +16,7 @@ export default async function handler(
 
   try {
     if (!fs.existsSync(vrmDir)) {
-      return res.status(404).json({ error: 'VRM directory not found' })
+      return res.status(200).json([])
     }
     const files = await fs.promises.readdir(vrmDir)
     const vrmFiles = files.filter((file) => file.endsWith('.vrm'))

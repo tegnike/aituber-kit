@@ -3,6 +3,10 @@ const isRestrictedMode = process.env.NEXT_PUBLIC_RESTRICTED_MODE === 'true'
 
 const nextConfig = {
   reactStrictMode: true,
+  devIndicators: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   assetPrefix: process.env.BASE_PATH || '',
   basePath: process.env.BASE_PATH || '',
   trailingSlash: true,

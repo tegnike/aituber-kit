@@ -1,8 +1,8 @@
 import '@charcoal-ui/icons'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import React, { useEffect } from 'react'
-import { Analytics } from '@vercel/analytics/react'
 
 import { isLanguageSupported } from '@/features/constants/settings'
 import homeStore from '@/features/stores/home'
@@ -11,6 +11,11 @@ import '@/styles/globals.css'
 import '@/styles/themes.css'
 import migrateStore from '@/utils/migrateStore'
 import i18n from '../lib/i18n'
+
+const Analytics = dynamic(
+  () => import('@vercel/analytics/react').then((mod) => mod.Analytics),
+  { ssr: false, loading: () => null }
+)
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -56,7 +61,7 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <Component {...pageProps} />
-      <Analytics />
+      {process.env.NODE_ENV === 'production' && <Analytics />}
     </>
   )
 }

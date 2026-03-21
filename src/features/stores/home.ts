@@ -189,6 +189,11 @@ const homeStore = create<HomeState>()(
 
 // chatLogの変更を監視して差分を保存
 homeStore.subscribe((state, prevState) => {
+  if (getRestoringChatLog()) {
+    lastSavedLogLength = state.chatLog.length
+    return
+  }
+
   if (state.chatLog !== prevState.chatLog && state.chatLog.length > 0) {
     if (lastSavedLogLength > state.chatLog.length) {
       resetSaveState()
@@ -235,6 +240,7 @@ homeStore.subscribe((state, prevState) => {
           body: JSON.stringify({
             messages: messagesWithEmbedding,
             isNewFile: shouldCreateNewFile,
+            targetFileName: getTargetLogFileName(),
           }),
         })
           .then((response) => {
@@ -262,6 +268,7 @@ homeStore.subscribe((state, prevState) => {
     state.chatLog.length === 0
   ) {
     resetSaveState()
+    setTargetLogFileName(null)
   }
 })
 
