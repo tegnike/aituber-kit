@@ -8,8 +8,9 @@ import slideStore from '@/features/stores/slide'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { IconButton } from './iconButton'
 import { useKioskMode } from '@/hooks/useKioskMode'
+import layoutStore from '@/features/stores/layout'
 
-// ファイルバリデーションの設定
+// 繝輔ぃ繧､繝ｫ繝舌Μ繝・・繧ｷ繝ｧ繝ｳ縺ｮ險ｭ螳・
 const FILE_VALIDATION = {
   maxSizeBytes: 10 * 1024 * 1024, // 10MB
   allowedTypes: [
@@ -57,6 +58,8 @@ export const MessageInput = ({
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const multiModalMode = settingsStore((s) => s.multiModalMode)
   const customModel = settingsStore((s) => s.customModel)
+  const chatLogWidth = settingsStore((s) => s.chatLogWidth)
+  const layoutMode = layoutStore((s) => s.layoutMode)
   const [rows, setRows] = useState(1)
   const [loadingDots, setLoadingDots] = useState('')
   const [showPermissionModal, setShowPermissionModal] = useState(false)
@@ -64,11 +67,21 @@ export const MessageInput = ({
   const [showImageActions, setShowImageActions] = useState(false)
   const [inputValidationError, setInputValidationError] = useState<string>('')
   const [isSmallScreen, setIsSmallScreen] = useState(false)
+  const [isCompactLayout, setIsCompactLayout] = useState(false)
+  const [isDedicatedMobileWindow, setIsDedicatedMobileWindow] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
 
   const { t } = useTranslation()
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    setIsDedicatedMobileWindow(
+      new URLSearchParams(window.location.search).get('layout') ===
+        'mobile-window'
+    )
+  }, [])
 
   useEffect(() => {
     const mql = window.matchMedia('(min-width: 640px)')
@@ -78,10 +91,23 @@ export const MessageInput = ({
     return () => mql.removeEventListener('change', handler)
   }, [])
 
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 768px)')
+    setIsCompactLayout(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsCompactLayout(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
+
+  const isMobileLayout =
+    isDedicatedMobileWindow ||
+    layoutMode === 'mobile' ||
+    (layoutMode === 'auto' && isCompactLayout)
+
   // Kiosk mode input validation
   const { isKioskMode, validateInput, maxInputLength } = useKioskMode()
 
-  // マルチモーダル対応かどうかを判定
+  // 繝槭Ν繝√Δ繝ｼ繝繝ｫ蟇ｾ蠢懊°縺ｩ縺・°繧貞愛螳・
   const isMultiModalSupported = isMultiModalAvailable(
     selectAIService,
     selectAIModel,
@@ -90,7 +116,7 @@ export const MessageInput = ({
     customModel
   )
 
-  // アイコン表示の条件
+  // 繧｢繧､繧ｳ繝ｳ陦ｨ遉ｺ縺ｮ譚｡莉ｶ
   const showIconDisplay = modalImage && imageDisplayPosition === 'icon'
 
   useEffect(() => {
@@ -122,18 +148,18 @@ export const MessageInput = ({
     }
   }, [chatProcessing])
 
-  // テキスト内容に基づいて適切な行数を計算
+  // 繝・く繧ｹ繝亥・螳ｹ縺ｫ蝓ｺ縺･縺・※驕ｩ蛻・↑陦梧焚繧定ｨ育ｮ・
   const calculateRows = useCallback((text: string): number => {
     const MIN_ROWS = 1
-    const MAX_ROWS = 5 // 最大行数を制限（UIの見栄えを考慮して調整）
-    const CHARS_PER_LINE = 50 // 平均的な1行の文字数（概算）
+    const MAX_ROWS = 5 // 譛螟ｧ陦梧焚繧貞宛髯撰ｼ・I縺ｮ隕区・∴繧定・・縺励※隱ｿ謨ｴ・・
+    const CHARS_PER_LINE = 50 // 蟷ｳ蝮・噪縺ｪ1陦後・譁・ｭ玲焚・域ｦらｮ暦ｼ・
     const lines = text.split('\n')
 
-    // 各行の幅を考慮してテキストの折り返しを計算
-    // 簡単な実装では改行文字の数 + 1を使用
+    // 蜷・｡後・蟷・ｒ閠・・縺励※繝・く繧ｹ繝医・謚倥ｊ霑斐＠繧定ｨ育ｮ・
+    // 邁｡蜊倥↑螳溯｣・〒縺ｯ謾ｹ陦梧枚蟄励・謨ｰ + 1繧剃ｽｿ逕ｨ
     const baseRows = Math.max(MIN_ROWS, lines.length)
 
-    // 長い行がある場合、追加の行を考慮（おおよその計算）
+    // 髟ｷ縺・｡後′縺ゅｋ蝣ｴ蜷医∬ｿｽ蜉縺ｮ陦後ｒ閠・・・医♀縺翫ｈ縺昴・險育ｮ暦ｼ・
     const extraRows = lines.reduce((acc, line) => {
       const lineRows = Math.ceil(line.length / CHARS_PER_LINE)
       return acc + Math.max(0, lineRows - 1)
@@ -142,13 +168,13 @@ export const MessageInput = ({
     return Math.min(MAX_ROWS, baseRows + extraRows)
   }, [])
 
-  // userMessageの変更に応じて行数を調整
+  // userMessage縺ｮ螟画峩縺ｫ蠢懊§縺ｦ陦梧焚繧定ｪｿ謨ｴ
   useEffect(() => {
     const newRows = calculateRows(userMessage)
     setRows(newRows)
   }, [userMessage, calculateRows])
 
-  // 共通の遅延行数更新処理
+  // 蜈ｱ騾壹・驕・ｻｶ陦梧焚譖ｴ譁ｰ蜃ｦ逅・
   const updateRowsWithDelay = useCallback(
     (target: HTMLTextAreaElement) => {
       setTimeout(() => {
@@ -159,7 +185,7 @@ export const MessageInput = ({
     [calculateRows]
   )
 
-  // テキストエリアの内容変更時の処理
+  // 繝・く繧ｹ繝医お繝ｪ繧｢縺ｮ蜀・ｮｹ螟画峩譎ゅ・蜃ｦ逅・
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = event.target.value
     const newRows = calculateRows(newText)
@@ -167,10 +193,10 @@ export const MessageInput = ({
     onChangeUserMessage(event)
   }
 
-  // ファイルバリデーション関数
+  // 繝輔ぃ繧､繝ｫ繝舌Μ繝・・繧ｷ繝ｧ繝ｳ髢｢謨ｰ
   const validateFile = useCallback(
     (file: File): { isValid: boolean; error?: string } => {
-      // ファイルサイズチェック
+      // 繝輔ぃ繧､繝ｫ繧ｵ繧､繧ｺ繝√ぉ繝・け
       if (file.size > FILE_VALIDATION.maxSizeBytes) {
         return {
           isValid: false,
@@ -180,7 +206,7 @@ export const MessageInput = ({
         }
       }
 
-      // ファイルタイプチェック
+      // 繝輔ぃ繧､繝ｫ繧ｿ繧､繝励メ繧ｧ繝・け
       if (!FILE_VALIDATION.allowedTypes.includes(file.type as any)) {
         return {
           isValid: false,
@@ -193,7 +219,7 @@ export const MessageInput = ({
     [t]
   )
 
-  // 画像の寸法をチェックする関数
+  // 逕ｻ蜒上・蟇ｸ豕輔ｒ繝√ぉ繝・け縺吶ｋ髢｢謨ｰ
   const validateImageDimensions = useCallback(
     (imageElement: HTMLImageElement): boolean => {
       return (
@@ -204,7 +230,7 @@ export const MessageInput = ({
     []
   )
 
-  // 画像を処理する関数
+  // 逕ｻ蜒上ｒ蜃ｦ逅・☆繧矩未謨ｰ
   const processImageFile = useCallback(
     async (file: File): Promise<void> => {
       setFileError('')
@@ -220,7 +246,7 @@ export const MessageInput = ({
         reader.onload = (e) => {
           const base64Image = e.target?.result as string
 
-          // 画像の寸法チェック（オプション）
+          // 逕ｻ蜒上・蟇ｸ豕輔メ繧ｧ繝・け・医が繝励す繝ｧ繝ｳ・・
           const img = document.createElement('img')
           img.onload = () => {
             if (!validateImageDimensions(img)) {
@@ -250,13 +276,13 @@ export const MessageInput = ({
     [validateFile, validateImageDimensions, t]
   )
 
-  // 画像を削除する関数
+  // 逕ｻ蜒上ｒ蜑企勁縺吶ｋ髢｢謨ｰ
   const handleRemoveImage = useCallback(() => {
     homeStore.setState({ modalImage: '' })
     setFileError('')
   }, [])
 
-  // クリップボードからの画像ペースト処理
+  // 繧ｯ繝ｪ繝・・繝懊・繝峨°繧峨・逕ｻ蜒上・繝ｼ繧ｹ繝亥・逅・
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       if (!isMultiModalSupported) {
@@ -285,7 +311,7 @@ export const MessageInput = ({
         }
       }
 
-      // 画像がない場合のみ通常のペースト処理を実行
+      // 逕ｻ蜒上′縺ｪ縺・ｴ蜷医・縺ｿ騾壼ｸｸ縺ｮ繝壹・繧ｹ繝亥・逅・ｒ螳溯｡・
       if (!hasImage) {
         updateRowsWithDelay(event.target as HTMLTextAreaElement)
       }
@@ -293,7 +319,7 @@ export const MessageInput = ({
     [isMultiModalSupported, processImageFile, updateRowsWithDelay]
   )
 
-  // ドラッグ＆ドロップ処理
+  // 繝峨Λ繝・げ・・ラ繝ｭ繝・・蜃ｦ逅・
   const handleDragOver = useCallback(
     (event: React.DragEvent) => {
       if (!isMultiModalSupported) {
@@ -349,13 +375,13 @@ export const MessageInput = ({
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
-      // IME 文字変換中を除外しつつ、半角/全角キー（Backquote）による IME トグルは無視
+      // IME 譁・ｭ怜､画鋤荳ｭ繧帝勁螟悶＠縺､縺､縲∝濠隗・蜈ｨ隗偵く繝ｼ・・ackquote・峨↓繧医ｋ IME 繝医げ繝ｫ縺ｯ辟｡隕・
       !event.nativeEvent.isComposing &&
       event.code !== 'Backquote' &&
       event.key === 'Enter' &&
       !event.shiftKey
     ) {
-      event.preventDefault() // デフォルトの挙動を防止
+      event.preventDefault() // 繝・ヵ繧ｩ繝ｫ繝医・謖吝虚繧帝亟豁｢
       if (userMessage.trim() !== '') {
         // Validate before sending
         if (
@@ -370,14 +396,14 @@ export const MessageInput = ({
         }
       }
     } else if (event.key === 'Enter' && event.shiftKey) {
-      // Shift+Enterの場合、calculateRowsで自動計算されるため、手動で行数を増やす必要なし
+      // Shift+Enter縺ｮ蝣ｴ蜷医…alculateRows縺ｧ閾ｪ蜍戊ｨ育ｮ励＆繧後ｋ縺溘ａ縲∵焔蜍輔〒陦梧焚繧貞｢励ｄ縺吝ｿ・ｦ√↑縺・
       updateRowsWithDelay(event.target as HTMLTextAreaElement)
     } else if (
       event.key === 'Backspace' &&
       rows > 1 &&
       userMessage.slice(-1) === '\n'
     ) {
-      // Backspaceの場合も、calculateRowsで自動計算されるため、手動で行数を減らす必要なし
+      // Backspace縺ｮ蝣ｴ蜷医ｂ縲…alculateRows縺ｧ閾ｪ蜍戊ｨ育ｮ励＆繧後ｋ縺溘ａ縲∵焔蜍輔〒陦梧焚繧呈ｸ帙ｉ縺吝ｿ・ｦ√↑縺・
       updateRowsWithDelay(event.target as HTMLTextAreaElement)
     }
   }
@@ -397,7 +423,13 @@ export const MessageInput = ({
   }
 
   return (
-    <div className="absolute bottom-0 z-20 w-screen">
+    <div
+      className="absolute bottom-0 z-20"
+      style={{
+        left: isMobileLayout ? '0px' : `${chatLogWidth}px`,
+        width: isMobileLayout ? '100vw' : `calc(100vw - ${chatLogWidth}px)`,
+      }}
+    >
       {showPermissionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-4 sm:p-6 rounded-2xl max-w-[calc(100vw-2rem)] sm:max-w-md">
@@ -414,15 +446,30 @@ export const MessageInput = ({
           </div>
         </div>
       )}
-      <div className="bg-base-light text-black">
-        <div className="mx-auto max-w-4xl p-2 sm:p-4 pb-3">
-          {/* プログレスバー - 設定に基づいて表示/非表示 */}
+      <div
+        className={
+          isMobileLayout
+            ? 'bg-black/30 text-black backdrop-blur-md'
+            : 'bg-base-light text-black'
+        }
+        style={
+          isMobileLayout
+            ? { paddingBottom: 'max(env(safe-area-inset-bottom), 0px)' }
+            : undefined
+        }
+      >
+        <div
+          className={`mx-auto p-2 sm:p-4 pb-3 ${
+            isMobileLayout ? 'max-w-2xl' : 'max-w-4xl'
+          }`}
+        >
+          {/* 繝励Ο繧ｰ繝ｬ繧ｹ繝舌・ - 險ｭ螳壹↓蝓ｺ縺･縺・※陦ｨ遉ｺ/髱櫁｡ｨ遉ｺ */}
           {isMicRecording && showSilenceProgressBar && (
             <div className="w-full h-2 bg-gray-200 rounded-full mb-2 overflow-hidden">
               <div
                 className="h-full bg-secondary transition-all duration-200 ease-linear"
                 style={{
-                  // プログレスバーの幅計算 - 最初と最後の0.3秒は表示しない
+                  // 繝励Ο繧ｰ繝ｬ繧ｹ繝舌・縺ｮ蟷・ｨ育ｮ・- 譛蛻昴→譛蠕後・0.3遘偵・陦ｨ遉ｺ縺励↑縺・
                   width:
                     silenceTimeoutRemaining !== null
                       ? `${Math.min(
@@ -442,19 +489,19 @@ export const MessageInput = ({
               ></div>
             </div>
           )}
-          {/* エラーメッセージ表示 */}
+          {/* 繧ｨ繝ｩ繝ｼ繝｡繝・そ繝ｼ繧ｸ陦ｨ遉ｺ */}
           {fileError && (
             <div className="mb-2 p-2 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
               {fileError}
             </div>
           )}
-          {/* 入力バリデーションエラー表示 (Kiosk mode) */}
+          {/* 蜈･蜉帙ヰ繝ｪ繝・・繧ｷ繝ｧ繝ｳ繧ｨ繝ｩ繝ｼ陦ｨ遉ｺ (Kiosk mode) */}
           {inputValidationError && (
             <div className="mb-2 p-2 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
               {inputValidationError}
             </div>
           )}
-          {/* 画像プレビュー - 入力欄表示設定の場合のみ */}
+          {/* 逕ｻ蜒上・繝ｬ繝薙Η繝ｼ - 蜈･蜉帶ｬ・｡ｨ遉ｺ險ｭ螳壹・蝣ｴ蜷医・縺ｿ */}
           {modalImage && imageDisplayPosition === 'input' && (
             <div
               className="mb-2 p-2 bg-gray-100 rounded-lg relative"
@@ -465,7 +512,7 @@ export const MessageInput = ({
                 onClick={handleRemoveImage}
                 className="absolute top-1 right-1 text-red-500 hover:text-red-700 text-sm font-medium w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-50"
               >
-                ×
+                x
               </button>
               <Image
                 src={modalImage}
@@ -479,30 +526,32 @@ export const MessageInput = ({
           )}
 
           <div className="flex gap-2 items-end">
-            <div className="flex-shrink-0 pb-[0.3rem]">
-              <IconButton
-                iconName={
-                  continuousMicListeningMode ? '24/Close' : '24/Microphone'
-                }
-                backgroundColor={
-                  continuousMicListeningMode
-                    ? isMicRecording
-                      ? 'bg-green-500 text-theme'
-                      : 'bg-green-600 text-theme'
-                    : undefined
-                }
-                isProcessing={isMicRecording}
-                isProcessingIcon={
-                  continuousMicListeningMode ? '24/Microphone' : '24/PauseAlt'
-                }
-                disabled={
-                  continuousMicListeningMode || chatProcessing || isSpeaking
-                }
-                onClick={handleMicClick}
-              />
-            </div>
+            {!isMobileLayout && (
+              <div className="flex-shrink-0 pb-[0.3rem]">
+                <IconButton
+                  iconName={
+                    continuousMicListeningMode ? '24/Close' : '24/Microphone'
+                  }
+                  backgroundColor={
+                    continuousMicListeningMode
+                      ? isMicRecording
+                        ? 'bg-green-500 text-theme'
+                        : 'bg-green-600 text-theme'
+                      : undefined
+                  }
+                  isProcessing={isMicRecording}
+                  isProcessingIcon={
+                    continuousMicListeningMode ? '24/Microphone' : '24/PauseAlt'
+                  }
+                  disabled={
+                    continuousMicListeningMode || chatProcessing || isSpeaking
+                  }
+                  onClick={handleMicClick}
+                />
+              </div>
+            )}
             <div className="flex-1 relative">
-              {/* 画像添付インジケーター - アイコンのみ表示設定の場合 */}
+              {/* 逕ｻ蜒乗ｷｻ莉倥う繝ｳ繧ｸ繧ｱ繝ｼ繧ｿ繝ｼ - 繧｢繧､繧ｳ繝ｳ縺ｮ縺ｿ陦ｨ遉ｺ險ｭ螳壹・蝣ｴ蜷・*/}
               {showIconDisplay && (
                 <div className="absolute left-3 top-3 z-10">
                   <div
@@ -538,7 +587,7 @@ export const MessageInput = ({
                         className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-theme rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
                         title={t('RemoveImage')}
                       >
-                        ×
+                        x
                       </button>
                     )}
                   </div>
@@ -582,12 +631,14 @@ export const MessageInput = ({
                 onClick={handleSendClick}
               />
 
-              <IconButton
-                iconName="stop"
-                className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
-                onClick={onClickStopButton}
-                isProcessing={false}
-              />
+              {!isMobileLayout && (
+                <IconButton
+                  iconName="stop"
+                  className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+                  onClick={onClickStopButton}
+                  isProcessing={false}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -1,9 +1,10 @@
 {
   "name": "aituber-kit",
   "version": "0.1.0",
+  "main": "electron.mjs",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000",
     "dev-https": "next dev --experimental-https",
     "build": "next build",
     "start": "next build && next start",
@@ -11,8 +12,11 @@
     "lint": "next lint",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
-    "electron": "wait-on http://localhost:3000 && electron ./electron.mjs",
-    "desktop": "NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=\"\" run-p dev electron",
+    "electron": "electron ./electron.mjs",
+    "desktop": "run-p dev electron",
+    "dist:win": "npm run build && electron-builder --win portable",
+    "dist:win:fast": "npm run build && electron-builder --win dir",
+    "dist:win:portable:fast": "npm run build && electron-builder --win portable",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -96,6 +100,7 @@
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.23",
     "electron": "^39.2.7",
+    "electron-builder": "^26.8.1",
     "electron-is-dev": "^3.0.1",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",
@@ -121,5 +126,38 @@
   },
   "engines": {
     "node": "24.x"
+  },
+  "build": {
+    "appId": "com.aituberkit.desktop",
+    "productName": "AITuberKit",
+    "asar": false,
+    "directories": {
+      "output": "dist-electron-portable"
+    },
+    "files": [
+      "electron.mjs",
+      "preload.js",
+      ".next/**/*",
+      "public/**/*",
+      "locales/**/*",
+      "next.config.js",
+      "package.json"
+    ],
+    "afterPack": "scripts/electron-after-pack.cjs",
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "artifactName": "AITuberKit-${version}-${arch}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "AITuberKit-${version}-${arch}.${ext}"
+    }
   }
 }

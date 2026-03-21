@@ -8,6 +8,7 @@ import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import { Message } from '@/features/messages/messages'
 import { useRestrictedMode } from '@/hooks/useRestrictedMode'
+import { composeSystemPrompt } from '@/features/chat/systemPrompt'
 
 class ReceivedMessage {
   timestamp: number
@@ -102,9 +103,13 @@ const MessageReceiver = () => {
             ]
               .map((m) => `${m.role}: ${m.content}`)
               .join('\n')
-            const systemPrompt = message.useCurrentSystemPrompt
+            const basePrompt = message.useCurrentSystemPrompt
               ? ss.systemPrompt
               : message.systemPrompt
+            const systemPrompt = composeSystemPrompt({
+              ...ss,
+              systemPrompt: basePrompt || '',
+            })
             const messages: Message[] = [
               {
                 role: 'system',

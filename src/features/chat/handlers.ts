@@ -17,6 +17,7 @@ import {
   searchMemoryContext,
 } from '@/features/memory/memoryStoreSync'
 import { THINKING_MARKER } from '@/features/chat/vercelAIChat'
+import { composeSystemPrompt } from '@/features/chat/systemPrompt'
 
 // セッションIDを生成する関数
 const generateSessionId = () => generateMessageId()
@@ -875,7 +876,7 @@ export const handleSendChatFn =
         }).catch(() => {})
       }
     } else {
-      let systemPrompt = ss.systemPrompt
+      let systemPrompt = composeSystemPrompt(ss)
       if (ss.slideMode) {
         if (sls.isPlaying) {
           return

@@ -7,6 +7,8 @@ import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
+import { ChatHistoryModal } from './chatHistoryModal'
+import { CurrentThreadOverlay } from './currentThreadOverlay'
 import { IconButton } from './iconButton'
 import Settings from './settings'
 import { Webcam } from './webcam'
@@ -16,13 +18,14 @@ import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 import { useKioskMode } from '@/hooks/useKioskMode'
+import layoutStore from '@/features/stores/layout'
 
-// モバイルデバイス検出用のカスタムフック
+// 繝｢繝舌う繝ｫ繝・ヰ繧､繧ｹ讀懷・逕ｨ縺ｮ繧ｫ繧ｹ繧ｿ繝繝輔ャ繧ｯ
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState<boolean | null>(null)
 
   useEffect(() => {
-    // モバイルデバイス検出用の関数
+    // 繝｢繝舌う繝ｫ繝・ヰ繧､繧ｹ讀懷・逕ｨ縺ｮ髢｢謨ｰ
     const checkMobile = () => {
       setIsMobile(
         window.innerWidth <= 768 ||
@@ -30,7 +33,7 @@ const useIsMobile = () => {
       )
     }
 
-    // 初回レンダリング時とウィンドウサイズ変更時に検出
+    // 蛻晏屓繝ｬ繝ｳ繝繝ｪ繝ｳ繧ｰ譎ゅ→繧ｦ繧｣繝ｳ繝峨え繧ｵ繧､繧ｺ螟画峩譎ゅ↓讀懷・
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
@@ -56,59 +59,63 @@ export const Menu = () => {
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
 
-  // デモ端末モード関連
+  // 繝・Δ遶ｯ譛ｫ繝｢繝ｼ繝蛾未騾｣
   const { isKioskMode, isTemporaryUnlocked, canAccessSettings } = useKioskMode()
 
-  // デモ端末モード時はコントロールパネルを非表示（一時解除時は除く）
+  // 繝・Δ遶ｯ譛ｫ繝｢繝ｼ繝画凾縺ｯ繧ｳ繝ｳ繝医Ο繝ｼ繝ｫ繝代ロ繝ｫ繧帝撼陦ｨ遉ｺ・井ｸ譎りｧ｣髯､譎ゅ・髯､縺擾ｼ・
   const effectiveShowControlPanel =
     showControlPanel && (!isKioskMode || isTemporaryUnlocked)
 
   const [showSettings, setShowSettings] = useState(false)
 
-  // キオスクモードで設定アクセス権が剥奪された場合に自動クローズ
+  // 繧ｭ繧ｪ繧ｹ繧ｯ繝｢繝ｼ繝峨〒險ｭ螳壹い繧ｯ繧ｻ繧ｹ讓ｩ縺悟翁螂ｪ縺輔ｌ縺溷ｴ蜷医↓閾ｪ蜍輔け繝ｭ繝ｼ繧ｺ
   useEffect(() => {
     if (!canAccessSettings) {
       setShowSettings(false)
     }
   }, [canAccessSettings])
-  // 会話ログ表示モード
-  const CHAT_LOG_MODE = {
-    HIDDEN: 0, // 非表示
-    ASSISTANT: 1, // アシスタントテキスト
-    CHAT_LOG: 2, // 会話ログ
-  } as const
+  const layoutMode = layoutStore((s) => s.layoutMode)
+  const mobileChatOpen = layoutStore((s) => s.mobileChatOpen)
+  const [isDedicatedMobileWindow, setIsDedicatedMobileWindow] = useState(false)
 
-  const [chatLogMode, setChatLogMode] = useState<number>(
-    CHAT_LOG_MODE.ASSISTANT
-  )
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    setIsDedicatedMobileWindow(
+      new URLSearchParams(window.location.search).get('layout') ===
+        'mobile-window'
+    )
+  }, [])
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
 
-  // ロングタップ用のステート
+  // 繝ｭ繝ｳ繧ｰ繧ｿ繝・・逕ｨ縺ｮ繧ｹ繝・・繝・
   const [touchStartTime, setTouchStartTime] = useState<number | null>(null)
   const [touchEndTime, setTouchEndTime] = useState<number | null>(null)
 
-  // モバイルデバイス検出
   const isMobile = useIsMobile()
+  const isMobileLayout =
+    isDedicatedMobileWindow ||
+    layoutMode === 'mobile' ||
+    (layoutMode === 'auto' && isMobile === true)
 
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
   const { t } = useTranslation()
 
   const [markdownContent, setMarkdownContent] = useState('')
 
-  // ロングタップ処理用の関数
+  // 繝ｭ繝ｳ繧ｰ繧ｿ繝・・蜃ｦ逅・畑縺ｮ髢｢謨ｰ
   const handleTouchStart = () => {
-    // デモ端末モードで設定アクセス不可の場合はロングタップを無効化
+    // 繝・Δ遶ｯ譛ｫ繝｢繝ｼ繝峨〒險ｭ螳壹い繧ｯ繧ｻ繧ｹ荳榊庄縺ｮ蝣ｴ蜷医・繝ｭ繝ｳ繧ｰ繧ｿ繝・・繧堤┌蜉ｹ蛹・
     if (!canAccessSettings) return
     setTouchStartTime(Date.now())
   }
 
   const handleTouchEnd = () => {
-    // デモ端末モードで設定アクセス不可の場合はロングタップを無効化
+    // 繝・Δ遶ｯ譛ｫ繝｢繝ｼ繝峨〒險ｭ螳壹い繧ｯ繧ｻ繧ｹ荳榊庄縺ｮ蝣ｴ蜷医・繝ｭ繝ｳ繧ｰ繧ｿ繝・・繧堤┌蜉ｹ蛹・
     if (!canAccessSettings) return
     setTouchEndTime(Date.now())
     if (touchStartTime && Date.now() - touchStartTime >= 800) {
-      // 800ms以上押し続けるとロングタップと判定
+      // 800ms莉･荳頑款縺礼ｶ壹￠繧九→繝ｭ繝ｳ繧ｰ繧ｿ繝・・縺ｨ蛻､螳・
       setShowSettings(true)
     }
     setTouchStartTime(null)
@@ -129,7 +136,7 @@ export const Menu = () => {
       )
   }, [selectedSlideDocs])
 
-  // アシスタントメッセージ
+  // 繧｢繧ｷ繧ｹ繧ｿ繝ｳ繝医Γ繝・そ繝ｼ繧ｸ
   const latestAssistantMessage = getLatestAssistantMessage(chatLog)
 
   const handleChangeVrmFile = useCallback(
@@ -158,7 +165,7 @@ export const Menu = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === '.') {
-        // デモ端末モードで設定アクセス不可の場合はショートカットを無効化
+        // 繝・Δ遶ｯ譛ｫ繝｢繝ｼ繝峨〒險ｭ螳壹い繧ｯ繧ｻ繧ｹ荳榊庄縺ｮ蝣ｴ蜷医・繧ｷ繝ｧ繝ｼ繝医き繝・ヨ繧堤┌蜉ｹ蛹・
         if (!canAccessSettings) return
         setShowSettings((prevState) => !prevState)
       }
@@ -195,6 +202,12 @@ export const Menu = () => {
   }, [showCapture])
 
   useEffect(() => {
+    if (!isMobileLayout && mobileChatOpen) {
+      layoutStore.getState().setMobileChatOpen(false)
+    }
+  }, [isMobileLayout, mobileChatOpen])
+
+  useEffect(() => {
     if (!youtubePlaying) {
       settingsStore.setState({
         youtubeContinuationCount: 0,
@@ -206,7 +219,7 @@ export const Menu = () => {
 
   const toggleCapture = useCallback(() => {
     menuStore.setState(({ showCapture }) => ({ showCapture: !showCapture }))
-    menuStore.setState({ showWebcam: false }) // Captureを表示するときWebcamを非表示にする
+    menuStore.setState({ showWebcam: false }) // Capture繧定｡ｨ遉ｺ縺吶ｋ縺ｨ縺晃ebcam繧帝撼陦ｨ遉ｺ縺ｫ縺吶ｋ
     if (!showCapture) {
       homeStore.setState({ webcamStatus: false }) // Ensure webcam status is false when enabling capture
     }
@@ -214,7 +227,7 @@ export const Menu = () => {
 
   const toggleWebcam = useCallback(() => {
     menuStore.setState(({ showWebcam }) => ({ showWebcam: !showWebcam }))
-    menuStore.setState({ showCapture: false }) // Webcamを表示するときCaptureを非表示にする
+    menuStore.setState({ showCapture: false }) // Webcam繧定｡ｨ遉ｺ縺吶ｋ縺ｨ縺垢apture繧帝撼陦ｨ遉ｺ縺ｫ縺吶ｋ
     if (!showWebcam) {
       homeStore.setState({ captureStatus: false }) // Ensure capture status is false when enabling webcam
     }
@@ -222,7 +235,7 @@ export const Menu = () => {
 
   return (
     <>
-      {/* ロングタップ用の透明な領域（モバイルでコントロールパネルが非表示の場合） */}
+      {/* 繝ｭ繝ｳ繧ｰ繧ｿ繝・・逕ｨ縺ｮ騾乗・縺ｪ鬆伜沺・医Δ繝舌う繝ｫ縺ｧ繧ｳ繝ｳ繝医Ο繝ｼ繝ｫ繝代ロ繝ｫ縺碁撼陦ｨ遉ｺ縺ｮ蝣ｴ蜷茨ｼ・*/}
       {isMobile === true && !effectiveShowControlPanel && (
         <div
           className="absolute top-0 left-0 z-30 w-20 h-20"
@@ -252,16 +265,16 @@ export const Menu = () => {
               )}
               <div className="md:order-2 order-1">
                 <IconButton
-                  iconName={
-                    chatLogMode === CHAT_LOG_MODE.CHAT_LOG
-                      ? '24/CommentOutline'
-                      : chatLogMode === CHAT_LOG_MODE.ASSISTANT
-                        ? '24/CommentFill'
-                        : '24/Close'
-                  }
+                  iconName="24/CommentOutline"
                   label={t('ChatLog')}
                   isProcessing={false}
-                  onClick={() => setChatLogMode((prev) => (prev + 1) % 3)}
+                  onClick={() =>
+                    isMobileLayout
+                      ? layoutStore.getState().toggleMobileChat()
+                      : menuStore.setState({
+                          showChatHistoryModal: true,
+                        })
+                  }
                 />
               </div>
               {!youtubeMode && (
@@ -346,12 +359,18 @@ export const Menu = () => {
       <div className="relative">
         {slideMode && slideVisible && <Slides markdown={markdownContent} />}
       </div>
-      {chatLogMode === CHAT_LOG_MODE.CHAT_LOG && <ChatLog />}
+      <ChatLog
+        onOpenSettings={() => setShowSettings(true)}
+        isMobileLayout={isMobileLayout}
+        isMobileOpen={mobileChatOpen}
+        onCloseMobile={() => layoutStore.getState().setMobileChatOpen(false)}
+      />
+      <CurrentThreadOverlay />
+      <ChatHistoryModal />
       {showSettings && canAccessSettings && (
         <Settings onClickClose={() => setShowSettings(false)} />
       )}
-      {chatLogMode === CHAT_LOG_MODE.ASSISTANT &&
-        latestAssistantMessage &&
+      {latestAssistantMessage &&
         (!slideMode || !slideVisible) &&
         showAssistantText && <AssistantText message={latestAssistantMessage} />}
       {showWebcam && navigator.mediaDevices && <Webcam />}

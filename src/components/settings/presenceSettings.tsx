@@ -1,7 +1,7 @@
-/**
+﻿/**
  * PresenceSettings Component
  *
- * 人感検知機能の設定UIを提供
+ * 莠ｺ諢滓､懃衍讖溯・縺ｮ險ｭ螳啅I繧呈署萓・
  * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 5.4
  */
 
@@ -24,7 +24,7 @@ const EMOTION_OPTIONS: EmotionType[] = [
 ]
 
 /**
- * 折りたたみ可能なセクションコンポーネント
+ * 謚倥ｊ縺溘◆縺ｿ蜿ｯ閭ｽ縺ｪ繧ｻ繧ｯ繧ｷ繝ｧ繝ｳ繧ｳ繝ｳ繝昴・繝阪Φ繝・
  */
 const CollapsibleSection = ({
   title,
@@ -55,7 +55,7 @@ const CollapsibleSection = ({
         <span
           className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
         >
-          ▼
+          笆ｼ
         </span>
       </button>
       {isOpen && <div className="p-4 border-t border-gray-200">{children}</div>}
@@ -70,9 +70,8 @@ const PresenceSettings = () => {
   const presenceDetectionEnabled = settingsStore(
     (s) => s.presenceDetectionEnabled
   )
-  const presenceGreetingPhrases = settingsStore(
-    (s) => s.presenceGreetingPhrases
-  )
+  const presenceGreetingPhrases =
+    settingsStore((s) => s.presenceGreetingPhrases) ?? []
   const presenceDepartureTimeout = settingsStore(
     (s) => s.presenceDepartureTimeout
   )
@@ -84,9 +83,8 @@ const PresenceSettings = () => {
     (s) => s.presenceDetectionThreshold
   )
   const presenceDebugMode = settingsStore((s) => s.presenceDebugMode)
-  const presenceDeparturePhrases = settingsStore(
-    (s) => s.presenceDeparturePhrases
-  )
+  const presenceDeparturePhrases =
+    settingsStore((s) => s.presenceDeparturePhrases) ?? []
   const presenceClearChatOnDeparture = settingsStore(
     (s) => s.presenceClearChatOnDeparture
   )
@@ -94,7 +92,7 @@ const PresenceSettings = () => {
     (s) => s.presenceSelectedCameraId
   )
 
-  // カメラデバイス一覧の状態
+  // 繧ｫ繝｡繝ｩ繝・ヰ繧､繧ｹ荳隕ｧ縺ｮ迥ｶ諷・
   const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([])
   const [isLoadingCameras, setIsLoadingCameras] = useState(false)
   const [cameraError, setCameraError] = useState<string | null>(null)
@@ -107,7 +105,7 @@ const PresenceSettings = () => {
   const [newDepartureEmotion, setNewDepartureEmotion] =
     useState<EmotionType>('neutral')
 
-  // 排他制御による無効化判定
+  // 謗剃ｻ門宛蠕｡縺ｫ繧医ｋ辟｡蜉ｹ蛹門愛螳・
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const audioMode = settingsStore((s) => s.audioMode)
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
@@ -115,21 +113,21 @@ const PresenceSettings = () => {
   const isPresenceDisabled =
     realtimeAPIMode || audioMode || externalLinkageMode || slideMode
 
-  // カメラデバイス一覧を取得
+  // 繧ｫ繝｡繝ｩ繝・ヰ繧､繧ｹ荳隕ｧ繧貞叙蠕・
   const loadCameraDevices = useCallback(async () => {
     setIsLoadingCameras(true)
     setCameraError(null)
     try {
-      // カメラへのアクセス許可を得るため、一時的にストリームを取得
+      // 繧ｫ繝｡繝ｩ縺ｸ縺ｮ繧｢繧ｯ繧ｻ繧ｹ險ｱ蜿ｯ繧貞ｾ励ｋ縺溘ａ縲∽ｸ譎ら噪縺ｫ繧ｹ繝医Μ繝ｼ繝繧貞叙蠕・
       const tempStream = await navigator.mediaDevices.getUserMedia({
         video: true,
       })
-      // すぐに解放
+      // 縺吶＄縺ｫ隗｣謾ｾ
       tempStream.getTracks().forEach((track) => {
         track.stop()
       })
 
-      // デバイス一覧を取得
+      // 繝・ヰ繧､繧ｹ荳隕ｧ繧貞叙蠕・
       const devices = await navigator.mediaDevices.enumerateDevices()
       const cameras = devices.filter((device) => device.kind === 'videoinput')
       setCameraDevices(cameras)
@@ -148,12 +146,12 @@ const PresenceSettings = () => {
     }
   }, [t])
 
-  // 初回マウント時にカメラ一覧を取得
+  // 蛻晏屓繝槭え繝ｳ繝域凾縺ｫ繧ｫ繝｡繝ｩ荳隕ｧ繧貞叙蠕・
   useEffect(() => {
     loadCameraDevices()
   }, [loadCameraDevices])
 
-  // カメラ選択変更ハンドラー
+  // 繧ｫ繝｡繝ｩ驕ｸ謚槫､画峩繝上Φ繝峨Λ繝ｼ
   const handleCameraChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     settingsStore.setState({ presenceSelectedCameraId: e.target.value })
   }
@@ -291,9 +289,9 @@ const PresenceSettings = () => {
           <h2 className="text-2xl font-bold">{t('PresenceSettings')}</h2>
         </div>
 
-        {/* ===== 基本設定 ===== */}
+        {/* ===== 蝓ｺ譛ｬ險ｭ螳・===== */}
 
-        {/* 人感検知モードON/OFF */}
+        {/* 莠ｺ諢滓､懃衍繝｢繝ｼ繝碓N/OFF */}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">
             {t('PresenceDetectionEnabled')}
@@ -317,7 +315,7 @@ const PresenceSettings = () => {
           </div>
         </div>
 
-        {/* 挨拶メッセージリスト */}
+        {/* 謖ｨ諡ｶ繝｡繝・そ繝ｼ繧ｸ繝ｪ繧ｹ繝・*/}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">
             {t('PresenceGreetingPhrases')}
@@ -326,7 +324,7 @@ const PresenceSettings = () => {
             {t('PresenceGreetingPhrasesInfo')}
           </div>
 
-          {/* 既存の挨拶メッセージリスト */}
+          {/* 譌｢蟄倥・謖ｨ諡ｶ繝｡繝・そ繝ｼ繧ｸ繝ｪ繧ｹ繝・*/}
           {presenceGreetingPhrases.length > 0 && (
             <div className="my-4 space-y-2">
               {presenceGreetingPhrases.map((phrase) => (
@@ -364,14 +362,14 @@ const PresenceSettings = () => {
                     className="px-3 py-1 text-red-500 hover:bg-red-50 rounded"
                     aria-label={t('PresenceDeletePhrase')}
                   >
-                    ✕
+                    笨・
                   </button>
                 </div>
               ))}
             </div>
           )}
 
-          {/* 新規挨拶メッセージ追加 */}
+          {/* 譁ｰ隕乗肩諡ｶ繝｡繝・そ繝ｼ繧ｸ霑ｽ蜉 */}
           <div className="my-4 flex items-center gap-2">
             <input
               type="text"
@@ -404,7 +402,7 @@ const PresenceSettings = () => {
           </div>
         </div>
 
-        {/* 離脱メッセージリスト */}
+        {/* 髮｢閼ｱ繝｡繝・そ繝ｼ繧ｸ繝ｪ繧ｹ繝・*/}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">
             {t('PresenceDeparturePhrases')}
@@ -413,7 +411,7 @@ const PresenceSettings = () => {
             {t('PresenceDeparturePhrasesInfo')}
           </div>
 
-          {/* 既存の離脱メッセージリスト */}
+          {/* 譌｢蟄倥・髮｢閼ｱ繝｡繝・そ繝ｼ繧ｸ繝ｪ繧ｹ繝・*/}
           {presenceDeparturePhrases.length > 0 && (
             <div className="my-4 space-y-2">
               {presenceDeparturePhrases.map((phrase) => (
@@ -451,14 +449,14 @@ const PresenceSettings = () => {
                     className="px-3 py-1 text-red-500 hover:bg-red-50 rounded"
                     aria-label={t('PresenceDeletePhrase')}
                   >
-                    ✕
+                    笨・
                   </button>
                 </div>
               ))}
             </div>
           )}
 
-          {/* 新規離脱メッセージ追加 */}
+          {/* 譁ｰ隕城屬閼ｱ繝｡繝・そ繝ｼ繧ｸ霑ｽ蜉 */}
           <div className="my-4 flex items-center gap-2">
             <input
               type="text"
@@ -491,7 +489,7 @@ const PresenceSettings = () => {
           </div>
         </div>
 
-        {/* 離脱時に会話履歴をクリア */}
+        {/* 髮｢閼ｱ譎ゅ↓莨夊ｩｱ螻･豁ｴ繧偵け繝ｪ繧｢ */}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">
             {t('PresenceClearChatOnDeparture')}
@@ -509,12 +507,12 @@ const PresenceSettings = () => {
           </div>
         </div>
 
-        {/* ===== タイミング設定（折りたたみ） ===== */}
+        {/* ===== 繧ｿ繧､繝溘Φ繧ｰ險ｭ螳夲ｼ域釜繧翫◆縺溘∩・・===== */}
         <CollapsibleSection
           title={t('PresenceTimingSettings')}
           description={t('PresenceTimingSettingsInfo')}
         >
-          {/* 離脱判定時間 */}
+          {/* 髮｢閼ｱ蛻､螳壽凾髢・*/}
           <div className="mb-6">
             <div className="mb-2 font-bold">
               {t('PresenceDepartureTimeout')}
@@ -536,7 +534,7 @@ const PresenceSettings = () => {
             </div>
           </div>
 
-          {/* クールダウン時間 */}
+          {/* 繧ｯ繝ｼ繝ｫ繝繧ｦ繝ｳ譎る俣 */}
           <div>
             <div className="mb-2 font-bold">{t('PresenceCooldownTime')}</div>
             <div className="mb-2 text-sm whitespace-pre-wrap">
@@ -557,12 +555,12 @@ const PresenceSettings = () => {
           </div>
         </CollapsibleSection>
 
-        {/* ===== 検出設定（折りたたみ） ===== */}
+        {/* ===== 讀懷・險ｭ螳夲ｼ域釜繧翫◆縺溘∩・・===== */}
         <CollapsibleSection
           title={t('PresenceDetectionSettings')}
           description={t('PresenceDetectionSettingsInfo')}
         >
-          {/* カメラ選択 */}
+          {/* 繧ｫ繝｡繝ｩ驕ｸ謚・*/}
           <div className="mb-6">
             <div className="mb-2 font-bold">{t('PresenceSelectedCamera')}</div>
             <div className="mb-2 text-sm whitespace-pre-wrap">
@@ -595,7 +593,7 @@ const PresenceSettings = () => {
             </div>
           </div>
 
-          {/* 検出感度 */}
+          {/* 讀懷・諢溷ｺｦ */}
           <div className="mb-6">
             <div className="mb-2 font-bold">
               {t('PresenceDetectionSensitivity')}
@@ -617,7 +615,7 @@ const PresenceSettings = () => {
             </div>
           </div>
 
-          {/* 検出確定時間 */}
+          {/* 讀懷・遒ｺ螳壽凾髢・*/}
           <div>
             <div className="mb-2 font-bold">
               {t('PresenceDetectionThreshold')}
@@ -641,9 +639,9 @@ const PresenceSettings = () => {
           </div>
         </CollapsibleSection>
 
-        {/* ===== 開発者向け設定（折りたたみ） ===== */}
+        {/* ===== 髢狗匱閠・髄縺題ｨｭ螳夲ｼ域釜繧翫◆縺溘∩・・===== */}
         <CollapsibleSection title={t('PresenceDeveloperSettings')}>
-          {/* デバッグモード */}
+          {/* 繝・ヰ繝・げ繝｢繝ｼ繝・*/}
           <div>
             <div className="mb-2 font-bold">{t('PresenceDebugMode')}</div>
             <div className="mb-2 text-sm whitespace-pre-wrap">

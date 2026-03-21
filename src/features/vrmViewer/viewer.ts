@@ -6,9 +6,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import settingsStore from '@/features/stores/settings'
 
 /**
- * three.jsを使った3Dビューワー
+ * three.js郢ｧ蜑・ｽｽ・ｿ邵ｺ・｣邵ｺ繝ｻD郢晁侭ﾎ礼ｹ晢ｽｼ郢晢ｽｯ郢晢ｽｼ
  *
- * setup()でcanvasを渡してから使う
+ * setup()邵ｺ・ｧcanvas郢ｧ蜻茨ｽｸ・｡邵ｺ蜉ｱ窶ｻ邵ｺ荵晢ｽ芽抄・ｿ邵ｺ繝ｻ
  */
 export class Viewer {
   public isReady: boolean
@@ -21,6 +21,7 @@ export class Viewer {
   private _cameraControls?: OrbitControls
   private _directionalLight?: THREE.DirectionalLight
   private _ambientLight?: THREE.AmbientLight
+  private _mobileInteractionMode = false
 
   constructor() {
     this.isReady = false
@@ -56,29 +57,34 @@ export class Viewer {
 
     // gltf and vrm
     this.model = new Model(this._camera || new THREE.Object3D())
-    this.model.loadVRM(url).then(async () => {
-      if (!this.model?.vrm) return
+    this.model
+      .loadVRM(url)
+      .then(async () => {
+        if (!this.model?.vrm) return
 
-      // Disable frustum culling
-      this.model.vrm.scene.traverse((obj) => {
-        obj.frustumCulled = false
+        // Disable frustum culling
+        this.model.vrm.scene.traverse((obj) => {
+          obj.frustumCulled = false
+        })
+
+        this.model.vrm.scene.visible = false
+        this._scene.add(this.model.vrm.scene)
+
+        try {
+          const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
+          if (vrma) this.model.loadAnimation(vrma)
+        } finally {
+          this.model.vrm.scene.visible = true
+        }
+
+        // HACK: 郢ｧ・｢郢昜ｹ斟鍋ｹ晢ｽｼ郢ｧ・ｷ郢晢ｽｧ郢晢ｽｳ邵ｺ・ｮ陷ｴ貅ｽ縺帷ｸｺ蠕娯・郢ｧ蠕娯ｻ邵ｺ繝ｻ・狗ｸｺ・ｮ邵ｺ・ｧ陷蜥ｲ蜃ｽ陟募ｾ娯・郢ｧ・ｫ郢晢ｽ｡郢晢ｽｩ闖ｴ蜥ｲ・ｽ・ｮ郢ｧ螳夲ｽｪ・ｿ隰ｨ・ｴ邵ｺ蜷ｶ・・
+        requestAnimationFrame(() => {
+          this.resetCamera()
+        })
       })
-
-      this.model.vrm.scene.visible = false
-      this._scene.add(this.model.vrm.scene)
-
-      try {
-        const vrma = await loadVRMAnimation(buildUrl('/idle_loop.vrma'))
-        if (vrma) this.model.loadAnimation(vrma)
-      } finally {
-        this.model.vrm.scene.visible = true
-      }
-
-      // HACK: アニメーションの原点がずれているので再生後にカメラ位置を調整する
-      requestAnimationFrame(() => {
-        this.resetCamera()
+      .catch((error) => {
+        console.error('Failed to load VRM model:', error)
       })
-    })
   }
 
   public unloadVRM(): void {
@@ -89,7 +95,7 @@ export class Viewer {
   }
 
   /**
-   * Reactで管理しているCanvasを後から設定する
+   * React邵ｺ・ｧ驍ゑｽ｡騾・・・邵ｺ・ｦ邵ｺ繝ｻ・気anvas郢ｧ雋橸ｽｾ蠕個ｰ郢ｧ闃ｽ・ｨ・ｭ陞ｳ螢ｹ笘・ｹｧ繝ｻ
    */
   public setup(canvas: HTMLCanvasElement) {
     const parentElement = canvas.parentElement
@@ -115,6 +121,7 @@ export class Viewer {
       this._renderer.domElement
     )
     this._cameraControls.screenSpacePanning = true
+    this.configureInteractionMode(this._mobileInteractionMode)
     this._cameraControls.update()
 
     // Listen for position lock changes
@@ -135,7 +142,7 @@ export class Viewer {
   }
 
   /**
-   * canvasの親要素を参照してサイズを変更する
+   * canvas邵ｺ・ｮ髫包ｽｪ髫補悪・ｴ・ｰ郢ｧ雋樒崟霎｣・ｧ邵ｺ蜉ｱ窶ｻ郢ｧ・ｵ郢ｧ・､郢ｧ・ｺ郢ｧ雋橸ｽ､逕ｻ蟲ｩ邵ｺ蜷ｶ・・
    */
   public resize() {
     if (!this._renderer) return
@@ -155,7 +162,7 @@ export class Viewer {
   }
 
   /**
-   * VRMのheadノードを参照してカメラ位置を調整する
+   * VRM邵ｺ・ｮhead郢晏ｼｱ繝ｻ郢晏ｳｨ・定愾繧峨・邵ｺ蜉ｱ窶ｻ郢ｧ・ｫ郢晢ｽ｡郢晢ｽｩ闖ｴ蜥ｲ・ｽ・ｮ郢ｧ螳夲ｽｪ・ｿ隰ｨ・ｴ邵ｺ蜷ｶ・・
    */
   public resetCamera() {
     const { fixedCharacterPosition } = settingsStore.getState()
@@ -193,7 +200,7 @@ export class Viewer {
   }
 
   /**
-   * 現在のカメラ位置を設定に保存する
+   * 霑ｴ・ｾ陜ｨ・ｨ邵ｺ・ｮ郢ｧ・ｫ郢晢ｽ｡郢晢ｽｩ闖ｴ蜥ｲ・ｽ・ｮ郢ｧ螳夲ｽｨ・ｭ陞ｳ螢ｹ竊楢将譎擾ｽｭ蛟･笘・ｹｧ繝ｻ
    */
   public saveCameraPosition() {
     if (!this._camera || !this._cameraControls) return
@@ -215,7 +222,7 @@ export class Viewer {
   }
 
   /**
-   * 保存されたカメラ位置を復元する
+   * 闖ｫ譎擾ｽｭ蛟･・・ｹｧ蠕娯螺郢ｧ・ｫ郢晢ｽ｡郢晢ｽｩ闖ｴ蜥ｲ・ｽ・ｮ郢ｧ雋橸ｽｾ・ｩ陷医・笘・ｹｧ繝ｻ
    */
   public restoreCameraPosition() {
     if (!this._camera || !this._cameraControls) return
@@ -244,7 +251,7 @@ export class Viewer {
   }
 
   /**
-   * カメラ位置を固定する
+   * 郢ｧ・ｫ郢晢ｽ｡郢晢ｽｩ闖ｴ蜥ｲ・ｽ・ｮ郢ｧ雋槫ｴ玖楜螢ｹ笘・ｹｧ繝ｻ
    */
   public fixCameraPosition() {
     this.saveCameraPosition()
@@ -255,7 +262,7 @@ export class Viewer {
   }
 
   /**
-   * カメラ位置の固定を解除する
+   * 郢ｧ・ｫ郢晢ｽ｡郢晢ｽｩ闖ｴ蜥ｲ・ｽ・ｮ邵ｺ・ｮ陜暦ｽｺ陞ｳ螢ｹ・帝囓・｣鬮ｯ・､邵ｺ蜷ｶ・・
    */
   public unfixCameraPosition() {
     settingsStore.setState({ fixedCharacterPosition: false })
@@ -265,7 +272,7 @@ export class Viewer {
   }
 
   /**
-   * カメラ位置をリセットする
+   * 郢ｧ・ｫ郢晢ｽ｡郢晢ｽｩ闖ｴ蜥ｲ・ｽ・ｮ郢ｧ蛛ｵﾎ懃ｹｧ・ｻ郢昴・繝ｨ邵ｺ蜷ｶ・・
    */
   public resetCameraPosition() {
     settingsStore.setState({
@@ -279,8 +286,40 @@ export class Viewer {
     this.resetCamera()
   }
 
+  public setMobileInteractionMode(enabled: boolean) {
+    this._mobileInteractionMode = enabled
+    this.configureInteractionMode(enabled)
+  }
+
+  public setControlsEnabled(enabled: boolean) {
+    if (!this._cameraControls) return
+    this._cameraControls.enabled = enabled
+  }
+
+  private configureInteractionMode(isMobileMode: boolean) {
+    if (!this._cameraControls) return
+
+    this._cameraControls.enablePan = true
+    this._cameraControls.enableZoom = true
+    this._cameraControls.enableRotate = true
+
+    if (isMobileMode) {
+      this._cameraControls.touches.ONE = THREE.TOUCH.PAN
+      this._cameraControls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE
+      this._cameraControls.rotateSpeed = 0.7
+      this._cameraControls.panSpeed = 1.1
+      this._cameraControls.zoomSpeed = 1.0
+    } else {
+      this._cameraControls.touches.ONE = THREE.TOUCH.ROTATE
+      this._cameraControls.touches.TWO = THREE.TOUCH.DOLLY_PAN
+      this._cameraControls.rotateSpeed = 1.0
+      this._cameraControls.panSpeed = 1.0
+      this._cameraControls.zoomSpeed = 1.0
+    }
+  }
+
   /**
-   * ライトの強度を更新する
+   * 郢晢ｽｩ郢ｧ・､郢晏現繝ｻ陟托ｽｷ陟趣ｽｦ郢ｧ蜻亥ｳｩ隴・ｽｰ邵ｺ蜷ｶ・・
    */
   public updateLightingIntensity(intensity: number) {
     if (this._directionalLight) {

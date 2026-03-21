@@ -12,6 +12,7 @@ import RealtimeAPIToolsJson from './realtimeAPITools.json'
 import { AudioBufferManager } from '@/utils/audioBufferManager'
 import toastStore from '@/features/stores/toast'
 import { resetSessionId } from '@/utils/sessionId'
+import { composeSystemPrompt } from '@/features/chat/systemPrompt'
 
 interface Params {
   handleReceiveTextFromRt: (
@@ -184,7 +185,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
         type: 'session.update',
         session: {
           modalities: ['text', 'audio'],
-          instructions: ss.systemPrompt,
+          instructions: composeSystemPrompt(ss),
           voice: ss.realtimeAPIModeVoice,
           input_audio_format: 'pcm16',
           output_audio_format: 'pcm16',

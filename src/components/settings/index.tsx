@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+﻿import React, { Component, useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import menuStore from '@/features/stores/menu'
 
@@ -23,6 +23,46 @@ import KioskSettings from './kioskSettings'
 type Props = {
   onClickClose: () => void
 }
+
+class SettingsErrorBoundary extends Component<
+  { activeTab: string; children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { activeTab: string; children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error) {
+    console.error(
+      `[Settings] tab render failed: ${this.props.activeTab}`,
+      error
+    )
+  }
+
+  componentDidUpdate(prevProps: { activeTab: string }) {
+    if (prevProps.activeTab !== this.props.activeTab && this.state.hasError) {
+      this.setState({ hasError: false })
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="text-red-600 whitespace-pre-wrap">
+          Failed to render this settings tab. Please switch tabs or restart the
+          app.
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 const Settings = (props: Props) => {
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
@@ -49,7 +89,7 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   )
 }
 
-// タブの定義
+// 繧ｿ繝悶・螳夂ｾｩ
 type TabKey =
   | 'description'
   | 'based'
@@ -66,7 +106,7 @@ type TabKey =
   | 'other'
   | 'speechInput'
 
-// アイコンのパスマッピング
+// 繧｢繧､繧ｳ繝ｳ縺ｮ繝代せ繝槭ャ繝斐Φ繧ｰ
 const tabIconMapping: Record<TabKey, string> = {
   description: '/images/setting-icons/description.svg',
   based: '/images/setting-icons/basic-settings.svg',
@@ -92,10 +132,10 @@ const Main = () => {
 
   const setActiveTab = (tab: TabKey) => {
     menuStore.setState({ activeSettingsTab: tab })
-    setIsDropdownOpen(false) // モバイルドロップダウンを閉じる
+    setIsDropdownOpen(false) // 繝｢繝舌う繝ｫ繝峨Ο繝・・繝繧ｦ繝ｳ繧帝哩縺倥ｋ
   }
 
-  // ドロップダウンの外側をクリックした際に閉じる
+  // 繝峨Ο繝・・繝繧ｦ繝ｳ縺ｮ螟門・繧偵け繝ｪ繝・け縺励◆髫帙↓髢峨§繧・
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -213,7 +253,7 @@ const Main = () => {
     <main className="max-h-full overflow-auto relative">
       <div className="text-text1 max-w-5xl mx-auto px-3 sm:px-6 py-14 sm:py-20">
         <div className="md:flex">
-          {/* デスクトップ版タブナビゲーション */}
+          {/* 繝・せ繧ｯ繝医ャ繝礼沿繧ｿ繝悶リ繝薙ご繝ｼ繧ｷ繝ｧ繝ｳ */}
           <div className="hidden md:block md:w-[25%] md:me-4 mb-4 md:mb-0 md:sticky md:top-20 md:self-start">
             <ul className="flex flex-col space-y-1 text-sm font-medium">
               {tabs.map((tab) => (
@@ -242,7 +282,7 @@ const Main = () => {
             </ul>
           </div>
 
-          {/* モバイル版ドロップダウンナビゲーション */}
+          {/* 繝｢繝舌う繝ｫ迚医ラ繝ｭ繝・・繝繧ｦ繝ｳ繝翫ン繧ｲ繝ｼ繧ｷ繝ｧ繝ｳ */}
           <div className="md:hidden mb-4 relative" ref={dropdownRef}>
             <button
               className="flex items-center justify-between w-full py-3 px-4 font-medium text-left bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -303,9 +343,11 @@ const Main = () => {
             )}
           </div>
 
-          {/* タブコンテンツ */}
+          {/* 繧ｿ繝悶さ繝ｳ繝・Φ繝・*/}
           <div className="p-4 sm:p-6 bg-gray-400 bg-opacity-20 text-medium rounded-lg w-full">
-            {renderTabContent()}
+            <SettingsErrorBoundary activeTab={activeTab}>
+              {renderTabContent()}
+            </SettingsErrorBoundary>
           </div>
         </div>
       </div>

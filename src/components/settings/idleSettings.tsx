@@ -1,7 +1,7 @@
-/**
+﻿/**
  * IdleSettings Component
  *
- * アイドルモード機能の設定UIを提供
+ * 繧｢繧､繝峨Ν繝｢繝ｼ繝画ｩ溯・縺ｮ險ｭ螳啅I繧呈署萓・
  * Requirements: 1.1, 3.1-3.3, 4.1-4.4, 7.2-7.3, 8.2-8.3
  */
 
@@ -34,7 +34,7 @@ const IdleSettings = () => {
 
   // Settings store state
   const idleModeEnabled = settingsStore((s) => s.idleModeEnabled)
-  const idlePhrases = settingsStore((s) => s.idlePhrases)
+  const idlePhrases = settingsStore((s) => s.idlePhrases) ?? []
   const idlePlaybackMode = settingsStore((s) => s.idlePlaybackMode)
   const idleInterval = settingsStore((s) => s.idleInterval)
   const idleTimePeriodEnabled = settingsStore((s) => s.idleTimePeriodEnabled)
@@ -57,7 +57,7 @@ const IdleSettings = () => {
   )
   const idleAiPromptTemplate = settingsStore((s) => s.idleAiPromptTemplate)
 
-  // 排他制御による無効化判定
+  // 謗剃ｻ門宛蠕｡縺ｫ繧医ｋ辟｡蜉ｹ蛹門愛螳・
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const audioMode = settingsStore((s) => s.audioMode)
   const externalLinkageMode = settingsStore((s) => s.externalLinkageMode)
@@ -179,7 +179,7 @@ const IdleSettings = () => {
           <h2 className="text-2xl font-bold">{t('IdleSettings')}</h2>
         </div>
 
-        {/* アイドルモードON/OFF */}
+        {/* 繧｢繧､繝峨Ν繝｢繝ｼ繝碓N/OFF */}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">{t('IdleModeEnabled')}</div>
           <div className="my-2 text-sm whitespace-pre-wrap">
@@ -199,7 +199,7 @@ const IdleSettings = () => {
           </div>
         </div>
 
-        {/* 発話間隔 */}
+        {/* 逋ｺ隧ｱ髢馴囈 */}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">{t('IdleInterval')}</div>
           <div className="my-2 text-sm whitespace-pre-wrap">
@@ -223,7 +223,7 @@ const IdleSettings = () => {
           </div>
         </div>
 
-        {/* 発話ソース */}
+        {/* 逋ｺ隧ｱ繧ｽ繝ｼ繧ｹ */}
         <div className="my-6">
           <div className="my-4 text-xl font-bold">{t('IdleSpeechSource')}</div>
           <div className="my-2 text-sm whitespace-pre-wrap">
@@ -258,10 +258,10 @@ const IdleSettings = () => {
             </select>
           </div>
 
-          {/* 発話リスト（phraseList選択時） */}
+          {/* 逋ｺ隧ｱ繝ｪ繧ｹ繝茨ｼ・hraseList驕ｸ謚樊凾・・*/}
           {!idleTimePeriodEnabled && !idleAiGenerationEnabled && (
             <div className="my-4 space-y-4">
-              {/* 再生モード */}
+              {/* 蜀咲函繝｢繝ｼ繝・*/}
               <div>
                 <div className="my-2 text-sm font-medium">
                   {t('IdlePlaybackMode')}
@@ -282,7 +282,7 @@ const IdleSettings = () => {
                 </select>
               </div>
 
-              {/* 発話リスト */}
+              {/* 逋ｺ隧ｱ繝ｪ繧ｹ繝・*/}
               <div>
                 <div className="my-2 text-sm font-medium">
                   {t('IdlePhrases')}
@@ -291,7 +291,7 @@ const IdleSettings = () => {
                   {t('IdlePhrasesInfo')}
                 </div>
 
-                {/* 既存の発話リスト */}
+                {/* 譌｢蟄倥・逋ｺ隧ｱ繝ｪ繧ｹ繝・*/}
                 {idlePhrases.length > 0 && (
                   <div className="my-4 space-y-2">
                     {idlePhrases.map((phrase, index) => (
@@ -306,7 +306,7 @@ const IdleSettings = () => {
                             className="px-2 py-0.5 text-xs bg-gray-100 rounded disabled:opacity-30"
                             aria-label={t('IdleMoveUp')}
                           >
-                            ▲
+                            笆ｲ
                           </button>
                           <button
                             onClick={() => handleMovePhrase(phrase.id, 'down')}
@@ -314,7 +314,7 @@ const IdleSettings = () => {
                             className="px-2 py-0.5 text-xs bg-gray-100 rounded disabled:opacity-30"
                             aria-label={t('IdleMoveDown')}
                           >
-                            ▼
+                            笆ｼ
                           </button>
                         </div>
                         <input
@@ -348,14 +348,14 @@ const IdleSettings = () => {
                           className="px-3 py-1 text-red-500 hover:bg-red-50 rounded"
                           aria-label={t('IdleDeletePhrase')}
                         >
-                          ✕
+                          笨・
                         </button>
                       </div>
                     ))}
                   </div>
                 )}
 
-                {/* 新規発話追加 */}
+                {/* 譁ｰ隕冗匱隧ｱ霑ｽ蜉 */}
                 <div className="my-4 flex items-center gap-2">
                   <input
                     type="text"
@@ -390,10 +390,10 @@ const IdleSettings = () => {
             </div>
           )}
 
-          {/* 時間帯別挨拶（timePeriod選択時） */}
+          {/* 譎る俣蟶ｯ蛻･謖ｨ諡ｶ・・imePeriod驕ｸ謚樊凾・・*/}
           {idleTimePeriodEnabled && (
             <div className="my-4 space-y-4">
-              {/* 朝（5:00-10:59） */}
+              {/* 譛晢ｼ・:00-10:59・・*/}
               <div>
                 <div className="my-2 text-sm font-medium">
                   {t('IdleTimePeriodMorning')}
@@ -427,7 +427,7 @@ const IdleSettings = () => {
                   </select>
                 </div>
               </div>
-              {/* 昼（11:00-16:59） */}
+              {/* 譏ｼ・・1:00-16:59・・*/}
               <div>
                 <div className="my-2 text-sm font-medium">
                   {t('IdleTimePeriodAfternoon')}
@@ -461,7 +461,7 @@ const IdleSettings = () => {
                   </select>
                 </div>
               </div>
-              {/* 夕（17:00-4:59） */}
+              {/* 螟包ｼ・7:00-4:59・・*/}
               <div>
                 <div className="my-2 text-sm font-medium">
                   {t('IdleTimePeriodEvening')}
@@ -498,7 +498,7 @@ const IdleSettings = () => {
             </div>
           )}
 
-          {/* AI自動生成（aiGeneration選択時） */}
+          {/* AI閾ｪ蜍慕函謌撰ｼ・iGeneration驕ｸ謚樊凾・・*/}
           {idleAiGenerationEnabled && (
             <div className="my-4">
               <div className="my-2 text-sm font-medium">

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { PNGTuberEngine } from '@/features/pngTuber/pngTuberEngine'
+import { useIsMobileLayout } from '@/hooks/useIsMobileLayout'
+import { useIsDedicatedMobileWindow } from '@/hooks/useIsDedicatedMobileWindow'
 
 const PNGTuberComponent = (): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -25,6 +27,9 @@ const PNGTuberComponent = (): JSX.Element => {
   const pngTuberScale = settingsStore((s) => s.pngTuberScale)
   const pngTuberOffsetX = settingsStore((s) => s.pngTuberOffsetX)
   const pngTuberOffsetY = settingsStore((s) => s.pngTuberOffsetY)
+  const isMobileLayout = useIsMobileLayout()
+  const isDedicatedMobileWindow = useIsDedicatedMobileWindow()
+  const isTouchMobileLayout = isMobileLayout && !isDedicatedMobileWindow
 
   // ドラッグ状態の追跡（refで管理してリスナーを安定させる）
   const [isDragging, setIsDragging] = useState(false)
@@ -138,31 +143,39 @@ const PNGTuberComponent = (): JSX.Element => {
   }, [])
 
   // ホイールイベント（ズーム）
-  const handleWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault()
-    const currentScale = settingsStore.getState().pngTuberScale
-    const scaleChange = e.deltaY * -0.001
-    const newScale = Math.max(0.1, Math.min(3.0, currentScale + scaleChange))
-    settingsStore.setState({ pngTuberScale: newScale })
-  }, [])
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      if (isTouchMobileLayout) return
+      e.preventDefault()
+      const currentScale = settingsStore.getState().pngTuberScale
+      const scaleChange = e.deltaY * -0.001
+      const newScale = Math.max(0.1, Math.min(3.0, currentScale + scaleChange))
+      settingsStore.setState({ pngTuberScale: newScale })
+    },
+    [isTouchMobileLayout]
+  )
 
   // ポインターイベント（ドラッグ）- refを使用してハンドラーを安定させる
-  const handlePointerDown = useCallback((e: PointerEvent) => {
-    const currentOffsetX = settingsStore.getState().pngTuberOffsetX
-    const currentOffsetY = settingsStore.getState().pngTuberOffsetY
+  const handlePointerDown = useCallback(
+    (e: PointerEvent) => {
+      if (isTouchMobileLayout) return
+      const currentOffsetX = settingsStore.getState().pngTuberOffsetX
+      const currentOffsetY = settingsStore.getState().pngTuberOffsetY
 
-    isDraggingRef.current = true
-    setIsDragging(true)
+      isDraggingRef.current = true
+      setIsDragging(true)
 
-    const offset = { x: currentOffsetX, y: currentOffsetY }
-    tempOffsetRef.current = offset
-    setTempOffset(offset)
+      const offset = { x: currentOffsetX, y: currentOffsetY }
+      tempOffsetRef.current = offset
+      setTempOffset(offset)
 
-    dragStartRef.current = {
-      x: e.clientX - currentOffsetX,
-      y: e.clientY - currentOffsetY,
-    }
-  }, [])
+      dragStartRef.current = {
+        x: e.clientX - currentOffsetX,
+        y: e.clientY - currentOffsetY,
+      }
+    },
+    [isTouchMobileLayout]
+  )
 
   const handlePointerMove = useCallback((e: PointerEvent) => {
     if (!isDraggingRef.current) return
@@ -207,6 +220,18 @@ const PNGTuberComponent = (): JSX.Element => {
     }
   }, [handleWheel, handlePointerDown, handlePointerMove, handlePointerUp])
 
+  const displayedOffsetX = isDragging
+    ? tempOffset.x
+    : isTouchMobileLayout
+      ? 0
+      : pngTuberOffsetX
+  const displayedOffsetY = isDragging
+    ? tempOffset.y
+    : isTouchMobileLayout
+      ? 0
+      : pngTuberOffsetY
+  const displayedScale = isTouchMobileLayout ? 1 : pngTuberScale
+
   return (
     <div
       ref={containerRef}
@@ -219,7 +244,7 @@ const PNGTuberComponent = (): JSX.Element => {
         ref={transformContainerRef}
         className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
         style={{
-          transform: `translate(${isDragging ? tempOffset.x : pngTuberOffsetX}px, ${isDragging ? tempOffset.y : pngTuberOffsetY}px) scale(${pngTuberScale})`,
+          transform: `translate(${displayedOffsetX}px, ${displayedOffsetY}px) scale(${displayedScale})`,
           transformOrigin: 'center center',
         }}
       >
