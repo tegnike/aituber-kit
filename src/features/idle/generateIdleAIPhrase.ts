@@ -15,13 +15,17 @@ const IDLE_AI_SYSTEM_PROMPT_SUFFIX = `
 /**
  * アイドルモード用のAI自動生成発話を生成する
  *
- * キャラクタープロンプトは使用せず、idleAiPromptTemplateのみを
- * システムプロンプトとして利用する。
+ * キャラクタープロンプトをベースに、idleAiPromptTemplateで
+ * アイドル時の話題や生成方針を追加指定する。
  */
 export async function generateIdleAIPhrase(
-  promptTemplate: string
+  promptTemplate: string,
+  characterPrompt = ''
 ): Promise<{ text: string; emotion: EmotionType } | null> {
-  const systemPrompt = promptTemplate + IDLE_AI_SYSTEM_PROMPT_SUFFIX
+  const promptParts = [characterPrompt, promptTemplate].filter((part) =>
+    part.trim()
+  )
+  const systemPrompt = promptParts.join('\n\n') + IDLE_AI_SYSTEM_PROMPT_SUFFIX
 
   const messages: Message[] = [
     { role: 'system', content: systemPrompt },

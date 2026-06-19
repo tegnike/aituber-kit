@@ -215,7 +215,10 @@ export function useIdleMode({
     let isAiGenerated = false
     if (idleAiGenerationEnabled && !idleTimePeriodEnabled) {
       const ss = settingsStore.getState()
-      phrase = await generateIdleAIPhrase(ss.idleAiPromptTemplate)
+      phrase = await generateIdleAIPhrase(
+        ss.idleAiPromptTemplate,
+        ss.systemPrompt
+      )
       isAiGenerated = true
     } else {
       phrase = selectPhrase()

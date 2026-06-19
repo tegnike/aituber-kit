@@ -5,6 +5,7 @@ import { renderHook, act } from '@testing-library/react'
 import { useIdleMode } from '@/hooks/useIdleMode'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
+import { generateIdleAIPhrase } from '@/features/idle/generateIdleAIPhrase'
 
 // Mock speakCharacter - 即座にonCompleteコールバックを呼び出す
 const mockSpeakCharacter = jest.fn(
@@ -20,6 +21,10 @@ const mockSpeakCharacter = jest.fn(
 )
 jest.mock('@/features/messages/speakCharacter', () => ({
   speakCharacter: (...args: unknown[]) => mockSpeakCharacter(...args),
+}))
+
+jest.mock('@/features/idle/generateIdleAIPhrase', () => ({
+  generateIdleAIPhrase: jest.fn(),
 }))
 
 // Mock SpeakQueue
@@ -74,6 +79,7 @@ function setupSettingsMock(overrides = {}) {
     idleTimePeriodEvening: 'こんばんは！',
     idleAiGenerationEnabled: false,
     idleAiPromptTemplate: '',
+    systemPrompt: 'キャラクタープロンプト',
     ...overrides,
   }
   const mockSettingsStore = settingsStore as unknown as jest.Mock & {
@@ -93,6 +99,7 @@ function setupHomeMock(overrides = {}) {
     chatProcessingCount: 0,
     isSpeaking: false,
     presenceState: 'idle',
+    upsertMessage: jest.fn(),
     ...overrides,
   }
   const mockHomeStore = homeStore as unknown as {
@@ -416,6 +423,39 @@ describe('useIdleMode - Task 3.3: セリフ選択ロジック', () => {
 
       // 時間帯別挨拶が呼ばれる
       expect(onIdleSpeechStart).toHaveBeenCalled()
+    })
+  })
+
+  describe('AI自動生成', () => {
+    it('should pass both idle prompt and character prompt to AI generation', async () => {
+      setupSettingsMock({
+        idleInterval: 5,
+        idlePhrases: [],
+        idleAiGenerationEnabled: true,
+        idleAiPromptTemplate: '展示会の来場者に話しかける',
+        systemPrompt: 'あなたは明るいAIキャラクターです',
+      })
+      ;(generateIdleAIPhrase as jest.Mock).mockResolvedValue({
+        text: 'こんにちは！',
+        emotion: 'happy',
+      })
+
+      const onIdleSpeechStart = jest.fn()
+      renderHook(() => useIdleMode({ onIdleSpeechStart }))
+
+      await act(async () => {
+        jest.advanceTimersByTime(5000)
+        await Promise.resolve()
+      })
+
+      expect(generateIdleAIPhrase).toHaveBeenCalledWith(
+        '展示会の来場者に話しかける',
+        'あなたは明るいAIキャラクターです'
+      )
+      expect(onIdleSpeechStart).toHaveBeenCalledWith({
+        text: 'こんにちは！',
+        emotion: 'happy',
+      })
     })
   })
 })
