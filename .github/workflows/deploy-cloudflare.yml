@@ -67,8 +67,12 @@ jobs:
           if [ -n "$CLOUDFLARE_ENV_FILE" ]; then
             echo "$CLOUDFLARE_ENV_FILE" > .env.local
           fi
+          if [ -n "$CLOUDFLARE_PUBLIC_ENV_APPEND" ]; then
+            printf '\n%s\n' "$CLOUDFLARE_PUBLIC_ENV_APPEND" >> .env.local
+          fi
         env:
           CLOUDFLARE_ENV_FILE: ${{ secrets.CLOUDFLARE_ENV_FILE }}
+          CLOUDFLARE_PUBLIC_ENV_APPEND: ${{ secrets.CLOUDFLARE_PUBLIC_ENV_APPEND }}
 
       - name: Build for Cloudflare
         run: npm run build:cloudflare
