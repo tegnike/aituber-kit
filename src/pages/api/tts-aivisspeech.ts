@@ -22,8 +22,7 @@ export default async function handler(
     prePhonemeLength = 0.1,
     postPhonemeLength = 0.1,
   } = req.body
-  const usesServerConfiguredUrl =
-    !serverUrl && Boolean(process.env.AIVIS_SPEECH_SERVER_URL)
+  const usesServerConfiguredUrl = !serverUrl
   const apiUrl =
     serverUrl || process.env.AIVIS_SPEECH_SERVER_URL || 'http://localhost:10101'
 

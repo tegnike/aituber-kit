@@ -78,9 +78,14 @@ export default async function handler(
   }
 
   // Azureのエンドポイントとデプロイメント名の処理
-  const azureEndpointValue = azureEndpoint || process.env.AZURE_ENDPOINT || ''
+  const azureEndpointValue =
+    aiService === 'azure'
+      ? azureEndpoint || process.env.AZURE_ENDPOINT || ''
+      : ''
   const usesServerAzureEndpoint =
-    !azureEndpoint && Boolean(process.env.AZURE_ENDPOINT)
+    aiService === 'azure' &&
+    !azureEndpoint &&
+    Boolean(process.env.AZURE_ENDPOINT)
   if (
     usesServerAzureEndpoint &&
     !guardServerSecretAccess(req, res, { featureName: 'youtube/continuation' })

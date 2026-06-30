@@ -25,6 +25,7 @@ describe('/api/update-aivis-speakers', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     process.env = { ...originalEnv }
+    delete process.env.AIVIS_SPEECH_SERVER_URL
     mockIsRestrictedMode.mockReturnValue(false)
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
@@ -55,6 +56,18 @@ describe('/api/update-aivis-speakers', () => {
         feature: 'update-aivis-speakers',
       })
     )
+    expect(global.fetch).not.toHaveBeenCalled()
+    expect(mockWriteFile).not.toHaveBeenCalled()
+  })
+
+  it('rejects non-POST requests', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
+    const { req, res } = createMocks({ method: 'GET' })
+
+    await handler(req as any, res as any)
+
+    expect(res._getStatusCode()).toBe(405)
+    expect(res._getJSONData()).toEqual({ error: 'Method Not Allowed' })
     expect(global.fetch).not.toHaveBeenCalled()
     expect(mockWriteFile).not.toHaveBeenCalled()
   })

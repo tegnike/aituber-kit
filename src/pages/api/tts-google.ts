@@ -16,13 +16,13 @@ export default async function handler(
   const ttsType = req.body.ttsType
   const languageCode = req.body.languageCode || 'ja-JP'
 
+  if (!guardServerSecretAccess(req, res, { featureName: 'tts-google' })) {
+    return
+  }
+
   try {
     // Check if GOOGLE_TTS_KEY exists
     if (process.env.GOOGLE_TTS_KEY) {
-      if (!guardServerSecretAccess(req, res, { featureName: 'tts-google' })) {
-        return
-      }
-
       // Use API Key based authentication
       const response = await fetch(
         `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.GOOGLE_TTS_KEY}`,

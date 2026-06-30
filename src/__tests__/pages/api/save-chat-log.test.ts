@@ -179,6 +179,21 @@ describe('/api/save-chat-log', () => {
     expect(res._json).toEqual({ message: 'Invalid targetFileName' })
   })
 
+  it('should reject non-string targetFileName values', async () => {
+    const req = createMockReq({
+      body: {
+        messages: [{ role: 'user', content: 'Hello' }],
+        targetFileName: { name: 'log.json' },
+      },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(400)
+    expect(res._json).toEqual({ message: 'Invalid targetFileName' })
+  })
+
   it('should return 400 when overwrite=true but targetFileName is missing', async () => {
     const req = createMockReq({
       body: {

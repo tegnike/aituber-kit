@@ -45,7 +45,7 @@ export default async function handler(
     } = req.body as {
       messages: Message[]
       isNewFile?: boolean
-      targetFileName?: string | null
+      targetFileName?: unknown
       overwrite?: boolean
     }
     const currentTime = new Date().toISOString()
@@ -144,7 +144,8 @@ export default async function handler(
   }
 }
 
-function getSafeLogFileName(fileName: string): string | null {
+function getSafeLogFileName(fileName: unknown): string | null {
+  if (typeof fileName !== 'string') return null
   if (fileName !== path.basename(fileName)) return null
   if (fileName.includes('/') || fileName.includes('\\')) return null
   if (fileName === '.' || fileName === '..') return null

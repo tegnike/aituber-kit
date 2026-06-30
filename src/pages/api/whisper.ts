@@ -73,13 +73,7 @@ export default async function handler(
       process.env.OPENAI_API_KEY ||
       process.env.NEXT_PUBLIC_OPENAI_API_KEY ||
       process.env.NEXT_PUBLIC_OPENAI_KEY
-    const usesServerSecret =
-      !openaiKey &&
-      Boolean(
-        process.env.OPENAI_API_KEY ||
-        process.env.NEXT_PUBLIC_OPENAI_API_KEY ||
-        process.env.NEXT_PUBLIC_OPENAI_KEY
-      )
+    const usesServerSecret = !openaiKey && Boolean(process.env.OPENAI_API_KEY)
 
     if (!apiKey) {
       return res.status(500).json({ error: 'OpenAI API key is not configured' })

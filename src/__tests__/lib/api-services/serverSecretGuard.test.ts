@@ -46,14 +46,16 @@ describe('serverSecretGuard', () => {
     expect(res._getStatusCode()).toBe(200)
   })
 
-  it('allows demo mode only for same-origin requests', () => {
+  it('allows demo mode only for same-origin requests with a demo token', () => {
     process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'demo'
+    process.env.AITUBERKIT_DEMO_ACCESS_TOKEN = 'demo-token'
     const { req, res } = createMocks({
       method: 'POST',
       headers: {
         host: 'aituberkit.example',
         origin: 'https://aituberkit.example',
         'sec-fetch-site': 'same-origin',
+        'x-aituberkit-demo-token': 'demo-token',
       },
     })
 
@@ -67,12 +69,34 @@ describe('serverSecretGuard', () => {
 
   it('rejects demo mode cross-site requests', () => {
     process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'demo'
+    process.env.AITUBERKIT_DEMO_ACCESS_TOKEN = 'demo-token'
     const { req, res } = createMocks({
       method: 'POST',
       headers: {
         host: 'aituberkit.example',
         origin: 'https://evil.example',
         'sec-fetch-site': 'cross-site',
+        'x-aituberkit-demo-token': 'demo-token',
+      },
+    })
+
+    const allowed = guardServerSecretAccess(req as any, res as any, {
+      featureName: 'test-feature',
+    })
+
+    expect(allowed).toBe(false)
+    expect(res._getStatusCode()).toBe(403)
+  })
+
+  it('rejects demo mode requests without a demo token', () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'demo'
+    process.env.AITUBERKIT_DEMO_ACCESS_TOKEN = 'demo-token'
+    const { req, res } = createMocks({
+      method: 'POST',
+      headers: {
+        host: 'aituberkit.example',
+        origin: 'https://aituberkit.example',
+        'sec-fetch-site': 'same-origin',
       },
     })
 
@@ -86,6 +110,7 @@ describe('serverSecretGuard', () => {
 
   it('rate limits demo mode requests per feature and client IP', () => {
     process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'demo'
+    process.env.AITUBERKIT_DEMO_ACCESS_TOKEN = 'demo-token'
     process.env.AITUBERKIT_DEMO_RATE_LIMIT_PER_MINUTE = '1'
 
     const createSameOriginRequest = () =>
@@ -95,8 +120,10 @@ describe('serverSecretGuard', () => {
           host: 'aituberkit.example',
           origin: 'https://aituberkit.example',
           'sec-fetch-site': 'same-origin',
+          'x-aituberkit-demo-token': 'demo-token',
           'x-forwarded-for': '203.0.113.10',
         },
+        socket: { remoteAddress: '198.51.100.20' },
       })
 
     const first = createSameOriginRequest()

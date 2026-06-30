@@ -220,6 +220,38 @@ describe('/api/ai/vercel handler', () => {
     })
   })
 
+  it('does not guard non-azure requests only because AZURE_ENDPOINT is configured', async () => {
+    process.env.AZURE_ENDPOINT =
+      'https://my-resource.openai.azure.com/openai/deployments/my-deploy/chat/completions?api-version=2024-05-01-preview'
+    mockModifyMessages.mockReturnValue([{ role: 'user', content: 'hi' }] as any)
+
+    const generateResponse = new Response('done', { status: 200 })
+    mockGenerateAiText.mockResolvedValue(generateResponse)
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
+        messages: [],
+        apiKey: 'openai-key',
+        aiService: 'openai',
+        model: 'gpt-4.1',
+        stream: false,
+        temperature: 0.3,
+        maxTokens: 256,
+      },
+    })
+
+    await handler(req as any, res as any)
+
+    expect(res._getStatusCode()).not.toBe(403)
+    expect(mockCreateAIRegistry).toHaveBeenCalledWith('openai', {
+      apiKey: 'openai-key',
+      baseURL: undefined,
+      resourceName: '',
+    })
+    expect(mockGenerateAiText).toHaveBeenCalled()
+  })
+
   it('calls generateAiText for azure requests using deployment name', async () => {
     mockModifyMessages.mockReturnValue([{ role: 'user', content: 'hi' }] as any)
 

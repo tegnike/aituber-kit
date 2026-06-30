@@ -52,6 +52,7 @@ describe('/api/tts-google', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    process.env = { ...originalEnv }
     jest.spyOn(console, 'error').mockImplementation(() => {})
     delete process.env.GOOGLE_TTS_KEY
   })
@@ -132,6 +133,7 @@ describe('/api/tts-google', () => {
 
   describe('Credential authentication', () => {
     it('should use TextToSpeechClient when no API key', async () => {
+      process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
       const audioContent = Buffer.from('audio data')
       mockSynthesizeSpeech.mockResolvedValue([{ audioContent: audioContent }])
 
@@ -158,6 +160,7 @@ describe('/api/tts-google', () => {
     })
 
     it('should return 500 on client error', async () => {
+      process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
       mockSynthesizeSpeech.mockRejectedValue(new Error('Auth error'))
 
       const req = createMockReq({
@@ -170,9 +173,30 @@ describe('/api/tts-google', () => {
       expect(res._status).toBe(500)
       expect(res._json).toEqual({ error: 'Internal Server Error' })
     })
+
+    it('should reject default credential usage by default', async () => {
+      delete process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE
+
+      const req = createMockReq({
+        body: { message: 'test', ttsType: 'en', languageCode: 'en-US' },
+      })
+      const res = createMockRes()
+
+      await handler(req, res)
+
+      expect(res._status).toBe(403)
+      expect(res._json).toEqual(
+        expect.objectContaining({
+          errorCode: 'ServerSecretAccessDenied',
+          feature: 'tts-google',
+        })
+      )
+      expect(mockSynthesizeSpeech).not.toHaveBeenCalled()
+    })
   })
 
   it('should default languageCode to ja-JP', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
     const audioContent = Buffer.from('audio')
     mockSynthesizeSpeech.mockResolvedValue([{ audioContent }])
 

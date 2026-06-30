@@ -62,6 +62,7 @@ describe('/api/tts-aivisspeech', () => {
   })
 
   it('should call audio_query and synthesis endpoints', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
     const mockPipe = jest.fn()
     mockAxiosPost
       .mockResolvedValueOnce({
@@ -97,6 +98,7 @@ describe('/api/tts-aivisspeech', () => {
   })
 
   it('should set Content-Type to audio/wav', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
     const mockPipe = jest.fn()
     mockAxiosPost
       .mockResolvedValueOnce({ data: {} })
@@ -139,6 +141,32 @@ describe('/api/tts-aivisspeech', () => {
     await handler(req, res)
 
     expect(mockAxiosPost.mock.calls[0][0]).toContain('http://custom:10101')
+  })
+
+  it('should reject default localhost AivisSpeech URL by default', async () => {
+    delete process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE
+
+    const req = createMockReq({
+      body: {
+        text: 'test',
+        speaker: 1,
+        speed: 1,
+        pitch: 0,
+        intonationScale: 1,
+      },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(403)
+    expect(res._json).toEqual(
+      expect.objectContaining({
+        errorCode: 'ServerSecretAccessDenied',
+        feature: 'tts-aivisspeech',
+      })
+    )
+    expect(mockAxiosPost).not.toHaveBeenCalled()
   })
 
   it('should reject server-configured AivisSpeech URL by default', async () => {
@@ -189,6 +217,7 @@ describe('/api/tts-aivisspeech', () => {
   })
 
   it('should apply tempoDynamics parameter', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
     const mockPipe = jest.fn()
     mockAxiosPost
       .mockResolvedValueOnce({ data: {} })
@@ -213,6 +242,7 @@ describe('/api/tts-aivisspeech', () => {
   })
 
   it('should return 500 on error', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
     mockAxiosPost.mockRejectedValue(new Error('Connection refused'))
 
     const req = createMockReq({

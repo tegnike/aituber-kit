@@ -12,8 +12,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { text, speaker, speed, pitch, intonation, serverUrl } = req.body
-  const usesServerConfiguredUrl =
-    !serverUrl && Boolean(process.env.VOICEVOX_SERVER_URL)
+  const usesServerConfiguredUrl = !serverUrl
   const apiUrl =
     serverUrl || process.env.VOICEVOX_SERVER_URL || 'http://localhost:50021'
 

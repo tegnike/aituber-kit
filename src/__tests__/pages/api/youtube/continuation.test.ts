@@ -25,6 +25,7 @@ const mockCreateAIRegistry = createAIRegistry as jest.MockedFunction<
 const mockGetLanguageModel = getLanguageModel as jest.MockedFunction<
   typeof getLanguageModel
 >
+const originalEnv = { ...process.env }
 
 const buildRequestBody = (overrides: any = {}) => ({
   aiService: 'openai',
@@ -49,8 +50,13 @@ const buildRequestBody = (overrides: any = {}) => ({
 describe('/api/youtube/continuation handler', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    process.env = { ...originalEnv }
     mockCreateAIRegistry.mockReturnValue({ languageModel: jest.fn() } as any)
     mockGetLanguageModel.mockReturnValue('mock-language-model' as any)
+  })
+
+  afterAll(() => {
+    process.env = originalEnv
   })
 
   it('rejects non-POST requests', async () => {
@@ -169,6 +175,40 @@ describe('/api/youtube/continuation handler', () => {
     expect(ctx.get('languageModel')).toBe('mock-language-model')
     expect(ctx.get('temperature')).toBe(1.0)
     expect(ctx.get('maxTokens')).toBe(4096)
+  })
+
+  it('does not guard non-azure flow only because AZURE_ENDPOINT is configured', async () => {
+    process.env.AZURE_ENDPOINT =
+      'https://my-resource.openai.azure.com/openai/deployments/my-deploy/chat/completions?api-version=2024-05-01-preview'
+    mockStart.mockResolvedValue({
+      status: 'success',
+      result: {
+        action: 'process_messages',
+        messages: [],
+        stateUpdates: {
+          noCommentCount: 0,
+          continuationCount: 0,
+          sleepMode: false,
+        },
+      },
+    })
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: buildRequestBody({
+        aiService: 'openai',
+        apiKey: 'openai-key',
+      }),
+    })
+
+    await handler(req as any, res as any)
+
+    expect(res._getStatusCode()).not.toBe(403)
+    expect(mockCreateAIRegistry).toHaveBeenCalledWith('openai', {
+      apiKey: 'openai-key',
+      baseURL: '',
+      resourceName: '',
+    })
   })
 
   it('returns send_comment action for comment selection', async () => {

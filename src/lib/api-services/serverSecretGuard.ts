@@ -12,6 +12,7 @@ export type ServerSecretGuardOptions = {
 
 const DEFAULT_ACCESS_MODE: ServerSecretAccessMode = 'disabled'
 const DEFAULT_DEMO_RATE_LIMIT_PER_MINUTE = 20
+const MAX_RATE_LIMIT_ENTRIES = 10_000
 
 type RateLimitEntry = {
   windowStart: number
@@ -93,14 +94,26 @@ function hasValidBearerToken(req: NextApiRequest): boolean {
   return authorization === expectedAuthorization
 }
 
-function getClientIp(req: NextApiRequest): string {
-  const forwardedFor = getHeaderValue(req, 'x-forwarded-for')
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim()
-  }
+function hasValidDemoToken(req: NextApiRequest): boolean {
+  const expectedToken =
+    process.env.AITUBERKIT_DEMO_ACCESS_TOKEN ||
+    process.env.AITUBERKIT_SERVER_SECRET_TOKEN
+  if (!expectedToken) return false
 
-  const realIp = getHeaderValue(req, 'cf-connecting-ip')
-  if (realIp) return realIp
+  const token = getHeaderValue(req, 'x-aituberkit-demo-token')
+  return token === expectedToken
+}
+
+function getClientIp(req: NextApiRequest): string {
+  if (process.env.AITUBERKIT_TRUST_PROXY_HEADERS === 'true') {
+    const realIp = getHeaderValue(req, 'cf-connecting-ip')
+    if (realIp) return realIp
+
+    const forwardedFor = getHeaderValue(req, 'x-forwarded-for')
+    if (forwardedFor) {
+      return forwardedFor.split(',')[0].trim()
+    }
+  }
 
   return req.socket?.remoteAddress || 'unknown'
 }
@@ -126,6 +139,17 @@ function isDemoRateLimited(req: NextApiRequest, featureName: string): boolean {
     globalStore.__aituberKitServerSecretRateLimit ||
     new Map<string, RateLimitEntry>()
   globalStore.__aituberKitServerSecretRateLimit = store
+
+  for (const [entryKey, entry] of store) {
+    if (now - entry.windowStart >= windowMs) {
+      store.delete(entryKey)
+    }
+  }
+
+  if (store.size >= MAX_RATE_LIMIT_ENTRIES && !store.has(key)) {
+    const oldestKey = store.keys().next().value
+    if (oldestKey) store.delete(oldestKey)
+  }
 
   const current = store.get(key)
   if (!current || now - current.windowStart >= windowMs) {
@@ -178,10 +202,13 @@ export function guardServerSecretAccess(
 
   if (mode === 'demo') {
     const fetchSite = getHeaderValue(req, 'sec-fetch-site')
-    const fetchSiteAllowed =
-      !fetchSite || fetchSite === 'same-origin' || fetchSite === 'none'
+    const fetchSiteAllowed = fetchSite === 'same-origin' || fetchSite === 'none'
 
-    if (fetchSiteAllowed && isAllowedDemoOrigin(req)) {
+    if (
+      fetchSiteAllowed &&
+      isAllowedDemoOrigin(req) &&
+      hasValidDemoToken(req)
+    ) {
       if (isDemoRateLimited(req, options.featureName)) {
         res.status(429).json({
           error: 'Server secret demo rate limit exceeded',
@@ -199,7 +226,7 @@ export function guardServerSecretAccess(
     rejectServerSecretAccess(
       res,
       options,
-      'Server-side secret settings in demo mode require an allowed same-origin request.'
+      'Server-side secret settings in demo mode require an allowed same-origin request with a valid demo token.'
     )
     return false
   }

@@ -98,6 +98,32 @@ describe('handleCustomApi', () => {
     expect(text).not.toContain('"type":"start"')
   })
 
+  it('filters raw SSE metadata lines and trailing buffered metadata by default', async () => {
+    const upstream = [
+      'event: internal-event',
+      'id: upstream-request-id',
+      'data: {"type":"text-delta","delta":"visible"}',
+      'data: {"type":"step-finish","payload":{"metadata":{"secret":"hidden"}}}',
+    ].join('\n')
+    ;(global.fetch as jest.Mock).mockResolvedValue(
+      createStreamResponse(upstream)
+    )
+
+    const response = await handleCustomApi(
+      [{ role: 'user', content: 'hi' } as any],
+      'https://example.com/custom',
+      '{}',
+      '{}',
+      true
+    )
+
+    const text = await response.text()
+    expect(text).toContain('data: {"type":"text-delta","delta":"visible"}')
+    expect(text).not.toContain('internal-event')
+    expect(text).not.toContain('upstream-request-id')
+    expect(text).not.toContain('hidden')
+  })
+
   it('can forward metadata when explicitly enabled', async () => {
     process.env.AITUBERKIT_FORWARD_CUSTOM_API_METADATA = 'true'
     const upstream = [
