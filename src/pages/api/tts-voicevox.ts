@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
+import { guardServerSecretAccess } from '@/lib/api-services/serverSecretGuard'
 
 type Data = {
   audio?: ArrayBuffer
@@ -11,8 +12,28 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { text, speaker, speed, pitch, intonation, serverUrl } = req.body
+  const usesServerConfiguredUrl =
+    !serverUrl && Boolean(process.env.VOICEVOX_SERVER_URL)
   const apiUrl =
     serverUrl || process.env.VOICEVOX_SERVER_URL || 'http://localhost:50021'
+
+  let parsedUrl: URL
+  try {
+    parsedUrl = new URL(apiUrl)
+  } catch {
+    return res.status(400).json({ error: 'Invalid server URL' })
+  }
+
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    return res.status(400).json({ error: 'Invalid server URL protocol' })
+  }
+
+  if (
+    usesServerConfiguredUrl &&
+    !guardServerSecretAccess(req, res, { featureName: 'tts-voicevox' })
+  ) {
+    return
+  }
 
   try {
     // 1. Audio Query の生成

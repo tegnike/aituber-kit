@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import textToSpeech from '@google-cloud/text-to-speech'
 import { google } from '@google-cloud/text-to-speech/build/protos/protos'
+import { guardServerSecretAccess } from '@/lib/api-services/serverSecretGuard'
 
 type Data = {
   audio?: string | Uint8Array // Base64 encoded string or Uint8Array
@@ -18,6 +19,10 @@ export default async function handler(
   try {
     // Check if GOOGLE_TTS_KEY exists
     if (process.env.GOOGLE_TTS_KEY) {
+      if (!guardServerSecretAccess(req, res, { featureName: 'tts-google' })) {
+        return
+      }
+
       // Use API Key based authentication
       const response = await fetch(
         `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.GOOGLE_TTS_KEY}`,

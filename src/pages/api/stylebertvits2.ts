@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { guardServerSecretAccess } from '@/lib/api-services/serverSecretGuard'
 
 type Data = {
   audio?: Buffer
@@ -30,10 +31,21 @@ export default async function handler(
     body.stylebertvits2ServerUrl || process.env.STYLEBERTVITS2_SERVER_URL
   const stylebertvits2ApiKey =
     body.stylebertvits2ApiKey || process.env.STYLEBERTVITS2_API_KEY
+  const usesServerSecret =
+    (!body.stylebertvits2ServerUrl &&
+      Boolean(process.env.STYLEBERTVITS2_SERVER_URL)) ||
+    (!body.stylebertvits2ApiKey && Boolean(process.env.STYLEBERTVITS2_API_KEY))
   const stylebertvits2Style = body.stylebertvits2Style
   const stylebertvits2SdpRatio = body.stylebertvits2SdpRatio
   const stylebertvits2Length = body.stylebertvits2Length
   const selectLanguage = getLanguageCode(body.selectLanguage)
+
+  if (
+    usesServerSecret &&
+    !guardServerSecretAccess(req, res, { featureName: 'stylebertvits2' })
+  ) {
+    return
+  }
 
   try {
     if (!stylebertvits2ServerUrl.includes('https://api.runpod.ai')) {

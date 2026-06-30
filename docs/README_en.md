@@ -262,6 +262,7 @@ npm run deploy:cloudflare
 This repository is intended for personal use and development in local environments, as well as commercial use with appropriate security measures. However, please note the following when deploying to a web environment:
 
 - **API Key Handling**: The system is designed to call AI services (OpenAI, Anthropic, etc.) and TTS services via a backend server, so proper management of API keys is necessary.
+- **Server-side secret protection**: A security update requires `AITUBERKIT_SERVER_SECRET_ACCESS_MODE` when public API routes use server-side secrets such as `OPENAI_API_KEY` or `CUSTOM_API_*`, chat log saving, or server-side TTS URLs. Without this setting, some APIs return `403`. See the [v2.53.0 release notes](https://github.com/tegnike/aituber-kit/releases/tag/v2.53.0) for details and migration steps.
 
 ### For Production Use
 

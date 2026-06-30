@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { pipeResponse } from '@/utils/pipeResponse'
+import { guardServerSecretAccess } from '@/lib/api-services/serverSecretGuard'
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,6 +16,9 @@ export default async function handler(
   const { query, apiKey, url, conversationId, stream } = req.body
 
   const difyKey = apiKey || process.env.DIFY_KEY || process.env.DIFY_API_KEY
+  const usesServerSecret =
+    (!apiKey && Boolean(process.env.DIFY_KEY || process.env.DIFY_API_KEY)) ||
+    (!url && Boolean(process.env.DIFY_URL))
   if (!difyKey) {
     return res
       .status(400)
@@ -38,6 +42,13 @@ export default async function handler(
       error: 'Dify Empty URL',
       errorCode: 'AIInvalidProperty',
     })
+  }
+
+  if (
+    usesServerSecret &&
+    !guardServerSecretAccess(req, res, { featureName: 'difyChat' })
+  ) {
+    return
   }
 
   const headers = {

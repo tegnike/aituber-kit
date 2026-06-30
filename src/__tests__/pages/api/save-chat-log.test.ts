@@ -26,6 +26,8 @@ jest.mock('@/utils/restrictedMode', () => ({
 import type { NextApiRequest, NextApiResponse } from 'next'
 import handler from '@/pages/api/save-chat-log'
 
+const originalEnv = { ...process.env }
+
 function createMockReq(
   overrides: Partial<NextApiRequest> = {}
 ): NextApiRequest {
@@ -58,6 +60,8 @@ function createMockRes() {
 describe('/api/save-chat-log', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    process.env = { ...originalEnv }
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
     mockIsDemoMode.mockReturnValue(false)
     jest.spyOn(console, 'error').mockImplementation(() => {})
     jest.spyOn(console, 'warn').mockImplementation(() => {})
@@ -65,6 +69,7 @@ describe('/api/save-chat-log', () => {
 
   afterEach(() => {
     jest.restoreAllMocks()
+    process.env = originalEnv
   })
 
   it('should return 405 for non-POST requests', async () => {
@@ -94,6 +99,28 @@ describe('/api/save-chat-log', () => {
       error: 'feature_disabled_in_restricted_mode',
       message: 'The feature "save-chat-log" is disabled in restricted mode.',
     })
+  })
+
+  it('should reject chat log writes by default', async () => {
+    delete process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE
+
+    const req = createMockReq({
+      body: {
+        messages: [{ role: 'user', content: 'Hello' }],
+        isNewFile: true,
+      },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(403)
+    expect(res._json).toEqual(
+      expect.objectContaining({
+        errorCode: 'ServerSecretAccessDenied',
+        feature: 'save-chat-log',
+      })
+    )
   })
 
   it('should return 400 for invalid messages data', async () => {
@@ -135,6 +162,21 @@ describe('/api/save-chat-log', () => {
     expect(res._status).toBe(200)
     expect(res._json).toEqual({ message: 'Logs saved successfully' })
     expect(fs.writeFileSync).toHaveBeenCalled()
+  })
+
+  it('should reject unsafe targetFileName values', async () => {
+    const req = createMockReq({
+      body: {
+        messages: [{ role: 'user', content: 'Hello' }],
+        targetFileName: '../outside.json',
+      },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(400)
+    expect(res._json).toEqual({ message: 'Invalid targetFileName' })
   })
 
   it('should return 400 when overwrite=true but targetFileName is missing', async () => {

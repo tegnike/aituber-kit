@@ -262,6 +262,7 @@ npm run deploy:cloudflare
 이 리포지토리는 개인 사용과 로컬 환경에서의 개발은 물론, 적절한 보안 대책을 마련한 상업적 사용도 고려하고 있습니다. 단, 웹 환경에 배포할 때는 다음 사항에 주의해 주시기 바랍니다:
 
 - **API 키 취급**: 백엔드 서버를 통해 AI 서비스(OpenAI, Anthropic 등)와 TTS 서비스의 API를 호출하는 사양이므로, API 키의 적절한 관리가 필요합니다.
+- **서버 사이드 시크릿 보호**: 보안 업데이트에 따라 공개 API 라우트에서 `OPENAI_API_KEY` 또는 `CUSTOM_API_*` 같은 서버 사이드 시크릿, 채팅 로그 저장, 서버 사이드 TTS URL을 사용할 때는 `AITUBERKIT_SERVER_SECRET_ACCESS_MODE` 설정이 필요합니다. 설정하지 않으면 일부 API가 `403`을 반환합니다. 자세한 내용과 마이그레이션 절차는 [v2.53.0 릴리스 노트](https://github.com/tegnike/aituber-kit/releases/tag/v2.53.0)를 참조하세요.
 
 ### 프로덕션 환경에서의 사용에 대하여
 

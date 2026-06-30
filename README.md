@@ -262,6 +262,7 @@ npm run deploy:cloudflare
 このリポジトリは、個人利用やローカル環境での開発はもちろん、適切なセキュリティ対策を施した上での商用利用も想定しています。ただし、Web環境にデプロイする際は以下の点にご注意ください：
 
 - **APIキーの取り扱い**: バックエンドサーバーを経由してAIサービス（OpenAI, Anthropic等）やTTSサービスのAPIを呼び出す仕様となっているため、APIキーの適切な管理が必要です。
+- **サーバー側秘匿キーの保護**: セキュリティアップデートにより、`OPENAI_API_KEY` や `CUSTOM_API_*` などのサーバー側秘匿値、ログ保存、サーバー側TTS URL等を公開APIから使う場合は `AITUBERKIT_SERVER_SECRET_ACCESS_MODE` の設定が必須です。未設定の場合、一部APIは `403` で拒否されます。詳細と移行手順は [v2.53.0 のリリースノート](https://github.com/tegnike/aituber-kit/releases/tag/v2.53.0) を参照してください。
 
 ### 本番環境での利用について
 

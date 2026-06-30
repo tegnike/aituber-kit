@@ -7,6 +7,7 @@ import {
   isRestrictedMode,
   createRestrictedModeErrorResponse,
 } from '@/utils/restrictedMode'
+import { guardServerSecretAccess } from '@/lib/api-services/serverSecretGuard'
 
 // Supabaseクライアントの初期化
 let supabase: SupabaseClient | null = null
@@ -29,6 +30,10 @@ export default async function handler(
     return res
       .status(403)
       .json(createRestrictedModeErrorResponse('save-chat-log'))
+  }
+
+  if (!guardServerSecretAccess(req, res, { featureName: 'save-chat-log' })) {
+    return
   }
 
   try {
@@ -65,9 +70,16 @@ export default async function handler(
 
     // ファイル名の決定: isNewFile → targetFileName → 最新ファイル → 新規作成
     const newFileName = `log_${currentTime.replace(/[:.]/g, '-')}.json`
+    const safeTargetFileName = targetFileName
+      ? getSafeLogFileName(targetFileName)
+      : null
+    if (targetFileName && !safeTargetFileName) {
+      return res.status(400).json({ message: 'Invalid targetFileName' })
+    }
+
     const fileName = isNewFile
       ? newFileName
-      : targetFileName || getLatestLogFile(logsDir) || newFileName
+      : safeTargetFileName || getLatestLogFile(logsDir) || newFileName
 
     const filePath = path.join(logsDir, fileName)
 
@@ -130,6 +142,14 @@ export default async function handler(
     console.error('Error saving chat log:', error)
     res.status(500).json({ message: 'Error saving chat log' })
   }
+}
+
+function getSafeLogFileName(fileName: string): string | null {
+  if (fileName !== path.basename(fileName)) return null
+  if (fileName.includes('/') || fileName.includes('\\')) return null
+  if (fileName === '.' || fileName === '..') return null
+  if (!fileName.endsWith('.json')) return null
+  return fileName
 }
 
 function getLatestLogFile(dir: string): string | null {

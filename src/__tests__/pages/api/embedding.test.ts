@@ -46,6 +46,7 @@ describe('/api/embedding', () => {
     it('テキストをベクトル化して1536次元のembeddingを返す', async () => {
       // Arrange
       process.env.OPENAI_API_KEY = 'test-api-key'
+      process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
       const mockEmbedding = new Array(1536).fill(0.1)
       mockCreate.mockResolvedValue({
         data: [{ embedding: mockEmbedding }],
@@ -157,9 +158,32 @@ describe('/api/embedding', () => {
       expect(data.code).toBe('API_KEY_MISSING')
     })
 
+    it('サーバー側APIキーはデフォルトで拒否する', async () => {
+      // Arrange
+      process.env.OPENAI_API_KEY = 'test-api-key'
+      delete process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE
+      const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+        method: 'POST',
+        body: { text: 'テスト' },
+      })
+
+      handler = await importHandler()
+
+      // Act
+      await handler(req, res)
+
+      // Assert
+      expect(res._getStatusCode()).toBe(403)
+      const data = JSON.parse(res._getData())
+      expect(data.errorCode).toBe('ServerSecretAccessDenied')
+      expect(data.feature).toBe('embedding')
+      expect(mockCreate).not.toHaveBeenCalled()
+    })
+
     it('OpenAI APIからレート制限エラーが返された場合は429エラーを返す', async () => {
       // Arrange
       process.env.OPENAI_API_KEY = 'test-api-key'
+      process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
       const rateLimitError = new Error('Rate limit exceeded')
       ;(rateLimitError as any).status = 429
       mockCreate.mockRejectedValue(rateLimitError)
@@ -183,6 +207,7 @@ describe('/api/embedding', () => {
     it('OpenAI API呼び出しが失敗した場合は500エラーを返す', async () => {
       // Arrange
       process.env.OPENAI_API_KEY = 'test-api-key'
+      process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
       mockCreate.mockRejectedValue(new Error('API error'))
 
       const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
@@ -206,6 +231,7 @@ describe('/api/embedding', () => {
     it('text-embedding-3-smallモデルを使用してEmbedding APIを呼び出す', async () => {
       // Arrange
       process.env.OPENAI_API_KEY = 'test-api-key'
+      process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
       const mockEmbedding = new Array(1536).fill(0.1)
       mockCreate.mockResolvedValue({
         data: [{ embedding: mockEmbedding }],

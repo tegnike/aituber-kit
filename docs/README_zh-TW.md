@@ -264,6 +264,7 @@ npm run deploy:cloudflare
 本倉庫適用於個人使用和本地環境開發，以及採取適當安全措施的商業用途。但是，在部署到 Web 環境時，請注意以下幾點：
 
 - **API 金鑰處理**：系統設計為透過後端伺服器呼叫 AI 服務（OpenAI、Anthropic 等）和 TTS 服務的 API，因此需要妥善管理 API 金鑰。
+- **伺服器端密鑰保護**：安全更新要求在公開 API 路由使用 `OPENAI_API_KEY` 或 `CUSTOM_API_*` 等伺服器端密鑰、聊天紀錄儲存、伺服器端 TTS URL 時設定 `AITUBERKIT_SERVER_SECRET_ACCESS_MODE`。未設定時，部分 API 會返回 `403`。詳細內容與遷移步驟請參閱 [v2.53.0 發布說明](https://github.com/tegnike/aituber-kit/releases/tag/v2.53.0)。
 
 ### 生產環境使用
 

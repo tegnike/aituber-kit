@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import OpenAI from 'openai'
+import { guardServerSecretAccess } from '@/lib/api-services/serverSecretGuard'
 
 // 感情表現を豊かにする追加指示を行うモデル、念の為リスト形式
 const gpt4oEmotionalInstructionModels = ['gpt-4o']
@@ -15,9 +16,18 @@ export default async function handler(
   const { message, voice, model, speed, apiKey, emotion } = req.body
   const openaiKey =
     apiKey || process.env.OPENAI_TTS_KEY || process.env.OPENAI_API_KEY
+  const usesServerSecret =
+    !apiKey && Boolean(process.env.OPENAI_TTS_KEY || process.env.OPENAI_API_KEY)
 
   if (!message || !voice || !model || !openaiKey) {
     return res.status(400).json({ error: 'Missing required parameters' })
+  }
+
+  if (
+    usesServerSecret &&
+    !guardServerSecretAccess(req, res, { featureName: 'openAITTS' })
+  ) {
+    return
   }
 
   try {

@@ -121,6 +121,33 @@ describe('/api/ai/vercel handler', () => {
     })
   })
 
+  it('rejects server-side API keys by default', async () => {
+    process.env.OPENAI_API_KEY = 'env-openai'
+    delete process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
+        messages: [],
+        apiKey: '',
+        aiService: 'openai',
+        model: 'gpt-4.1',
+        stream: true,
+        temperature: 1,
+        maxTokens: 10,
+      },
+    })
+
+    await handler(req as any, res as any)
+    expect(res._getStatusCode()).toBe(403)
+    expect(res._getJSONData()).toEqual(
+      expect.objectContaining({
+        errorCode: 'ServerSecretAccessDenied',
+        feature: 'ai/vercel',
+      })
+    )
+  })
+
   it('returns 400 when local services lack a URL', async () => {
     const { req, res } = createMocks({
       method: 'POST',
@@ -146,6 +173,7 @@ describe('/api/ai/vercel handler', () => {
 
   it('streams google responses with search grounding using env API key', async () => {
     process.env.GOOGLE_KEY = 'env-google'
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
     mockModifyMessages.mockReturnValue([
       { role: 'user', content: 'hello' },
     ] as any)

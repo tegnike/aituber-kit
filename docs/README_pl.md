@@ -262,6 +262,7 @@ npm run deploy:cloudflare
 To repozytorium jest przeznaczone zarówno do użytku osobistego i rozwoju w środowisku lokalnym, jak i do użytku komercyjnego z odpowiednimi środkami bezpieczeństwa. Jednak podczas wdrażania w środowisku internetowym należy zwrócić uwagę na następujące punkty:
 
 - **Obsługa kluczy API**: Ponieważ system jest zaprojektowany do wywoływania API usług AI (OpenAI, Anthropic itp.) i usług TTS poprzez serwer backendowy, wymagane jest odpowiednie zarządzanie kluczami API.
+- **Ochrona sekretów po stronie serwera**: Aktualizacja bezpieczeństwa wymaga ustawienia `AITUBERKIT_SERVER_SECRET_ACCESS_MODE`, gdy publiczne trasy API używają sekretów po stronie serwera, takich jak `OPENAI_API_KEY` lub `CUSTOM_API_*`, zapisu historii rozmów albo serwerowych adresów URL TTS. Bez tej konfiguracji część API zwróci `403`. Szczegóły i kroki migracji znajdziesz w [informacjach o wydaniu v2.53.0](https://github.com/tegnike/aituber-kit/releases/tag/v2.53.0).
 
 ### Użycie w środowisku produkcyjnym
 

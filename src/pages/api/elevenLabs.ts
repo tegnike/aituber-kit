@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { guardServerSecretAccess } from '@/lib/api-services/serverSecretGuard'
 
 type Data = {
   audio?: Buffer
@@ -45,6 +46,9 @@ export default async function handler(
   const message = body.message
   const voiceId = body.voiceId || process.env.ELEVENLABS_VOICE_ID
   const apiKey = body.apiKey || process.env.ELEVENLABS_API_KEY
+  const usesServerSecret =
+    (!body.apiKey && Boolean(process.env.ELEVENLABS_API_KEY)) ||
+    (!body.voiceId && Boolean(process.env.ELEVENLABS_VOICE_ID))
   const language = body.language
 
   if (!apiKey) {
@@ -64,6 +68,13 @@ export default async function handler(
         headers: { 'Content-Type': 'application/json' },
       }
     )
+  }
+
+  if (
+    usesServerSecret &&
+    !guardServerSecretAccess(req, res, { featureName: 'elevenLabs' })
+  ) {
+    return
   }
 
   try {
