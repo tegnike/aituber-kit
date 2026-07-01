@@ -1,0 +1,127 @@
+name: Apply Cloudflare WAF API Guard
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Apply or remove the AITuberKit API guard rules
+        required: true
+        default: apply
+        type: choice
+        options:
+          - apply
+          - remove
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      ZONE_NAME: aituberkit.com
+      OPERATION: ${{ inputs.operation }}
+    steps:
+      - name: Apply Cloudflare WAF rules
+        run: |
+          node <<'NODE'
+          const token = process.env.CLOUDFLARE_API_TOKEN
+          const zoneName = process.env.ZONE_NAME
+          const operation = process.env.OPERATION
+
+          if (!token) {
+            throw new Error('CLOUDFLARE_API_TOKEN is not configured')
+          }
+
+          const api = async (path, options = {}) => {
+            const response = await fetch(`https://api.cloudflare.com/client/v4${path}`, {
+              ...options,
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                ...(options.headers || {}),
+              },
+            })
+            const text = await response.text()
+            const json = text ? JSON.parse(text) : {}
+            if (!response.ok || json.success === false) {
+              throw new Error(`${options.method || 'GET'} ${path} failed: ${response.status} ${text}`)
+            }
+            return json
+          }
+
+          const zones = await api(`/zones?name=${encodeURIComponent(zoneName)}&status=active`)
+          const zone = zones.result?.[0]
+          if (!zone) {
+            throw new Error(`Cloudflare zone not found: ${zoneName}`)
+          }
+
+          const phase = 'http_request_firewall_custom'
+          const guardRefs = new Set([
+            'aituberkit-browser-clearance',
+            'aituberkit-protected-api-clearance',
+          ])
+          const guardRules = [
+            {
+              ref: 'aituberkit-browser-clearance',
+              description: 'AITuberKit: issue browser clearance before protected API use',
+              expression:
+                '(http.host in {"aituberkit.com" "www.aituberkit.com"} and http.request.method eq "GET" and not starts_with(http.request.uri.path, "/api/") and not starts_with(http.request.uri.path, "/_next/") and not starts_with(http.request.uri.path, "/assets/") and not ends_with(http.request.uri.path, ".js") and not ends_with(http.request.uri.path, ".css") and not ends_with(http.request.uri.path, ".png") and not ends_with(http.request.uri.path, ".jpg") and not ends_with(http.request.uri.path, ".jpeg") and not ends_with(http.request.uri.path, ".webp") and not ends_with(http.request.uri.path, ".svg") and not ends_with(http.request.uri.path, ".ico") and not cf.client.bot)',
+              action: 'managed_challenge',
+              enabled: true,
+            },
+            {
+              ref: 'aituberkit-protected-api-clearance',
+              description: 'AITuberKit: challenge protected server-secret API calls without clearance',
+              expression:
+                '(http.host in {"aituberkit.com" "www.aituberkit.com"} and http.request.method eq "POST" and http.request.uri.path in {"/api/ai/custom" "/api/tts-aivis-cloud-api"} and not http.cookie contains "cf_clearance" and not cf.client.bot)',
+              action: 'managed_challenge',
+              enabled: true,
+            },
+          ]
+
+          let ruleset = null
+          try {
+            const current = await api(`/zones/${zone.id}/rulesets/phases/${phase}/entrypoint`)
+            ruleset = current.result
+          } catch (error) {
+            if (!String(error.message).includes('404')) {
+              throw error
+            }
+          }
+
+          const existingRules = ruleset?.rules || []
+          const retainedRules = existingRules.filter((rule) => !guardRefs.has(rule.ref))
+          const nextRules = operation === 'remove' ? retainedRules : [...guardRules, ...retainedRules]
+
+          if (!ruleset) {
+            if (operation === 'remove') {
+              console.log('No custom WAF ruleset exists; nothing to remove.')
+              process.exit(0)
+            }
+            const created = await api(`/zones/${zone.id}/rulesets`, {
+              method: 'POST',
+              body: JSON.stringify({
+                name: 'AITuberKit custom WAF rules',
+                description: 'Custom WAF rules managed by aituber-kit',
+                kind: 'zone',
+                phase,
+                rules: nextRules,
+              }),
+            })
+            console.log(`Created ruleset ${created.result.id} with ${nextRules.length} rules.`)
+            process.exit(0)
+          }
+
+          const updated = await api(`/zones/${zone.id}/rulesets/${ruleset.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              name: ruleset.name || 'AITuberKit custom WAF rules',
+              description: ruleset.description || 'Custom WAF rules managed by aituber-kit',
+              kind: ruleset.kind,
+              phase: ruleset.phase,
+              rules: nextRules,
+            }),
+          })
+          console.log(`Updated ruleset ${updated.result.id}; operation=${operation}; rules=${nextRules.length}.`)
+          NODE
