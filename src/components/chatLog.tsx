@@ -20,6 +20,8 @@ export const ChatLog = () => {
   )
 
   const [isDragging, setIsDragging] = useState<boolean>(false)
+  const [isResizeHandleHovered, setIsResizeHandleHovered] =
+    useState<boolean>(false)
 
   useEffect(() => {
     chatScrollRef.current?.scrollIntoView({
@@ -37,11 +39,15 @@ export const ChatLog = () => {
 
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
+      e.preventDefault()
+      window.getSelection()?.removeAllRanges()
       setIsDragging(true)
     }
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging) return
+      e.preventDefault()
+      window.getSelection()?.removeAllRanges()
 
       const newWidth = e.clientX
 
@@ -57,6 +63,11 @@ export const ChatLog = () => {
       setIsDragging(false)
     }
 
+    const previousUserSelect = document.body.style.userSelect
+    if (isDragging) {
+      document.body.style.userSelect = 'none'
+    }
+
     const resizeHandle = resizeHandleRef.current
     if (resizeHandle) {
       resizeHandle.addEventListener('mousedown', handleMouseDown)
@@ -70,6 +81,7 @@ export const ChatLog = () => {
       }
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
+      document.body.style.userSelect = previousUserSelect
     }
   }, [isDragging])
 
@@ -117,12 +129,23 @@ export const ChatLog = () => {
       </div>
       <div
         ref={resizeHandleRef}
-        className="absolute right-0 top-0 h-full w-4 cursor-ew-resize transition-colors hover:bg-secondary/10"
+        className="absolute right-0 top-0 h-full w-5 cursor-ew-resize select-none"
         style={{
           cursor: isDragging ? 'grabbing' : 'ew-resize',
+          userSelect: 'none',
         }}
+        onMouseEnter={() => setIsResizeHandleHovered(true)}
+        onMouseLeave={() => setIsResizeHandleHovered(false)}
       >
-        <div className="absolute right-1 top-1/2 h-16 w-1 -translate-y-1/2 transform rounded-full bg-secondary/40"></div>
+        <div
+          className={`absolute right-0.5 top-1/2 h-24 w-1.5 -translate-y-1/2 rounded-full transition-opacity ${
+            isDragging || isResizeHandleHovered ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{
+            backgroundColor:
+              'color-mix(in srgb, var(--color-primary) 70%, transparent)',
+          }}
+        ></div>
       </div>
     </div>
   )
