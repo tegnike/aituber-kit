@@ -109,11 +109,11 @@ const CharacterPresetMenu = () => {
   const layerItems = getAllLayerItems()
 
   return (
-    <div className="fixed bottom-20 right-4 z-30">
+    <div className="fixed bottom-3.5 right-4 z-30 sm:bottom-8">
       {/* メインボタン */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="theme-surface-popover flex h-11 w-11 items-center justify-center rounded-xl border text-primary shadow-md transition-colors hover:border-secondary hover:text-secondary"
+        className="aurora-glass-popover flex h-11 w-11 items-center justify-center rounded-xl text-primary transition-colors hover:border-secondary hover:text-secondary"
         aria-label={t('CharacterSettingsPrompt')}
         aria-expanded={isOpen}
         aria-controls="preset-menu"
@@ -156,7 +156,7 @@ const CharacterPresetMenu = () => {
       {/* プリセット・レイヤーメニュー */}
       {isOpen && (
         <div
-          className="theme-surface-elevated absolute bottom-14 right-0 w-72 rounded-xl border p-2 text-theme-default shadow-xl backdrop-blur-md"
+          className="aurora-glass-popover absolute bottom-14 right-0 w-72 rounded-xl p-2 text-theme-default"
           id="preset-menu"
           role="menu"
         >

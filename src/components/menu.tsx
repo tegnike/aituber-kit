@@ -250,7 +250,7 @@ export const Menu = () => {
 
       <div className="absolute z-15 m-3 sm:m-6">
         <div
-          className="theme-surface-popover relative mb-10 grid grid-flow-col gap-1 rounded-xl border p-1 shadow-md backdrop-blur-md"
+          className="aurora-glass-dock relative mb-10 grid grid-flow-col gap-0.5 rounded-[18px] p-1.5"
           style={{ width: 'max-content' }}
         >
           {effectiveShowControlPanel && (
@@ -283,9 +283,9 @@ export const Menu = () => {
                   isProcessing={false}
                   onClick={() => setChatLogMode((prev) => (prev + 1) % 3)}
                   aria-label={t('ChatLog')}
-                  backgroundColor="bg-transparent hover:bg-primary/10 active:bg-primary/15 disabled:bg-transparent"
+                  backgroundColor="bg-transparent hover:bg-black/5 active:bg-black/10 disabled:bg-transparent"
                   iconColor="text-text1"
-                  className="transition-colors duration-200"
+                  className="!rounded-[13px] transition-colors duration-200"
                 />
               </div>
               <div className="order-3">
@@ -298,14 +298,14 @@ export const Menu = () => {
                   aria-label={t('Tools')}
                   aria-expanded={showToolMenu}
                   data-testid="main-tools-toggle-button"
-                  backgroundColor="bg-transparent hover:bg-primary/10 active:bg-primary/15 disabled:bg-transparent"
+                  backgroundColor="bg-transparent hover:bg-black/5 active:bg-black/10 disabled:bg-transparent"
                   iconColor="text-text1"
-                  className="transition-colors duration-200"
+                  className="!rounded-[13px] transition-colors duration-200"
                 />
               </div>
               {showToolMenu && (
                 <div
-                  className="theme-surface-popover absolute left-0 top-full z-20 mt-2 grid w-max min-w-[180px] max-w-[calc(100vw-24px)] gap-2 rounded-lg border p-2 shadow-xl backdrop-blur sm:min-w-[220px]"
+                  className="aurora-glass-popover absolute left-0 top-full z-20 mt-2 grid w-max min-w-[180px] max-w-[calc(100vw-24px)] gap-0.5 rounded-[18px] p-2 sm:min-w-[220px]"
                   data-testid="main-tools-menu"
                 >
                   <ToolMenuButton
@@ -494,9 +494,9 @@ const ToolMenuButton = ({
     backgroundColor={
       active
         ? 'bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled disabled:cursor-not-allowed'
-        : 'theme-surface-control border disabled:cursor-not-allowed disabled:opacity-50'
+        : 'bg-transparent hover:bg-black/5 active:bg-black/10 disabled:cursor-not-allowed disabled:opacity-50'
     }
     iconColor={active ? 'text-theme' : 'text-text1'}
-    className={`w-full !justify-start rounded-lg ${rest.className ?? ''}`}
+    className={`w-full !justify-start !rounded-xl ${rest.className ?? ''}`}
   />
 )

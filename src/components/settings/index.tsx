@@ -4,7 +4,7 @@ import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import { Language } from '@/features/constants/settings'
 
-import { IconButton } from '../iconButton'
+import { IconButton, InlineOutlineIcon } from '../iconButton'
 import Image from 'next/image'
 import Description from './description'
 import Based from './based'
@@ -107,7 +107,7 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
   }
 
   return (
-    <header className="theme-surface-popover relative z-30 grid shrink-0 grid-cols-[auto_auto_minmax(0,1fr)_minmax(6.75rem,8rem)_auto] items-center gap-2 border-b border-primary/20 px-3 py-3 backdrop-blur-sm sm:grid-cols-[auto_auto_auto_minmax(10rem,14rem)_1fr_auto] sm:gap-3 sm:px-4">
+    <header className="theme-surface-popover relative z-30 grid shrink-0 grid-cols-[auto_auto_minmax(0,1fr)_minmax(6.75rem,8rem)_auto] items-center gap-2 border-b border-primary/20 px-3 py-3 sm:grid-cols-[auto_auto_auto_minmax(10rem,14rem)_1fr_auto] sm:gap-3 sm:px-4">
       <div className="z-15">
         <IconButton
           iconName="24/Close"
@@ -164,7 +164,7 @@ const Header = ({ onClickClose }: Pick<Props, 'onClickClose'>) => {
         aria-expanded={showMobileSearch || !!settingsSearchQuery}
         onClick={() => setShowMobileSearch((value) => !value)}
       >
-        <pixiv-icon name="24/Search" scale="1" />
+        <InlineOutlineIcon name="24/Search" />
       </button>
       <div
         className={`order-6 col-span-5 sm:order-none sm:col-span-1 sm:block ${
@@ -271,7 +271,7 @@ const SettingsSearch = () => {
   return (
     <div className="relative block">
       <span className="pointer-events-none absolute left-2.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-text-primary">
-        <pixiv-icon name="24/Search" scale="1" />
+        <InlineOutlineIcon name="24/Search" />
       </span>
       <input
         className="theme-surface-control h-10 w-full rounded-lg border py-2 pl-9 pr-11 text-sm text-text1 outline-none transition"
@@ -297,7 +297,7 @@ const SettingsSearch = () => {
             })
           }
         >
-          <pixiv-icon name="24/Close" scale="1" />
+          <InlineOutlineIcon name="24/Close" />
         </button>
       )}
     </div>
@@ -743,7 +743,7 @@ const Main = () => {
 
   return (
     <main className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[auto_1fr] text-text1 md:grid-cols-[260px_1fr] md:grid-rows-1">
-      <aside className="theme-surface-popover hidden min-h-0 overflow-y-auto border-r border-primary/20 p-3 backdrop-blur-sm md:block">
+      <aside className="theme-surface-popover hidden min-h-0 overflow-y-auto border-r border-primary/20 p-3 md:block">
         <nav aria-label="Settings navigation" className="space-y-4">
           {visibleGroups.map((group) => (
             <section key={group.key}>
@@ -826,7 +826,7 @@ const Main = () => {
           </div>
           <div
             ref={settingsPanelRef}
-            className="theme-surface-elevated rounded-xl border p-4 backdrop-blur-sm sm:p-6"
+            className="theme-surface-elevated rounded-xl border p-4 sm:p-6"
             data-testid="settings-panel"
           >
             <div

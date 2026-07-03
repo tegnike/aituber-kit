@@ -10,6 +10,55 @@ body {
 }
 
 @layer components {
+  /* Aurora ガラスUIトークン（テーマ非依存のすりガラス演出） */
+  .aurora-glass-bubble {
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow: 0 8px 28px rgba(31, 38, 60, 0.14);
+  }
+
+  .aurora-glass-panel {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 12px 40px rgba(31, 38, 60, 0.16);
+  }
+
+  .aurora-glass-capsule {
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(24px) saturate(1.7);
+    -webkit-backdrop-filter: blur(24px) saturate(1.7);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 12px 40px rgba(31, 38, 60, 0.2);
+  }
+
+  .aurora-glass-dock {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 32px rgba(31, 38, 60, 0.16);
+  }
+
+  .aurora-glass-popover {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 16px 48px rgba(31, 38, 60, 0.22);
+  }
+
+  .aurora-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(8, 8, 13, 0.62),
+      rgba(8, 8, 13, 0)
+    );
+  }
+
   .theme-surface-popover {
     border-color: color-mix(in srgb, var(--color-primary) 14%, transparent);
     background-color: color-mix(
@@ -352,7 +401,46 @@ body {
   }
 }
 
+/* Aurora UIアニメーション */
+@keyframes aurora-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes aurora-dot-blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@keyframes aurora-mic-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 90, 120, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(255, 90, 120, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 90, 120, 0);
+  }
+}
+
 @layer utilities {
+  .animate-aurora-bubble-in {
+    animation: aurora-bubble-in 0.3s ease-out;
+  }
+
   .scroll-hidden {
     -ms-overflow-style: none;
     scrollbar-width: none;

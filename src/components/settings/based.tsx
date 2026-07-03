@@ -17,6 +17,9 @@ const Based = () => {
   const { isRestrictedMode } = useRestrictedMode()
   const selectLanguage = settingsStore((s) => s.selectLanguage)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
+  const assistantTextStyle = settingsStore((s) => s.assistantTextStyle)
+  const chatLogPosition = settingsStore((s) => s.chatLogPosition)
+  const chatLogStyle = settingsStore((s) => s.chatLogStyle)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
@@ -218,6 +221,78 @@ const Based = () => {
             enabled={showAssistantText}
             onChange={(v) => settingsStore.setState({ showAssistantText: v })}
           />
+        </div>
+      </div>
+
+      {/* 回答欄スタイル設定 */}
+      {showAssistantText && (
+        <div className="my-6">
+          <div className="my-4 text-xl font-bold">
+            {t('AssistantTextStyle')}
+          </div>
+          <div className="my-2 text-sm whitespace-pre-wrap">
+            {t('AssistantTextStyleInfo')}
+          </div>
+          <div className="flex flex-col mb-4">
+            <select
+              className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+              value={assistantTextStyle}
+              onChange={(e) =>
+                settingsStore.setState({
+                  assistantTextStyle: e.target.value as 'bubble' | 'borderless',
+                })
+              }
+            >
+              <option value="bubble">{t('AssistantTextStyleBubble')}</option>
+              <option value="borderless">
+                {t('AssistantTextStyleBorderless')}
+              </option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* 会話ログデザイン設定 */}
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">{t('ChatLogStyle')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('ChatLogStyleInfo')}
+        </div>
+        <div className="flex flex-col mb-4">
+          <select
+            className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            value={chatLogStyle}
+            onChange={(e) =>
+              settingsStore.setState({
+                chatLogStyle: e.target.value as 'glass' | 'classic',
+              })
+            }
+          >
+            <option value="glass">{t('ChatLogStyleGlass')}</option>
+            <option value="classic">{t('ChatLogStyleClassic')}</option>
+          </select>
+        </div>
+      </div>
+
+      {/* 会話ログ表示位置設定 */}
+      <div className="my-6">
+        <div className="my-4 text-xl font-bold">{t('ChatLogPosition')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('ChatLogPositionInfo')}
+        </div>
+        <div className="flex flex-col mb-4">
+          <select
+            className="text-ellipsis px-4 py-2 w-full sm:w-col-span-2 bg-white hover:bg-white-hover rounded-lg"
+            value={chatLogPosition}
+            onChange={(e) =>
+              settingsStore.setState({
+                chatLogPosition: e.target.value as 'left' | 'right',
+              })
+            }
+          >
+            <option value="right">{t('ChatLogPositionRight')}</option>
+            <option value="left">{t('ChatLogPositionLeft')}</option>
+          </select>
         </div>
       </div>
 

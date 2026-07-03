@@ -28,18 +28,12 @@ describe('VideoDisplay controls', () => {
     renderVideoDisplay()
 
     const hideButton = screen.getByLabelText('HideVideoPreview')
-    expect(hideButton.querySelector('pixiv-icon')).toHaveAttribute(
-      'name',
-      '24/Hide'
-    )
+    expect(hideButton.querySelector('[data-icon="24/Hide"]')).not.toBeNull()
 
     fireEvent.click(hideButton)
 
     const showButton = screen.getByLabelText('ShowVideoDisplay')
-    expect(showButton.querySelector('pixiv-icon')).toHaveAttribute(
-      'name',
-      '24/Show'
-    )
+    expect(showButton.querySelector('[data-icon="24/Show"]')).not.toBeNull()
   })
 
   it('uses stop button for the provided stop source handler', () => {

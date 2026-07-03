@@ -42,6 +42,7 @@ const mockSettingsStore = settingsStore as jest.MockedFunction<
   typeof settingsStore
 > & {
   setState: jest.Mock
+  getState: jest.Mock
 }
 const mockHomeStore = homeStore as jest.MockedFunction<typeof homeStore>
 const mockGetTextAndImageMessages =
@@ -58,10 +59,17 @@ describe('ChatLog', () => {
         characterName: 'Character',
         userDisplayName: 'User',
         chatLogWidth: 400,
+        chatLogPosition: 'left',
+        chatLogStyle: 'glass',
+        chatLogEdgeOffset: null,
         showThinkingText: false,
       }
       return selector(state as any)
     })
+    mockSettingsStore.getState.mockReturnValue({
+      chatLogWidth: 400,
+      chatLogEdgeOffset: null,
+    } as any)
 
     mockHomeStore.mockImplementation((selector) => {
       const state = {
@@ -120,6 +128,131 @@ describe('ChatLog', () => {
 
     fireEvent.mouseUp(document)
 
+    await waitFor(() => expect(document.body.style.userSelect).toBe(''))
+  })
+
+  it('resizes from the inner edge when the log is displayed on the right', async () => {
+    mockSettingsStore.mockImplementation((selector) => {
+      const state = {
+        characterName: 'Character',
+        userDisplayName: 'User',
+        chatLogWidth: 400,
+        chatLogPosition: 'right',
+        chatLogStyle: 'glass',
+        chatLogEdgeOffset: null,
+        showThinkingText: false,
+      }
+      return selector(state as any)
+    })
+
+    const removeAllRanges = jest.fn()
+    jest.spyOn(window, 'getSelection').mockReturnValue({
+      removeAllRanges,
+    } as unknown as Selection)
+
+    const { container } = render(<ChatLog />)
+    const panel = container.firstChild as HTMLElement
+    expect(panel.className).toContain('right-2')
+
+    const resizeHandle = container.querySelector(
+      '.cursor-ew-resize'
+    ) as HTMLElement
+    expect(resizeHandle.className).toContain('left-0')
+
+    const mouseDownEvent = new MouseEvent('mousedown', {
+      bubbles: true,
+      cancelable: true,
+      clientX: 600,
+    })
+    resizeHandle.dispatchEvent(mouseDownEvent)
+
+    await waitFor(() => expect(document.body.style.userSelect).toBe('none'))
+
+    const mouseMoveEvent = new MouseEvent('mousemove', {
+      bubbles: true,
+      cancelable: true,
+      clientX: 500,
+    })
+    document.dispatchEvent(mouseMoveEvent)
+
+    expect(mockSettingsStore.setState).toHaveBeenCalledWith({
+      chatLogWidth: window.innerWidth - 500,
+    })
+
+    fireEvent.mouseUp(document)
+
+    await waitFor(() => expect(document.body.style.userSelect).toBe(''))
+  })
+
+  it('renders the classic bubble-card design when chatLogStyle is classic', () => {
+    mockSettingsStore.mockImplementation((selector) => {
+      const state = {
+        characterName: 'Character',
+        userDisplayName: 'User',
+        chatLogWidth: 400,
+        chatLogPosition: 'left',
+        chatLogStyle: 'classic',
+        chatLogEdgeOffset: null,
+        showThinkingText: false,
+      }
+      return selector(state as any)
+    })
+
+    const { container } = render(<ChatLog />)
+    const panel = container.firstChild as HTMLElement
+
+    expect(panel.className).not.toContain('aurora-glass-panel')
+    expect(panel.className).toContain('left-2')
+    expect(container.querySelector('.theme-surface-popover')).not.toBeNull()
+    expect(container.querySelector('.cursor-ew-resize')).not.toBeNull()
+  })
+
+  it('resizes the edge offset when dragging the outer handle', async () => {
+    mockSettingsStore.mockImplementation((selector) => {
+      const state = {
+        characterName: 'Character',
+        userDisplayName: 'User',
+        chatLogWidth: 400,
+        chatLogPosition: 'right',
+        chatLogStyle: 'glass',
+        chatLogEdgeOffset: null,
+        showThinkingText: false,
+      }
+      return selector(state as any)
+    })
+
+    const removeAllRanges = jest.fn()
+    jest.spyOn(window, 'getSelection').mockReturnValue({
+      removeAllRanges,
+    } as unknown as Selection)
+
+    const { container } = render(<ChatLog />)
+    const handles = container.querySelectorAll('.cursor-ew-resize')
+    expect(handles.length).toBe(2)
+    const outerHandle = handles[1] as HTMLElement
+    // 右配置時、外側ハンドルはパネルの右端（画面端側）
+    expect(outerHandle.className).toContain('right-0')
+
+    outerHandle.dispatchEvent(
+      new MouseEvent('mousedown', { bubbles: true, cancelable: true })
+    )
+    await waitFor(() => expect(document.body.style.userSelect).toBe('none'))
+
+    // pointerFromEdge = innerWidth - clientX = 60。内縁(0+400)は固定される
+    document.dispatchEvent(
+      new MouseEvent('mousemove', {
+        bubbles: true,
+        cancelable: true,
+        clientX: window.innerWidth - 60,
+      })
+    )
+
+    expect(mockSettingsStore.setState).toHaveBeenCalledWith({
+      chatLogEdgeOffset: 60,
+      chatLogWidth: 340,
+    })
+
+    fireEvent.mouseUp(document)
     await waitFor(() => expect(document.body.style.userSelect).toBe(''))
   })
 

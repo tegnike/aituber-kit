@@ -180,6 +180,7 @@ interface Character {
   customPresetName5: string
   selectedPresetIndex: number
   showAssistantText: boolean
+  assistantTextStyle: 'bubble' | 'borderless'
   showCharacterName: boolean
   systemPrompt: string
   selectedVrmPath: string
@@ -260,6 +261,9 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
+  chatLogPosition: 'left' | 'right'
+  chatLogStyle: 'glass' | 'classic'
+  chatLogEdgeOffset: number | null
   imageDisplayPosition: 'input' | 'side' | 'icon'
   multiModalAiDecisionPrompt: string
   enableMultiModal: boolean
@@ -493,6 +497,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   selectedPresetIndex: 0,
   showAssistantText:
     process.env.NEXT_PUBLIC_SHOW_ASSISTANT_TEXT === 'true' ? true : false,
+  assistantTextStyle:
+    process.env.NEXT_PUBLIC_ASSISTANT_TEXT_STYLE === 'borderless'
+      ? 'borderless'
+      : 'bubble',
   showCharacterName:
     process.env.NEXT_PUBLIC_SHOW_CHARACTER_NAME === 'true' ? true : false,
   systemPrompt:
@@ -612,6 +620,14 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') || 5.0,
   chatLogWidth:
     parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
+  chatLogPosition:
+    process.env.NEXT_PUBLIC_CHAT_LOG_POSITION === 'left' ? 'left' : 'right',
+  chatLogStyle:
+    process.env.NEXT_PUBLIC_CHAT_LOG_STYLE === 'classic' ? 'classic' : 'glass',
+  chatLogEdgeOffset: (() => {
+    const value = parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_EDGE_OFFSET || '')
+    return Number.isFinite(value) && value >= 0 ? value : null
+  })(),
   imageDisplayPosition: (() => {
     const validPositions = ['input', 'side', 'icon'] as const
     const envPosition = process.env.NEXT_PUBLIC_IMAGE_DISPLAY_POSITION
@@ -1053,6 +1069,7 @@ const settingsStore = create<SettingsState>()(
         customPresetName5: state.customPresetName5,
         selectedPresetIndex: state.selectedPresetIndex,
         showAssistantText: state.showAssistantText,
+        assistantTextStyle: state.assistantTextStyle,
         showCharacterName: state.showCharacterName,
         systemPrompt: state.systemPrompt,
         selectLanguage: state.selectLanguage,
@@ -1130,6 +1147,9 @@ const settingsStore = create<SettingsState>()(
         customApiIncludeMimeType: state.customApiIncludeMimeType,
         initialSpeechTimeout: state.initialSpeechTimeout,
         chatLogWidth: state.chatLogWidth,
+        chatLogPosition: state.chatLogPosition,
+        chatLogStyle: state.chatLogStyle,
+        chatLogEdgeOffset: state.chatLogEdgeOffset,
         imageDisplayPosition: state.imageDisplayPosition,
         multiModalAiDecisionPrompt: state.multiModalAiDecisionPrompt,
         enableMultiModal: state.enableMultiModal,
