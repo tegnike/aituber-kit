@@ -22,6 +22,19 @@ body {
   --aurora-control-bg-disabled: rgba(120, 120, 140, 0.08);
 }
 
+/* darkMode: class 用の上書き（ダークガラス面に合わせたライトテキスト） */
+.dark {
+  --aurora-text-strong: #f2f2f6;
+  --aurora-text-medium: #e9eaf1;
+  --aurora-text-soft: #d5d6e0;
+  --aurora-text-subtle: #b8b9c6;
+  --aurora-text-muted: #8a8a96;
+  --aurora-icon: #d5d6e0;
+  --aurora-control-bg: rgba(120, 120, 140, 0.28);
+  --aurora-control-bg-hover: rgba(120, 120, 140, 0.4);
+  --aurora-control-bg-disabled: rgba(120, 120, 140, 0.14);
+}
+
 @layer components {
   /* Aurora ガラスUIトークン（テーマ非依存のすりガラス演出） */
   .aurora-glass-bubble {
@@ -70,6 +83,24 @@ body {
       rgba(8, 8, 13, 0.62),
       rgba(8, 8, 13, 0)
     );
+  }
+
+  /* darkMode: class 時はガラス面をダーク系に反転（テキストトークンの.dark値と対応） */
+  .dark .aurora-glass-bubble,
+  .dark .aurora-glass-capsule {
+    background: rgba(17, 19, 28, 0.58);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .dark .aurora-glass-panel,
+  .dark .aurora-glass-dock {
+    background: rgba(17, 19, 28, 0.5);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .dark .aurora-glass-popover {
+    background: rgba(17, 19, 28, 0.62);
+    border-color: rgba(255, 255, 255, 0.16);
   }
 
   .theme-surface-popover {
