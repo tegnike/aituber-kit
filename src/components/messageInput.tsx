@@ -514,7 +514,7 @@ export const MessageInput = ({
                   aria-label={t('AttachImage')}
                   onClick={handleAttachClick}
                   disabled={chatProcessing || slidePlaying || realtimeAPIMode}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-[#55555f] transition-colors hover:bg-black/5 disabled:opacity-40"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-[var(--aurora-text-subtle)] transition-colors hover:bg-black/5 disabled:opacity-40"
                 >
                   <svg
                     width="20"
@@ -598,7 +598,7 @@ export const MessageInput = ({
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 disabled={chatProcessing || slidePlaying || realtimeAPIMode}
-                className="block w-full bg-transparent text-[15px] font-bold text-[#26262e] outline-none transition-all duration-200 placeholder:text-[#8a8a96] disabled:opacity-60"
+                className="block w-full bg-transparent text-[15px] font-bold text-[var(--aurora-text-strong)] outline-none transition-all duration-200 placeholder:text-[var(--aurora-text-muted)] disabled:opacity-60"
                 value={userMessage}
                 rows={rows}
                 maxLength={maxInputLength}
@@ -622,12 +622,12 @@ export const MessageInput = ({
                       : 'bg-green-600 text-theme'
                     : isMicRecording
                       ? 'bg-secondary text-theme'
-                      : 'bg-[rgba(120,120,140,0.16)] hover:bg-[rgba(120,120,140,0.28)] disabled:bg-[rgba(120,120,140,0.08)]'
+                      : 'bg-[var(--aurora-control-bg)] hover:bg-[var(--aurora-control-bg-hover)] disabled:bg-[var(--aurora-control-bg-disabled)]'
                 }
                 iconColor={
                   continuousMicListeningMode || isMicRecording
                     ? 'text-theme'
-                    : 'text-[#41414f]'
+                    : 'text-[var(--aurora-icon)]'
                 }
                 isProcessing={isMicRecording}
                 isProcessingIcon={
@@ -655,7 +655,7 @@ export const MessageInput = ({
 
               <IconButton
                 iconName="stop"
-                backgroundColor="bg-[rgba(120,120,140,0.16)] hover:bg-[rgba(120,120,140,0.28)]"
+                backgroundColor="bg-[var(--aurora-control-bg)] hover:bg-[var(--aurora-control-bg-hover)]"
                 className="!h-10 !min-h-10 !w-10 !min-w-10 !rounded-full !p-2 sm:!h-[46px] sm:!min-h-[46px] sm:!w-[46px] sm:!min-w-[46px] ring-0 transition-colors duration-200 focus:outline-none focus-visible:outline-none focus-visible:ring-0"
                 onClick={onClickStopButton}
                 isProcessing={false}

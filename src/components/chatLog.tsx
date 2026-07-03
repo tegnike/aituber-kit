@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EMOTIONS } from '@/features/messages/messages'
 
@@ -219,8 +219,10 @@ const GlassChatLog = () => {
   const chatLogPosition = settingsStore((s) => s.chatLogPosition)
   const chatLogEdgeOffset = settingsStore((s) => s.chatLogEdgeOffset)
   const chatProcessing = homeStore((s) => s.chatProcessing)
-  const messages = messageSelectors.getTextAndImageMessages(
-    homeStore((s) => s.chatLog)
+  const chatLog = homeStore((s) => s.chatLog)
+  const messages = useMemo(
+    () => messageSelectors.getTextAndImageMessages(chatLog),
+    [chatLog]
   )
 
   const isRightAligned = chatLogPosition === 'right'
@@ -250,7 +252,7 @@ const GlassChatLog = () => {
           : {}),
       }}
     >
-      <div className="border-b border-black/5 px-[18px] pb-2.5 pt-3.5 text-[13px] font-bold text-[#3a3a46]">
+      <div className="border-b border-black/5 px-[18px] pb-2.5 pt-3.5 text-[13px] font-bold text-[var(--aurora-text-soft)]">
         {t('ChatLog')}
       </div>
       <div className="scroll-hidden flex flex-1 flex-col gap-2.5 overflow-y-auto p-3.5">
@@ -294,9 +296,9 @@ const GlassChatLog = () => {
         })}
         {chatProcessing && (
           <div className="flex gap-1 self-start rounded-[16px_16px_16px_4px] bg-white/80 px-[15px] py-[11px]">
-            <span className="block h-1.5 w-1.5 animate-[aurora-dot-blink_1.2s_infinite] rounded-full bg-[#8a8a96]"></span>
-            <span className="block h-1.5 w-1.5 animate-[aurora-dot-blink_1.2s_0.2s_infinite] rounded-full bg-[#8a8a96]"></span>
-            <span className="block h-1.5 w-1.5 animate-[aurora-dot-blink_1.2s_0.4s_infinite] rounded-full bg-[#8a8a96]"></span>
+            <span className="block h-1.5 w-1.5 animate-[aurora-dot-blink_1.2s_infinite] rounded-full bg-[var(--aurora-text-muted)]"></span>
+            <span className="block h-1.5 w-1.5 animate-[aurora-dot-blink_1.2s_0.2s_infinite] rounded-full bg-[var(--aurora-text-muted)]"></span>
+            <span className="block h-1.5 w-1.5 animate-[aurora-dot-blink_1.2s_0.4s_infinite] rounded-full bg-[var(--aurora-text-muted)]"></span>
           </div>
         )}
       </div>
@@ -362,7 +364,7 @@ const GlassChat = ({
       data-message-index={index}
     >
       {senderName && (
-        <span className="max-w-full truncate px-1.5 text-[10px] font-bold text-[#55555f]">
+        <span className="max-w-full truncate px-1.5 text-[10px] font-bold text-[var(--aurora-text-subtle)]">
           {senderName}
         </span>
       )}
@@ -370,14 +372,14 @@ const GlassChat = ({
         className={`w-fit max-w-full px-3.5 py-[9px] text-[13px] leading-[1.6] ${
           isUser
             ? 'rounded-[16px_16px_4px_16px] bg-primary text-white'
-            : 'rounded-[16px_16px_16px_4px] bg-white/80 text-[#2a2a34]'
+            : 'rounded-[16px_16px_16px_4px] bg-white/80 text-[var(--aurora-text-medium)]'
         }`}
       >
         {thinking && !isUser && (
           <div className="mb-2">
             <button
               onClick={() => setIsLocalExpanded(!isLocalExpanded)}
-              className="flex items-center gap-1 text-xs text-[#55555f] transition-colors hover:text-primary"
+              className="flex items-center gap-1 text-xs text-[var(--aurora-text-subtle)] transition-colors hover:text-primary"
             >
               <span
                 className={`inline-block transform transition-transform ${isThinkingExpanded ? 'rotate-90' : ''}`}
@@ -387,7 +389,7 @@ const GlassChat = ({
               <span>{t('ThinkingProcess')}</span>
             </button>
             {isThinkingExpanded && (
-              <div className="mt-2 whitespace-pre-wrap rounded border-l-2 border-l-primary bg-white/60 px-3 py-2 text-xs italic text-[#55555f]">
+              <div className="mt-2 whitespace-pre-wrap rounded border-l-2 border-l-primary bg-white/60 px-3 py-2 text-xs italic text-[var(--aurora-text-subtle)]">
                 {thinking}
               </div>
             )}
@@ -433,8 +435,10 @@ const ClassicChatLog = () => {
   const chatLogWidth = settingsStore((s) => s.chatLogWidth)
   const chatLogPosition = settingsStore((s) => s.chatLogPosition)
   const chatLogEdgeOffset = settingsStore((s) => s.chatLogEdgeOffset)
-  const messages = messageSelectors.getTextAndImageMessages(
-    homeStore((s) => s.chatLog)
+  const chatLog = homeStore((s) => s.chatLog)
+  const messages = useMemo(
+    () => messageSelectors.getTextAndImageMessages(chatLog),
+    [chatLog]
   )
 
   const isRightAligned = chatLogPosition === 'right'

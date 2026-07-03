@@ -9,6 +9,19 @@ body {
   background-repeat: no-repeat;
 }
 
+/* Aurora ガラスUI上のテキスト/コントロール色トークン */
+:root {
+  --aurora-text-strong: #26262e;
+  --aurora-text-medium: #2a2a34;
+  --aurora-text-soft: #3a3a46;
+  --aurora-text-subtle: #55555f;
+  --aurora-text-muted: #8a8a96;
+  --aurora-icon: #41414f;
+  --aurora-control-bg: rgba(120, 120, 140, 0.16);
+  --aurora-control-bg-hover: rgba(120, 120, 140, 0.28);
+  --aurora-control-bg-disabled: rgba(120, 120, 140, 0.08);
+}
+
 @layer components {
   /* Aurora ガラスUIトークン（テーマ非依存のすりガラス演出） */
   .aurora-glass-bubble {

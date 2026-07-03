@@ -1,6 +1,5 @@
 import { KnownIconType } from '@charcoal-ui/icons'
 import { ButtonHTMLAttributes } from 'react'
-import Image from 'next/image'
 
 // Auroraデザイン準拠の白抜き（アウトライン）アイコン。
 // ここに定義があるアイコン名はpixiv-icon（塗りつぶし）の代わりにこちらを描画する。
@@ -12,10 +11,19 @@ const OUTLINE_ICONS: Record<string, JSX.Element> = {
     </>
   ),
   '24/CommentFill': (
-    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+    <>
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+      <line x1="8" y1="11.5" x2="8.01" y2="11.5" />
+      <line x1="12" y1="11.5" x2="12.01" y2="11.5" />
+      <line x1="16" y1="11.5" x2="16.01" y2="11.5" />
+    </>
   ),
   '24/CommentOutline': (
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    <>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      <line x1="8" y1="8" x2="16" y2="8" />
+      <line x1="8" y1="12" x2="13" y2="12" />
+    </>
   ),
   '24/Menu': (
     <>
@@ -215,44 +223,16 @@ export const IconButton = ({
   backgroundColor = 'bg-primary hover:bg-primary-hover active:bg-primary-press disabled:bg-primary-disabled',
   ...rest
 }: Props) => {
-  const customIconClassName =
-    iconColor === 'text-text1' ? 'brightness-0 opacity-80' : ''
-
   const resolvedName = String(
     isProcessing ? isProcessingIcon || '24/Dot' : iconName
   )
   const outlineIcon = OUTLINE_ICONS[resolvedName]
 
+  // OUTLINE_ICONSにないアイコン名のみpixiv-icon（塗りつぶし）にフォールバック
   const iconElement = outlineIcon ? (
     <OutlineIcon name={resolvedName}>{outlineIcon}</OutlineIcon>
-  ) : isProcessing ? (
-    <pixiv-icon name={(isProcessingIcon || '24/Dot') as any} scale="1" />
-  ) : iconName === 'screen-share' ? (
-    <Image
-      src="/images/icons/screen-share.svg"
-      alt="screen share"
-      width={24}
-      height={24}
-      className={`block ${customIconClassName}`}
-    />
-  ) : iconName === 'game-controller' ? (
-    <Image
-      src="/images/icons/game-controller.svg"
-      alt="game controller"
-      width={24}
-      height={24}
-      className={`block ${customIconClassName}`}
-    />
-  ) : iconName === 'stop' ? (
-    <Image
-      src="/images/icons/stop.svg"
-      alt="stop"
-      width={24}
-      height={24}
-      className="block"
-    />
   ) : (
-    <pixiv-icon name={iconName as any} scale="1" />
+    <pixiv-icon name={resolvedName as any} scale="1" />
   )
 
   return (

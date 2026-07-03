@@ -52,7 +52,7 @@ export const AssistantText = ({ message }: { message: string }) => {
             {characterName}
           </span>
         )}
-        <div className="line-clamp-4 text-base font-medium leading-[1.75] text-[#26262e]">
+        <div className="line-clamp-4 text-base font-medium leading-[1.75] text-[var(--aurora-text-strong)]">
           {sanitizedMessage}
         </div>
       </div>
