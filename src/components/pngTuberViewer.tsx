@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import ModelLoadingOverlay from '@/components/modelLoadingOverlay'
 
 const PNGTuberComponent = dynamic(() => import('./PNGTuberComponent'), {
   ssr: false,
-  loading: () => null,
+  loading: () => <ModelLoadingOverlay />,
 })
 
 export default function PNGTuberViewer() {
@@ -16,7 +17,7 @@ export default function PNGTuberViewer() {
   }, [])
 
   if (!isMounted) {
-    return null
+    return <ModelLoadingOverlay />
   }
 
   return (

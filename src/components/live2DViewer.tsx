@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import homeStore from '@/features/stores/home'
+import ModelLoadingOverlay from '@/components/modelLoadingOverlay'
 
 const Live2DComponent = dynamic(
   () => {
@@ -23,7 +24,7 @@ const Live2DComponent = dynamic(
     ssr: false,
     loading: () => {
       console.log('Live2DComponent is loading...')
-      return null
+      return <ModelLoadingOverlay />
     },
   }
 )
@@ -61,7 +62,7 @@ export default function Live2DViewer() {
 
   if (!isMounted) {
     console.log('Live2DViewer not mounted yet')
-    return null
+    return <ModelLoadingOverlay />
   }
 
   console.log('Rendering Live2DViewer')
@@ -84,6 +85,7 @@ export default function Live2DViewer() {
           }
         }}
       />
+      {!isCubismCoreLoaded && <ModelLoadingOverlay />}
       {isCubismCoreLoaded && <Live2DComponent />}
     </div>
   )

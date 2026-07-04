@@ -5,6 +5,7 @@ import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { Live2DHandler } from '@/features/messages/live2dHandler'
 import { debounce } from 'lodash'
+import ModelLoadingOverlay from '@/components/modelLoadingOverlay'
 
 console.log('Live2DComponent module loaded')
 
@@ -42,7 +43,9 @@ const Live2DComponent = (): JSX.Element => {
   const [model, setModel] = useState<InstanceType<typeof Live2DModel> | null>(
     null
   )
+  const [isModelLoading, setIsModelLoading] = useState(false)
   const modelRef = useRef<InstanceType<typeof Live2DModel> | null>(null)
+  const loadRequestIdRef = useRef(0)
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const selectedLive2DPath = settingsStore((state) => state.selectedLive2DPath)
@@ -132,6 +135,8 @@ const Live2DComponent = (): JSX.Element => {
   ) => {
     if (!canvasContainerRef.current) return
     const hs = homeStore.getState()
+    const requestId = ++loadRequestIdRef.current
+    setIsModelLoading(true)
 
     try {
       const newModel = await Live2DModel.fromSync(modelPath, {
@@ -159,6 +164,10 @@ const Live2DComponent = (): JSX.Element => {
       await Live2DHandler.resetToIdle()
     } catch (error) {
       console.error('Failed to load Live2D model:', error)
+    } finally {
+      if (requestId === loadRequestIdRef.current) {
+        setIsModelLoading(false)
+      }
     }
   }
 
@@ -383,12 +392,13 @@ const Live2DComponent = (): JSX.Element => {
   }, [app, model])
 
   return (
-    <div className="w-screen h-screen">
+    <div className="relative h-screen w-screen">
       <canvas
         ref={canvasContainerRef}
         className="w-full h-full"
         onContextMenu={(e) => e.preventDefault()}
       />
+      {isModelLoading && <ModelLoadingOverlay />}
     </div>
   )
 }

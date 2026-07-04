@@ -1,15 +1,30 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
 import { loadVRMAnimation } from '@/lib/VRMAnimation/loadVRMAnimation'
 import PoseTestButton from '@/components/poseTestButton'
+import ModelLoadingOverlay from '@/components/modelLoadingOverlay'
 
 export default function VrmViewer() {
+  const [isModelLoading, setIsModelLoading] = useState(false)
+
+  useEffect(() => {
+    const { viewer } = homeStore.getState()
+    viewer.onModelLoadingChange = setIsModelLoading
+
+    return () => {
+      if (viewer.onModelLoadingChange === setIsModelLoading) {
+        viewer.onModelLoadingChange = undefined
+      }
+    }
+  }, [])
+
   const canvasRef = useCallback((canvas: HTMLCanvasElement) => {
     if (canvas) {
       const { viewer } = homeStore.getState()
       const { selectedVrmPath } = settingsStore.getState()
+      viewer.onModelLoadingChange = setIsModelLoading
       viewer.setup(canvas)
       viewer.loadVrm(selectedVrmPath)
 
@@ -64,6 +79,7 @@ export default function VrmViewer() {
     <>
       <div className={'absolute top-0 left-0 w-screen h-[100svh] z-5'}>
         <canvas ref={canvasRef} className={'h-full w-full'}></canvas>
+        {isModelLoading && <ModelLoadingOverlay />}
       </div>
       {poseAdjustMode && <PoseTestButton />}
     </>
