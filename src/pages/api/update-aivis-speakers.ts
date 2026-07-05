@@ -60,7 +60,17 @@ export default async function handler(
       return res.status(400).json({ error: 'Invalid server URL protocol' })
     }
     const response = await fetch(`${serverUrl}/speakers`)
+
+    if (!response.ok) {
+      throw new Error(
+        `AivisSpeech server responded with status: ${response.status}`
+      )
+    }
+
     const speakers: Speaker[] = await response.json()
+    if (!Array.isArray(speakers)) {
+      throw new Error('AivisSpeech speakers response must be an array')
+    }
 
     // Aivis形式に変換
     const aivisSpeakers: AivisSpeaker[] = speakers.flatMap((speaker) =>

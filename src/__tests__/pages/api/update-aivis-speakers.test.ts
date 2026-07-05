@@ -82,4 +82,33 @@ describe('/api/update-aivis-speakers', () => {
     expect(global.fetch).toHaveBeenCalledWith('http://127.0.0.1:10101/speakers')
     expect(mockWriteFile).toHaveBeenCalled()
   })
+
+  it('rejects non-ok responses from the AivisSpeech server', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+      json: async () => ({ error: 'service unavailable' }),
+    }) as jest.Mock
+    const { req, res } = createMocks({ method: 'POST' })
+
+    await handler(req as any, res as any)
+
+    expect(res._getStatusCode()).toBe(500)
+    expect(mockWriteFile).not.toHaveBeenCalled()
+  })
+
+  it('rejects invalid speaker response shapes', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ speakers: [] }),
+    }) as jest.Mock
+    const { req, res } = createMocks({ method: 'POST' })
+
+    await handler(req as any, res as any)
+
+    expect(res._getStatusCode()).toBe(500)
+    expect(mockWriteFile).not.toHaveBeenCalled()
+  })
 })

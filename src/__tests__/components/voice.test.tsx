@@ -5,7 +5,7 @@
  */
 
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Voice from '@/components/settings/voice'
 import settingsStore from '@/features/stores/settings'
 
@@ -177,6 +177,71 @@ describe('Voice Settings', () => {
 
       expect(screen.getByText('VoicevoxServerUrl')).toBeTruthy()
       expect(screen.getByText('SpeakerSelection')).toBeTruthy()
+    })
+  })
+
+  describe('aivis speech settings', () => {
+    it('should request speaker updates with POST', async () => {
+      mockSettingsStore.mockImplementation((selector) => {
+        return selector({
+          ...defaultVoiceState,
+          selectVoice: 'aivis_speech',
+        } as any)
+      })
+
+      const fetchMock = global.fetch as jest.Mock
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => [],
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ message: 'ok' }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => [{ speaker: 'Speaker/Normal', id: 1 }],
+        })
+
+      render(<Voice />)
+
+      fireEvent.click(screen.getByText('UpdateSpeakerList'))
+
+      await waitFor(() => {
+        expect(fetchMock).toHaveBeenCalledWith(
+          '/api/update-aivis-speakers?serverUrl=',
+          { method: 'POST' }
+        )
+      })
+    })
+
+    it('should explain server resource access errors', async () => {
+      mockSettingsStore.mockImplementation((selector) => {
+        return selector({
+          ...defaultVoiceState,
+          selectVoice: 'aivis_speech',
+        } as any)
+      })
+
+      const fetchMock = global.fetch as jest.Mock
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => [],
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          json: async () => ({ errorCode: 'ServerSecretAccessDenied' }),
+        })
+
+      render(<Voice />)
+
+      fireEvent.click(screen.getByText('UpdateSpeakerList'))
+
+      await waitFor(() => {
+        expect(screen.getByText(/サーバー側リソース利用の許可/)).toBeTruthy()
+      })
     })
   })
 

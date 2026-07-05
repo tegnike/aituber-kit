@@ -22,6 +22,21 @@ import speakers from '../speakers.json'
 // import speakers_aivis from '../speakers_aivis.json'
 import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
+const getSpeakerUpdateErrorMessage = async (
+  response: Response
+): Promise<string> => {
+  try {
+    const data = (await response.json()) as { errorCode?: unknown }
+    if (data.errorCode === 'ServerSecretAccessDenied') {
+      return '話者リストの更新にはサーバー側リソース利用の許可が必要です。ローカル環境では .env.local に AITUBERKIT_SERVER_SECRET_ACCESS_MODE="unprotected" を設定してください。'
+    }
+  } catch {
+    // Fall through to the generic message when the error response is not JSON.
+  }
+
+  return '話者リストの更新に失敗しました'
+}
+
 const Voice = () => {
   const { isRestrictedMode } = useRestrictedMode()
   const koeiromapKey = settingsStore((s) => s.koeiromapKey)
@@ -360,7 +375,8 @@ const Voice = () => {
                       try {
                         const response = await fetch(
                           '/api/update-voicevox-speakers?serverUrl=' +
-                            encodeURIComponent(voicevoxServerUrl)
+                            encodeURIComponent(voicevoxServerUrl),
+                          { method: 'POST' }
                         )
                         if (response.ok) {
                           const updatedSpeakersResponse = await fetch(
@@ -371,7 +387,7 @@ const Voice = () => {
                           setSpeakers_voicevox(updatedSpeakers)
                         } else {
                           setVoicevoxSpeakersUpdateError(
-                            '話者リストの更新に失敗しました'
+                            await getSpeakerUpdateErrorMessage(response)
                           )
                         }
                       } catch (error) {
@@ -656,7 +672,8 @@ const Voice = () => {
                       try {
                         const response = await fetch(
                           '/api/update-aivis-speakers?serverUrl=' +
-                            encodeURIComponent(aivisSpeechServerUrl)
+                            encodeURIComponent(aivisSpeechServerUrl),
+                          { method: 'POST' }
                         )
                         if (response.ok) {
                           const updatedSpeakersResponse = await fetch(
@@ -667,7 +684,7 @@ const Voice = () => {
                           setSpeakers_aivis(updatedSpeakers)
                         } else {
                           setSpeakersUpdateError(
-                            '話者リストの更新に失敗しました'
+                            await getSpeakerUpdateErrorMessage(response)
                           )
                         }
                       } catch (error) {
