@@ -82,4 +82,18 @@ describe('/api/update-voicevox-speakers', () => {
     expect(global.fetch).toHaveBeenCalledWith('http://localhost:50021/speakers')
     expect(mockWriteFile).toHaveBeenCalled()
   })
+
+  it('rejects invalid speaker response shapes', async () => {
+    process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ speakers: [] }),
+    }) as jest.Mock
+    const { req, res } = createMocks({ method: 'POST' })
+
+    await handler(req as any, res as any)
+
+    expect(res._getStatusCode()).toBe(500)
+    expect(mockWriteFile).not.toHaveBeenCalled()
+  })
 })

@@ -68,6 +68,9 @@ export default async function handler(
     }
 
     const speakers: Speaker[] = await response.json()
+    if (!Array.isArray(speakers)) {
+      throw new Error('VOICEVOX speakers response must be an array')
+    }
 
     // VOICEVOX形式に変換
     const voicevoxSpeakers: VoicevoxSpeaker[] = speakers.flatMap((speaker) =>
