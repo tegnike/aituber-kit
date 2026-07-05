@@ -65,7 +65,10 @@ export class Viewer {
     return model
       .loadVRM(url)
       .then(async () => {
-        if (this.model !== model || !model.vrm) return
+        if (this.model !== model || !model.vrm) {
+          model.unLoadVrm()
+          return
+        }
 
         // Disable frustum culling
         model.vrm.scene.traverse((obj) => {

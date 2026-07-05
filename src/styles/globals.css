@@ -20,6 +20,7 @@ body {
   --aurora-control-bg: rgba(120, 120, 140, 0.16);
   --aurora-control-bg-hover: rgba(120, 120, 140, 0.28);
   --aurora-control-bg-disabled: rgba(120, 120, 140, 0.08);
+  --settings-backdrop-bg: rgba(255, 255, 255, 0.52);
 }
 
 /* darkMode: class 用の上書き（ダークガラス面に合わせたライトテキスト） */
@@ -33,6 +34,7 @@ body {
   --aurora-control-bg: rgba(120, 120, 140, 0.28);
   --aurora-control-bg-hover: rgba(120, 120, 140, 0.4);
   --aurora-control-bg-disabled: rgba(120, 120, 140, 0.14);
+  --settings-backdrop-bg: rgba(17, 19, 28, 0.46);
 }
 
 @layer components {
@@ -127,7 +129,7 @@ body {
   }
 
   .theme-settings-backdrop {
-    background-color: rgba(255, 255, 255, 0.52);
+    background-color: var(--settings-backdrop-bg);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
