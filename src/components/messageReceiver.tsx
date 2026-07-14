@@ -10,6 +10,22 @@ import homeStore from '@/features/stores/home'
 import { Message } from '@/features/messages/messages'
 import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 import { SpeakQueue } from '@/features/messages/speakQueue'
+import type {
+  PresentationAssignment,
+  PresentationControlAction,
+  PresentationControlTarget,
+} from '@/features/presentation/presentationTypes'
+import { normalizeExternalPresentation } from '@/features/presentation/presentationNormalizer'
+import presentationStore, {
+  applyPresentationControl,
+  getPresentationActualState,
+  loadPresentationDocument,
+  setPresentationError,
+  setPresentationLoading,
+  unloadPresentation,
+} from '@/features/stores/presentation'
+import slideStore from '@/features/stores/slide'
+import menuStore from '@/features/stores/menu'
 
 class ReceivedMessage {
   timestamp: number
@@ -36,12 +52,29 @@ class ReceivedMessage {
   }
 }
 
-type ReceivedCommand = {
+type ReceivedStopCommand = {
   id: string
   command: 'stop'
   mode: 'speech' | 'queue' | 'all'
   reason?: string
 }
+
+type ReceivedPresentationCommand =
+  | {
+      id: string
+      command: 'presentation.load'
+      presentationId: string
+      revision: number
+    }
+  | {
+      id: string
+      command: 'presentation.control'
+      action: PresentationControlAction
+      target?: PresentationControlTarget
+      speak?: boolean
+    }
+
+type ReceivedCommand = ReceivedStopCommand | ReceivedPresentationCommand
 
 const getClientApiHeaders = () => {
   const apiKey = process.env.NEXT_PUBLIC_AITUBERKIT_API_KEY
@@ -202,6 +235,78 @@ const MessageReceiver = () => {
   useEffect(() => {
     if (!clientId || isRestrictedMode) return
 
+    let loadingPresentationKey: string | null = null
+    let autoStartedAssignmentKey: string | null = null
+
+    const loadPresentation = async (
+      presentationId: string,
+      revision: number,
+      autoStart = false
+    ) => {
+      const key = `${presentationId}:${revision}`
+      if (loadingPresentationKey === key) return
+      loadingPresentationKey = key
+      setPresentationLoading(presentationId, revision)
+
+      try {
+        const authHeaders = getClientApiHeaders()
+        if (!authHeaders) throw new Error('Client API key is not configured')
+        const response = await fetch(
+          `/api/v1/presentations/${encodeURIComponent(presentationId)}?revision=${revision}`,
+          { headers: authHeaders }
+        )
+        if (!response.ok) {
+          throw new Error(`Presentation load failed (${response.status})`)
+        }
+        const data = await response.json()
+        const document = normalizeExternalPresentation(data.presentation)
+        loadPresentationDocument(document, data.contentHash, autoStart)
+        settingsStore.setState({ slideMode: true })
+        menuStore.setState({ slideVisible: true })
+        slideStore.setState({ currentSlide: 0, isPlaying: false })
+        if (autoStart) autoStartedAssignmentKey = key
+      } catch (error) {
+        logger.error('Error loading external presentation:', error)
+        setPresentationError(
+          error instanceof Error ? error.message : 'Presentation load failed'
+        )
+      } finally {
+        loadingPresentationKey = null
+      }
+    }
+
+    const reconcileAssignment = async (
+      assignment: PresentationAssignment | null
+    ) => {
+      const current = presentationStore.getState()
+      if (!assignment) {
+        if (current.presentationId) unloadPresentation()
+        return
+      }
+      const key = `${assignment.presentationId}:${assignment.revision}`
+      if (
+        !current.document ||
+        current.document.presentationId !== assignment.presentationId ||
+        current.document.revision !== assignment.revision ||
+        current.presentationId !== assignment.presentationId ||
+        current.revision !== assignment.revision ||
+        current.state === 'error'
+      ) {
+        await loadPresentation(
+          assignment.presentationId,
+          assignment.revision,
+          assignment.autoStart
+        )
+      } else if (
+        assignment.autoStart &&
+        autoStartedAssignmentKey !== key &&
+        current.state === 'ready'
+      ) {
+        applyPresentationControl('start')
+        autoStartedAssignmentKey = key
+      }
+    }
+
     const reportStatus = async () => {
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
@@ -210,23 +315,32 @@ const MessageReceiver = () => {
       const ss = settingsStore.getState()
 
       try {
-        await fetch(`/api/v1/client/status/?clientId=${clientId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...authHeaders,
-          },
-          body: JSON.stringify({
-            connected: true,
-            isSpeaking: hs.isSpeaking,
-            chatProcessing: hs.chatProcessing,
-            messageReceiverEnabled: ss.messageReceiverEnabled,
-            modelType: ss.modelType,
-            aiService: ss.selectAIService,
-            voiceEngine: ss.selectVoice,
-            externalLinkageMode: ss.externalLinkageMode,
-          }),
-        })
+        const response = await fetch(
+          `/api/v1/client/status/?clientId=${clientId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeaders,
+            },
+            body: JSON.stringify({
+              connected: true,
+              isSpeaking: hs.isSpeaking,
+              chatProcessing: hs.chatProcessing,
+              messageReceiverEnabled: ss.messageReceiverEnabled,
+              modelType: ss.modelType,
+              aiService: ss.selectAIService,
+              voiceEngine: ss.selectVoice,
+              externalLinkageMode: ss.externalLinkageMode,
+              presentation: getPresentationActualState(hs.isSpeaking),
+            }),
+          }
+        )
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        await reconcileAssignment(data.assignment ?? null)
       } catch (error) {
         logger.error('Error reporting client status:', error)
       }
@@ -246,22 +360,35 @@ const MessageReceiver = () => {
         }
         const data = await response.json()
         const commands = (data.commands || []) as ReceivedCommand[]
-        const stopCommands = commands.filter(
-          (command) => command.command === 'stop'
-        )
-
-        for (const command of stopCommands) {
-          if (command.mode === 'speech') {
-            SpeakQueue.stopCurrentSpeech()
-          } else if (command.mode === 'queue') {
-            SpeakQueue.stopQueue()
-          } else {
-            SpeakQueue.stopAll()
-            homeStore.setState({ chatProcessing: false, isSpeaking: false })
+        for (const command of commands) {
+          if (command.command === 'stop') {
+            if (command.mode === 'speech') {
+              SpeakQueue.stopCurrentSpeech()
+            } else if (command.mode === 'queue') {
+              SpeakQueue.stopQueue()
+            } else {
+              SpeakQueue.stopAll()
+              homeStore.setState({ chatProcessing: false, isSpeaking: false })
+            }
+          } else if (command.command === 'presentation.load') {
+            await loadPresentation(
+              command.presentationId,
+              command.revision,
+              false
+            )
+          } else if (command.command === 'presentation.control') {
+            const applied = applyPresentationControl(
+              command.action,
+              command.target,
+              command.speak
+            )
+            if (!applied) {
+              setPresentationError('Presentation control could not be applied')
+            }
           }
         }
 
-        if (stopCommands.length > 0) {
+        if (commands.length > 0) {
           await reportStatus()
         }
       } catch (error) {
@@ -270,6 +397,7 @@ const MessageReceiver = () => {
     }
 
     const fetchMessages = async () => {
+      if (!settingsStore.getState().messageReceiverEnabled) return
       try {
         const response = await fetch(
           `/api/messages/?lastTimestamp=${lastTimestamp}&clientId=${clientId}`

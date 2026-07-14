@@ -22,20 +22,29 @@ type EndpointId =
   | 'stop'
   | 'status'
   | 'events'
+  | 'presentation_register'
+  | 'presentation_get'
+  | 'presentation_activate'
+  | 'presentation_control'
+  | 'presentation_status'
   | 'legacy_direct'
   | 'legacy_ai'
   | 'legacy_user'
 
 type CodeSampleId = 'curl' | 'node' | 'python'
+type EndpointGroup = 'v1' | 'presentation' | 'legacy'
 
 type EndpointDefinition = {
   id: EndpointId
-  group: 'v1' | 'legacy'
+  group: EndpointGroup
   label: string
-  method: 'GET' | 'POST'
+  method: 'GET' | 'POST' | 'PUT'
   path: string
   description: string
   requiresApiKey: boolean
+  requiresClientId?: boolean
+  requiresPresentationId?: boolean
+  supportsRevisionQuery?: boolean
   defaultBody?: Record<string, unknown>
   fields: Array<{
     name: string
@@ -44,6 +53,8 @@ type EndpointDefinition = {
     description: string
   }>
 }
+
+const defaultPresentationId = 'api-console-demo'
 
 const endpoints: EndpointDefinition[] = [
   {
@@ -270,6 +281,183 @@ const endpoints: EndpointDefinition[] = [
     ],
   },
   {
+    id: 'presentation_register',
+    group: 'presentation',
+    label: 'Register / Update',
+    method: 'PUT',
+    path: '/api/v1/presentations/{presentationId}',
+    description:
+      'Presentation Manifestを登録または更新します。同じRevision・同じ内容の再送はno-opになります。',
+    requiresApiKey: true,
+    requiresClientId: false,
+    requiresPresentationId: true,
+    defaultBody: {
+      schemaVersion: 1,
+      presentationId: defaultPresentationId,
+      revision: 1,
+      title: 'API Console Demo',
+      locale: 'ja-JP',
+      createdAt: '2026-07-14T20:00:00.000Z',
+      theme: 'default',
+      sections: [
+        {
+          id: 'section-1',
+          title: 'デモセクション',
+          qaBrief: 'このデモ資料に関する質問へ、資料の内容に基づいて回答する。',
+          responsePolicy: '資料にない情報は推測で断定しない。',
+          slides: [
+            {
+              id: 'slide-1',
+              markdown:
+                '# API Console Demo\n\n外部APIから登録したスライドです。',
+              narration: '外部APIから登録したデモスライドです。',
+              pauseAfter: true,
+            },
+          ],
+        },
+      ],
+    },
+    fields: [
+      {
+        name: 'presentationId',
+        type: 'string',
+        required: true,
+        description:
+          'URLとManifestで一致させるPresentation IDです。英数字・ハイフン・アンダースコアを使用できます。',
+      },
+      {
+        name: 'revision',
+        type: 'integer >= 1',
+        required: true,
+        description:
+          '更新番号です。同じIDでは保存済みRevision以上を指定します。',
+      },
+      {
+        name: 'sections',
+        type: 'PresentationSectionV1[]',
+        required: true,
+        description:
+          '1件以上のSectionと、各Sectionに1件以上のSlideを指定します。',
+      },
+    ],
+  },
+  {
+    id: 'presentation_get',
+    group: 'presentation',
+    label: 'Get Manifest',
+    method: 'GET',
+    path: '/api/v1/presentations/{presentationId}',
+    description:
+      '保存済みPresentation Manifestを取得します。Revisionは任意です。',
+    requiresApiKey: true,
+    requiresClientId: false,
+    requiresPresentationId: true,
+    supportsRevisionQuery: true,
+    fields: [
+      {
+        name: 'presentationId',
+        type: 'path string',
+        required: true,
+        description: '取得するPresentation IDです。',
+      },
+      {
+        name: 'revision',
+        type: 'query integer',
+        description:
+          '任意のRevisionです。保存済みRevisionと異なる場合は409になります。',
+      },
+    ],
+  },
+  {
+    id: 'presentation_activate',
+    group: 'presentation',
+    label: 'Activate',
+    method: 'POST',
+    path: '/api/v1/presentations/{presentationId}/activate',
+    description:
+      'PresentationをClient IDへ割り当て、ブラウザへ読込コマンドを送ります。',
+    requiresApiKey: true,
+    requiresPresentationId: true,
+    defaultBody: {
+      revision: 1,
+      autoStart: false,
+    },
+    fields: [
+      {
+        name: 'clientId',
+        type: 'query or body string',
+        required: true,
+        description: 'Presentationを割り当てるClient IDです。',
+      },
+      {
+        name: 'revision',
+        type: 'integer >= 1',
+        required: true,
+        description: '割り当てる保存済みRevisionです。',
+      },
+      {
+        name: 'autoStart',
+        type: 'boolean',
+        description: 'trueなら読込後に開始します。既定値はfalseです。',
+      },
+    ],
+  },
+  {
+    id: 'presentation_control',
+    group: 'presentation',
+    label: 'Control',
+    method: 'POST',
+    path: '/api/v1/presentation/control',
+    description:
+      '割当済みPresentationの開始、一時停止、移動、解除などを非同期で指示します。',
+    requiresApiKey: true,
+    defaultBody: {
+      action: 'start',
+    },
+    fields: [
+      {
+        name: 'clientId',
+        type: 'query or body string',
+        required: true,
+        description: '操作対象のClient IDです。',
+      },
+      {
+        name: 'action',
+        type: '"start" | "pause" | "resume" | "next_slide" | "previous_slide" | "next_section" | "previous_section" | "goto" | "reset" | "unload"',
+        required: true,
+        description: '実行するPresentation操作です。',
+      },
+      {
+        name: 'target',
+        type: '{ sectionId?: string; slideId?: string }',
+        description: 'goto時に必須となる移動先です。',
+      },
+      {
+        name: 'speak',
+        type: 'boolean',
+        description: '移動後に読み上げるかを指定します。',
+      },
+    ],
+  },
+  {
+    id: 'presentation_status',
+    group: 'presentation',
+    label: 'Presentation Status',
+    method: 'GET',
+    path: '/api/v1/presentation/status',
+    description:
+      'Clientの割当状態（desired）とブラウザの実状態（actual）、同期状態を取得します。',
+    requiresApiKey: true,
+    fields: [
+      {
+        name: 'clientId',
+        type: 'query string',
+        required: true,
+        description: '状態を取得するClient IDです。',
+      },
+    ],
+  },
+  {
     id: 'legacy_direct',
     group: 'legacy',
     label: 'Legacy Direct Send',
@@ -405,6 +593,8 @@ const SendMessage = () => {
   const { t } = useTranslation()
   const [selectedId, setSelectedId] = useState<EndpointId>(defaultEndpoint.id)
   const [clientId, setClientId] = useState('')
+  const [presentationId, setPresentationId] = useState(defaultPresentationId)
+  const [presentationRevision, setPresentationRevision] = useState('')
   const [apiKey, setApiKey] = useState('')
   const [baseUrl, setBaseUrl] = useState('')
   const [requestBody, setRequestBody] = useState(
@@ -436,13 +626,20 @@ const SendMessage = () => {
   }, [])
 
   const buildUrl = () => {
-    const url = new URL(
-      selectedEndpoint.path,
-      baseUrl || 'http://localhost:3000'
-    )
+    const path = selectedEndpoint.requiresPresentationId
+      ? selectedEndpoint.path.replace(
+          '{presentationId}',
+          encodeURIComponent(presentationId.trim() || 'PRESENTATION_ID')
+        )
+      : selectedEndpoint.path
+    const url = new URL(path, baseUrl || 'http://localhost:3000')
 
-    if (clientId) {
+    if (selectedEndpoint.requiresClientId !== false && clientId) {
       url.searchParams.set('clientId', clientId)
+    }
+
+    if (selectedEndpoint.supportsRevisionQuery && presentationRevision.trim()) {
+      url.searchParams.set('revision', presentationRevision.trim())
     }
 
     const legacyType = legacyTypeByEndpoint[selectedEndpoint.id]
@@ -468,7 +665,7 @@ const SendMessage = () => {
   const buildCurlSample = () => {
     const url = buildUrl().toString()
     const headers =
-      selectedEndpoint.method === 'POST'
+      selectedEndpoint.method !== 'GET'
         ? ['-H "Content-Type: application/json"']
         : []
 
@@ -477,7 +674,7 @@ const SendMessage = () => {
     }
 
     const body =
-      selectedEndpoint.method === 'POST' && requestBody.trim()
+      selectedEndpoint.method !== 'GET' && requestBody.trim()
         ? ` \\\n  -d '${requestBody.replace(/\n/g, '')}'`
         : ''
 
@@ -489,7 +686,7 @@ const SendMessage = () => {
   const buildNodeSample = () => {
     const url = buildUrl().toString()
     const headers = [
-      ...(selectedEndpoint.method === 'POST'
+      ...(selectedEndpoint.method !== 'GET'
         ? [`'Content-Type': 'application/json'`]
         : []),
       ...(selectedEndpoint.requiresApiKey
@@ -500,7 +697,7 @@ const SendMessage = () => {
     const requestOptions = [
       `method: '${selectedEndpoint.method}'`,
       `headers: {${headers.length ? `\n    ${headers.join(',\n    ')}\n  ` : ''}}`,
-      ...(selectedEndpoint.method === 'POST'
+      ...(selectedEndpoint.method !== 'GET'
         ? [`body: JSON.stringify(${body})`]
         : []),
     ]
@@ -518,7 +715,7 @@ console.log(await response.json())`
   const buildPythonSample = () => {
     const url = buildUrl().toString()
     const headers = [
-      ...(selectedEndpoint.method === 'POST'
+      ...(selectedEndpoint.method !== 'GET'
         ? [`'Content-Type': 'application/json'`]
         : []),
       ...(selectedEndpoint.requiresApiKey
@@ -530,14 +727,14 @@ console.log(await response.json())`
       `'${selectedEndpoint.method}'`,
       'url',
       ...(headers.length ? ['headers=headers'] : []),
-      ...(selectedEndpoint.method === 'POST' ? ['json=payload'] : []),
+      ...(selectedEndpoint.method !== 'GET' ? ['json=payload'] : []),
     ]
 
-    return `${selectedEndpoint.method === 'POST' ? 'import json\n' : ''}import requests
+    return `${selectedEndpoint.method !== 'GET' ? 'import json\n' : ''}import requests
 
 url = '${url}'
 ${headers.length ? `headers = {\n    ${headers.join(',\n    ')}\n}\n` : ''}${
-      selectedEndpoint.method === 'POST'
+      selectedEndpoint.method !== 'GET'
         ? `payload = json.loads(${JSON.stringify(body)})\n`
         : ''
     }
@@ -560,12 +757,33 @@ print(response.json())`
   }
 
   const handleEndpointChange = (endpoint: EndpointDefinition) => {
+    const defaultBody = endpoint.defaultBody
+      ? { ...endpoint.defaultBody }
+      : undefined
+    if (endpoint.id === 'presentation_register' && defaultBody) {
+      defaultBody.presentationId = presentationId
+    }
     setSelectedId(endpoint.id)
-    setRequestBody(stringifyBody(endpoint.defaultBody))
-    setMessageText(extractMessageText(endpoint, endpoint.defaultBody))
+    setRequestBody(stringifyBody(defaultBody))
+    setMessageText(extractMessageText(endpoint, defaultBody))
     setResponseText('')
     if (window.innerWidth < 1024) {
       setEndpointsOpen(false)
+    }
+  }
+
+  const handlePresentationIdChange = (value: string) => {
+    setPresentationId(value)
+    if (selectedEndpoint.id !== 'presentation_register') return
+
+    try {
+      const parsed = JSON.parse(requestBody)
+      if (isRequestBodyObject(parsed)) {
+        parsed.presentationId = value
+        setRequestBody(JSON.stringify(parsed, null, 2))
+      }
+    } catch {
+      // Keep invalid JSON untouched while editing the path parameter.
     }
   }
 
@@ -624,8 +842,13 @@ print(response.json())`
   }
 
   const handleSubmit = async () => {
-    if (!clientId.trim()) {
+    if (selectedEndpoint.requiresClientId !== false && !clientId.trim()) {
       setResponseText(t('ApiConsole.clientIdRequired'))
+      return
+    }
+
+    if (selectedEndpoint.requiresPresentationId && !presentationId.trim()) {
+      setResponseText(t('ApiConsole.presentationIdRequired'))
       return
     }
 
@@ -642,7 +865,7 @@ print(response.json())`
       const res = await fetch(buildUrl(), {
         method: selectedEndpoint.method,
         headers: {
-          ...(selectedEndpoint.method === 'POST'
+          ...(selectedEndpoint.method !== 'GET'
             ? { 'Content-Type': 'application/json' }
             : {}),
           ...(selectedEndpoint.requiresApiKey
@@ -730,7 +953,7 @@ print(response.json())`
               </button>
             </div>
             <div className={`${endpointsOpen ? 'block' : 'hidden'} lg:block`}>
-              {(['v1', 'legacy'] as const).map((group) => (
+              {(['v1', 'presentation', 'legacy'] as const).map((group) => (
                 <div
                   key={group}
                   className="border-b border-primary/10 p-3 last:border-b-0"
@@ -738,7 +961,9 @@ print(response.json())`
                   <div className="mb-2 text-xs font-bold uppercase text-primary">
                     {group === 'v1'
                       ? t('ApiConsole.v1Endpoints')
-                      : t('ApiConsole.legacyEndpoints')}
+                      : group === 'presentation'
+                        ? t('ApiConsole.presentationEndpoints')
+                        : t('ApiConsole.legacyEndpoints')}
                   </div>
                   <div className="flex flex-col gap-1.5">
                     {endpoints
@@ -781,24 +1006,28 @@ print(response.json())`
 
         <div className="grid min-w-0 gap-5">
           <section className="theme-surface-popover grid gap-3 rounded-lg border p-4 shadow-sm md:grid-cols-2">
-            <label
-              className={`flex flex-col gap-2 text-sm font-bold ${
-                selectedEndpoint.requiresApiKey ? '' : 'md:col-span-2'
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                <ShieldCheckIcon className="h-5 w-5 text-primary" />
-                {t('ClientID')}
-              </span>
-              <input
-                type="text"
-                value={clientId}
-                onChange={(event) => setClientId(event.target.value)}
-                className="theme-surface-control h-11 rounded-lg border px-3 font-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-              />
-            </label>
-            {selectedEndpoint.requiresApiKey && (
+            {selectedEndpoint.requiresClientId !== false && (
               <label className="flex flex-col gap-2 text-sm font-bold">
+                <span className="flex items-center gap-2">
+                  <ShieldCheckIcon className="h-5 w-5 text-primary" />
+                  {t('ClientID')}
+                </span>
+                <input
+                  type="text"
+                  value={clientId}
+                  onChange={(event) => setClientId(event.target.value)}
+                  className="theme-surface-control h-11 rounded-lg border px-3 font-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </label>
+            )}
+            {selectedEndpoint.requiresApiKey && (
+              <label
+                className={`flex flex-col gap-2 text-sm font-bold ${
+                  selectedEndpoint.requiresClientId === false
+                    ? 'md:col-span-2'
+                    : ''
+                }`}
+              >
                 <span className="flex items-center gap-2">
                   <KeyIcon className="h-5 w-5 text-primary" />
                   {t('ApiConsole.apiKey')}
@@ -809,6 +1038,36 @@ print(response.json())`
                   onChange={(event) => setApiKey(event.target.value)}
                   className="theme-surface-control h-11 rounded-lg border px-3 font-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                   placeholder={t('ApiConsole.apiKeyPlaceholder')}
+                />
+              </label>
+            )}
+            {selectedEndpoint.requiresPresentationId && (
+              <label className="flex flex-col gap-2 text-sm font-bold">
+                <span>Presentation ID</span>
+                <input
+                  type="text"
+                  value={presentationId}
+                  onChange={(event) =>
+                    handlePresentationIdChange(event.target.value)
+                  }
+                  className="theme-surface-control h-11 rounded-lg border px-3 font-mono font-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  placeholder="morning-show-2026-07-14"
+                />
+              </label>
+            )}
+            {selectedEndpoint.supportsRevisionQuery && (
+              <label className="flex flex-col gap-2 text-sm font-bold">
+                <span>Revision（任意）</span>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={presentationRevision}
+                  onChange={(event) =>
+                    setPresentationRevision(event.target.value)
+                  }
+                  className="theme-surface-control h-11 rounded-lg border px-3 font-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  placeholder="1"
                 />
               </label>
             )}
@@ -884,7 +1143,7 @@ print(response.json())`
                   </div>
                 </div>
 
-                {selectedEndpoint.method === 'POST' && (
+                {selectedEndpoint.method !== 'GET' && (
                   <div className="grid min-w-0 gap-3">
                     {selectedEndpoint.id === 'chat' && (
                       <div className="rounded-lg border border-primary/20 bg-primary/10 p-3 text-sm leading-6 text-theme-default">
