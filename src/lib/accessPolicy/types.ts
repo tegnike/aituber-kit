@@ -9,7 +9,7 @@
  * ランタイム import を持たないこと。
  */
 
-export type ApiHttpMethod = 'GET' | 'POST' | 'DELETE'
+export type ApiHttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 /**
  * ルートがアクセスするリソースの分類

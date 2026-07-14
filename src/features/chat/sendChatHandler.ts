@@ -19,6 +19,8 @@ import {
   createV2ExternalLinkageChatEvent,
 } from '@/features/externalLinkage/externalLinkageProtocol'
 import { processAIResponse } from './speechPipeline/processAIResponse'
+import presentationStore from '@/features/stores/presentation'
+import { buildPresentationPromptContext } from '@/features/presentation/presentationPromptContext'
 
 /**
  * アシスタントとの会話を行う
@@ -34,6 +36,7 @@ export const handleSendChatFn =
 
     const ss = settingsStore.getState()
     const sls = slideStore.getState()
+    const presentation = presentationStore.getState()
     const externalWsManager = externalLinkageWebSocketStore.getState().wsManager
     const modalImage = homeStore.getState().modalImage
 
@@ -123,41 +126,58 @@ export const handleSendChatFn =
     } else {
       let systemPrompt = ss.systemPrompt
       if (ss.slideMode) {
-        if (sls.isPlaying) {
+        if (sls.isPlaying || presentation.state === 'playing') {
           return
         }
 
-        try {
-          let scripts = JSON.stringify(
-            require(
-              `../../../public/slides/${sls.selectedSlideDocs}/scripts.json`
-            )
+        if (
+          presentation.document &&
+          presentation.sectionId &&
+          presentation.slideId
+        ) {
+          const context = buildPresentationPromptContext(
+            presentation.document,
+            presentation.sectionId,
+            presentation.slideId
           )
-          systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
-
-          let supplement = ''
+          if (context) systemPrompt += `\n\n${context}`
+        } else {
           try {
-            const response = await fetch(
-              `/api/getSupplement?slideName=${sls.selectedSlideDocs}`
+            let scripts = JSON.stringify(
+              require(
+                `../../../public/slides/${sls.selectedSlideDocs}/scripts.json`
+              )
             )
-            if (!response.ok) {
-              throw new Error('Failed to fetch supplement')
-            }
-            const data = await response.json()
-            supplement = data.supplement
-            systemPrompt = systemPrompt.replace('{{SUPPLEMENT}}', supplement)
-          } catch (e) {
-            logger.error('supplement.txtの読み込みに失敗しました:', e)
-          }
+            systemPrompt = systemPrompt.replace('{{SCRIPTS}}', scripts)
 
-          const answerString = await judgeSlide(newMessage, scripts, supplement)
-          const answer = JSON.parse(answerString)
-          if (answer.judge === 'true' && answer.page !== '') {
-            goToSlide(Number(answer.page))
-            systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
+            let supplement = ''
+            try {
+              const response = await fetch(
+                `/api/getSupplement?slideName=${sls.selectedSlideDocs}`
+              )
+              if (!response.ok) {
+                throw new Error('Failed to fetch supplement')
+              }
+              const data = await response.json()
+              supplement = data.supplement
+              systemPrompt = systemPrompt.replace('{{SUPPLEMENT}}', supplement)
+            } catch (e) {
+              logger.error('supplement.txtの読み込みに失敗しました:', e)
+            }
+
+            const answerString = await judgeSlide(
+              newMessage,
+              scripts,
+              supplement
+            )
+            const answer = JSON.parse(answerString)
+            if (answer.judge === 'true' && answer.page !== '') {
+              goToSlide(Number(answer.page))
+              systemPrompt += `\n\nEspecial Page Number is ${answer.page}.`
+            }
+          } catch (e) {
+            logger.error(e)
           }
-        } catch (e) {
-          logger.error(e)
         }
       }
 

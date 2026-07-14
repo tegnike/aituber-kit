@@ -266,7 +266,7 @@ describe('API route static checks', () => {
         ])
       })
 
-      it('fs-read/fs-write routes must import the fs module', () => {
+      it('fs-read/fs-write routes must import fs or delegate to the presentation repository', () => {
         const violations: string[] = []
 
         for (const [policyPath, policy] of policyEntries()) {
@@ -280,7 +280,11 @@ describe('API route static checks', () => {
           const file = routeFilePath(policyPath)
           const source = fs.readFileSync(file, 'utf8')
           const importsFs = /from\s+['"]fs(\/promises)?['"]/.test(source)
-          if (!importsFs) {
+          const delegatesToFsRepository =
+            /from\s+['"]@\/features\/presentation\/presentationRepository['"]/.test(
+              source
+            )
+          if (!importsFs && !delegatesToFsRepository) {
             violations.push(policyPath)
           }
         }
