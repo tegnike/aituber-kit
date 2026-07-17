@@ -6,11 +6,26 @@ interface SlideContentProps {
 
 const SlideContent: React.FC<SlideContentProps> = ({ marpitContainer }) => {
   return (
-    <div data-testid="slide-content" style={{ border: '2px solid #333' }}>
+    <div
+      data-testid="slide-content"
+      style={{
+        aspectRatio: '16 / 9',
+        background: '#f4f7ff',
+        border: '2px solid #333',
+        height: '100%',
+        overflow: 'hidden',
+        width: '100%',
+      }}
+    >
       {marpitContainer && (
         <div
           data-testid="slide-marpit-container"
-          style={{ width: '100%', height: '100%', overflow: 'hidden' }}
+          style={{
+            background: '#f4f7ff',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+          }}
           dangerouslySetInnerHTML={{ __html: marpitContainer.outerHTML }}
         />
       )}

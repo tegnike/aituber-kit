@@ -79,6 +79,34 @@ describe('tagExtractors（handlers.tsから移設した既存挙動の固定）'
       expect(extractSentence('文のあと[happy]続き').sentence).toBe('文のあと')
     })
 
+    it('小数点を文末として分割しない', () => {
+      expect(extractSentence('価格は1分0.10から0.37ドル。')).toEqual({
+        sentence: '価格は1分0.10から0.37ドル。',
+        remainingText: '',
+      })
+    })
+
+    it('数字直後のピリオドが末尾なら次のチャンクまで保留する', () => {
+      expect(extractSentence('価格は1分0.')).toEqual({
+        sentence: '',
+        remainingText: '価格は1分0.',
+      })
+    })
+
+    it('桁区切りのカンマを文の区切りとして扱わない', () => {
+      expect(extractSentence('再生回数は5,200万回です。')).toEqual({
+        sentence: '再生回数は5,200万回です。',
+        remainingText: '',
+      })
+    })
+
+    it('数字直後のカンマが末尾なら次のチャンクまで保留する', () => {
+      expect(extractSentence('累計再生回数は5,')).toEqual({
+        sentence: '',
+        remainingText: '累計再生回数は5,',
+      })
+    })
+
     it('区切りがなければ空文を返す', () => {
       expect(extractSentence('区切りなし')).toEqual({
         sentence: '',

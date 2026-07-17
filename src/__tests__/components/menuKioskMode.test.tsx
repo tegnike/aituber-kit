@@ -10,6 +10,7 @@ import { Menu } from '@/components/menu'
 import settingsStore from '@/features/stores/settings'
 import menuStore from '@/features/stores/menu'
 import homeStore from '@/features/stores/home'
+import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 
 // Mock useKioskMode
 const mockUseKioskMode = jest.fn(() => ({
@@ -133,10 +134,15 @@ const mockMenuStore = menuStore as jest.MockedFunction<typeof menuStore>
 
 import slideStore from '@/features/stores/slide'
 const mockSlideStore = slideStore as jest.MockedFunction<typeof slideStore>
+const mockGetLatestAssistantMessage =
+  getLatestAssistantMessage as jest.MockedFunction<
+    typeof getLatestAssistantMessage
+  >
 
 describe('Menu - Kiosk Mode', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockGetLatestAssistantMessage.mockReturnValue('')
 
     // Default settings store mock
     mockSettingsStore.mockImplementation((selector) => {
@@ -308,5 +314,35 @@ describe('Menu - Kiosk Mode', () => {
       fireEvent.keyDown(window, { key: 'k', code: 'KeyK', ctrlKey: true })
       expect(screen.getByTestId('settings')).toBeTruthy()
     })
+  })
+
+  it('スライド表示中は通常のAI回答テキストを表示しない', () => {
+    mockSettingsStore.mockImplementation((selector) =>
+      selector({
+        selectAIService: 'openai',
+        selectAIModel: 'gpt-4',
+        enableMultiModal: false,
+        customModel: false,
+        youtubeMode: false,
+        youtubePlaying: false,
+        slideMode: true,
+        showControlPanel: true,
+        showAssistantText: true,
+      } as any)
+    )
+    mockMenuStore.mockImplementation((selector) =>
+      selector({
+        slideVisible: true,
+        showWebcam: false,
+        showCapture: false,
+      } as any)
+    )
+    mockGetLatestAssistantMessage.mockReturnValue({
+      role: 'assistant',
+      content: '質問への回答です。',
+    } as any)
+
+    const { queryByTestId } = render(<Menu />)
+    expect(queryByTestId('assistant-text')).not.toBeInTheDocument()
   })
 })

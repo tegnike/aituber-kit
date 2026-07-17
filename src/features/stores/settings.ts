@@ -240,6 +240,7 @@ interface General {
   showControlPanel: boolean
   settingsToggleShortcut: string
   voiceInputShortcut: string
+  showMessageInput: boolean
   showQuickMenu: boolean
   externalLinkageMode: boolean
   externalLinkageUrl: string
@@ -578,6 +579,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     process.env.NEXT_PUBLIC_VOICE_INPUT_SHORTCUT,
     DEFAULT_VOICE_INPUT_SHORTCUT
   ),
+  showMessageInput: process.env.NEXT_PUBLIC_SHOW_MESSAGE_INPUT !== 'false',
   showQuickMenu: process.env.NEXT_PUBLIC_SHOW_QUICK_MENU === 'true',
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   externalLinkageUrl:
@@ -1184,6 +1186,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   includeTimestampInUserMessage: state.includeTimestampInUserMessage,
   settingsToggleShortcut: state.settingsToggleShortcut,
   voiceInputShortcut: state.voiceInputShortcut,
+  showMessageInput: state.showMessageInput,
   externalLinkageMode: state.externalLinkageMode,
   externalLinkageUrl: state.externalLinkageUrl,
   realtimeAPIMode: state.realtimeAPIMode,

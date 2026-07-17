@@ -34,6 +34,7 @@ const Based = () => {
     DEFAULT_SETTINGS_TOGGLE_SHORTCUT
   const voiceInputShortcut =
     settingsStore((s) => s.voiceInputShortcut) || DEFAULT_VOICE_INPUT_SHORTCUT
+  const showMessageInput = settingsStore((s) => s.showMessageInput)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
@@ -345,6 +346,17 @@ const Based = () => {
             }
             conflictsWith={[voiceInputShortcut]}
             testId="settings-toggle-shortcut-input"
+          />
+        </div>
+      </div>
+
+      {/* 入力欄表示設定 */}
+      <div className="border-t border-gray-300 pt-6 my-6">
+        <div className="my-4 text-xl font-bold">{t('ShowMessageInput')}</div>
+        <div className="my-2">
+          <ToggleSwitch
+            enabled={showMessageInput}
+            onChange={(v) => settingsStore.setState({ showMessageInput: v })}
           />
         </div>
       </div>

@@ -340,6 +340,7 @@
   "ShortcutReset": "初期設定に戻す",
   "ShortcutConflict": "このショートカットは別の操作に割り当てられています。",
   "ShortcutExternalKeyboardInfo": "スマホ・タブレットでは、外付けキーボードを接続している場合のみ使用できます。",
+  "ShowMessageInput": "入力欄を表示する",
   "ColorTheme": "カラーテーマ",
   "ColorThemeInfo": "アプリケーションのカラーテーマを選択できます。選択したテーマは即座に適用されます。",
   "ThemeDefault": "デフォルト",

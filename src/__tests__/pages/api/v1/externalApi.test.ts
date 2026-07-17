@@ -396,6 +396,11 @@ describe('/api/v1 external API', () => {
           mode: 'ai_generate',
           useCurrentSystemPrompt: false,
           systemPrompt: 'Be concise',
+          responseCallback: {
+            url: 'http://127.0.0.1:9892/api/question-responses',
+            interactionId: 'qa-question-1',
+            token: 'callback-token',
+          },
         },
       }),
       res
@@ -417,6 +422,11 @@ describe('/api/v1 external API', () => {
         type: 'ai_generate',
         systemPrompt: 'Be concise',
         useCurrentSystemPrompt: false,
+        responseCallback: {
+          url: 'http://127.0.0.1:9892/api/question-responses',
+          interactionId: 'qa-question-1',
+          token: 'callback-token',
+        },
       })
     )
   })

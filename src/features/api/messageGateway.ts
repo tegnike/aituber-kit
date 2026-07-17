@@ -14,6 +14,12 @@ export type ApiCommandType =
 
 export type ApiStopMode = 'speech' | 'queue' | 'all'
 
+export interface ResponseCallback {
+  url: string
+  interactionId: string
+  token: string
+}
+
 export interface QueuedMessage {
   id: string
   timestamp: number
@@ -26,6 +32,7 @@ export interface QueuedMessage {
   priority?: 'normal' | 'high'
   interrupt?: boolean
   source?: 'legacy' | 'v1'
+  responseCallback?: ResponseCallback
 }
 
 export interface QueuedStopCommand {
@@ -119,6 +126,7 @@ export interface EnqueueMessagesParams {
   priority?: 'normal' | 'high'
   interrupt?: boolean
   source?: 'legacy' | 'v1'
+  responseCallback?: ResponseCallback
 }
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5
@@ -232,6 +240,7 @@ export const enqueueMessages = ({
   priority = 'normal',
   interrupt = false,
   source = 'v1',
+  responseCallback,
 }: EnqueueMessagesParams): QueuedMessage[] => {
   cleanupClientQueues()
 
@@ -249,6 +258,7 @@ export const enqueueMessages = ({
     priority,
     interrupt,
     source,
+    responseCallback,
   }))
 
   if (priority === 'high') {

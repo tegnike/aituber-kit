@@ -86,7 +86,10 @@ export const presentationManifestSchema = z
     description: z.string().optional(),
     locale: z.string().optional(),
     createdAt: z.string().datetime({ offset: true }),
-    theme: z.literal('default').optional(),
+    theme: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]{1,64}$/, 'Invalid theme ID')
+      .optional(),
     sections: z.array(sectionSchema).min(1).max(PRESENTATION_LIMITS.sections),
     metadata: z.record(metadataValueSchema).optional(),
   })

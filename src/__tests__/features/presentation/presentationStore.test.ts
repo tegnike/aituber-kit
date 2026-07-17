@@ -4,6 +4,7 @@ import presentationStore, {
   finishCurrentPresentationNarration,
   getCurrentPresentationLocation,
   loadPresentationDocument,
+  setPresentationLoading,
   unloadPresentation,
 } from '@/features/stores/presentation'
 import type { PresentationManifestV1 } from '@/features/presentation/presentationTypes'
@@ -69,5 +70,12 @@ describe('presentationStore', () => {
     expect(persisted).toContain('store-test')
     expect(persisted).not.toContain('SECRET_BRIEF_MUST_NOT_BE_PERSISTED')
     expect(persisted).not.toContain('sha256:test')
+  })
+
+  it('does not persist transient loading state across a browser reload', () => {
+    setPresentationLoading('store-test', 1)
+    const persisted = localStorage.getItem('aituber-kit-presentation-position')
+    expect(persisted).toContain('"state":"paused"')
+    expect(persisted).not.toContain('"state":"loading"')
   })
 })
