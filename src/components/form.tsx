@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import slideStore from '@/features/stores/slide'
 import { handleSendChatFn } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import { PresetQuestionButtons } from './presetQuestionButtons'
@@ -16,14 +15,15 @@ export const Form = () => {
   const captureStatus = homeStore((s) => s.captureStatus)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
-  const slidePlaying = slideStore((s) => s.isPlaying)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
+  const isSpeaking = homeStore((s) => s.isSpeaking)
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
   const customModel = settingsStore((s) => s.customModel)
   const gameCommentaryEnabled = settingsStore((s) => s.gameCommentaryEnabled)
   const gameCommentaryPlaying = settingsStore((s) => s.gameCommentaryPlaying)
+  const showMessageInput = settingsStore((s) => s.showMessageInput)
   const [delayedText, setDelayedText] = useState('')
   const handleSendChat = handleSendChatFn()
 
@@ -92,13 +92,15 @@ export const Form = () => {
 
   return slideMode &&
     slideVisible &&
-    slidePlaying &&
+    isSpeaking &&
     chatProcessingCount !== 0 ? (
     <SlideText />
   ) : (
     <>
       <PresetQuestionButtons onSelectQuestion={hookSendChat} />
-      <MessageInputContainer onChatProcessStart={hookSendChat} />
+      {showMessageInput && (
+        <MessageInputContainer onChatProcessStart={hookSendChat} />
+      )}
     </>
   )
 }

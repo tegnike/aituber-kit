@@ -5,11 +5,13 @@ import presentationStore, {
   applyPresentationControl,
   finishCurrentPresentationNarration,
 } from '@/features/stores/presentation'
+import { buildExternalSlideMarkdown } from '@/features/presentation/externalSlideMarkdown'
 import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import { SpeakQueue } from '@/features/messages/speakQueue'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
+import SlideFrame from './slideFrame'
 
 interface SlidesProps {
   markdown: string
@@ -50,7 +52,15 @@ const Slides: React.FC<SlidesProps> = () => {
   const currentSlide = isExternal ? externalCurrentSlide : legacyCurrentSlide
   const slideCount = isExternal ? externalSlides.length : legacySlideCount
   const externalMarkdown = useMemo(
-    () => externalSlides.map(({ slide }) => slide.markdown).join('\n\n---\n\n'),
+    () =>
+      externalSlides
+        .map(({ section, slide }) => {
+          const sectionSlideIndex = section.slides.findIndex(
+            (item) => item.id === slide.id
+          )
+          return buildExternalSlideMarkdown(section, slide, sectionSlideIndex)
+        })
+        .join('\n\n---\n\n'),
     [externalSlides]
   )
 
@@ -263,10 +273,6 @@ const Slides: React.FC<SlidesProps> = () => {
     }
   }, [chatProcessingCount, currentSlide, isExternal, slideCount])
 
-  const slideSize = {
-    width: 'min(calc(70vh * (16 / 9)), 80vw)',
-    height: 'min(calc(80vw * (9 / 16)), 70vh)',
-  }
   const currentSection = externalSlides[externalCurrentSlide]?.section
   const canMoveToNextSection = Boolean(
     document &&
@@ -276,33 +282,8 @@ const Slides: React.FC<SlidesProps> = () => {
   )
 
   return (
-    <div
-      className="flex flex-col items-center justify-center"
-      data-testid="slide-mode-viewer"
-      style={{
-        height: '100vh',
-        padding: '10px 0',
-        position: 'absolute',
-        width: '100%',
-      }}
-    >
-      <div
-        style={{
-          ...slideSize,
-          margin: '0 auto',
-          position: 'relative',
-        }}
-      >
-        <SlideContent marpitContainer={marpitContainer} />
-      </div>
-      <div
-        style={{
-          width: slideSize.width,
-          margin: '10px auto 0',
-          position: 'relative',
-          zIndex: 10,
-        }}
-      >
+    <SlideFrame
+      controls={
         <SlideControls
           currentSlide={currentSlide}
           slideCount={slideCount}
@@ -318,8 +299,10 @@ const Slides: React.FC<SlidesProps> = () => {
               : undefined
           }
         />
-      </div>
-    </div>
+      }
+    >
+      <SlideContent marpitContainer={marpitContainer} />
+    </SlideFrame>
   )
 }
 

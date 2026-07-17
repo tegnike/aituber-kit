@@ -60,7 +60,7 @@ export const extractSentence = (
   text: string
 ): { sentence: string; remainingText: string } => {
   const sentenceMatch = text.match(
-    /^(.{1,9}?(?:[。．.!?！？\n]|(?=\[))|.{10,}?(?:[、,。．.!?！？\n]|(?=\[)))/
+    /^(.{1,9}?(?:[。．!?！？\n]|(?<!\d)\.|\.(?=[^\d])|(?=\[))|.{10,}?(?:[、。．!?！？\n]|(?<!\d)[,.]|[,.](?=[^\d])|(?=\[)))/
   )
   if (sentenceMatch?.[0]) {
     return {

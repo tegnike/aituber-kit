@@ -46,7 +46,12 @@ const presentationStore = create<PresentationState>()(
       revision: state.revision,
       sectionId: state.sectionId,
       slideId: state.slideId,
-      state: state.state === 'playing' ? 'paused' : state.state,
+      state:
+        state.state === 'playing' ||
+        state.state === 'loading' ||
+        state.state === 'error'
+          ? 'paused'
+          : state.state,
       updatedAt: state.updatedAt,
     }),
   })

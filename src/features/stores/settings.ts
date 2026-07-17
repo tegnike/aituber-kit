@@ -229,6 +229,7 @@ interface General {
   changeEnglishToJapanese: boolean
   includeTimestampInUserMessage: boolean
   showControlPanel: boolean
+  showMessageInput: boolean
   showQuickMenu: boolean
   externalLinkageMode: boolean
   externalLinkageUrl: string
@@ -550,6 +551,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   includeTimestampInUserMessage:
     process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
   showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
+  showMessageInput: process.env.NEXT_PUBLIC_SHOW_MESSAGE_INPUT !== 'false',
   showQuickMenu: process.env.NEXT_PUBLIC_SHOW_QUICK_MENU === 'true',
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   externalLinkageUrl:
@@ -1172,6 +1174,7 @@ const settingsStore = create<SettingsState>()(
         maxPastMessages: state.maxPastMessages,
         useVideoAsBackground: state.useVideoAsBackground,
         hideVideoDisplay: state.hideVideoDisplay,
+        showMessageInput: state.showMessageInput,
         showQuickMenu: state.showQuickMenu,
         temperature: state.temperature,
         maxTokens: state.maxTokens,

@@ -23,6 +23,7 @@ const Based = () => {
   const chatLogStyle = settingsStore((s) => s.chatLogStyle)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
+  const showMessageInput = settingsStore((s) => s.showMessageInput)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
@@ -319,6 +320,17 @@ const Based = () => {
           <ToggleSwitch
             enabled={showControlPanel}
             onChange={(v) => settingsStore.setState({ showControlPanel: v })}
+          />
+        </div>
+      </div>
+
+      {/* 入力欄表示設定 */}
+      <div className="border-t border-gray-300 pt-6 my-6">
+        <div className="my-4 text-xl font-bold">{t('ShowMessageInput')}</div>
+        <div className="my-2">
+          <ToggleSwitch
+            enabled={showMessageInput}
+            onChange={(v) => settingsStore.setState({ showMessageInput: v })}
           />
         </div>
       </div>

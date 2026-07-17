@@ -61,6 +61,15 @@ describe('presentationRepository', () => {
     ).toBe(2)
   })
 
+  it('accepts a custom theme ID defined by the external manifest contract', async () => {
+    const manifest = createManifest()
+    manifest.theme = 'nikechan-morning'
+    await savePresentation(manifest)
+    expect((await readPresentation('repository-test', 1)).manifest.theme).toBe(
+      'nikechan-morning'
+    )
+  })
+
   it('rejects conflicting and stale revisions', async () => {
     await savePresentation(createManifest(2))
     const conflicting = createManifest(2)

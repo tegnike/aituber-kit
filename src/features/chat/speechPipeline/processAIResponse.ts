@@ -30,13 +30,13 @@ export const processAIResponse = async (messages: Message[]) => {
     logger.error(e)
     thinkingPose.reset()
     homeStore.setState({ chatProcessing: false })
-    return
+    return null
   }
 
   if (stream == null) {
     thinkingPose.reset()
     homeStore.setState({ chatProcessing: false })
-    return
+    return null
   }
 
   const writer = new MessageLogWriter()
@@ -77,6 +77,7 @@ export const processAIResponse = async (messages: Message[]) => {
   if (dispatcher.disabled) {
     await SpeakQueue.finalizeIfIdle()
   }
+  return finalContent || null
 }
 
 // 思考中ポーズの適用（VRMのみ）。reset() は冪等。

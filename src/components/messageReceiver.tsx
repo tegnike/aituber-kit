@@ -26,6 +26,14 @@ import presentationStore, {
 } from '@/features/stores/presentation'
 import slideStore from '@/features/stores/slide'
 import menuStore from '@/features/stores/menu'
+import type { ResponseCallback } from '@/features/api/messageGateway'
+import {
+  canClaimClientTabLease,
+  parseClientTabLease,
+} from '@/features/api/clientTabLeadership'
+
+const CLIENT_TAB_LEASE_DURATION = 5000
+const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
 
 class ReceivedMessage {
   timestamp: number
@@ -34,6 +42,7 @@ class ReceivedMessage {
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
   image?: string
+  responseCallback?: ResponseCallback
 
   constructor(
     timestamp: number,
@@ -41,7 +50,8 @@ class ReceivedMessage {
     type: 'direct_send' | 'ai_generate' | 'user_input',
     systemPrompt?: string,
     useCurrentSystemPrompt?: boolean,
-    image?: string
+    image?: string,
+    responseCallback?: ResponseCallback
   ) {
     this.timestamp = timestamp
     this.message = message
@@ -49,6 +59,7 @@ class ReceivedMessage {
     this.systemPrompt = systemPrompt
     this.useCurrentSystemPrompt = useCurrentSystemPrompt
     this.image = image
+    this.responseCallback = responseCallback
   }
 }
 
@@ -176,7 +187,31 @@ const MessageReceiver = () => {
               homeStore.setState({ modalImage: '' })
             }
 
-            await processAIResponse(messages)
+            homeStore.getState().upsertMessage({
+              role: 'user',
+              content: message.message,
+              timestamp: new Date().toISOString(),
+            })
+            try {
+              const content = await processAIResponse(messages)
+              if (message.responseCallback) {
+                await reportResponseCallback(
+                  message.responseCallback,
+                  content
+                    ? { status: 'completed', content }
+                    : { status: 'empty' }
+                )
+              }
+            } catch (error) {
+              if (message.responseCallback) {
+                await reportResponseCallback(message.responseCallback, {
+                  status: 'failed',
+                  error:
+                    error instanceof Error ? error.message : 'UNKNOWN_ERROR',
+                })
+              }
+              throw error
+            }
             break
           }
           case 'user_input': {
@@ -237,6 +272,45 @@ const MessageReceiver = () => {
 
     let loadingPresentationKey: string | null = null
     let autoStartedAssignmentKey: string | null = null
+    const tabId = crypto.randomUUID()
+    const leaseKey = `aituber-kit-client-tab-leader:${clientId}`
+    let isClientTabLeader = false
+
+    const readClientTabLease = () => {
+      try {
+        return parseClientTabLease(window.localStorage.getItem(leaseKey))
+      } catch {
+        return null
+      }
+    }
+
+    const writeClientTabLease = () => {
+      try {
+        window.localStorage.setItem(
+          leaseKey,
+          JSON.stringify({
+            tabId,
+            expiresAt: Date.now() + CLIENT_TAB_LEASE_DURATION,
+          })
+        )
+        isClientTabLeader = true
+      } catch {
+        // Storageが使えない環境では従来どおりこのTabを有効にする。
+        isClientTabLeader = true
+      }
+    }
+
+    const releaseClientTabLease = () => {
+      if (!isClientTabLeader) return
+      try {
+        if (readClientTabLease()?.tabId === tabId) {
+          window.localStorage.removeItem(leaseKey)
+        }
+      } catch {
+        // Cleanup時のStorage例外は無視する。
+      }
+      isClientTabLeader = false
+    }
 
     const loadPresentation = async (
       presentationId: string,
@@ -290,6 +364,7 @@ const MessageReceiver = () => {
         current.document.revision !== assignment.revision ||
         current.presentationId !== assignment.presentationId ||
         current.revision !== assignment.revision ||
+        current.state === 'loading' ||
         current.state === 'error'
       ) {
         await loadPresentation(
@@ -308,6 +383,7 @@ const MessageReceiver = () => {
     }
 
     const reportStatus = async () => {
+      if (!isClientTabLeader) return
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
 
@@ -340,6 +416,7 @@ const MessageReceiver = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
+        if (!isClientTabLeader) return
         await reconcileAssignment(data.assignment ?? null)
       } catch (error) {
         logger.error('Error reporting client status:', error)
@@ -347,6 +424,7 @@ const MessageReceiver = () => {
     }
 
     const fetchCommands = async () => {
+      if (!isClientTabLeader) return
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
 
@@ -359,6 +437,7 @@ const MessageReceiver = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
+        if (!isClientTabLeader) return
         const commands = (data.commands || []) as ReceivedCommand[]
         for (const command of commands) {
           if (command.command === 'stop') {
@@ -377,6 +456,9 @@ const MessageReceiver = () => {
               false
             )
           } else if (command.command === 'presentation.control') {
+            if (!presentationStore.getState().document) {
+              await reportStatus()
+            }
             const applied = applyPresentationControl(
               command.action,
               command.target,
@@ -397,6 +479,7 @@ const MessageReceiver = () => {
     }
 
     const fetchMessages = async () => {
+      if (!isClientTabLeader) return
       if (!settingsStore.getState().messageReceiverEnabled) return
       try {
         const response = await fetch(
@@ -406,6 +489,7 @@ const MessageReceiver = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
+        if (!isClientTabLeader) return
         if (data.messages && data.messages.length > 0) {
           speakMessage(data.messages)
           const newLastTimestamp =
@@ -420,6 +504,7 @@ const MessageReceiver = () => {
     let isFetchingMessages = false
     let isFetchingCommands = false
     let isReportingStatus = false
+    let isStatusReportQueued = false
 
     const safeFetchMessages = async () => {
       if (isFetchingMessages) return
@@ -442,30 +527,124 @@ const MessageReceiver = () => {
     }
 
     const safeReportStatus = async () => {
+      if (!isClientTabLeader) return
+      isStatusReportQueued = true
       if (isReportingStatus) return
       isReportingStatus = true
       try {
-        await reportStatus()
+        while (isStatusReportQueued) {
+          isStatusReportQueued = false
+          await reportStatus()
+        }
       } finally {
         isReportingStatus = false
       }
     }
 
-    void safeFetchCommands()
-    void safeFetchMessages()
-    void safeReportStatus()
+    const unsubscribePresentationStatus = presentationStore.subscribe(
+      (state, previousState) => {
+        if (isClientTabLeader && state.updatedAt !== previousState.updatedAt) {
+          void safeReportStatus()
+        }
+      }
+    )
+
+    const claimClientTabLeadership = () => {
+      if (document.visibilityState !== 'visible') return
+      writeClientTabLease()
+      void safeFetchCommands()
+      void safeFetchMessages()
+      void safeReportStatus()
+    }
+
+    const refreshClientTabLeadership = () => {
+      const lease = readClientTabLease()
+      if (lease?.tabId === tabId) {
+        writeClientTabLease()
+        return
+      }
+      isClientTabLeader = false
+      if (
+        document.visibilityState === 'visible' &&
+        canClaimClientTabLease(lease, tabId, Date.now())
+      ) {
+        claimClientTabLeadership()
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') claimClientTabLeadership()
+    }
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== leaseKey) return
+      isClientTabLeader = parseClientTabLease(event.newValue)?.tabId === tabId
+    }
+
+    window.addEventListener('focus', claimClientTabLeadership)
+    window.addEventListener('storage', handleStorage)
+    window.addEventListener('beforeunload', releaseClientTabLease)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    if (document.visibilityState === 'visible' && document.hasFocus()) {
+      claimClientTabLeadership()
+    } else {
+      refreshClientTabLeadership()
+    }
+
     const commandIntervalId = setInterval(() => void safeFetchCommands(), 1000)
     const intervalId = setInterval(() => void safeFetchMessages(), 1000)
     const statusIntervalId = setInterval(() => void safeReportStatus(), 2000)
+    const leaseIntervalId = setInterval(
+      refreshClientTabLeadership,
+      CLIENT_TAB_LEASE_REFRESH_INTERVAL
+    )
 
     return () => {
       clearInterval(intervalId)
       clearInterval(commandIntervalId)
       clearInterval(statusIntervalId)
+      clearInterval(leaseIntervalId)
+      unsubscribePresentationStatus()
+      window.removeEventListener('focus', claimClientTabLeadership)
+      window.removeEventListener('storage', handleStorage)
+      window.removeEventListener('beforeunload', releaseClientTabLease)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      releaseClientTabLease()
     }
   }, [clientId, isRestrictedMode, lastTimestamp, speakMessage])
 
   return <></>
+}
+
+const reportResponseCallback = async (
+  callback: ResponseCallback,
+  result:
+    | { status: 'completed'; content: string }
+    | { status: 'empty' }
+    | { status: 'failed'; error: string }
+) => {
+  let lastError: unknown = null
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const response = await fetch(callback.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          interactionId: callback.interactionId,
+          token: callback.token,
+          ...result,
+        }),
+      })
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      return
+    } catch (error) {
+      lastError = error
+      if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 500))
+    }
+  }
+  logger.error('Failed to record external chat response:', lastError)
 }
 
 export default MessageReceiver

@@ -25,6 +25,33 @@ const normalizeChatMode = (mode: unknown): MessageType => {
   return 'user_input'
 }
 
+const normalizeResponseCallback = (value: unknown) => {
+  if (value === undefined || value === null) return undefined
+  if (!value || typeof value !== 'object') return null
+  const input = value as Record<string, unknown>
+  if (
+    typeof input.url !== 'string' ||
+    typeof input.interactionId !== 'string' ||
+    !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,127}$/.test(input.interactionId) ||
+    typeof input.token !== 'string' ||
+    input.token.length < 8 ||
+    input.token.length > 256
+  )
+    return null
+  try {
+    const url = new URL(input.url)
+    if (url.protocol !== 'http:') return null
+    if (!['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) return null
+    return {
+      url: url.toString(),
+      interactionId: input.interactionId,
+      token: input.token,
+    }
+  } catch {
+    return null
+  }
+}
+
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const clientId = getClientIdFromRequest(req, req.body?.clientId)
   if (!clientId) {
@@ -59,6 +86,11 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     enqueueStopCommand(clientId, 'all', 'interrupt_before_chat')
   }
 
+  const responseCallback = normalizeResponseCallback(req.body?.responseCallback)
+  if (responseCallback === null) {
+    return res.status(400).json({ error: 'Invalid response callback' })
+  }
+
   const queuedMessages = enqueueMessages({
     clientId,
     messages,
@@ -73,6 +105,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     priority: req.body?.priority === 'high' ? 'high' : 'normal',
     interrupt,
     source: 'v1',
+    responseCallback,
   })
 
   return res.status(202).json({
