@@ -11,6 +11,7 @@ import {
   applyPresentationControlAction,
   completePresentationNarration,
 } from '@/features/presentation/presentationStateMachine'
+import menuStore from '@/features/stores/menu'
 
 interface PresentationState {
   document: PresentationDocument | null
@@ -159,6 +160,7 @@ export const setPresentationError = (message: string) => {
 
 export const unloadPresentation = () => {
   presentationStore.setState({ ...initialState, updatedAt: now() })
+  menuStore.setState({ slideVisible: false })
 }
 
 export const applyPresentationControl = (
@@ -173,7 +175,7 @@ export const applyPresentationControl = (
   const current = presentationStore.getState()
   if (!current.document) return false
   const position = getPosition(current.document, current)
-  return setMachineState(
+  const applied = setMachineState(
     current.document,
     applyPresentationControlAction(
       current.document,
@@ -187,6 +189,23 @@ export const applyPresentationControl = (
       speak
     )
   )
+  if (applied && action === 'reset') {
+    menuStore.setState({ slideVisible: false })
+  } else if (
+    applied &&
+    [
+      'start',
+      'resume',
+      'next_slide',
+      'previous_slide',
+      'next_section',
+      'previous_section',
+      'goto',
+    ].includes(action)
+  ) {
+    menuStore.setState({ slideVisible: true })
+  }
+  return applied
 }
 
 export const finishCurrentPresentationNarration = () => {
@@ -198,7 +217,11 @@ export const finishCurrentPresentationNarration = () => {
     playbackState: current.state,
     pauseRequested: current.pauseRequested,
   })
-  return setMachineState(current.document, next)
+  const applied = setMachineState(current.document, next)
+  if (applied && next.playbackState === 'completed') {
+    menuStore.setState({ slideVisible: false })
+  }
+  return applied
 }
 
 export const getCurrentPresentationLocation = () => {
