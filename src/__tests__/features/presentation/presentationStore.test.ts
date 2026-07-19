@@ -7,6 +7,7 @@ import presentationStore, {
   setPresentationLoading,
   unloadPresentation,
 } from '@/features/stores/presentation'
+import menuStore from '@/features/stores/menu'
 import type { PresentationManifestV1 } from '@/features/presentation/presentationTypes'
 
 const manifest: PresentationManifestV1 = {
@@ -37,6 +38,7 @@ describe('presentationStore', () => {
   beforeEach(() => {
     localStorage.clear()
     unloadPresentation()
+    menuStore.setState({ slideVisible: false })
   })
 
   afterAll(() => {
@@ -50,6 +52,7 @@ describe('presentationStore', () => {
     )
     expect(presentationStore.getState().state).toBe('ready')
     expect(applyPresentationControl('start')).toBe(true)
+    expect(menuStore.getState().slideVisible).toBe(true)
     expect(finishCurrentPresentationNarration()).toBe(true)
     expect(getCurrentPresentationLocation()?.slide.id).toBe('slide-2')
     expect(presentationStore.getState().state).toBe('playing')
@@ -59,6 +62,22 @@ describe('presentationStore', () => {
     expect(getCurrentPresentationLocation()?.slide.id).toBe('slide-3')
     finishCurrentPresentationNarration()
     expect(presentationStore.getState().state).toBe('completed')
+    expect(menuStore.getState().slideVisible).toBe(false)
+  })
+
+  it('hides the slide on reset and shows it when slide playback starts', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:test'
+    )
+    menuStore.setState({ slideVisible: false })
+
+    applyPresentationControl('start')
+    expect(menuStore.getState().slideVisible).toBe(true)
+
+    applyPresentationControl('reset')
+    expect(presentationStore.getState().state).toBe('ready')
+    expect(menuStore.getState().slideVisible).toBe(false)
   })
 
   it('persists position metadata without persisting manifest or Q&A content', () => {
