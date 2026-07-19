@@ -13,6 +13,10 @@ import {
   generateAiText,
 } from '@/lib/api-services/vercelAi'
 import { buildReasoningProviderOptions } from '@/lib/api-services/providerOptionsBuilder'
+import {
+  mergeProviderOptions,
+  preparePromptCache,
+} from '@/lib/api-services/promptCache'
 import { googleSearchGroundingModels } from '@/features/constants/aiModels'
 import { pipeResponse } from '@/utils/pipeResponse'
 import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
@@ -129,6 +133,11 @@ async function handler(
 
     // メッセージの修正
     const modifiedMessages = modifyMessages(aiService, model, messages)
+    const promptCache = preparePromptCache(
+      aiService,
+      modifiedModel,
+      modifiedMessages
+    )
 
     // Google検索接地オプションの設定
     const isUseSearchGrounding =
@@ -153,12 +162,15 @@ async function handler(
     }
 
     // 推論モードのproviderOptionsを構築
-    const providerOptions = buildReasoningProviderOptions(
-      aiService,
-      modifiedModel,
-      reasoningMode,
-      reasoningEffort,
-      reasoningTokenBudget
+    const providerOptions = mergeProviderOptions(
+      buildReasoningProviderOptions(
+        aiService,
+        modifiedModel,
+        reasoningMode,
+        reasoningEffort,
+        reasoningTokenBudget
+      ),
+      promptCache.providerOptions
     )
 
     // ストリーミングレスポンスまたは一括レスポンスの生成
@@ -168,7 +180,7 @@ async function handler(
         model: modifiedModel,
         registry,
         service: aiService as VercelAIService,
-        messages: modifiedMessages,
+        messages: promptCache.messages,
         temperature,
         maxTokens,
         options,
@@ -179,7 +191,7 @@ async function handler(
         model: modifiedModel,
         registry,
         service: aiService as VercelAIService,
-        messages: modifiedMessages,
+        messages: promptCache.messages,
         temperature,
         maxTokens,
         providerOptions,

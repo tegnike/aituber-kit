@@ -249,6 +249,61 @@ describe('/api/ai/vercel handler', () => {
     expect(mockGenerateAiText).toHaveBeenCalled()
   })
 
+  it('enables explicit prompt caching for marked GPT-5.6 prompts', async () => {
+    mockModifyMessages.mockReturnValue([
+      {
+        role: 'system',
+        content:
+          '固定人格と共通ルール<prompt_cache_breakpoint />動的な会話履歴',
+      },
+      { role: 'user', content: '質問' },
+    ] as any)
+    mockGenerateAiText.mockResolvedValue(new Response('done', { status: 200 }))
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
+        messages: [],
+        apiKey: 'openai-key',
+        aiService: 'openai',
+        model: 'gpt-5.6-terra',
+        stream: false,
+        reasoningMode: true,
+        reasoningEffort: 'none',
+        reasoningTokenBudget: 8192,
+      },
+    })
+
+    await handler(req as any, res as any)
+
+    expect(mockGenerateAiText).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: 'gpt-5.6-terra',
+        messages: [
+          expect.objectContaining({
+            role: 'system',
+            content: '固定人格と共通ルール',
+            providerOptions: {
+              openai: {
+                promptCacheBreakpoint: { mode: 'explicit' },
+              },
+            },
+          }),
+          { role: 'system', content: '動的な会話履歴' },
+          { role: 'user', content: '質問' },
+        ],
+        providerOptions: {
+          openai: {
+            reasoningEffort: 'none',
+            reasoningSummary: 'detailed',
+            promptCacheKey: expect.stringMatching(/^aituberkit:[a-f0-9]{32}$/),
+            promptCacheOptions: { mode: 'explicit', ttl: '30m' },
+          },
+        },
+      })
+    )
+  })
+
   it('calls generateAiText for azure requests using deployment name', async () => {
     mockModifyMessages.mockReturnValue([{ role: 'user', content: 'hi' }] as any)
 

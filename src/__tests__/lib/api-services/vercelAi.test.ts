@@ -294,6 +294,38 @@ describe('vercelAi service helpers', () => {
       })
     })
 
+    it('returns GPT-5.6 prompt cache usage for observability', async () => {
+      mockGenerateText.mockResolvedValue({
+        text: 'cached result',
+        usage: {
+          inputTokens: 2400,
+          inputTokenDetails: {
+            noCacheTokens: 320,
+            cacheReadTokens: 2048,
+            cacheWriteTokens: 32,
+          },
+        },
+      } as any)
+
+      const response = await generateAiText({
+        model: 'gpt-5.6-terra',
+        registry: mockRegistry as any,
+        service: 'openai',
+        messages: testMessages,
+        temperature: 0.1,
+        maxTokens: 100,
+      })
+
+      expect(await response.json()).toEqual({
+        text: 'cached result',
+        promptCache: {
+          inputTokens: 2400,
+          cacheReadTokens: 2048,
+          cacheWriteTokens: 32,
+        },
+      })
+    })
+
     it('returns error response when generation fails', async () => {
       mockGenerateText.mockRejectedValue(new Error('quota exceeded'))
 

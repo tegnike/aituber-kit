@@ -1007,6 +1007,19 @@ const mergePersistedSettings = (
     }
   }
 
+  if (
+    process.env
+      .NEXT_PUBLIC_ALWAYS_OVERRIDE_MODEL_SETTINGS_WITH_ENV_VARIABLES === 'true'
+  ) {
+    return {
+      ...mergedState,
+      selectAIService: currentState.selectAIService,
+      selectAIModel: currentState.selectAIModel,
+      reasoningMode: currentState.reasoningMode,
+      reasoningEffort: currentState.reasoningEffort,
+    }
+  }
+
   return mergedState
 }
 

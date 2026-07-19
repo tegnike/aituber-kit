@@ -32,6 +32,28 @@ export type ProviderParams = {
 
 type AIRegistry = ReturnType<typeof createProviderRegistry<Record<string, any>>>
 
+type PromptCacheUsage = {
+  inputTokens?: number
+  cacheReadTokens?: number
+  cacheWriteTokens?: number
+}
+
+const getPromptCacheUsage = (usage: {
+  inputTokens?: number
+  inputTokenDetails?: {
+    cacheReadTokens?: number
+    cacheWriteTokens?: number
+  }
+}): PromptCacheUsage => ({
+  inputTokens: usage.inputTokens,
+  cacheReadTokens: usage.inputTokenDetails?.cacheReadTokens,
+  cacheWriteTokens: usage.inputTokenDetails?.cacheWriteTokens,
+})
+
+const logPromptCacheUsage = (model: string, usage: PromptCacheUsage) => {
+  logger.log('OpenAI prompt cache usage', { model, ...usage })
+}
+
 /**
  * 指定されたAIサービス用のProvider Registryを作成する
  */
@@ -184,6 +206,12 @@ export async function streamAiText({
       }),
     })
 
+    if (service === 'openai' && model.startsWith('gpt-5.6')) {
+      void Promise.resolve(result.usage)
+        .then((usage) => logPromptCacheUsage(model, getPromptCacheUsage(usage)))
+        .catch((error) => logger.warn('Prompt cache usage unavailable:', error))
+    }
+
     return result.toUIMessageStreamResponse()
   } catch (error: unknown) {
     const errorMessage =
@@ -239,7 +267,13 @@ export async function generateAiText({
       }),
     })
 
-    return new Response(JSON.stringify({ text: result.text }), {
+    const promptCache =
+      service === 'openai' && model.startsWith('gpt-5.6')
+        ? getPromptCacheUsage(result.usage)
+        : undefined
+    if (promptCache) logPromptCacheUsage(model, promptCache)
+
+    return new Response(JSON.stringify({ text: result.text, promptCache }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
