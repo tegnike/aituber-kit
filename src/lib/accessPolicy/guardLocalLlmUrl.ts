@@ -3,6 +3,7 @@ import type { PolicyGate } from '@/lib/accessPolicy/withAccessPolicy'
 import {
   isAllowedConfiguredOrListedUrl,
   isHttpUrl,
+  isLocalLlmHost,
 } from '@/lib/api-services/serverUrlGuard'
 
 export function guardLocalLlmUrl(
@@ -29,12 +30,16 @@ export function guardLocalLlmUrl(
     return false
   }
 
-  const { isProtectedServerResource, isAllowedPublicUrl } =
-    isAllowedConfiguredOrListedUrl(
-      parsedUrl,
-      undefined,
-      process.env.AITUBERKIT_ALLOWED_LLM_SERVER_ORIGINS || ''
-    )
+  const {
+    isProtectedServerResource: isProtectedByAddress,
+    isAllowedPublicUrl,
+  } = isAllowedConfiguredOrListedUrl(
+    parsedUrl,
+    undefined,
+    process.env.AITUBERKIT_ALLOWED_LLM_SERVER_ORIGINS || ''
+  )
+  const isProtectedServerResource =
+    isProtectedByAddress || isLocalLlmHost(parsedUrl.hostname)
 
   if (!isProtectedServerResource && !isAllowedPublicUrl) {
     res.status(400).json({

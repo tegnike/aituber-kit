@@ -21,6 +21,7 @@ import {
   isAllowedConfiguredOrListedUrl,
   isHttpUrl,
   isLoopbackHost,
+  isSameMachineHost,
 } from '@/lib/api-services/serverUrlGuard'
 import {
   isRestrictedMode,
@@ -51,7 +52,7 @@ export interface PolicyGate {
   guardServerSecret(
     usesServerSecret: boolean,
     options?: {
-      /** 動的URLルートで、同一マシンのループバック接続だけdisabledでも許可する */
+      /** 動的URLルートで、同一マシンのローカル接続だけdisabledでも許可する */
       allowLocalLoopbackUrl?: URL
     }
   ): boolean
@@ -150,7 +151,7 @@ function isSameMachineLoopbackRequest(req: NextApiRequest): boolean {
   )
 }
 
-function allowsLocalLoopbackAccess(
+function allowsSameMachineAccess(
   policy: RoutePolicy,
   req: NextApiRequest,
   resolvedServerUrl: ResolvedServerUrl | undefined
@@ -159,7 +160,7 @@ function allowsLocalLoopbackAccess(
     policy.serverUrl?.allowLocalLoopback === true &&
     isServerSecretAccessDisabled() &&
     Boolean(resolvedServerUrl) &&
-    isLoopbackHost(resolvedServerUrl?.parsed.hostname || '') &&
+    isSameMachineHost(resolvedServerUrl?.parsed.hostname || '') &&
     isSameMachineLoopbackRequest(req)
   )
 }
@@ -244,7 +245,7 @@ export function withAccessPolicy(
 
     // 5. サーバー秘匿リソースガード
     let usesServerSecret = false
-    const allowsLocalLoopback = allowsLocalLoopbackAccess(
+    const allowsSameMachine = allowsSameMachineAccess(
       policy,
       req,
       resolvedServerUrl
@@ -252,7 +253,7 @@ export function withAccessPolicy(
     if (policy.secret.kind === 'pairs') {
       usesServerSecret = evaluateSecretPairs(req, policy.secret.pairs)
       const mustGuard =
-        !allowsLocalLoopback &&
+        !allowsSameMachine &&
         (usesServerSecret ||
           Boolean(resolvedServerUrl?.isProtectedServerResource))
       if (
@@ -264,7 +265,7 @@ export function withAccessPolicy(
     } else if (policy.secret.kind === 'always') {
       usesServerSecret = true
       if (
-        !allowsLocalLoopback &&
+        !allowsSameMachine &&
         !guardServerSecretAccess(req, res, { featureName: policy.featureName })
       ) {
         return
@@ -280,12 +281,12 @@ export function withAccessPolicy(
             `guardServerSecret() is only available for secret.kind === 'dynamic' routes (${policy.path})`
           )
         }
-        const allowsDynamicLocalLoopback =
+        const allowsDynamicSameMachine =
           Boolean(options?.allowLocalLoopbackUrl) &&
           isServerSecretAccessDisabled() &&
-          isLoopbackHost(options?.allowLocalLoopbackUrl?.hostname || '') &&
+          isSameMachineHost(options?.allowLocalLoopbackUrl?.hostname || '') &&
           isSameMachineLoopbackRequest(req)
-        if (allowsDynamicLocalLoopback) {
+        if (allowsDynamicSameMachine) {
           return true
         }
         if (!dynamicUsesServerSecret) {
