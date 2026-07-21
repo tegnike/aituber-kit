@@ -185,7 +185,7 @@ function withAccessPolicy(
    - env設定URL（`envVar`）が存在してパース不能 → 400（現行 `tts-voicevox.ts` の挙動を保存 — レビューm8）
    - クライアント提供URLを `isHttpUrl` で検証 → 不正は400
    - `isAllowedConfiguredOrListedUrl` で `isProtectedServerResource` / `isAllowedPublicUrl` を判定 → 許可外のpublic URLは400
-   - LM Studio / Ollamaは、プライベートIPに加えて単一ラベルのLANマシン名と`.local` mDNS名も保護対象URLとして扱う。公開FQDNはallowlist未登録なら400
+   - LM Studio / Ollamaは、プライベートIPに加えて単一ラベルのLANマシン名、`.local` mDNS名、同一マシンのOSホスト名も保護対象URLとして扱う。それ以外の公開FQDNはallowlist未登録なら400
 5. **server-secret**:
    - `kind: 'pairs'`: `computeUsesServerSecret(pairs)` または `isProtectedServerResource` が真なら `guardServerSecretAccess()`
    - `kind: 'always'`: 無条件で `guardServerSecretAccess()`

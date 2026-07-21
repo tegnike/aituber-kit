@@ -4,6 +4,7 @@ import {
   isAllowedConfiguredOrListedUrl,
   isHttpUrl,
   isLocalLlmHost,
+  isSameMachineHost,
 } from '@/lib/api-services/serverUrlGuard'
 
 export function guardLocalLlmUrl(
@@ -39,7 +40,9 @@ export function guardLocalLlmUrl(
     process.env.AITUBERKIT_ALLOWED_LLM_SERVER_ORIGINS || ''
   )
   const isProtectedServerResource =
-    isProtectedByAddress || isLocalLlmHost(parsedUrl.hostname)
+    isProtectedByAddress ||
+    isLocalLlmHost(parsedUrl.hostname) ||
+    isSameMachineHost(parsedUrl.hostname)
 
   if (!isProtectedServerResource && !isAllowedPublicUrl) {
     res.status(400).json({

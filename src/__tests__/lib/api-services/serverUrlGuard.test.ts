@@ -88,6 +88,16 @@ describe('serverUrlGuard', () => {
       ).toBe(true)
     })
 
+    it('accepts a .local alias when the OS hostname has no suffix', () => {
+      expect(
+        isSameMachineHost(
+          'studio-pc.local',
+          'STUDIO-PC',
+          localInterfaceAddresses
+        )
+      ).toBe(true)
+    })
+
     it('rejects other LAN machine names and addresses', () => {
       expect(
         isSameMachineHost('other-pc', machineHostname, localInterfaceAddresses)

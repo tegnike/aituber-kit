@@ -8,6 +8,11 @@ import { modifyMessages } from '@/lib/api-services/utils'
 import { createMocks } from 'node-mocks-http'
 import { hostname as getHostname } from 'node:os'
 
+jest.mock('node:os', () => ({
+  ...jest.requireActual('node:os'),
+  hostname: jest.fn(() => 'STUDIO-PC'),
+}))
+
 // テスト環境でResponseが未定義の場合のポリフィル
 if (typeof global.Response === 'undefined') {
   class MockResponse {
@@ -73,6 +78,7 @@ const mockGenerateAiText = generateAiText as jest.MockedFunction<
 const mockModifyMessages = modifyMessages as jest.MockedFunction<
   typeof modifyMessages
 >
+const mockGetHostname = getHostname as jest.MockedFunction<typeof getHostname>
 
 const originalEnv = { ...process.env }
 
@@ -82,6 +88,7 @@ describe('/api/ai/vercel handler', () => {
     process.env = { ...originalEnv }
     delete process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE
     delete process.env.AITUBERKIT_ALLOWED_LLM_SERVER_ORIGINS
+    mockGetHostname.mockReturnValue('STUDIO-PC')
     mockCreateAIRegistry.mockReturnValue(mockRegistry as any)
   })
 
@@ -212,37 +219,43 @@ describe('/api/ai/vercel handler', () => {
     }
   )
 
-  it('allows the same-machine LM Studio hostname by default', async () => {
-    mockModifyMessages.mockReturnValue([
-      { role: 'user', content: 'hello' },
-    ] as any)
-    mockGenerateAiText.mockResolvedValue(new Response('done', { status: 200 }))
-    const localLlmUrl = `http://${getHostname()}:1234/v1`
-    const { req, res } = createMocks({
-      method: 'POST',
-      headers: { host: 'localhost:3000' },
-      body: {
-        messages: [],
+  it.each(['STUDIO-PC', 'studio-pc.corp.example'])(
+    'allows the same-machine LM Studio hostname %s by default',
+    async (machineHostname) => {
+      mockGetHostname.mockReturnValue(machineHostname)
+      mockModifyMessages.mockReturnValue([
+        { role: 'user', content: 'hello' },
+      ] as any)
+      mockGenerateAiText.mockResolvedValue(
+        new Response('done', { status: 200 })
+      )
+      const localLlmUrl = `http://${getHostname()}:1234/v1`
+      const { req, res } = createMocks({
+        method: 'POST',
+        headers: { host: 'localhost:3000' },
+        body: {
+          messages: [],
+          apiKey: '',
+          aiService: 'lmstudio',
+          model: 'local-model',
+          localLlmUrl,
+          stream: false,
+          temperature: 1,
+          maxTokens: 10,
+        },
+      })
+      req.socket.remoteAddress = '127.0.0.1'
+
+      await handler(req as any, res as any)
+
+      expect(res._getStatusCode()).toBe(200)
+      expect(mockCreateAIRegistry).toHaveBeenCalledWith('lmstudio', {
         apiKey: '',
-        aiService: 'lmstudio',
-        model: 'local-model',
-        localLlmUrl,
-        stream: false,
-        temperature: 1,
-        maxTokens: 10,
-      },
-    })
-    req.socket.remoteAddress = '127.0.0.1'
-
-    await handler(req as any, res as any)
-
-    expect(res._getStatusCode()).toBe(200)
-    expect(mockCreateAIRegistry).toHaveBeenCalledWith('lmstudio', {
-      apiKey: '',
-      baseURL: localLlmUrl,
-      resourceName: '',
-    })
-  })
+        baseURL: localLlmUrl,
+        resourceName: '',
+      })
+    }
+  )
 
   it('rejects remote requests to local LLM loopback URLs by default', async () => {
     const { req, res } = createMocks({
