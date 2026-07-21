@@ -21,11 +21,12 @@ aituber-kitで `develop => main` PRをマージし、新しいマイナーバー
 
 ```markdown
 ## vX.Y.0
+
 - XXXを改善
   - XXXに対応
   - XXXを修正
 - XXXを追加
-https://github.com/tegnike/aituber-kit/releases/tag/vX.Y.0
+  https://github.com/tegnike/aituber-kit/releases/tag/vX.Y.0
 ```
 
 ## 手順
