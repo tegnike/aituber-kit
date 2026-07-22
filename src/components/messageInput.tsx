@@ -66,6 +66,9 @@ export const MessageInput = ({
   const [inputValidationError, setInputValidationError] = useState<string>('')
   const [isSmallScreen, setIsSmallScreen] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  // Mount focus is an initialization contract; later prop changes must not
+  // retrigger the chat-processing effect or clear an in-progress draft.
+  const focusOnMountRef = useRef(focusOnMount)
   const previousChatProcessingRef = useRef<boolean | null>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
@@ -114,7 +117,6 @@ export const MessageInput = ({
       const isTouchDevice = () => {
         if (typeof window === 'undefined') return false
         return (
-          'ontouchstart' in window ||
           navigator.maxTouchPoints > 0 ||
           // @ts-expect-error: msMaxTouchPoints is IE-specific
           navigator.msMaxTouchPoints > 0
@@ -125,12 +127,12 @@ export const MessageInput = ({
 
       if (
         !isTouchDevice() &&
-        ((isInitialMount && focusOnMount) || hasCompletedProcessing)
+        ((isInitialMount && focusOnMountRef.current) || hasCompletedProcessing)
       ) {
         textareaRef.current.focus({ preventScroll: true })
       }
     }
-  }, [chatProcessing, focusOnMount])
+  }, [chatProcessing])
 
   // テキスト内容に基づいて適切な行数を計算
   const calculateRows = useCallback((text: string): number => {

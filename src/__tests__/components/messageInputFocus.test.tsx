@@ -123,6 +123,37 @@ describe('MessageInput focus contract', () => {
     expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true })
   })
 
+  it('focuses non-touch desktop browsers that expose touch event APIs', () => {
+    Object.defineProperty(window, 'ontouchstart', {
+      configurable: true,
+      value: null,
+    })
+
+    render(<MessageInput {...defaultProps} />)
+
+    expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true })
+  })
+
+  it('does not clear a draft when focusOnMount changes after mounting', () => {
+    const { getByTestId, rerender } = render(
+      <MessageInput {...defaultProps} focusOnMount={false} />
+    )
+    rerender(
+      <MessageInput
+        {...defaultProps}
+        userMessage="draft"
+        focusOnMount={false}
+      />
+    )
+
+    rerender(
+      <MessageInput {...defaultProps} userMessage="draft" focusOnMount={true} />
+    )
+
+    expect(getByTestId('chat-message-input')).toHaveValue('draft')
+    expect(focusSpy).not.toHaveBeenCalled()
+  })
+
   it('restores focus after chat processing even when mount focus is disabled', () => {
     mockChatProcessing = true
     const { rerender } = render(
