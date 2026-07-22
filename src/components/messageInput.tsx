@@ -23,6 +23,7 @@ const FILE_VALIDATION = {
 } as const
 
 type Props = {
+  focusOnMount?: boolean
   userMessage: string
   isMicRecording: boolean
   onChangeUserMessage: (
@@ -38,6 +39,7 @@ type Props = {
 }
 
 export const MessageInput = ({
+  focusOnMount = true,
   userMessage,
   isMicRecording,
   onChangeUserMessage,
@@ -64,6 +66,7 @@ export const MessageInput = ({
   const [inputValidationError, setInputValidationError] = useState<string>('')
   const [isSmallScreen, setIsSmallScreen] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const previousChatProcessingRef = useRef<boolean | null>(null)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const showSilenceProgressBar = settingsStore((s) => s.showSilenceProgressBar)
 
@@ -92,6 +95,9 @@ export const MessageInput = ({
   const showIconDisplay = modalImage && imageDisplayPosition === 'icon'
 
   useEffect(() => {
+    const previousChatProcessing = previousChatProcessingRef.current
+    previousChatProcessingRef.current = chatProcessing
+
     if (chatProcessing) {
       const interval = setInterval(() => {
         setLoadingDots((prev) => {
@@ -101,24 +107,30 @@ export const MessageInput = ({
       }, 200)
 
       return () => clearInterval(interval)
-    } else {
-      if (textareaRef.current) {
-        textareaRef.current.value = ''
-        const isTouchDevice = () => {
-          if (typeof window === 'undefined') return false
-          return (
-            'ontouchstart' in window ||
-            navigator.maxTouchPoints > 0 ||
-            // @ts-expect-error: msMaxTouchPoints is IE-specific
-            navigator.msMaxTouchPoints > 0
-          )
-        }
-        if (!isTouchDevice()) {
-          textareaRef.current.focus()
-        }
+    }
+
+    if (textareaRef.current) {
+      textareaRef.current.value = ''
+      const isTouchDevice = () => {
+        if (typeof window === 'undefined') return false
+        return (
+          'ontouchstart' in window ||
+          navigator.maxTouchPoints > 0 ||
+          // @ts-expect-error: msMaxTouchPoints is IE-specific
+          navigator.msMaxTouchPoints > 0
+        )
+      }
+      const isInitialMount = previousChatProcessing === null
+      const hasCompletedProcessing = previousChatProcessing === true
+
+      if (
+        !isTouchDevice() &&
+        ((isInitialMount && focusOnMount) || hasCompletedProcessing)
+      ) {
+        textareaRef.current.focus({ preventScroll: true })
       }
     }
-  }, [chatProcessing])
+  }, [chatProcessing, focusOnMount])
 
   // テキスト内容に基づいて適切な行数を計算
   const calculateRows = useCallback((text: string): number => {

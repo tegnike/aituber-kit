@@ -6,10 +6,14 @@ import { useVoiceRecognition } from '@/hooks/useVoiceRecognition'
 
 // 無音検出用の状態と変数を追加
 type Props = {
+  focusOnMount?: boolean
   onChatProcessStart: (text: string) => void
 }
 
-export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
+export const MessageInputContainer = ({
+  focusOnMount = true,
+  onChatProcessStart,
+}: Props) => {
   const isSpeaking = homeStore((s) => s.isSpeaking)
   const continuousMicListeningMode = settingsStore(
     (s) => s.continuousMicListeningMode
@@ -42,6 +46,7 @@ export const MessageInputContainer = ({ onChatProcessStart }: Props) => {
 
   return (
     <MessageInput
+      focusOnMount={focusOnMount}
       userMessage={userMessage}
       isMicRecording={isListening}
       onChangeUserMessage={handleInputChange}

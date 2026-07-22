@@ -10,7 +10,11 @@ import { SlideText } from './slideText'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 
-export const Form = () => {
+type Props = {
+  focusOnMount?: boolean
+}
+
+export const Form = ({ focusOnMount = true }: Props) => {
   const modalImage = homeStore((s) => s.modalImage)
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const captureStatus = homeStore((s) => s.captureStatus)
@@ -98,7 +102,10 @@ export const Form = () => {
   ) : (
     <>
       <PresetQuestionButtons onSelectQuestion={hookSendChat} />
-      <MessageInputContainer onChatProcessStart={hookSendChat} />
+      <MessageInputContainer
+        focusOnMount={focusOnMount}
+        onChatProcessStart={hookSendChat}
+      />
     </>
   )
 }

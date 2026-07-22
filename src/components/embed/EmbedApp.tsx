@@ -168,7 +168,7 @@ export const EmbedApp = ({ embedId }: Props) => {
         {showAssistantText && latestAssistantMessage && (
           <AssistantText message={latestAssistantMessage} />
         )}
-        <Form />
+        <Form focusOnMount={false} />
         <ModalImage />
         <Toasts />
         <MemoryServiceInitializer />
