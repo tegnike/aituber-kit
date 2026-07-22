@@ -69,7 +69,7 @@ export type ServerUrlPolicy = {
   key: string
   envVar: string
   defaultUrl: string
-  /** プロキシを介さない同一マシンのループバック接続に限り、disabledでも利用を許可する */
+  /** プロキシを介さない同一マシンのローカル接続に限り、disabledでも利用を許可する */
   allowLocalLoopback?: true
 }
 
