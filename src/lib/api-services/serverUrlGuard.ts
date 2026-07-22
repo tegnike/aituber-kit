@@ -143,11 +143,13 @@ export function isSameMachineHost(
     .replace(/\.$/, '')
   if (!normalizedMachineHostname) return false
 
-  const machineLabel = normalizedMachineHostname.split('.')[0]
+  const machineHostnameLabels = normalizedMachineHostname.split('.')
+  const machineLabel = machineHostnameLabels[0]
   return (
     normalized === normalizedMachineHostname ||
     normalized === machineLabel ||
-    normalized === `${machineLabel}.local`
+    (machineHostnameLabels.length === 1 &&
+      normalized === `${machineLabel}.local`)
   )
 }
 

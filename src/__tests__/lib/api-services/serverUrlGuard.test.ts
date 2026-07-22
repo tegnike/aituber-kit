@@ -98,6 +98,30 @@ describe('serverUrlGuard', () => {
       ).toBe(true)
     })
 
+    it('does not infer a .local alias from an OS hostname with a domain', () => {
+      expect(
+        isSameMachineHost(
+          'studio-pc.corp.example',
+          'studio-pc.corp.example',
+          localInterfaceAddresses
+        )
+      ).toBe(true)
+      expect(
+        isSameMachineHost(
+          'studio-pc',
+          'studio-pc.corp.example',
+          localInterfaceAddresses
+        )
+      ).toBe(true)
+      expect(
+        isSameMachineHost(
+          'studio-pc.local',
+          'studio-pc.corp.example',
+          localInterfaceAddresses
+        )
+      ).toBe(false)
+    })
+
     it('rejects other LAN machine names and addresses', () => {
       expect(
         isSameMachineHost('other-pc', machineHostname, localInterfaceAddresses)
