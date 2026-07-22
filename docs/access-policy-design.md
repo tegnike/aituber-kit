@@ -185,11 +185,12 @@ function withAccessPolicy(
    - env設定URL（`envVar`）が存在してパース不能 → 400（現行 `tts-voicevox.ts` の挙動を保存 — レビューm8）
    - クライアント提供URLを `isHttpUrl` で検証 → 不正は400
    - `isAllowedConfiguredOrListedUrl` で `isProtectedServerResource` / `isAllowedPublicUrl` を判定 → 許可外のpublic URLは400
+   - LM Studio / Ollamaは、プライベートIPに加えて単一ラベルのLANマシン名、`.local` mDNS名、同一マシンのOSホスト名も保護対象URLとして扱う。それ以外の公開FQDNはallowlist未登録なら400
 5. **server-secret**:
    - `kind: 'pairs'`: `computeUsesServerSecret(pairs)` または `isProtectedServerResource` が真なら `guardServerSecretAccess()`
    - `kind: 'always'`: 無条件で `guardServerSecretAccess()`
    - `kind: 'dynamic'`: ここでは何もしない。ルートが `gate.guardServerSecret()` を呼ぶ（呼んでいることを静的テストで強制 — §7.2-3）。動的な接続先URLを扱うルートは、検証済みURLを `allowLocalLoopbackUrl` として渡せる
-   - ただし `allowLocalLoopback` を宣言したルートは、`disabled` かつリクエスト元Host・ソケット接続元・接続先URLがすべてループバックの場合のみガードを省略する。Next.jsが直接接続にも補完する `X-Forwarded-For` / `X-Forwarded-Host` は、値がすべてループバックの場合に限り許容する
+   - ただし `allowLocalLoopback` を宣言したルートは、`disabled` かつリクエスト元Host・ソケット接続元がループバックで、接続先URLが同一マシン（ループバック、NICのIP、OSホスト名）を指す場合のみガードを省略する。Next.jsが直接接続にも補完する `X-Forwarded-For` / `X-Forwarded-Host` は、値がすべてループバックの場合に限り許容する
    - 外部IPを含む `X-Forwarded-For`、非ループバックの `X-Forwarded-Host`、Next.jsが補完しない `Forwarded` / `X-Real-IP` / `CF-Connecting-IP` がある場合はプロキシ経由と判断して例外を無効化する。リバースプロキシ環境では `protected` / `demo` / `unprotected` の明示的な運用モードを使用する
 6. すべて通過 → `handler(req, res, gate)` を実行
 

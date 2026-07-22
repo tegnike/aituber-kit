@@ -1,4 +1,5 @@
 import { isIP } from 'node:net'
+import { hostname as getHostname, networkInterfaces } from 'node:os'
 
 const PRIVATE_IPV4_RANGES = [
   /^10\./,
@@ -93,6 +94,63 @@ export function isLocalOrPrivateHost(hostname: string): boolean {
   if (!Number.isFinite(firstHextet)) return false
 
   return (firstHextet & 0xfe00) === 0xfc00 || (firstHextet & 0xffc0) === 0xfe80
+}
+
+/**
+ * LM Studio / Ollamaで使われるLAN内のホスト名を判定する。
+ *
+ * 単一ラベル名はOSのDNS検索サフィックスやNetBIOSで解決されるマシン名、
+ * `.local` はmDNS名として扱う。公開FQDNは許可しない。
+ */
+export function isLocalLlmHost(hostname: string): boolean {
+  const normalized = hostname
+    .toLowerCase()
+    .replace(/^\[|\]$/g, '')
+    .replace(/\.$/, '')
+
+  if (!normalized) return false
+  if (isLocalOrPrivateHost(normalized)) return true
+  if (isIP(normalized) !== 0) return false
+
+  return !normalized.includes('.') || normalized.endsWith('.local')
+}
+
+function getLocalInterfaceAddresses(): string[] {
+  return Object.values(networkInterfaces()).flatMap((addresses) =>
+    (addresses || []).map(({ address }) => address.toLowerCase())
+  )
+}
+
+/** 同一マシンを指すループバック、NICのIPアドレス、OSホスト名を判定する。 */
+export function isSameMachineHost(
+  hostname: string,
+  machineHostname = getHostname(),
+  localInterfaceAddresses = getLocalInterfaceAddresses()
+): boolean {
+  const normalized = hostname
+    .toLowerCase()
+    .replace(/^\[|\]$/g, '')
+    .replace(/\.$/, '')
+  if (!normalized) return false
+  if (isLoopbackHost(normalized)) return true
+
+  if (isIP(normalized) !== 0) {
+    return localInterfaceAddresses.includes(normalized)
+  }
+
+  const normalizedMachineHostname = machineHostname
+    .toLowerCase()
+    .replace(/\.$/, '')
+  if (!normalizedMachineHostname) return false
+
+  const machineHostnameLabels = normalizedMachineHostname.split('.')
+  const machineLabel = machineHostnameLabels[0]
+  return (
+    normalized === normalizedMachineHostname ||
+    normalized === machineLabel ||
+    (machineHostnameLabels.length === 1 &&
+      normalized === `${machineLabel}.local`)
+  )
 }
 
 export function isAllowedConfiguredOrListedUrl(
