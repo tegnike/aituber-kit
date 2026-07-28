@@ -217,11 +217,7 @@ export const finishCurrentPresentationNarration = () => {
     playbackState: current.state,
     pauseRequested: current.pauseRequested,
   })
-  const applied = setMachineState(current.document, next)
-  if (applied && next.playbackState === 'completed') {
-    menuStore.setState({ slideVisible: false })
-  }
-  return applied
+  return setMachineState(current.document, next)
 }
 
 export const getCurrentPresentationLocation = () => {

@@ -596,6 +596,35 @@ describe('/api/v1 external API', () => {
     )
   })
 
+  it('emits events when speech starts and ends', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const baseStatus = {
+      connected: true,
+      chatProcessing: false,
+    }
+
+    updateClientStatus('client1', { ...baseStatus, isSpeaking: false })
+    updateClientStatus('client1', { ...baseStatus, isSpeaking: true })
+    updateClientStatus('client1', { ...baseStatus, isSpeaking: false })
+
+    const speechEvents = getRecentApiEvents('client1').filter(
+      (event: { type: string }) => event.type.startsWith('speech_')
+    )
+    expect(speechEvents).toEqual([
+      expect.objectContaining({
+        type: 'speech_started',
+        payload: expect.objectContaining({ isSpeaking: true }),
+      }),
+      expect.objectContaining({
+        type: 'speech_ended',
+        payload: expect.objectContaining({ isSpeaking: false }),
+      }),
+    ])
+  })
+
   it('returns recent events as a JSON snapshot', () => {
     const speak = require('@/pages/api/v1/speak').default
     const events = require('@/pages/api/v1/events').default

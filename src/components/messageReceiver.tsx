@@ -549,6 +549,17 @@ const MessageReceiver = () => {
       }
     )
 
+    const unsubscribeSpeechStatus = homeStore.subscribe(
+      (state, previousState) => {
+        if (
+          isClientTabLeader &&
+          state.isSpeaking !== previousState.isSpeaking
+        ) {
+          void safeReportStatus()
+        }
+      }
+    )
+
     const claimClientTabLeadership = () => {
       if (document.visibilityState !== 'visible') return
       writeClientTabLease()
@@ -606,6 +617,7 @@ const MessageReceiver = () => {
       clearInterval(statusIntervalId)
       clearInterval(leaseIntervalId)
       unsubscribePresentationStatus()
+      unsubscribeSpeechStatus()
       window.removeEventListener('focus', claimClientTabLeadership)
       window.removeEventListener('storage', handleStorage)
       window.removeEventListener('beforeunload', releaseClientTabLease)

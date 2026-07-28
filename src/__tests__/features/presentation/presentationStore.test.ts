@@ -62,7 +62,7 @@ describe('presentationStore', () => {
     expect(getCurrentPresentationLocation()?.slide.id).toBe('slide-3')
     finishCurrentPresentationNarration()
     expect(presentationStore.getState().state).toBe('completed')
-    expect(menuStore.getState().slideVisible).toBe(false)
+    expect(menuStore.getState().slideVisible).toBe(true)
   })
 
   it('hides the slide on reset and shows it when slide playback starts', () => {

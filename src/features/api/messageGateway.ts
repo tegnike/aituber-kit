@@ -89,6 +89,8 @@ export interface ApiEvent {
     | 'stop_requested'
     | 'commands_fetched'
     | 'status_updated'
+    | 'speech_started'
+    | 'speech_ended'
     | 'presentation_registered'
     | 'presentation_assigned'
     | 'presentation_loaded'
@@ -390,6 +392,17 @@ export const updateClientStatus = (
     isSpeaking: nextStatus.isSpeaking,
     chatProcessing: nextStatus.chatProcessing,
   })
+
+  if (previousStatus && previousStatus.isSpeaking !== nextStatus.isSpeaking) {
+    emitApiEvent(
+      clientId,
+      nextStatus.isSpeaking ? 'speech_started' : 'speech_ended',
+      {
+        isSpeaking: nextStatus.isSpeaking,
+        chatProcessing: nextStatus.chatProcessing,
+      }
+    )
+  }
 
   const previousPresentation = previousStatus?.presentation
   const presentation = nextStatus.presentation
