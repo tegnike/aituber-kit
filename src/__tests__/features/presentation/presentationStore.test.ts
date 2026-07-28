@@ -15,6 +15,12 @@ const manifest: PresentationManifestV1 = {
   presentationId: 'store-test',
   revision: 1,
   title: 'Store test',
+  thumbnail: {
+    id: 'show-thumbnail',
+    type: 'image',
+    url: 'http://127.0.0.1:9892/api/shows/store-test/assets/thumbnail.png',
+    alt: '番組サムネイル',
+  },
   createdAt: '2026-07-14T20:00:00.000Z',
   sections: [
     {
@@ -50,6 +56,9 @@ describe('presentationStore', () => {
       normalizeExternalPresentation(manifest),
       'sha256:test'
     )
+    expect(presentationStore.getState().document?.thumbnail?.id).toBe(
+      'show-thumbnail'
+    )
     expect(presentationStore.getState().state).toBe('ready')
     expect(applyPresentationControl('start')).toBe(true)
     expect(menuStore.getState().slideVisible).toBe(true)
@@ -78,6 +87,29 @@ describe('presentationStore', () => {
     applyPresentationControl('reset')
     expect(presentationStore.getState().state).toBe('ready')
     expect(menuStore.getState().slideVisible).toBe(false)
+  })
+
+  it('hides and restores the slide without changing its position or playback state', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:test'
+    )
+    applyPresentationControl('start')
+    applyPresentationControl('next_slide')
+    presentationStore.setState({ state: 'completed' })
+    const before = getCurrentPresentationLocation()
+
+    expect(applyPresentationControl('hide')).toBe(true)
+    expect(menuStore.getState().slideVisible).toBe(false)
+    expect(menuStore.getState().thumbnailVisible).toBe(true)
+    expect(getCurrentPresentationLocation()).toEqual(before)
+    expect(presentationStore.getState().state).toBe('completed')
+
+    expect(applyPresentationControl('show')).toBe(true)
+    expect(menuStore.getState().slideVisible).toBe(true)
+    expect(menuStore.getState().thumbnailVisible).toBe(false)
+    expect(getCurrentPresentationLocation()).toEqual(before)
+    expect(presentationStore.getState().state).toBe('completed')
   })
 
   it('persists position metadata without persisting manifest or Q&A content', () => {

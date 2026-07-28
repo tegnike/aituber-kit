@@ -9,6 +9,7 @@ const CONTROLS_SPACE = 96
 interface SlideFrameProps {
   children: React.ReactNode
   controls: React.ReactNode
+  visible?: boolean
 }
 
 const fitSlideToBounds = (maxWidth: number, maxHeight: number) => {
@@ -63,7 +64,11 @@ const resizeHandles = [
   },
 ] as const
 
-const SlideFrame: React.FC<SlideFrameProps> = ({ children, controls }) => {
+const SlideFrame: React.FC<SlideFrameProps> = ({
+  children,
+  controls,
+  visible = true,
+}) => {
   const frameRef = useRef<HTMLDivElement>(null)
   const resizeStartPositionRef = useRef({ x: 0, y: 0 })
   const interactionRef = useRef({ dragging: false, resizing: false })
@@ -203,7 +208,8 @@ const SlideFrame: React.FC<SlideFrameProps> = ({ children, controls }) => {
     <div
       className="pointer-events-none fixed inset-0"
       data-testid="slide-mode-viewer"
-      style={{ zIndex: 8 }}
+      style={{ zIndex: 8, visibility: visible ? 'visible' : 'hidden' }}
+      aria-hidden={!visible}
     >
       <div
         ref={frameRef}

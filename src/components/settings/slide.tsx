@@ -48,7 +48,7 @@ const Slide = () => {
   const toggleSlideMode = () => {
     const newSlideMode = !slideMode
     settingsStore.setState({ slideMode: newSlideMode })
-    menuStore.setState({ slideVisible: newSlideMode })
+    menuStore.setState({ slideVisible: newSlideMode, thumbnailVisible: false })
   }
 
   const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

@@ -6,6 +6,7 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
+import presentationStore from '@/features/stores/presentation'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
 import { IconButton } from './iconButton'
@@ -57,6 +58,8 @@ export const Menu = () => {
   const gameCommentaryPlaying = settingsStore((s) => s.gameCommentaryPlaying)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
+  const thumbnailVisible = menuStore((s) => s.thumbnailVisible)
+  const presentationDocument = presentationStore((s) => s.document)
   const chatLog = homeStore((s) => s.chatLog)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
@@ -420,7 +423,10 @@ export const Menu = () => {
                       label={slideVisible ? t('HideSlide') : t('ShowSlide')}
                       active={slideVisible}
                       onClick={() =>
-                        menuStore.setState({ slideVisible: !slideVisible })
+                        menuStore.setState({
+                          slideVisible: !slideVisible,
+                          thumbnailVisible: false,
+                        })
                       }
                       disabled={slidePlaying}
                       aria-pressed={slideVisible}
@@ -434,7 +440,14 @@ export const Menu = () => {
         </div>
       </div>
       <div className="relative">
-        {slideMode && slideVisible && <Slides markdown={markdownContent} />}
+        {slideMode &&
+          (slideVisible || thumbnailVisible || presentationDocument) && (
+            <Slides
+              markdown={markdownContent}
+              visible={slideVisible || thumbnailVisible}
+              thumbnailVisible={thumbnailVisible}
+            />
+          )}
       </div>
       {chatLogMode === CHAT_LOG_MODE.CHAT_LOG && <ChatLog />}
       {showSettings && canAccessSettings && (

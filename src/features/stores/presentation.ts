@@ -160,7 +160,7 @@ export const setPresentationError = (message: string) => {
 
 export const unloadPresentation = () => {
   presentationStore.setState({ ...initialState, updatedAt: now() })
-  menuStore.setState({ slideVisible: false })
+  menuStore.setState({ slideVisible: false, thumbnailVisible: false })
 }
 
 export const applyPresentationControl = (
@@ -189,8 +189,10 @@ export const applyPresentationControl = (
       speak
     )
   )
-  if (applied && action === 'reset') {
-    menuStore.setState({ slideVisible: false })
+  if (applied && action === 'hide') {
+    menuStore.setState({ slideVisible: false, thumbnailVisible: true })
+  } else if (applied && action === 'reset') {
+    menuStore.setState({ slideVisible: false, thumbnailVisible: false })
   } else if (
     applied &&
     [
@@ -201,9 +203,10 @@ export const applyPresentationControl = (
       'next_section',
       'previous_section',
       'goto',
+      'show',
     ].includes(action)
   ) {
-    menuStore.setState({ slideVisible: true })
+    menuStore.setState({ slideVisible: true, thumbnailVisible: false })
   }
   return applied
 }

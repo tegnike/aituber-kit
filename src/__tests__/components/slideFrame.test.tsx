@@ -98,4 +98,34 @@ describe('SlideFrame', () => {
     expect(resizedWidth / resizedHeight).toBeCloseTo(16 / 9, 4)
     fireEvent.mouseUp(document)
   })
+
+  it('keeps its position while hidden and shown with different content', () => {
+    const { rerender } = renderFrame()
+    const frame = screen.getByTestId('slide-frame')
+
+    fireEvent.mouseDown(screen.getByTestId('slide-drag-surface'), {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+    })
+    fireEvent.mouseMove(document, { clientX: 160, clientY: 140 })
+    fireEvent.mouseUp(document)
+
+    rerender(
+      <SlideFrame visible={false} controls={null}>
+        <div>Hidden content</div>
+      </SlideFrame>
+    )
+    expect(screen.getByTestId('slide-mode-viewer')).toHaveStyle({
+      visibility: 'hidden',
+    })
+
+    rerender(
+      <SlideFrame visible controls={null}>
+        <div>Thumbnail content</div>
+      </SlideFrame>
+    )
+    expect(frame.style.transform).toContain('translate(60px, 40px)')
+    expect(screen.getByText('Thumbnail content')).toBeInTheDocument()
+  })
 })

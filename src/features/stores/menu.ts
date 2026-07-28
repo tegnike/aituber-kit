@@ -23,6 +23,7 @@ interface MenuState {
   fileInput: HTMLInputElement | null
   bgFileInput: HTMLInputElement | null
   slideVisible: boolean
+  thumbnailVisible: boolean
   activeSettingsTab: SettingsTabKey
   settingsSearchQuery: string
 }
@@ -33,6 +34,7 @@ const menuStore = create<MenuState>((set, get) => ({
   fileInput: null,
   bgFileInput: null,
   slideVisible: false,
+  thumbnailVisible: false,
   activeSettingsTab: 'quickStart',
   settingsSearchQuery: '',
 }))

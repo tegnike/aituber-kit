@@ -164,6 +164,9 @@ export const applyPresentationControlAction = (
         playbackState: 'ready',
         pauseRequested: false,
       }
+    case 'hide':
+    case 'show':
+      return state
     case 'unload':
       return {
         sectionIndex: 0,

@@ -12,14 +12,20 @@ import { SpeakQueue } from '@/features/messages/speakQueue'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
 import SlideFrame from './slideFrame'
+import PresentationThumbnail from './presentationThumbnail'
 
 interface SlidesProps {
   markdown: string
+  visible?: boolean
+  thumbnailVisible?: boolean
 }
 
 export { goToSlide } from '@/features/stores/slide'
 
-const Slides: React.FC<SlidesProps> = () => {
+const Slides: React.FC<SlidesProps> = ({
+  visible = true,
+  thumbnailVisible = false,
+}) => {
   const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
   const legacyIsPlaying = slideStore((state) => state.isPlaying)
   const legacyCurrentSlide = slideStore((state) => state.currentSlide)
@@ -283,25 +289,32 @@ const Slides: React.FC<SlidesProps> = () => {
 
   return (
     <SlideFrame
+      visible={visible}
       controls={
-        <SlideControls
-          currentSlide={currentSlide}
-          slideCount={slideCount}
-          isPlaying={isPlaying}
-          prevSlide={prevSlide}
-          nextSlide={nextSlide}
-          toggleIsPlaying={toggleIsPlaying}
-          currentSectionTitle={currentSection?.title}
-          playbackState={isExternal ? playbackState : undefined}
-          nextSection={
-            isExternal && canMoveToNextSection
-              ? () => applyPresentationControl('next_section')
-              : undefined
-          }
-        />
+        thumbnailVisible ? null : (
+          <SlideControls
+            currentSlide={currentSlide}
+            slideCount={slideCount}
+            isPlaying={isPlaying}
+            prevSlide={prevSlide}
+            nextSlide={nextSlide}
+            toggleIsPlaying={toggleIsPlaying}
+            currentSectionTitle={currentSection?.title}
+            playbackState={isExternal ? playbackState : undefined}
+            nextSection={
+              isExternal && canMoveToNextSection
+                ? () => applyPresentationControl('next_section')
+                : undefined
+            }
+          />
+        )
       }
     >
-      <SlideContent marpitContainer={marpitContainer} />
+      {thumbnailVisible ? (
+        <PresentationThumbnail />
+      ) : (
+        <SlideContent marpitContainer={marpitContainer} />
+      )}
     </SlideFrame>
   )
 }

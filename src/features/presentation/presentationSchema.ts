@@ -83,6 +83,7 @@ export const presentationManifestSchema = z
     presentationId: idSchema,
     revision: z.number().int().min(1),
     title: z.string().min(1),
+    thumbnail: assetSchema.optional(),
     description: z.string().optional(),
     locale: z.string().optional(),
     createdAt: z.string().datetime({ offset: true }),
@@ -99,6 +100,8 @@ export const presentationManifestSchema = z
     const assetIds = new Set<string>()
     let slideCount = 0
     let sourceCount = 0
+
+    if (manifest.thumbnail) assetIds.add(manifest.thumbnail.id)
 
     manifest.sections.forEach((section, sectionIndex) => {
       if (sectionIds.has(section.id)) {

@@ -3,6 +3,7 @@ export interface PresentationManifestV1 {
   presentationId: string
   revision: number
   title: string
+  thumbnail?: PresentationAssetV1
   description?: string
   locale?: string
   createdAt: string
@@ -84,6 +85,8 @@ export type PresentationControlAction =
   | 'previous_section'
   | 'goto'
   | 'reset'
+  | 'hide'
+  | 'show'
   | 'unload'
 
 export interface PresentationControlTarget {

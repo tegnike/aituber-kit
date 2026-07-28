@@ -336,7 +336,7 @@ const MessageReceiver = () => {
         const document = normalizeExternalPresentation(data.presentation)
         loadPresentationDocument(document, data.contentHash, autoStart)
         settingsStore.setState({ slideMode: true })
-        menuStore.setState({ slideVisible: autoStart })
+        menuStore.setState({ slideVisible: autoStart, thumbnailVisible: false })
         slideStore.setState({ currentSlide: 0, isPlaying: false })
         if (autoStart) autoStartedAssignmentKey = key
       } catch (error) {

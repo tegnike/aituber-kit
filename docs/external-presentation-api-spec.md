@@ -427,6 +427,8 @@ Request:
 | `previous_section` | 前のSection先頭へ移動                      |
 | `goto`             | 指定したSectionまたはSlideへ移動           |
 | `reset`            | 発話を停止し先頭のready状態へ戻す          |
+| `hide`             | 現在位置と状態を保ち、番組サムネイルへ切替 |
+| `show`             | 現在位置のSlideを再表示する                 |
 | `unload`           | 現在Presentationを解除する                 |
 
 `goto` Request例:
@@ -575,6 +577,8 @@ export type PresentationCommand =
       speak?: boolean
     }
 ```
+
+Manifestに`thumbnail`がある場合、`hide`は現在位置と再生状態を保ったままスライドを隠して番組サムネイルを表示する。`show`はサムネイルを隠し、同じ位置のスライドを再表示する。
 
 Assignmentが正本であり、コマンド取りこぼしがあっても次の状態報告で再同期できること。
 

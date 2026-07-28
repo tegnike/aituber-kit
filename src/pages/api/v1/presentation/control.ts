@@ -26,6 +26,8 @@ const actions: PresentationControlAction[] = [
   'previous_section',
   'goto',
   'reset',
+  'hide',
+  'show',
   'unload',
 ]
 

@@ -165,6 +165,23 @@ describe('external presentation API', () => {
         action: 'next_section',
       }),
     ])
+
+    const hidden = createMockRes()
+    await control(
+      createMockReq({
+        method: 'POST',
+        headers: authHeaders,
+        body: { clientId: 'main-stage', action: 'hide' },
+      }),
+      hidden
+    )
+    expect(hidden._status).toBe(202)
+    expect(gateway.dequeueCommands('main-stage')).toEqual([
+      expect.objectContaining({
+        command: 'presentation.control',
+        action: 'hide',
+      }),
+    ])
   })
 
   it('returns desired and actual status after client synchronization', async () => {
