@@ -132,7 +132,10 @@ async function handler(
           }),
     })
 
-    logger.log('OpenAI transcription API response:', response)
+    logger.log('OpenAI transcription API response received', {
+      model,
+      textLength: response.text?.length ?? 0,
+    })
 
     return res.status(200).json({ text: response.text })
   } catch (error) {

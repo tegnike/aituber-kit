@@ -250,12 +250,13 @@ export function useVoiceRecognition({
         // 先に音声認識を停止
         await currentHookRef.current.stopListening()
 
-        // stopListening完了後にメッセージを送信
-        if (
-          message &&
-          settingsStore.getState().speechRecognitionMode !==
-            'live-transcription'
-        ) {
+        const settings = settingsStore.getState()
+        const isLiveTranscription =
+          !settings.realtimeAPIMode &&
+          settings.speechRecognitionMode === 'live-transcription'
+
+        // ライブ文字起こしはstopListening内で確定結果を送信する。
+        if (message && !isLiveTranscription) {
           // chatProcessing を true に設定
           homeStore.setState({ chatProcessing: true })
           // メッセージを空にする

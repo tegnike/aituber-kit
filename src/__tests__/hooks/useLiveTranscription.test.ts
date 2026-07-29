@@ -56,7 +56,7 @@ class MockDataChannel extends EventTarget {
   }
 }
 
-const dataChannel = new MockDataChannel()
+let dataChannel = new MockDataChannel()
 const audioTrack = { enabled: true, stop: jest.fn() }
 const mediaStream = {
   getAudioTracks: jest.fn(() => [audioTrack]),
@@ -76,7 +76,7 @@ class MockPeerConnection {
 describe('useLiveTranscription', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    dataChannel.readyState = 'open'
+    dataChannel = new MockDataChannel()
     audioTrack.enabled = true
     mockSettingsState.initialSpeechTimeout = 0
     mockSettingsState.noSpeechTimeout = 0
@@ -123,6 +123,7 @@ describe('useLiveTranscription', () => {
       1,
       '/api/ai/realtime-client-secret',
       expect.objectContaining({
+        signal: expect.anything(),
         body: JSON.stringify({
           apiKey: 'sk-test',
           model: 'gpt-live-transcribe',
@@ -130,6 +131,11 @@ describe('useLiveTranscription', () => {
           languages: ['ja'],
         }),
       })
+    )
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      'https://api.openai.com/v1/realtime/calls',
+      expect.objectContaining({ signal: expect.anything() })
     )
 
     act(() => {

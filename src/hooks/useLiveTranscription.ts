@@ -141,9 +141,7 @@ export function useLiveTranscription(
       return
     }
 
-    if (noSpeechTimeout > 1) {
-      setSilenceTimeoutRemaining(noSpeechTimeout * 1000)
-    }
+    setSilenceTimeoutRemaining(noSpeechTimeout * 1000)
     if (silenceProgressTimerRef.current !== null) return
 
     silenceProgressTimerRef.current = window.setInterval(() => {
@@ -154,9 +152,7 @@ export function useLiveTranscription(
           (Date.now() - lastTranscriptActivityRef.current)
       )
 
-      if (noSpeechTimeout > 1) {
-        setSilenceTimeoutRemaining(remainingTime)
-      }
+      setSilenceTimeoutRemaining(remainingTime)
 
       if (remainingTime === 0 && !isFinishingRef.current) {
         window.clearInterval(silenceProgressTimerRef.current ?? undefined)
@@ -277,6 +273,7 @@ export function useLiveTranscription(
         const tokenResponse = await fetch('/api/ai/realtime-client-secret', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(CONNECTION_TIMEOUT_MS),
           body: JSON.stringify({
             apiKey: settings.openaiKey,
             model: LIVE_TRANSCRIPTION_MODEL,
@@ -352,6 +349,7 @@ export function useLiveTranscription(
             'Content-Type': 'application/sdp',
           },
           body: offer.sdp,
+          signal: AbortSignal.timeout(CONNECTION_TIMEOUT_MS),
         }
       )
       if (!sdpResponse.ok) {

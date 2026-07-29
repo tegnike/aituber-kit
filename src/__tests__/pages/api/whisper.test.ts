@@ -86,6 +86,7 @@ describe('/api/whisper', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockCreateTranscription.mockResolvedValue({ text: 'transcribed text' })
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     jest.spyOn(console, 'error').mockImplementation(() => {})
   })
 
@@ -129,6 +130,13 @@ describe('/api/whisper', () => {
     expect(request).not.toHaveProperty('response_format')
     expect(res._status).toBe(200)
     expect(res._json).toEqual({ text: 'transcribed text' })
+    expect(console.log).toHaveBeenCalledWith(
+      'OpenAI transcription API response received',
+      { model: 'gpt-transcribe', textLength: 16 }
+    )
+    expect(JSON.stringify((console.log as jest.Mock).mock.calls)).not.toContain(
+      'transcribed text'
+    )
   })
 
   it('rejects the transcription snapshot scheduled for removal', async () => {
