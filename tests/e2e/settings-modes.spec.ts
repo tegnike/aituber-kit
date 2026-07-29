@@ -196,7 +196,7 @@ test('enforces mode exclusions for real-time API and audio modes from settings U
   await expectPersistedSetting(page, 'noSpeechTimeout', 0)
   await expectPersistedSetting(page, 'showSilenceProgressBar', false)
   await expectPersistedSetting(page, 'continuousMicListeningMode', false)
-  await expectPersistedSetting(page, 'selectAIModel', 'gpt-realtime')
+  await expectPersistedSetting(page, 'selectAIModel', 'gpt-realtime-2.1')
 
   await expect(page.getByTestId('realtime-api-mode-toggle')).toHaveAttribute(
     'aria-checked',

@@ -54,6 +54,21 @@ jest.mock('@/hooks/useRealtimeVoiceAPI', () => ({
   })),
 }))
 
+jest.mock('@/hooks/useLiveTranscription', () => ({
+  useLiveTranscription: jest.fn(() => ({
+    userMessage: '',
+    isListening: false,
+    isProcessing: false,
+    silenceTimeoutRemaining: null,
+    handleInputChange: jest.fn(),
+    handleSendMessage: jest.fn(),
+    toggleListening: jest.fn(),
+    startListening: jest.fn(),
+    stopListening: jest.fn(),
+    checkRecognitionActive: jest.fn(() => true),
+  })),
+}))
+
 jest.mock('@/hooks/useIsomorphicLayoutEffect', () => ({
   useIsomorphicLayoutEffect: jest.fn((fn) => fn()),
 }))

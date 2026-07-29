@@ -12,6 +12,11 @@ const LEGACY_OPENAI_MODELS: Record<string, string> = {
   'gpt-4o-audio-preview-2025-06-03': 'gpt-audio',
   'gpt-4o-mini-audio-preview': 'gpt-audio-mini',
   'gpt-4o-mini-audio-preview-2024-12-17': 'gpt-audio-mini',
+  // 2027-01-20に廃止されるRealtime APIモデルを現行モデルへ移行
+  'gpt-realtime': 'gpt-realtime-2.1',
+  'gpt-4o-realtime': 'gpt-realtime-2.1',
+  'gpt-realtime-mini': 'gpt-realtime-2.1-mini',
+  'gpt-4o-mini-realtime': 'gpt-realtime-2.1-mini',
 }
 
 // Migrate OpenAI model names from old format to new format

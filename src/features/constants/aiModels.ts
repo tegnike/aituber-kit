@@ -677,7 +677,7 @@ export const defaultModels: Record<
     ])
   ),
   openaiAudio: 'gpt-audio-mini',
-  openaiRealtime: 'gpt-realtime',
+  openaiRealtime: 'gpt-realtime-2.1',
 } as Record<AIService | 'openaiAudio' | 'openaiRealtime', string>
 
 /**
@@ -732,8 +732,8 @@ export function getMultiModalModels(service: AIService): string[] {
  * OpenAIのリアルタイムAPIモードで使用するモデル一覧
  */
 export const openAIRealtimeModels = [
-  'gpt-realtime',
-  'gpt-realtime-mini',
+  'gpt-realtime-2.1',
+  'gpt-realtime-2.1-mini',
 ] as const
 
 /**
@@ -768,13 +768,22 @@ export function getOpenAIAudioModels(): string[] {
  * OpenAIのWhisper(音声認識)用モデル一覧
  */
 export const openAIWhisperModels = [
+  'gpt-transcribe',
   'whisper-1',
   'gpt-4o-transcribe',
   'gpt-4o-transcribe-diarize',
   'gpt-4o-mini-transcribe',
-  'gpt-4o-mini-transcribe-2025-03-20',
   'gpt-4o-mini-transcribe-2025-12-15',
 ] as const
+
+export const defaultOpenAITranscriptionModel = 'gpt-transcribe' as const
+
+export function migrateOpenAITranscriptionModel(modelName: string): string {
+  if (modelName === 'gpt-4o-mini-transcribe-2025-03-20') {
+    return 'gpt-4o-mini-transcribe-2025-12-15'
+  }
+  return modelName
+}
 
 /**
  * OpenAIのWhisperモデル一覧を取得する

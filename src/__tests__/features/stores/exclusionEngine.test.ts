@@ -254,6 +254,26 @@ describe('排他エンジン (computeExclusions)', () => {
       expect(corrections.showSilenceProgressBar).toBe(false)
       expect(corrections.continuousMicListeningMode).toBe(false)
     })
+
+    it('live-transcriptionモードではタイムアウト系を維持する', () => {
+      const prev = createBaseState({
+        realtimeAPIMode: true,
+        audioMode: true,
+        initialSpeechTimeout: 5.0,
+        noSpeechTimeout: 5.0,
+        showSilenceProgressBar: true,
+        continuousMicListeningMode: true,
+      })
+      const incoming = { speechRecognitionMode: 'live-transcription' as const }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.realtimeAPIMode).toBe(false)
+      expect(corrections.audioMode).toBe(false)
+      expect(corrections.initialSpeechTimeout).toBeUndefined()
+      expect(corrections.noSpeechTimeout).toBeUndefined()
+      expect(corrections.showSilenceProgressBar).toBeUndefined()
+      expect(corrections.continuousMicListeningMode).toBe(false)
+    })
   })
 
   describe('Rule 11: language-nonJa-jaVoice', () => {

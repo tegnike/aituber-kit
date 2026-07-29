@@ -179,7 +179,7 @@ export type RealtimeAPIModeAzureVoice =
 export type AudioModeModel = string
 export type AudioModeInputType = 'input_text' | 'input_audio'
 
-export type SpeechRecognitionMode = 'browser' | 'whisper'
+export type SpeechRecognitionMode = 'browser' | 'whisper' | 'live-transcription'
 
 export type WhisperTranscriptionModel = (typeof openAIWhisperModels)[number]
 
