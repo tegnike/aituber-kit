@@ -56,6 +56,19 @@ export const exclusionRules: ExclusionRule[] = [
     }),
   },
 
+  // OpenAIライブ文字起こしモード ON
+  {
+    id: 'liveTranscription-on',
+    description: 'ライブ文字起こしON時にrealtimeAPIMode/audioModeをOFFにする',
+    trigger: (_incoming, merged) =>
+      merged.speechRecognitionMode === 'live-transcription',
+    apply: () => ({
+      realtimeAPIMode: false,
+      audioMode: false,
+      continuousMicListeningMode: false,
+    }),
+  },
+
   // Rule 2: realtimeAPIMode ON
   {
     id: 'realtimeAPI-on',

@@ -7,6 +7,7 @@ import { SpeakQueue } from '@/features/messages/speakQueue'
 import { useBrowserSpeechRecognition } from './useBrowserSpeechRecognition'
 import { useWhisperRecognition } from './useWhisperRecognition'
 import { useRealtimeVoiceAPI } from './useRealtimeVoiceAPI'
+import { useLiveTranscription } from './useLiveTranscription'
 
 type UseVoiceRecognitionProps = {
   onChatProcessStart: (text: string) => void
@@ -36,13 +37,17 @@ export function useVoiceRecognition({
   // リアルタイムAPI処理フック
   const realtimeAPI = useRealtimeVoiceAPI(onChatProcessStart)
 
+  // OpenAIライブ文字起こしフック
+  const liveTranscription = useLiveTranscription(onChatProcessStart)
+
   // ----- 現在のモードに基づいて適切なフックを選択 -----
-  const currentHook =
-    speechRecognitionMode === 'browser'
-      ? realtimeAPIMode
-        ? realtimeAPI
+  const currentHook = realtimeAPIMode
+    ? realtimeAPI
+    : speechRecognitionMode === 'whisper'
+      ? whisperSpeech
+      : speechRecognitionMode === 'live-transcription'
+        ? liveTranscription
         : browserSpeech
-      : whisperSpeech
 
   // ----- currentHookの関数参照をrefで保持（依存配列からcurrentHookを除去するため） -----
   const currentHookRef = useRef({
@@ -246,7 +251,11 @@ export function useVoiceRecognition({
         await currentHookRef.current.stopListening()
 
         // stopListening完了後にメッセージを送信
-        if (message) {
+        if (
+          message &&
+          settingsStore.getState().speechRecognitionMode !==
+            'live-transcription'
+        ) {
           // chatProcessing を true に設定
           homeStore.setState({ chatProcessing: true })
           // メッセージを空にする

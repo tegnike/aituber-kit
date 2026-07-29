@@ -38,7 +38,7 @@ describe('/api/ai/realtime-client-secret', () => {
     const req = createMockReq({
       body: {
         apiKey: 'client-key',
-        model: 'gpt-realtime',
+        model: 'gpt-realtime-2.1',
       },
     })
     const res = createMockRes()
@@ -56,7 +56,7 @@ describe('/api/ai/realtime-client-secret', () => {
         body: JSON.stringify({
           session: {
             type: 'realtime',
-            model: 'gpt-realtime',
+            model: 'gpt-realtime-2.1',
           },
         }),
       })
@@ -69,11 +69,77 @@ describe('/api/ai/realtime-client-secret', () => {
     })
   })
 
+  it('gpt-live-transcribe用の文字起こしセッションを発行する', async () => {
+    mockServerSecretGuard('disabled')
+    mockFetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ value: 'ek_transcription' }),
+    })
+
+    const req = createMockReq({
+      body: {
+        apiKey: 'client-key',
+        model: 'gpt-live-transcribe',
+        sessionType: 'transcription',
+        languages: ['JA', 'invalid language'],
+      },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.openai.com/v1/realtime/client_secrets',
+      expect.objectContaining({
+        body: JSON.stringify({
+          session: {
+            type: 'transcription',
+            audio: {
+              input: {
+                format: { type: 'audio/pcm', rate: 24000 },
+                transcription: {
+                  model: 'gpt-live-transcribe',
+                  delay: 'low',
+                  languages: ['ja'],
+                },
+                turn_detection: null,
+              },
+            },
+          },
+        }),
+      })
+    )
+    expect(res._status).toBe(200)
+    expect(res._json).toEqual({ value: 'ek_transcription' })
+  })
+
+  it('文字起こしセッションでは未対応モデルを拒否する', async () => {
+    mockServerSecretGuard('disabled')
+    const req = createMockReq({
+      body: {
+        apiKey: 'client-key',
+        model: 'gpt-realtime-2.1',
+        sessionType: 'transcription',
+      },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(400)
+    expect(res._json).toEqual({
+      error: 'Unsupported live transcription model',
+      errorCode: 'InvalidLiveTranscriptionModel',
+    })
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
   it('サーバーキー使用時はアクセスガードを評価する', async () => {
     mockServerSecretGuard('disabled')
     process.env.OPENAI_API_KEY = 'server-key'
 
-    const req = createMockReq({ body: { model: 'gpt-realtime' } })
+    const req = createMockReq({ body: { model: 'gpt-realtime-2.1' } })
     const res = createMockRes()
 
     await handler(req, res)
@@ -93,7 +159,7 @@ describe('/api/ai/realtime-client-secret', () => {
 
     const req = createMockReq({
       headers,
-      body: { model: 'gpt-realtime' },
+      body: { model: 'gpt-realtime-2.1' },
     })
     const res = createMockRes()
 
@@ -123,6 +189,23 @@ describe('/api/ai/realtime-client-secret', () => {
     expect(res._json).toEqual({
       error: 'Empty API Key',
       errorCode: 'EmptyAPIKey',
+    })
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('廃止予定のRealtime APIモデルを拒否する', async () => {
+    mockServerSecretGuard('disabled')
+    const req = createMockReq({
+      body: { apiKey: 'client-key', model: 'gpt-realtime' },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(400)
+    expect(res._json).toEqual({
+      error: 'Unsupported Realtime API model',
+      errorCode: 'InvalidRealtimeModel',
     })
     expect(mockFetch).not.toHaveBeenCalled()
   })

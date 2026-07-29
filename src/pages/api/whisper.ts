@@ -6,6 +6,10 @@ import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
 import type { PolicyGate } from '@/lib/accessPolicy/withAccessPolicy'
 import { routePolicies } from '@/lib/accessPolicy/routePolicies'
 import { computeUsesServerSecret } from '@/lib/accessPolicy/secretPairs'
+import {
+  defaultOpenAITranscriptionModel,
+  openAIWhisperModels,
+} from '@/features/constants/aiModels'
 
 const MAX_WHISPER_REQUEST_BODY_BYTES = 25 * 1024 * 1024
 
@@ -51,7 +55,7 @@ async function handler(
     let audioFilePart = null
     let language = undefined
     let openaiKey = undefined
-    let model = 'whisper-1'
+    let model = defaultOpenAITranscriptionModel as string
 
     for (const part of parts) {
       if (part.name === 'file' && part.filename) {
@@ -67,6 +71,10 @@ async function handler(
 
     if (!audioFilePart) {
       return res.status(400).json({ error: 'No audio file provided' })
+    }
+
+    if (!(openAIWhisperModels as readonly string[]).includes(model)) {
+      return res.status(400).json({ error: 'Unsupported transcription model' })
     }
 
     logger.log('Received audio file:', {
@@ -111,16 +119,20 @@ async function handler(
       { type: audioFilePart.type || 'audio/webm' }
     )
 
-    // Whisper APIに送信
-    logger.log(`Sending audio data to Whisper API using model: ${model}`)
+    // OpenAI文字起こしAPIに送信
+    logger.log(`Sending audio data to transcription API using model: ${model}`)
     const response = await openai.audio.transcriptions.create({
       file: audioFile,
       model: model,
-      language: language || undefined,
-      response_format: 'json',
+      ...(model === defaultOpenAITranscriptionModel
+        ? {}
+        : {
+            language: language || undefined,
+            response_format: 'json' as const,
+          }),
     })
 
-    logger.log('Whisper API response:', response)
+    logger.log('OpenAI transcription API response:', response)
 
     return res.status(200).json({ text: response.text })
   } catch (error) {
