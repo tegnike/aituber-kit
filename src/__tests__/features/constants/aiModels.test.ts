@@ -130,8 +130,8 @@ describe('aiModels', () => {
       expect(getSpecificDefaultModel('openaiAudio')).toBe('gpt-audio-mini')
     })
 
-    it('should return gpt-realtime for openaiRealtime', () => {
-      expect(getSpecificDefaultModel('openaiRealtime')).toBe('gpt-realtime')
+    it('should return gpt-realtime-2.1 for openaiRealtime', () => {
+      expect(getSpecificDefaultModel('openaiRealtime')).toBe('gpt-realtime-2.1')
     })
 
     it('should also work for regular AIService', () => {
@@ -333,8 +333,10 @@ describe('aiModels', () => {
     it('getOpenAIRealtimeModels should return correct models', () => {
       const models = getOpenAIRealtimeModels()
       expect(models).toEqual([...openAIRealtimeModels])
-      expect(models).toContain('gpt-realtime')
-      expect(models).toContain('gpt-realtime-mini')
+      expect(models).toContain('gpt-realtime-2.1')
+      expect(models).toContain('gpt-realtime-2.1-mini')
+      expect(models).not.toContain('gpt-realtime')
+      expect(models).not.toContain('gpt-realtime-mini')
     })
 
     it('getOpenAIAudioModels should return correct models', () => {
@@ -347,7 +349,10 @@ describe('aiModels', () => {
     it('getOpenAIWhisperModels should return correct models', () => {
       const models = getOpenAIWhisperModels()
       expect(models).toEqual([...openAIWhisperModels])
+      expect(models[0]).toBe('gpt-transcribe')
+      expect(models).toContain('gpt-transcribe')
       expect(models).toContain('whisper-1')
+      expect(models).not.toContain('gpt-4o-mini-transcribe-2025-03-20')
     })
 
     it('getOpenAITTSModels should return correct models', () => {

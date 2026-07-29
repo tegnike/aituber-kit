@@ -41,7 +41,10 @@ import {
 import {
   googleSearchGroundingModels,
   defaultModels,
+  defaultOpenAITranscriptionModel,
   getReasoningEfforts,
+  migrateOpenAITranscriptionModel,
+  openAIWhisperModels,
 } from '../constants/aiModels'
 import { migrateOpenAIModelName } from '@/utils/modelMigration'
 
@@ -311,6 +314,16 @@ const parseEnvInt = (value: string | undefined, fallback: number): number => {
 }
 
 // Function to get initial values from environment variables
+const getInitialWhisperTranscriptionModel = (): WhisperTranscriptionModel => {
+  const configuredModel = migrateOpenAITranscriptionModel(
+    process.env.NEXT_PUBLIC_WHISPER_TRANSCRIPTION_MODEL ||
+      defaultOpenAITranscriptionModel
+  )
+  return (openAIWhisperModels as readonly string[]).includes(configuredModel)
+    ? (configuredModel as WhisperTranscriptionModel)
+    : defaultOpenAITranscriptionModel
+}
+
 const getInitialValuesFromEnv = (): SettingsState => ({
   // API Keys
   openaiKey:
@@ -612,10 +625,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     (process.env
       .NEXT_PUBLIC_SPEECH_RECOGNITION_MODE as SpeechRecognitionMode) ||
     'browser',
-  whisperTranscriptionModel:
-    (process.env
-      .NEXT_PUBLIC_WHISPER_TRANSCRIPTION_MODEL as WhisperTranscriptionModel) ||
-    'whisper-1',
+  whisperTranscriptionModel: getInitialWhisperTranscriptionModel(),
   initialSpeechTimeout:
     parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') || 5.0,
   chatLogWidth:
@@ -871,7 +881,11 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   surprisedMotionGroup: process.env.NEXT_PUBLIC_SURPRISED_MOTION_GROUP || '',
 })
 
-type PersistedSettingsState = Partial<SettingsState> & {
+type PersistedSettingsState = Omit<
+  Partial<SettingsState>,
+  'whisperTranscriptionModel'
+> & {
+  whisperTranscriptionModel?: string
   multiModalMode?: 'always' | 'never' | 'ai-decide'
   presenceGreetingMessage?: string
   presenceDepartureMessage?: string
@@ -987,6 +1001,22 @@ const settingsMigrationSteps: Record<number, SettingsMigrationStep> = {
           ? 'medium'
           : supportedEfforts[0]
       }
+    }
+    return migrated
+  },
+  7: (state) => {
+    const migrated = { ...state }
+    if (typeof migrated.whisperTranscriptionModel === 'string') {
+      migrated.whisperTranscriptionModel = migrateOpenAITranscriptionModel(
+        migrated.whisperTranscriptionModel
+      )
+    }
+    return migrated
+  },
+  8: (state) => {
+    const migrated = { ...state }
+    if (typeof migrated.selectAIModel === 'string') {
+      migrated.selectAIModel = migrateOpenAIModelName(migrated.selectAIModel)
     }
     return migrated
   },

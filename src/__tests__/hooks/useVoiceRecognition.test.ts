@@ -108,6 +108,19 @@ const mockRealtimeAPI = {
   stopListening: jest.fn().mockResolvedValue(undefined),
 }
 
+const mockLiveTranscription = {
+  userMessage: 'live partial',
+  isListening: false,
+  isProcessing: false,
+  silenceTimeoutRemaining: null,
+  handleInputChange: jest.fn(),
+  handleSendMessage: jest.fn(),
+  toggleListening: jest.fn(),
+  startListening: jest.fn().mockResolvedValue(undefined),
+  stopListening: jest.fn().mockResolvedValue(undefined),
+  checkRecognitionActive: jest.fn(() => true),
+}
+
 jest.mock('@/hooks/useBrowserSpeechRecognition', () => ({
   useBrowserSpeechRecognition: jest.fn(() => mockBrowserSpeech),
 }))
@@ -118,6 +131,10 @@ jest.mock('@/hooks/useWhisperRecognition', () => ({
 
 jest.mock('@/hooks/useRealtimeVoiceAPI', () => ({
   useRealtimeVoiceAPI: jest.fn(() => mockRealtimeAPI),
+}))
+
+jest.mock('@/hooks/useLiveTranscription', () => ({
+  useLiveTranscription: jest.fn(() => mockLiveTranscription),
 }))
 
 // Import after mocking
@@ -137,6 +154,10 @@ describe('useVoiceRecognition', () => {
     mockBrowserSpeech.stopListening.mockClear()
     mockBrowserSpeech.handleInputChange.mockClear()
     mockBrowserSpeech.checkRecognitionActive.mockReturnValue(true)
+    mockRealtimeAPI.userMessage = ''
+    mockRealtimeAPI.isListening = false
+    mockLiveTranscription.userMessage = 'live partial'
+    mockLiveTranscription.isListening = false
 
     // settingsStoreのモックをデフォルト状態に戻す
     const mockSettingsStore = settingsStore as jest.Mock
@@ -1003,6 +1024,68 @@ describe('useVoiceRecognition', () => {
       // realtimeAPIモードでも正常に動作すること
       expect(result.current.isListening).toBeDefined()
       expect(result.current.startListening).toBeDefined()
+    })
+
+    it('live-transcriptionモードではAltキーを離しても重複送信しないこと', async () => {
+      const mockSettingsStore = settingsStore as jest.Mock
+      const state = {
+        selectLanguage: 'ja',
+        speechRecognitionMode: 'live-transcription',
+        realtimeAPIMode: false,
+        continuousMicListeningMode: false,
+        initialSpeechTimeout: 0,
+        noSpeechTimeout: 0,
+      }
+      mockSettingsStore.mockImplementation((selector) => {
+        return selector ? selector(state) : state
+      })
+      ;(settingsStore.getState as jest.Mock).mockReturnValue(state)
+      mockLiveTranscription.isListening = true
+      const onChatProcessStart = jest.fn()
+
+      const { result } = renderHook(() =>
+        useVoiceRecognition({ onChatProcessStart })
+      )
+
+      expect(result.current.userMessage).toBe('live partial')
+      expect(result.current.startListening).toBe(
+        mockLiveTranscription.startListening
+      )
+
+      await act(async () => {
+        window.dispatchEvent(new KeyboardEvent('keyup', { key: 'Alt' }))
+      })
+
+      expect(mockLiveTranscription.stopListening).toHaveBeenCalled()
+      expect(onChatProcessStart).not.toHaveBeenCalled()
+    })
+
+    it('realtime API使用中は保存されたlive-transcription設定でAltキー送信を抑止しない', async () => {
+      const mockSettingsStore = settingsStore as jest.Mock
+      const state = {
+        selectLanguage: 'ja',
+        speechRecognitionMode: 'live-transcription',
+        realtimeAPIMode: true,
+        continuousMicListeningMode: false,
+        initialSpeechTimeout: 0,
+        noSpeechTimeout: 0,
+      }
+      mockSettingsStore.mockImplementation((selector) =>
+        selector ? selector(state) : state
+      )
+      ;(settingsStore.getState as jest.Mock).mockReturnValue(state)
+      mockRealtimeAPI.userMessage = 'realtime message'
+      mockRealtimeAPI.isListening = true
+      const onChatProcessStart = jest.fn()
+
+      renderHook(() => useVoiceRecognition({ onChatProcessStart }))
+
+      await act(async () => {
+        window.dispatchEvent(new KeyboardEvent('keyup', { key: 'Alt' }))
+      })
+
+      expect(mockRealtimeAPI.stopListening).toHaveBeenCalled()
+      expect(onChatProcessStart).toHaveBeenCalledWith('realtime message')
     })
   })
 

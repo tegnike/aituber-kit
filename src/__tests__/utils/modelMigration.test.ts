@@ -13,6 +13,10 @@ describe('migrateOpenAIModelName', () => {
     ['gpt-4o-audio-preview-2025-06-03', 'gpt-audio'],
     ['gpt-4o-mini-audio-preview', 'gpt-audio-mini'],
     ['gpt-4o-mini-audio-preview-2024-12-17', 'gpt-audio-mini'],
+    ['gpt-realtime', 'gpt-realtime-2.1'],
+    ['gpt-4o-realtime', 'gpt-realtime-2.1'],
+    ['gpt-realtime-mini', 'gpt-realtime-2.1-mini'],
+    ['gpt-4o-mini-realtime', 'gpt-realtime-2.1-mini'],
   ]
 
   it.each(legacyMappings)('should migrate "%s" to "%s"', (legacy, current) => {

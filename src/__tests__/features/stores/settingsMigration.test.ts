@@ -127,13 +127,45 @@ describe('settingsStore versioned migration', () => {
     expect(state.reasoningEffort).toBe('medium')
   })
 
+  it('migrates version 6 data away from the deprecated transcription snapshot', () => {
+    setPersisted(
+      {
+        whisperTranscriptionModel: 'gpt-4o-mini-transcribe-2025-03-20',
+      },
+      6
+    )
+
+    const settingsStore = loadStore()
+    const state = settingsStore.getState()
+
+    expect(state.whisperTranscriptionModel).toBe(
+      'gpt-4o-mini-transcribe-2025-12-15'
+    )
+  })
+
+  it.each([
+    ['gpt-realtime', 'gpt-realtime-2.1'],
+    ['gpt-4o-realtime', 'gpt-realtime-2.1'],
+    ['gpt-realtime-mini', 'gpt-realtime-2.1-mini'],
+    ['gpt-4o-mini-realtime', 'gpt-realtime-2.1-mini'],
+  ])(
+    'migrates version 7 Realtime model %s to %s',
+    (deprecatedModel, replacementModel) => {
+      setPersisted({ selectAIModel: deprecatedModel }, 7)
+
+      const settingsStore = loadStore()
+
+      expect(settingsStore.getState().selectAIModel).toBe(replacementModel)
+    }
+  )
+
   it('does not run migration steps for already-current data', () => {
     setPersisted(
       {
         selectAIModel: 'gpt-4o',
         gameCommentaryEnabled: false,
       },
-      6
+      8
     )
 
     const settingsStore = loadStore()

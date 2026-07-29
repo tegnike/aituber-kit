@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
-import { TextButton } from '../textButton'
 import { settingsControlClass } from '@/components/settings/formStyles'
 import { ToggleSwitch } from '../toggleSwitch'
 import Image from 'next/image'
@@ -31,7 +30,10 @@ const SpeechInput = () => {
       label: m,
     }))
 
-  // realtimeAPIモードかaudioモードがオンの場合はボタンを無効化
+  // realtimeAPIモードかaudioモードがオンの場合は音声認識方式を固定
+  const isLiveTranscriptionMode = speechRecognitionMode === 'live-transcription'
+  const supportsSpeechTimeouts =
+    speechRecognitionMode === 'browser' || isLiveTranscriptionMode
   const isSpeechModeSwitchDisabled = realtimeAPIMode || audioMode
 
   return (
@@ -58,23 +60,36 @@ const SpeechInput = () => {
             {t('SpeechRecognitionModeDisabledInfo')}
           </div>
         )}
-        <div className="mt-2">
-          <TextButton
-            onClick={() =>
+        <div className="mt-4">
+          <select
+            id="speech-recognition-mode-select"
+            className={settingsControlClass.medium}
+            value={speechRecognitionMode}
+            onChange={(e) =>
               settingsStore.setState({
-                speechRecognitionMode:
-                  speechRecognitionMode === 'browser' ? 'whisper' : 'browser',
+                speechRecognitionMode: e.target.value as
+                  | 'browser'
+                  | 'whisper'
+                  | 'live-transcription',
               })
             }
             disabled={isSpeechModeSwitchDisabled}
+            data-testid="speech-recognition-mode-select"
           >
-            {speechRecognitionMode === 'browser'
-              ? t('BrowserSpeechRecognition')
-              : t('WhisperSpeechRecognition')}
-          </TextButton>
+            <option value="browser">{t('BrowserSpeechRecognition')}</option>
+            <option value="whisper">{t('WhisperSpeechRecognition')}</option>
+            <option value="live-transcription">
+              {t('LiveTranscriptionSpeechRecognition')}
+            </option>
+          </select>
         </div>
+        {isLiveTranscriptionMode && (
+          <div className="my-4 text-sm whitespace-pre-wrap">
+            {t('LiveTranscriptionInfo')}
+          </div>
+        )}
       </div>
-      {speechRecognitionMode === 'whisper' && (
+      {(speechRecognitionMode === 'whisper' || isLiveTranscriptionMode) && (
         <>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">
@@ -98,34 +113,36 @@ const SpeechInput = () => {
               }
             />
           </div>
-          <div className="mt-6">
-            <div className="mb-4 text-xl font-bold">
-              {t('WhisperTranscriptionModel')}
+          {speechRecognitionMode === 'whisper' && (
+            <div className="mt-6">
+              <div className="mb-4 text-xl font-bold">
+                {t('WhisperTranscriptionModel')}
+              </div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('WhisperTranscriptionModelInfo')}
+              </div>
+              <select
+                id="whisper-model-select"
+                className={settingsControlClass.medium}
+                value={whisperTranscriptionModel}
+                onChange={(e) =>
+                  settingsStore.setState({
+                    whisperTranscriptionModel: e.target
+                      .value as WhisperTranscriptionModel,
+                  })
+                }
+              >
+                {whisperModels.map((model) => (
+                  <option key={model.value} value={model.value}>
+                    {model.label}
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="my-2 text-sm whitespace-pre-wrap">
-              {t('WhisperTranscriptionModelInfo')}
-            </div>
-            <select
-              id="whisper-model-select"
-              className={settingsControlClass.medium}
-              value={whisperTranscriptionModel}
-              onChange={(e) =>
-                settingsStore.setState({
-                  whisperTranscriptionModel: e.target
-                    .value as WhisperTranscriptionModel,
-                })
-              }
-            >
-              {whisperModels.map((model) => (
-                <option key={model.value} value={model.value}>
-                  {model.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          )}
         </>
       )}
-      {speechRecognitionMode === 'browser' && !realtimeAPIMode && (
+      {supportsSpeechTimeouts && !realtimeAPIMode && (
         <>
           <div className="my-6">
             <div className="my-4 text-xl font-bold">
@@ -191,19 +208,21 @@ const SpeechInput = () => {
               />
             </div>
           </div>
-          <div className="my-6">
-            <div className="my-4 text-xl font-bold">{t('ContinuousMic')}</div>
-            <div className="my-2 text-sm whitespace-pre-wrap">
-              {t('ContinuousMicInfo')}
+          {speechRecognitionMode === 'browser' && (
+            <div className="my-6">
+              <div className="my-4 text-xl font-bold">{t('ContinuousMic')}</div>
+              <div className="my-2 text-sm whitespace-pre-wrap">
+                {t('ContinuousMicInfo')}
+              </div>
+              <ToggleSwitch
+                enabled={continuousMicListeningMode}
+                onChange={(v) =>
+                  settingsStore.setState({ continuousMicListeningMode: v })
+                }
+                testId="continuous-mic-listening-toggle"
+              />
             </div>
-            <ToggleSwitch
-              enabled={continuousMicListeningMode}
-              onChange={(v) =>
-                settingsStore.setState({ continuousMicListeningMode: v })
-              }
-              testId="continuous-mic-listening-toggle"
-            />
-          </div>
+          )}
         </>
       )}
     </div>
