@@ -5,7 +5,7 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { Menu } from '@/components/menu'
 import settingsStore from '@/features/stores/settings'
 import menuStore from '@/features/stores/menu'
@@ -270,6 +270,43 @@ describe('Menu - Kiosk Mode', () => {
         '[data-testid="icon-24/Settings"]'
       )
       expect(settingsButton).toBeNull()
+    })
+  })
+
+  describe('settings keyboard shortcut', () => {
+    it('toggles settings with the configured shortcut only', () => {
+      mockUseKioskMode.mockReturnValue({
+        isKioskMode: false,
+        isTemporaryUnlocked: false,
+        canAccessSettings: true,
+        maxInputLength: 200,
+        validateInput: jest.fn(() => ({ valid: true })),
+        temporaryUnlock: jest.fn(),
+        lockAgain: jest.fn(),
+      })
+      mockSettingsStore.mockImplementation((selector) => {
+        const state = {
+          selectAIService: 'openai',
+          selectAIModel: 'gpt-4',
+          enableMultiModal: false,
+          customModel: false,
+          youtubeMode: false,
+          youtubePlaying: false,
+          slideMode: false,
+          showControlPanel: true,
+          showAssistantText: true,
+          settingsToggleShortcut: 'Control+KeyK',
+        }
+        return selector(state as any)
+      })
+
+      render(<Menu />)
+
+      fireEvent.keyDown(window, { key: '.', code: 'Period', ctrlKey: true })
+      expect(screen.queryByTestId('settings')).toBeNull()
+
+      fireEvent.keyDown(window, { key: 'k', code: 'KeyK', ctrlKey: true })
+      expect(screen.getByTestId('settings')).toBeTruthy()
     })
   })
 })

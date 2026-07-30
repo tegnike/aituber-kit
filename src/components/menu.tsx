@@ -17,6 +17,12 @@ import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
 import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 import { useKioskMode } from '@/hooks/useKioskMode'
+import {
+  DEFAULT_SETTINGS_TOGGLE_SHORTCUT,
+  hasCommandModifier,
+  isEditableKeyboardTarget,
+  matchesKeyboardShortcut,
+} from '@/utils/keyboardShortcut'
 
 // モバイルデバイス検出用のカスタムフック
 const useIsMobile = () => {
@@ -57,6 +63,9 @@ export const Menu = () => {
   const showCapture = menuStore((s) => s.showCapture)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const showAssistantText = settingsStore((s) => s.showAssistantText)
+  const settingsToggleShortcut =
+    settingsStore((s) => s.settingsToggleShortcut) ||
+    DEFAULT_SETTINGS_TOGGLE_SHORTCUT
 
   // デモ端末モード関連
   const { isKioskMode, isTemporaryUnlocked, canAccessSettings } = useKioskMode()
@@ -160,9 +169,20 @@ export const Menu = () => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === '.') {
+      if (
+        !event.repeat &&
+        matchesKeyboardShortcut(event, settingsToggleShortcut)
+      ) {
         // デモ端末モードで設定アクセス不可の場合はショートカットを無効化
         if (!canAccessSettings) return
+        if (
+          isEditableKeyboardTarget(event.target) &&
+          !hasCommandModifier(settingsToggleShortcut) &&
+          event.key.length === 1
+        ) {
+          return
+        }
+        event.preventDefault()
         setShowSettings((prevState) => !prevState)
       }
     }
@@ -172,7 +192,7 @@ export const Menu = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [canAccessSettings])
+  }, [canAccessSettings, settingsToggleShortcut])
 
   useEffect(() => {
     logger.log('onChangeWebcamStatus')

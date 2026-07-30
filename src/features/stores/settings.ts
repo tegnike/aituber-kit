@@ -47,6 +47,11 @@ import {
   openAIWhisperModels,
 } from '../constants/aiModels'
 import { migrateOpenAIModelName } from '@/utils/modelMigration'
+import {
+  DEFAULT_SETTINGS_TOGGLE_SHORTCUT,
+  DEFAULT_VOICE_INPUT_SHORTCUT,
+  normalizeKeyboardShortcut,
+} from '@/utils/keyboardShortcut'
 
 export type googleSearchGroundingModelKey =
   (typeof googleSearchGroundingModels)[number]
@@ -233,6 +238,8 @@ interface General {
   changeEnglishToJapanese: boolean
   includeTimestampInUserMessage: boolean
   showControlPanel: boolean
+  settingsToggleShortcut: string
+  voiceInputShortcut: string
   showQuickMenu: boolean
   externalLinkageMode: boolean
   externalLinkageUrl: string
@@ -563,6 +570,14 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   includeTimestampInUserMessage:
     process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
   showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
+  settingsToggleShortcut: normalizeKeyboardShortcut(
+    process.env.NEXT_PUBLIC_SETTINGS_TOGGLE_SHORTCUT,
+    DEFAULT_SETTINGS_TOGGLE_SHORTCUT
+  ),
+  voiceInputShortcut: normalizeKeyboardShortcut(
+    process.env.NEXT_PUBLIC_VOICE_INPUT_SHORTCUT,
+    DEFAULT_VOICE_INPUT_SHORTCUT
+  ),
   showQuickMenu: process.env.NEXT_PUBLIC_SHOW_QUICK_MENU === 'true',
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   externalLinkageUrl:
@@ -1176,6 +1191,8 @@ const settingsStore = create<SettingsState>()(
         selectLanguage: state.selectLanguage,
         changeEnglishToJapanese: state.changeEnglishToJapanese,
         includeTimestampInUserMessage: state.includeTimestampInUserMessage,
+        settingsToggleShortcut: state.settingsToggleShortcut,
+        voiceInputShortcut: state.voiceInputShortcut,
         externalLinkageMode: state.externalLinkageMode,
         externalLinkageUrl: state.externalLinkageUrl,
         realtimeAPIMode: state.realtimeAPIMode,
