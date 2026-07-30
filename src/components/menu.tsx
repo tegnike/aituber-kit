@@ -147,6 +147,32 @@ export const Menu = () => {
   // アシスタントメッセージ
   const latestAssistantMessage = getLatestAssistantMessage(chatLog)
 
+  // オープニング／カーテンコールではPresentationを隠す。スライドを隠しただけで
+  // 古い回答が再表示されないよう、新しく届いた回答だけを表示対象にする。
+  useEffect(
+    () =>
+      homeStore.subscribe((state, previousState) => {
+        if (state.chatLog.length <= previousState.chatLog.length) return
+        if (
+          state.chatLog.at(-1)?.role === 'assistant' &&
+          slideMode &&
+          !slideVisible &&
+          presentationDocument
+        ) {
+          setChatLogMode((current) =>
+            current === CHAT_LOG_MODE.HIDDEN ? CHAT_LOG_MODE.ASSISTANT : current
+          )
+        }
+      }),
+    [
+      CHAT_LOG_MODE.ASSISTANT,
+      CHAT_LOG_MODE.HIDDEN,
+      presentationDocument,
+      slideMode,
+      slideVisible,
+    ]
+  )
+
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files

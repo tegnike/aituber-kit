@@ -2,6 +2,7 @@ import {
   createExternalPresentationMarpit,
   externalPresentationCss,
 } from '@/pages/api/convertMarkdown'
+import { newsTemplateCss } from '@/features/presentation/newsTemplateCss'
 
 describe('external presentation CSS', () => {
   it('screen表示でもスライドに不透明な背景を与える', () => {
@@ -47,6 +48,26 @@ describe('external presentation CSS', () => {
     expect(rendered.html).toContain('<strong>人格</strong>')
     expect(externalPresentationCss).toContain(
       'section.news-guardrail > ul > li'
+    )
+  })
+
+  it('glossaryの箇条書きを大きな用語リストで表示する', () => {
+    const markdown = `<!-- _class: news-glossary -->
+
+# Vtkoolは三つの仕組みを組み合わせる
+
+- **対話** 生成AIと会話フローで質問に答える
+- **キャラクター表現** Live2D、VRM、音声、表情、モーションを組み合わせる
+- **Web導入** FAQや教材を回答に利用し、外部サイトへ埋め込む`
+    const rendered = createExternalPresentationMarpit().render(markdown)
+
+    expect(rendered.html).toMatch(/<section[^>]*class="news-glossary"[^>]*>/)
+    expect(rendered.html).toContain('<ul>')
+    expect(rendered.html).toContain('<strong>対話</strong>')
+    expect(newsTemplateCss).toContain('section.news-glossary ul')
+    expect(newsTemplateCss).toContain('section.news-glossary li strong')
+    expect(newsTemplateCss).toMatch(
+      /section\.news-glossary ul \{[\s\S]*?font-size:26px;/
     )
   })
 })

@@ -371,6 +371,35 @@ div.marpit > svg > foreignObject > section.news-glossary h1 {
   font-size:46px;
 }
 
+div.marpit > svg > foreignObject > section.news-glossary ul {
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:16px;
+  font-size:26px;
+}
+
+div.marpit > svg > foreignObject > section.news-glossary li {
+  display:grid;
+  grid-template-columns:minmax(180px, 0.3fr) 1fr;
+  align-items:center;
+  gap:24px;
+  margin:0;
+  padding:17px 22px;
+  border-left:7px solid #b45309;
+  border-radius:10px;
+  background:rgba(255,255,255,0.62);
+  box-shadow:0 8px 22px rgba(26,34,51,0.06);
+  line-height:1.4;
+}
+
+div.marpit > svg > foreignObject > section.news-glossary li strong {
+  color:#b45309;
+  font-size:30px;
+  line-height:1.2;
+}
+
 div.marpit > svg > foreignObject > section.news-glossary table {
   width:100%;
   border-collapse:collapse;
