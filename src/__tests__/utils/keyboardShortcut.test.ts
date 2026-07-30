@@ -70,6 +70,7 @@ describe('keyboardShortcut', () => {
     expect(formatKeyboardShortcut('Mod+Period', 'other')).toBe('Ctrl + .')
     expect(formatKeyboardShortcut('Alt', 'other')).toBe('Alt')
     expect(formatKeyboardShortcut('Meta+KeyK', 'mac')).toBe('Cmd + K')
+    expect(formatKeyboardShortcut('Meta+KeyK', 'windows')).toBe('Win + K')
     expect(formatKeyboardShortcut('Meta+KeyK', 'other')).toBe('Meta + K')
     expect(formatKeyboardShortcut('Control+Shift+KeyK')).toBe(
       'Ctrl + Shift + K'
@@ -78,7 +79,8 @@ describe('keyboardShortcut', () => {
 
   it.each([
     ['MacIntel', 'Mozilla/5.0', 'mac'],
-    ['Win32', 'Mozilla/5.0 (Windows NT 10.0)', 'other'],
+    ['Win32', 'Mozilla/5.0 (Windows NT 10.0)', 'windows'],
+    ['Linux x86_64', 'Mozilla/5.0 (X11; Linux x86_64)', 'other'],
   ])(
     'detects %s with %s as %s shortcut platform',
     (navigatorPlatform, userAgent, expected) => {

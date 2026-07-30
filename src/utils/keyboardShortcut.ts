@@ -1,6 +1,6 @@
 export const DEFAULT_SETTINGS_TOGGLE_SHORTCUT = 'Mod+Period'
 export const DEFAULT_VOICE_INPUT_SHORTCUT = 'Alt'
-export type KeyboardShortcutPlatform = 'mac' | 'other'
+export type KeyboardShortcutPlatform = 'mac' | 'windows' | 'other'
 
 const MODIFIERS = ['Mod', 'Control', 'Alt', 'Shift', 'Meta'] as const
 type ShortcutModifier = (typeof MODIFIERS)[number]
@@ -197,10 +197,12 @@ export const isKeyboardShortcutRelease = (
 export const detectKeyboardShortcutPlatform = (
   navigatorPlatform: string,
   userAgent: string
-): KeyboardShortcutPlatform =>
-  /Mac|iPhone|iPad|iPod/i.test(`${navigatorPlatform} ${userAgent}`)
-    ? 'mac'
-    : 'other'
+): KeyboardShortcutPlatform => {
+  const platformDescription = `${navigatorPlatform} ${userAgent}`
+  if (/Mac|iPhone|iPad|iPod/i.test(platformDescription)) return 'mac'
+  if (/Win/i.test(platformDescription)) return 'windows'
+  return 'other'
+}
 
 export const formatKeyboardShortcut = (
   shortcut: string,
@@ -213,7 +215,11 @@ export const formatKeyboardShortcut = (
     if (modifier === 'Mod') return platform === 'mac' ? 'Cmd' : 'Ctrl'
     if (modifier === 'Control') return 'Ctrl'
     if (modifier === 'Alt') return platform === 'mac' ? 'Option' : 'Alt'
-    if (modifier === 'Meta') return platform === 'mac' ? 'Cmd' : 'Meta'
+    if (modifier === 'Meta') {
+      if (platform === 'mac') return 'Cmd'
+      if (platform === 'windows') return 'Win'
+      return 'Meta'
+    }
     return modifier
   })
   const keyLabel = parsed.key
