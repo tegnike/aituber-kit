@@ -6,6 +6,11 @@ import Image from 'next/image'
 import { WhisperTranscriptionModel } from '@/features/constants/settings'
 import { Link } from '../link'
 import { getOpenAIWhisperModels } from '@/features/constants/aiModels'
+import { KeyboardShortcutInput } from '@/components/settings/KeyboardShortcutInput'
+import {
+  DEFAULT_SETTINGS_TOGGLE_SHORTCUT,
+  DEFAULT_VOICE_INPUT_SHORTCUT,
+} from '@/utils/keyboardShortcut'
 
 const SpeechInput = () => {
   const noSpeechTimeout = settingsStore((s) => s.noSpeechTimeout)
@@ -21,6 +26,11 @@ const SpeechInput = () => {
   const initialSpeechTimeout = settingsStore((s) => s.initialSpeechTimeout)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const audioMode = settingsStore((s) => s.audioMode)
+  const voiceInputShortcut =
+    settingsStore((s) => s.voiceInputShortcut) || DEFAULT_VOICE_INPUT_SHORTCUT
+  const settingsToggleShortcut =
+    settingsStore((s) => s.settingsToggleShortcut) ||
+    DEFAULT_SETTINGS_TOGGLE_SHORTCUT
 
   const { t } = useTranslation()
 
@@ -88,6 +98,21 @@ const SpeechInput = () => {
             {t('LiveTranscriptionInfo')}
           </div>
         )}
+      </div>
+      <div className="border-t border-gray-300 pt-6 my-6">
+        <div className="my-4 text-xl font-bold">{t('VoiceInputShortcut')}</div>
+        <div className="my-2 text-sm whitespace-pre-wrap">
+          {t('VoiceInputShortcutInfo')}
+        </div>
+        <KeyboardShortcutInput
+          value={voiceInputShortcut}
+          defaultValue={DEFAULT_VOICE_INPUT_SHORTCUT}
+          onChange={(shortcut) =>
+            settingsStore.setState({ voiceInputShortcut: shortcut })
+          }
+          conflictsWith={[settingsToggleShortcut]}
+          testId="voice-input-shortcut-input"
+        />
       </div>
       {(speechRecognitionMode === 'whisper' || isLiveTranscriptionMode) && (
         <>

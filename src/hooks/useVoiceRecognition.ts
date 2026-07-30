@@ -8,6 +8,13 @@ import { useBrowserSpeechRecognition } from './useBrowserSpeechRecognition'
 import { useWhisperRecognition } from './useWhisperRecognition'
 import { useRealtimeVoiceAPI } from './useRealtimeVoiceAPI'
 import { useLiveTranscription } from './useLiveTranscription'
+import {
+  DEFAULT_VOICE_INPUT_SHORTCUT,
+  hasCommandModifier,
+  isEditableKeyboardTarget,
+  isKeyboardShortcutRelease,
+  matchesKeyboardShortcut,
+} from '@/utils/keyboardShortcut'
 
 type UseVoiceRecognitionProps = {
   onChatProcessStart: (text: string) => void
@@ -26,6 +33,8 @@ export function useVoiceRecognition({
   const continuousMicListeningMode = settingsStore(
     (s) => s.continuousMicListeningMode
   )
+  const voiceInputShortcut =
+    settingsStore((s) => s.voiceInputShortcut) || DEFAULT_VOICE_INPUT_SHORTCUT
 
   // ----- 各モードのフックを使用 -----
   // ブラウザ音声認識フック
@@ -61,6 +70,9 @@ export function useVoiceRecognition({
         ? (currentHook as any).checkRecognitionActive
         : null,
   })
+  const voiceInputShortcutRef = useRef(voiceInputShortcut)
+  const activeVoiceShortcutRef = useRef<string | null>(null)
+  const shortcutStartPromiseRef = useRef<Promise<boolean> | null>(null)
 
   // ref更新はeffectで（render中アクセス禁止lint対策）
   useIsomorphicLayoutEffect(() => {
@@ -76,6 +88,10 @@ export function useVoiceRecognition({
           : null,
     }
   }, [currentHook])
+
+  useIsomorphicLayoutEffect(() => {
+    voiceInputShortcutRef.current = voiceInputShortcut
+  }, [voiceInputShortcut])
 
   // ----- 音声停止 -----
   const handleStopSpeaking = useCallback(() => {
@@ -231,16 +247,65 @@ export function useVoiceRecognition({
   // ----- キーボードショートカットの設定 -----
   useEffect(() => {
     const handleKeyDown = async (e: KeyboardEvent) => {
-      if (e.key === 'Alt' && !currentHookRef.current.isListening) {
-        // Alt キーを押した時の処理
+      const shortcut = voiceInputShortcutRef.current
+      if (
+        !e.repeat &&
+        !activeVoiceShortcutRef.current &&
+        matchesKeyboardShortcut(e, shortcut) &&
+        !currentHookRef.current.isListening
+      ) {
+        if (
+          isEditableKeyboardTarget(e.target) &&
+          !hasCommandModifier(shortcut) &&
+          e.key.length === 1
+        ) {
+          return
+        }
+
+        e.preventDefault()
+        activeVoiceShortcutRef.current = shortcut
         handleStopSpeaking()
-        await currentHookRef.current.startListening()
+        const startPromise = Promise.resolve(
+          currentHookRef.current.startListening()
+        )
+          .then(() => true)
+          .catch((error) => {
+            logger.error('Failed to start voice input from shortcut:', error)
+            return false
+          })
+        shortcutStartPromiseRef.current = startPromise
+        const started = await startPromise
+        if (!started) {
+          activeVoiceShortcutRef.current = null
+          shortcutStartPromiseRef.current = null
+        }
       }
     }
 
     const handleKeyUp = async (e: KeyboardEvent) => {
-      if (e.key === 'Alt' && currentHookRef.current.isListening) {
-        // Alt キーを離した時の処理
+      const activeShortcut =
+        activeVoiceShortcutRef.current ?? voiceInputShortcutRef.current
+      if (
+        isKeyboardShortcutRelease(e, activeShortcut) &&
+        (activeVoiceShortcutRef.current || currentHookRef.current.isListening)
+      ) {
+        if (
+          !activeVoiceShortcutRef.current &&
+          isEditableKeyboardTarget(e.target) &&
+          !hasCommandModifier(activeShortcut) &&
+          e.key.length === 1
+        ) {
+          return
+        }
+
+        e.preventDefault()
+        activeVoiceShortcutRef.current = null
+
+        const started = await (shortcutStartPromiseRef.current ??
+          Promise.resolve(currentHookRef.current.isListening))
+        shortcutStartPromiseRef.current = null
+        if (!started) return
+
         // マイクボタンと同じ動作をさせるため、toggleListeningを使用せず
         // stopListeningを直接呼び出し、テキストが存在する場合は送信する
 
@@ -275,6 +340,8 @@ export function useVoiceRecognition({
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
+      activeVoiceShortcutRef.current = null
+      shortcutStartPromiseRef.current = null
     }
   }, [handleStopSpeaking, onChatProcessStart])
 

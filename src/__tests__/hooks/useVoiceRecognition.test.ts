@@ -639,6 +639,43 @@ describe('useVoiceRecognition', () => {
       expect(mockBrowserSpeech.startListening).toHaveBeenCalled()
     })
 
+    it('uses the customized voice input shortcut instead of Alt', async () => {
+      const state = {
+        selectLanguage: 'ja',
+        speechRecognitionMode: 'browser',
+        realtimeAPIMode: false,
+        continuousMicListeningMode: false,
+        initialSpeechTimeout: 5,
+        noSpeechTimeout: 2,
+        voiceInputShortcut: 'Control+Space',
+      }
+      const mockSettingsStore = settingsStore as jest.Mock
+      mockSettingsStore.mockImplementation((selector) =>
+        selector ? selector(state) : state
+      )
+      ;(settingsStore.getState as jest.Mock).mockReturnValue(state)
+
+      renderHook(() => useVoiceRecognition({ onChatProcessStart: jest.fn() }))
+
+      await act(async () => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Alt' }))
+        await Promise.resolve()
+      })
+      expect(mockBrowserSpeech.startListening).not.toHaveBeenCalled()
+
+      await act(async () => {
+        window.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: ' ',
+            code: 'Space',
+            ctrlKey: true,
+          })
+        )
+        await Promise.resolve()
+      })
+      expect(mockBrowserSpeech.startListening).toHaveBeenCalledTimes(1)
+    })
+
     // NOTE: このテストはモックのタイミング問題により不安定なためスキップ
     it.skip('4.1.4: handleKeyUp内でcurrentHookRef.current.userMessageを使用すること', async () => {
       const mockOnChatProcessStart = jest.fn()

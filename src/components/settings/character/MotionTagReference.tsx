@@ -67,8 +67,8 @@ export const MotionTagReference = ({
                 ? '✓ コピー済み'
                 : '✓ copied'
               : isJa
-                ? 'クリックでコピー'
-                : 'click to copy'}
+                ? 'コピーする'
+                : 'Copy'}
           </span>
         </div>
       </div>
