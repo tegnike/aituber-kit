@@ -53,10 +53,12 @@ describe('KeyboardShortcutInput', () => {
     )
 
     const input = screen.getByTestId('shortcut')
+    expect(input).toHaveAttribute('aria-label', 'Ctrl + Shift + K')
     expect(input).toHaveAccessibleName('Ctrl + Shift + K')
 
     fireEvent.click(input)
 
+    expect(input).toHaveAttribute('aria-label', 'ShortcutPressKeys')
     expect(input).toHaveAccessibleName('ShortcutPressKeys')
   })
 
