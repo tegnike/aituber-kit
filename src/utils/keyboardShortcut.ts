@@ -213,7 +213,7 @@ export const formatKeyboardShortcut = (
     if (modifier === 'Mod') return platform === 'mac' ? 'Cmd' : 'Ctrl'
     if (modifier === 'Control') return 'Ctrl'
     if (modifier === 'Alt') return platform === 'mac' ? 'Option' : 'Alt'
-    if (modifier === 'Meta') return 'Cmd'
+    if (modifier === 'Meta') return platform === 'mac' ? 'Cmd' : 'Meta'
     return modifier
   })
   const keyLabel = parsed.key

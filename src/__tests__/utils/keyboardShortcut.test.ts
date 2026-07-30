@@ -69,6 +69,8 @@ describe('keyboardShortcut', () => {
     expect(formatKeyboardShortcut('Alt', 'mac')).toBe('Option')
     expect(formatKeyboardShortcut('Mod+Period', 'other')).toBe('Ctrl + .')
     expect(formatKeyboardShortcut('Alt', 'other')).toBe('Alt')
+    expect(formatKeyboardShortcut('Meta+KeyK', 'mac')).toBe('Cmd + K')
+    expect(formatKeyboardShortcut('Meta+KeyK', 'other')).toBe('Meta + K')
     expect(formatKeyboardShortcut('Control+Shift+KeyK')).toBe(
       'Ctrl + Shift + K'
     )

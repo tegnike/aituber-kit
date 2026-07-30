@@ -61,6 +61,20 @@ export const KeyboardShortcutInput = ({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     if (!isRecording) return
 
+    if (event.key === 'Tab') {
+      setIsRecording(false)
+      pendingShortcutRef.current = null
+      return
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      event.stopPropagation()
+      setIsRecording(false)
+      pendingShortcutRef.current = null
+      return
+    }
+
     event.preventDefault()
     event.stopPropagation()
 
@@ -106,7 +120,11 @@ export const KeyboardShortcutInput = ({
           }}
           onKeyDown={handleKeyDown}
           onKeyUp={handleKeyUp}
-          aria-label={t('ShortcutPressKeys')}
+          aria-label={
+            isRecording
+              ? t('ShortcutPressKeys')
+              : formatKeyboardShortcut(value, platform)
+          }
           data-testid={testId}
         >
           {isRecording
