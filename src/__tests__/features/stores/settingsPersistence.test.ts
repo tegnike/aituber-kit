@@ -57,4 +57,17 @@ describe('settingsStore persistence', () => {
       '/vrm/nikechan_v1.vrm'
     )
   })
+
+  it('persists customized keyboard shortcuts', () => {
+    const settingsStore = loadStore()
+
+    settingsStore.setState({
+      settingsToggleShortcut: 'Control+Shift+KeyS',
+      voiceInputShortcut: 'Space',
+    })
+
+    const persisted = JSON.parse(localStorage.getItem(storageKey) ?? '{}')
+    expect(persisted.state.settingsToggleShortcut).toBe('Control+Shift+KeyS')
+    expect(persisted.state.voiceInputShortcut).toBe('Space')
+  })
 })

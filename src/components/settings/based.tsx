@@ -13,6 +13,11 @@ import { IMAGE_CONSTANTS } from '@/constants/images'
 import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 import { languageOptions } from '@/components/settings/languageOptions'
 import { settingsControlClass } from '@/components/settings/formStyles'
+import { KeyboardShortcutInput } from '@/components/settings/KeyboardShortcutInput'
+import {
+  DEFAULT_SETTINGS_TOGGLE_SHORTCUT,
+  DEFAULT_VOICE_INPUT_SHORTCUT,
+} from '@/utils/keyboardShortcut'
 
 const Based = () => {
   const { t } = useTranslation()
@@ -24,6 +29,11 @@ const Based = () => {
   const chatLogStyle = settingsStore((s) => s.chatLogStyle)
   const showCharacterName = settingsStore((s) => s.showCharacterName)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
+  const settingsToggleShortcut =
+    settingsStore((s) => s.settingsToggleShortcut) ||
+    DEFAULT_SETTINGS_TOGGLE_SHORTCUT
+  const voiceInputShortcut =
+    settingsStore((s) => s.voiceInputShortcut) || DEFAULT_VOICE_INPUT_SHORTCUT
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const changeEnglishToJapanese = settingsStore(
     (s) => s.changeEnglishToJapanese
@@ -320,6 +330,21 @@ const Based = () => {
           <ToggleSwitch
             enabled={showControlPanel}
             onChange={(v) => settingsStore.setState({ showControlPanel: v })}
+          />
+        </div>
+        <div className="mt-6">
+          <div className="mb-2 font-bold">{t('SettingsToggleShortcut')}</div>
+          <div className="mb-3 text-sm whitespace-pre-wrap">
+            {t('SettingsToggleShortcutInfo')}
+          </div>
+          <KeyboardShortcutInput
+            value={settingsToggleShortcut}
+            defaultValue={DEFAULT_SETTINGS_TOGGLE_SHORTCUT}
+            onChange={(shortcut) =>
+              settingsStore.setState({ settingsToggleShortcut: shortcut })
+            }
+            conflictsWith={[voiceInputShortcut]}
+            testId="settings-toggle-shortcut-input"
           />
         </div>
       </div>
