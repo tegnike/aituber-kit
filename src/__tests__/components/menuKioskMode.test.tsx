@@ -5,13 +5,7 @@
  */
 
 import React from 'react'
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Menu } from '@/components/menu'
 import settingsStore from '@/features/stores/settings'
 import menuStore from '@/features/stores/menu'
