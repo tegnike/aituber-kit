@@ -4,37 +4,51 @@ import {
   completeResponseCallback,
   releaseResponseCallback,
 } from '@/features/api/messageGateway'
-import { isHttpUrl, isLoopbackHost } from '@/lib/api-services/serverUrlGuard'
+import { isAllowedLoopbackHttpUrl } from '@/lib/api-services/serverUrlGuard'
 import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
 import { routePolicies } from '@/lib/accessPolicy/routePolicies'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const handle = req.body?.handle
   if (typeof handle !== 'string' || !/^callback_[a-zA-Z0-9_]+$/.test(handle)) {
-    return res.status(400).json({ error: 'Invalid callback handle' })
+    return res
+      .status(400)
+      .json({ error: 'Invalid callback handle', code: 'VALIDATION_ERROR' })
   }
 
   const status = req.body?.status
   if (!['completed', 'empty', 'failed'].includes(status)) {
-    return res.status(400).json({ error: 'Invalid callback status' })
+    return res
+      .status(400)
+      .json({ error: 'Invalid callback status', code: 'VALIDATION_ERROR' })
   }
   if (status === 'completed' && typeof req.body?.content !== 'string') {
-    return res.status(400).json({ error: 'Callback content is required' })
+    return res
+      .status(400)
+      .json({ error: 'Callback content is required', code: 'VALIDATION_ERROR' })
   }
   if (status === 'failed' && typeof req.body?.error !== 'string') {
-    return res.status(400).json({ error: 'Callback error is required' })
+    return res
+      .status(400)
+      .json({ error: 'Callback error is required', code: 'VALIDATION_ERROR' })
   }
 
   const callback = claimResponseCallback(handle)
   if (!callback) {
-    return res.status(404).json({ error: 'Callback handle was not found' })
+    return res.status(404).json({
+      error: 'Callback handle was not found',
+      code: 'CALLBACK_NOT_FOUND',
+    })
   }
 
   try {
     const callbackUrl = new URL(callback.url)
-    if (!isHttpUrl(callbackUrl) || !isLoopbackHost(callbackUrl.hostname)) {
+    if (!isAllowedLoopbackHttpUrl(callbackUrl)) {
       completeResponseCallback(handle)
-      return res.status(400).json({ error: 'Callback URL is not allowed' })
+      return res.status(400).json({
+        error: 'Callback URL is not allowed',
+        code: 'CALLBACK_URL_NOT_ALLOWED',
+      })
     }
 
     const callbackResponse = await fetch(callbackUrl, {
@@ -57,7 +71,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ ok: true })
   } catch {
     releaseResponseCallback(handle)
-    return res.status(502).json({ error: 'Callback delivery failed' })
+    return res.status(502).json({
+      error: 'Callback delivery failed',
+      code: 'CALLBACK_DELIVERY_FAILED',
+    })
   }
 }
 

@@ -578,7 +578,11 @@ export const routePolicies = {
     path: '/api/v1/presentations/[presentationId]',
     featureName: 'v1/presentations',
     methods: ['GET', 'PUT'],
-    resources: ['external-control', 'fs-read', 'fs-write'],
+    resources: ['external-control'],
+    resourcesByMethod: {
+      GET: ['fs-read'],
+      PUT: ['fs-read', 'fs-write'],
+    },
     secret: { kind: 'none' },
     restrictedBehavior: 'deny',
     requiresApiKey: true,

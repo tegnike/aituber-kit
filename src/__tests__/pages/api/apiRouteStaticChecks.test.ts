@@ -37,6 +37,24 @@ function policyEntries(): [string, RoutePolicy][] {
   return Object.entries(routePolicies) as [string, RoutePolicy][]
 }
 
+function declaredResources(policy: RoutePolicy) {
+  return new Set([
+    ...policy.resources,
+    ...Object.values(policy.resourcesByMethod ?? {}).flatMap(
+      (resources) => resources ?? []
+    ),
+  ])
+}
+
+function hasExecutableLoopbackUrlGuard(source: string) {
+  const executableSource = source
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '')
+  return /if\s*\(\s*!isAllowedLoopbackHttpUrl\s*\(\s*[a-zA-Z_$][\w$]*\s*\)\s*\)\s*{[\s\S]{0,400}?return\s+res\.status\((?:400|403)\)/.test(
+    executableSource
+  )
+}
+
 /**
  * withAccessPolicy への移行が完了していないルート。
  * F1移行完了により空。新規ルートは必ず withAccessPolicy でラップすること
@@ -203,7 +221,7 @@ describe('API route static checks', () => {
       const violations = policyEntries()
         .filter(
           ([, policy]) =>
-            policy.resources.includes('external-control') &&
+            declaredResources(policy).has('external-control') &&
             !policy.requiresApiKey
         )
         .map(([key]) => key)
@@ -220,7 +238,7 @@ describe('API route static checks', () => {
         const violations = policyEntries()
           .filter(
             ([, policy]) =>
-              policy.resources.includes('server-secret') &&
+              declaredResources(policy).has('server-secret') &&
               policy.secret.kind === 'none'
           )
           .map(([key]) => key)
@@ -232,7 +250,7 @@ describe('API route static checks', () => {
           .filter(
             ([, policy]) =>
               policy.secret.kind !== 'none' &&
-              !policy.resources.includes('server-secret')
+              !declaredResources(policy).has('server-secret')
           )
           .map(([key]) => key)
         expect(violations).toEqual([])
@@ -242,7 +260,7 @@ describe('API route static checks', () => {
         const violations: string[] = []
 
         for (const [policyPath, policy] of policyEntries()) {
-          if (!policy.resources.includes('server-url')) continue
+          if (!declaredResources(policy).has('server-url')) continue
           if (SERVER_URL_VALIDATION_EXEMPT.includes(policyPath)) continue
           if (policy.serverUrl) continue
 
@@ -251,8 +269,7 @@ describe('API route static checks', () => {
           const callsServerUrlGuard =
             (/isAllowedConfiguredOrListedUrl\s*\(/.test(source) &&
               /isHttpUrl\s*\(/.test(source)) ||
-            (/isLoopbackHost\s*\(/.test(source) &&
-              /isHttpUrl\s*\(/.test(source)) ||
+            hasExecutableLoopbackUrlGuard(source) ||
             /guardLocalLlmUrl\s*\(/.test(source)
           if (!callsServerUrlGuard) {
             violations.push(policyPath)
@@ -260,6 +277,30 @@ describe('API route static checks', () => {
         }
 
         expect(violations).toEqual([])
+      })
+
+      it('requires the loopback URL helper to gate an error return', () => {
+        expect(
+          hasExecutableLoopbackUrlGuard(`
+            if (!isAllowedLoopbackHttpUrl(callbackUrl)) {
+              return res.status(400).json({ error: 'not allowed' })
+            }
+          `)
+        ).toBe(true)
+        expect(
+          hasExecutableLoopbackUrlGuard(`
+            // if (!isAllowedLoopbackHttpUrl(callbackUrl)) {
+            //   return res.status(400).json({ error: 'not allowed' })
+            // }
+            isAllowedLoopbackHttpUrl(unrelatedUrl)
+          `)
+        ).toBe(false)
+        expect(
+          hasExecutableLoopbackUrlGuard(`
+            const allowed = isAllowedLoopbackHttpUrl(callbackUrl)
+            fetch(callbackUrl)
+          `)
+        ).toBe(false)
       })
 
       it('should not silently grow the server-url validation exemption list', () => {
@@ -274,8 +315,8 @@ describe('API route static checks', () => {
 
         for (const [policyPath, policy] of policyEntries()) {
           if (
-            !policy.resources.includes('fs-read') &&
-            !policy.resources.includes('fs-write')
+            !declaredResources(policy).has('fs-read') &&
+            !declaredResources(policy).has('fs-write')
           ) {
             continue
           }
@@ -306,7 +347,7 @@ describe('API route static checks', () => {
         const violations = policyEntries()
           .filter(
             ([key, policy]) =>
-              policy.resources.includes('external-control') &&
+              declaredResources(policy).has('external-control') &&
               !policy.requiresApiKey &&
               !legacyAllowed.includes(key)
           )
@@ -318,7 +359,7 @@ describe('API route static checks', () => {
         const violations = policyEntries()
           .filter(
             ([, policy]) =>
-              policy.resources.includes('client-proxy') &&
+              declaredResources(policy).has('client-proxy') &&
               policy.secret.kind !== 'none'
           )
           .map(([key]) => key)
