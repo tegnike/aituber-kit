@@ -73,6 +73,13 @@ export const SENSITIVE_SETTINGS_KEYS = [
 
 const sensitiveSettingsKeys = new Set<string>(SENSITIVE_SETTINGS_KEYS)
 const dangerousObjectKeys = new Set(['__proto__', 'constructor', 'prototype'])
+const migratedSettingSourceKeys: Partial<
+  Record<keyof PersistedSettings, readonly string[]>
+> = {
+  presenceGreetingPhrases: ['presenceGreetingMessage'],
+  presenceDeparturePhrases: ['presenceDepartureMessage'],
+  enableMultiModal: ['multiModalMode'],
+}
 
 export interface SettingsFileData {
   format: typeof SETTINGS_FILE_FORMAT
@@ -124,10 +131,13 @@ const matchesTopLevelType = (
   value: unknown,
   reference: unknown
 ): boolean => {
+  if (key === 'chatLogEdgeOffset') {
+    return (
+      value === null || (typeof value === 'number' && Number.isFinite(value))
+    )
+  }
   if (reference === null) {
-    return key === 'chatLogEdgeOffset'
-      ? value === null || (typeof value === 'number' && Number.isFinite(value))
-      : value === null
+    return value === null
   }
   if (Array.isArray(reference)) return Array.isArray(value)
   if (typeof reference === 'number') {
@@ -223,6 +233,7 @@ export const parseSettingsFile = (contents: string): SettingsImportData => {
     )
   }
 
+  const originalSettingKeys = new Set(Object.keys(envelope.settings))
   const migratedSettings = runSettingsMigrations(
     envelope.settings,
     envelope.settingsVersion
@@ -232,7 +243,16 @@ export const parseSettingsFile = (contents: string): SettingsImportData => {
   const sanitizedSettings: Record<string, unknown> = {}
 
   for (const [key, value] of Object.entries(migratedSettings)) {
-    if (!(key in currentSettingsRecord)) {
+    const migrationSourceKeys =
+      migratedSettingSourceKeys[key as keyof PersistedSettings] ?? []
+    const wasProvidedByFile =
+      originalSettingKeys.has(key) ||
+      migrationSourceKeys.some((sourceKey) =>
+        originalSettingKeys.has(sourceKey)
+      )
+    if (!wasProvidedByFile) continue
+
+    if (!Object.hasOwn(currentSettingsRecord, key)) {
       throw new SettingsFileError('unknown-setting', `Unknown setting: ${key}`)
     }
     if (!envelope.secretsIncluded && sensitiveSettingsKeys.has(key)) {

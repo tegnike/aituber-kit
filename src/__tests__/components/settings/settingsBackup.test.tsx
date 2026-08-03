@@ -63,11 +63,31 @@ describe('SettingsBackup', () => {
     expect(mockDownloadSettingsFile).toHaveBeenCalledWith(false)
   })
 
+  it('shows an error toast when exporting fails', () => {
+    mockDownloadSettingsFile.mockImplementation(() => {
+      throw new Error('Download failed')
+    })
+    render(<SettingsBackup />)
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'SettingsExportButton' })
+    )
+
+    expect(mockAddToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'SettingsExportFailed',
+        type: 'error',
+      })
+    )
+  })
+
   it('confirms before exporting sensitive settings', () => {
     const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true)
     render(<SettingsBackup />)
 
-    fireEvent.click(screen.getByTestId('settings-include-secrets'))
+    fireEvent.click(
+      screen.getByRole('switch', { name: 'SettingsIncludeSecrets' })
+    )
     fireEvent.click(
       screen.getByRole('button', { name: 'SettingsExportButton' })
     )
@@ -107,6 +127,90 @@ describe('SettingsBackup', () => {
     )
     expect(mockApplySettingsImport).toHaveBeenCalledWith(importData)
     expect(jest.getTimerCount()).toBe(1)
+  })
+
+  it('maps a settings file error to the matching toast message', async () => {
+    const { SettingsFileError } = jest.requireMock(
+      '@/features/settings/settingsFile'
+    ) as {
+      SettingsFileError: new (code: string, message: string) => Error
+    }
+    mockParseSettingsFile.mockImplementation(() => {
+      throw new SettingsFileError('invalid-json', 'Invalid JSON')
+    })
+    const file = new File(['{'], 'settings.json', {
+      type: 'application/json',
+    })
+    Object.defineProperty(file, 'text', {
+      value: jest.fn().mockResolvedValue('{'),
+    })
+    render(<SettingsBackup />)
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText('SettingsImportFileLabel'), {
+        target: { files: [file] },
+      })
+      await Promise.resolve()
+    })
+
+    expect(mockAddToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'SettingsImportInvalidJson',
+        type: 'error',
+      })
+    )
+    expect(mockApplySettingsImport).not.toHaveBeenCalled()
+  })
+
+  it('rejects a settings file larger than the supported limit', async () => {
+    const file = new File(['{}'], 'settings.json', {
+      type: 'application/json',
+    })
+    Object.defineProperty(file, 'size', {
+      value: 5 * 1024 * 1024 + 1,
+    })
+    render(<SettingsBackup />)
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText('SettingsImportFileLabel'), {
+        target: { files: [file] },
+      })
+    })
+
+    expect(mockAddToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'SettingsImportFileTooLarge',
+        type: 'error',
+      })
+    )
+    expect(mockParseSettingsFile).not.toHaveBeenCalled()
+  })
+
+  it('does not apply sensitive settings when the user cancels', async () => {
+    mockParseSettingsFile.mockReturnValue({
+      settingsVersion: 6,
+      exportedAt: '2026-08-03T12:34:56.000Z',
+      secretsIncluded: true,
+      settings: {},
+    })
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false)
+    const file = new File(['{}'], 'settings.json', {
+      type: 'application/json',
+    })
+    Object.defineProperty(file, 'text', {
+      value: jest.fn().mockResolvedValue('{}'),
+    })
+    render(<SettingsBackup />)
+
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText('SettingsImportFileLabel'), {
+        target: { files: [file] },
+      })
+      await Promise.resolve()
+    })
+
+    expect(confirmSpy).toHaveBeenCalledWith('SettingsImportConfirmWithSecrets')
+    expect(mockApplySettingsImport).not.toHaveBeenCalled()
   })
 
   it('disables import when environment settings always override the browser', () => {

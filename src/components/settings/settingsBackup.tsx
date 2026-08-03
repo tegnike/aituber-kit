@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import {
   SETTINGS_FILE_MAX_BYTES,
   SettingsFileError,
+  type SettingsFileErrorCode,
   applySettingsImport,
   downloadSettingsFile,
   isEnvironmentSettingsOverrideEnabled,
@@ -13,7 +14,7 @@ import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
 
-const importErrorTranslationKeys: Record<string, string> = {
+const importErrorTranslationKeys: Record<SettingsFileErrorCode, string> = {
   'invalid-json': 'SettingsImportInvalidJson',
   'invalid-format': 'SettingsImportInvalidFormat',
   'unsupported-format-version': 'SettingsImportUnsupportedFormat',
@@ -40,8 +41,12 @@ const SettingsBackup = () => {
       return
     }
 
-    downloadSettingsFile(includeSecrets)
-    showToast(t('SettingsExportSuccess'), 'success')
+    try {
+      downloadSettingsFile(includeSecrets)
+      showToast(t('SettingsExportSuccess'), 'success')
+    } catch {
+      showToast(t('SettingsExportFailed'), 'error')
+    }
   }
 
   const handleImport = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +96,7 @@ const SettingsBackup = () => {
             enabled={includeSecrets}
             onChange={setIncludeSecrets}
             testId="settings-include-secrets"
+            ariaLabel={t('SettingsIncludeSecrets')}
           />
           <span className="font-bold">{t('SettingsIncludeSecrets')}</span>
         </div>

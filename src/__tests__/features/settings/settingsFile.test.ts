@@ -148,6 +148,116 @@ describe('settings file export and import', () => {
     expect(parsed.settings).not.toHaveProperty('multiModalMode')
   })
 
+  it('preserves current values for settings omitted from a partial old file', () => {
+    settingsStore.setState({ gameCommentaryEnabled: true })
+    const parsed = parseSettingsFile(
+      JSON.stringify({
+        format: SETTINGS_FILE_FORMAT,
+        formatVersion: SETTINGS_FILE_FORMAT_VERSION,
+        settingsVersion: 3,
+        exportedAt: '2026-08-03T12:34:56.000Z',
+        secretsIncluded: false,
+        settings: { characterName: '部分設定' },
+      })
+    )
+
+    expect(parsed.settings).not.toHaveProperty('gameCommentaryEnabled')
+    applySettingsImport(parsed)
+    expect(settingsStore.getState().gameCommentaryEnabled).toBe(true)
+  })
+
+  it('accepts null and finite numbers for chatLogEdgeOffset', () => {
+    const createFile = (chatLogEdgeOffset: number | null) =>
+      JSON.stringify({
+        format: SETTINGS_FILE_FORMAT,
+        formatVersion: SETTINGS_FILE_FORMAT_VERSION,
+        settingsVersion: CURRENT_SETTINGS_VERSION,
+        exportedAt: '2026-08-03T12:34:56.000Z',
+        secretsIncluded: false,
+        settings: { chatLogEdgeOffset },
+      })
+
+    settingsStore.setState({ chatLogEdgeOffset: 12 })
+    expect(parseSettingsFile(createFile(null)).settings.chatLogEdgeOffset).toBe(
+      null
+    )
+
+    settingsStore.setState({ chatLogEdgeOffset: null })
+    expect(parseSettingsFile(createFile(12)).settings.chatLogEdgeOffset).toBe(
+      12
+    )
+  })
+
+  it('rejects invalid JSON', () => {
+    expect(() => parseSettingsFile('{')).toThrow(
+      expect.objectContaining<Partial<SettingsFileError>>({
+        code: 'invalid-json',
+      })
+    )
+  })
+
+  it('rejects an unsupported settings file format version', () => {
+    expect(() =>
+      parseSettingsFile(
+        JSON.stringify({
+          format: SETTINGS_FILE_FORMAT,
+          formatVersion: SETTINGS_FILE_FORMAT_VERSION + 1,
+          settingsVersion: CURRENT_SETTINGS_VERSION,
+          exportedAt: '2026-08-03T12:34:56.000Z',
+          secretsIncluded: false,
+          settings: {},
+        })
+      )
+    ).toThrow(
+      expect.objectContaining<Partial<SettingsFileError>>({
+        code: 'unsupported-format-version',
+      })
+    )
+  })
+
+  it('rejects unknown settings', () => {
+    expect(() =>
+      parseSettingsFile(
+        JSON.stringify({
+          format: SETTINGS_FILE_FORMAT,
+          formatVersion: SETTINGS_FILE_FORMAT_VERSION,
+          settingsVersion: CURRENT_SETTINGS_VERSION,
+          exportedAt: '2026-08-03T12:34:56.000Z',
+          secretsIncluded: false,
+          settings: { unknownSetting: true },
+        })
+      )
+    ).toThrow(
+      expect.objectContaining<Partial<SettingsFileError>>({
+        code: 'unknown-setting',
+      })
+    )
+  })
+
+  it('rejects dangerous object keys without polluting prototypes', () => {
+    const settings = JSON.parse(
+      '{"koeiroParam":{"__proto__":{"polluted":true}}}'
+    )
+
+    expect(() =>
+      parseSettingsFile(
+        JSON.stringify({
+          format: SETTINGS_FILE_FORMAT,
+          formatVersion: SETTINGS_FILE_FORMAT_VERSION,
+          settingsVersion: CURRENT_SETTINGS_VERSION,
+          exportedAt: '2026-08-03T12:34:56.000Z',
+          secretsIncluded: false,
+          settings,
+        })
+      )
+    ).toThrow(
+      expect.objectContaining<Partial<SettingsFileError>>({
+        code: 'invalid-setting-value',
+      })
+    )
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined()
+  })
+
   it('rejects a settings file created by a newer settings schema', () => {
     expect(() =>
       parseSettingsFile(
