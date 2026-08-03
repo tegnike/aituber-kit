@@ -53,6 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const callbackResponse = await fetch(callbackUrl, {
       method: 'POST',
+      redirect: 'error',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         interactionId: callback.interactionId,

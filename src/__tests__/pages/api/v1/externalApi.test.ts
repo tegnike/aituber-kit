@@ -455,6 +455,7 @@ describe('/api/v1 external API', () => {
         new URL('http://127.0.0.1:9892/api/question-responses'),
         expect.objectContaining({
           method: 'POST',
+          redirect: 'error',
           body: expect.stringContaining('callback-token'),
         })
       )

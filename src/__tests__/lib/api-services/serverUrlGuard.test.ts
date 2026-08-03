@@ -15,6 +15,9 @@ describe('serverUrlGuard', () => {
       expect(
         isAllowedLoopbackHttpUrl(new URL('https://localhost/callback'))
       ).toBe(true)
+      expect(isAllowedLoopbackHttpUrl(new URL('http://[::1]/callback'))).toBe(
+        true
+      )
       expect(
         isAllowedLoopbackHttpUrl(new URL('https://example.com/callback'))
       ).toBe(false)
