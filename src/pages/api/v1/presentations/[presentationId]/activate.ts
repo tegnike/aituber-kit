@@ -9,12 +9,19 @@ import {
   emitApiEvent,
   enqueuePresentationLoadCommand,
 } from '@/features/api/messageGateway'
+import { PRESENTATION_ID_PATTERN } from '@/features/presentation/presentationSchema'
 import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
 import { routePolicies } from '@/lib/accessPolicy/routePolicies'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const presentationId =
     typeof req.query.presentationId === 'string' ? req.query.presentationId : ''
+  if (!PRESENTATION_ID_PATTERN.test(presentationId)) {
+    return res.status(422).json({
+      error: 'Presentation ID is invalid',
+      code: 'VALIDATION_ERROR',
+    })
+  }
   const clientId = getClientIdFromRequest(req, req.body?.clientId)
   if (!clientId) {
     return res.status(400).json({

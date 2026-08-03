@@ -11,13 +11,20 @@ export const buildPresentationPromptContext = (
   const section = document.sections.find((item) => item.id === sectionId)
   if (!section) return ''
   const slide = section.slides.find((item) => item.id === slideId)
+  const currentSlideIndex = section.slides.findIndex(
+    (item) => item.id === slideId
+  )
+  const visibleSlides =
+    currentSlideIndex >= 0
+      ? section.slides.slice(0, currentSlideIndex + 1)
+      : section.slides
   const sources = (section.sources ?? [])
     .map((source) => {
       const publisher = source.publisher ? ` (${source.publisher})` : ''
       return `- ${source.title}${publisher}: ${source.url}`
     })
     .join('\n')
-  const narrations = section.slides
+  const narrations = visibleSlides
     .map((item) => item.narration)
     .filter((item): item is string => Boolean(item))
     .join('\n')

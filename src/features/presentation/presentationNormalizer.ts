@@ -1,8 +1,8 @@
 import type {
   PresentationDocument,
   PresentationManifestV1,
-} from './presentationTypes'
-import { validateExternalPresentation } from './presentationSchema'
+} from '@/features/presentation/presentationTypes'
+import { validateExternalPresentation } from '@/features/presentation/presentationSchema'
 
 export const normalizeExternalPresentation = (
   value: unknown

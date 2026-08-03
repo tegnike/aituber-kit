@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import { logger } from '@/lib/logger'
 import type {
   PresentationActualState,
@@ -20,6 +21,10 @@ export interface ResponseCallback {
   token: string
 }
 
+export interface QueuedResponseCallback {
+  handle: string
+}
+
 export interface QueuedMessage {
   id: string
   timestamp: number
@@ -32,7 +37,7 @@ export interface QueuedMessage {
   priority?: 'normal' | 'high'
   interrupt?: boolean
   source?: 'legacy' | 'v1'
-  responseCallback?: ResponseCallback
+  responseCallback?: QueuedResponseCallback
 }
 
 export interface QueuedStopCommand {
@@ -116,6 +121,10 @@ interface ClientQueue {
 interface MessageGatewayState {
   queuesPerClient: Record<string, ClientQueue>
   statusesPerClient: Record<string, ClientStatus>
+  responseCallbacks: Record<
+    string,
+    ResponseCallback & { expiresAt: number; claimed: boolean }
+  >
   recentEvents: ApiEvent[]
   eventListeners: Array<(event: ApiEvent) => void>
 }
@@ -146,10 +155,13 @@ const getGatewayState = (): MessageGatewayState => {
     globalState.__aituberKitMessageGateway = {
       queuesPerClient: {},
       statusesPerClient: {},
+      responseCallbacks: {},
       recentEvents: [],
       eventListeners: [],
     }
   }
+
+  globalState.__aituberKitMessageGateway.responseCallbacks ??= {}
 
   return globalState.__aituberKitMessageGateway
 }
@@ -232,6 +244,38 @@ export const cleanupClientQueues = () => {
       delete state.statusesPerClient[clientId]
     }
   }
+  for (const handle of Object.keys(state.responseCallbacks)) {
+    if (state.responseCallbacks[handle].expiresAt <= now) {
+      delete state.responseCallbacks[handle]
+    }
+  }
+}
+
+const queueResponseCallback = (callback: ResponseCallback) => {
+  const handle = `callback_${randomUUID().replaceAll('-', '')}`
+  getGatewayState().responseCallbacks[handle] = {
+    ...callback,
+    expiresAt: Date.now() + CLIENT_TIMEOUT,
+    claimed: false,
+  }
+  return { handle }
+}
+
+export const claimResponseCallback = (handle: string) => {
+  cleanupClientQueues()
+  const callback = getGatewayState().responseCallbacks[handle]
+  if (!callback || callback.claimed) return null
+  callback.claimed = true
+  return callback
+}
+
+export const releaseResponseCallback = (handle: string) => {
+  const callback = getGatewayState().responseCallbacks[handle]
+  if (callback) callback.claimed = false
+}
+
+export const completeResponseCallback = (handle: string) => {
+  delete getGatewayState().responseCallbacks[handle]
 }
 
 export const enqueueMessages = ({
@@ -251,20 +295,25 @@ export const enqueueMessages = ({
 
   const queue = getOrCreateQueue(clientId)
   const timestamp = Date.now()
-  const queuedMessages = messages.map((message) => ({
-    id: createId('msg'),
-    timestamp,
-    message,
-    type,
-    systemPrompt,
-    useCurrentSystemPrompt,
-    image,
-    emotion,
-    priority,
-    interrupt,
-    source,
-    responseCallback,
-  }))
+  const queuedMessages = messages.map((message) => {
+    const queuedResponseCallback = responseCallback
+      ? queueResponseCallback(responseCallback)
+      : undefined
+    return {
+      id: createId('msg'),
+      timestamp,
+      message,
+      type,
+      systemPrompt,
+      useCurrentSystemPrompt,
+      image,
+      emotion,
+      priority,
+      interrupt,
+      source,
+      responseCallback: queuedResponseCallback,
+    }
+  })
 
   if (priority === 'high') {
     queue.messages.unshift(...queuedMessages)
@@ -396,7 +445,11 @@ export const updateClientStatus = (
     chatProcessing: nextStatus.chatProcessing,
   })
 
-  if (previousStatus && previousStatus.isSpeaking !== nextStatus.isSpeaking) {
+  if (
+    previousStatus
+      ? previousStatus.isSpeaking !== nextStatus.isSpeaking
+      : nextStatus.isSpeaking
+  ) {
     emitApiEvent(
       clientId,
       nextStatus.isSpeaking ? 'speech_started' : 'speech_ended',
@@ -490,6 +543,7 @@ export const __resetMessageGatewayForTests = () => {
 
   state.queuesPerClient = {}
   state.statusesPerClient = {}
+  state.responseCallbacks = {}
   state.recentEvents = []
   state.eventListeners = []
 }

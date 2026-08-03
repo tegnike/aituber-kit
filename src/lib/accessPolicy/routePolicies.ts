@@ -502,6 +502,15 @@ export const routePolicies = {
     restrictedBehavior: 'deny',
     requiresApiKey: true,
   },
+  '/api/v1/chat/callback': {
+    path: '/api/v1/chat/callback',
+    featureName: 'v1/chat/callback',
+    methods: ['POST'],
+    resources: ['external-control', 'server-url'],
+    secret: { kind: 'none' },
+    restrictedBehavior: 'deny',
+    requiresApiKey: true,
+  },
   '/api/v1/events': {
     path: '/api/v1/events',
     featureName: 'v1/events',

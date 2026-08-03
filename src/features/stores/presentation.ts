@@ -59,6 +59,7 @@ const presentationStore = create<PresentationState>()(
 )
 
 const now = () => new Date().toISOString()
+let presentationLoadGeneration = 0
 
 const getPosition = (
   document: PresentationDocument,
@@ -98,7 +99,19 @@ export const setPresentationLoading = (
   presentationId: string,
   revision: number
 ) => {
+  presentationLoadGeneration += 1
+  const current = presentationStore.getState()
+  const assignmentChanged =
+    current.presentationId !== presentationId || current.revision !== revision
   presentationStore.setState({
+    ...(assignmentChanged
+      ? {
+          document: null,
+          contentHash: null,
+          sectionId: null,
+          slideId: null,
+        }
+      : {}),
     presentationId,
     revision,
     state: 'loading',
@@ -106,13 +119,21 @@ export const setPresentationLoading = (
     lastError: null,
     updatedAt: now(),
   })
+  return presentationLoadGeneration
 }
 
 export const loadPresentationDocument = (
   document: PresentationDocument,
   contentHash: string,
-  autoStart = false
+  autoStart = false,
+  loadGeneration?: number
 ) => {
+  if (
+    loadGeneration !== undefined &&
+    loadGeneration !== presentationLoadGeneration
+  ) {
+    return false
+  }
   const previous = presentationStore.getState()
   const canRestore =
     previous.presentationId === document.presentationId &&
@@ -125,14 +146,14 @@ export const loadPresentationDocument = (
     ? (section.slides.find((item) => item.id === previous.slideId) ??
       section.slides[0])
     : section.slides[0]
-  const stableState = canRestore
-    ? previous.state === 'playing' ||
-      previous.state === 'loading' ||
-      previous.state === 'error'
-      ? 'paused'
-      : previous.state
-    : autoStart
-      ? 'playing'
+  const stableState = autoStart
+    ? 'playing'
+    : canRestore
+      ? previous.state === 'playing' ||
+        previous.state === 'loading' ||
+        previous.state === 'error'
+        ? 'paused'
+        : previous.state
       : 'ready'
 
   presentationStore.setState({
@@ -147,18 +168,30 @@ export const loadPresentationDocument = (
     lastError: null,
     updatedAt: now(),
   })
+  return true
 }
 
-export const setPresentationError = (message: string) => {
+export const setPresentationError = (
+  message: string,
+  loadGeneration?: number
+) => {
+  if (
+    loadGeneration !== undefined &&
+    loadGeneration !== presentationLoadGeneration
+  ) {
+    return false
+  }
   presentationStore.setState({
     state: 'error',
     pauseRequested: false,
     lastError: message,
     updatedAt: now(),
   })
+  return true
 }
 
 export const unloadPresentation = () => {
+  presentationLoadGeneration += 1
   presentationStore.setState({ ...initialState, updatedAt: now() })
   menuStore.setState({ slideVisible: false, thumbnailVisible: false })
 }

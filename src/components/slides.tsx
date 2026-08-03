@@ -173,15 +173,19 @@ const Slides: React.FC<SlidesProps> = ({
       return
     }
 
-    void speakMessageHandler(narration).then(() => {
-      if (
-        narrationKeyRef.current === key &&
-        homeStore.getState().chatProcessingCount === 0
-      ) {
-        narrationKeyRef.current = null
-        finishCurrentPresentationNarration()
-      }
-    })
+    void speakMessageHandler(narration)
+      .catch((error) => {
+        logger.error('Presentation narration failed:', error)
+      })
+      .finally(() => {
+        if (
+          narrationKeyRef.current === key &&
+          homeStore.getState().chatProcessingCount === 0
+        ) {
+          narrationKeyRef.current = null
+          finishCurrentPresentationNarration()
+        }
+      })
   }, [externalCurrentSlide, externalSlides, isExternal, playbackState])
 
   useEffect(() => {

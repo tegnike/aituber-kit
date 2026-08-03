@@ -30,7 +30,7 @@ const SlideControls: React.FC<SlideControlsProps> = ({
   return (
     <div className="flex flex-col items-center mt-5 gap-2">
       {currentSectionTitle && (
-        <div className="rounded-lg bg-white/80 px-3 py-1 text-sm text-black">
+        <div className="theme-surface-elevated rounded-lg border px-3 py-1 text-sm text-text1">
           {currentSectionTitle}
           {playbackState === 'section_paused' && '（セクション停止中）'}
         </div>

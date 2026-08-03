@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'crypto'
 import fs from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
 import type {
   PresentationAssignment,
   PresentationManifestV1,
@@ -121,6 +122,32 @@ const writeJsonAtomic = async (filePath: string, value: unknown) => {
 const readJson = async (filePath: string): Promise<unknown> =>
   JSON.parse(await fs.readFile(filePath, 'utf8'))
 
+const presentationSaveLocks = new Map<string, Promise<void>>()
+
+const withPresentationSaveLock = async <T>(
+  presentationId: string,
+  operation: () => Promise<T>
+): Promise<T> => {
+  const predecessor =
+    presentationSaveLocks.get(presentationId) ?? Promise.resolve()
+  let release = () => {}
+  const lock = new Promise<void>((resolve) => {
+    release = resolve
+  })
+  const tail = predecessor.then(() => lock)
+  presentationSaveLocks.set(presentationId, tail)
+  await predecessor
+
+  try {
+    return await operation()
+  } finally {
+    release()
+    if (presentationSaveLocks.get(presentationId) === tail) {
+      presentationSaveLocks.delete(presentationId)
+    }
+  }
+}
+
 export const readPresentation = async (
   presentationId: string,
   revision?: number
@@ -201,39 +228,34 @@ export const savePresentation = async (value: unknown) => {
   }
 
   const manifest = validation.manifest
-  const paths = getPaths(manifest.presentationId)
-  const contentHash = createPresentationContentHash(manifest)
-  let existing: Awaited<ReturnType<typeof readPresentation>> | null = null
-  try {
-    existing = await readPresentation(manifest.presentationId)
-  } catch (error) {
-    if (
-      !(error instanceof PresentationRepositoryError) ||
-      error.code !== 'PRESENTATION_NOT_FOUND'
-    ) {
-      throw error
+  return withPresentationSaveLock(manifest.presentationId, async () => {
+    const paths = getPaths(manifest.presentationId)
+    const contentHash = createPresentationContentHash(manifest)
+    let existing: Awaited<ReturnType<typeof readPresentation>> | null = null
+    try {
+      existing = await readPresentation(manifest.presentationId)
+    } catch (error) {
+      if (
+        !(error instanceof PresentationRepositoryError) ||
+        !['PRESENTATION_NOT_FOUND', 'PRESENTATION_LOAD_FAILED'].includes(
+          error.code
+        )
+      ) {
+        throw error
+      }
+      if (error.code === 'PRESENTATION_LOAD_FAILED') {
+        logger.warn(
+          `Presentation ${manifest.presentationId} had inconsistent storage and will be overwritten.`
+        )
+      }
     }
-  }
 
-  if (existing) {
-    if (manifest.revision < existing.manifest.revision) {
-      throw new PresentationRepositoryError(
-        'STALE_REVISION',
-        409,
-        'Presentation revision is stale',
-        {
-          presentationId: manifest.presentationId,
-          storedRevision: existing.manifest.revision,
-          requestedRevision: manifest.revision,
-        }
-      )
-    }
-    if (manifest.revision === existing.manifest.revision) {
-      if (contentHash !== existing.metadata.contentHash) {
+    if (existing) {
+      if (manifest.revision < existing.manifest.revision) {
         throw new PresentationRepositoryError(
-          'REVISION_CONFLICT',
+          'STALE_REVISION',
           409,
-          'Presentation revision conflicts with stored data',
+          'Presentation revision is stale',
           {
             presentationId: manifest.presentationId,
             storedRevision: existing.manifest.revision,
@@ -241,39 +263,53 @@ export const savePresentation = async (value: unknown) => {
           }
         )
       }
-      return {
-        presentationId: manifest.presentationId,
-        revision: manifest.revision,
-        contentHash,
-        created: false,
-        updated: false,
-        noOp: true,
+      if (manifest.revision === existing.manifest.revision) {
+        if (contentHash !== existing.metadata.contentHash) {
+          throw new PresentationRepositoryError(
+            'REVISION_CONFLICT',
+            409,
+            'Presentation revision conflicts with stored data',
+            {
+              presentationId: manifest.presentationId,
+              storedRevision: existing.manifest.revision,
+              requestedRevision: manifest.revision,
+            }
+          )
+        }
+        return {
+          presentationId: manifest.presentationId,
+          revision: manifest.revision,
+          contentHash,
+          created: false,
+          updated: false,
+          noOp: true,
+        }
       }
     }
-  }
 
-  const metadata: PresentationMetadata = {
-    presentationId: manifest.presentationId,
-    revision: manifest.revision,
-    contentHash,
-    updatedAt: new Date().toISOString(),
-  }
+    const metadata: PresentationMetadata = {
+      presentationId: manifest.presentationId,
+      revision: manifest.revision,
+      contentHash,
+      updatedAt: new Date().toISOString(),
+    }
 
-  try {
-    await writeJsonAtomic(paths.manifest, manifest)
-    await writeJsonAtomic(paths.metadata, metadata)
-  } catch (error) {
-    throw toStorageError(error)
-  }
+    try {
+      await writeJsonAtomic(paths.manifest, manifest)
+      await writeJsonAtomic(paths.metadata, metadata)
+    } catch (error) {
+      throw toStorageError(error)
+    }
 
-  return {
-    presentationId: manifest.presentationId,
-    revision: manifest.revision,
-    contentHash,
-    created: !existing,
-    updated: Boolean(existing),
-    noOp: false,
-  }
+    return {
+      presentationId: manifest.presentationId,
+      revision: manifest.revision,
+      contentHash,
+      created: !existing,
+      updated: Boolean(existing),
+      noOp: false,
+    }
+  })
 }
 
 export const saveAssignment = async (

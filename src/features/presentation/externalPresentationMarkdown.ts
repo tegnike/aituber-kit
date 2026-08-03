@@ -1,4 +1,4 @@
-import type { PresentationDocument } from './presentationTypes'
+import type { PresentationDocument } from '@/features/presentation/presentationTypes'
 
 /**
  * Serializes an external presentation without inferring layouts or rewriting

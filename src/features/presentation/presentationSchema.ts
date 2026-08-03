@@ -9,6 +9,13 @@ export const PRESENTATION_LIMITS = {
   narration: 10_000,
   qaBrief: 100_000,
   sources: 500,
+  notes: 10_000,
+  responsePolicy: 10_000,
+  description: 2_000,
+  locale: 64,
+  assetsPerSlide: 20,
+  metadataEntries: 50,
+  metadataValue: 10_000,
 } as const
 
 const idSchema = z.string().regex(PRESENTATION_ID_PATTERN, 'Invalid ID')
@@ -56,22 +63,25 @@ const slideSchema = z.object({
     .max(PRESENTATION_LIMITS.markdown)
     .refine(isSafePresentationMarkdown, 'Markdown contains unsafe content'),
   narration: z.string().max(PRESENTATION_LIMITS.narration).optional(),
-  notes: z.string().optional(),
+  notes: z.string().max(PRESENTATION_LIMITS.notes).optional(),
   pauseAfter: z.boolean().optional(),
-  assets: z.array(assetSchema).optional(),
+  assets: z
+    .array(assetSchema)
+    .max(PRESENTATION_LIMITS.assetsPerSlide)
+    .optional(),
 })
 
 const sectionSchema = z.object({
   id: idSchema,
   title: z.string().min(1),
   qaBrief: z.string().max(PRESENTATION_LIMITS.qaBrief).optional(),
-  responsePolicy: z.string().optional(),
+  responsePolicy: z.string().max(PRESENTATION_LIMITS.responsePolicy).optional(),
   sources: z.array(sourceSchema).optional(),
   slides: z.array(slideSchema).min(1),
 })
 
 const metadataValueSchema = z.union([
-  z.string(),
+  z.string().max(PRESENTATION_LIMITS.metadataValue),
   z.number(),
   z.boolean(),
   z.null(),
@@ -84,8 +94,8 @@ export const presentationManifestSchema = z
     revision: z.number().int().min(1),
     title: z.string().min(1),
     thumbnail: assetSchema.optional(),
-    description: z.string().optional(),
-    locale: z.string().optional(),
+    description: z.string().max(PRESENTATION_LIMITS.description).optional(),
+    locale: z.string().max(PRESENTATION_LIMITS.locale).optional(),
     createdAt: z.string().datetime({ offset: true }),
     theme: z
       .string()
@@ -102,6 +112,18 @@ export const presentationManifestSchema = z
     let sourceCount = 0
 
     if (manifest.thumbnail) assetIds.add(manifest.thumbnail.id)
+
+    if (
+      manifest.metadata &&
+      Object.keys(manifest.metadata).length >
+        PRESENTATION_LIMITS.metadataEntries
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['metadata'],
+        message: `Metadata cannot exceed ${PRESENTATION_LIMITS.metadataEntries} entries`,
+      })
+    }
 
     manifest.sections.forEach((section, sectionIndex) => {
       if (sectionIds.has(section.id)) {

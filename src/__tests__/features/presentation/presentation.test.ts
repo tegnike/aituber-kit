@@ -107,6 +107,30 @@ describe('external presentation domain', () => {
     expect(validateExternalPresentation(tooManySections).ok).toBe(false)
   })
 
+  it('bounds optional producer-controlled fields and collections', () => {
+    const oversizedNotes = createManifest()
+    oversizedNotes.sections[0].slides[0].notes = 'x'.repeat(10_001)
+    expect(validateExternalPresentation(oversizedNotes).ok).toBe(false)
+
+    const tooManyAssets = createManifest()
+    tooManyAssets.sections[0].slides[0].assets = Array.from(
+      { length: 21 },
+      (_, index) => ({
+        id: `asset-${index}`,
+        type: 'image' as const,
+        url: `https://example.com/${index}.png`,
+        alt: `Asset ${index}`,
+      })
+    )
+    expect(validateExternalPresentation(tooManyAssets).ok).toBe(false)
+
+    const tooMuchMetadata = createManifest()
+    tooMuchMetadata.metadata = Object.fromEntries(
+      Array.from({ length: 51 }, (_, index) => [`key-${index}`, index])
+    )
+    expect(validateExternalPresentation(tooMuchMetadata).ok).toBe(false)
+  })
+
   it('sanitizes rendered HTML defense in depth', () => {
     const sanitized = sanitizePresentationHtml(
       '<svg onload="alert(1)"><script>alert(1)</script><image href="javascript:alert(1)"></image></svg>'
@@ -124,6 +148,8 @@ describe('external presentation domain', () => {
     )
     expect(context).toContain('FIRST_SECTION_ONLY')
     expect(context).toContain('First notes')
+    expect(context).toContain('First narration')
+    expect(context).not.toContain('Second narration')
     expect(context).not.toContain('MUST_NOT_LEAK')
     expect(context).toContain('trust="untrusted_reference"')
   })

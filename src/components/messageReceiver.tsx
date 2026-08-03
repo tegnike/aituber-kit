@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger'
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import {
   speakMessageHandler,
   processAIResponse,
@@ -26,7 +26,7 @@ import presentationStore, {
 } from '@/features/stores/presentation'
 import slideStore from '@/features/stores/slide'
 import menuStore from '@/features/stores/menu'
-import type { ResponseCallback } from '@/features/api/messageGateway'
+import type { QueuedResponseCallback } from '@/features/api/messageGateway'
 import {
   canClaimClientTabLease,
   parseClientTabLease,
@@ -42,7 +42,7 @@ class ReceivedMessage {
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
   image?: string
-  responseCallback?: ResponseCallback
+  responseCallback?: QueuedResponseCallback
 
   constructor(
     timestamp: number,
@@ -51,7 +51,7 @@ class ReceivedMessage {
     systemPrompt?: string,
     useCurrentSystemPrompt?: boolean,
     image?: string,
-    responseCallback?: ResponseCallback
+    responseCallback?: QueuedResponseCallback
   ) {
     this.timestamp = timestamp
     this.message = message
@@ -93,7 +93,7 @@ const getClientApiHeaders = () => {
 }
 
 const MessageReceiver = () => {
-  const [lastTimestamp, setLastTimestamp] = useState(0)
+  const lastTimestampRef = useRef(0)
   const clientId = settingsStore((state) => state.clientId)
   const { isRestrictedMode } = useRestrictedMode()
   const handleSendChat = handleSendChatFn()
@@ -204,13 +204,20 @@ const MessageReceiver = () => {
               }
             } catch (error) {
               if (message.responseCallback) {
-                await reportResponseCallback(message.responseCallback, {
-                  status: 'failed',
-                  error:
-                    error instanceof Error ? error.message : 'UNKNOWN_ERROR',
-                })
+                try {
+                  await reportResponseCallback(message.responseCallback, {
+                    status: 'failed',
+                    error:
+                      error instanceof Error ? error.message : 'UNKNOWN_ERROR',
+                  })
+                } catch (callbackError) {
+                  logger.error(
+                    'Failed to report AI response error:',
+                    callbackError
+                  )
+                }
               }
-              throw error
+              logger.error('Failed to process received AI message:', error)
             }
             break
           }
@@ -270,8 +277,11 @@ const MessageReceiver = () => {
   useEffect(() => {
     if (!clientId || isRestrictedMode) return
 
-    let loadingPresentationKey: string | null = null
+    const loadingPresentationKeys = new Set<string>()
     let autoStartedAssignmentKey: string | null = null
+    let failedPresentationKey: string | null = null
+    let presentationRetryAttempt = 0
+    let presentationRetryAfter = 0
     const tabId = crypto.randomUUID()
     const leaseKey = `aituber-kit-client-tab-leader:${clientId}`
     let isClientTabLeader = false
@@ -318,9 +328,9 @@ const MessageReceiver = () => {
       autoStart = false
     ) => {
       const key = `${presentationId}:${revision}`
-      if (loadingPresentationKey === key) return
-      loadingPresentationKey = key
-      setPresentationLoading(presentationId, revision)
+      if (loadingPresentationKeys.has(key)) return
+      loadingPresentationKeys.add(key)
+      const loadGeneration = setPresentationLoading(presentationId, revision)
 
       try {
         const authHeaders = getClientApiHeaders()
@@ -334,18 +344,37 @@ const MessageReceiver = () => {
         }
         const data = await response.json()
         const document = normalizeExternalPresentation(data.presentation)
-        loadPresentationDocument(document, data.contentHash, autoStart)
+        const committed = loadPresentationDocument(
+          document,
+          data.contentHash,
+          autoStart,
+          loadGeneration
+        )
+        if (!committed) return
         settingsStore.setState({ slideMode: true })
         menuStore.setState({ slideVisible: autoStart, thumbnailVisible: false })
         slideStore.setState({ currentSlide: 0, isPlaying: false })
         if (autoStart) autoStartedAssignmentKey = key
+        failedPresentationKey = null
+        presentationRetryAttempt = 0
+        presentationRetryAfter = 0
       } catch (error) {
         logger.error('Error loading external presentation:', error)
-        setPresentationError(
-          error instanceof Error ? error.message : 'Presentation load failed'
-        )
+        if (
+          setPresentationError(
+            error instanceof Error ? error.message : 'Presentation load failed',
+            loadGeneration
+          )
+        ) {
+          presentationRetryAttempt =
+            failedPresentationKey === key ? presentationRetryAttempt + 1 : 1
+          failedPresentationKey = key
+          presentationRetryAfter =
+            Date.now() +
+            Math.min(60_000, 2_000 * 2 ** (presentationRetryAttempt - 1))
+        }
       } finally {
-        loadingPresentationKey = null
+        loadingPresentationKeys.delete(key)
       }
     }
 
@@ -355,9 +384,19 @@ const MessageReceiver = () => {
       const current = presentationStore.getState()
       if (!assignment) {
         if (current.presentationId) unloadPresentation()
+        failedPresentationKey = null
+        presentationRetryAttempt = 0
+        presentationRetryAfter = 0
         return
       }
       const key = `${assignment.presentationId}:${assignment.revision}`
+      if (
+        current.state === 'error' &&
+        failedPresentationKey === key &&
+        Date.now() < presentationRetryAfter
+      ) {
+        return
+      }
       if (
         !current.document ||
         current.document.presentationId !== assignment.presentationId ||
@@ -484,7 +523,7 @@ const MessageReceiver = () => {
       if (!settingsStore.getState().messageReceiverEnabled) return
       try {
         const response = await fetch(
-          `/api/messages/?lastTimestamp=${lastTimestamp}&clientId=${clientId}`
+          `/api/messages/?lastTimestamp=${lastTimestampRef.current}&clientId=${clientId}`
         )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -492,10 +531,10 @@ const MessageReceiver = () => {
         const data = await response.json()
         if (!isClientTabLeader) return
         if (data.messages && data.messages.length > 0) {
-          speakMessage(data.messages)
+          await speakMessage(data.messages)
           const newLastTimestamp =
             data.messages[data.messages.length - 1].timestamp
-          setLastTimestamp(newLastTimestamp)
+          lastTimestampRef.current = newLastTimestamp
         }
       } catch (error) {
         logger.error('Error fetching messages:', error)
@@ -626,13 +665,13 @@ const MessageReceiver = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       releaseClientTabLease()
     }
-  }, [clientId, isRestrictedMode, lastTimestamp, speakMessage])
+  }, [clientId, isRestrictedMode, speakMessage])
 
   return <></>
 }
 
 const reportResponseCallback = async (
-  callback: ResponseCallback,
+  callback: QueuedResponseCallback,
   result:
     | { status: 'completed'; content: string }
     | { status: 'empty' }
@@ -641,12 +680,18 @@ const reportResponseCallback = async (
   let lastError: unknown = null
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      const response = await fetch(callback.url, {
+      const authHeaders = getClientApiHeaders()
+      if (!authHeaders) {
+        throw new Error('Client API key is not configured')
+      }
+      const response = await fetch('/api/v1/chat/callback', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...authHeaders,
+        },
         body: JSON.stringify({
-          interactionId: callback.interactionId,
-          token: callback.token,
+          handle: callback.handle,
           ...result,
         }),
       })

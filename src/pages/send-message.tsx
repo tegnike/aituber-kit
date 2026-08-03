@@ -761,7 +761,8 @@ print(response.json())`
       ? { ...endpoint.defaultBody }
       : undefined
     if (endpoint.id === 'presentation_register' && defaultBody) {
-      defaultBody.presentationId = presentationId
+      defaultBody.presentationId =
+        presentationId.trim() || defaultPresentationId
     }
     setSelectedId(endpoint.id)
     setRequestBody(stringifyBody(defaultBody))

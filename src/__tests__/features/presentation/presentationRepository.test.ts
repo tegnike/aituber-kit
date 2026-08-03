@@ -82,6 +82,48 @@ describe('presentationRepository', () => {
     })
   })
 
+  it('serializes concurrent saves for the same presentation', async () => {
+    await savePresentation(createManifest())
+    const left = createManifest(2)
+    left.title = 'Left update'
+    const right = createManifest(2)
+    right.title = 'Right update'
+
+    const results = await Promise.allSettled([
+      savePresentation(left),
+      savePresentation(right),
+    ])
+
+    expect(
+      results.filter((result) => result.status === 'fulfilled')
+    ).toHaveLength(1)
+    const rejected = results.find(
+      (result): result is PromiseRejectedResult => result.status === 'rejected'
+    )
+    expect(rejected?.reason).toMatchObject({ code: 'REVISION_CONFLICT' })
+  })
+
+  it('repairs inconsistent manifest metadata on the next save', async () => {
+    await savePresentation(createManifest())
+    const metadataPath = path.join(
+      storageDir,
+      'metadata',
+      'repository-test.json'
+    )
+    const metadata = JSON.parse(await fs.readFile(metadataPath, 'utf8'))
+    metadata.contentHash = 'sha256:corrupted'
+    await fs.writeFile(metadataPath, JSON.stringify(metadata))
+
+    await expect(savePresentation(createManifest(2))).resolves.toEqual(
+      expect.objectContaining({ revision: 2, noOp: false })
+    )
+    await expect(readPresentation('repository-test', 2)).resolves.toEqual(
+      expect.objectContaining({
+        manifest: expect.objectContaining({ revision: 2 }),
+      })
+    )
+  })
+
   it('hashes client IDs instead of using them as paths', async () => {
     const assignment = {
       presentationId: 'repository-test',

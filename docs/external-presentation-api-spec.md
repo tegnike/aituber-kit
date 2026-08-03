@@ -167,6 +167,7 @@ export interface PresentationManifestV1 {
   presentationId: string
   revision: number
   title: string
+  thumbnail?: PresentationAssetV1
   description?: string
   locale?: string
   createdAt: string
@@ -230,15 +231,22 @@ export interface PresentationSourceV1 {
 
 ### 8.4 推奨上限
 
-| 項目                 |        上限 |
-| -------------------- | ----------: |
-| リクエストJSON全体   |         5MB |
-| Section数            |          50 |
-| Slide総数            |         200 |
-| 1 SlideのMarkdown    |  50,000文字 |
-| 1 SlideのNarration   |  10,000文字 |
-| 1 SectionのQ&A Brief | 100,000文字 |
-| Source数             |         500 |
+| 項目                       |        上限 |
+| -------------------------- | ----------: |
+| リクエストJSON全体         |         5MB |
+| Section数                  |          50 |
+| Slide総数                  |         200 |
+| 1 SlideのMarkdown          |  50,000文字 |
+| 1 SlideのNarration         |  10,000文字 |
+| 1 SlideのNotes             |  10,000文字 |
+| 1 SlideのAsset数           |          20 |
+| 1 SectionのQ&A Brief       | 100,000文字 |
+| 1 SectionのResponse Policy |  10,000文字 |
+| Source数                   |         500 |
+| Description                |   2,000文字 |
+| Locale                     |      64文字 |
+| Metadata項目数             |          50 |
+| Metadata文字列値           |  10,000文字 |
 
 上限超過時は`413 PAYLOAD_TOO_LARGE`または`422 VALIDATION_ERROR`を返す。
 

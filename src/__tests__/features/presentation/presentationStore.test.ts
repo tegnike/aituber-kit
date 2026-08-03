@@ -129,4 +129,52 @@ describe('presentationStore', () => {
     expect(persisted).toContain('"state":"paused"')
     expect(persisted).not.toContain('"state":"loading"')
   })
+
+  it('honors autoStart after the assignment enters loading state', () => {
+    const document = normalizeExternalPresentation(manifest)
+    const loadGeneration = setPresentationLoading('store-test', 1)
+
+    expect(
+      loadPresentationDocument(
+        document,
+        'sha256:auto-start',
+        true,
+        loadGeneration
+      )
+    ).toBe(true)
+    expect(presentationStore.getState().state).toBe('playing')
+  })
+
+  it('ignores an in-flight load after the presentation is unloaded', () => {
+    const document = normalizeExternalPresentation(manifest)
+    const staleGeneration = setPresentationLoading('store-test', 1)
+    unloadPresentation()
+
+    expect(
+      loadPresentationDocument(document, 'sha256:stale', false, staleGeneration)
+    ).toBe(false)
+    expect(presentationStore.getState().document).toBeNull()
+    expect(presentationStore.getState().state).toBe('unassigned')
+  })
+
+  it('clears the previous document while a different assignment loads', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:previous'
+    )
+
+    setPresentationLoading('different-presentation', 2)
+
+    expect(presentationStore.getState()).toEqual(
+      expect.objectContaining({
+        document: null,
+        contentHash: null,
+        sectionId: null,
+        slideId: null,
+        presentationId: 'different-presentation',
+        revision: 2,
+        state: 'loading',
+      })
+    )
+  })
 })

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import PresentationThumbnail from '@/components/presentationThumbnail'
 import { normalizeExternalPresentation } from '@/features/presentation/presentationNormalizer'
 import {
@@ -40,5 +40,38 @@ describe('PresentationThumbnail', () => {
       'src',
       'http://127.0.0.1:9892/api/shows/show-1/assets/thumbnail.png'
     )
+  })
+
+  it('hides a thumbnail that fails to load', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation({
+        schemaVersion: 1,
+        presentationId: 'broken-thumbnail-test',
+        revision: 1,
+        title: 'Broken thumbnail test',
+        thumbnail: {
+          id: 'broken-thumbnail',
+          type: 'image',
+          url: 'https://example.com/broken.png',
+          alt: '壊れたサムネイル',
+        },
+        createdAt: '2026-07-28T12:00:00.000Z',
+        sections: [
+          {
+            id: 'section-1',
+            title: 'Section',
+            slides: [{ id: 'slide-1', markdown: '# Slide' }],
+          },
+        ],
+      }),
+      'sha256:broken-thumbnail-test'
+    )
+
+    render(<PresentationThumbnail />)
+    fireEvent.error(screen.getByRole('img', { name: '壊れたサムネイル' }))
+
+    expect(
+      screen.queryByRole('img', { name: '壊れたサムネイル' })
+    ).not.toBeInTheDocument()
   })
 })

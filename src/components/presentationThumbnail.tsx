@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import presentationStore from '@/features/stores/presentation'
 
 const PresentationThumbnail = () => {
   const thumbnail = presentationStore((state) => state.document?.thumbnail)
-  if (!thumbnail) return null
+  const [failedUrl, setFailedUrl] = useState<string | null>(null)
+  if (!thumbnail || failedUrl === thumbnail.url) return null
 
   return (
     <div
@@ -14,6 +16,7 @@ const PresentationThumbnail = () => {
         alt={thumbnail.alt}
         className="pointer-events-none h-full w-full object-contain"
         draggable={false}
+        onError={() => setFailedUrl(thumbnail.url)}
       />
     </div>
   )

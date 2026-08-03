@@ -381,8 +381,9 @@ describe('/api/v1 external API', () => {
     )
   })
 
-  it('supports ai_generate chat mode with a custom system prompt', () => {
+  it('keeps ai_generate callback secrets on the server', async () => {
     const chat = require('@/pages/api/v1/chat').default
+    const callbackRoute = require('@/pages/api/v1/chat/callback').default
     const messages = require('@/pages/api/messages').default
 
     const res = createMockRes()
@@ -417,18 +418,49 @@ describe('/api/v1 external API', () => {
       getRes
     )
 
-    expect((getRes._json as { messages: unknown[] }).messages[0]).toEqual(
+    const queuedMessage = (getRes._json as { messages: any[] }).messages[0]
+    expect(queuedMessage).toEqual(
       expect.objectContaining({
         type: 'ai_generate',
         systemPrompt: 'Be concise',
         useCurrentSystemPrompt: false,
         responseCallback: {
-          url: 'http://127.0.0.1:9892/api/question-responses',
-          interactionId: 'qa-question-1',
-          token: 'callback-token',
+          handle: expect.stringMatching(/^callback_/),
         },
       })
     )
+    expect(JSON.stringify(queuedMessage)).not.toContain('callback-token')
+    expect(JSON.stringify(queuedMessage)).not.toContain('question-responses')
+
+    const originalFetch = global.fetch
+    const callbackFetch = jest.fn().mockResolvedValue({ ok: true })
+    global.fetch = callbackFetch as typeof fetch
+    try {
+      const callbackRes = createMockRes()
+      await callbackRoute(
+        createMockReq({
+          method: 'POST',
+          headers: { authorization: 'Bearer test-api-key' },
+          body: {
+            handle: queuedMessage.responseCallback.handle,
+            status: 'completed',
+            content: 'Generated answer',
+          },
+        }),
+        callbackRes
+      )
+
+      expect(callbackRes._status).toBe(200)
+      expect(callbackFetch).toHaveBeenCalledWith(
+        new URL('http://127.0.0.1:9892/api/question-responses'),
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('callback-token'),
+        })
+      )
+    } finally {
+      global.fetch = originalFetch
+    }
   })
 
   it('queues stop commands for the client command poller', () => {
@@ -623,6 +655,25 @@ describe('/api/v1 external API', () => {
         payload: expect.objectContaining({ isSpeaking: false }),
       }),
     ])
+  })
+
+  it('emits speech_started when the first client status is already speaking', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+
+    updateClientStatus('client1', {
+      connected: true,
+      chatProcessing: true,
+      isSpeaking: true,
+    })
+
+    expect(
+      getRecentApiEvents('client1').filter(
+        (event: { type: string }) => event.type === 'speech_started'
+      )
+    ).toHaveLength(1)
   })
 
   it('emits the exact text when each synthesized speech chunk starts', () => {

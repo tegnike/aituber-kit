@@ -251,6 +251,8 @@ describe('API route static checks', () => {
           const callsServerUrlGuard =
             (/isAllowedConfiguredOrListedUrl\s*\(/.test(source) &&
               /isHttpUrl\s*\(/.test(source)) ||
+            (/isLoopbackHost\s*\(/.test(source) &&
+              /isHttpUrl\s*\(/.test(source)) ||
             /guardLocalLlmUrl\s*\(/.test(source)
           if (!callsServerUrlGuard) {
             violations.push(policyPath)
@@ -281,10 +283,16 @@ describe('API route static checks', () => {
           const file = routeFilePath(policyPath)
           const source = fs.readFileSync(file, 'utf8')
           const importsFs = /from\s+['"]fs(\/promises)?['"]/.test(source)
-          const delegatesToFsRepository =
-            /from\s+['"]@\/features\/presentation\/presentationRepository['"]/.test(
-              source
-            )
+          const repositoryImport = source.match(
+            /import\s*{([^}]+)}\s*from\s*['"]@\/features\/presentation\/presentationRepository['"]/
+          )
+          const repositoryFunctions = repositoryImport?.[1]
+            .split(',')
+            .map((name) => name.trim())
+            .filter(Boolean)
+          const delegatesToFsRepository = repositoryFunctions?.some((name) =>
+            new RegExp(`\\b${name}\\s*\\(`).test(source)
+          )
           if (!importsFs && !delegatesToFsRepository) {
             violations.push(policyPath)
           }

@@ -182,6 +182,21 @@ describe('external presentation API', () => {
         action: 'hide',
       }),
     ])
+
+    const invalidGoto = createMockRes()
+    await control(
+      createMockReq({
+        method: 'POST',
+        headers: authHeaders,
+        body: {
+          clientId: 'main-stage',
+          action: 'goto',
+          target: { sectionId: '' },
+        },
+      }),
+      invalidGoto
+    )
+    expect(invalidGoto._status).toBe(422)
   })
 
   it('returns desired and actual status after client synchronization', async () => {

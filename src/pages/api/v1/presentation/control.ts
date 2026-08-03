@@ -47,14 +47,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
   }
   const target = req.body?.target as PresentationControlTarget | undefined
+  const hasSectionId =
+    typeof target?.sectionId === 'string' && target.sectionId.length > 0
+  const hasSlideId =
+    typeof target?.slideId === 'string' && target.slideId.length > 0
   if (
     action === 'goto' &&
     (!target ||
       (target.sectionId !== undefined &&
         typeof target.sectionId !== 'string') ||
       (target.slideId !== undefined && typeof target.slideId !== 'string') ||
-      (typeof target.sectionId !== 'string' &&
-        typeof target.slideId !== 'string'))
+      (!hasSectionId && !hasSlideId))
   ) {
     return res.status(422).json({
       error: 'goto requires a sectionId or slideId target',
