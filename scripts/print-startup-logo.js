@@ -21,8 +21,11 @@ const readVersionFile = (filePath) => {
 const readAppVersion = (rootDir = root) =>
   readVersionFile(path.join(rootDir, 'src/constants/appVersion.json'))
 
+const readPackageVersion = (rootDir = root) =>
+  readVersionFile(path.join(rootDir, 'package.json'))
+
 const getVersion = (rootDir = root) =>
-  readAppVersion(rootDir) || 'version unknown'
+  readAppVersion(rootDir) || readPackageVersion(rootDir) || 'version unknown'
 
 const main = async () => {
   const { render } = await import('oh-my-logo')
@@ -45,4 +48,4 @@ if (require.main === module && process.env.AITUBERKIT_NO_LOGO !== '1') {
   })
 }
 
-module.exports = { getVersion, readAppVersion }
+module.exports = { getVersion, readAppVersion, readPackageVersion }

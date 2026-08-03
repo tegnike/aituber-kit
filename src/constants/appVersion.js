@@ -11,7 +11,17 @@ const readBundledAppVersion = () => {
   }
 }
 
+const readPackageVersion = () => {
+  try {
+    return require('../../package.json').version
+  } catch {
+    return null
+  }
+}
+
 const APP_VERSION =
-  normalizeAppVersion(readBundledAppVersion()) || 'version unknown'
+  normalizeAppVersion(readBundledAppVersion()) ||
+  normalizeAppVersion(readPackageVersion()) ||
+  'version unknown'
 
 module.exports = { APP_VERSION, normalizeAppVersion }
