@@ -315,6 +315,33 @@ describe('settings file export and import', () => {
     )
   })
 
+  it.each([
+    ['selectAIService', 'not-a-service'],
+    ['modelType', 'unknown'],
+    ['temperature', -0.01],
+    ['temperature', 2.01],
+    ['maxPastMessages', 0],
+    ['maxPastMessages', 10000],
+    ['maxPastMessages', 1.5],
+  ])('rejects an invalid constrained value for %s', (key, value) => {
+    expect(() =>
+      parseSettingsFile(
+        JSON.stringify({
+          format: SETTINGS_FILE_FORMAT,
+          formatVersion: SETTINGS_FILE_FORMAT_VERSION,
+          settingsVersion: CURRENT_SETTINGS_VERSION,
+          exportedAt: '2026-08-03T12:34:56.000Z',
+          secretsIncluded: false,
+          settings: { [key]: value },
+        })
+      )
+    ).toThrow(
+      expect.objectContaining<Partial<SettingsFileError>>({
+        code: 'invalid-setting-value',
+      })
+    )
+  })
+
   it('preserves current secrets when importing a regular settings file', () => {
     applySettingsImport({
       settingsVersion: CURRENT_SETTINGS_VERSION,

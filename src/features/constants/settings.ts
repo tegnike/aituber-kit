@@ -62,6 +62,25 @@ export type DifyService = 'dify'
 
 export type AIService = VercelAIService | DifyService
 
+export const AI_SERVICES = [
+  'openai',
+  'anthropic',
+  'google',
+  'azure',
+  'xai',
+  'groq',
+  'cohere',
+  'mistralai',
+  'perplexity',
+  'fireworks',
+  'deepseek',
+  'openrouter',
+  'lmstudio',
+  'ollama',
+  'custom-api',
+  'dify',
+] as const satisfies readonly AIService[]
+
 export interface AIServiceConfig {
   openai: { key: string; model: string }
   anthropic: { key: string; model: string }

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { AI_SERVICES } from '@/features/constants/settings'
 import settingsStore, {
   CURRENT_SETTINGS_VERSION,
   PersistedSettings,
@@ -147,6 +148,13 @@ const matchesTopLevelType = (
   return typeof value === typeof reference
 }
 
+const constrainedSettingSchemas = new Map<keyof PersistedSettings, z.ZodType>([
+  ['selectAIService', z.enum(AI_SERVICES)],
+  ['modelType', z.enum(['vrm', 'live2d', 'pngtuber'])],
+  ['temperature', z.number().min(0).max(2)],
+  ['maxPastMessages', z.number().int().min(1).max(9999)],
+])
+
 export const isEnvironmentSettingsOverrideEnabled = () =>
   process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES === 'true'
 
@@ -262,6 +270,15 @@ export const parseSettingsFile = (contents: string): SettingsImportData => {
       )
     }
     if (!matchesTopLevelType(key, value, currentSettingsRecord[key])) {
+      throw new SettingsFileError(
+        'invalid-setting-value',
+        `Invalid setting value: ${key}`
+      )
+    }
+    const constrainedSchema = constrainedSettingSchemas.get(
+      key as keyof PersistedSettings
+    )
+    if (constrainedSchema && !constrainedSchema.safeParse(value).success) {
       throw new SettingsFileError(
         'invalid-setting-value',
         `Invalid setting value: ${key}`
