@@ -274,6 +274,7 @@ const Based = () => {
         </div>
         <div className="flex flex-col mb-4">
           <select
+            aria-label={t('ChatLogMode')}
             className={settingsControlClass.compact}
             value={chatLogMode}
             onChange={(e) =>
@@ -352,6 +353,7 @@ const Based = () => {
         </div>
         <div className="my-2">
           <ToggleSwitch
+            ariaLabel={t('ShowInputForm')}
             enabled={showInputForm}
             onChange={(v) => settingsStore.setState({ showInputForm: v })}
           />

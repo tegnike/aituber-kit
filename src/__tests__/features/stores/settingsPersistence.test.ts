@@ -16,8 +16,16 @@ describe('settingsStore persistence', () => {
     process.env.NEXT_PUBLIC_SELECTED_VRM_PATH = originalSelectedVrmPath
     process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES =
       originalAlwaysOverride
-    process.env.NEXT_PUBLIC_SHOW_INPUT_FORM = originalShowInputForm
-    process.env.NEXT_PUBLIC_CHAT_LOG_MODE = originalChatLogMode
+    if (originalShowInputForm === undefined) {
+      delete process.env.NEXT_PUBLIC_SHOW_INPUT_FORM
+    } else {
+      process.env.NEXT_PUBLIC_SHOW_INPUT_FORM = originalShowInputForm
+    }
+    if (originalChatLogMode === undefined) {
+      delete process.env.NEXT_PUBLIC_CHAT_LOG_MODE
+    } else {
+      process.env.NEXT_PUBLIC_CHAT_LOG_MODE = originalChatLogMode
+    }
   })
 
   it('prefers environment values before components read the store when override is enabled', () => {
