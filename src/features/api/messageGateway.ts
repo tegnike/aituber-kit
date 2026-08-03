@@ -69,6 +69,7 @@ export interface ClientStatus {
   clientId: string
   connected: boolean
   isSpeaking: boolean
+  activeSpeech?: { id: string; text: string } | null
   chatProcessing: boolean
   messageReceiverEnabled?: boolean
   modelType?: string
@@ -91,6 +92,8 @@ export interface ApiEvent {
     | 'status_updated'
     | 'speech_started'
     | 'speech_ended'
+    | 'speech_chunk_started'
+    | 'speech_chunk_ended'
     | 'presentation_registered'
     | 'presentation_assigned'
     | 'presentation_loaded'
@@ -402,6 +405,22 @@ export const updateClientStatus = (
         chatProcessing: nextStatus.chatProcessing,
       }
     )
+  }
+
+  const previousSpeech = previousStatus?.activeSpeech ?? null
+  const nextSpeech = nextStatus.activeSpeech ?? null
+  if (previousSpeech?.id !== nextSpeech?.id) {
+    if (previousSpeech) {
+      emitApiEvent(clientId, 'speech_chunk_ended', {
+        speechChunkId: previousSpeech.id,
+      })
+    }
+    if (nextSpeech) {
+      emitApiEvent(clientId, 'speech_chunk_started', {
+        speechChunkId: nextSpeech.id,
+        text: nextSpeech.text,
+      })
+    }
   }
 
   const previousPresentation = previousStatus?.presentation

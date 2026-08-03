@@ -625,6 +625,57 @@ describe('/api/v1 external API', () => {
     ])
   })
 
+  it('emits the exact text when each synthesized speech chunk starts', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const baseStatus = {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: true,
+    }
+
+    updateClientStatus('client1', { ...baseStatus, activeSpeech: null })
+    updateClientStatus('client1', {
+      ...baseStatus,
+      activeSpeech: { id: 'speech-1', text: '最初の音声チャンクです。' },
+    })
+    updateClientStatus('client1', {
+      ...baseStatus,
+      activeSpeech: { id: 'speech-2', text: '次の音声チャンクです。' },
+    })
+    updateClientStatus('client1', { ...baseStatus, activeSpeech: null })
+
+    const chunkEvents = getRecentApiEvents('client1').filter(
+      (event: { type: string }) => event.type.startsWith('speech_chunk_')
+    )
+    expect(chunkEvents).toEqual([
+      expect.objectContaining({
+        type: 'speech_chunk_started',
+        payload: expect.objectContaining({
+          speechChunkId: 'speech-1',
+          text: '最初の音声チャンクです。',
+        }),
+      }),
+      expect.objectContaining({
+        type: 'speech_chunk_ended',
+        payload: { speechChunkId: 'speech-1' },
+      }),
+      expect.objectContaining({
+        type: 'speech_chunk_started',
+        payload: expect.objectContaining({
+          speechChunkId: 'speech-2',
+          text: '次の音声チャンクです。',
+        }),
+      }),
+      expect.objectContaining({
+        type: 'speech_chunk_ended',
+        payload: { speechChunkId: 'speech-2' },
+      }),
+    ])
+  })
+
   it('returns recent events as a JSON snapshot', () => {
     const speak = require('@/pages/api/v1/speak').default
     const events = require('@/pages/api/v1/events').default

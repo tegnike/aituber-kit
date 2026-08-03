@@ -61,6 +61,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const status = updateClientStatus(clientId, {
     connected: req.body?.connected === true,
     isSpeaking: req.body?.isSpeaking === true,
+    activeSpeech:
+      req.body?.activeSpeech &&
+      typeof req.body.activeSpeech.id === 'string' &&
+      typeof req.body.activeSpeech.text === 'string'
+        ? { id: req.body.activeSpeech.id, text: req.body.activeSpeech.text }
+        : null,
     chatProcessing: req.body?.chatProcessing === true,
     messageReceiverEnabled: req.body?.messageReceiverEnabled === true,
     modelType:

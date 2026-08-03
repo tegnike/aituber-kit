@@ -402,6 +402,7 @@ const MessageReceiver = () => {
             body: JSON.stringify({
               connected: true,
               isSpeaking: hs.isSpeaking,
+              activeSpeech: hs.activeSpeech,
               chatProcessing: hs.chatProcessing,
               messageReceiverEnabled: ss.messageReceiverEnabled,
               modelType: ss.modelType,
@@ -553,7 +554,8 @@ const MessageReceiver = () => {
       (state, previousState) => {
         if (
           isClientTabLeader &&
-          state.isSpeaking !== previousState.isSpeaking
+          (state.isSpeaking !== previousState.isSpeaking ||
+            state.activeSpeech?.id !== previousState.activeSpeech?.id)
         ) {
           void safeReportStatus()
         }
