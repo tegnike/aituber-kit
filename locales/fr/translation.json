@@ -7,6 +7,10 @@
   "VoiceSettings": "Paramètres de synthèse vocale",
   "SpeechInputSettings": "Paramètres d'entrée vocale",
   "SlideSettings": "Paramètres des diapositives",
+  "SlideControls": {
+    "SectionPaused": " (Section en pause)",
+    "NextSection": "Section suivante"
+  },
   "ImageSettings": "Paramètres d'image",
   "LogSettings": "Historique des conversations",
   "OtherSettings": "Autres",

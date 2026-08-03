@@ -7,6 +7,10 @@
   "VoiceSettings": "Настройки синтеза речи",
   "SpeechInputSettings": "Настройки голосового ввода",
   "SlideSettings": "Настройки слайдов",
+  "SlideControls": {
+    "SectionPaused": " (Раздел приостановлен)",
+    "NextSection": "Следующий раздел"
+  },
   "ImageSettings": "Настройки изображения",
   "LogSettings": "История разговоров",
   "OtherSettings": "Прочее",

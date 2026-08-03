@@ -86,7 +86,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ ok: true, status, assignment })
   } catch (error) {
     const response = toPresentationErrorResponse(error)
-    return res.status(response.status).json(response.body)
+    return res.status(200).json({
+      ok: true,
+      status,
+      assignment: null,
+      assignmentError: response.body,
+    })
   }
 }
 

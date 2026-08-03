@@ -54,9 +54,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       typeof rawRevision === 'string' && rawRevision !== ''
         ? Number(rawRevision)
         : undefined
-    if (revision !== undefined && !Number.isInteger(revision)) {
+    if (
+      revision !== undefined &&
+      (!Number.isInteger(revision) || revision < 1)
+    ) {
       return res.status(422).json({
-        error: 'Revision must be an integer',
+        error: 'Revision must be a positive integer',
         code: 'VALIDATION_ERROR',
       })
     }

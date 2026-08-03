@@ -1,9 +1,17 @@
 import {
   canClaimClientTabLease,
+  createClientTabId,
   parseClientTabLease,
 } from '@/features/api/clientTabLeadership'
 
 describe('clientTabLeadership', () => {
+  it('randomUUIDが使えない環境でもTab IDを生成する', () => {
+    expect(createClientTabId(null, 1234, 0.5)).toBe('tab-1234-i')
+    expect(
+      createClientTabId({ randomUUID: () => 'native-uuid' }, 1234, 0.5)
+    ).toBe('native-uuid')
+  })
+
   it('壊れたLeaseを無効として扱う', () => {
     expect(parseClientTabLease(null)).toBeNull()
     expect(parseClientTabLease('{invalid')).toBeNull()

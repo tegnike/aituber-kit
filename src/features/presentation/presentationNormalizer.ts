@@ -36,7 +36,14 @@ export const normalizeLegacyPresentation = (
   supplement = '',
   presentationId = 'legacy-presentation'
 ): PresentationDocument => {
-  const pages = markdown.split(/^\s*---\s*$/m)
+  const withoutFrontMatter = markdown.replace(
+    /^\uFEFF?\s*---\s*\r?\n[\s\S]*?\r?\n---\s*(?:\r?\n|$)/,
+    ''
+  )
+  const pages = withoutFrontMatter
+    .split(/^\s*---\s*$/m)
+    .map((page) => page.trim())
+    .filter(Boolean)
   const manifest: PresentationManifestV1 = {
     schemaVersion: 1,
     presentationId,
@@ -52,7 +59,7 @@ export const normalizeLegacyPresentation = (
           const script = scripts.find((item) => item.page === index)
           return {
             id: `legacy-slide-${index + 1}`,
-            markdown: page.trim(),
+            markdown: page,
             narration: script?.line,
             notes: script?.notes,
             pauseAfter: index === pages.length - 1,

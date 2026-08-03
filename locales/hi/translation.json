@@ -7,6 +7,10 @@
   "VoiceSettings": "आवाज़ सिंथेसिस सेटिंग्स",
   "SpeechInputSettings": "आवाज़ इनपुट सेटिंग्स",
   "SlideSettings": "स्लाइड सेटिंग्स",
+  "SlideControls": {
+    "SectionPaused": " (अनुभाग रुका हुआ है)",
+    "NextSection": "अगला अनुभाग"
+  },
   "ImageSettings": "छवि सेटिंग्स",
   "LogSettings": "वार्तालाप इतिहास",
   "OtherSettings": "अन्य",

@@ -3,6 +3,7 @@
 import fs from 'fs/promises'
 import os from 'os'
 import path from 'path'
+import { createHash } from 'crypto'
 import {
   createMockReq,
   createMockRes,
@@ -95,6 +96,27 @@ describe('external presentation API', () => {
         contentHash: expect.stringMatching(/^sha256:/),
       })
     )
+  })
+
+  it.each(['0', '-1'])('rejects non-positive revision %s', async (revision) => {
+    const handler =
+      require('@/pages/api/v1/presentations/[presentationId]').default
+    const response = createMockRes()
+
+    await handler(
+      createMockReq({
+        method: 'GET',
+        headers: authHeaders,
+        query: { presentationId: 'api-test', revision },
+      }),
+      response
+    )
+
+    expect(response._status).toBe(422)
+    expect(response._json).toEqual({
+      error: 'Revision must be a positive integer',
+      code: 'VALIDATION_ERROR',
+    })
   })
 
   it('persists assignments and queues commands only for the target client', async () => {
@@ -268,6 +290,74 @@ describe('external presentation API', () => {
         desired: expect.objectContaining({ presentationId: 'api-test' }),
         actual: expect.objectContaining({ state: 'section_paused' }),
         inSync: true,
+      })
+    )
+  })
+
+  it('does not report an unassigned error state as synchronized', async () => {
+    const gateway = require('@/features/api/messageGateway')
+    gateway.updateClientStatus('main-stage', {
+      connected: true,
+      isSpeaking: false,
+      chatProcessing: false,
+      presentation: {
+        presentationId: null,
+        revision: null,
+        state: 'error',
+        sectionId: null,
+        slideId: null,
+        slideIndex: null,
+        isSpeaking: false,
+        lastError: 'load failed',
+        updatedAt: '2026-07-14T20:01:00.000Z',
+      },
+    })
+    const status = require('@/pages/api/v1/presentation/status').default
+    const response = createMockRes()
+
+    await status(
+      createMockReq({
+        method: 'GET',
+        headers: authHeaders,
+        query: { clientId: 'main-stage' },
+      }),
+      response
+    )
+
+    expect(response._json).toEqual(
+      expect.objectContaining({ desired: null, inSync: false })
+    )
+  })
+
+  it('keeps a successful client heartbeat when assignment data is corrupt', async () => {
+    const assignmentHash = createHash('sha256')
+      .update('main-stage')
+      .digest('hex')
+    const assignmentDir = path.join(storageDir, 'assignments')
+    await fs.mkdir(assignmentDir, { recursive: true })
+    await fs.writeFile(path.join(assignmentDir, `${assignmentHash}.json`), '{')
+    const clientStatus = require('@/pages/api/v1/client/status').default
+    const response = createMockRes()
+
+    await clientStatus(
+      createMockReq({
+        method: 'POST',
+        headers: authHeaders,
+        query: { clientId: 'main-stage' },
+        body: { connected: true, isSpeaking: false },
+      }),
+      response
+    )
+
+    expect(response._status).toBe(200)
+    expect(response._json).toEqual(
+      expect.objectContaining({
+        ok: true,
+        status: expect.objectContaining({ connected: true }),
+        assignment: null,
+        assignmentError: expect.objectContaining({
+          code: 'PRESENTATION_LOAD_FAILED',
+        }),
       })
     )
   })

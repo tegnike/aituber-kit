@@ -464,6 +464,30 @@ describe('/api/v1 external API', () => {
     }
   })
 
+  it('keeps response callbacks available beyond the client queue timeout', () => {
+    const gateway = require('@/features/api/messageGateway')
+    const now = jest.spyOn(Date, 'now').mockReturnValue(1_000)
+    try {
+      const [message] = gateway.enqueueMessages({
+        clientId: 'client1',
+        messages: ['long-running response'],
+        type: 'ai_generate',
+        responseCallback: {
+          url: 'http://127.0.0.1:9892/api/question-responses',
+          interactionId: 'long-running',
+          token: 'callback-token',
+        },
+      })
+      now.mockReturnValue(1_000 + 6 * 60 * 1_000)
+
+      expect(
+        gateway.claimResponseCallback(message.responseCallback.handle)
+      ).toEqual(expect.objectContaining({ interactionId: 'long-running' }))
+    } finally {
+      now.mockRestore()
+    }
+  })
+
   it('queues stop commands for the client command poller', () => {
     const stop = require('@/pages/api/v1/stop').default
     const commands = require('@/pages/api/v1/client/commands').default
@@ -726,6 +750,57 @@ describe('/api/v1 external API', () => {
         payload: { speechChunkId: 'speech-2' },
       }),
     ])
+  })
+
+  it('emits slide_changed only after a presentation finishes loading', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const baseStatus = {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: false,
+    }
+    const presentation = {
+      presentationId: 'new-presentation',
+      revision: 1,
+      sectionId: 'section-1',
+      slideIndex: 0,
+      isSpeaking: false,
+      lastError: null,
+      updatedAt: '2026-08-03T00:00:00.000Z',
+    }
+
+    updateClientStatus('client1', {
+      ...baseStatus,
+      presentation: {
+        ...presentation,
+        presentationId: 'old-presentation',
+        state: 'ready',
+        slideId: 'old-slide',
+      },
+    })
+    const eventCount = getRecentApiEvents('client1').length
+    updateClientStatus('client1', {
+      ...baseStatus,
+      presentation: { ...presentation, state: 'loading', slideId: null },
+    })
+    expect(
+      getRecentApiEvents('client1')
+        .slice(eventCount)
+        .map((event: { type: string }) => event.type)
+    ).not.toContain('slide_changed')
+
+    updateClientStatus('client1', {
+      ...baseStatus,
+      presentation: { ...presentation, state: 'ready', slideId: 'new-slide' },
+    })
+    expect(
+      getRecentApiEvents('client1')
+        .slice(eventCount)
+        .map((event: { type: string }) => event.type)
+    ).toEqual(expect.arrayContaining(['presentation_loaded', 'slide_changed']))
   })
 
   it('returns recent events as a JSON snapshot', () => {

@@ -83,6 +83,13 @@ describe('external presentation domain', () => {
         ]
       },
     ],
+    [
+      'standalone Marpit slide separator',
+      (manifest: PresentationManifestV1) => {
+        manifest.sections[0].slides[0].markdown =
+          '# One\n\n---\n\n# Unexpected slide'
+      },
+    ],
   ])('rejects %s', (_name, mutate) => {
     const manifest = createManifest()
     mutate(manifest)
@@ -193,5 +200,29 @@ describe('external presentation domain', () => {
     expect(document.sections[0].slides).toHaveLength(2)
     expect(document.sections[0].slides[0].narration).toBe('Hello')
     expect(document.sections[0].qaBrief).toBe('Supplement')
+  })
+
+  it('removes legacy front matter and empty slide chunks before mapping scripts', () => {
+    const document = normalizeLegacyPresentation(
+      '---\nmarp: true\ntheme: default\n---\n\n# Page 1\n\n---\n\n---\n\n# Page 2',
+      [
+        { page: 0, line: 'First narration' },
+        { page: 1, line: 'Second narration' },
+      ]
+    )
+
+    expect(document.sections[0].slides).toHaveLength(2)
+    expect(document.sections[0].slides[0]).toEqual(
+      expect.objectContaining({
+        markdown: '# Page 1',
+        narration: 'First narration',
+      })
+    )
+    expect(document.sections[0].slides[1]).toEqual(
+      expect.objectContaining({
+        markdown: '# Page 2',
+        narration: 'Second narration',
+      })
+    )
   })
 })

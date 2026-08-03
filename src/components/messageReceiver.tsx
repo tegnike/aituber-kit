@@ -29,6 +29,7 @@ import menuStore from '@/features/stores/menu'
 import type { QueuedResponseCallback } from '@/features/api/messageGateway'
 import {
   canClaimClientTabLease,
+  createClientTabId,
   parseClientTabLease,
 } from '@/features/api/clientTabLeadership'
 
@@ -282,7 +283,7 @@ const MessageReceiver = () => {
     let failedPresentationKey: string | null = null
     let presentationRetryAttempt = 0
     let presentationRetryAfter = 0
-    const tabId = crypto.randomUUID()
+    const tabId = createClientTabId()
     const leaseKey = `aituber-kit-client-tab-leader:${clientId}`
     let isClientTabLeader = false
 
@@ -431,7 +432,7 @@ const MessageReceiver = () => {
 
       try {
         const response = await fetch(
-          `/api/v1/client/status/?clientId=${clientId}`,
+          `/api/v1/client/status/?clientId=${encodeURIComponent(clientId)}`,
           {
             method: 'POST',
             headers: {
@@ -457,6 +458,13 @@ const MessageReceiver = () => {
         }
         const data = await response.json()
         if (!isClientTabLeader) return
+        if (data.assignmentError) {
+          logger.error(
+            'Error reading presentation assignment:',
+            data.assignmentError
+          )
+          return
+        }
         await reconcileAssignment(data.assignment ?? null)
       } catch (error) {
         logger.error('Error reporting client status:', error)
@@ -470,7 +478,7 @@ const MessageReceiver = () => {
 
       try {
         const response = await fetch(
-          `/api/v1/client/commands/?clientId=${clientId}`,
+          `/api/v1/client/commands/?clientId=${encodeURIComponent(clientId)}`,
           { headers: authHeaders }
         )
         if (!response.ok) {
@@ -523,7 +531,7 @@ const MessageReceiver = () => {
       if (!settingsStore.getState().messageReceiverEnabled) return
       try {
         const response = await fetch(
-          `/api/messages/?lastTimestamp=${lastTimestampRef.current}&clientId=${clientId}`
+          `/api/messages/?lastTimestamp=${lastTimestampRef.current}&clientId=${encodeURIComponent(clientId)}`
         )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -531,10 +539,10 @@ const MessageReceiver = () => {
         const data = await response.json()
         if (!isClientTabLeader) return
         if (data.messages && data.messages.length > 0) {
-          await speakMessage(data.messages)
           const newLastTimestamp =
             data.messages[data.messages.length - 1].timestamp
           lastTimestampRef.current = newLastTimestamp
+          await speakMessage(data.messages)
         }
       } catch (error) {
         logger.error('Error fetching messages:', error)

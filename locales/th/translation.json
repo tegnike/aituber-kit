@@ -7,6 +7,10 @@
   "VoiceSettings": "การตั้งค่าเสียงสังเคราะห์",
   "SpeechInputSettings": "การตั้งค่าการป้อนข้อมูลด้วยเสียง",
   "SlideSettings": "การตั้งค่าสไลด์",
+  "SlideControls": {
+    "SectionPaused": " (หยุดส่วนชั่วคราว)",
+    "NextSection": "ส่วนถัดไป"
+  },
   "ImageSettings": "การตั้งค่าภาพ",
   "LogSettings": "ประวัติการสนทนา",
   "OtherSettings": "อื่นๆ",

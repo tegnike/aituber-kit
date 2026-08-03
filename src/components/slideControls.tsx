@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconButton } from './iconButton'
 import type { PresentationPlaybackState } from '@/features/presentation/presentationTypes'
 
@@ -27,12 +28,15 @@ const SlideControls: React.FC<SlideControlsProps> = ({
   playbackState,
   nextSection,
 }) => {
+  const { t } = useTranslation()
+
   return (
     <div className="flex flex-col items-center mt-5 gap-2">
       {currentSectionTitle && (
         <div className="theme-surface-elevated rounded-lg border px-3 py-1 text-sm text-text1">
           {currentSectionTitle}
-          {playbackState === 'section_paused' && '（セクション停止中）'}
+          {playbackState === 'section_paused' &&
+            t('SlideControls.SectionPaused')}
         </div>
       )}
       <div
@@ -80,7 +84,7 @@ const SlideControls: React.FC<SlideControlsProps> = ({
             className="bg-primary hover:bg-primary-hover text-theme rounded-2xl py-2 px-4 text-sm font-bold"
             data-testid="presentation-next-section-button"
           >
-            次のセクション
+            {t('SlideControls.NextSection')}
           </button>
         )}
       </div>

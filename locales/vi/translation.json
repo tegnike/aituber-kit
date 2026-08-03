@@ -7,6 +7,10 @@
   "VoiceSettings": "Cài đặt giọng nói tổng hợp",
   "SpeechInputSettings": "Cài đặt đầu vào giọng nói",
   "SlideSettings": "Cài đặt slide",
+  "SlideControls": {
+    "SectionPaused": " (Đã tạm dừng phần)",
+    "NextSection": "Phần tiếp theo"
+  },
   "ImageSettings": "Cài đặt hình ảnh",
   "LogSettings": "Lịch sử hội thoại",
   "OtherSettings": "Cài đặt khác",

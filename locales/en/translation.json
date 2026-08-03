@@ -7,6 +7,10 @@
   "VoiceSettings": "Voice Synthesis Settings",
   "SpeechInputSettings": "Voice Input Settings",
   "SlideSettings": "Slide Settings",
+  "SlideControls": {
+    "SectionPaused": " (Section paused)",
+    "NextSection": "Next section"
+  },
   "ImageSettings": "Image Settings",
   "LogSettings": "Conversation History",
   "OtherSettings": "Other",

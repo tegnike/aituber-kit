@@ -5,6 +5,7 @@ import os from 'os'
 import path from 'path'
 import {
   PresentationRepositoryError,
+  createPresentationContentHash,
   deleteAssignment,
   readAssignment,
   readPresentation,
@@ -59,6 +60,17 @@ describe('presentationRepository', () => {
     expect(
       (await readPresentation('repository-test', 2)).manifest.revision
     ).toBe(2)
+  })
+
+  it('creates the same content hash regardless of object key insertion order', () => {
+    const left = createManifest()
+    left.metadata = { z_key: 'last', '-key': 'first' }
+    const right = createManifest()
+    right.metadata = { '-key': 'first', z_key: 'last' }
+
+    expect(createPresentationContentHash(left)).toBe(
+      createPresentationContentHash(right)
+    )
   })
 
   it('preserves a producer theme hint for renderer fallback', async () => {

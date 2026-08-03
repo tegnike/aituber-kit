@@ -3,6 +3,18 @@ export interface ClientTabLease {
   expiresAt: number
 }
 
+export const createClientTabId = (
+  cryptoApi: Pick<Crypto, 'randomUUID'> | null = typeof globalThis.crypto !==
+  'undefined'
+    ? globalThis.crypto
+    : null,
+  now = Date.now(),
+  randomValue = Math.random()
+) =>
+  typeof cryptoApi?.randomUUID === 'function'
+    ? cryptoApi.randomUUID()
+    : `tab-${now}-${randomValue.toString(36).slice(2)}`
+
 export const parseClientTabLease = (
   value: string | null
 ): ClientTabLease | null => {

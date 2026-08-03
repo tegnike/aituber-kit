@@ -3,7 +3,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { Marpit } from '@marp-team/marpit'
 import fs from 'fs/promises'
 import path from 'path'
-import { isRestrictedMode } from '@/utils/restrictedMode'
+import {
+  createRestrictedModeErrorResponse,
+  isRestrictedMode,
+} from '@/utils/restrictedMode'
 import assetManifest from '@/constants/assetManifest.json'
 import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
 import { routePolicies } from '@/lib/accessPolicy/routePolicies'
@@ -28,6 +31,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       : null
 
   if (externalMarkdown !== null) {
+    if (isRestrictedMode()) {
+      return res
+        .status(403)
+        .json(createRestrictedModeErrorResponse('external presentation'))
+    }
+
     if (!isSafePresentationMarkdown(externalMarkdown)) {
       return res.status(422).json({
         message: 'External markdown contains unsafe content',

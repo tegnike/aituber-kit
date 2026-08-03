@@ -7,6 +7,10 @@
   "VoiceSettings": "合成语音设置",
   "SpeechInputSettings": "语音输入设置",
   "SlideSettings": "幻灯片设置",
+  "SlideControls": {
+    "SectionPaused": "（章节已暂停）",
+    "NextSection": "下一章节"
+  },
   "ImageSettings": "图像设置",
   "LogSettings": "对话历史",
   "OtherSettings": "其他",

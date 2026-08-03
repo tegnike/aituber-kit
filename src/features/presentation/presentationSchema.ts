@@ -39,6 +39,9 @@ export const isSafePresentationMarkdown = (markdown: string) => {
   return !forbidden.some((pattern) => pattern.test(markdown))
 }
 
+const hasStandaloneSlideSeparator = (markdown: string) =>
+  /^\s*---\s*$/m.test(markdown)
+
 const assetSchema = z.object({
   id: idSchema,
   type: z.literal('image'),
@@ -61,7 +64,11 @@ const slideSchema = z.object({
   markdown: z
     .string()
     .max(PRESENTATION_LIMITS.markdown)
-    .refine(isSafePresentationMarkdown, 'Markdown contains unsafe content'),
+    .refine(isSafePresentationMarkdown, 'Markdown contains unsafe content')
+    .refine(
+      (markdown) => !hasStandaloneSlideSeparator(markdown),
+      'Markdown cannot contain standalone slide separators'
+    ),
   narration: z.string().max(PRESENTATION_LIMITS.narration).optional(),
   notes: z.string().max(PRESENTATION_LIMITS.notes).optional(),
   pauseAfter: z.boolean().optional(),

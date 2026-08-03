@@ -7,6 +7,10 @@
   "VoiceSettings": "إعدادات الصوت الاصطناعي",
   "SpeechInputSettings": "إعدادات إدخال الصوت",
   "SlideSettings": "إعدادات العرض التقديمي",
+  "SlideControls": {
+    "SectionPaused": " (القسم متوقف مؤقتًا)",
+    "NextSection": "القسم التالي"
+  },
   "ImageSettings": "إعدادات الصورة",
   "LogSettings": "سجل المحادثات",
   "OtherSettings": "إعدادات أخرى",

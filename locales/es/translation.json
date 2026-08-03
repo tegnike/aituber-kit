@@ -7,6 +7,10 @@
   "VoiceSettings": "Configuración de voz sintética",
   "SpeechInputSettings": "Configuración de entrada de voz",
   "SlideSettings": "Configuración de presentación",
+  "SlideControls": {
+    "SectionPaused": " (Sección en pausa)",
+    "NextSection": "Siguiente sección"
+  },
   "ImageSettings": "Configuración de imagen",
   "LogSettings": "Historial de conversación",
   "OtherSettings": "Otros",

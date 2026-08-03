@@ -7,6 +7,10 @@
   "VoiceSettings": "합성 음성 설정",
   "SpeechInputSettings": "음성 입력 설정",
   "SlideSettings": "슬라이드 설정",
+  "SlideControls": {
+    "SectionPaused": " (섹션 일시정지됨)",
+    "NextSection": "다음 섹션"
+  },
   "ImageSettings": "이미지 설정",
   "LogSettings": "대화 기록",
   "OtherSettings": "기타",

@@ -7,6 +7,10 @@
   "VoiceSettings": "Ustawienia syntezy głosu",
   "SpeechInputSettings": "Ustawienia wejścia głosowego",
   "SlideSettings": "Ustawienia slajdów",
+  "SlideControls": {
+    "SectionPaused": " (Sekcja wstrzymana)",
+    "NextSection": "Następna sekcja"
+  },
   "ImageSettings": "Ustawienia obrazu",
   "LogSettings": "Historia rozmów",
   "OtherSettings": "Inne",

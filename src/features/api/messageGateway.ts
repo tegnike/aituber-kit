@@ -144,6 +144,7 @@ export interface EnqueueMessagesParams {
 }
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5
+const RESPONSE_CALLBACK_TIMEOUT = 1000 * 60 * 30
 const RECENT_EVENT_LIMIT = 100
 
 const getGatewayState = (): MessageGatewayState => {
@@ -255,7 +256,7 @@ const queueResponseCallback = (callback: ResponseCallback) => {
   const handle = `callback_${randomUUID().replaceAll('-', '')}`
   getGatewayState().responseCallbacks[handle] = {
     ...callback,
-    expiresAt: Date.now() + CLIENT_TIMEOUT,
+    expiresAt: Date.now() + RESPONSE_CALLBACK_TIMEOUT,
     claimed: false,
   }
   return { handle }
@@ -504,7 +505,10 @@ export const updateClientStatus = (
     ) {
       emitApiEvent(clientId, 'presentation_loaded', payload)
     }
-    if (previousPresentation?.slideId !== presentation.slideId) {
+    if (
+      presentation.state !== 'loading' &&
+      previousPresentation?.slideId !== presentation.slideId
+    ) {
       emitApiEvent(clientId, 'slide_changed', payload)
     }
     if (previousPresentation?.state !== presentation.state) {

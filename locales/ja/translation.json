@@ -7,6 +7,10 @@
   "VoiceSettings": "合成音声設定",
   "SpeechInputSettings": "音声入力設定",
   "SlideSettings": "スライド設定",
+  "SlideControls": {
+    "SectionPaused": "（セクション停止中）",
+    "NextSection": "次のセクション"
+  },
   "ImageSettings": "画像設定",
   "LogSettings": "会話履歴",
   "OtherSettings": "その他",

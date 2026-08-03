@@ -1,10 +1,23 @@
-import { createExternalPresentationMarpit } from '@/pages/api/convertMarkdown'
+import handler, {
+  createExternalPresentationMarpit,
+} from '@/pages/api/convertMarkdown'
 import {
   DEFAULT_PRESENTATION_THEME_ID,
   resolvePresentationTheme,
 } from '@/features/presentation/presentationThemes'
+import { createMockReq, createMockRes } from '../../helpers/apiRouteTestUtils'
 
 describe('external presentation rendering', () => {
+  const originalRestrictedMode = process.env.NEXT_PUBLIC_RESTRICTED_MODE
+
+  afterEach(() => {
+    if (originalRestrictedMode === undefined) {
+      delete process.env.NEXT_PUBLIC_RESTRICTED_MODE
+    } else {
+      process.env.NEXT_PUBLIC_RESTRICTED_MODE = originalRestrictedMode
+    }
+  })
+
   it('provides a neutral opaque default theme', () => {
     const theme = resolvePresentationTheme()
 
@@ -37,5 +50,25 @@ describe('external presentation rendering', () => {
     expect(rendered.html).toContain('<table>')
     expect(rendered.html).toContain('<th>Stage</th>')
     expect(rendered.html).toContain('<td style="text-align:right">150 ms</td>')
+  })
+
+  it('rejects external Markdown rendering in restricted mode', async () => {
+    process.env.NEXT_PUBLIC_RESTRICTED_MODE = 'true'
+    const res = createMockRes()
+
+    await handler(
+      createMockReq({
+        method: 'POST',
+        body: { external: true, markdown: '# External' },
+      }),
+      res
+    )
+
+    expect(res._status).toBe(403)
+    expect(res._json).toEqual({
+      error: 'feature_disabled_in_restricted_mode',
+      message:
+        'The feature "external presentation" is disabled in restricted mode.',
+    })
   })
 })

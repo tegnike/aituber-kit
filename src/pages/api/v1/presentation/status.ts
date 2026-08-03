@@ -28,7 +28,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           actual.state !== 'loading' &&
           actual.state !== 'error'
         )
-      : !actual?.presentationId && actual?.state !== 'loading'
+      : !actual?.presentationId &&
+        actual?.state !== 'loading' &&
+        actual?.state !== 'error'
     return res.status(200).json({ ok: true, clientId, desired, actual, inSync })
   } catch (error) {
     const response = toPresentationErrorResponse(error)

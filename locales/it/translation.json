@@ -7,6 +7,10 @@
   "VoiceSettings": "Impostazioni voce sintetica",
   "SpeechInputSettings": "Impostazioni input vocale",
   "SlideSettings": "Impostazioni presentazione",
+  "SlideControls": {
+    "SectionPaused": " (Sezione in pausa)",
+    "NextSection": "Sezione successiva"
+  },
   "ImageSettings": "Impostazioni immagine",
   "LogSettings": "Cronologia conversazioni",
   "OtherSettings": "Altro",

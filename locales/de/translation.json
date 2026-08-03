@@ -7,6 +7,10 @@
   "VoiceSettings": "Sprachsynthese-Einstellungen",
   "SpeechInputSettings": "Spracheingabe-Einstellungen",
   "SlideSettings": "Präsentationseinstellungen",
+  "SlideControls": {
+    "SectionPaused": " (Abschnitt pausiert)",
+    "NextSection": "Nächster Abschnitt"
+  },
   "ImageSettings": "Bildeinstellungen",
   "LogSettings": "Gesprächsverlauf",
   "OtherSettings": "Sonstiges",
