@@ -1,6 +1,6 @@
 ---
 name: develop-main-release
-description: aituber-kitでdevelop=>mainのPRをマージし、新しいマイナーバージョンをリリースする。フッターのver表記更新、PRチェックとCodeRabbit reviewThreads確認、PRマージ、ローカルmain最新化、軽量タグ作成・push、CodeRabbit文を除外したGitHub Release発行時に使用。
+description: aituber-kitでdevelop=>mainのPRをマージし、新しいマイナーバージョンをリリースする。アプリ表示バージョン更新、PRチェックとCodeRabbit reviewThreads確認、PRマージ、ローカルmain最新化、軽量タグ作成・push、CodeRabbit文を除外したGitHub Release発行時に使用。
 user-invocable: true
 ---
 
@@ -11,7 +11,8 @@ aituber-kitで `develop => main` PRをマージし、新しいマイナーバー
 ## 基本方針
 
 - 次のマイナーバージョンは、最新リリースタグ `vX.Y.Z` から `vX.(Y+1).0` とする。
-- フッターの表示バージョンはPRマージ前に `develop` 側へコミットしてpushする。
+- アプリの表示バージョンはPRマージ前に `develop` 側へコミットしてpushする。
+- 表示バージョンの正本は `src/constants/appVersion.json` とし、設定フッターと起動ロゴはこの値を共有する。
 - タグは軽量タグで作成する。
 - GitHub Release本文は `develop => main` PR本文を転記するが、CodeRabbit自動生成ブロックとCodeRabbit由来の文言は含めない。
 - main checkoutに未追跡のネストrepo等がある場合、checkoutせず `git branch -f main origin/main` で参照だけ更新する。
@@ -49,27 +50,33 @@ git ls-remote origin 'refs/tags/v*'
 git ls-remote --exit-code origin refs/tags/vX.Y.0
 ```
 
-3. フッターの表示バージョンを更新する。
+3. アプリの表示バージョンを更新する。
 
 対象ファイル:
 
 ```text
-src/components/settings/index.tsx
+src/constants/appVersion.json
 ```
 
-検索例:
+この1ファイルだけの `version` を更新する。フッターや起動スクリプトへバージョン番号を直接記述しない。
+
+確認例:
 
 ```bash
-rg -n "powered by ChatVRM from Pixiv / ver\\." src/components/settings/index.tsx
+node -p "require('./src/constants/appVersion.json').version"
+node scripts/print-startup-logo.js | rg -F "AITuberKit vX.Y.0"
+rg -n "appVersion" src/components/settings/shell/Footer.tsx scripts/print-startup-logo.js
 ```
 
 変更後、差分を確認してコミット・pushする。
 
 ```bash
-git diff -- src/components/settings/index.tsx
+git diff -- src/constants/appVersion.json
 git diff --check
-git add src/components/settings/index.tsx
-git commit -m "Bump footer version to X.Y.0"
+git add src/constants/appVersion.json
+git diff --cached --check
+test "$(git diff --cached --name-only)" = "src/constants/appVersion.json"
+git commit --only src/constants/appVersion.json -m "Bump app version to X.Y.0"
 git push origin HEAD:develop
 ```
 
@@ -103,10 +110,10 @@ git rev-parse main origin/main
 
 7. タグを作成してpushする。
 
-マージcommitとフッター表示を確認してから軽量タグを付ける。
+マージcommitとアプリ表示バージョンを確認してから軽量タグを付ける。
 
 ```bash
-git show main:src/components/settings/index.tsx | rg -n "ver\\. X.Y.0"
+git show main:src/constants/appVersion.json | node -e "const fs = require('fs'); const { version } = JSON.parse(fs.readFileSync(0, 'utf8')); process.exit(version === 'X.Y.0' ? 0 : 1)"
 git tag vX.Y.0 main
 git push origin vX.Y.0
 ```
