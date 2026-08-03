@@ -54,7 +54,7 @@ describe('Form - Presentation answer overlay', () => {
         customModel: false,
         gameCommentaryEnabled: false,
         gameCommentaryPlaying: false,
-        showMessageInput: true,
+        showInputForm: true,
       } as any)
     )
     mockMenuStore.mockImplementation((selector) =>
@@ -128,7 +128,7 @@ describe('Form - Presentation answer overlay', () => {
         customModel: false,
         gameCommentaryEnabled: false,
         gameCommentaryPlaying: false,
-        showMessageInput: false,
+        showInputForm: false,
       } as any)
     )
     mockHomeStore.mockImplementation((selector) =>
