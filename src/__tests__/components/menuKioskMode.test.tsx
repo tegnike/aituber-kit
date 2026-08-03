@@ -150,6 +150,7 @@ describe('Menu - Kiosk Mode', () => {
         slideMode: false,
         showControlPanel: true,
         showAssistantText: true,
+        chatLogMode: 'assistant',
       }
       return selector(state as any)
     })
@@ -181,6 +182,19 @@ describe('Menu - Kiosk Mode', () => {
   })
 
   describe('control panel visibility', () => {
+    it('persists the next chat log mode through the settings store', () => {
+      const { container } = render(<Menu />)
+      const chatLogButton = container.querySelector(
+        '[data-testid="icon-24/CommentFill"]'
+      )
+
+      expect(chatLogButton).not.toBeNull()
+      fireEvent.click(chatLogButton as Element)
+      expect(settingsStore.setState).toHaveBeenCalledWith({
+        chatLogMode: 'chat-log',
+      })
+    })
+
     it('should show settings button when kiosk mode is off and control panel is visible', () => {
       mockUseKioskMode.mockReturnValue({
         isKioskMode: false,
@@ -259,6 +273,7 @@ describe('Menu - Kiosk Mode', () => {
           slideMode: false,
           showControlPanel: true,
           showAssistantText: true,
+          chatLogMode: 'assistant',
         }
         return selector(state as any)
       })
@@ -295,6 +310,7 @@ describe('Menu - Kiosk Mode', () => {
           slideMode: false,
           showControlPanel: true,
           showAssistantText: true,
+          chatLogMode: 'assistant',
           settingsToggleShortcut: 'Control+KeyK',
         }
         return selector(state as any)
