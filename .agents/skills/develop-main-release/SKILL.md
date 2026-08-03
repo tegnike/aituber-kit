@@ -63,7 +63,7 @@ src/constants/appVersion.json
 確認例:
 
 ```bash
-node -p "require('./src/constants/appVersion.json').version"
+node -e "const { version } = require('./src/constants/appVersion.json'); process.exit(version === 'X.Y.0' ? 0 : 1)"
 node scripts/print-startup-logo.js | rg -F "AITuberKit vX.Y.0"
 rg -n "appVersion" src/components/settings/shell/Footer.tsx scripts/print-startup-logo.js
 ```
@@ -71,13 +71,15 @@ rg -n "appVersion" src/components/settings/shell/Footer.tsx scripts/print-startu
 変更後、差分を確認してコミット・pushする。
 
 ```bash
+test "$(git branch --show-current)" = "develop"
+test "$(gh pr view <pr-number> --json headRefName --jq .headRefName)" = "develop"
 git diff -- src/constants/appVersion.json
 git diff --check
 git add src/constants/appVersion.json
 git diff --cached --check
 test "$(git diff --cached --name-only)" = "src/constants/appVersion.json"
 git commit --only src/constants/appVersion.json -m "Bump app version to X.Y.0"
-git push origin HEAD:develop
+git push origin develop
 ```
 
 4. PRチェックとレビュー状態を確認する。
@@ -113,8 +115,11 @@ git rev-parse main origin/main
 マージcommitとアプリ表示バージョンを確認してから軽量タグを付ける。
 
 ```bash
-git show main:src/constants/appVersion.json | node -e "const fs = require('fs'); const { version } = JSON.parse(fs.readFileSync(0, 'utf8')); process.exit(version === 'X.Y.0' ? 0 : 1)"
-git tag vX.Y.0 main
+git fetch origin main --prune
+test "$(git rev-parse main)" = "$(git rev-parse origin/main)"
+main_sha="$(git rev-parse origin/main)"
+git show "${main_sha}:src/constants/appVersion.json" | node -e "const fs = require('fs'); const { version } = JSON.parse(fs.readFileSync(0, 'utf8')); process.exit(version === 'X.Y.0' ? 0 : 1)"
+git tag vX.Y.0 "$main_sha"
 git push origin vX.Y.0
 ```
 
