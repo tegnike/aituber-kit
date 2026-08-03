@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import { TextButton } from '../textButton'
 import { ToggleSwitch } from '../toggleSwitch'
+import SettingsBackup from './settingsBackup'
 
 const AdvancedSettings = () => {
   const includeTimestampInUserMessage = settingsStore(
@@ -14,7 +15,8 @@ const AdvancedSettings = () => {
 
   return (
     <div className="mb-10">
-      <div className="mb-6 grid-cols-2">
+      <SettingsBackup />
+      <div className="border-t border-gray-300 pt-6 my-6 grid-cols-2">
         <div className="mb-4 text-xl font-bold">{t('LocalStorageReset')}</div>
         <div className="my-2 text-sm whitespace-pre-wrap">
           {t('LocalStorageResetInfo')}

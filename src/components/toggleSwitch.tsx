@@ -5,6 +5,7 @@ interface ToggleSwitchProps {
   onChange: (enabled: boolean) => void
   disabled?: boolean
   testId?: string
+  ariaLabel?: string
 }
 
 export const ToggleSwitch = ({
@@ -12,6 +13,7 @@ export const ToggleSwitch = ({
   onChange,
   disabled = false,
   testId,
+  ariaLabel,
 }: ToggleSwitchProps) => {
   return (
     <Switch
@@ -19,6 +21,7 @@ export const ToggleSwitch = ({
       onChange={onChange}
       disabled={disabled}
       data-testid={testId}
+      aria-label={ariaLabel}
       className={`${enabled ? 'bg-primary' : 'bg-[#c0c0c0]'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         relative inline-flex h-7 w-12 shrink-0 rounded-full

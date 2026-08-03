@@ -70,4 +70,29 @@ describe('settingsStore persistence', () => {
     expect(persisted.state.settingsToggleShortcut).toBe('Control+Shift+KeyS')
     expect(persisted.state.voiceInputShortcut).toBe('Space')
   })
+
+  it('persists user-configurable settings previously omitted from storage', () => {
+    process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES = 'false'
+    const settingsStore = loadStore()
+
+    settingsStore.setState({
+      cartesiaApiKey: 'cartesia-test-key',
+      dynamicRetrievalThreshold: 0.65,
+      showControlPanel: false,
+    })
+
+    const persisted = JSON.parse(localStorage.getItem(storageKey) ?? '{}')
+    expect(persisted.state.cartesiaApiKey).toBe('cartesia-test-key')
+    expect(persisted.state.dynamicRetrievalThreshold).toBe(0.65)
+    expect(persisted.state.showControlPanel).toBe(false)
+
+    const reloadedSettingsStore = loadStore()
+    expect(reloadedSettingsStore.getState().cartesiaApiKey).toBe(
+      'cartesia-test-key'
+    )
+    expect(reloadedSettingsStore.getState().dynamicRetrievalThreshold).toBe(
+      0.65
+    )
+    expect(reloadedSettingsStore.getState().showControlPanel).toBe(false)
+  })
 })
