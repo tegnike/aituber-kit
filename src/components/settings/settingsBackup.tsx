@@ -11,6 +11,7 @@ import {
 } from '@/features/settings/settingsFile'
 import toastStore from '@/features/stores/toast'
 import { TextButton } from '../textButton'
+import { ToggleSwitch } from '../toggleSwitch'
 
 const importErrorTranslationKeys: Record<string, string> = {
   'invalid-json': 'SettingsImportInvalidJson',
@@ -84,18 +85,17 @@ const SettingsBackup = () => {
       <div className="my-2 text-sm whitespace-pre-wrap">
         {t('SettingsBackupInfo')}
       </div>
-      <label className="my-3 flex items-start gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={includeSecrets}
-          onChange={(event) => setIncludeSecrets(event.target.checked)}
-          className="mt-1"
-        />
-        <span>
-          <span className="block font-bold">{t('SettingsIncludeSecrets')}</span>
-          <span className="block">{t('SettingsIncludeSecretsInfo')}</span>
-        </span>
-      </label>
+      <div className="my-3 text-sm">
+        <div className="flex items-center gap-3">
+          <ToggleSwitch
+            enabled={includeSecrets}
+            onChange={setIncludeSecrets}
+            testId="settings-include-secrets"
+          />
+          <span className="font-bold">{t('SettingsIncludeSecrets')}</span>
+        </div>
+        <div className="mt-2">{t('SettingsIncludeSecretsInfo')}</div>
+      </div>
       <div className="flex flex-col items-start gap-3 sm:flex-row">
         <TextButton onClick={handleExport}>
           {t('SettingsExportButton')}

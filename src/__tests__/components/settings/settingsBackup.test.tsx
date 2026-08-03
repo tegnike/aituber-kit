@@ -67,7 +67,7 @@ describe('SettingsBackup', () => {
     const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true)
     render(<SettingsBackup />)
 
-    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.click(screen.getByTestId('settings-include-secrets'))
     fireEvent.click(
       screen.getByRole('button', { name: 'SettingsExportButton' })
     )
