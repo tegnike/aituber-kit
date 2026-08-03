@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, { type ChatLogMode } from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
@@ -83,15 +83,12 @@ export const Menu = () => {
     }
   }, [canAccessSettings])
   // 会話ログ表示モード
+  const chatLogMode = settingsStore((s) => s.chatLogMode)
   const CHAT_LOG_MODE = {
-    HIDDEN: 0, // 非表示
-    ASSISTANT: 1, // アシスタントテキスト
-    CHAT_LOG: 2, // 会話ログ
-  } as const
-
-  const [chatLogMode, setChatLogMode] = useState<number>(
-    CHAT_LOG_MODE.ASSISTANT
-  )
+    HIDDEN: 'hidden',
+    ASSISTANT: 'assistant',
+    CHAT_LOG: 'chat-log',
+  } as const satisfies Record<string, ChatLogMode>
   const [showToolMenu, setShowToolMenu] = useState(false)
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
@@ -302,7 +299,16 @@ export const Menu = () => {
                   label={t('ChatLog')}
                   labelClassName="hidden sm:block"
                   isProcessing={false}
-                  onClick={() => setChatLogMode((prev) => (prev + 1) % 3)}
+                  onClick={() => {
+                    const nextMode: Record<ChatLogMode, ChatLogMode> = {
+                      assistant: CHAT_LOG_MODE.CHAT_LOG,
+                      'chat-log': CHAT_LOG_MODE.HIDDEN,
+                      hidden: CHAT_LOG_MODE.ASSISTANT,
+                    }
+                    settingsStore.setState({
+                      chatLogMode: nextMode[chatLogMode],
+                    })
+                  }}
                   aria-label={t('ChatLog')}
                   backgroundColor="bg-transparent hover:bg-black/5 active:bg-black/10 disabled:bg-transparent"
                   iconColor="text-text1"

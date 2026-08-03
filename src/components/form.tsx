@@ -19,6 +19,7 @@ export const Form = ({ focusOnMount = true }: Props) => {
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const captureStatus = homeStore((s) => s.captureStatus)
   const slideMode = settingsStore((s) => s.slideMode)
+  const showInputForm = settingsStore((s) => s.showInputForm)
   const slideVisible = menuStore((s) => s.slideVisible)
   const slidePlaying = slideStore((s) => s.isPlaying)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
@@ -102,10 +103,12 @@ export const Form = ({ focusOnMount = true }: Props) => {
   ) : (
     <>
       <PresetQuestionButtons onSelectQuestion={hookSendChat} />
-      <MessageInputContainer
-        focusOnMount={focusOnMount}
-        onChatProcessStart={hookSendChat}
-      />
+      {showInputForm && (
+        <MessageInputContainer
+          focusOnMount={focusOnMount}
+          onChatProcessStart={hookSendChat}
+        />
+      )}
     </>
   )
 }
