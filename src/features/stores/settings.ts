@@ -258,6 +258,7 @@ interface General {
   useSearchGrounding: boolean
   dynamicRetrievalThreshold: number
   maxPastMessages: number
+  backgroundImageUrl: string
   useVideoAsBackground: boolean
   hideVideoDisplay: boolean
   temperature: number
@@ -615,6 +616,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     0.3,
   maxPastMessages:
     parseInt(process.env.NEXT_PUBLIC_MAX_PAST_MESSAGES || '10') || 10,
+  backgroundImageUrl:
+    process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH || '/backgrounds/bg-c.png',
   useVideoAsBackground:
     process.env.NEXT_PUBLIC_USE_VIDEO_AS_BACKGROUND === 'true',
   hideVideoDisplay: process.env.NEXT_PUBLIC_HIDE_VIDEO_DISPLAY === 'true',
@@ -1241,6 +1244,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   relaxedMotionGroup: state.relaxedMotionGroup,
   surprisedMotionGroup: state.surprisedMotionGroup,
   maxPastMessages: state.maxPastMessages,
+  backgroundImageUrl: state.backgroundImageUrl,
   useVideoAsBackground: state.useVideoAsBackground,
   hideVideoDisplay: state.hideVideoDisplay,
   showControlPanel: state.showControlPanel,

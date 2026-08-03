@@ -27,6 +27,7 @@ describe('settings file export and import', () => {
       characterName: 'ニケ',
       dynamicRetrievalThreshold: 0.7,
       showControlPanel: false,
+      backgroundImageUrl: 'green',
     })
   })
 
@@ -51,6 +52,7 @@ describe('settings file export and import', () => {
     expect(data.settings.characterName).toBe('ニケ')
     expect(data.settings.dynamicRetrievalThreshold).toBe(0.7)
     expect(data.settings.showControlPanel).toBe(false)
+    expect(data.settings.backgroundImageUrl).toBe('green')
     expect(data.settings).not.toHaveProperty('openaiKey')
     expect(data.settings).not.toHaveProperty('cartesiaApiKey')
     expect(data.settings).not.toHaveProperty('customApiHeaders')
