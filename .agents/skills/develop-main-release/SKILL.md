@@ -64,7 +64,7 @@ src/constants/appVersion.json
 
 ```bash
 node -p "require('./src/constants/appVersion.json').version"
-node scripts/print-startup-logo.js | rg "AITuberKit vX.Y.0"
+node scripts/print-startup-logo.js | rg -F "AITuberKit vX.Y.0"
 rg -n "appVersion" src/components/settings/shell/Footer.tsx scripts/print-startup-logo.js
 ```
 
@@ -74,7 +74,9 @@ rg -n "appVersion" src/components/settings/shell/Footer.tsx scripts/print-startu
 git diff -- src/constants/appVersion.json
 git diff --check
 git add src/constants/appVersion.json
-git commit -m "Bump app version to X.Y.0"
+git diff --cached --check
+test "$(git diff --cached --name-only)" = "src/constants/appVersion.json"
+git commit --only src/constants/appVersion.json -m "Bump app version to X.Y.0"
 git push origin HEAD:develop
 ```
 
@@ -111,7 +113,7 @@ git rev-parse main origin/main
 マージcommitとアプリ表示バージョンを確認してから軽量タグを付ける。
 
 ```bash
-git show main:src/constants/appVersion.json | rg -n '"version": "X.Y.0"'
+git show main:src/constants/appVersion.json | node -e "const fs = require('fs'); const { version } = JSON.parse(fs.readFileSync(0, 'utf8')); process.exit(version === 'X.Y.0' ? 0 : 1)"
 git tag vX.Y.0 main
 git push origin vX.Y.0
 ```

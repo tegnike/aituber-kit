@@ -1,12 +1,13 @@
 const fs = require('fs')
 const path = require('path')
+const { normalizeAppVersion } = require('../src/constants/appVersion')
 
 const root = path.resolve(__dirname, '..')
 
-const formatVersion = (version) =>
-  typeof version === 'string' && /^\d+\.\d+\.\d+$/.test(version)
-    ? `v${version}`
-    : null
+const formatVersion = (version) => {
+  const normalizedVersion = normalizeAppVersion(version)
+  return normalizedVersion ? `v${normalizedVersion}` : null
+}
 
 const readVersionFile = (filePath) => {
   try {
@@ -20,11 +21,8 @@ const readVersionFile = (filePath) => {
 const readAppVersion = (rootDir = root) =>
   readVersionFile(path.join(rootDir, 'src/constants/appVersion.json'))
 
-const readPackageVersion = (rootDir = root) =>
-  readVersionFile(path.join(rootDir, 'package.json'))
-
 const getVersion = (rootDir = root) =>
-  readAppVersion(rootDir) || readPackageVersion(rootDir) || 'version unknown'
+  readAppVersion(rootDir) || 'version unknown'
 
 const main = async () => {
   const { render } = await import('oh-my-logo')
@@ -47,4 +45,4 @@ if (require.main === module && process.env.AITUBERKIT_NO_LOGO !== '1') {
   })
 }
 
-module.exports = { getVersion, readAppVersion, readPackageVersion }
+module.exports = { getVersion, readAppVersion }
