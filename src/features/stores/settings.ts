@@ -233,11 +233,14 @@ export interface PresetQuestion {
   order: number
 }
 
+export type ChatLogMode = 'hidden' | 'assistant' | 'chat-log'
+
 interface General {
   selectLanguage: Language
   changeEnglishToJapanese: boolean
   includeTimestampInUserMessage: boolean
   showControlPanel: boolean
+  showInputForm: boolean
   settingsToggleShortcut: string
   voiceInputShortcut: string
   showQuickMenu: boolean
@@ -272,6 +275,7 @@ interface General {
   whisperTranscriptionModel: WhisperTranscriptionModel
   initialSpeechTimeout: number
   chatLogWidth: number
+  chatLogMode: ChatLogMode
   chatLogPosition: 'left' | 'right'
   chatLogStyle: 'glass' | 'classic'
   chatLogEdgeOffset: number | null
@@ -570,6 +574,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   includeTimestampInUserMessage:
     process.env.NEXT_PUBLIC_INCLUDE_TIMESTAMP_IN_USER_MESSAGE === 'true',
   showControlPanel: process.env.NEXT_PUBLIC_SHOW_CONTROL_PANEL !== 'false',
+  showInputForm: process.env.NEXT_PUBLIC_SHOW_INPUT_FORM !== 'false',
   settingsToggleShortcut: normalizeKeyboardShortcut(
     process.env.NEXT_PUBLIC_SETTINGS_TOGGLE_SHORTCUT,
     DEFAULT_SETTINGS_TOGGLE_SHORTCUT
@@ -645,6 +650,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_INITIAL_SPEECH_TIMEOUT || '5.0') || 5.0,
   chatLogWidth:
     parseFloat(process.env.NEXT_PUBLIC_CHAT_LOG_WIDTH || '400') || 400,
+  chatLogMode: (() => {
+    const mode = process.env.NEXT_PUBLIC_CHAT_LOG_MODE
+    return mode === 'hidden' || mode === 'chat-log' ? mode : 'assistant'
+  })(),
   chatLogPosition:
     process.env.NEXT_PUBLIC_CHAT_LOG_POSITION === 'left' ? 'left' : 'right',
   chatLogStyle:
@@ -1235,6 +1244,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   useVideoAsBackground: state.useVideoAsBackground,
   hideVideoDisplay: state.hideVideoDisplay,
   showControlPanel: state.showControlPanel,
+  showInputForm: state.showInputForm,
   showQuickMenu: state.showQuickMenu,
   temperature: state.temperature,
   maxTokens: state.maxTokens,
@@ -1257,6 +1267,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   customApiIncludeMimeType: state.customApiIncludeMimeType,
   initialSpeechTimeout: state.initialSpeechTimeout,
   chatLogWidth: state.chatLogWidth,
+  chatLogMode: state.chatLogMode,
   chatLogPosition: state.chatLogPosition,
   chatLogStyle: state.chatLogStyle,
   chatLogEdgeOffset: state.chatLogEdgeOffset,

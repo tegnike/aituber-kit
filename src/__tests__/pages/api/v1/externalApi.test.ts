@@ -381,8 +381,9 @@ describe('/api/v1 external API', () => {
     )
   })
 
-  it('supports ai_generate chat mode with a custom system prompt', () => {
+  it('keeps ai_generate callback secrets on the server', async () => {
     const chat = require('@/pages/api/v1/chat').default
+    const callbackRoute = require('@/pages/api/v1/chat/callback').default
     const messages = require('@/pages/api/messages').default
 
     const res = createMockRes()
@@ -396,6 +397,11 @@ describe('/api/v1 external API', () => {
           mode: 'ai_generate',
           useCurrentSystemPrompt: false,
           systemPrompt: 'Be concise',
+          responseCallback: {
+            url: 'http://127.0.0.1:9892/api/question-responses',
+            interactionId: 'qa-question-1',
+            token: 'callback-token',
+          },
         },
       }),
       res
@@ -412,13 +418,74 @@ describe('/api/v1 external API', () => {
       getRes
     )
 
-    expect((getRes._json as { messages: unknown[] }).messages[0]).toEqual(
+    const queuedMessage = (getRes._json as { messages: any[] }).messages[0]
+    expect(queuedMessage).toEqual(
       expect.objectContaining({
         type: 'ai_generate',
         systemPrompt: 'Be concise',
         useCurrentSystemPrompt: false,
+        responseCallback: {
+          handle: expect.stringMatching(/^callback_/),
+        },
       })
     )
+    expect(JSON.stringify(queuedMessage)).not.toContain('callback-token')
+    expect(JSON.stringify(queuedMessage)).not.toContain('question-responses')
+
+    const originalFetch = global.fetch
+    const callbackFetch = jest.fn().mockResolvedValue({ ok: true })
+    global.fetch = callbackFetch as typeof fetch
+    try {
+      const callbackRes = createMockRes()
+      await callbackRoute(
+        createMockReq({
+          method: 'POST',
+          headers: { authorization: 'Bearer test-api-key' },
+          body: {
+            handle: queuedMessage.responseCallback.handle,
+            status: 'completed',
+            content: 'Generated answer',
+          },
+        }),
+        callbackRes
+      )
+
+      expect(callbackRes._status).toBe(200)
+      expect(callbackFetch).toHaveBeenCalledWith(
+        new URL('http://127.0.0.1:9892/api/question-responses'),
+        expect.objectContaining({
+          method: 'POST',
+          redirect: 'error',
+          body: expect.stringContaining('callback-token'),
+        })
+      )
+    } finally {
+      global.fetch = originalFetch
+    }
+  })
+
+  it('keeps response callbacks available beyond the client queue timeout', () => {
+    const gateway = require('@/features/api/messageGateway')
+    const now = jest.spyOn(Date, 'now').mockReturnValue(1_000)
+    try {
+      const [message] = gateway.enqueueMessages({
+        clientId: 'client1',
+        messages: ['long-running response'],
+        type: 'ai_generate',
+        responseCallback: {
+          url: 'http://127.0.0.1:9892/api/question-responses',
+          interactionId: 'long-running',
+          token: 'callback-token',
+        },
+      })
+      now.mockReturnValue(1_000 + 6 * 60 * 1_000)
+
+      expect(
+        gateway.claimResponseCallback(message.responseCallback.handle)
+      ).toEqual(expect.objectContaining({ interactionId: 'long-running' }))
+    } finally {
+      now.mockRestore()
+    }
   })
 
   it('queues stop commands for the client command poller', () => {
@@ -584,6 +651,156 @@ describe('/api/v1 external API', () => {
         }),
       })
     )
+  })
+
+  it('emits events when speech starts and ends', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const baseStatus = {
+      connected: true,
+      chatProcessing: false,
+    }
+
+    updateClientStatus('client1', { ...baseStatus, isSpeaking: false })
+    updateClientStatus('client1', { ...baseStatus, isSpeaking: true })
+    updateClientStatus('client1', { ...baseStatus, isSpeaking: false })
+
+    const speechEvents = getRecentApiEvents('client1').filter(
+      (event: { type: string }) => event.type.startsWith('speech_')
+    )
+    expect(speechEvents).toEqual([
+      expect.objectContaining({
+        type: 'speech_started',
+        payload: expect.objectContaining({ isSpeaking: true }),
+      }),
+      expect.objectContaining({
+        type: 'speech_ended',
+        payload: expect.objectContaining({ isSpeaking: false }),
+      }),
+    ])
+  })
+
+  it('emits speech_started when the first client status is already speaking', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+
+    updateClientStatus('client1', {
+      connected: true,
+      chatProcessing: true,
+      isSpeaking: true,
+    })
+
+    expect(
+      getRecentApiEvents('client1').filter(
+        (event: { type: string }) => event.type === 'speech_started'
+      )
+    ).toHaveLength(1)
+  })
+
+  it('emits the exact text when each synthesized speech chunk starts', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const baseStatus = {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: true,
+    }
+
+    updateClientStatus('client1', { ...baseStatus, activeSpeech: null })
+    updateClientStatus('client1', {
+      ...baseStatus,
+      activeSpeech: { id: 'speech-1', text: '最初の音声チャンクです。' },
+    })
+    updateClientStatus('client1', {
+      ...baseStatus,
+      activeSpeech: { id: 'speech-2', text: '次の音声チャンクです。' },
+    })
+    updateClientStatus('client1', { ...baseStatus, activeSpeech: null })
+
+    const chunkEvents = getRecentApiEvents('client1').filter(
+      (event: { type: string }) => event.type.startsWith('speech_chunk_')
+    )
+    expect(chunkEvents).toEqual([
+      expect.objectContaining({
+        type: 'speech_chunk_started',
+        payload: expect.objectContaining({
+          speechChunkId: 'speech-1',
+          text: '最初の音声チャンクです。',
+        }),
+      }),
+      expect.objectContaining({
+        type: 'speech_chunk_ended',
+        payload: { speechChunkId: 'speech-1' },
+      }),
+      expect.objectContaining({
+        type: 'speech_chunk_started',
+        payload: expect.objectContaining({
+          speechChunkId: 'speech-2',
+          text: '次の音声チャンクです。',
+        }),
+      }),
+      expect.objectContaining({
+        type: 'speech_chunk_ended',
+        payload: { speechChunkId: 'speech-2' },
+      }),
+    ])
+  })
+
+  it('emits slide_changed only after a presentation finishes loading', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const baseStatus = {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: false,
+    }
+    const presentation = {
+      presentationId: 'new-presentation',
+      revision: 1,
+      sectionId: 'section-1',
+      slideIndex: 0,
+      isSpeaking: false,
+      lastError: null,
+      updatedAt: '2026-08-03T00:00:00.000Z',
+    }
+
+    updateClientStatus('client1', {
+      ...baseStatus,
+      presentation: {
+        ...presentation,
+        presentationId: 'old-presentation',
+        state: 'ready',
+        slideId: 'old-slide',
+      },
+    })
+    const eventCount = getRecentApiEvents('client1').length
+    updateClientStatus('client1', {
+      ...baseStatus,
+      presentation: { ...presentation, state: 'loading', slideId: null },
+    })
+    expect(
+      getRecentApiEvents('client1')
+        .slice(eventCount)
+        .map((event: { type: string }) => event.type)
+    ).not.toContain('slide_changed')
+
+    updateClientStatus('client1', {
+      ...baseStatus,
+      presentation: { ...presentation, state: 'ready', slideId: 'new-slide' },
+    })
+    expect(
+      getRecentApiEvents('client1')
+        .slice(eventCount)
+        .map((event: { type: string }) => event.type)
+    ).toEqual(expect.arrayContaining(['presentation_loaded', 'slide_changed']))
   })
 
   it('returns recent events as a JSON snapshot', () => {

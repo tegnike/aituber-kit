@@ -1,10 +1,29 @@
+import { randomUUID } from 'crypto'
 import { logger } from '@/lib/logger'
+import type {
+  PresentationActualState,
+  PresentationControlAction,
+  PresentationControlTarget,
+} from '@/features/presentation/presentationTypes'
 
 export type MessageType = 'direct_send' | 'ai_generate' | 'user_input'
 
-export type ApiCommandType = 'stop'
+export type ApiCommandType =
+  | 'stop'
+  | 'presentation.load'
+  | 'presentation.control'
 
 export type ApiStopMode = 'speech' | 'queue' | 'all'
+
+export interface ResponseCallback {
+  url: string
+  interactionId: string
+  token: string
+}
+
+export interface QueuedResponseCallback {
+  handle: string
+}
 
 export interface QueuedMessage {
   id: string
@@ -18,26 +37,51 @@ export interface QueuedMessage {
   priority?: 'normal' | 'high'
   interrupt?: boolean
   source?: 'legacy' | 'v1'
+  responseCallback?: QueuedResponseCallback
 }
 
-export interface QueuedCommand {
+export interface QueuedStopCommand {
   id: string
   timestamp: number
-  command: ApiCommandType
+  command: 'stop'
   mode: ApiStopMode
   reason?: string
 }
+
+export interface QueuedPresentationLoadCommand {
+  id: string
+  timestamp: number
+  command: 'presentation.load'
+  presentationId: string
+  revision: number
+}
+
+export interface QueuedPresentationControlCommand {
+  id: string
+  timestamp: number
+  command: 'presentation.control'
+  action: PresentationControlAction
+  target?: PresentationControlTarget
+  speak?: boolean
+}
+
+export type QueuedCommand =
+  | QueuedStopCommand
+  | QueuedPresentationLoadCommand
+  | QueuedPresentationControlCommand
 
 export interface ClientStatus {
   clientId: string
   connected: boolean
   isSpeaking: boolean
+  activeSpeech?: { id: string; text: string } | null
   chatProcessing: boolean
   messageReceiverEnabled?: boolean
   modelType?: string
   aiService?: string
   voiceEngine?: string
   externalLinkageMode?: boolean
+  presentation?: PresentationActualState
   lastSeenAt: number
 }
 
@@ -51,6 +95,20 @@ export interface ApiEvent {
     | 'stop_requested'
     | 'commands_fetched'
     | 'status_updated'
+    | 'speech_started'
+    | 'speech_ended'
+    | 'speech_chunk_started'
+    | 'speech_chunk_ended'
+    | 'presentation_registered'
+    | 'presentation_assigned'
+    | 'presentation_loaded'
+    | 'presentation_started'
+    | 'slide_changed'
+    | 'section_paused'
+    | 'presentation_paused'
+    | 'presentation_completed'
+    | 'presentation_unloaded'
+    | 'presentation_error'
   payload?: Record<string, unknown>
 }
 
@@ -63,6 +121,10 @@ interface ClientQueue {
 interface MessageGatewayState {
   queuesPerClient: Record<string, ClientQueue>
   statusesPerClient: Record<string, ClientStatus>
+  responseCallbacks: Record<
+    string,
+    ResponseCallback & { expiresAt: number; claimed: boolean }
+  >
   recentEvents: ApiEvent[]
   eventListeners: Array<(event: ApiEvent) => void>
 }
@@ -78,9 +140,11 @@ export interface EnqueueMessagesParams {
   priority?: 'normal' | 'high'
   interrupt?: boolean
   source?: 'legacy' | 'v1'
+  responseCallback?: ResponseCallback
 }
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5
+const RESPONSE_CALLBACK_TIMEOUT = 1000 * 60 * 30
 const RECENT_EVENT_LIMIT = 100
 
 const getGatewayState = (): MessageGatewayState => {
@@ -92,10 +156,13 @@ const getGatewayState = (): MessageGatewayState => {
     globalState.__aituberKitMessageGateway = {
       queuesPerClient: {},
       statusesPerClient: {},
+      responseCallbacks: {},
       recentEvents: [],
       eventListeners: [],
     }
   }
+
+  globalState.__aituberKitMessageGateway.responseCallbacks ??= {}
 
   return globalState.__aituberKitMessageGateway
 }
@@ -178,6 +245,38 @@ export const cleanupClientQueues = () => {
       delete state.statusesPerClient[clientId]
     }
   }
+  for (const handle of Object.keys(state.responseCallbacks)) {
+    if (state.responseCallbacks[handle].expiresAt <= now) {
+      delete state.responseCallbacks[handle]
+    }
+  }
+}
+
+const queueResponseCallback = (callback: ResponseCallback) => {
+  const handle = `callback_${randomUUID().replaceAll('-', '')}`
+  getGatewayState().responseCallbacks[handle] = {
+    ...callback,
+    expiresAt: Date.now() + RESPONSE_CALLBACK_TIMEOUT,
+    claimed: false,
+  }
+  return { handle }
+}
+
+export const claimResponseCallback = (handle: string) => {
+  cleanupClientQueues()
+  const callback = getGatewayState().responseCallbacks[handle]
+  if (!callback || callback.claimed) return null
+  callback.claimed = true
+  return callback
+}
+
+export const releaseResponseCallback = (handle: string) => {
+  const callback = getGatewayState().responseCallbacks[handle]
+  if (callback) callback.claimed = false
+}
+
+export const completeResponseCallback = (handle: string) => {
+  delete getGatewayState().responseCallbacks[handle]
 }
 
 export const enqueueMessages = ({
@@ -191,24 +290,31 @@ export const enqueueMessages = ({
   priority = 'normal',
   interrupt = false,
   source = 'v1',
+  responseCallback,
 }: EnqueueMessagesParams): QueuedMessage[] => {
   cleanupClientQueues()
 
   const queue = getOrCreateQueue(clientId)
   const timestamp = Date.now()
-  const queuedMessages = messages.map((message) => ({
-    id: createId('msg'),
-    timestamp,
-    message,
-    type,
-    systemPrompt,
-    useCurrentSystemPrompt,
-    image,
-    emotion,
-    priority,
-    interrupt,
-    source,
-  }))
+  const queuedMessages = messages.map((message) => {
+    const queuedResponseCallback = responseCallback
+      ? queueResponseCallback(responseCallback)
+      : undefined
+    return {
+      id: createId('msg'),
+      timestamp,
+      message,
+      type,
+      systemPrompt,
+      useCurrentSystemPrompt,
+      image,
+      emotion,
+      priority,
+      interrupt,
+      source,
+      responseCallback: queuedResponseCallback,
+    }
+  })
 
   if (priority === 'high') {
     queue.messages.unshift(...queuedMessages)
@@ -247,11 +353,11 @@ export const enqueueStopCommand = (
   clientId: string,
   mode: ApiStopMode = 'all',
   reason?: string
-): QueuedCommand => {
+): QueuedStopCommand => {
   cleanupClientQueues()
 
   const queue = getOrCreateQueue(clientId)
-  const command: QueuedCommand = {
+  const command: QueuedStopCommand = {
     id: createId('cmd'),
     timestamp: Date.now(),
     command: 'stop',
@@ -263,6 +369,46 @@ export const enqueueStopCommand = (
   queue.lastAccessed = command.timestamp
   emitApiEvent(clientId, 'stop_requested', { commandId: command.id, mode })
 
+  return command
+}
+
+export const enqueuePresentationLoadCommand = (
+  clientId: string,
+  presentationId: string,
+  revision: number
+): QueuedPresentationLoadCommand => {
+  cleanupClientQueues()
+  const queue = getOrCreateQueue(clientId)
+  const command: QueuedPresentationLoadCommand = {
+    id: createId('cmd'),
+    timestamp: Date.now(),
+    command: 'presentation.load',
+    presentationId,
+    revision,
+  }
+  queue.commands.push(command)
+  queue.lastAccessed = command.timestamp
+  return command
+}
+
+export const enqueuePresentationControlCommand = (
+  clientId: string,
+  action: PresentationControlAction,
+  target?: PresentationControlTarget,
+  speak?: boolean
+): QueuedPresentationControlCommand => {
+  cleanupClientQueues()
+  const queue = getOrCreateQueue(clientId)
+  const command: QueuedPresentationControlCommand = {
+    id: createId('cmd'),
+    timestamp: Date.now(),
+    command: 'presentation.control',
+    action,
+    target,
+    speak,
+  }
+  queue.commands.push(command)
+  queue.lastAccessed = command.timestamp
   return command
 }
 
@@ -286,6 +432,7 @@ export const updateClientStatus = (
   clientId: string,
   status: Omit<ClientStatus, 'clientId' | 'lastSeenAt'>
 ): ClientStatus => {
+  const previousStatus = getGatewayState().statusesPerClient[clientId]
   const nextStatus: ClientStatus = {
     ...status,
     clientId,
@@ -298,6 +445,86 @@ export const updateClientStatus = (
     isSpeaking: nextStatus.isSpeaking,
     chatProcessing: nextStatus.chatProcessing,
   })
+
+  if (
+    previousStatus
+      ? previousStatus.isSpeaking !== nextStatus.isSpeaking
+      : nextStatus.isSpeaking
+  ) {
+    emitApiEvent(
+      clientId,
+      nextStatus.isSpeaking ? 'speech_started' : 'speech_ended',
+      {
+        isSpeaking: nextStatus.isSpeaking,
+        chatProcessing: nextStatus.chatProcessing,
+      }
+    )
+  }
+
+  const previousSpeech = previousStatus?.activeSpeech ?? null
+  const nextSpeech = nextStatus.activeSpeech ?? null
+  if (previousSpeech?.id !== nextSpeech?.id) {
+    if (previousSpeech) {
+      emitApiEvent(clientId, 'speech_chunk_ended', {
+        speechChunkId: previousSpeech.id,
+      })
+    }
+    if (nextSpeech) {
+      emitApiEvent(clientId, 'speech_chunk_started', {
+        speechChunkId: nextSpeech.id,
+        text: nextSpeech.text,
+      })
+    }
+  }
+
+  const previousPresentation = previousStatus?.presentation
+  const presentation = nextStatus.presentation
+  if (
+    previousPresentation?.presentationId &&
+    (!presentation?.presentationId || presentation.state === 'unassigned')
+  ) {
+    emitApiEvent(clientId, 'presentation_unloaded', {
+      presentationId: previousPresentation.presentationId,
+      revision: previousPresentation.revision,
+    })
+  } else if (presentation?.presentationId) {
+    const payload = {
+      presentationId: presentation.presentationId,
+      revision: presentation.revision,
+      sectionId: presentation.sectionId,
+      slideId: presentation.slideId,
+      state: presentation.state,
+    }
+    if (
+      presentation.state !== 'loading' &&
+      presentation.state !== 'error' &&
+      (previousPresentation?.presentationId !== presentation.presentationId ||
+        previousPresentation?.revision !== presentation.revision ||
+        previousPresentation?.state === 'loading' ||
+        previousPresentation?.state === 'error')
+    ) {
+      emitApiEvent(clientId, 'presentation_loaded', payload)
+    }
+    if (
+      presentation.state !== 'loading' &&
+      previousPresentation?.slideId !== presentation.slideId
+    ) {
+      emitApiEvent(clientId, 'slide_changed', payload)
+    }
+    if (previousPresentation?.state !== presentation.state) {
+      const eventByState: Partial<
+        Record<PresentationActualState['state'], ApiEvent['type']>
+      > = {
+        playing: 'presentation_started',
+        paused: 'presentation_paused',
+        section_paused: 'section_paused',
+        completed: 'presentation_completed',
+        error: 'presentation_error',
+      }
+      const eventType = eventByState[presentation.state]
+      if (eventType) emitApiEvent(clientId, eventType, payload)
+    }
+  }
 
   return nextStatus
 }
@@ -320,6 +547,7 @@ export const __resetMessageGatewayForTests = () => {
 
   state.queuesPerClient = {}
   state.statusesPerClient = {}
+  state.responseCallbacks = {}
   state.recentEvents = []
   state.eventListeners = []
 }

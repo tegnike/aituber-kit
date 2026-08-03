@@ -143,13 +143,22 @@ describe('SpeakQueue', () => {
       queue.checkSessionId('session1')
 
       const task = createTask('session1')
+      mockModelSpeak.mockImplementationOnce(
+        async (_buffer, _talk, _isNeedDecode, observer) => {
+          observer?.onPlaybackStart?.()
+        }
+      )
       await queue.addTask(task)
 
       expect(mockModelSpeak).toHaveBeenCalledWith(
         task.audioBuffer,
         task.talk,
-        task.isNeedDecode
+        task.isNeedDecode,
+        { onPlaybackStart: expect.any(Function) }
       )
+      expect(mockHomeSetState).toHaveBeenCalledWith({
+        activeSpeech: expect.objectContaining({ text: 'test' }),
+      })
     })
 
     it('should process a PCM16 stream via the VRM model', async () => {
@@ -157,6 +166,11 @@ describe('SpeakQueue', () => {
       queue.checkSessionId('session1')
       const stream = new ReadableStream<Uint8Array>()
       const onPlaybackStart = jest.fn()
+      mockModelSpeakPcm16Stream.mockImplementationOnce(
+        async (_stream, _talk, _sampleRate, observer) => {
+          observer?.onPlaybackStart?.()
+        }
+      )
 
       await queue.addTask({
         sessionId: 'session1',
@@ -171,8 +185,9 @@ describe('SpeakQueue', () => {
         stream,
         expect.objectContaining({ message: 'test' }),
         16000,
-        { onPlaybackStart }
+        { onPlaybackStart: expect.any(Function) }
       )
+      expect(onPlaybackStart).toHaveBeenCalledTimes(1)
     })
 
     it('should cancel a PCM16 stream and complete when the renderer is unsupported', async () => {
@@ -207,7 +222,8 @@ describe('SpeakQueue', () => {
       expect(mockLive2DSpeak).toHaveBeenCalledWith(
         task.audioBuffer,
         task.talk,
-        task.isNeedDecode
+        task.isNeedDecode,
+        { onPlaybackStart: expect.any(Function) }
       )
     })
 
@@ -222,7 +238,8 @@ describe('SpeakQueue', () => {
       expect(mockPNGTuberSpeak).toHaveBeenCalledWith(
         task.audioBuffer,
         task.talk,
-        task.isNeedDecode
+        task.isNeedDecode,
+        { onPlaybackStart: expect.any(Function) }
       )
     })
 
@@ -255,7 +272,10 @@ describe('SpeakQueue', () => {
 
     it('should set isSpeaking to false', () => {
       SpeakQueue.stopAll()
-      expect(mockHomeSetState).toHaveBeenCalledWith({ isSpeaking: false })
+      expect(mockHomeSetState).toHaveBeenCalledWith({
+        isSpeaking: false,
+        activeSpeech: null,
+      })
     })
 
     it('should call stopSpeaking on VRM model', () => {
@@ -340,7 +360,10 @@ describe('SpeakQueue', () => {
 
       expect(SpeakQueue.currentStopToken).toBe(initialToken + 1)
       expect(mockModelStopSpeaking).toHaveBeenCalled()
-      expect(mockHomeSetState).toHaveBeenCalledWith({ isSpeaking: false })
+      expect(mockHomeSetState).toHaveBeenCalledWith({
+        isSpeaking: false,
+        activeSpeech: null,
+      })
       expect(queue.isStopped()).toBe(true)
     })
 

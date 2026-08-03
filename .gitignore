@@ -100,3 +100,6 @@ promo-video/*
 
 .team/*
 .claude/scheduled_tasks.lock
+
+# External presentation persistent storage
+/.aituber-kit/

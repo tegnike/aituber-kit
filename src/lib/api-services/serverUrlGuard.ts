@@ -66,6 +66,10 @@ export function isLoopbackHost(hostname: string): boolean {
   )
 }
 
+export function isAllowedLoopbackHttpUrl(url: URL): boolean {
+  return isHttpUrl(url) && isLoopbackHost(url.hostname)
+}
+
 export function isLocalOrPrivateHost(hostname: string): boolean {
   const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, '')
   if (isLoopbackHost(normalized)) return true

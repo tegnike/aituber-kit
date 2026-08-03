@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger'
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import {
   speakMessageHandler,
   processAIResponse,
@@ -10,6 +10,31 @@ import homeStore from '@/features/stores/home'
 import { Message } from '@/features/messages/messages'
 import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 import { SpeakQueue } from '@/features/messages/speakQueue'
+import type {
+  PresentationAssignment,
+  PresentationControlAction,
+  PresentationControlTarget,
+} from '@/features/presentation/presentationTypes'
+import { normalizeExternalPresentation } from '@/features/presentation/presentationNormalizer'
+import presentationStore, {
+  applyPresentationControl,
+  getPresentationActualState,
+  loadPresentationDocument,
+  setPresentationError,
+  setPresentationLoading,
+  unloadPresentation,
+} from '@/features/stores/presentation'
+import slideStore from '@/features/stores/slide'
+import menuStore from '@/features/stores/menu'
+import type { QueuedResponseCallback } from '@/features/api/messageGateway'
+import {
+  canClaimClientTabLease,
+  createClientTabId,
+  parseClientTabLease,
+} from '@/features/api/clientTabLeadership'
+
+const CLIENT_TAB_LEASE_DURATION = 5000
+const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
 
 class ReceivedMessage {
   timestamp: number
@@ -18,6 +43,7 @@ class ReceivedMessage {
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
   image?: string
+  responseCallback?: QueuedResponseCallback
 
   constructor(
     timestamp: number,
@@ -25,7 +51,8 @@ class ReceivedMessage {
     type: 'direct_send' | 'ai_generate' | 'user_input',
     systemPrompt?: string,
     useCurrentSystemPrompt?: boolean,
-    image?: string
+    image?: string,
+    responseCallback?: QueuedResponseCallback
   ) {
     this.timestamp = timestamp
     this.message = message
@@ -33,15 +60,33 @@ class ReceivedMessage {
     this.systemPrompt = systemPrompt
     this.useCurrentSystemPrompt = useCurrentSystemPrompt
     this.image = image
+    this.responseCallback = responseCallback
   }
 }
 
-type ReceivedCommand = {
+type ReceivedStopCommand = {
   id: string
   command: 'stop'
   mode: 'speech' | 'queue' | 'all'
   reason?: string
 }
+
+type ReceivedPresentationCommand =
+  | {
+      id: string
+      command: 'presentation.load'
+      presentationId: string
+      revision: number
+    }
+  | {
+      id: string
+      command: 'presentation.control'
+      action: PresentationControlAction
+      target?: PresentationControlTarget
+      speak?: boolean
+    }
+
+type ReceivedCommand = ReceivedStopCommand | ReceivedPresentationCommand
 
 const getClientApiHeaders = () => {
   const apiKey = process.env.NEXT_PUBLIC_AITUBERKIT_API_KEY
@@ -49,7 +94,7 @@ const getClientApiHeaders = () => {
 }
 
 const MessageReceiver = () => {
-  const [lastTimestamp, setLastTimestamp] = useState(0)
+  const lastTimestampRef = useRef(0)
   const clientId = settingsStore((state) => state.clientId)
   const { isRestrictedMode } = useRestrictedMode()
   const handleSendChat = handleSendChatFn()
@@ -143,7 +188,38 @@ const MessageReceiver = () => {
               homeStore.setState({ modalImage: '' })
             }
 
-            await processAIResponse(messages)
+            homeStore.getState().upsertMessage({
+              role: 'user',
+              content: message.message,
+              timestamp: new Date().toISOString(),
+            })
+            try {
+              const content = await processAIResponse(messages)
+              if (message.responseCallback) {
+                await reportResponseCallback(
+                  message.responseCallback,
+                  content
+                    ? { status: 'completed', content }
+                    : { status: 'empty' }
+                )
+              }
+            } catch (error) {
+              if (message.responseCallback) {
+                try {
+                  await reportResponseCallback(message.responseCallback, {
+                    status: 'failed',
+                    error:
+                      error instanceof Error ? error.message : 'UNKNOWN_ERROR',
+                  })
+                } catch (callbackError) {
+                  logger.error(
+                    'Failed to report AI response error:',
+                    callbackError
+                  )
+                }
+              }
+              logger.error('Failed to process received AI message:', error)
+            }
             break
           }
           case 'user_input': {
@@ -202,7 +278,152 @@ const MessageReceiver = () => {
   useEffect(() => {
     if (!clientId || isRestrictedMode) return
 
+    const loadingPresentationKeys = new Set<string>()
+    let autoStartedAssignmentKey: string | null = null
+    let failedPresentationKey: string | null = null
+    let presentationRetryAttempt = 0
+    let presentationRetryAfter = 0
+    const tabId = createClientTabId()
+    const leaseKey = `aituber-kit-client-tab-leader:${clientId}`
+    let isClientTabLeader = false
+
+    const readClientTabLease = () => {
+      try {
+        return parseClientTabLease(window.localStorage.getItem(leaseKey))
+      } catch {
+        return null
+      }
+    }
+
+    const writeClientTabLease = () => {
+      try {
+        window.localStorage.setItem(
+          leaseKey,
+          JSON.stringify({
+            tabId,
+            expiresAt: Date.now() + CLIENT_TAB_LEASE_DURATION,
+          })
+        )
+        isClientTabLeader = true
+      } catch {
+        // Storageが使えない環境では従来どおりこのTabを有効にする。
+        isClientTabLeader = true
+      }
+    }
+
+    const releaseClientTabLease = () => {
+      if (!isClientTabLeader) return
+      try {
+        if (readClientTabLease()?.tabId === tabId) {
+          window.localStorage.removeItem(leaseKey)
+        }
+      } catch {
+        // Cleanup時のStorage例外は無視する。
+      }
+      isClientTabLeader = false
+    }
+
+    const loadPresentation = async (
+      presentationId: string,
+      revision: number,
+      autoStart = false
+    ) => {
+      const key = `${presentationId}:${revision}`
+      if (loadingPresentationKeys.has(key)) return
+      loadingPresentationKeys.add(key)
+      const loadGeneration = setPresentationLoading(presentationId, revision)
+
+      try {
+        const authHeaders = getClientApiHeaders()
+        if (!authHeaders) throw new Error('Client API key is not configured')
+        const response = await fetch(
+          `/api/v1/presentations/${encodeURIComponent(presentationId)}?revision=${revision}`,
+          { headers: authHeaders }
+        )
+        if (!response.ok) {
+          throw new Error(`Presentation load failed (${response.status})`)
+        }
+        const data = await response.json()
+        const document = normalizeExternalPresentation(data.presentation)
+        const committed = loadPresentationDocument(
+          document,
+          data.contentHash,
+          autoStart,
+          loadGeneration
+        )
+        if (!committed) return
+        settingsStore.setState({ slideMode: true })
+        menuStore.setState({ slideVisible: autoStart, thumbnailVisible: false })
+        slideStore.setState({ currentSlide: 0, isPlaying: false })
+        if (autoStart) autoStartedAssignmentKey = key
+        failedPresentationKey = null
+        presentationRetryAttempt = 0
+        presentationRetryAfter = 0
+      } catch (error) {
+        logger.error('Error loading external presentation:', error)
+        if (
+          setPresentationError(
+            error instanceof Error ? error.message : 'Presentation load failed',
+            loadGeneration
+          )
+        ) {
+          presentationRetryAttempt =
+            failedPresentationKey === key ? presentationRetryAttempt + 1 : 1
+          failedPresentationKey = key
+          presentationRetryAfter =
+            Date.now() +
+            Math.min(60_000, 2_000 * 2 ** (presentationRetryAttempt - 1))
+        }
+      } finally {
+        loadingPresentationKeys.delete(key)
+      }
+    }
+
+    const reconcileAssignment = async (
+      assignment: PresentationAssignment | null
+    ) => {
+      const current = presentationStore.getState()
+      if (!assignment) {
+        if (current.presentationId) unloadPresentation()
+        failedPresentationKey = null
+        presentationRetryAttempt = 0
+        presentationRetryAfter = 0
+        return
+      }
+      const key = `${assignment.presentationId}:${assignment.revision}`
+      if (
+        current.state === 'error' &&
+        failedPresentationKey === key &&
+        Date.now() < presentationRetryAfter
+      ) {
+        return
+      }
+      if (
+        !current.document ||
+        current.document.presentationId !== assignment.presentationId ||
+        current.document.revision !== assignment.revision ||
+        current.presentationId !== assignment.presentationId ||
+        current.revision !== assignment.revision ||
+        current.state === 'loading' ||
+        current.state === 'error'
+      ) {
+        await loadPresentation(
+          assignment.presentationId,
+          assignment.revision,
+          assignment.autoStart
+        )
+      } else if (
+        assignment.autoStart &&
+        autoStartedAssignmentKey !== key &&
+        current.state === 'ready'
+      ) {
+        applyPresentationControl('start')
+        autoStartedAssignmentKey = key
+      }
+    }
+
     const reportStatus = async () => {
+      if (!isClientTabLeader) return
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
 
@@ -210,58 +431,94 @@ const MessageReceiver = () => {
       const ss = settingsStore.getState()
 
       try {
-        await fetch(`/api/v1/client/status/?clientId=${clientId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...authHeaders,
-          },
-          body: JSON.stringify({
-            connected: true,
-            isSpeaking: hs.isSpeaking,
-            chatProcessing: hs.chatProcessing,
-            messageReceiverEnabled: ss.messageReceiverEnabled,
-            modelType: ss.modelType,
-            aiService: ss.selectAIService,
-            voiceEngine: ss.selectVoice,
-            externalLinkageMode: ss.externalLinkageMode,
-          }),
-        })
+        const response = await fetch(
+          `/api/v1/client/status/?clientId=${encodeURIComponent(clientId)}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeaders,
+            },
+            body: JSON.stringify({
+              connected: true,
+              isSpeaking: hs.isSpeaking,
+              activeSpeech: hs.activeSpeech,
+              chatProcessing: hs.chatProcessing,
+              messageReceiverEnabled: ss.messageReceiverEnabled,
+              modelType: ss.modelType,
+              aiService: ss.selectAIService,
+              voiceEngine: ss.selectVoice,
+              externalLinkageMode: ss.externalLinkageMode,
+              presentation: getPresentationActualState(hs.isSpeaking),
+            }),
+          }
+        )
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        if (!isClientTabLeader) return
+        if (data.assignmentError) {
+          logger.error(
+            'Error reading presentation assignment:',
+            data.assignmentError
+          )
+          return
+        }
+        await reconcileAssignment(data.assignment ?? null)
       } catch (error) {
         logger.error('Error reporting client status:', error)
       }
     }
 
     const fetchCommands = async () => {
+      if (!isClientTabLeader) return
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
 
       try {
         const response = await fetch(
-          `/api/v1/client/commands/?clientId=${clientId}`,
+          `/api/v1/client/commands/?clientId=${encodeURIComponent(clientId)}`,
           { headers: authHeaders }
         )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
+        if (!isClientTabLeader) return
         const commands = (data.commands || []) as ReceivedCommand[]
-        const stopCommands = commands.filter(
-          (command) => command.command === 'stop'
-        )
-
-        for (const command of stopCommands) {
-          if (command.mode === 'speech') {
-            SpeakQueue.stopCurrentSpeech()
-          } else if (command.mode === 'queue') {
-            SpeakQueue.stopQueue()
-          } else {
-            SpeakQueue.stopAll()
-            homeStore.setState({ chatProcessing: false, isSpeaking: false })
+        for (const command of commands) {
+          if (command.command === 'stop') {
+            if (command.mode === 'speech') {
+              SpeakQueue.stopCurrentSpeech()
+            } else if (command.mode === 'queue') {
+              SpeakQueue.stopQueue()
+            } else {
+              SpeakQueue.stopAll()
+              homeStore.setState({ chatProcessing: false, isSpeaking: false })
+            }
+          } else if (command.command === 'presentation.load') {
+            await loadPresentation(
+              command.presentationId,
+              command.revision,
+              false
+            )
+          } else if (command.command === 'presentation.control') {
+            if (!presentationStore.getState().document) {
+              await reportStatus()
+            }
+            const applied = applyPresentationControl(
+              command.action,
+              command.target,
+              command.speak
+            )
+            if (!applied) {
+              setPresentationError('Presentation control could not be applied')
+            }
           }
         }
 
-        if (stopCommands.length > 0) {
+        if (commands.length > 0) {
           await reportStatus()
         }
       } catch (error) {
@@ -270,19 +527,22 @@ const MessageReceiver = () => {
     }
 
     const fetchMessages = async () => {
+      if (!isClientTabLeader) return
+      if (!settingsStore.getState().messageReceiverEnabled) return
       try {
         const response = await fetch(
-          `/api/messages/?lastTimestamp=${lastTimestamp}&clientId=${clientId}`
+          `/api/messages/?lastTimestamp=${lastTimestampRef.current}&clientId=${encodeURIComponent(clientId)}`
         )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
+        if (!isClientTabLeader) return
         if (data.messages && data.messages.length > 0) {
-          speakMessage(data.messages)
           const newLastTimestamp =
             data.messages[data.messages.length - 1].timestamp
-          setLastTimestamp(newLastTimestamp)
+          lastTimestampRef.current = newLastTimestamp
+          await speakMessage(data.messages)
         }
       } catch (error) {
         logger.error('Error fetching messages:', error)
@@ -292,6 +552,7 @@ const MessageReceiver = () => {
     let isFetchingMessages = false
     let isFetchingCommands = false
     let isReportingStatus = false
+    let isStatusReportQueued = false
 
     const safeFetchMessages = async () => {
       if (isFetchingMessages) return
@@ -314,30 +575,143 @@ const MessageReceiver = () => {
     }
 
     const safeReportStatus = async () => {
+      if (!isClientTabLeader) return
+      isStatusReportQueued = true
       if (isReportingStatus) return
       isReportingStatus = true
       try {
-        await reportStatus()
+        while (isStatusReportQueued) {
+          isStatusReportQueued = false
+          await reportStatus()
+        }
       } finally {
         isReportingStatus = false
       }
     }
 
-    void safeFetchCommands()
-    void safeFetchMessages()
-    void safeReportStatus()
+    const unsubscribePresentationStatus = presentationStore.subscribe(
+      (state, previousState) => {
+        if (isClientTabLeader && state.updatedAt !== previousState.updatedAt) {
+          void safeReportStatus()
+        }
+      }
+    )
+
+    const unsubscribeSpeechStatus = homeStore.subscribe(
+      (state, previousState) => {
+        if (
+          isClientTabLeader &&
+          (state.isSpeaking !== previousState.isSpeaking ||
+            state.activeSpeech?.id !== previousState.activeSpeech?.id)
+        ) {
+          void safeReportStatus()
+        }
+      }
+    )
+
+    const claimClientTabLeadership = () => {
+      if (document.visibilityState !== 'visible') return
+      writeClientTabLease()
+      void safeFetchCommands()
+      void safeFetchMessages()
+      void safeReportStatus()
+    }
+
+    const refreshClientTabLeadership = () => {
+      const lease = readClientTabLease()
+      if (lease?.tabId === tabId) {
+        writeClientTabLease()
+        return
+      }
+      isClientTabLeader = false
+      if (
+        document.visibilityState === 'visible' &&
+        canClaimClientTabLease(lease, tabId, Date.now())
+      ) {
+        claimClientTabLeadership()
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') claimClientTabLeadership()
+    }
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== leaseKey) return
+      isClientTabLeader = parseClientTabLease(event.newValue)?.tabId === tabId
+    }
+
+    window.addEventListener('focus', claimClientTabLeadership)
+    window.addEventListener('storage', handleStorage)
+    window.addEventListener('beforeunload', releaseClientTabLease)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    if (document.visibilityState === 'visible' && document.hasFocus()) {
+      claimClientTabLeadership()
+    } else {
+      refreshClientTabLeadership()
+    }
+
     const commandIntervalId = setInterval(() => void safeFetchCommands(), 1000)
     const intervalId = setInterval(() => void safeFetchMessages(), 1000)
     const statusIntervalId = setInterval(() => void safeReportStatus(), 2000)
+    const leaseIntervalId = setInterval(
+      refreshClientTabLeadership,
+      CLIENT_TAB_LEASE_REFRESH_INTERVAL
+    )
 
     return () => {
       clearInterval(intervalId)
       clearInterval(commandIntervalId)
       clearInterval(statusIntervalId)
+      clearInterval(leaseIntervalId)
+      unsubscribePresentationStatus()
+      unsubscribeSpeechStatus()
+      window.removeEventListener('focus', claimClientTabLeadership)
+      window.removeEventListener('storage', handleStorage)
+      window.removeEventListener('beforeunload', releaseClientTabLease)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      releaseClientTabLease()
     }
-  }, [clientId, isRestrictedMode, lastTimestamp, speakMessage])
+  }, [clientId, isRestrictedMode, speakMessage])
 
   return <></>
+}
+
+const reportResponseCallback = async (
+  callback: QueuedResponseCallback,
+  result:
+    | { status: 'completed'; content: string }
+    | { status: 'empty' }
+    | { status: 'failed'; error: string }
+) => {
+  let lastError: unknown = null
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const authHeaders = getClientApiHeaders()
+      if (!authHeaders) {
+        throw new Error('Client API key is not configured')
+      }
+      const response = await fetch('/api/v1/chat/callback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...authHeaders,
+        },
+        body: JSON.stringify({
+          handle: callback.handle,
+          ...result,
+        }),
+      })
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      return
+    } catch (error) {
+      lastError = error
+      if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 500))
+    }
+  }
+  logger.error('Failed to record external chat response:', lastError)
 }
 
 export default MessageReceiver

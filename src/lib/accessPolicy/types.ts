@@ -9,7 +9,7 @@
  * ランタイム import を持たないこと。
  */
 
-export type ApiHttpMethod = 'GET' | 'POST' | 'DELETE'
+export type ApiHttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 /**
  * ルートがアクセスするリソースの分類
@@ -96,7 +96,10 @@ export type RoutePolicy = {
   /** 制限モード拒否時の機能名（featureName と異なる場合のみ指定） */
   restrictedFeatureName?: string
   methods: ApiHttpMethod[]
+  /** すべての許可メソッドに共通するリソース。 */
   resources: ApiResource[]
+  /** HTTPメソッドごとに追加で必要なリソース。 */
+  resourcesByMethod?: Partial<Record<ApiHttpMethod, ApiResource[]>>
   secret: SecretPolicy
   serverUrl?: ServerUrlPolicy
   restrictedBehavior: RestrictedBehavior

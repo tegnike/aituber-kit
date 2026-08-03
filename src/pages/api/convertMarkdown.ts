@@ -3,12 +3,58 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { Marpit } from '@marp-team/marpit'
 import fs from 'fs/promises'
 import path from 'path'
-import { isRestrictedMode } from '@/utils/restrictedMode'
+import {
+  createRestrictedModeErrorResponse,
+  isRestrictedMode,
+} from '@/utils/restrictedMode'
 import assetManifest from '@/constants/assetManifest.json'
 import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
 import { routePolicies } from '@/lib/accessPolicy/routePolicies'
+import { isSafePresentationMarkdown } from '@/features/presentation/presentationSchema'
+import { sanitizePresentationHtml } from '@/features/presentation/presentationSanitizer'
+import { resolvePresentationTheme } from '@/features/presentation/presentationThemes'
+
+export const config = {
+  api: { bodyParser: { sizeLimit: '5mb' } },
+}
+
+export const createExternalPresentationMarpit = () => {
+  const marpit = new Marpit({ inlineSVG: true })
+  marpit.markdown.enable('table')
+  return marpit
+}
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const externalMarkdown =
+    req.body?.external === true && typeof req.body?.markdown === 'string'
+      ? req.body.markdown
+      : null
+
+  if (externalMarkdown !== null) {
+    if (isRestrictedMode()) {
+      return res
+        .status(403)
+        .json(createRestrictedModeErrorResponse('external presentation'))
+    }
+
+    if (!isSafePresentationMarkdown(externalMarkdown)) {
+      return res.status(422).json({
+        message: 'External markdown contains unsafe content',
+        code: 'VALIDATION_ERROR',
+      })
+    }
+
+    const requestedTheme =
+      typeof req.body?.theme === 'string' ? req.body.theme : undefined
+    const theme = resolvePresentationTheme(requestedTheme)
+    const rendered = createExternalPresentationMarpit().render(externalMarkdown)
+    return res.status(200).json({
+      html: sanitizePresentationHtml(rendered.html),
+      css: `${rendered.css}\n${theme.css}`,
+      theme: theme.id,
+    })
+  }
+
   if (isRestrictedMode()) {
     const { slideName } = req.body as { slideName: string }
     if (!slideName || typeof slideName !== 'string') {
@@ -50,24 +96,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         'theme.css'
       )
       css = await fs.readFile(cssPath, 'utf-8')
-    } catch (cssError) {
+    } catch {
       logger.warn(`CSSファイルが見つかりません: ${slideName}/theme.css`)
-      // CSSファイルが見つからない場合は空文字列を使用
     }
 
-    const marpit = new Marpit({
-      inlineSVG: true,
-    })
+    const marpit = new Marpit({ inlineSVG: true })
     if (css) {
       marpit.themeSet.default = marpit.themeSet.add(css)
     }
 
     const { html, css: generatedCss } = marpit.render(markdown)
-
-    res.status(200).json({ html, css: generatedCss })
+    return res.status(200).json({ html, css: generatedCss })
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Error processing markdown',
       error: (error as Error).message,
     })

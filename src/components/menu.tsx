@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import settingsStore from '@/features/stores/settings'
+import settingsStore, { type ChatLogMode } from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
+import presentationStore from '@/features/stores/presentation'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
 import { IconButton } from './iconButton'
@@ -57,6 +58,8 @@ export const Menu = () => {
   const gameCommentaryPlaying = settingsStore((s) => s.gameCommentaryPlaying)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
+  const thumbnailVisible = menuStore((s) => s.thumbnailVisible)
+  const presentationDocument = presentationStore((s) => s.document)
   const chatLog = homeStore((s) => s.chatLog)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
@@ -83,15 +86,12 @@ export const Menu = () => {
     }
   }, [canAccessSettings])
   // 会話ログ表示モード
+  const chatLogMode = settingsStore((s) => s.chatLogMode)
   const CHAT_LOG_MODE = {
-    HIDDEN: 0, // 非表示
-    ASSISTANT: 1, // アシスタントテキスト
-    CHAT_LOG: 2, // 会話ログ
-  } as const
-
-  const [chatLogMode, setChatLogMode] = useState<number>(
-    CHAT_LOG_MODE.ASSISTANT
-  )
+    HIDDEN: 'hidden',
+    ASSISTANT: 'assistant',
+    CHAT_LOG: 'chat-log',
+  } as const satisfies Record<string, ChatLogMode>
   const [showToolMenu, setShowToolMenu] = useState(false)
   const [showPermissionModal, setShowPermissionModal] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
@@ -143,6 +143,33 @@ export const Menu = () => {
 
   // アシスタントメッセージ
   const latestAssistantMessage = getLatestAssistantMessage(chatLog)
+
+  // オープニング／カーテンコールではPresentationを隠す。スライドを隠しただけで
+  // 古い回答が再表示されないよう、新しく届いた回答だけを表示対象にする。
+  useEffect(
+    () =>
+      homeStore.subscribe((state, previousState) => {
+        if (state.chatLog.length <= previousState.chatLog.length) return
+        if (
+          state.chatLog.at(-1)?.role === 'assistant' &&
+          slideMode &&
+          !slideVisible &&
+          presentationDocument
+        ) {
+          if (chatLogMode === CHAT_LOG_MODE.HIDDEN) {
+            settingsStore.setState({ chatLogMode: CHAT_LOG_MODE.ASSISTANT })
+          }
+        }
+      }),
+    [
+      CHAT_LOG_MODE.ASSISTANT,
+      CHAT_LOG_MODE.HIDDEN,
+      chatLogMode,
+      presentationDocument,
+      slideMode,
+      slideVisible,
+    ]
+  )
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -302,7 +329,16 @@ export const Menu = () => {
                   label={t('ChatLog')}
                   labelClassName="hidden sm:block"
                   isProcessing={false}
-                  onClick={() => setChatLogMode((prev) => (prev + 1) % 3)}
+                  onClick={() => {
+                    const nextMode: Record<ChatLogMode, ChatLogMode> = {
+                      assistant: CHAT_LOG_MODE.CHAT_LOG,
+                      'chat-log': CHAT_LOG_MODE.HIDDEN,
+                      hidden: CHAT_LOG_MODE.ASSISTANT,
+                    }
+                    settingsStore.setState({
+                      chatLogMode: nextMode[chatLogMode],
+                    })
+                  }}
                   aria-label={t('ChatLog')}
                   backgroundColor="bg-transparent hover:bg-black/5 active:bg-black/10 disabled:bg-transparent"
                   iconColor="text-text1"
@@ -420,7 +456,10 @@ export const Menu = () => {
                       label={slideVisible ? t('HideSlide') : t('ShowSlide')}
                       active={slideVisible}
                       onClick={() =>
-                        menuStore.setState({ slideVisible: !slideVisible })
+                        menuStore.setState({
+                          slideVisible: !slideVisible,
+                          thumbnailVisible: false,
+                        })
                       }
                       disabled={slidePlaying}
                       aria-pressed={slideVisible}
@@ -434,7 +473,14 @@ export const Menu = () => {
         </div>
       </div>
       <div className="relative">
-        {slideMode && slideVisible && <Slides markdown={markdownContent} />}
+        {slideMode &&
+          (slideVisible || thumbnailVisible || presentationDocument) && (
+            <Slides
+              markdown={markdownContent}
+              visible={slideVisible || thumbnailVisible}
+              thumbnailVisible={thumbnailVisible}
+            />
+          )}
       </div>
       {chatLogMode === CHAT_LOG_MODE.CHAT_LOG && <ChatLog />}
       {showSettings && canAccessSettings && (
