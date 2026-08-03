@@ -6,6 +6,7 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore, { type ChatLogMode } from '@/features/stores/settings'
 import slideStore from '@/features/stores/slide'
+import presentationStore from '@/features/stores/presentation'
 import { AssistantText } from './assistantText'
 import { ChatLog } from './chatLog'
 import { IconButton } from './iconButton'
@@ -57,6 +58,8 @@ export const Menu = () => {
   const gameCommentaryPlaying = settingsStore((s) => s.gameCommentaryPlaying)
   const slideMode = settingsStore((s) => s.slideMode)
   const slideVisible = menuStore((s) => s.slideVisible)
+  const thumbnailVisible = menuStore((s) => s.thumbnailVisible)
+  const presentationDocument = presentationStore((s) => s.document)
   const chatLog = homeStore((s) => s.chatLog)
   const showWebcam = menuStore((s) => s.showWebcam)
   const showControlPanel = settingsStore((s) => s.showControlPanel)
@@ -140,6 +143,33 @@ export const Menu = () => {
 
   // アシスタントメッセージ
   const latestAssistantMessage = getLatestAssistantMessage(chatLog)
+
+  // オープニング／カーテンコールではPresentationを隠す。スライドを隠しただけで
+  // 古い回答が再表示されないよう、新しく届いた回答だけを表示対象にする。
+  useEffect(
+    () =>
+      homeStore.subscribe((state, previousState) => {
+        if (state.chatLog.length <= previousState.chatLog.length) return
+        if (
+          state.chatLog.at(-1)?.role === 'assistant' &&
+          slideMode &&
+          !slideVisible &&
+          presentationDocument
+        ) {
+          if (chatLogMode === CHAT_LOG_MODE.HIDDEN) {
+            settingsStore.setState({ chatLogMode: CHAT_LOG_MODE.ASSISTANT })
+          }
+        }
+      }),
+    [
+      CHAT_LOG_MODE.ASSISTANT,
+      CHAT_LOG_MODE.HIDDEN,
+      chatLogMode,
+      presentationDocument,
+      slideMode,
+      slideVisible,
+    ]
+  )
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -426,7 +456,10 @@ export const Menu = () => {
                       label={slideVisible ? t('HideSlide') : t('ShowSlide')}
                       active={slideVisible}
                       onClick={() =>
-                        menuStore.setState({ slideVisible: !slideVisible })
+                        menuStore.setState({
+                          slideVisible: !slideVisible,
+                          thumbnailVisible: false,
+                        })
                       }
                       disabled={slidePlaying}
                       aria-pressed={slideVisible}
@@ -440,7 +473,14 @@ export const Menu = () => {
         </div>
       </div>
       <div className="relative">
-        {slideMode && slideVisible && <Slides markdown={markdownContent} />}
+        {slideMode &&
+          (slideVisible || thumbnailVisible || presentationDocument) && (
+            <Slides
+              markdown={markdownContent}
+              visible={slideVisible || thumbnailVisible}
+              thumbnailVisible={thumbnailVisible}
+            />
+          )}
       </div>
       {chatLogMode === CHAT_LOG_MODE.CHAT_LOG && <ChatLog />}
       {showSettings && canAccessSettings && (

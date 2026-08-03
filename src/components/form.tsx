@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import settingsStore from '@/features/stores/settings'
 import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
-import slideStore from '@/features/stores/slide'
 import { handleSendChatFn } from '../features/chat/handlers'
 import { MessageInputContainer } from './messageInputContainer'
 import { PresetQuestionButtons } from './presetQuestionButtons'
@@ -21,8 +20,8 @@ export const Form = ({ focusOnMount = true }: Props) => {
   const slideMode = settingsStore((s) => s.slideMode)
   const showInputForm = settingsStore((s) => s.showInputForm)
   const slideVisible = menuStore((s) => s.slideVisible)
-  const slidePlaying = slideStore((s) => s.isPlaying)
   const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
+  const isSpeaking = homeStore((s) => s.isSpeaking)
   const selectAIService = settingsStore((s) => s.selectAIService)
   const selectAIModel = settingsStore((s) => s.selectAIModel)
   const enableMultiModal = settingsStore((s) => s.enableMultiModal)
@@ -97,7 +96,7 @@ export const Form = ({ focusOnMount = true }: Props) => {
 
   return slideMode &&
     slideVisible &&
-    slidePlaying &&
+    isSpeaking &&
     chatProcessingCount !== 0 ? (
     <SlideText />
   ) : (

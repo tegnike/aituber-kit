@@ -1,4 +1,5 @@
 import {
+  isAllowedLoopbackHttpUrl,
   isLocalLlmHost,
   isLocalOrPrivateHost,
   isLoopbackHost,
@@ -6,6 +7,26 @@ import {
 } from '@/lib/api-services/serverUrlGuard'
 
 describe('serverUrlGuard', () => {
+  describe('isAllowedLoopbackHttpUrl', () => {
+    it('allows HTTP(S) loopback URLs and rejects public hosts or other protocols', () => {
+      expect(
+        isAllowedLoopbackHttpUrl(new URL('http://127.0.0.1/callback'))
+      ).toBe(true)
+      expect(
+        isAllowedLoopbackHttpUrl(new URL('https://localhost/callback'))
+      ).toBe(true)
+      expect(isAllowedLoopbackHttpUrl(new URL('http://[::1]/callback'))).toBe(
+        true
+      )
+      expect(
+        isAllowedLoopbackHttpUrl(new URL('https://example.com/callback'))
+      ).toBe(false)
+      expect(isAllowedLoopbackHttpUrl(new URL('file:///tmp/callback'))).toBe(
+        false
+      )
+    })
+  })
+
   describe('isLoopbackHost', () => {
     it('detects loopback names and addresses only', () => {
       expect(isLoopbackHost('localhost')).toBe(true)

@@ -54,8 +54,11 @@ export const PresetQuestionButtons = ({ onSelectQuestion }: Props) => {
   const sortedQuestions = [...presetQuestions].sort((a, b) => a.order - b.order)
 
   return (
-    <div className="absolute bottom-[94px] z-20 w-full sm:bottom-[100px]">
-      <div className="mx-auto max-w-4xl px-3 sm:px-4" ref={containerRef}>
+    <div className="pointer-events-none absolute bottom-[94px] z-20 w-full sm:bottom-[100px]">
+      <div
+        className="pointer-events-auto mx-auto max-w-4xl px-3 sm:px-4"
+        ref={containerRef}
+      >
         <div
           ref={contentRef}
           className={`preset-questions-scroll flex gap-2 overflow-x-auto pb-2 ${

@@ -39,6 +39,10 @@ const Home = () => {
         ? ''
         : `url(${buildUrl(backgroundImageUrl)})`
   const messageReceiverEnabled = settingsStore((s) => s.messageReceiverEnabled)
+  const clientId = settingsStore((s) => s.clientId)
+  const externalControlEnabled = Boolean(
+    clientId && process.env.NEXT_PUBLIC_AITUBERKIT_API_KEY
+  )
   const modelType = settingsStore((s) => s.modelType)
   const { isLive2DEnabled } = useLive2DEnabled()
   const characterPreset1 = settingsStore((s) => s.characterPreset1)
@@ -121,7 +125,9 @@ const Home = () => {
       <Form />
       <Menu />
       <ModalImage />
-      {messageReceiverEnabled && <MessageReceiver />}
+      {(messageReceiverEnabled || externalControlEnabled) && (
+        <MessageReceiver />
+      )}
       <Toasts />
       <WebSocketManager />
       <YoutubeManager />

@@ -113,6 +113,44 @@ describe('SpeechSegmenter', () => {
         speeches(flushed).map((e) => e.kind === 'speech' && e.text)
       ).toEqual(['句点のないテキスト'])
     })
+
+    it('チャンク境界にある小数点で発話を分割しない', () => {
+      const seg = new SpeechSegmenter()
+      const events = [
+        ...pushAll(seg, [
+          '価格も、外部サービスの利用が1分0.',
+          '10から0.',
+          '37ドル、自前構成の計算費用が0.',
+          '06から0.',
+          '12ドルという記事上の目安があります。',
+        ]),
+        ...seg.flush(),
+      ]
+      const spoken = speeches(events).map(
+        (event) => event.kind === 'speech' && event.text
+      )
+
+      expect(spoken.join('')).toBe(
+        '価格も、外部サービスの利用が1分0.10から0.37ドル、自前構成の計算費用が0.06から0.12ドルという記事上の目安があります。'
+      )
+      expect(
+        spoken.some((text) => typeof text === 'string' && /\d\.$/.test(text))
+      ).toBe(false)
+    })
+
+    it('チャンク境界にある桁区切りのカンマで発話を分割しない', () => {
+      const seg = new SpeechSegmenter()
+      const events = [
+        ...pushAll(seg, ['動画の累計再生回数は5,', '200万回でした。']),
+        ...seg.flush(),
+      ]
+      const spoken = speeches(events).map(
+        (event) => event.kind === 'speech' && event.text
+      )
+
+      expect(spoken.join('')).toBe('動画の累計再生回数は5,200万回でした。')
+      expect(spoken).not.toContain('動画の累計再生回数は5,')
+    })
   })
 
   describe('感情タグ・モーションタグ', () => {

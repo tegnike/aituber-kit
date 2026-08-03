@@ -1,152 +1,250 @@
 import { logger } from '@/lib/logger'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import slideStore from '@/features/stores/slide'
+import presentationStore, {
+  applyPresentationControl,
+  finishCurrentPresentationNarration,
+} from '@/features/stores/presentation'
+import { serializeExternalPresentationMarkdown } from '@/features/presentation/externalPresentationMarkdown'
 import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import { SpeakQueue } from '@/features/messages/speakQueue'
 import SlideContent from './slideContent'
 import SlideControls from './slideControls'
+import SlideFrame from './slideFrame'
+import PresentationThumbnail from './presentationThumbnail'
 
 interface SlidesProps {
   markdown: string
+  visible?: boolean
+  thumbnailVisible?: boolean
 }
 
 export { goToSlide } from '@/features/stores/slide'
 
-const Slides: React.FC<SlidesProps> = ({ markdown }) => {
+const Slides: React.FC<SlidesProps> = ({
+  visible = true,
+  thumbnailVisible = false,
+}) => {
   const [marpitContainer, setMarpitContainer] = useState<Element | null>(null)
-  const isPlaying = slideStore((state) => state.isPlaying)
-  const currentSlide = slideStore((state) => state.currentSlide)
+  const legacyIsPlaying = slideStore((state) => state.isPlaying)
+  const legacyCurrentSlide = slideStore((state) => state.currentSlide)
   const selectedSlideDocs = slideStore((state) => state.selectedSlideDocs)
-  const chatProcessingCount = homeStore((s) => s.chatProcessingCount)
-  const [slideCount, setSlideCount] = useState(0)
+  const document = presentationStore((state) => state.document)
+  const playbackState = presentationStore((state) => state.state)
+  const currentSectionId = presentationStore((state) => state.sectionId)
+  const currentSlideId = presentationStore((state) => state.slideId)
+  const chatProcessingCount = homeStore((state) => state.chatProcessingCount)
+  const [legacySlideCount, setLegacySlideCount] = useState(0)
+  const narrationKeyRef = useRef<string | null>(null)
+  const narrationObservedRef = useRef(false)
+
+  const externalSlides = useMemo(
+    () =>
+      document?.sections.flatMap((section) =>
+        section.slides.map((slide) => ({ section, slide }))
+      ) ?? [],
+    [document]
+  )
+  const externalCurrentSlide = Math.max(
+    0,
+    externalSlides.findIndex(
+      ({ section, slide }) =>
+        section.id === currentSectionId && slide.id === currentSlideId
+    )
+  )
+  const isExternal = Boolean(document)
+  const isPlaying = isExternal ? playbackState === 'playing' : legacyIsPlaying
+  const currentSlide = isExternal ? externalCurrentSlide : legacyCurrentSlide
+  const slideCount = isExternal ? externalSlides.length : legacySlideCount
+  const externalMarkdown = useMemo(
+    () => (document ? serializeExternalPresentationMarkdown(document) : ''),
+    [document]
+  )
 
   useEffect(() => {
-    const currentMarpitContainer = document.querySelector('.marpit')
-    if (currentMarpitContainer) {
-      const slides = currentMarpitContainer.querySelectorAll(':scope > svg')
-      slides.forEach((slide, i) => {
-        const svgElement = slide as SVGElement
-        if (i === currentSlide) {
-          svgElement.style.display = 'block'
-        } else {
-          svgElement.style.display = 'none'
-        }
-      })
-    }
+    slideStore.setState({ currentSlide, isPlaying })
+  }, [currentSlide, isPlaying])
+
+  useEffect(() => {
+    const currentMarpitContainer = window.document.querySelector('.marpit')
+    if (!currentMarpitContainer) return
+    const slides = currentMarpitContainer.querySelectorAll(':scope > svg')
+    slides.forEach((slide, index) => {
+      const svgElement = slide as SVGElement
+      svgElement.style.display = index === currentSlide ? 'block' : 'none'
+    })
   }, [currentSlide, marpitContainer])
 
   useEffect(() => {
+    let cancelled = false
+    let styleElement: HTMLStyleElement | null = null
+
     const convertMarkdown = async () => {
-      const response = await fetch('/api/convertMarkdown', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ slideName: selectedSlideDocs }),
-      })
-      const data = await response.json()
-
-      // HTMLをパースしてmarpit要素を取得
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(data.html, 'text/html')
-      const marpitElement = doc.querySelector('.marpit')
-      setMarpitContainer(marpitElement)
-
-      // スライド数を設定
-      if (marpitElement) {
-        const slides = marpitElement.querySelectorAll(':scope > svg')
-        setSlideCount(slides.length)
-
-        // 初期状態で最初のスライドを表示
-        slides.forEach((slide, i) => {
-          if (i === 0) {
-            slide.removeAttribute('hidden')
-          } else {
-            slide.setAttribute('hidden', '')
-          }
-        })
+      if (!isExternal && !selectedSlideDocs) {
+        setMarpitContainer(null)
+        setLegacySlideCount(0)
+        return
       }
+      try {
+        const response = await fetch('/api/convertMarkdown', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            isExternal
+              ? {
+                  external: true,
+                  markdown: externalMarkdown,
+                  theme: document?.theme,
+                }
+              : { slideName: selectedSlideDocs }
+          ),
+        })
+        if (!response.ok) {
+          throw new Error(`Slide rendering failed (${response.status})`)
+        }
+        const data = await response.json()
+        const parser = new DOMParser()
+        const parsed = parser.parseFromString(data.html, 'text/html')
+        const marpitElement = parsed.querySelector('.marpit')
+        if (cancelled) return
+        setMarpitContainer(marpitElement)
 
-      // CSSを動的に適用
-      const styleElement = document.createElement('style')
-      styleElement.textContent = data.css
-      document.head.appendChild(styleElement)
+        const slides = marpitElement?.querySelectorAll(':scope > svg') ?? []
+        if (!isExternal) setLegacySlideCount(slides.length)
 
-      return () => {
-        document.head.removeChild(styleElement)
+        styleElement = window.document.createElement('style')
+        styleElement.textContent = data.css
+        window.document.head.appendChild(styleElement)
+      } catch (error) {
+        logger.error('Failed to render slides:', error)
       }
     }
 
-    convertMarkdown()
-  }, [selectedSlideDocs])
+    void convertMarkdown()
+    return () => {
+      cancelled = true
+      styleElement?.remove()
+    }
+  }, [document?.theme, externalMarkdown, isExternal, selectedSlideDocs])
 
   useEffect(() => {
-    // カスタムCSSを適用
-    const customStyle = `
-      div.marpit > svg > foreignObject > section {
-        padding: 2em;
-      }
+    const styleElement = window.document.createElement('style')
+    styleElement.textContent = `
+      div.marpit > svg > foreignObject > section { padding: 2em; }
+      div.marpit img { background: #eee; color: #555; }
     `
-    const styleElement = document.createElement('style')
-    styleElement.textContent = customStyle
-    document.head.appendChild(styleElement)
-
-    // コンポーネントのアンマウント時にスタイルを削除
-    return () => {
-      document.head.removeChild(styleElement)
-    }
+    window.document.head.appendChild(styleElement)
+    return () => styleElement.remove()
   }, [])
 
-  const readSlide = useCallback(
+  const readLegacySlide = useCallback(
     (slideIndex: number) => {
-      const getCurrentLines = () => {
-        const scripts = require(
-          `../../public/slides/${selectedSlideDocs}/scripts.json`
-        )
-        const currentScript = scripts.find(
-          (script: { page: number }) => script.page === slideIndex
-        )
-        return currentScript ? currentScript.line : ''
-      }
-
-      const currentLines = getCurrentLines()
-      logger.log(currentLines)
-      speakMessageHandler(currentLines)
+      const scripts = require(
+        `../../public/slides/${selectedSlideDocs}/scripts.json`
+      )
+      const script = scripts.find(
+        (item: { page: number }) => item.page === slideIndex
+      )
+      const line = script?.line ?? ''
+      logger.log(line)
+      void speakMessageHandler(line)
     },
     [selectedSlideDocs]
   )
 
-  const nextSlide = useCallback(() => {
-    slideStore.setState((state) => {
-      const newSlide = Math.min(state.currentSlide + 1, slideCount - 1)
-      if (isPlaying) {
-        readSlide(newSlide)
-      }
-      return { currentSlide: newSlide }
-    })
-  }, [isPlaying, readSlide, slideCount])
+  useEffect(() => {
+    if (!isExternal || playbackState !== 'playing') {
+      narrationKeyRef.current = null
+      narrationObservedRef.current = false
+      return
+    }
+    const current = externalSlides[externalCurrentSlide]
+    if (!current) return
+    const key = `${current.section.id}:${current.slide.id}`
+    if (narrationKeyRef.current === key) return
+
+    narrationKeyRef.current = key
+    narrationObservedRef.current = false
+    const narration = current.slide.narration?.trim() ?? ''
+    if (!narration) {
+      narrationKeyRef.current = null
+      finishCurrentPresentationNarration()
+      return
+    }
+
+    void speakMessageHandler(narration)
+      .catch((error) => {
+        logger.error('Presentation narration failed:', error)
+      })
+      .finally(() => {
+        if (
+          narrationKeyRef.current === key &&
+          homeStore.getState().chatProcessingCount === 0
+        ) {
+          narrationKeyRef.current = null
+          finishCurrentPresentationNarration()
+        }
+      })
+  }, [externalCurrentSlide, externalSlides, isExternal, playbackState])
 
   useEffect(() => {
-    // 最後のスライドに達した場合、isPlayingをfalseに設定
-    if (currentSlide === slideCount - 1 && chatProcessingCount === 0) {
-      slideStore.setState({ isPlaying: false })
+    if (
+      !isExternal ||
+      playbackState !== 'playing' ||
+      !narrationKeyRef.current
+    ) {
+      return
     }
-  }, [currentSlide, slideCount, chatProcessingCount])
+    if (chatProcessingCount > 0) {
+      narrationObservedRef.current = true
+      return
+    }
+    if (narrationObservedRef.current) {
+      narrationObservedRef.current = false
+      narrationKeyRef.current = null
+      finishCurrentPresentationNarration()
+    }
+  }, [chatProcessingCount, isExternal, playbackState])
+
+  const nextSlide = useCallback(() => {
+    if (isExternal) {
+      applyPresentationControl('next_slide')
+      return
+    }
+    slideStore.setState((state) => {
+      const next = Math.min(state.currentSlide + 1, slideCount - 1)
+      if (legacyIsPlaying) readLegacySlide(next)
+      return { currentSlide: next }
+    })
+  }, [isExternal, legacyIsPlaying, readLegacySlide, slideCount])
 
   const prevSlide = useCallback(() => {
+    if (isExternal) {
+      applyPresentationControl('previous_slide')
+      return
+    }
     slideStore.setState((state) => ({
       currentSlide: Math.max(state.currentSlide - 1, 0),
     }))
-  }, [])
+  }, [isExternal])
 
   const toggleIsPlaying = () => {
-    const newIsPlaying = !isPlaying
-    slideStore.setState({
-      isPlaying: newIsPlaying,
-    })
-    if (newIsPlaying) {
-      readSlide(currentSlide)
+    if (isExternal) {
+      applyPresentationControl(
+        playbackState === 'playing'
+          ? 'pause'
+          : playbackState === 'paused'
+            ? 'resume'
+            : 'start'
+      )
+      return
+    }
+
+    const nextPlaying = !legacyIsPlaying
+    slideStore.setState({ isPlaying: nextPlaying })
+    if (nextPlaying) {
+      readLegacySlide(currentSlide)
     } else {
       homeStore.setState({ isSpeaking: false })
       SpeakQueue.stopAll()
@@ -155,70 +253,70 @@ const Slides: React.FC<SlidesProps> = ({ markdown }) => {
 
   useEffect(() => {
     if (
+      !isExternal &&
       chatProcessingCount === 0 &&
-      isPlaying &&
+      legacyIsPlaying &&
       currentSlide < slideCount - 1
     ) {
       nextSlide()
     }
-  }, [chatProcessingCount, isPlaying, nextSlide, currentSlide, slideCount])
+  }, [
+    chatProcessingCount,
+    currentSlide,
+    isExternal,
+    legacyIsPlaying,
+    nextSlide,
+    slideCount,
+  ])
 
-  // スライドの縦のサイズを70%に制限し、アスペクト比を維持
-  const calculateSlideSize = () => {
-    // 縦のサイズの上限を70vhに設定
-    const maxHeight = '70vh'
-    // 横幅をアスペクト比に合わせて計算（16:9）
-    const width = 'calc(70vh * (16 / 9))'
-    // 横幅が大きすぎる場合は80vwを上限とする
-    const maxWidth = '80vw'
-
-    return {
-      width: `min(${width}, ${maxWidth})`,
-      height: `min(calc(${maxWidth} * (9 / 16)), ${maxHeight})`,
+  useEffect(() => {
+    if (
+      !isExternal &&
+      currentSlide === slideCount - 1 &&
+      chatProcessingCount === 0
+    ) {
+      slideStore.setState({ isPlaying: false })
     }
-  }
+  }, [chatProcessingCount, currentSlide, isExternal, slideCount])
 
-  const slideSize = calculateSlideSize()
+  const currentSection = externalSlides[externalCurrentSlide]?.section
+  const canMoveToNextSection = Boolean(
+    document &&
+    currentSection &&
+    document.sections.findIndex((section) => section.id === currentSection.id) <
+      document.sections.length - 1
+  )
 
   return (
-    <div
-      className="flex flex-col items-center justify-center"
-      data-testid="slide-mode-viewer"
-      style={{
-        height: '100vh',
-        padding: '10px 0',
-        position: 'absolute',
-        width: '100%',
-      }}
+    <SlideFrame
+      visible={visible}
+      controls={
+        thumbnailVisible ? null : (
+          <SlideControls
+            currentSlide={currentSlide}
+            slideCount={slideCount}
+            isPlaying={isPlaying}
+            prevSlide={prevSlide}
+            nextSlide={nextSlide}
+            toggleIsPlaying={toggleIsPlaying}
+            currentSectionTitle={currentSection?.title}
+            playbackState={isExternal ? playbackState : undefined}
+            nextSection={
+              isExternal && canMoveToNextSection
+                ? () => applyPresentationControl('next_section')
+                : undefined
+            }
+          />
+        )
+      }
     >
-      <div
-        style={{
-          width: slideSize.width,
-          height: slideSize.height,
-          margin: '0 auto',
-          position: 'relative',
-        }}
-      >
+      {thumbnailVisible ? (
+        <PresentationThumbnail />
+      ) : (
         <SlideContent marpitContainer={marpitContainer} />
-      </div>
-      <div
-        style={{
-          width: slideSize.width,
-          margin: '10px auto 0',
-          position: 'relative',
-          zIndex: 10,
-        }}
-      >
-        <SlideControls
-          currentSlide={currentSlide}
-          slideCount={slideCount}
-          isPlaying={isPlaying}
-          prevSlide={prevSlide}
-          nextSlide={nextSlide}
-          toggleIsPlaying={toggleIsPlaying}
-        />
-      </div>
-    </div>
+      )}
+    </SlideFrame>
   )
 }
+
 export default Slides

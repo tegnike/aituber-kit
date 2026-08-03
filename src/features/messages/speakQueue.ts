@@ -33,6 +33,7 @@ export class SpeakQueue {
   private static _instance: SpeakQueue | null = null
   private stopped = false
   private static stopTokenCounter = 0
+  private static speechTaskCounter = 0
   // 直近の停止の対象範囲（'all' = 全体停止 / それ以外 = 対象セッションID）。
   // speechDispatcher が「他セッション向けの停止に巻き添えされない」判定に使う
   // 読み取り専用の付帯情報で、キュー自体の制御には使用しない。
@@ -98,7 +99,7 @@ export class SpeakQueue {
     SpeakQueue.stopScope = 'all'
     instance.clearQueue()
     SpeakQueue.stopCurrentModelSpeaking()
-    homeStore.setState({ isSpeaking: false })
+    homeStore.setState({ isSpeaking: false, activeSpeech: null })
   }
 
   /**
@@ -130,7 +131,7 @@ export class SpeakQueue {
     instance.clearQueue()
 
     SpeakQueue.stopCurrentModelSpeaking()
-    homeStore.setState({ isSpeaking: false })
+    homeStore.setState({ isSpeaking: false, activeSpeech: null })
   }
 
   /**
@@ -218,7 +219,7 @@ export class SpeakQueue {
       const currentState = homeStore.getState()
       if (!currentState.isSpeaking) {
         this.clearQueue()
-        homeStore.setState({ isSpeaking: false })
+        homeStore.setState({ isSpeaking: false, activeSpeech: null })
         break
       }
 
@@ -231,16 +232,23 @@ export class SpeakQueue {
         }
         try {
           const renderer = getCharacterRenderer()
-          const observer = task.onPlaybackStart
-            ? { onPlaybackStart: task.onPlaybackStart }
-            : undefined
-          if (task.kind === 'pcm16-stream') {
-            if (!renderer?.speakPcm16Stream) {
-              throw new Error(
-                'Current character renderer does not support PCM16 streaming'
-              )
-            }
-            if (observer) {
+          const activeSpeech = {
+            id: `speech-${Date.now()}-${++SpeakQueue.speechTaskCounter}`,
+            text: task.talk.message,
+          }
+          const observer = {
+            onPlaybackStart: () => {
+              homeStore.setState({ activeSpeech })
+              task.onPlaybackStart?.()
+            },
+          }
+          try {
+            if (task.kind === 'pcm16-stream') {
+              if (!renderer?.speakPcm16Stream) {
+                throw new Error(
+                  'Current character renderer does not support PCM16 streaming'
+                )
+              }
               await renderer.speakPcm16Stream(
                 task.audioStream,
                 task.talk,
@@ -248,26 +256,16 @@ export class SpeakQueue {
                 observer
               )
             } else {
-              await renderer.speakPcm16Stream(
-                task.audioStream,
-                task.talk,
-                task.sampleRate
-              )
-            }
-          } else {
-            if (observer) {
               await renderer?.speak(
                 task.audioBuffer,
                 task.talk,
                 task.isNeedDecode,
                 observer
               )
-            } else {
-              await renderer?.speak(
-                task.audioBuffer,
-                task.talk,
-                task.isNeedDecode
-              )
+            }
+          } finally {
+            if (homeStore.getState().activeSpeech?.id === activeSpeech.id) {
+              homeStore.setState({ activeSpeech: null })
             }
           }
         } catch (error) {
@@ -322,7 +320,7 @@ export class SpeakQueue {
     if (isComplete) {
       logger.log('🎤 発話が完了しました。登録されたコールバックを実行します。')
       // 発話完了時に isSpeaking を必ず false に設定
-      homeStore.setState({ isSpeaking: false })
+      homeStore.setState({ isSpeaking: false, activeSpeech: null })
       // 停止フラグもリセットして次回の動作に備える
       this.stopped = false
       // すべての発話完了コールバックを呼び出す

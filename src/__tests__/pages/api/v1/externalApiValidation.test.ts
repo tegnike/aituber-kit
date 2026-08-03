@@ -177,6 +177,31 @@ describe('/api/v1 validation and mode branches', () => {
       expect(res._status).toBe(400)
       expect(res._json).toEqual({ error: 'System prompt is not a string' })
     })
+
+    it('rejects a non-loopback response callback on v1/chat with 400', () => {
+      const handler = require('@/pages/api/v1/chat').default
+      const res = createMockRes()
+
+      handler(
+        createMockReq({
+          method: 'POST',
+          headers: AUTH_HEADERS,
+          query: { clientId: 'client1' },
+          body: {
+            text: 'hello',
+            responseCallback: {
+              url: 'https://example.com/callback',
+              interactionId: 'qa-question-1',
+              token: 'callback-token',
+            },
+          },
+        }),
+        res
+      )
+
+      expect(res._status).toBe(400)
+      expect(res._json).toEqual({ error: 'Invalid response callback' })
+    })
   })
 
   describe('authentication alternatives', () => {

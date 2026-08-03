@@ -1,0 +1,180 @@
+import { normalizeExternalPresentation } from '@/features/presentation/presentationNormalizer'
+import presentationStore, {
+  applyPresentationControl,
+  finishCurrentPresentationNarration,
+  getCurrentPresentationLocation,
+  loadPresentationDocument,
+  setPresentationLoading,
+  unloadPresentation,
+} from '@/features/stores/presentation'
+import menuStore from '@/features/stores/menu'
+import type { PresentationManifestV1 } from '@/features/presentation/presentationTypes'
+
+const manifest: PresentationManifestV1 = {
+  schemaVersion: 1,
+  presentationId: 'store-test',
+  revision: 1,
+  title: 'Store test',
+  thumbnail: {
+    id: 'show-thumbnail',
+    type: 'image',
+    url: 'http://127.0.0.1:9892/api/shows/store-test/assets/thumbnail.png',
+    alt: '番組サムネイル',
+  },
+  createdAt: '2026-07-14T20:00:00.000Z',
+  sections: [
+    {
+      id: 'section-1',
+      title: 'One',
+      qaBrief: 'SECRET_BRIEF_MUST_NOT_BE_PERSISTED',
+      slides: [
+        { id: 'slide-1', markdown: '# One', pauseAfter: false },
+        { id: 'slide-2', markdown: '# Two' },
+      ],
+    },
+    {
+      id: 'section-2',
+      title: 'Two',
+      slides: [{ id: 'slide-3', markdown: '# Three' }],
+    },
+  ],
+}
+
+describe('presentationStore', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    unloadPresentation()
+    menuStore.setState({ slideVisible: false })
+  })
+
+  afterAll(() => {
+    presentationStore.persist.clearStorage()
+  })
+
+  it('runs narration progression and section boundaries', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:test'
+    )
+    expect(presentationStore.getState().document?.thumbnail?.id).toBe(
+      'show-thumbnail'
+    )
+    expect(presentationStore.getState().state).toBe('ready')
+    expect(applyPresentationControl('start')).toBe(true)
+    expect(menuStore.getState().slideVisible).toBe(true)
+    expect(finishCurrentPresentationNarration()).toBe(true)
+    expect(getCurrentPresentationLocation()?.slide.id).toBe('slide-2')
+    expect(presentationStore.getState().state).toBe('playing')
+    finishCurrentPresentationNarration()
+    expect(presentationStore.getState().state).toBe('section_paused')
+    applyPresentationControl('next_section')
+    expect(getCurrentPresentationLocation()?.slide.id).toBe('slide-3')
+    finishCurrentPresentationNarration()
+    expect(presentationStore.getState().state).toBe('completed')
+    expect(menuStore.getState().slideVisible).toBe(true)
+  })
+
+  it('hides the slide on reset and shows it when slide playback starts', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:test'
+    )
+    menuStore.setState({ slideVisible: false })
+
+    applyPresentationControl('start')
+    expect(menuStore.getState().slideVisible).toBe(true)
+
+    applyPresentationControl('reset')
+    expect(presentationStore.getState().state).toBe('ready')
+    expect(menuStore.getState().slideVisible).toBe(false)
+  })
+
+  it('hides and restores the slide without changing its position or playback state', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:test'
+    )
+    applyPresentationControl('start')
+    applyPresentationControl('next_slide')
+    presentationStore.setState({ state: 'completed' })
+    const before = getCurrentPresentationLocation()
+
+    expect(applyPresentationControl('hide')).toBe(true)
+    expect(menuStore.getState().slideVisible).toBe(false)
+    expect(menuStore.getState().thumbnailVisible).toBe(true)
+    expect(getCurrentPresentationLocation()).toEqual(before)
+    expect(presentationStore.getState().state).toBe('completed')
+
+    expect(applyPresentationControl('show')).toBe(true)
+    expect(menuStore.getState().slideVisible).toBe(true)
+    expect(menuStore.getState().thumbnailVisible).toBe(false)
+    expect(getCurrentPresentationLocation()).toEqual(before)
+    expect(presentationStore.getState().state).toBe('completed')
+  })
+
+  it('persists position metadata without persisting manifest or Q&A content', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:test'
+    )
+    const persisted = localStorage.getItem('aituber-kit-presentation-position')
+    expect(persisted).toContain('store-test')
+    expect(persisted).not.toContain('SECRET_BRIEF_MUST_NOT_BE_PERSISTED')
+    expect(persisted).not.toContain('sha256:test')
+  })
+
+  it('does not persist transient loading state across a browser reload', () => {
+    setPresentationLoading('store-test', 1)
+    const persisted = localStorage.getItem('aituber-kit-presentation-position')
+    expect(persisted).toContain('"state":"paused"')
+    expect(persisted).not.toContain('"state":"loading"')
+  })
+
+  it('honors autoStart after the assignment enters loading state', () => {
+    const document = normalizeExternalPresentation(manifest)
+    const loadGeneration = setPresentationLoading('store-test', 1)
+
+    expect(
+      loadPresentationDocument(
+        document,
+        'sha256:auto-start',
+        true,
+        loadGeneration
+      )
+    ).toBe(true)
+    expect(presentationStore.getState().state).toBe('playing')
+  })
+
+  it('ignores an in-flight load after the presentation is unloaded', () => {
+    const document = normalizeExternalPresentation(manifest)
+    const staleGeneration = setPresentationLoading('store-test', 1)
+    unloadPresentation()
+
+    expect(
+      loadPresentationDocument(document, 'sha256:stale', false, staleGeneration)
+    ).toBe(false)
+    expect(presentationStore.getState().document).toBeNull()
+    expect(presentationStore.getState().state).toBe('unassigned')
+  })
+
+  it('clears the previous document while a different assignment loads', () => {
+    loadPresentationDocument(
+      normalizeExternalPresentation(manifest),
+      'sha256:previous'
+    )
+
+    setPresentationLoading('different-presentation', 2)
+
+    expect(presentationStore.getState()).toEqual(
+      expect.objectContaining({
+        document: null,
+        contentHash: null,
+        sectionId: null,
+        slideId: null,
+        presentationId: 'different-presentation',
+        revision: 2,
+        state: 'loading',
+      })
+    )
+  })
+})

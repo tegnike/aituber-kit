@@ -62,7 +62,7 @@ export const extractSentence = (
 ): { sentence: string; remainingText: string } => {
   const normalizedCommaMinChars = Math.max(2, Math.floor(commaMinChars))
   const sentencePattern = new RegExp(
-    `^(.{1,${normalizedCommaMinChars - 1}}?(?:[。．.!?！？\\n]|(?=\\[))|.{${normalizedCommaMinChars},}?(?:[、,。．.!?！？\\n]|(?=\\[)))`
+    `^(.{1,${normalizedCommaMinChars - 1}}?(?:[。．!?！？\\n]|(?<!\\d)\\.|\\.(?=[^\\d])|(?=\\[))|.{${normalizedCommaMinChars},}?(?:[、。．!?！？\\n]|(?<!\\d)[,.]|[,.](?=[^\\d])|(?=\\[)))`
   )
   const sentenceMatch = text.match(sentencePattern)
   if (sentenceMatch?.[0]) {

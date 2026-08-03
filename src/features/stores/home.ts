@@ -32,6 +32,7 @@ export interface TransientState {
   live2dViewer: Live2DViewer | null
   pngTuberViewer: PNGTuberEngine | null
   slideMessages: string[]
+  activeSpeech: { id: string; text: string } | null
   chatProcessing: boolean
   chatProcessingCount: number
   incrementChatProcessingCount: () => void
@@ -201,6 +202,7 @@ const homeStore = create<HomeState>()(
       live2dViewer: null,
       pngTuberViewer: null,
       slideMessages: [],
+      activeSpeech: null,
       chatProcessing: false,
       chatProcessingCount: 0,
       incrementChatProcessingCount: () => {
