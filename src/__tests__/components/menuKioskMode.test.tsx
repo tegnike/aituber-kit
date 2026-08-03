@@ -377,6 +377,7 @@ describe('Menu - Kiosk Mode', () => {
 
   it('外部プレゼンを隠した会話中は新しいAI回答を自動表示する', async () => {
     let chatLog: any[] = []
+    let chatLogMode = 'hidden'
     mockUseKioskMode.mockReturnValue({
       isKioskMode: false,
       isTemporaryUnlocked: false,
@@ -397,8 +398,12 @@ describe('Menu - Kiosk Mode', () => {
         slideMode: true,
         showControlPanel: true,
         showAssistantText: true,
+        chatLogMode,
       } as any)
     )
+    ;(settingsStore.setState as jest.Mock).mockImplementation((update) => {
+      if (update.chatLogMode) chatLogMode = update.chatLogMode
+    })
     mockMenuStore.mockImplementation((selector) =>
       selector({
         slideVisible: false,
@@ -414,8 +419,6 @@ describe('Menu - Kiosk Mode', () => {
     )
 
     const view = render(<Menu />)
-    fireEvent.click(view.getByTestId('icon-24/CommentFill'))
-    fireEvent.click(view.getByTestId('icon-24/CommentOutline'))
     expect(view.queryByTestId('assistant-text')).not.toBeInTheDocument()
 
     chatLog = [
@@ -424,6 +427,13 @@ describe('Menu - Kiosk Mode', () => {
     mockGetLatestAssistantMessage.mockReturnValue('新しい回答です。')
     const onHomeStoreChange = (homeStore as any).subscribe.mock.calls.at(-1)[0]
     act(() => onHomeStoreChange({ chatLog }, { chatLog: [] }))
+
+    await waitFor(() =>
+      expect(settingsStore.setState).toHaveBeenCalledWith({
+        chatLogMode: 'assistant',
+      })
+    )
+    view.rerender(<Menu />)
 
     await waitFor(() =>
       expect(view.getByTestId('assistant-text')).toBeInTheDocument()

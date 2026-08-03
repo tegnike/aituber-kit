@@ -156,14 +156,15 @@ export const Menu = () => {
           !slideVisible &&
           presentationDocument
         ) {
-          setChatLogMode((current) =>
-            current === CHAT_LOG_MODE.HIDDEN ? CHAT_LOG_MODE.ASSISTANT : current
-          )
+          if (chatLogMode === CHAT_LOG_MODE.HIDDEN) {
+            settingsStore.setState({ chatLogMode: CHAT_LOG_MODE.ASSISTANT })
+          }
         }
       }),
     [
       CHAT_LOG_MODE.ASSISTANT,
       CHAT_LOG_MODE.HIDDEN,
+      chatLogMode,
       presentationDocument,
       slideMode,
       slideVisible,
