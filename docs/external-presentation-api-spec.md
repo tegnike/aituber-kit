@@ -71,7 +71,7 @@ AITuberKitは「外部で完成した資料を受け取り、表示・発話・�
 | 用語          | 定義                                                    |
 | ------------- | ------------------------------------------------------- |
 | Presentation  | 外部から登録されるプレゼンテーション全体                |
-| Section       | ニュース1件、章、トピックなど、質疑応答の文脈単位       |
+| Section       | 章、トピック、議題など、質疑応答の文脈単位              |
 | Slide         | 画面に表示する1ページ                                   |
 | Narration     | Slide表示時にAIキャラクターが読み上げる台本             |
 | Q&A Brief     | Sectionについて質問へ回答するための長文資料             |
@@ -146,6 +146,16 @@ External API manifest
 ```
 
 既存スライドモードは互換アダプターとして残す。
+
+### 7.4 Producerに依存しない
+
+AITuberKitは、登録元アプリケーションの名前、業務領域、Section名、Asset有無、URLのホスト名から表示内容やレイアウトを推測しない。
+
+- Slideの`markdown`はProducerが完成させた表示内容として扱い、AITuberKitは書き換えない。
+- `assets`、`sources`、`metadata`は参照情報であり、Markdownへの画像・出典の自動挿入には使わない。
+- AITuberKit固有の処理は、入力検証、sanitize、登録済みテーマの適用、Slide順序の維持に限定する。
+- 特定Producer専用のCSS、テンプレートID、ドメイン特例をAITuberKit本体へ追加しない。
+- Producer固有の組版が必要な場合は、Producer側でMarkdownを完成させるか、再利用可能な汎用テーマとしてAITuberKitへ別途提案する。
 
 ## 8. Presentation Manifest
 
@@ -241,6 +251,9 @@ export interface PresentationSourceV1 {
 - `onload`, `onclick`などのイベント属性を禁止する。
 - 任意の`<style>`と外部CSS読込を禁止する。
 - テーマはAITuberKit側で登録済みのテーマ名から選ぶ。
+- 登録済みテーマは`default`と`dark`とする。
+- `theme`省略時と未知のテーマ名では、安全な`default`へフォールバックする。
+- テーマは色・タイポグラフィなど汎用的な表示だけを担い、Markdown構造を変更しない。
 - Raw HTMLを許可する場合も、明示的なタグ・属性allowlistでsanitizeする。
 - Markdownレンダリング後のHTMLにもsanitizeを適用する。
 
@@ -249,49 +262,49 @@ export interface PresentationSourceV1 {
 ```json
 {
   "schemaVersion": 1,
-  "presentationId": "morning-show-2026-07-14",
+  "presentationId": "product-demo-2026-07-14",
   "revision": 1,
-  "title": "毎日朝活 2026-07-14",
+  "title": "Product Demo 2026-07-14",
   "locale": "ja-JP",
   "createdAt": "2026-07-14T20:00:00.000+02:00",
   "theme": "default",
   "sections": [
     {
-      "id": "news-01",
-      "title": "AIキャラクター関連ニュース",
-      "qaBrief": "このニュースの背景、確定情報、未確定情報を記載する。",
+      "id": "introduction",
+      "title": "製品紹介",
+      "qaBrief": "製品の背景、確定している機能、制約を記載する。",
       "responsePolicy": "資料にない情報は推測で断定しない。",
       "sources": [
         {
           "id": "source-01",
-          "title": "発表記事",
-          "url": "https://example.com/news/1",
-          "publisher": "Example News",
+          "title": "製品ドキュメント",
+          "url": "https://example.com/products/1",
+          "publisher": "Example Inc.",
           "publishedAt": "2026-07-14T09:00:00.000Z"
         }
       ],
       "slides": [
         {
-          "id": "news-01-1",
-          "markdown": "# 最初のニュース\n\n![記事画像](https://example.com/news/1/ogp.jpg)\n\n出典: Example News",
-          "narration": "それでは最初のニュースです。",
-          "notes": "記事の概要を紹介するページです。",
+          "id": "introduction-1",
+          "markdown": "# 製品概要\n\n![製品画像](https://example.com/products/1/hero.jpg)\n\n提供: Example Inc.",
+          "narration": "それでは製品の概要を紹介します。",
+          "notes": "製品の概要を紹介するページです。",
           "pauseAfter": false,
           "assets": [
             {
-              "id": "news-01-ogp",
+              "id": "product-hero",
               "type": "image",
-              "url": "https://example.com/news/1/ogp.jpg",
-              "alt": "記事のサムネイル",
-              "credit": "Example News",
-              "sourceUrl": "https://example.com/news/1"
+              "url": "https://example.com/products/1/hero.jpg",
+              "alt": "製品の外観",
+              "credit": "Example Inc.",
+              "sourceUrl": "https://example.com/products/1"
             }
           ]
         },
         {
-          "id": "news-01-2",
-          "markdown": "# 注目ポイント\n\n- 発表内容\n- 業界への影響\n- 今後の論点",
-          "narration": "このニュースの注目点は三つあります。",
+          "id": "introduction-2",
+          "markdown": "# 主な機能\n\n- シンプルな導入\n- 安定した運用\n- 外部API連携",
+          "narration": "この製品の主な機能は三つあります。",
           "pauseAfter": true
         }
       ]
@@ -328,7 +341,7 @@ Request bodyは`PresentationManifestV1`とする。URLの`presentationId`とbody
 ```json
 {
   "ok": true,
-  "presentationId": "morning-show-2026-07-14",
+  "presentationId": "product-demo-2026-07-14",
   "revision": 1,
   "contentHash": "sha256:...",
   "created": true,
@@ -389,7 +402,7 @@ Request:
   "ok": true,
   "clientId": "main-stage",
   "assignment": {
-    "presentationId": "morning-show-2026-07-14",
+    "presentationId": "product-demo-2026-07-14",
     "revision": 1,
     "autoStart": false
   },
@@ -428,7 +441,7 @@ Request:
 | `goto`             | 指定したSectionまたはSlideへ移動           |
 | `reset`            | 発話を停止し先頭のready状態へ戻す          |
 | `hide`             | 現在位置と状態を保ち、番組サムネイルへ切替 |
-| `show`             | 現在位置のSlideを再表示する                 |
+| `show`             | 現在位置のSlideを再表示する                |
 | `unload`           | 現在Presentationを解除する                 |
 
 `goto` Request例:
@@ -438,8 +451,8 @@ Request:
   "clientId": "main-stage",
   "action": "goto",
   "target": {
-    "sectionId": "news-02",
-    "slideId": "news-02-3"
+    "sectionId": "details",
+    "slideId": "details-3"
   },
   "speak": true
 }
@@ -460,16 +473,16 @@ Response:
   "ok": true,
   "clientId": "main-stage",
   "desired": {
-    "presentationId": "morning-show-2026-07-14",
+    "presentationId": "product-demo-2026-07-14",
     "revision": 1,
     "autoStart": false
   },
   "actual": {
-    "presentationId": "morning-show-2026-07-14",
+    "presentationId": "product-demo-2026-07-14",
     "revision": 1,
     "state": "section_paused",
-    "sectionId": "news-01",
-    "slideId": "news-01-3",
+    "sectionId": "introduction",
+    "slideId": "introduction-3",
     "slideIndex": 2,
     "isSpeaking": false,
     "lastError": null,
@@ -488,7 +501,7 @@ Response:
   "error": "Presentation revision conflicts with stored data",
   "code": "REVISION_CONFLICT",
   "details": {
-    "presentationId": "morning-show-2026-07-14",
+    "presentationId": "product-demo-2026-07-14",
     "storedRevision": 1,
     "requestedRevision": 1
   }
@@ -530,9 +543,9 @@ AITUBERKIT_PRESENTATION_STORAGE_DIR=""
 ```text
 .aituber-kit/presentations/
 ├── manifests/
-│   └── morning-show-2026-07-14.json
+│   └── product-demo-2026-07-14.json
 ├── metadata/
-│   └── morning-show-2026-07-14.json
+│   └── product-demo-2026-07-14.json
 └── assignments/
     └── <sha256(clientId)>.json
 ```
@@ -719,10 +732,10 @@ Payload例:
 
 ```json
 {
-  "presentationId": "morning-show-2026-07-14",
+  "presentationId": "product-demo-2026-07-14",
   "revision": 1,
-  "sectionId": "news-01",
-  "slideId": "news-01-3",
+  "sectionId": "introduction",
+  "slideId": "introduction-3",
   "state": "section_paused"
 }
 ```
@@ -937,13 +950,13 @@ Node.js 24.x、npm ^11.6.2を使用すること。
 
 ```bash
 curl -X PUT \
-  'http://localhost:3000/api/v1/presentations/morning-show-2026-07-14' \
+  'http://localhost:3000/api/v1/presentations/product-demo-2026-07-14' \
   -H 'Authorization: Bearer <API_KEY>' \
   -H 'Content-Type: application/json' \
   --data-binary @presentation.json
 
 curl -X POST \
-  'http://localhost:3000/api/v1/presentations/morning-show-2026-07-14/activate' \
+  'http://localhost:3000/api/v1/presentations/product-demo-2026-07-14/activate' \
   -H 'Authorization: Bearer <API_KEY>' \
   -H 'Content-Type: application/json' \
   -d '{"clientId":"main-stage","revision":1,"autoStart":false}'

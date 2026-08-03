@@ -61,12 +61,12 @@ describe('presentationRepository', () => {
     ).toBe(2)
   })
 
-  it('accepts a custom theme ID defined by the external manifest contract', async () => {
+  it('preserves a producer theme hint for renderer fallback', async () => {
     const manifest = createManifest()
-    manifest.theme = 'nikechan-morning'
+    manifest.theme = 'product-demo'
     await savePresentation(manifest)
     expect((await readPresentation('repository-test', 1)).manifest.theme).toBe(
-      'nikechan-morning'
+      'product-demo'
     )
   })
 

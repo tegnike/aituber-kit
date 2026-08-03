@@ -5,7 +5,7 @@ import presentationStore, {
   applyPresentationControl,
   finishCurrentPresentationNarration,
 } from '@/features/stores/presentation'
-import { buildExternalSlideMarkdown } from '@/features/presentation/externalSlideMarkdown'
+import { serializeExternalPresentationMarkdown } from '@/features/presentation/externalPresentationMarkdown'
 import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import { SpeakQueue } from '@/features/messages/speakQueue'
@@ -58,16 +58,8 @@ const Slides: React.FC<SlidesProps> = ({
   const currentSlide = isExternal ? externalCurrentSlide : legacyCurrentSlide
   const slideCount = isExternal ? externalSlides.length : legacySlideCount
   const externalMarkdown = useMemo(
-    () =>
-      externalSlides
-        .map(({ section, slide }) => {
-          const sectionSlideIndex = section.slides.findIndex(
-            (item) => item.id === slide.id
-          )
-          return buildExternalSlideMarkdown(section, slide, sectionSlideIndex)
-        })
-        .join('\n\n---\n\n'),
-    [externalSlides]
+    () => (document ? serializeExternalPresentationMarkdown(document) : ''),
+    [document]
   )
 
   useEffect(() => {
@@ -100,7 +92,11 @@ const Slides: React.FC<SlidesProps> = ({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(
             isExternal
-              ? { external: true, markdown: externalMarkdown }
+              ? {
+                  external: true,
+                  markdown: externalMarkdown,
+                  theme: document?.theme,
+                }
               : { slideName: selectedSlideDocs }
           ),
         })
@@ -130,7 +126,7 @@ const Slides: React.FC<SlidesProps> = ({
       cancelled = true
       styleElement?.remove()
     }
-  }, [externalMarkdown, isExternal, selectedSlideDocs])
+  }, [document?.theme, externalMarkdown, isExternal, selectedSlideDocs])
 
   useEffect(() => {
     const styleElement = window.document.createElement('style')
