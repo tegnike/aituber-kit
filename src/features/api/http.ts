@@ -47,10 +47,20 @@ export const getClientIdFromRequest = (
   req: NextApiRequest,
   bodyClientId?: unknown
 ): string => {
+  const bodyReceiverId = req.body?.receiverId
+  const queryReceiverId = req.query.receiverId
   const queryClientId = req.query.clientId
+  if (typeof bodyReceiverId === 'string') {
+    const trimmedBodyReceiverId = bodyReceiverId.trim()
+    if (trimmedBodyReceiverId) return trimmedBodyReceiverId
+  }
   if (typeof bodyClientId === 'string') {
     const trimmedBodyClientId = bodyClientId.trim()
     if (trimmedBodyClientId) return trimmedBodyClientId
+  }
+  if (typeof queryReceiverId === 'string') {
+    const trimmedQueryReceiverId = queryReceiverId.trim()
+    if (trimmedQueryReceiverId) return trimmedQueryReceiverId
   }
   if (typeof queryClientId === 'string') {
     const trimmedQueryClientId = queryClientId.trim()

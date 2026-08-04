@@ -97,6 +97,87 @@ describe('/api/v1 external API', () => {
     })
   })
 
+  it('lists active receiver instances without exposing legacy duplicates', () => {
+    const { updateClientStatus } = require('@/features/api/messageGateway')
+    const receivers = require('@/pages/api/v1/receivers').default
+    const commonStatus = {
+      connected: true,
+      isSpeaking: false,
+      chatProcessing: false,
+      messageReceiverEnabled: true,
+    }
+
+    updateClientStatus('aituber-receiver-tab-1', {
+      ...commonStatus,
+      configuredClientId: 'stage',
+      receiverDisplayName: 'Chrome tab-1',
+      receiverKind: 'browser',
+      receiverCapabilities: ['presentation', 'chat', 'speech'],
+    })
+    updateClientStatus('stage', {
+      ...commonStatus,
+      configuredClientId: 'stage',
+      receiverDisplayName: 'AITuberKit legacy receiver',
+      receiverKind: 'legacy',
+    })
+
+    const res = createMockRes()
+    receivers(
+      createMockReq({
+        method: 'GET',
+        headers: { authorization: 'Bearer test-api-key' },
+      }),
+      res
+    )
+
+    expect(res._status).toBe(200)
+    expect(res._json).toEqual({
+      ok: true,
+      receivers: [
+        expect.objectContaining({
+          receiverId: 'aituber-receiver-tab-1',
+          configuredClientId: 'stage',
+          displayName: 'Chrome tab-1',
+          kind: 'browser',
+          capabilities: ['presentation', 'chat', 'speech'],
+          connected: true,
+          isSpeaking: false,
+          lastSeenAt: expect.any(String),
+        }),
+      ],
+    })
+  })
+
+  it('accepts receiverId as the preferred routing parameter', () => {
+    const speak = require('@/pages/api/v1/speak').default
+    const messages = require('@/pages/api/messages').default
+    const speakRes = createMockRes()
+
+    speak(
+      createMockReq({
+        method: 'POST',
+        headers: { authorization: 'Bearer test-api-key' },
+        query: { receiverId: 'aituber-receiver-tab-1' },
+        body: { text: 'receiver routed message' },
+      }),
+      speakRes
+    )
+
+    const messagesRes = createMockRes()
+    messages(
+      createMockReq({
+        method: 'GET',
+        query: { clientId: 'aituber-receiver-tab-1' },
+      }),
+      messagesRes
+    )
+
+    expect(speakRes._status).toBe(202)
+    expect((messagesRes._json as { messages: unknown[] }).messages).toEqual([
+      expect.objectContaining({ message: 'receiver routed message' }),
+    ])
+  })
+
   it('does not accept public env keys or query string API keys for v1 authentication', () => {
     delete process.env.AITUBERKIT_API_KEY
     process.env.NEXT_PUBLIC_AITUBERKIT_API_KEY = 'public-key'
@@ -811,7 +892,7 @@ describe('/api/v1 external API', () => {
       createMockReq({
         method: 'POST',
         headers: { authorization: 'Bearer test-api-key' },
-        query: { clientId: 'client1' },
+        query: { receiverId: 'aituber-receiver-client1' },
         body: { text: 'event source' },
       }),
       createMockRes()
@@ -822,7 +903,10 @@ describe('/api/v1 external API', () => {
       createMockReq({
         method: 'GET',
         headers: { authorization: 'Bearer test-api-key' },
-        query: { clientId: 'client1', snapshot: 'true' },
+        query: {
+          receiverId: 'aituber-receiver-client1',
+          snapshot: 'true',
+        },
       }),
       eventsRes
     )

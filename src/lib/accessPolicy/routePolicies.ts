@@ -574,6 +574,15 @@ export const routePolicies = {
     restrictedBehavior: 'deny',
     requiresApiKey: true,
   },
+  '/api/v1/receivers': {
+    path: '/api/v1/receivers',
+    featureName: 'v1/receivers',
+    methods: ['GET'],
+    resources: ['external-control'],
+    secret: { kind: 'none' },
+    restrictedBehavior: 'deny',
+    requiresApiKey: true,
+  },
   '/api/v1/presentations/[presentationId]': {
     path: '/api/v1/presentations/[presentationId]',
     featureName: 'v1/presentations',

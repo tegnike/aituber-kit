@@ -15,7 +15,11 @@ const writeSseEvent = (res: NextApiResponse, event: ApiEvent) => {
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const clientId =
-    typeof req.query.clientId === 'string' ? req.query.clientId : undefined
+    typeof req.query.receiverId === 'string'
+      ? req.query.receiverId
+      : typeof req.query.clientId === 'string'
+        ? req.query.clientId
+        : undefined
   const snapshot = req.query.snapshot === 'true'
 
   if (snapshot) {
