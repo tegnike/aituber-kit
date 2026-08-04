@@ -150,7 +150,7 @@ describe('/api/v1 external API', () => {
 
   it('accepts receiverId as the preferred routing parameter', () => {
     const speak = require('@/pages/api/v1/speak').default
-    const messages = require('@/pages/api/messages').default
+    const messages = require('@/pages/api/v1/client/messages').default
     const speakRes = createMockRes()
 
     speak(
@@ -163,11 +163,22 @@ describe('/api/v1 external API', () => {
       speakRes
     )
 
+    const unauthenticatedRes = createMockRes()
+    messages(
+      createMockReq({
+        method: 'GET',
+        query: { receiverId: 'aituber-receiver-tab-1' },
+      }),
+      unauthenticatedRes
+    )
+    expect(unauthenticatedRes._status).toBe(401)
+
     const messagesRes = createMockRes()
     messages(
       createMockReq({
         method: 'GET',
-        query: { clientId: 'aituber-receiver-tab-1' },
+        headers: { authorization: 'Bearer test-api-key' },
+        query: { receiverId: 'aituber-receiver-tab-1' },
       }),
       messagesRes
     )
@@ -884,7 +895,7 @@ describe('/api/v1 external API', () => {
     ).toEqual(expect.arrayContaining(['presentation_loaded', 'slide_changed']))
   })
 
-  it('returns recent events as a JSON snapshot', () => {
+  it('falls back from an empty receiverId when filtering event snapshots', () => {
     const speak = require('@/pages/api/v1/speak').default
     const events = require('@/pages/api/v1/events').default
 
@@ -904,7 +915,8 @@ describe('/api/v1 external API', () => {
         method: 'GET',
         headers: { authorization: 'Bearer test-api-key' },
         query: {
-          receiverId: 'aituber-receiver-client1',
+          receiverId: '   ',
+          clientId: '  aituber-receiver-client1  ',
           snapshot: 'true',
         },
       }),

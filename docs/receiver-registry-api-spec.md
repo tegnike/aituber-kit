@@ -154,6 +154,8 @@ JSON bodyを持つAPIでは次の形式も使用できる。
 ## 10. Legacy互換
 
 - 新しいAITuberKit画面はReceiver固有IDと従来の`configuredClientId`の両方をポーリングする。
+- Receiver固有メッセージはAPIキー必須の`GET /api/v1/client/messages/?receiverId=...`から取得する。
+- Legacy経路だけは後方互換のため既存の`GET /api/messages/?clientId=...`を使用する。
 - Receiver固有のAssignmentが存在する場合、そのReceiverはLegacy Assignmentを処理しない。
 - 同一`configuredClientId`を共有するタブのうち、Legacy経路は既存のタブリーダーだけが処理する。
 - Receiver一覧に新形式Receiverが1件以上存在する場合、Legacy重複は一覧へ返さない。

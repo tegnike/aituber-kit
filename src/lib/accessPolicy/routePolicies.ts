@@ -565,6 +565,15 @@ export const routePolicies = {
     restrictedBehavior: 'deny',
     requiresApiKey: true,
   },
+  '/api/v1/client/messages': {
+    path: '/api/v1/client/messages',
+    featureName: 'v1/client/messages',
+    methods: ['GET'],
+    resources: ['external-control'],
+    secret: { kind: 'none' },
+    restrictedBehavior: 'deny',
+    requiresApiKey: true,
+  },
   '/api/v1/client/status': {
     path: '/api/v1/client/status',
     featureName: 'v1/client/status',

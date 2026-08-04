@@ -596,9 +596,16 @@ const MessageReceiver = () => {
       }
       if (!settingsStore.getState().messageReceiverEnabled) return
       const lastTimestamp = lastTimestampsRef.current[targetId] ?? 0
+      const authHeaders = mode === 'receiver' ? getClientApiHeaders() : null
+      if (mode === 'receiver' && !authHeaders) return
       try {
+        const endpoint =
+          mode === 'receiver'
+            ? `/api/v1/client/messages/?lastTimestamp=${lastTimestamp}&receiverId=${encodeURIComponent(targetId)}`
+            : `/api/messages/?lastTimestamp=${lastTimestamp}&clientId=${encodeURIComponent(targetId)}`
         const response = await fetch(
-          `/api/messages/?lastTimestamp=${lastTimestamp}&clientId=${encodeURIComponent(targetId)}`
+          endpoint,
+          authHeaders ? { headers: authHeaders } : undefined
         )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
