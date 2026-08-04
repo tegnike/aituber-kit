@@ -37,7 +37,7 @@ import {
   getReceiverCapabilities,
 } from '@/features/api/receiverRegistry'
 import {
-  createCoalescedRunner,
+  createOrderedReceiverDrainRunner,
   subscribeReceiverEventStream,
 } from '@/features/api/receiverEventStream'
 
@@ -635,15 +635,22 @@ const MessageReceiver = () => {
     let isReportingStatus = false
     let isStatusReportQueued = false
 
-    const safeFetchMessages = createCoalescedRunner(async () => {
-      await fetchMessages(receiverId, 'receiver')
-      await fetchMessages(clientId, 'legacy')
+    const drainReceiver = createOrderedReceiverDrainRunner({
+      fetchCommands: () => fetchCommands(receiverId, 'receiver'),
+      fetchMessages: () => fetchMessages(receiverId, 'receiver'),
     })
-
-    const safeFetchCommands = createCoalescedRunner(async () => {
-      await fetchCommands(receiverId, 'receiver')
-      await fetchCommands(clientId, 'legacy')
+    const drainLegacyReceiver = createOrderedReceiverDrainRunner({
+      fetchCommands: () => fetchCommands(clientId, 'legacy'),
+      fetchMessages: () => fetchMessages(clientId, 'legacy'),
     })
+    const drainAllReceivers = () =>
+      Promise.all([drainReceiver(), drainLegacyReceiver()])
+    const drainEventTarget = (targetId: string) => {
+      const drains: Promise<void>[] = []
+      if (targetId === receiverId) drains.push(drainReceiver())
+      if (targetId === clientId) drains.push(drainLegacyReceiver())
+      return Promise.all(drains)
+    }
 
     const safeReportStatus = async () => {
       isStatusReportQueued = true
@@ -682,8 +689,7 @@ const MessageReceiver = () => {
     const claimClientTabLeadership = () => {
       if (document.visibilityState !== 'visible') return
       writeClientTabLease()
-      void safeFetchCommands()
-      void safeFetchMessages()
+      void drainAllReceivers()
       void safeReportStatus()
     }
 
@@ -716,8 +722,7 @@ const MessageReceiver = () => {
     window.addEventListener('beforeunload', releaseClientTabLease)
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
-    void safeFetchCommands()
-    void safeFetchMessages()
+    void drainAllReceivers()
     void safeReportStatus()
 
     if (document.visibilityState === 'visible' && document.hasFocus()) {
@@ -737,16 +742,12 @@ const MessageReceiver = () => {
           targetId,
           headers: eventStreamHeaders,
           signal: eventStreamAbortController.signal,
-          onWakeup: (wakeup) => {
-            if (wakeup === 'messages') void safeFetchMessages()
-            if (wakeup === 'commands') void safeFetchCommands()
-          },
+          onWakeup: () => void drainEventTarget(targetId),
           onConnectionChange: (connected) => {
             if (connected) {
               connectedEventStreamTargets.add(targetId)
               // 接続確立直前に追加されたキューとの競合を閉じる。
-              void safeFetchCommands()
-              void safeFetchMessages()
+              void drainEventTarget(targetId)
             } else {
               connectedEventStreamTargets.delete(targetId)
             }
@@ -762,13 +763,11 @@ const MessageReceiver = () => {
         !eventStreamHeaders ||
         connectedEventStreamTargets.size < eventStreamTargets.length
       ) {
-        void safeFetchCommands()
-        void safeFetchMessages()
+        void drainAllReceivers()
       }
     }, DISCONNECTED_FALLBACK_POLL_INTERVAL)
     const safetyIntervalId = setInterval(() => {
-      void safeFetchCommands()
-      void safeFetchMessages()
+      void drainAllReceivers()
     }, CONNECTED_SAFETY_POLL_INTERVAL)
     const statusIntervalId = setInterval(() => void safeReportStatus(), 2000)
     const leaseIntervalId = setInterval(

@@ -1,5 +1,6 @@
 import {
   createCoalescedRunner,
+  createOrderedReceiverDrainRunner,
   receiverWakeupForEvent,
   subscribeReceiverEventStream,
   type ReceiverWakeup,
@@ -70,6 +71,73 @@ describe('receiverEventStream', () => {
     await first
 
     expect(task).toHaveBeenCalledTimes(2)
+  })
+
+  it('重なった停止・メッセージ通知でもコマンド取得後にメッセージ取得する', async () => {
+    const order: string[] = []
+    let releaseCommands: (() => void) | undefined
+    let releaseMessages: (() => void) | undefined
+    let markMessagesStarted: (() => void) | undefined
+    const commandsGate = new Promise<void>((resolve) => {
+      releaseCommands = resolve
+    })
+    const messagesGate = new Promise<void>((resolve) => {
+      releaseMessages = resolve
+    })
+    const messagesStarted = new Promise<void>((resolve) => {
+      markMessagesStarted = resolve
+    })
+    const fetchCommands = jest
+      .fn<Promise<void>, []>()
+      .mockImplementationOnce(async () => {
+        order.push('commands:start')
+        await commandsGate
+        order.push('commands:applied')
+      })
+      .mockImplementationOnce(async () => {
+        order.push('commands:recheck')
+      })
+    const fetchMessages = jest
+      .fn<Promise<void>, []>()
+      .mockImplementationOnce(async () => {
+        order.push('messages:start')
+        markMessagesStarted?.()
+        await messagesGate
+        order.push('messages:dispatched')
+      })
+      .mockImplementationOnce(async () => {
+        order.push('messages:recheck')
+      })
+    const drain = createOrderedReceiverDrainRunner({
+      fetchCommands,
+      fetchMessages,
+    })
+
+    const stopWakeup = drain()
+    const messageWakeup = drain()
+
+    expect(messageWakeup).toBe(stopWakeup)
+    expect(order).toEqual(['commands:start'])
+
+    releaseCommands?.()
+    await messagesStarted
+    expect(order).toEqual([
+      'commands:start',
+      'commands:applied',
+      'messages:start',
+    ])
+
+    releaseMessages?.()
+    await stopWakeup
+
+    expect(order).toEqual([
+      'commands:start',
+      'commands:applied',
+      'messages:start',
+      'messages:dispatched',
+      'commands:recheck',
+      'messages:recheck',
+    ])
   })
 
   it('認証付きSSEの分割chunkを読み、Receiverの取得処理を起こす', async () => {

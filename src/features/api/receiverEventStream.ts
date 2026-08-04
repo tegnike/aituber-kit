@@ -34,6 +34,18 @@ export const createCoalescedRunner = (task: () => Promise<void>) => {
   }
 }
 
+export const createOrderedReceiverDrainRunner = ({
+  fetchCommands,
+  fetchMessages,
+}: {
+  fetchCommands: () => Promise<void>
+  fetchMessages: () => Promise<void>
+}) =>
+  createCoalescedRunner(async () => {
+    await fetchCommands()
+    await fetchMessages()
+  })
+
 const INITIAL_RECONNECT_DELAY_MS = 250
 const MAX_RECONNECT_DELAY_MS = 5_000
 const RECONNECT_BACKOFF_RESET_AFTER_MS = 15_000
