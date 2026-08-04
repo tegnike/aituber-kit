@@ -5,6 +5,10 @@ import type {
   PresentationControlAction,
   PresentationControlTarget,
 } from '@/features/presentation/presentationTypes'
+import type {
+  ReceiverCapability,
+  ReceiverKind,
+} from '@/features/api/receiverRegistry'
 
 export type MessageType = 'direct_send' | 'ai_generate' | 'user_input'
 
@@ -72,6 +76,10 @@ export type QueuedCommand =
 
 export interface ClientStatus {
   clientId: string
+  configuredClientId?: string
+  receiverDisplayName?: string
+  receiverKind?: ReceiverKind
+  receiverCapabilities?: ReceiverCapability[]
   connected: boolean
   isSpeaking: boolean
   activeSpeech?: { id: string; text: string } | null
@@ -83,6 +91,17 @@ export interface ClientStatus {
   externalLinkageMode?: boolean
   presentation?: PresentationActualState
   lastSeenAt: number
+}
+
+export interface ActiveReceiver {
+  receiverId: string
+  configuredClientId: string
+  displayName: string
+  kind: ReceiverKind
+  capabilities: ReceiverCapability[]
+  connected: true
+  isSpeaking: boolean
+  lastSeenAt: string
 }
 
 export interface ApiEvent {
@@ -144,6 +163,7 @@ export interface EnqueueMessagesParams {
 }
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5
+const ACTIVE_RECEIVER_WINDOW = 1000 * 10
 const RESPONSE_CALLBACK_TIMEOUT = 1000 * 60 * 30
 const RECENT_EVENT_LIMIT = 100
 
@@ -531,6 +551,45 @@ export const updateClientStatus = (
 
 export const getClientStatus = (clientId: string): ClientStatus | null =>
   getGatewayState().statusesPerClient[clientId] ?? null
+
+const defaultReceiverCapabilities = (
+  status: ClientStatus
+): ReceiverCapability[] => [
+  'presentation',
+  ...(status.messageReceiverEnabled ? (['chat', 'speech'] as const) : []),
+]
+
+const toActiveReceiver = (status: ClientStatus): ActiveReceiver => ({
+  receiverId: status.clientId,
+  configuredClientId: status.configuredClientId ?? status.clientId,
+  displayName:
+    status.receiverDisplayName ??
+    `AITuberKit ${status.clientId.slice(-8) || status.clientId}`,
+  kind: status.receiverKind ?? 'legacy',
+  capabilities:
+    status.receiverCapabilities ?? defaultReceiverCapabilities(status),
+  connected: true,
+  isSpeaking: status.isSpeaking,
+  lastSeenAt: new Date(status.lastSeenAt).toISOString(),
+})
+
+export const listActiveReceivers = (now = Date.now()): ActiveReceiver[] => {
+  cleanupClientQueues()
+  const activeStatuses = Object.values(getGatewayState().statusesPerClient)
+    .filter(
+      (status) =>
+        status.connected && now - status.lastSeenAt <= ACTIVE_RECEIVER_WINDOW
+    )
+    .sort((left, right) => right.lastSeenAt - left.lastSeenAt)
+  const registeredReceivers = activeStatuses.filter(
+    (status) => status.receiverKind && status.receiverKind !== 'legacy'
+  )
+  return (
+    registeredReceivers.length > 0
+      ? registeredReceivers
+      : activeStatuses.filter((status) => status.receiverKind !== 'legacy')
+  ).map(toActiveReceiver)
+}
 
 export const getClientQueueSummary = (clientId: string) => {
   const queue = getQueueIfExists(clientId)

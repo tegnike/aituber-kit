@@ -11,6 +11,10 @@ import type {
   PresentationActualState,
   PresentationPlaybackState,
 } from '@/features/presentation/presentationTypes'
+import type {
+  ReceiverCapability,
+  ReceiverKind,
+} from '@/features/api/receiverRegistry'
 
 const playbackStates: PresentationPlaybackState[] = [
   'unassigned',
@@ -21,6 +25,13 @@ const playbackStates: PresentationPlaybackState[] = [
   'section_paused',
   'completed',
   'error',
+]
+
+const receiverKinds: ReceiverKind[] = ['browser', 'obs', 'legacy']
+const receiverCapabilities: ReceiverCapability[] = [
+  'chat',
+  'presentation',
+  'speech',
 ]
 
 const normalizePresentationStatus = (
@@ -59,6 +70,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const status = updateClientStatus(clientId, {
+    configuredClientId:
+      typeof req.body?.configuredClientId === 'string'
+        ? req.body.configuredClientId.slice(0, 200)
+        : undefined,
+    receiverDisplayName:
+      typeof req.body?.receiverDisplayName === 'string'
+        ? req.body.receiverDisplayName.slice(0, 200)
+        : undefined,
+    receiverKind: receiverKinds.includes(req.body?.receiverKind)
+      ? req.body.receiverKind
+      : undefined,
+    receiverCapabilities: Array.isArray(req.body?.receiverCapabilities)
+      ? req.body.receiverCapabilities.filter(
+          (value: unknown): value is ReceiverCapability =>
+            receiverCapabilities.includes(value as ReceiverCapability)
+        )
+      : undefined,
     connected: req.body?.connected === true,
     isSpeaking: req.body?.isSpeaking === true,
     activeSpeech:
