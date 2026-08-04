@@ -242,6 +242,7 @@ describe('/api/v1 external API', () => {
           text: 'hello from v1',
           emotion: 'happy',
           priority: 'high',
+          speechSessionId: 'answer-stream-1',
         },
       }),
       speakRes
@@ -271,10 +272,50 @@ describe('/api/v1 external API', () => {
         message: 'hello from v1',
         type: 'direct_send',
         emotion: 'happy',
+        speechSessionId: 'answer-stream-1',
         priority: 'high',
         source: 'v1',
       })
     )
+  })
+
+  it('同一発話セッションの高優先度チャンクをFIFOで取得する', () => {
+    const speak = require('@/pages/api/v1/speak').default
+    const messages = require('@/pages/api/v1/client/messages').default
+    const enqueue = (text: string, speechSessionId: string) =>
+      speak(
+        createMockReq({
+          method: 'POST',
+          headers: { authorization: 'Bearer test-api-key' },
+          query: { clientId: 'client1' },
+          body: { text, priority: 'high', speechSessionId },
+        }),
+        createMockRes()
+      )
+
+    enqueue('先に送ったチャンク', 'answer-stream-1')
+    enqueue('別セッションの高優先度発話', 'answer-stream-2')
+    enqueue('後に送ったチャンク', 'answer-stream-1')
+
+    const res = createMockRes()
+    messages(
+      createMockReq({
+        method: 'GET',
+        headers: { authorization: 'Bearer test-api-key' },
+        query: { clientId: 'client1' },
+      }),
+      res
+    )
+
+    expect(
+      (res._json as { messages: Array<{ message: string }> }).messages.map(
+        (message) => message.message
+      )
+    ).toEqual([
+      '別セッションの高優先度発話',
+      '先に送ったチャンク',
+      '後に送ったチャンク',
+    ])
   })
 
   it('queues v1 messages requests with the legacy messages payload shape', () => {

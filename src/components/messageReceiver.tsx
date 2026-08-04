@@ -36,9 +36,15 @@ import {
   createReceiverDescriptor,
   getReceiverCapabilities,
 } from '@/features/api/receiverRegistry'
+import {
+  createCoalescedRunner,
+  subscribeReceiverEventStream,
+} from '@/features/api/receiverEventStream'
 
 const CLIENT_TAB_LEASE_DURATION = 5000
 const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
+const DISCONNECTED_FALLBACK_POLL_INTERVAL = 1000
+const CONNECTED_SAFETY_POLL_INTERVAL = 15000
 
 class ReceivedMessage {
   timestamp: number
@@ -47,6 +53,7 @@ class ReceivedMessage {
   systemPrompt?: string
   useCurrentSystemPrompt?: boolean
   image?: string
+  speechSessionId?: string
   responseCallback?: QueuedResponseCallback
 
   constructor(
@@ -56,6 +63,7 @@ class ReceivedMessage {
     systemPrompt?: string,
     useCurrentSystemPrompt?: boolean,
     image?: string,
+    speechSessionId?: string,
     responseCallback?: QueuedResponseCallback
   ) {
     this.timestamp = timestamp
@@ -64,6 +72,7 @@ class ReceivedMessage {
     this.systemPrompt = systemPrompt
     this.useCurrentSystemPrompt = useCurrentSystemPrompt
     this.image = image
+    this.speechSessionId = speechSessionId
     this.responseCallback = responseCallback
   }
 }
@@ -111,7 +120,7 @@ const MessageReceiver = () => {
       for (const message of messages) {
         switch (message.type) {
           case 'direct_send':
-            await speakMessageHandler(message.message)
+            await speakMessageHandler(message.message, message.speechSessionId)
             break
           case 'ai_generate': {
             // 外部画像が提供された場合はそれを使用、なければカメラキャプチャ
@@ -623,32 +632,18 @@ const MessageReceiver = () => {
       }
     }
 
-    let isFetchingMessages = false
-    let isFetchingCommands = false
     let isReportingStatus = false
     let isStatusReportQueued = false
 
-    const safeFetchMessages = async () => {
-      if (isFetchingMessages) return
-      isFetchingMessages = true
-      try {
-        await fetchMessages(receiverId, 'receiver')
-        await fetchMessages(clientId, 'legacy')
-      } finally {
-        isFetchingMessages = false
-      }
-    }
+    const safeFetchMessages = createCoalescedRunner(async () => {
+      await fetchMessages(receiverId, 'receiver')
+      await fetchMessages(clientId, 'legacy')
+    })
 
-    const safeFetchCommands = async () => {
-      if (isFetchingCommands) return
-      isFetchingCommands = true
-      try {
-        await fetchCommands(receiverId, 'receiver')
-        await fetchCommands(clientId, 'legacy')
-      } finally {
-        isFetchingCommands = false
-      }
-    }
+    const safeFetchCommands = createCoalescedRunner(async () => {
+      await fetchCommands(receiverId, 'receiver')
+      await fetchCommands(clientId, 'legacy')
+    })
 
     const safeReportStatus = async () => {
       isStatusReportQueued = true
@@ -731,8 +726,50 @@ const MessageReceiver = () => {
       refreshClientTabLeadership()
     }
 
-    const commandIntervalId = setInterval(() => void safeFetchCommands(), 1000)
-    const intervalId = setInterval(() => void safeFetchMessages(), 1000)
+    const eventStreamAbortController = new AbortController()
+    const eventStreamTargets = [...new Set([receiverId, clientId])]
+    const connectedEventStreamTargets = new Set<string>()
+    const eventStreamHeaders = getClientApiHeaders()
+
+    if (eventStreamHeaders) {
+      eventStreamTargets.forEach((targetId) => {
+        void subscribeReceiverEventStream({
+          targetId,
+          headers: eventStreamHeaders,
+          signal: eventStreamAbortController.signal,
+          onWakeup: (wakeup) => {
+            if (wakeup === 'messages') void safeFetchMessages()
+            if (wakeup === 'commands') void safeFetchCommands()
+          },
+          onConnectionChange: (connected) => {
+            if (connected) {
+              connectedEventStreamTargets.add(targetId)
+              // 接続確立直前に追加されたキューとの競合を閉じる。
+              void safeFetchCommands()
+              void safeFetchMessages()
+            } else {
+              connectedEventStreamTargets.delete(targetId)
+            }
+          },
+          onError: (error) =>
+            logger.error('Receiver event stream disconnected:', error),
+        })
+      })
+    }
+
+    const fallbackIntervalId = setInterval(() => {
+      if (
+        !eventStreamHeaders ||
+        connectedEventStreamTargets.size < eventStreamTargets.length
+      ) {
+        void safeFetchCommands()
+        void safeFetchMessages()
+      }
+    }, DISCONNECTED_FALLBACK_POLL_INTERVAL)
+    const safetyIntervalId = setInterval(() => {
+      void safeFetchCommands()
+      void safeFetchMessages()
+    }, CONNECTED_SAFETY_POLL_INTERVAL)
     const statusIntervalId = setInterval(() => void safeReportStatus(), 2000)
     const leaseIntervalId = setInterval(
       refreshClientTabLeadership,
@@ -740,8 +777,9 @@ const MessageReceiver = () => {
     )
 
     return () => {
-      clearInterval(intervalId)
-      clearInterval(commandIntervalId)
+      eventStreamAbortController.abort()
+      clearInterval(fallbackIntervalId)
+      clearInterval(safetyIntervalId)
       clearInterval(statusIntervalId)
       clearInterval(leaseIntervalId)
       unsubscribePresentationStatus()
