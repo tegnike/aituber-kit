@@ -38,6 +38,8 @@ export interface QueuedMessage {
   useCurrentSystemPrompt?: boolean
   image?: string
   emotion?: string
+  /** 分割された同一回答を同じSpeakQueueセッションへ積むためのID。 */
+  speechSessionId?: string
   priority?: 'normal' | 'high'
   interrupt?: boolean
   source?: 'legacy' | 'v1'
@@ -110,6 +112,7 @@ export interface ApiEvent {
   clientId: string
   type:
     | 'message_queued'
+    | 'command_queued'
     | 'messages_fetched'
     | 'stop_requested'
     | 'commands_fetched'
@@ -156,6 +159,7 @@ export interface EnqueueMessagesParams {
   useCurrentSystemPrompt?: boolean
   image?: string
   emotion?: string
+  speechSessionId?: string
   priority?: 'normal' | 'high'
   interrupt?: boolean
   source?: 'legacy' | 'v1'
@@ -307,6 +311,7 @@ export const enqueueMessages = ({
   useCurrentSystemPrompt,
   image,
   emotion,
+  speechSessionId,
   priority = 'normal',
   interrupt = false,
   source = 'v1',
@@ -329,6 +334,7 @@ export const enqueueMessages = ({
       useCurrentSystemPrompt,
       image,
       emotion,
+      speechSessionId,
       priority,
       interrupt,
       source,
@@ -408,6 +414,10 @@ export const enqueuePresentationLoadCommand = (
   }
   queue.commands.push(command)
   queue.lastAccessed = command.timestamp
+  emitApiEvent(clientId, 'command_queued', {
+    commandId: command.id,
+    commandType: command.command,
+  })
   return command
 }
 
@@ -429,6 +439,10 @@ export const enqueuePresentationControlCommand = (
   }
   queue.commands.push(command)
   queue.lastAccessed = command.timestamp
+  emitApiEvent(clientId, 'command_queued', {
+    commandId: command.id,
+    commandType: command.command,
+  })
   return command
 }
 

@@ -140,6 +140,12 @@ const endpoints: EndpointDefinition[] = [
         description: '発話時の表情・感情指定です。未指定なら通常状態です。',
       },
       {
+        name: 'speechSessionId',
+        type: 'string',
+        description:
+          'ストリーミング回答を分割送信するとき、同じ回答の全リクエストに共通で指定します。発話順を維持したまま同一キューへ追加されます。',
+      },
+      {
         name: 'priority',
         type: '"normal" | "high"',
         description: 'high の場合は通常より前にキューへ入れます。',

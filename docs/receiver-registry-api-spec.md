@@ -138,9 +138,15 @@ JSON bodyを持つAPIでは次の形式も使用できる。
 ```json
 {
   "receiverId": "aituber-receiver-...",
-  "text": "このReceiverだけが発話します"
+  "text": "このReceiverだけが発話します",
+  "speechSessionId": "answer-stream-1"
 }
 ```
+
+ストリーミング生成した回答を複数回の`/api/v1/speak`へ分ける場合は、
+同じ回答の全リクエストに共通の`speechSessionId`を指定する。Receiverは同じIDの
+発話を同一のSpeakQueueセッションへFIFOで追加し、後続文による先行キューの破棄を防ぐ。
+IDは1〜200文字とする。省略時は従来どおり、リクエストごとに独立した発話として扱う。
 
 互換性のため`clientId`も継続して受け付ける。両方が指定された場合は`receiverId`を優先する。
 
@@ -153,7 +159,12 @@ JSON bodyを持つAPIでは次の形式も使用できる。
 
 ## 10. Legacy互換
 
-- 新しいAITuberKit画面はReceiver固有IDと従来の`configuredClientId`の両方をポーリングする。
+- 新しいAITuberKit画面はReceiver固有IDと従来の`configuredClientId`の両方について、
+  認証付き`GET /api/v1/events/`を購読する。
+- `message_queued`を受信したらメッセージを、`command_queued`または`stop_requested`を
+  受信したらコマンドを即時取得する。SSE接続中は15秒ごとに取りこぼしを確認する。
+- SSEが切断している間だけ、メッセージとコマンドを1秒ごとにポーリングし、
+  250ミリ秒から最大5秒の指数バックオフでSSEへ再接続する。
 - Receiver固有メッセージはAPIキー必須の`GET /api/v1/client/messages/?receiverId=...`から取得する。
 - Legacy経路だけは後方互換のため既存の`GET /api/messages/?clientId=...`を使用する。
 - Receiver固有のAssignmentが存在する場合、そのReceiverはLegacy Assignmentを処理しない。

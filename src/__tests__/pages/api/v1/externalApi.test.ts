@@ -242,6 +242,7 @@ describe('/api/v1 external API', () => {
           text: 'hello from v1',
           emotion: 'happy',
           priority: 'high',
+          speechSessionId: 'answer-stream-1',
         },
       }),
       speakRes
@@ -271,6 +272,7 @@ describe('/api/v1 external API', () => {
         message: 'hello from v1',
         type: 'direct_send',
         emotion: 'happy',
+        speechSessionId: 'answer-stream-1',
         priority: 'high',
         source: 'v1',
       })
