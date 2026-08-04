@@ -14,8 +14,11 @@ import settingsStore from '@/features/stores/settings'
  * （表示形式のみ現行の正規化フォーマットを踏襲。設計§5.1）。
  * chatProcessing管理・記憶保存・思考ポーズは行わない（現行踏襲）。
  */
-export const speakMessageHandler = async (receivedMessage: string) => {
-  const sessionId = generateMessageId()
+export const speakMessageHandler = async (
+  receivedMessage: string,
+  speechSessionId?: string
+) => {
+  const sessionId = speechSessionId || generateMessageId()
   const writer = new NormalizedMessageLogWriter()
   const dispatcher = createSpeechDispatcher(sessionId)
   const segmenter = new SpeechSegmenter({

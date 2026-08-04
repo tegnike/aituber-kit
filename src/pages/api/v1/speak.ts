@@ -34,6 +34,20 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: 'Text or messages are required' })
   }
 
+  const speechSessionIdInput = req.body?.speechSessionId
+  if (
+    speechSessionIdInput !== undefined &&
+    (typeof speechSessionIdInput !== 'string' ||
+      speechSessionIdInput.trim().length === 0 ||
+      speechSessionIdInput.trim().length > 200)
+  ) {
+    return res.status(400).json({ error: 'Invalid speech session ID' })
+  }
+  const speechSessionId =
+    typeof speechSessionIdInput === 'string'
+      ? speechSessionIdInput.trim()
+      : undefined
+
   const imageResult = normalizeImage(req.body?.image)
   if (!imageResult.ok) {
     return res.status(imageResult.status).json({ error: imageResult.error })
@@ -51,6 +65,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     image: imageResult.image,
     emotion:
       typeof req.body?.emotion === 'string' ? req.body.emotion : undefined,
+    speechSessionId,
     priority: req.body?.priority === 'high' ? 'high' : 'normal',
     interrupt,
     source: 'v1',

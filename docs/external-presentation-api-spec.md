@@ -87,7 +87,7 @@ flowchart LR
   API["AITuberKit v1 API"]
   Storage["Presentation永続ストレージ"]
   Assignment["Client Assignment"]
-  Poller["messageReceiver / status poller"]
+  Receiver["messageReceiver / SSE subscriber"]
   Store["presentationStore"]
   Viewer["スライド表示・発話"]
   Chat["マイク入力・チャット"]
@@ -97,9 +97,9 @@ flowchart LR
   API --> Storage
   Producer -->|activate / control| API
   API --> Assignment
-  Poller -->|desired state取得| API
-  API -->|manifest| Poller
-  Poller --> Store
+  Receiver -->|desired state取得| API
+  API -->|event / manifest| Receiver
+  Receiver --> Store
   Store --> Viewer
   Chat --> LLM
   Store -->|active section brief| LLM
@@ -125,7 +125,7 @@ flowchart LR
 新しいWebSocketは追加しない。次の既存機構を拡張する。
 
 - `messageGateway.ts`のクライアント別コマンドキュー
-- `messageReceiver.tsx`のコマンドポーリング
+- `messageReceiver.tsx`のSSE通知と切断中のコマンドポーリング
 - `/api/v1/client/status`の状態報告
 - `/api/v1/events`のSSEイベント
 - 既存Access PolicyとAPIキー認証
