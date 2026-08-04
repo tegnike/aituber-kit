@@ -143,7 +143,7 @@ const endpoints: EndpointDefinition[] = [
         name: 'speechSessionId',
         type: 'string',
         description:
-          'ストリーミング回答を分割送信するとき、同じ回答の全リクエストに共通で指定します。発話順を維持したまま同一キューへ追加されます。',
+          'ストリーミング回答を分割送信するとき、同じ回答の全リクエストに共通で指定します。trim後1〜200文字が必要で、発話順を維持したまま同一キューへ追加されます。',
       },
       {
         name: 'priority',

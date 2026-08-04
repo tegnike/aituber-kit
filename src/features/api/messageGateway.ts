@@ -343,7 +343,16 @@ export const enqueueMessages = ({
   })
 
   if (priority === 'high') {
-    queue.messages.unshift(...queuedMessages)
+    const lastSessionMessageIndex = speechSessionId
+      ? queue.messages.findLastIndex(
+          (message) => message.speechSessionId === speechSessionId
+        )
+      : -1
+    if (lastSessionMessageIndex >= 0) {
+      queue.messages.splice(lastSessionMessageIndex + 1, 0, ...queuedMessages)
+    } else {
+      queue.messages.unshift(...queuedMessages)
+    }
   } else {
     queue.messages.push(...queuedMessages)
   }

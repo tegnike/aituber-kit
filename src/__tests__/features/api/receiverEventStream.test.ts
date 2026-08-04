@@ -31,6 +31,7 @@ describe('receiverEventStream', () => {
   }
 
   afterEach(() => {
+    jest.useRealTimers()
     jest.restoreAllMocks()
     if (originalFetch) {
       global.fetch = originalFetch
@@ -136,5 +137,33 @@ describe('receiverEventStream', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2)
     expect(errors).toHaveLength(1)
     expect(connectionChanges).toEqual([true, false])
+  })
+
+  it('直後に閉じる200応答で再接続待機を250ms、500ms、1秒へ増やす', async () => {
+    jest.useFakeTimers()
+    const controller = new AbortController()
+    const timeoutSpy = jest.spyOn(global, 'setTimeout')
+    const fetchMock = jest.fn().mockImplementation(async () => {
+      if (fetchMock.mock.calls.length === 4) controller.abort()
+      return createSseResponse([])
+    })
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const subscription = subscribeReceiverEventStream({
+      targetId: 'receiver-immediate-close',
+      headers: { Authorization: 'Bearer test-key' },
+      signal: controller.signal,
+      onWakeup: jest.fn(),
+    })
+
+    await jest.advanceTimersByTimeAsync(250)
+    await jest.advanceTimersByTimeAsync(500)
+    await jest.advanceTimersByTimeAsync(1_000)
+    await subscription
+
+    expect(fetchMock).toHaveBeenCalledTimes(4)
+    expect(timeoutSpy.mock.calls.map((call) => call[1])).toEqual([
+      250, 500, 1_000,
+    ])
   })
 })
