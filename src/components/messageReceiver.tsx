@@ -32,6 +32,10 @@ import {
   createClientTabId,
   parseClientTabLease,
 } from '@/features/api/clientTabLeadership'
+import {
+  createReceiverDescriptor,
+  getReceiverCapabilities,
+} from '@/features/api/receiverRegistry'
 
 const CLIENT_TAB_LEASE_DURATION = 5000
 const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
@@ -94,7 +98,7 @@ const getClientApiHeaders = () => {
 }
 
 const MessageReceiver = () => {
-  const lastTimestampRef = useRef(0)
+  const lastTimestampsRef = useRef<Record<string, number>>({})
   const clientId = settingsStore((state) => state.clientId)
   const { isRestrictedMode } = useRestrictedMode()
   const handleSendChat = handleSendChatFn()
@@ -283,9 +287,32 @@ const MessageReceiver = () => {
     let failedPresentationKey: string | null = null
     let presentationRetryAttempt = 0
     let presentationRetryAfter = 0
-    const tabId = createClientTabId()
+    const receiverStorageKey = `aituber-kit-receiver:${clientId}`
+    let tabId = createClientTabId()
+    try {
+      const storedTabId = window.sessionStorage.getItem(receiverStorageKey)
+      if (storedTabId) {
+        tabId = storedTabId
+      } else {
+        window.sessionStorage.setItem(receiverStorageKey, tabId)
+      }
+    } catch {
+      // OBSなどsessionStorageが制限される環境では一時IDを使用する。
+    }
+    const receiver = createReceiverDescriptor(
+      clientId,
+      tabId,
+      navigator.userAgent,
+      settingsStore.getState().messageReceiverEnabled
+    )
+    const {
+      receiverId,
+      displayName: receiverDisplayName,
+      kind: receiverKind,
+    } = receiver
     const leaseKey = `aituber-kit-client-tab-leader:${clientId}`
     let isClientTabLeader = false
+    let receiverHasAssignment = false
 
     const readClientTabLease = () => {
       try {
@@ -422,8 +449,11 @@ const MessageReceiver = () => {
       }
     }
 
-    const reportStatus = async () => {
-      if (!isClientTabLeader) return
+    const reportStatus = async (
+      targetId: string,
+      mode: 'receiver' | 'legacy'
+    ) => {
+      if (mode === 'legacy' && !isClientTabLeader) return
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
 
@@ -432,7 +462,7 @@ const MessageReceiver = () => {
 
       try {
         const response = await fetch(
-          `/api/v1/client/status/?clientId=${encodeURIComponent(clientId)}`,
+          `/api/v1/client/status/?receiverId=${encodeURIComponent(targetId)}`,
           {
             method: 'POST',
             headers: {
@@ -440,6 +470,23 @@ const MessageReceiver = () => {
               ...authHeaders,
             },
             body: JSON.stringify({
+              ...(mode === 'receiver'
+                ? {
+                    configuredClientId: clientId,
+                    receiverDisplayName,
+                    receiverKind,
+                    receiverCapabilities: getReceiverCapabilities(
+                      ss.messageReceiverEnabled
+                    ),
+                  }
+                : {
+                    configuredClientId: clientId,
+                    receiverDisplayName: 'AITuberKit legacy receiver',
+                    receiverKind: 'legacy',
+                    receiverCapabilities: getReceiverCapabilities(
+                      ss.messageReceiverEnabled
+                    ),
+                  }),
               connected: true,
               isSpeaking: hs.isSpeaking,
               activeSpeech: hs.activeSpeech,
@@ -457,7 +504,7 @@ const MessageReceiver = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
-        if (!isClientTabLeader) return
+        if (mode === 'legacy' && !isClientTabLeader) return
         if (data.assignmentError) {
           logger.error(
             'Error reading presentation assignment:',
@@ -465,27 +512,41 @@ const MessageReceiver = () => {
           )
           return
         }
-        await reconcileAssignment(data.assignment ?? null)
+        const assignment = data.assignment ?? null
+        if (mode === 'receiver') {
+          const previouslyAssigned = receiverHasAssignment
+          receiverHasAssignment = Boolean(assignment)
+          if (assignment || previouslyAssigned) {
+            await reconcileAssignment(assignment)
+          }
+        } else if (!receiverHasAssignment) {
+          await reconcileAssignment(assignment)
+        }
       } catch (error) {
         logger.error('Error reporting client status:', error)
       }
     }
 
-    const fetchCommands = async () => {
-      if (!isClientTabLeader) return
+    const fetchCommands = async (
+      targetId: string,
+      mode: 'receiver' | 'legacy'
+    ) => {
+      if (mode === 'legacy' && (!isClientTabLeader || receiverHasAssignment)) {
+        return
+      }
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
 
       try {
         const response = await fetch(
-          `/api/v1/client/commands/?clientId=${encodeURIComponent(clientId)}`,
+          `/api/v1/client/commands/?receiverId=${encodeURIComponent(targetId)}`,
           { headers: authHeaders }
         )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
-        if (!isClientTabLeader) return
+        if (mode === 'legacy' && !isClientTabLeader) return
         const commands = (data.commands || []) as ReceivedCommand[]
         for (const command of commands) {
           if (command.command === 'stop') {
@@ -505,7 +566,7 @@ const MessageReceiver = () => {
             )
           } else if (command.command === 'presentation.control') {
             if (!presentationStore.getState().document) {
-              await reportStatus()
+              await reportStatus(targetId, mode)
             }
             const applied = applyPresentationControl(
               command.action,
@@ -519,29 +580,42 @@ const MessageReceiver = () => {
         }
 
         if (commands.length > 0) {
-          await reportStatus()
+          await reportStatus(targetId, mode)
         }
       } catch (error) {
         logger.error('Error fetching commands:', error)
       }
     }
 
-    const fetchMessages = async () => {
-      if (!isClientTabLeader) return
+    const fetchMessages = async (
+      targetId: string,
+      mode: 'receiver' | 'legacy'
+    ) => {
+      if (mode === 'legacy' && (!isClientTabLeader || receiverHasAssignment)) {
+        return
+      }
       if (!settingsStore.getState().messageReceiverEnabled) return
+      const lastTimestamp = lastTimestampsRef.current[targetId] ?? 0
+      const authHeaders = mode === 'receiver' ? getClientApiHeaders() : null
+      if (mode === 'receiver' && !authHeaders) return
       try {
+        const endpoint =
+          mode === 'receiver'
+            ? `/api/v1/client/messages/?lastTimestamp=${lastTimestamp}&receiverId=${encodeURIComponent(targetId)}`
+            : `/api/messages/?lastTimestamp=${lastTimestamp}&clientId=${encodeURIComponent(targetId)}`
         const response = await fetch(
-          `/api/messages/?lastTimestamp=${lastTimestampRef.current}&clientId=${encodeURIComponent(clientId)}`
+          endpoint,
+          authHeaders ? { headers: authHeaders } : undefined
         )
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
-        if (!isClientTabLeader) return
+        if (mode === 'legacy' && !isClientTabLeader) return
         if (data.messages && data.messages.length > 0) {
           const newLastTimestamp =
             data.messages[data.messages.length - 1].timestamp
-          lastTimestampRef.current = newLastTimestamp
+          lastTimestampsRef.current[targetId] = newLastTimestamp
           await speakMessage(data.messages)
         }
       } catch (error) {
@@ -558,7 +632,8 @@ const MessageReceiver = () => {
       if (isFetchingMessages) return
       isFetchingMessages = true
       try {
-        await fetchMessages()
+        await fetchMessages(receiverId, 'receiver')
+        await fetchMessages(clientId, 'legacy')
       } finally {
         isFetchingMessages = false
       }
@@ -568,21 +643,22 @@ const MessageReceiver = () => {
       if (isFetchingCommands) return
       isFetchingCommands = true
       try {
-        await fetchCommands()
+        await fetchCommands(receiverId, 'receiver')
+        await fetchCommands(clientId, 'legacy')
       } finally {
         isFetchingCommands = false
       }
     }
 
     const safeReportStatus = async () => {
-      if (!isClientTabLeader) return
       isStatusReportQueued = true
       if (isReportingStatus) return
       isReportingStatus = true
       try {
         while (isStatusReportQueued) {
           isStatusReportQueued = false
-          await reportStatus()
+          await reportStatus(receiverId, 'receiver')
+          await reportStatus(clientId, 'legacy')
         }
       } finally {
         isReportingStatus = false
@@ -591,7 +667,7 @@ const MessageReceiver = () => {
 
     const unsubscribePresentationStatus = presentationStore.subscribe(
       (state, previousState) => {
-        if (isClientTabLeader && state.updatedAt !== previousState.updatedAt) {
+        if (state.updatedAt !== previousState.updatedAt) {
           void safeReportStatus()
         }
       }
@@ -600,9 +676,8 @@ const MessageReceiver = () => {
     const unsubscribeSpeechStatus = homeStore.subscribe(
       (state, previousState) => {
         if (
-          isClientTabLeader &&
-          (state.isSpeaking !== previousState.isSpeaking ||
-            state.activeSpeech?.id !== previousState.activeSpeech?.id)
+          state.isSpeaking !== previousState.isSpeaking ||
+          state.activeSpeech?.id !== previousState.activeSpeech?.id
         ) {
           void safeReportStatus()
         }
@@ -645,6 +720,10 @@ const MessageReceiver = () => {
     window.addEventListener('storage', handleStorage)
     window.addEventListener('beforeunload', releaseClientTabLease)
     document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    void safeFetchCommands()
+    void safeFetchMessages()
+    void safeReportStatus()
 
     if (document.visibilityState === 'visible' && document.hasFocus()) {
       claimClientTabLeadership()
