@@ -516,26 +516,6 @@ export const Menu = () => {
         }}
         onChange={handleChangeVrmFile}
       />
-      <input
-        type="file"
-        className="hidden"
-        accept="image/*"
-        ref={(bgFileInput) => {
-          if (!bgFileInput) {
-            menuStore.setState({ bgFileInput: null })
-            return
-          }
-
-          menuStore.setState({ bgFileInput })
-        }}
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          if (file) {
-            const imageUrl = URL.createObjectURL(file)
-            homeStore.setState({ backgroundImageUrl: imageUrl })
-          }
-        }}
-      />
     </>
   )
 }

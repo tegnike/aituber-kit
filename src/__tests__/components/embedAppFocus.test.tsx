@@ -40,12 +40,10 @@ jest.mock('@/features/stores/home', () => ({
       selector({
         webcamStatus: false,
         captureStatus: false,
-        backgroundImageUrl: 'green',
         chatLog: [],
       })
     ),
     {
-      getInitialState: jest.fn(() => ({ backgroundImageUrl: 'green' })),
       setState: jest.fn(),
     }
   ),
@@ -75,6 +73,7 @@ jest.mock('@/features/stores/settings', () => ({
         showPresetQuestions: false,
         presetQuestions: [],
         colorTheme: 'default',
+        backgroundImageUrl: 'green',
       })),
       setState: jest.fn(),
     }

@@ -36,10 +36,13 @@ const applyEmbedConfig = (embedId?: string) => {
   const queryConfig = getEmbedOverridesFromSearchParams(params)
   const config = mergeEmbedConfig(baseConfig, queryConfig)
   const defaultSettings = settingsStore.getInitialState()
-  const defaultHome = homeStore.getInitialState()
 
   if (!isEmbedOriginAllowed(config, document.referrer)) {
-    return { allowed: false, id: config.id || embedId || '' }
+    return {
+      allowed: false,
+      id: config.id || embedId || '',
+      backgroundImageUrl: defaultSettings.backgroundImageUrl,
+    }
   }
 
   settingsStore.setState({
@@ -73,19 +76,18 @@ const applyEmbedConfig = (embedId?: string) => {
     config.colorTheme ?? defaultSettings.colorTheme
   )
 
-  homeStore.setState({
+  return {
+    allowed: true,
+    id: config.id || embedId || '',
     backgroundImageUrl:
-      config.backgroundImageUrl ?? defaultHome.backgroundImageUrl,
-  })
-
-  return { allowed: true, id: config.id || embedId || '' }
+      config.backgroundImageUrl ?? defaultSettings.backgroundImageUrl,
+  }
 }
 
 export const EmbedApp = ({ embedId }: Props) => {
   const { t } = useTranslation()
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const captureStatus = homeStore((s) => s.captureStatus)
-  const backgroundImageUrl = homeStore((s) => s.backgroundImageUrl)
   const chatLog = homeStore((s) => s.chatLog)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const modelType = settingsStore((s) => s.modelType)
@@ -95,6 +97,9 @@ export const EmbedApp = ({ embedId }: Props) => {
   const [isReady, setIsReady] = useState(false)
   const [isAllowed, setIsAllowed] = useState(true)
   const [resolvedEmbedId, setResolvedEmbedId] = useState(embedId || '')
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState(
+    () => settingsStore.getInitialState().backgroundImageUrl
+  )
   const pageTitle = t('EmbedPageTitle')
   usePresetLoader()
 
@@ -104,6 +109,7 @@ export const EmbedApp = ({ embedId }: Props) => {
     const timeoutId = window.setTimeout(() => {
       setResolvedEmbedId(result.id)
       setIsAllowed(result.allowed)
+      setBackgroundImageUrl(result.backgroundImageUrl)
       setIsReady(true)
     }, 0)
 
