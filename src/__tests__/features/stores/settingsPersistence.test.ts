@@ -5,6 +5,8 @@ describe('settingsStore persistence', () => {
     process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES
   const originalShowInputForm = process.env.NEXT_PUBLIC_SHOW_INPUT_FORM
   const originalChatLogMode = process.env.NEXT_PUBLIC_CHAT_LOG_MODE
+  const originalBackgroundImagePath =
+    process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH
 
   const loadStore = () => {
     jest.resetModules()
@@ -25,6 +27,12 @@ describe('settingsStore persistence', () => {
       delete process.env.NEXT_PUBLIC_CHAT_LOG_MODE
     } else {
       process.env.NEXT_PUBLIC_CHAT_LOG_MODE = originalChatLogMode
+    }
+    if (originalBackgroundImagePath === undefined) {
+      delete process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH
+    } else {
+      process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_PATH =
+        originalBackgroundImagePath
     }
   })
 
@@ -111,6 +119,7 @@ describe('settingsStore persistence', () => {
       showControlPanel: false,
       showInputForm: false,
       chatLogMode: 'hidden',
+      backgroundImageUrl: 'green',
     })
 
     const persisted = JSON.parse(localStorage.getItem(storageKey) ?? '{}')
@@ -119,6 +128,7 @@ describe('settingsStore persistence', () => {
     expect(persisted.state.showControlPanel).toBe(false)
     expect(persisted.state.showInputForm).toBe(false)
     expect(persisted.state.chatLogMode).toBe('hidden')
+    expect(persisted.state.backgroundImageUrl).toBe('green')
 
     const reloadedSettingsStore = loadStore()
     expect(reloadedSettingsStore.getState().cartesiaApiKey).toBe(
@@ -130,5 +140,6 @@ describe('settingsStore persistence', () => {
     expect(reloadedSettingsStore.getState().showControlPanel).toBe(false)
     expect(reloadedSettingsStore.getState().showInputForm).toBe(false)
     expect(reloadedSettingsStore.getState().chatLogMode).toBe('hidden')
+    expect(reloadedSettingsStore.getState().backgroundImageUrl).toBe('green')
   })
 })

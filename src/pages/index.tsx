@@ -30,7 +30,7 @@ import { useLive2DEnabled } from '@/hooks/useLive2DEnabled'
 const Home = () => {
   const webcamStatus = homeStore((s) => s.webcamStatus)
   const captureStatus = homeStore((s) => s.captureStatus)
-  const backgroundImageUrl = homeStore((s) => s.backgroundImageUrl)
+  const backgroundImageUrl = settingsStore((s) => s.backgroundImageUrl)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
   const bgUrl =
     (webcamStatus || captureStatus) && useVideoAsBackground

@@ -46,7 +46,7 @@ const Based = () => {
   const [error, setError] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
-  const backgroundImageUrl = homeStore((s) => s.backgroundImageUrl)
+  const backgroundImageUrl = settingsStore((s) => s.backgroundImageUrl)
 
   useEffect(() => {
     setIsLoading(true)
@@ -94,7 +94,7 @@ const Based = () => {
       }
 
       const { path } = await response.json()
-      homeStore.setState({ backgroundImageUrl: path })
+      settingsStore.setState({ backgroundImageUrl: path })
 
       // バックグラウンドリストを更新
       setIsLoading(true)
@@ -189,7 +189,7 @@ const Based = () => {
             value={backgroundImageUrl}
             onChange={(e) => {
               const path = e.target.value
-              homeStore.setState({ backgroundImageUrl: path })
+              settingsStore.setState({ backgroundImageUrl: path })
             }}
             disabled={isLoading || isUploading || isRestrictedMode}
           >
