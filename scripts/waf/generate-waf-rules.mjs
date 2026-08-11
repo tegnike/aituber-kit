@@ -73,6 +73,9 @@ export function generateWafRules(config = loadWafConfig()) {
 
   const browser = config.browserClearance
   const browserClearanceExpression = `(${hostIn} and http.request.method eq "GET" and ${[
+    ...browser.excludedPaths.map(
+      (excludedPath) => `http.request.uri.path ne "${excludedPath}"`
+    ),
     ...browser.excludedPathPrefixes.map(
       (prefix) => `not starts_with(http.request.uri.path, "${prefix}")`
     ),

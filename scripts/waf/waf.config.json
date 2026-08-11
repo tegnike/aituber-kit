@@ -20,6 +20,13 @@
   },
   "browserClearance": {
     "description": "AITuberKit: issue browser clearance before protected API use",
+    "excludedPaths": [
+      "/aituber",
+      "/aituber/",
+      "/robots.txt",
+      "/sitemap.xml",
+      "/llms.txt"
+    ],
     "excludedPathPrefixes": ["/api/", "/_next/", "/assets/"],
     "excludedPathSuffixes": [
       ".js",

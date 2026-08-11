@@ -1,0 +1,18 @@
+# AITuberKit
+
+AITuberKit is an open-source toolkit for building and experiencing AI character conversations and AITuber (AI VTuber) streaming in a web browser.
+
+## Primary pages
+
+- Demo: https://aituberkit.com/
+- About AITuber and AITuberKit: https://aituberkit.com/aituber/
+- Documentation: https://docs.aituberkit.com/
+- Source code: https://github.com/tegnike/aituber-kit
+
+## Capabilities
+
+- AI character conversations using multiple LLM providers
+- VRM, Live2D, and PNGTuber character models
+- Text-to-speech and speech recognition
+- YouTube comment integration for AITuber streaming
+- Long-term memory, kiosk, idle, slide, and external API modes

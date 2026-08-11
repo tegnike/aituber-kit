@@ -1,52 +1,17 @@
-import '@charcoal-ui/icons'
 import type { AppProps } from 'next/app'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Analytics } from '@vercel/analytics/react'
 
-import { isLanguageSupported } from '@/features/constants/settings'
-import homeStore from '@/features/stores/home'
-import settingsStore from '@/features/stores/settings'
 import '@/styles/globals.css'
 import '@/styles/themes.css'
-import migrateStore from '@/utils/migrateStore'
-import i18n from '../lib/i18n'
 
-export default function App({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    const hs = homeStore.getState()
-    const ss = settingsStore.getState()
+const AppInitializer = dynamic(() => import('@/components/appInitializer'), {
+  ssr: false,
+})
 
-    if (hs.userOnboarded) {
-      i18n.changeLanguage(ss.selectLanguage)
-      // 保存されたテーマを適用
-      document.documentElement.setAttribute('data-theme', ss.colorTheme)
-      return
-    }
-
-    migrateStore()
-
-    const browserLanguage = navigator.language
-    const languageCode =
-      browserLanguage === 'zh-TW'
-        ? 'zh-TW'
-        : browserLanguage.match(/^zh/i)
-          ? 'zh-CN'
-          : browserLanguage.split('-')[0].toLowerCase()
-
-    let language = ss.selectLanguage
-    if (!language) {
-      language = isLanguageSupported(languageCode) ? languageCode : 'ja'
-    }
-    i18n.changeLanguage(language)
-    settingsStore.setState({ selectLanguage: language })
-
-    // 初期テーマを適用
-    document.documentElement.setAttribute('data-theme', ss.colorTheme)
-
-    homeStore.setState({ userOnboarded: true })
-  }, [])
-
+export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
@@ -54,7 +19,11 @@ export default function App({ Component, pageProps }: AppProps) {
           name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
+        {router.pathname !== '/' && router.pathname !== '/aituber' && (
+          <meta name="robots" content="noindex,nofollow" />
+        )}
       </Head>
+      {router.pathname !== '/aituber' && <AppInitializer />}
       <Component {...pageProps} />
       <Analytics />
     </>
