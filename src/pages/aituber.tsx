@@ -1,5 +1,7 @@
+import type { GetStaticProps } from 'next'
 import Link from 'next/link'
 import { Meta, SITE_URL } from '@/components/meta'
+import { isOfficialSite } from '@/utils/officialSite'
 
 const faq = [
   {
@@ -213,4 +215,10 @@ export default function AITuberPage() {
       </main>
     </>
   )
+}
+
+export const getStaticProps: GetStaticProps = () => {
+  if (!isOfficialSite()) return { notFound: true }
+
+  return { props: {} }
 }
