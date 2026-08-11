@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api
+Disallow: /embed
+Disallow: /send-message
+Disallow: /slide-editor
+
+Sitemap: https://aituberkit.com/sitemap.xml
