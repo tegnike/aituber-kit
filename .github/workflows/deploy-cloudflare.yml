@@ -109,6 +109,8 @@ jobs:
 
       - name: Build for Cloudflare
         run: npm run build:cloudflare
+        env:
+          NEXT_PUBLIC_OFFICIAL_SITE: 'true'
 
       - name: Deploy to Cloudflare Workers
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
