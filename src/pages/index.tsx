@@ -26,6 +26,7 @@ import { MemoryServiceInitializer } from '@/components/memoryServiceInitializer'
 import toastStore from '@/features/stores/toast'
 import { usePresetLoader } from '@/features/presets/usePresetLoader'
 import { useLive2DEnabled } from '@/hooks/useLive2DEnabled'
+import { SeoSummary } from '@/components/seoSummary'
 
 const Home = () => {
   const webcamStatus = homeStore((s) => s.webcamStatus)
@@ -114,6 +115,7 @@ const Home = () => {
   return (
     <div className="h-[100svh] bg-cover" style={backgroundStyle}>
       <Meta />
+      <SeoSummary />
       <Introduction />
       {modelType === 'live2d' && isLive2DEnabled ? (
         <Live2DViewer />

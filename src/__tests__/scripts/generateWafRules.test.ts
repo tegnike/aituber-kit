@@ -3,9 +3,9 @@
  *
  * WAF生成スクリプトの検証（docs/access-policy-design.md §6.2）。
  *
- * 1. 移行等価性: 生成ルールが、以前ワークフローYAMLにハードコードされていた
- *    ルールと意味的に等価であること（`in {…}` 集合は順序不問の集合比較、
- *    それ以外は文字列一致）。
+ * 1. 生成ルールが、以前ワークフローYAMLにハードコードされていたルールへ
+ *    明示した公開SEOパスの除外だけを加えた内容であること（`in {…}` 集合は
+ *    順序不問の集合比較、それ以外は文字列一致）。
  * 2. ポリシー整合: 生成される保護対象/embed許可のAPIパス集合が
  *    routePolicies の waf フラグと一致すること。
  * 3. 実行互換性: child_process で実際にスクリプトを実行することで、
@@ -66,7 +66,7 @@ const LEGACY_RULES: WafRule[] = [
     ref: 'aituberkit-browser-clearance',
     description: 'AITuberKit: issue browser clearance before protected API use',
     expression:
-      '(http.host in {"aituberkit.com" "www.aituberkit.com"} and http.request.method eq "GET" and not starts_with(http.request.uri.path, "/api/") and not starts_with(http.request.uri.path, "/_next/") and not starts_with(http.request.uri.path, "/assets/") and not ends_with(http.request.uri.path, ".js") and not ends_with(http.request.uri.path, ".css") and not ends_with(http.request.uri.path, ".png") and not ends_with(http.request.uri.path, ".jpg") and not ends_with(http.request.uri.path, ".jpeg") and not ends_with(http.request.uri.path, ".webp") and not ends_with(http.request.uri.path, ".svg") and not ends_with(http.request.uri.path, ".ico") and not cf.client.bot)',
+      '(http.host in {"aituberkit.com" "www.aituberkit.com"} and http.request.method eq "GET" and http.request.uri.path ne "/aituber" and http.request.uri.path ne "/aituber/" and http.request.uri.path ne "/robots.txt" and http.request.uri.path ne "/sitemap.xml" and http.request.uri.path ne "/llms.txt" and not starts_with(http.request.uri.path, "/api/") and not starts_with(http.request.uri.path, "/_next/") and not starts_with(http.request.uri.path, "/assets/") and not ends_with(http.request.uri.path, ".js") and not ends_with(http.request.uri.path, ".css") and not ends_with(http.request.uri.path, ".png") and not ends_with(http.request.uri.path, ".jpg") and not ends_with(http.request.uri.path, ".jpeg") and not ends_with(http.request.uri.path, ".webp") and not ends_with(http.request.uri.path, ".svg") and not ends_with(http.request.uri.path, ".ico") and not cf.client.bot)',
     action: 'managed_challenge',
     enabled: true,
   },
@@ -119,7 +119,7 @@ describe('generate-waf-rules.mjs', () => {
     generated = JSON.parse(stdout)
   })
 
-  it('generates the same three rules as the legacy hardcoded workflow', () => {
+  it('generates the three expected rules including public SEO paths', () => {
     expect(generated).toHaveLength(LEGACY_RULES.length)
 
     generated.forEach((rule, index) => {
