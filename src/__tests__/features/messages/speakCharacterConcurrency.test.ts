@@ -138,6 +138,27 @@ describe('speakCharacter concurrency', () => {
     })
   })
 
+  it('forwards the display callback to the actual playback start', async () => {
+    const onPlaybackStart = jest.fn()
+    mockSynthesizeVoicevoxApi.mockResolvedValueOnce(new ArrayBuffer(1))
+
+    speakCharacter(
+      'session-playback',
+      { message: 'spoken', emotion: 'neutral' },
+      undefined,
+      undefined,
+      'displayed',
+      onPlaybackStart
+    )
+    await flushPromises()
+
+    expect(onPlaybackStart).not.toHaveBeenCalled()
+    const queuedTask = mockAddTask.mock.calls[0][0]
+    queuedTask.onPlaybackStart()
+
+    expect(onPlaybackStart).toHaveBeenCalledTimes(1)
+  })
+
   it('drops old synthesis results after a session switch', async () => {
     const oldTask = createDeferred<ArrayBuffer>()
     const newTask = createDeferred<ArrayBuffer>()
