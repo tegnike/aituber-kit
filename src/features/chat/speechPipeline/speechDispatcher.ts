@@ -29,6 +29,7 @@ export type SpeechDispatcher = {
 
 export type SpeechDispatcherOptions = {
   displayMessages?: string[]
+  displayMessageFallback?: string
 }
 
 /**
@@ -79,9 +80,8 @@ export const createSpeechDispatcher = (
     if (!isSpeakableText(event.text)) return false
 
     const displayMessage =
-      options.displayMessages === undefined
-        ? undefined
-        : (options.displayMessages[displayMessageIndex] ?? '')
+      options.displayMessages?.[displayMessageIndex] ??
+      options.displayMessageFallback
     displayMessageIndex += 1
     speakOne(sessionId, event, slideMessages, displayMessage)
     anyDispatched = true

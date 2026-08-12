@@ -60,6 +60,7 @@ export const speakMessageHandler = async (
     displayMessages: hasSeparateDisplayMessage
       ? displaySpeechSegments
       : undefined,
+    displayMessageFallback: hasSeparateDisplayMessage ? '' : undefined,
   })
 
   const handleSpeechEvent = (event: SegmenterEvent) => {
