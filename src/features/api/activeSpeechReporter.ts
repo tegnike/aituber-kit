@@ -1,37 +1,18 @@
 export type ActiveSpeech = { id: string; text: string } | null
 
 /**
- * Reports speech state serially while collapsing queued transitions to the
- * latest value. A slow request must not replay already-finished captions.
+ * Reports every transition immediately with a monotonically increasing
+ * version. The server uses the version to discard late, out-of-order requests.
  */
 export const createActiveSpeechReporter = (
-  report: (activeSpeech: ActiveSpeech) => Promise<void>
+  report: (activeSpeech: ActiveSpeech, version: number) => Promise<void>
 ) => {
-  let pending: ActiveSpeech | undefined
-  let draining: Promise<void> | null = null
-
-  const drain = async () => {
-    while (pending !== undefined) {
-      const activeSpeech = pending
-      pending = undefined
-      await report(activeSpeech)
-    }
-  }
-
-  const startDrain = () => {
-    if (!draining) {
-      draining = drain().finally(() => {
-        draining = null
-        if (pending !== undefined) void startDrain()
-      })
-    }
-    return draining
-  }
+  let lastVersion = Date.now() * 1000
 
   return {
     enqueue(activeSpeech: ActiveSpeech) {
-      pending = activeSpeech
-      return startDrain()
+      lastVersion = Math.max(lastVersion + 1, Date.now() * 1000)
+      return report(activeSpeech, lastVersion)
     },
   }
 }
