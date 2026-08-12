@@ -161,6 +161,38 @@ describe('SpeakQueue', () => {
       })
     })
 
+    it('should expose display text while speaking synthesized text', async () => {
+      const queue = SpeakQueue.getInstance()
+      queue.checkSessionId('session1')
+      const task = {
+        ...createTask('session1'),
+        displayText: 'Bunkerkidsを紹介します。',
+        talk: {
+          emotion: 'neutral' as const,
+          message: 'バンカーキッズを紹介します。',
+        },
+      }
+      mockModelSpeak.mockImplementationOnce(
+        async (_buffer, _talk, _isNeedDecode, observer) => {
+          observer?.onPlaybackStart?.()
+        }
+      )
+
+      await queue.addTask(task)
+
+      expect(mockModelSpeak).toHaveBeenCalledWith(
+        task.audioBuffer,
+        task.talk,
+        task.isNeedDecode,
+        { onPlaybackStart: expect.any(Function) }
+      )
+      expect(mockHomeSetState).toHaveBeenCalledWith({
+        activeSpeech: expect.objectContaining({
+          text: 'Bunkerkidsを紹介します。',
+        }),
+      })
+    })
+
     it('should process a PCM16 stream via the VRM model', async () => {
       const queue = SpeakQueue.getInstance()
       queue.checkSessionId('session1')

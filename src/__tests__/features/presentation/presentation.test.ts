@@ -6,6 +6,10 @@ import { buildPresentationPromptContext } from '@/features/presentation/presenta
 import { sanitizePresentationHtml } from '@/features/presentation/presentationSanitizer'
 import { validateExternalPresentation } from '@/features/presentation/presentationSchema'
 import {
+  getPresentationDisplayNarration,
+  getPresentationSpeechText,
+} from '@/features/presentation/presentationText'
+import {
   applyPresentationControlAction,
   completePresentationNarration,
 } from '@/features/presentation/presentationStateMachine'
@@ -57,6 +61,37 @@ describe('external presentation domain', () => {
     expect(document.sections[1].slides[0].pauseAfter).toBe(true)
   })
 
+  it('keeps display narration and speech text separate with compatible fallbacks', () => {
+    const separated = {
+      narration: 'Bunkerkidsを紹介します。',
+      speechText: 'バンカーキッズを紹介します。',
+    }
+    expect(getPresentationDisplayNarration(separated)).toBe(
+      'Bunkerkidsを紹介します。'
+    )
+    expect(getPresentationSpeechText(separated)).toBe(
+      'バンカーキッズを紹介します。'
+    )
+    expect(getPresentationDisplayNarration({ speechText: '発話だけ' })).toBe(
+      '発話だけ'
+    )
+    expect(getPresentationSpeechText({ narration: '従来の原稿' })).toBe(
+      '従来の原稿'
+    )
+    expect(
+      getPresentationDisplayNarration({
+        narration: '',
+        speechText: '発話だけ',
+      })
+    ).toBe('')
+    expect(
+      getPresentationSpeechText({
+        speechText: '',
+        narration: '表示だけ',
+      })
+    ).toBe('')
+  })
+
   it.each([
     [
       'duplicate slide IDs',
@@ -104,6 +139,14 @@ describe('external presentation domain', () => {
     const oversizedNarration = createManifest()
     oversizedNarration.sections[0].slides[0].narration = 'x'.repeat(10_001)
     expect(validateExternalPresentation(oversizedNarration).ok).toBe(false)
+
+    const maxSpeechText = createManifest()
+    maxSpeechText.sections[0].slides[0].speechText = 'x'.repeat(10_000)
+    expect(validateExternalPresentation(maxSpeechText).ok).toBe(true)
+
+    const oversizedSpeechText = createManifest()
+    oversizedSpeechText.sections[0].slides[0].speechText = 'x'.repeat(10_001)
+    expect(validateExternalPresentation(oversizedSpeechText).ok).toBe(false)
 
     const tooManySections = createManifest()
     tooManySections.sections = Array.from({ length: 51 }, (_, index) => ({

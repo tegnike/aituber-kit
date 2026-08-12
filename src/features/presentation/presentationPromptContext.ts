@@ -1,4 +1,5 @@
-import type { PresentationDocument } from './presentationTypes'
+import type { PresentationDocument } from '@/features/presentation/presentationTypes'
+import { getPresentationDisplayNarration } from '@/features/presentation/presentationText'
 
 const escapeXml = (value: string) =>
   value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -25,8 +26,8 @@ export const buildPresentationPromptContext = (
     })
     .join('\n')
   const narrations = visibleSlides
-    .map((item) => item.narration)
-    .filter((item): item is string => Boolean(item))
+    .map(getPresentationDisplayNarration)
+    .filter(Boolean)
     .join('\n')
 
   const material = [

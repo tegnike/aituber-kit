@@ -189,6 +189,7 @@ export interface PresentationSlideV1 {
   id: string
   markdown: string
   narration?: string
+  speechText?: string
   notes?: string
   pauseAfter?: boolean
   assets?: PresentationAssetV1[]
@@ -211,6 +212,8 @@ export interface PresentationSourceV1 {
   publishedAt?: string
 }
 ```
+
+`narration`は画面表示や会話文脈へ使う原稿、`speechText`はTTSへ渡す発話文とする。発話時は`speechText ?? narration`、表示・文脈では`narration ?? speechText`の順でfallbackする。既存Producerとの互換性、および発話のない視覚専用Slideを維持するため、両方とも省略可能とする。
 
 ### 8.2 ID制約
 
@@ -238,6 +241,7 @@ export interface PresentationSourceV1 {
 | Slide総数                  |         200 |
 | 1 SlideのMarkdown          |  50,000文字 |
 | 1 SlideのNarration         |  10,000文字 |
+| 1 SlideのSpeechText        |  10,000文字 |
 | 1 SlideのNotes             |  10,000文字 |
 | 1 SlideのAsset数           |          20 |
 | 1 SectionのQ&A Brief       | 100,000文字 |
