@@ -27,6 +27,10 @@ export type SpeechDispatcher = {
   readonly disabled: boolean
 }
 
+export type SpeechDispatcherOptions = {
+  displayMessages?: string[]
+}
+
 /**
  * 応答セッション1回分の発話ディスパッチャ。
  *
@@ -37,13 +41,17 @@ export type SpeechDispatcher = {
  *   他セッション向けならトークンを追従して発話を継続する
  * - 自分より新しい応答セッションが登録されたら無効化
  */
-export const createSpeechDispatcher = (sessionId: string): SpeechDispatcher => {
+export const createSpeechDispatcher = (
+  sessionId: string,
+  options: SpeechDispatcherOptions = {}
+): SpeechDispatcher => {
   latestResponseSessionId = sessionId
   let capturedToken: number | null = null
   let disabled = false
   let anyDispatched = false
   // スライド字幕はこの応答の発話中文リストで全置換する（旧refベース実装の踏襲）
   const slideMessages: string[] = []
+  let displayMessageIndex = 0
 
   const dispatch = (event: SpeechEvent): boolean => {
     if (disabled) return false
@@ -70,7 +78,9 @@ export const createSpeechDispatcher = (sessionId: string): SpeechDispatcher => {
     // ガード3: 発話可否（記号・空白のみは発話しない）
     if (!isSpeakableText(event.text)) return false
 
-    speakOne(sessionId, event, slideMessages)
+    const displayMessage = options.displayMessages?.[displayMessageIndex]
+    displayMessageIndex += 1
+    speakOne(sessionId, event, slideMessages, displayMessage)
     anyDispatched = true
     return true
   }
@@ -91,29 +101,33 @@ export const createSpeechDispatcher = (sessionId: string): SpeechDispatcher => {
 const speakOne = (
   sessionId: string,
   event: SpeechEvent,
-  slideMessages: string[]
+  slideMessages: string[],
+  displayMessage: string | undefined
 ) => {
   const hs = homeStore.getState()
   const emotion = event.emotionTag.includes('[')
     ? (event.emotionTag.slice(1, -1).toLowerCase() as EmotionType)
     : 'neutral'
 
-  speakCharacter(
-    sessionId,
-    {
-      message: event.text,
-      emotion,
-      motion: event.motionTag || undefined,
-    },
-    () => {
-      hs.incrementChatProcessingCount()
-      slideMessages.push(event.text)
-      homeStore.setState({ slideMessages: [...slideMessages] })
-    },
-    () => {
-      hs.decrementChatProcessingCount()
-      slideMessages.shift()
-      homeStore.setState({ slideMessages: [...slideMessages] })
-    }
-  )
+  const talk = {
+    message: event.text,
+    emotion,
+    motion: event.motionTag || undefined,
+  }
+  const onStart = () => {
+    hs.incrementChatProcessingCount()
+    slideMessages.push(displayMessage ?? event.text)
+    homeStore.setState({ slideMessages: [...slideMessages] })
+  }
+  const onComplete = () => {
+    hs.decrementChatProcessingCount()
+    slideMessages.shift()
+    homeStore.setState({ slideMessages: [...slideMessages] })
+  }
+
+  if (displayMessage !== undefined) {
+    speakCharacter(sessionId, talk, onStart, onComplete, displayMessage)
+  } else {
+    speakCharacter(sessionId, talk, onStart, onComplete)
+  }
 }

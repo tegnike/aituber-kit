@@ -6,6 +6,7 @@ import { getCharacterRenderer } from './characterRenderer'
 type SpeakTaskBase = {
   sessionId: string
   talk: Talk
+  displayText?: string
   onPlaybackStart?: () => void
   onComplete?: () => void
 }
@@ -234,7 +235,7 @@ export class SpeakQueue {
           const renderer = getCharacterRenderer()
           const activeSpeech = {
             id: `speech-${Date.now()}-${++SpeakQueue.speechTaskCounter}`,
-            text: task.talk.message,
+            text: task.displayText ?? task.talk.message,
           }
           const observer = {
             onPlaybackStart: () => {

@@ -25,6 +25,7 @@ export interface PresentationSlideV1 {
   id: string
   markdown: string
   narration?: string
+  speechText?: string
   notes?: string
   pauseAfter?: boolean
   assets?: PresentationAssetV1[]
