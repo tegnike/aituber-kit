@@ -117,20 +117,40 @@ const speakOne = (
     emotion,
     motion: event.motionTag || undefined,
   }
+  let playbackStarted = false
   const onStart = () => {
     hs.incrementChatProcessingCount()
+  }
+  const onPlaybackStart = () => {
+    playbackStarted = true
     slideMessages.push(displayMessage ?? event.text)
     homeStore.setState({ slideMessages: [...slideMessages] })
   }
   const onComplete = () => {
     hs.decrementChatProcessingCount()
-    slideMessages.shift()
-    homeStore.setState({ slideMessages: [...slideMessages] })
+    if (playbackStarted) {
+      slideMessages.shift()
+      homeStore.setState({ slideMessages: [...slideMessages] })
+    }
   }
 
   if (displayMessage !== undefined) {
-    speakCharacter(sessionId, talk, onStart, onComplete, displayMessage)
+    speakCharacter(
+      sessionId,
+      talk,
+      onStart,
+      onComplete,
+      displayMessage,
+      onPlaybackStart
+    )
   } else {
-    speakCharacter(sessionId, talk, onStart, onComplete)
+    speakCharacter(
+      sessionId,
+      talk,
+      onStart,
+      onComplete,
+      undefined,
+      onPlaybackStart
+    )
   }
 }
