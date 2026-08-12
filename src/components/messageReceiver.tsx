@@ -41,7 +41,10 @@ import {
   subscribeReceiverEventStream,
 } from '@/features/api/receiverEventStream'
 import { createAssignmentReconciliationRunner } from '@/features/presentation/assignmentReconciliation'
-import { createActiveSpeechReporter } from '@/features/api/activeSpeechReporter'
+import {
+  createActiveSpeechReporter,
+  createActiveSpeechStatusCoordinator,
+} from '@/features/api/activeSpeechReporter'
 
 const CLIENT_TAB_LEASE_DURATION = 5000
 const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
@@ -469,9 +472,9 @@ const MessageReceiver = () => {
       targetId: string,
       mode: 'receiver' | 'legacy'
     ) => {
-      if (mode === 'legacy' && !isClientTabLeader) return
+      if (mode === 'legacy' && !isClientTabLeader) return false
       const authHeaders = getClientApiHeaders()
-      if (!authHeaders) return
+      if (!authHeaders) return false
 
       const hs = homeStore.getState()
       const ss = settingsStore.getState()
@@ -519,13 +522,13 @@ const MessageReceiver = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
-        if (mode === 'legacy' && !isClientTabLeader) return
+        if (mode === 'legacy' && !isClientTabLeader) return false
         if (data.assignmentError) {
           logger.error(
             'Error reading presentation assignment:',
             data.assignmentError
           )
-          return
+          return true
         }
         const assignment = data.assignment ?? null
         if (mode === 'receiver') {
@@ -540,8 +543,10 @@ const MessageReceiver = () => {
         } else if (!receiverHasAssignment) {
           scheduleAssignmentReconciliation(assignment)
         }
+        return true
       } catch (error) {
         logger.error('Error reporting client status:', error)
+        return false
       }
     }
 
@@ -680,7 +685,6 @@ const MessageReceiver = () => {
 
     let isReportingStatus = false
     let isStatusReportQueued = false
-    let activeSpeechReporterReady = false
     const activeSpeechReporter = createActiveSpeechReporter(
       async (activeSpeech, version) => {
         try {
@@ -690,6 +694,12 @@ const MessageReceiver = () => {
         }
       }
     )
+    const activeSpeechStatusCoordinator = createActiveSpeechStatusCoordinator({
+      reportStatus: () => reportStatus(receiverId, 'receiver'),
+      reportActiveSpeech: (activeSpeech) =>
+        activeSpeechReporter.enqueue(activeSpeech),
+      getActiveSpeech: () => homeStore.getState().activeSpeech,
+    })
 
     const drainReceiver = createOrderedReceiverDrainRunner({
       fetchCommands: () => fetchCommands(receiverId, 'receiver'),
@@ -709,14 +719,13 @@ const MessageReceiver = () => {
     }
 
     const safeReportStatus = async () => {
-      if (!activeSpeechReporterReady) return
       isStatusReportQueued = true
       if (isReportingStatus) return
       isReportingStatus = true
       try {
         while (isStatusReportQueued) {
           isStatusReportQueued = false
-          await reportStatus(receiverId, 'receiver')
+          await activeSpeechStatusCoordinator.reportClientStatus()
           await reportStatus(clientId, 'legacy')
         }
       } finally {
@@ -741,7 +750,9 @@ const MessageReceiver = () => {
           void safeReportStatus()
         }
         if (state.activeSpeech?.id !== previousState.activeSpeech?.id) {
-          void activeSpeechReporter.enqueue(state.activeSpeech)
+          void activeSpeechStatusCoordinator.reportSpeechTransition(
+            state.activeSpeech
+          )
         }
       }
     )
@@ -783,12 +794,7 @@ const MessageReceiver = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     void drainAllReceivers()
-    void activeSpeechReporter
-      .enqueue(homeStore.getState().activeSpeech)
-      .then(() => {
-        activeSpeechReporterReady = true
-        return safeReportStatus()
-      })
+    void safeReportStatus()
 
     if (document.visibilityState === 'visible' && document.hasFocus()) {
       claimClientTabLeadership()

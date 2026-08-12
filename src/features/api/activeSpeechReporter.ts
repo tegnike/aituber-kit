@@ -16,3 +16,29 @@ export const createActiveSpeechReporter = (
     },
   }
 }
+
+export const createActiveSpeechStatusCoordinator = ({
+  reportStatus,
+  reportActiveSpeech,
+  getActiveSpeech,
+}: {
+  reportStatus: () => Promise<boolean>
+  reportActiveSpeech: (activeSpeech: ActiveSpeech) => Promise<void>
+  getActiveSpeech: () => ActiveSpeech
+}) => {
+  let statusInitialized = false
+
+  return {
+    async reportClientStatus() {
+      const reported = await reportStatus()
+      if (reported && !statusInitialized) {
+        statusInitialized = true
+        await reportActiveSpeech(getActiveSpeech())
+      }
+    },
+    reportSpeechTransition(activeSpeech: ActiveSpeech) {
+      if (!statusInitialized) return Promise.resolve()
+      return reportActiveSpeech(activeSpeech)
+    },
+  }
+}
