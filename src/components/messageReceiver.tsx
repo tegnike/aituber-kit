@@ -526,10 +526,14 @@ const MessageReceiver = () => {
           const previouslyAssigned = receiverHasAssignment
           receiverHasAssignment = Boolean(assignment)
           if (assignment || previouslyAssigned) {
-            await reconcileAssignment(assignment)
+            // Assignment loading can take several seconds. Do not hold the
+            // serialized status reporter while it runs: activeSpeech changes
+            // must reach the gateway at playback start so external captions
+            // do not miss the first spoken segment.
+            void reconcileAssignment(assignment)
           }
         } else if (!receiverHasAssignment) {
-          await reconcileAssignment(assignment)
+          void reconcileAssignment(assignment)
         }
       } catch (error) {
         logger.error('Error reporting client status:', error)
