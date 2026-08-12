@@ -3,15 +3,20 @@ export const createConcurrencyLimiter = (limit: number) => {
   const waiters: (() => void)[] = []
 
   const release = () => {
+    const next = waiters.shift()
+    if (next) {
+      next()
+      return
+    }
     active -= 1
-    waiters.shift()?.()
   }
 
   return async () => {
     if (active >= limit) {
       await new Promise<void>((resolve) => waiters.push(resolve))
+    } else {
+      active += 1
     }
-    active += 1
     let released = false
     return () => {
       if (released) return

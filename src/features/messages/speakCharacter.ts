@@ -29,7 +29,7 @@ import {
   containsEnglish,
 } from '@/utils/textProcessing'
 import { markConversationLatency } from '@/features/chat/conversationLatency'
-import { createConcurrencyLimiter } from './concurrencyLimiter'
+import { createConcurrencyLimiter } from '@/features/messages/concurrencyLimiter'
 
 const speakQueue = SpeakQueue.getInstance()
 const SYNTHESIS_START_GAP_MS = 250

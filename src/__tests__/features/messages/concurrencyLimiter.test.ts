@@ -20,4 +20,25 @@ describe('createConcurrencyLimiter', () => {
     releaseSecond()
     releaseThird()
   })
+
+  it('transfers a released slot to the existing waiter before a newcomer', async () => {
+    const acquire = createConcurrencyLimiter(1)
+    const releaseFirst = await acquire()
+    const waiting = acquire()
+
+    releaseFirst()
+    let newcomerAcquired = false
+    const newcomer = acquire().then((release) => {
+      newcomerAcquired = true
+      return release
+    })
+    const releaseWaiting = await waiting
+    await Promise.resolve()
+
+    expect(newcomerAcquired).toBe(false)
+    releaseWaiting()
+    const releaseNewcomer = await newcomer
+    expect(newcomerAcquired).toBe(true)
+    releaseNewcomer()
+  })
 })
