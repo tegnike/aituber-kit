@@ -29,9 +29,6 @@ export const speakMessageHandler = async (
       : (speechSessionIdOrOptions ?? {})
   const sessionId = options.speechSessionId || generateMessageId()
   const writer = new NormalizedMessageLogWriter()
-  const dispatcher = createSpeechDispatcher(sessionId, {
-    displayMessage: options.displayMessage?.trim(),
-  })
   const createSegmenter = () =>
     new SpeechSegmenter({
       firstSpeechCommaMinChars: getFirstSpeechCommaMinChars(
@@ -39,19 +36,31 @@ export const speakMessageHandler = async (
       ),
     })
   const speechSegmenter = createSegmenter()
+  const normalizedDisplayMessage = options.displayMessage?.trim()
   const hasSeparateDisplayMessage =
-    options.displayMessage !== undefined &&
-    options.displayMessage !== receivedMessage
+    normalizedDisplayMessage !== undefined &&
+    normalizedDisplayMessage !== receivedMessage
+  const displaySpeechSegments: string[] = []
 
   if (hasSeparateDisplayMessage) {
     const displaySegmenter = createSegmenter()
-    for (const event of displaySegmenter.push(options.displayMessage ?? '')) {
+    const handleDisplayEvent = (event: SegmenterEvent) => {
       writer.handleEvent(event)
+      if (event.kind === 'speech') displaySpeechSegments.push(event.text)
+    }
+    for (const event of displaySegmenter.push(normalizedDisplayMessage ?? '')) {
+      handleDisplayEvent(event)
     }
     for (const event of displaySegmenter.flush()) {
-      writer.handleEvent(event)
+      handleDisplayEvent(event)
     }
   }
+
+  const dispatcher = createSpeechDispatcher(sessionId, {
+    displayMessages: hasSeparateDisplayMessage
+      ? displaySpeechSegments
+      : undefined,
+  })
 
   const handleSpeechEvent = (event: SegmenterEvent) => {
     if (!hasSeparateDisplayMessage) writer.handleEvent(event)

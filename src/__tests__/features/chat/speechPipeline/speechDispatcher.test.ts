@@ -141,7 +141,7 @@ describe('speechDispatcher', () => {
 
   it('発話文と異なる表示文を字幕へ維持する', () => {
     const d = createSpeechDispatcher('session-1', {
-      displayMessage: 'Bunkerkidsを紹介します。',
+      displayMessages: ['Bunkerkidsを', '紹介します。'],
     })
     d.dispatch(speech('バンカーキッズを'))
     d.dispatch(speech('紹介します。'))
@@ -152,24 +152,26 @@ describe('speechDispatcher', () => {
       speakCharacter as jest.Mock
     ).mock.calls[1]
 
-    expect(firstDisplayText).toBe('Bunkerkidsを紹介します。')
-    expect(secondDisplayText).toBe('Bunkerkidsを紹介します。')
+    expect(firstDisplayText).toBe('Bunkerkidsを')
+    expect(secondDisplayText).toBe('紹介します。')
 
     firstOnStart()
     secondOnStart()
-    expect(homeStore.setState).toHaveBeenCalledWith({
-      slideMessages: ['Bunkerkidsを紹介します。'],
+    expect(homeStore.setState).toHaveBeenLastCalledWith({
+      slideMessages: ['Bunkerkidsを', '紹介します。'],
     })
     ;(homeStore.setState as jest.Mock).mockClear()
     firstOnComplete()
-    expect(homeStore.setState).not.toHaveBeenCalledWith({ slideMessages: [] })
+    expect(homeStore.setState).toHaveBeenLastCalledWith({
+      slideMessages: ['紹介します。'],
+    })
 
     secondOnComplete()
     expect(homeStore.setState).toHaveBeenLastCalledWith({ slideMessages: [] })
   })
 
   it('空の表示文を発話文へフォールバックしない', () => {
-    const d = createSpeechDispatcher('session-1', { displayMessage: '' })
+    const d = createSpeechDispatcher('session-1', { displayMessages: [''] })
     d.dispatch(speech('バンカーキッズを紹介します。'))
     const [, , onStart, onComplete, displayText] = (speakCharacter as jest.Mock)
       .mock.calls[0]

@@ -28,7 +28,7 @@ export type SpeechDispatcher = {
 }
 
 export type SpeechDispatcherOptions = {
-  displayMessage?: string
+  displayMessages?: string[]
 }
 
 /**
@@ -51,7 +51,7 @@ export const createSpeechDispatcher = (
   let anyDispatched = false
   // スライド字幕はこの応答の発話中文リストで全置換する（旧refベース実装の踏襲）
   const slideMessages: string[] = []
-  let activeDisplaySegments = 0
+  let displayMessageIndex = 0
 
   const dispatch = (event: SpeechEvent): boolean => {
     if (disabled) return false
@@ -78,15 +78,9 @@ export const createSpeechDispatcher = (
     // ガード3: 発話可否（記号・空白のみは発話しない）
     if (!isSpeakableText(event.text)) return false
 
-    speakOne(sessionId, event, slideMessages, options.displayMessage, {
-      start: () => {
-        activeDisplaySegments += 1
-      },
-      complete: () => {
-        activeDisplaySegments = Math.max(0, activeDisplaySegments - 1)
-        return activeDisplaySegments
-      },
-    })
+    const displayMessage = options.displayMessages?.[displayMessageIndex]
+    displayMessageIndex += 1
+    speakOne(sessionId, event, slideMessages, displayMessage)
     anyDispatched = true
     return true
   }
@@ -108,8 +102,7 @@ const speakOne = (
   sessionId: string,
   event: SpeechEvent,
   slideMessages: string[],
-  displayMessage: string | undefined,
-  displaySegments: { start: () => void; complete: () => number }
+  displayMessage: string | undefined
 ) => {
   const hs = homeStore.getState()
   const emotion = event.emotionTag.includes('[')
@@ -123,23 +116,13 @@ const speakOne = (
   }
   const onStart = () => {
     hs.incrementChatProcessingCount()
-    if (displayMessage !== undefined) {
-      displaySegments.start()
-      homeStore.setState({ slideMessages: [displayMessage] })
-    } else {
-      slideMessages.push(event.text)
-      homeStore.setState({ slideMessages: [...slideMessages] })
-    }
+    slideMessages.push(displayMessage ?? event.text)
+    homeStore.setState({ slideMessages: [...slideMessages] })
   }
   const onComplete = () => {
     hs.decrementChatProcessingCount()
-    if (displayMessage !== undefined) {
-      const remaining = displaySegments.complete()
-      if (remaining === 0) homeStore.setState({ slideMessages: [] })
-    } else {
-      slideMessages.shift()
-      homeStore.setState({ slideMessages: [...slideMessages] })
-    }
+    slideMessages.shift()
+    homeStore.setState({ slideMessages: [...slideMessages] })
   }
 
   if (displayMessage !== undefined) {

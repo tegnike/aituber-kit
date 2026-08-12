@@ -28,23 +28,33 @@ describe('speakMessageHandler', () => {
   })
 
   it('表示文をchatLogへ残し、発話文だけをTTSへ渡す', async () => {
-    await speakMessageHandler('バンカーキッズを紹介します。', {
+    await speakMessageHandler('バンカーキッズを紹介します。次はウィフです。', {
       speechSessionId: 'presentation-1',
-      displayMessage: 'Bunkerkidsを紹介します。',
+      displayMessage: 'Bunkerkidsを紹介します。次はWHIFです。',
     })
 
     expect(upsertMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         role: 'assistant',
-        content: 'Bunkerkidsを紹介します。',
+        content: 'Bunkerkidsを紹介します。 次はWHIFです。',
       })
     )
-    expect(speakCharacter).toHaveBeenCalledWith(
+    expect(speakCharacter).toHaveBeenCalledTimes(2)
+    expect(speakCharacter).toHaveBeenNthCalledWith(
+      1,
       'presentation-1',
       expect.objectContaining({ message: 'バンカーキッズを紹介します。' }),
       expect.any(Function),
       expect.any(Function),
       'Bunkerkidsを紹介します。'
+    )
+    expect(speakCharacter).toHaveBeenNthCalledWith(
+      2,
+      'presentation-1',
+      expect.objectContaining({ message: '次はウィフです。' }),
+      expect.any(Function),
+      expect.any(Function),
+      '次はWHIFです。'
     )
   })
 })
