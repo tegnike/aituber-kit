@@ -143,6 +143,7 @@ interface ClientQueue {
 interface MessageGatewayState {
   queuesPerClient: Record<string, ClientQueue>
   statusesPerClient: Record<string, ClientStatus>
+  activeSpeechVersionsPerClient: Record<string, number>
   responseCallbacks: Record<
     string,
     ResponseCallback & { expiresAt: number; claimed: boolean }
@@ -180,6 +181,7 @@ const getGatewayState = (): MessageGatewayState => {
     globalState.__aituberKitMessageGateway = {
       queuesPerClient: {},
       statusesPerClient: {},
+      activeSpeechVersionsPerClient: {},
       responseCallbacks: {},
       recentEvents: [],
       eventListeners: [],
@@ -267,6 +269,7 @@ export const cleanupClientQueues = () => {
   for (const clientId of Object.keys(state.statusesPerClient)) {
     if (now - state.statusesPerClient[clientId].lastSeenAt > CLIENT_TIMEOUT) {
       delete state.statusesPerClient[clientId]
+      delete state.activeSpeechVersionsPerClient[clientId]
     }
   }
   for (const handle of Object.keys(state.responseCallbacks)) {
@@ -471,13 +474,37 @@ export const dequeueCommands = (clientId: string): QueuedCommand[] => {
   return commands
 }
 
+const emitSpeechChunkTransition = (
+  clientId: string,
+  previousSpeech: ClientStatus['activeSpeech'],
+  nextSpeech: ClientStatus['activeSpeech']
+) => {
+  if (previousSpeech?.id === nextSpeech?.id) return
+  if (previousSpeech) {
+    emitApiEvent(clientId, 'speech_chunk_ended', {
+      speechChunkId: previousSpeech.id,
+    })
+  }
+  if (nextSpeech) {
+    emitApiEvent(clientId, 'speech_chunk_started', {
+      speechChunkId: nextSpeech.id,
+      text: nextSpeech.text,
+    })
+  }
+}
+
 export const updateClientStatus = (
   clientId: string,
   status: Omit<ClientStatus, 'clientId' | 'lastSeenAt'>
 ): ClientStatus => {
   const previousStatus = getGatewayState().statusesPerClient[clientId]
+  const activeSpeech =
+    status.activeSpeech === undefined
+      ? (previousStatus?.activeSpeech ?? null)
+      : status.activeSpeech
   const nextStatus: ClientStatus = {
     ...status,
+    activeSpeech,
     clientId,
     lastSeenAt: Date.now(),
   }
@@ -504,21 +531,11 @@ export const updateClientStatus = (
     )
   }
 
-  const previousSpeech = previousStatus?.activeSpeech ?? null
-  const nextSpeech = nextStatus.activeSpeech ?? null
-  if (previousSpeech?.id !== nextSpeech?.id) {
-    if (previousSpeech) {
-      emitApiEvent(clientId, 'speech_chunk_ended', {
-        speechChunkId: previousSpeech.id,
-      })
-    }
-    if (nextSpeech) {
-      emitApiEvent(clientId, 'speech_chunk_started', {
-        speechChunkId: nextSpeech.id,
-        text: nextSpeech.text,
-      })
-    }
-  }
+  emitSpeechChunkTransition(
+    clientId,
+    previousStatus?.activeSpeech ?? null,
+    nextStatus.activeSpeech ?? null
+  )
 
   const previousPresentation = previousStatus?.presentation
   const presentation = nextStatus.presentation
@@ -569,6 +586,36 @@ export const updateClientStatus = (
     }
   }
 
+  return nextStatus
+}
+
+export const updateClientActiveSpeech = (
+  clientId: string,
+  activeSpeech: ClientStatus['activeSpeech'],
+  version?: number
+): ClientStatus | null => {
+  const state = getGatewayState()
+  const previousStatus = state.statusesPerClient[clientId]
+  if (!previousStatus) return null
+  if (
+    version !== undefined &&
+    version <= (state.activeSpeechVersionsPerClient[clientId] ?? -1)
+  ) {
+    return previousStatus
+  }
+  if (version !== undefined) {
+    state.activeSpeechVersionsPerClient[clientId] = version
+  }
+
+  const previousSpeech = previousStatus.activeSpeech ?? null
+  const nextSpeech = activeSpeech ?? null
+  const nextStatus: ClientStatus = {
+    ...previousStatus,
+    activeSpeech: nextSpeech,
+    lastSeenAt: Date.now(),
+  }
+  state.statusesPerClient[clientId] = nextStatus
+  emitSpeechChunkTransition(clientId, previousSpeech, nextSpeech)
   return nextStatus
 }
 
@@ -629,6 +676,7 @@ export const __resetMessageGatewayForTests = () => {
 
   state.queuesPerClient = {}
   state.statusesPerClient = {}
+  state.activeSpeechVersionsPerClient = {}
   state.responseCallbacks = {}
   state.recentEvents = []
   state.eventListeners = []

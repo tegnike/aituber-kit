@@ -29,9 +29,11 @@ import {
   containsEnglish,
 } from '@/utils/textProcessing'
 import { markConversationLatency } from '@/features/chat/conversationLatency'
+import { createConcurrencyLimiter } from '@/features/messages/concurrencyLimiter'
 
 const speakQueue = SpeakQueue.getInstance()
 const SYNTHESIS_START_GAP_MS = 250
+const MAX_CONCURRENT_SYNTHESIS = 3
 
 type SynthesizedSpeech =
   | {
@@ -50,6 +52,7 @@ type PendingSpeakResult = {
   audio: SynthesizedSpeech | null
   talk: Talk
   displayText?: string
+  onPlaybackStart?: () => void
   onComplete?: () => void
   tokenAtStart: number
 }
@@ -236,6 +239,9 @@ async function synthesizeVoice(
 }
 
 const createSpeakCharacter = () => {
+  const acquireSynthesisSlot = createConcurrencyLimiter(
+    MAX_CONCURRENT_SYNTHESIS
+  )
   let lastSynthesisStartAt = 0
   let currentSessionId: string | null = null
   let nextSynthesisOrder = 0
@@ -278,8 +284,10 @@ const createSpeakCharacter = () => {
         talk: result.talk,
         displayText: result.displayText,
         ...result.audio,
-        onPlaybackStart: () =>
-          markConversationLatency(result.sessionId, 'playback_started'),
+        onPlaybackStart: () => {
+          markConversationLatency(result.sessionId, 'playback_started')
+          result.onPlaybackStart?.()
+        },
         onComplete: result.onComplete,
       })
     }
@@ -290,7 +298,8 @@ const createSpeakCharacter = () => {
     talk: Talk,
     onStart?: () => void,
     onComplete?: () => void,
-    displayText?: string
+    displayText?: string,
+    onPlaybackStart?: () => void
   ) => {
     let called = false
     const ss = settingsStore.getState()
@@ -349,28 +358,29 @@ const createSpeakCharacter = () => {
         await wait(waitTime)
       }
 
-      // ボタン停止でキャンセルされた場合はここで終了
-      if (SpeakQueue.currentStopToken !== initialToken) {
-        return null
-      }
-
-      if (
-        processedMessage &&
-        ss.changeEnglishToJapanese &&
-        ss.selectLanguage === 'ja' &&
-        containsEnglish(processedMessage)
-      ) {
-        try {
-          const convertedText =
-            await asyncConvertEnglishToJapaneseReading(processedMessage)
-          talk.message = convertedText
-        } catch (error) {
-          logger.error('Error converting English to Japanese:', error)
-        }
-      }
-
-      let audio: SynthesizedSpeech | null
+      const releaseSynthesisSlot = await acquireSynthesisSlot()
       try {
+        // ボタン停止でキャンセルされた場合はここで終了
+        if (SpeakQueue.currentStopToken !== initialToken) {
+          return null
+        }
+
+        if (
+          processedMessage &&
+          ss.changeEnglishToJapanese &&
+          ss.selectLanguage === 'ja' &&
+          containsEnglish(processedMessage)
+        ) {
+          try {
+            const convertedText =
+              await asyncConvertEnglishToJapaneseReading(processedMessage)
+            talk.message = convertedText
+          } catch (error) {
+            logger.error('Error converting English to Japanese:', error)
+          }
+        }
+
+        let audio: SynthesizedSpeech | null
         if (talk.message == '' && talk.buffer) {
           audio = {
             kind: 'buffer',
@@ -423,18 +433,20 @@ const createSpeakCharacter = () => {
         } else {
           audio = null
         }
+        return {
+          sessionId,
+          audio,
+          talk,
+          displayText,
+          onPlaybackStart,
+          onComplete: guardedOnComplete,
+          tokenAtStart: initialToken,
+        }
       } catch (error) {
         handleTTSError(error, ss.selectVoice)
         return null
-      }
-
-      return {
-        sessionId,
-        audio,
-        talk,
-        displayText,
-        onComplete: guardedOnComplete,
-        tokenAtStart: initialToken,
+      } finally {
+        releaseSynthesisSlot()
       }
     })()
 
@@ -450,6 +462,7 @@ const createSpeakCharacter = () => {
           audio: result?.audio ?? null,
           talk,
           displayText,
+          onPlaybackStart,
           onComplete: guardedOnComplete,
           tokenAtStart: result?.tokenAtStart ?? initialToken,
         })
@@ -465,6 +478,7 @@ const createSpeakCharacter = () => {
           sessionId,
           audio: null,
           talk,
+          onPlaybackStart,
           onComplete: guardedOnComplete,
           tokenAtStart: initialToken,
         })

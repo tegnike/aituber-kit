@@ -40,6 +40,11 @@ import {
   createOrderedReceiverDrainRunner,
   subscribeReceiverEventStream,
 } from '@/features/api/receiverEventStream'
+import { createAssignmentReconciliationRunner } from '@/features/presentation/assignmentReconciliation'
+import {
+  createActiveSpeechReporter,
+  createActiveSpeechStatusCoordinator,
+} from '@/features/api/activeSpeechReporter'
 
 const CLIENT_TAB_LEASE_DURATION = 5000
 const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
@@ -458,13 +463,18 @@ const MessageReceiver = () => {
       }
     }
 
+    const scheduleAssignmentReconciliation =
+      createAssignmentReconciliationRunner(reconcileAssignment, (error) =>
+        logger.error('Error reconciling presentation assignment:', error)
+      )
+
     const reportStatus = async (
       targetId: string,
       mode: 'receiver' | 'legacy'
     ) => {
-      if (mode === 'legacy' && !isClientTabLeader) return
+      if (mode === 'legacy' && !isClientTabLeader) return false
       const authHeaders = getClientApiHeaders()
-      if (!authHeaders) return
+      if (!authHeaders) return false
 
       const hs = homeStore.getState()
       const ss = settingsStore.getState()
@@ -498,7 +508,6 @@ const MessageReceiver = () => {
                   }),
               connected: true,
               isSpeaking: hs.isSpeaking,
-              activeSpeech: hs.activeSpeech,
               chatProcessing: hs.chatProcessing,
               messageReceiverEnabled: ss.messageReceiverEnabled,
               modelType: ss.modelType,
@@ -513,27 +522,69 @@ const MessageReceiver = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
-        if (mode === 'legacy' && !isClientTabLeader) return
+        if (mode === 'legacy' && !isClientTabLeader) return false
         if (data.assignmentError) {
           logger.error(
             'Error reading presentation assignment:',
             data.assignmentError
           )
-          return
+          return true
         }
         const assignment = data.assignment ?? null
         if (mode === 'receiver') {
           const previouslyAssigned = receiverHasAssignment
           receiverHasAssignment = Boolean(assignment)
           if (assignment || previouslyAssigned) {
-            await reconcileAssignment(assignment)
+            // Assignment loading can take several seconds. Keep only the
+            // latest assignment in a separate serial drain so activeSpeech
+            // reports are not delayed and autoStart/unload updates are kept.
+            scheduleAssignmentReconciliation(assignment)
           }
         } else if (!receiverHasAssignment) {
-          await reconcileAssignment(assignment)
+          scheduleAssignmentReconciliation(assignment)
         }
+        return true
       } catch (error) {
         logger.error('Error reporting client status:', error)
+        return false
       }
+    }
+
+    const reportActiveSpeech = async (
+      activeSpeech: { id: string; text: string } | null,
+      version: number
+    ) => {
+      const authHeaders = getClientApiHeaders()
+      if (!authHeaders) return
+      let lastError: Error | null = null
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          const response = await fetch(
+            `/api/v1/client/speech-status/?receiverId=${encodeURIComponent(receiverId)}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...authHeaders,
+              },
+              body: JSON.stringify({ activeSpeech, version }),
+            }
+          )
+          if (response.ok) return
+          lastError = new Error(`HTTP error! status: ${response.status}`)
+        } catch (error) {
+          lastError =
+            error instanceof Error
+              ? error
+              : new Error('Active speech status request failed')
+        }
+        if (attempt < 2) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, 50 * (attempt + 1))
+          )
+        }
+      }
+      throw lastError ?? new Error('Active speech status request failed')
     }
 
     const fetchCommands = async (
@@ -634,6 +685,20 @@ const MessageReceiver = () => {
 
     let isReportingStatus = false
     let isStatusReportQueued = false
+    const activeSpeechReporter = createActiveSpeechReporter(reportActiveSpeech)
+    const activeSpeechStatusCoordinator = createActiveSpeechStatusCoordinator({
+      reportStatus: () => reportStatus(receiverId, 'receiver'),
+      reportActiveSpeech: async (activeSpeech) => {
+        try {
+          await activeSpeechReporter.enqueue(activeSpeech)
+          return true
+        } catch (error) {
+          logger.error('Error reporting active speech status:', error)
+          return false
+        }
+      },
+      getActiveSpeech: () => homeStore.getState().activeSpeech,
+    })
 
     const drainReceiver = createOrderedReceiverDrainRunner({
       fetchCommands: () => fetchCommands(receiverId, 'receiver'),
@@ -659,7 +724,7 @@ const MessageReceiver = () => {
       try {
         while (isStatusReportQueued) {
           isStatusReportQueued = false
-          await reportStatus(receiverId, 'receiver')
+          await activeSpeechStatusCoordinator.reportClientStatus()
           await reportStatus(clientId, 'legacy')
         }
       } finally {
@@ -682,6 +747,11 @@ const MessageReceiver = () => {
           state.activeSpeech?.id !== previousState.activeSpeech?.id
         ) {
           void safeReportStatus()
+        }
+        if (state.activeSpeech?.id !== previousState.activeSpeech?.id) {
+          void activeSpeechStatusCoordinator.reportSpeechTransition(
+            state.activeSpeech
+          )
         }
       }
     )

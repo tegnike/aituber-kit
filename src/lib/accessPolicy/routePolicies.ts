@@ -583,6 +583,15 @@ export const routePolicies = {
     restrictedBehavior: 'deny',
     requiresApiKey: true,
   },
+  '/api/v1/client/speech-status': {
+    path: '/api/v1/client/speech-status',
+    featureName: 'v1/client/speech-status',
+    methods: ['POST'],
+    resources: ['external-control'],
+    secret: { kind: 'none' },
+    restrictedBehavior: 'deny',
+    requiresApiKey: true,
+  },
   '/api/v1/receivers': {
     path: '/api/v1/receivers',
     featureName: 'v1/receivers',
