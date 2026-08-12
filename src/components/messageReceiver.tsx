@@ -504,7 +504,6 @@ const MessageReceiver = () => {
                   }),
               connected: true,
               isSpeaking: hs.isSpeaking,
-              activeSpeech: hs.activeSpeech,
               chatProcessing: hs.chatProcessing,
               messageReceiverEnabled: ss.messageReceiverEnabled,
               modelType: ss.modelType,
@@ -543,6 +542,35 @@ const MessageReceiver = () => {
       } catch (error) {
         logger.error('Error reporting client status:', error)
       }
+    }
+
+    const reportActiveSpeech = async (
+      activeSpeech: { id: string; text: string } | null
+    ) => {
+      const authHeaders = getClientApiHeaders()
+      if (!authHeaders) return
+      let lastStatus = 0
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const response = await fetch(
+          `/api/v1/client/speech-status/?receiverId=${encodeURIComponent(receiverId)}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeaders,
+            },
+            body: JSON.stringify({ activeSpeech }),
+          }
+        )
+        if (response.ok) return
+        lastStatus = response.status
+        if (attempt < 2) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, 50 * (attempt + 1))
+          )
+        }
+      }
+      throw new Error(`HTTP error! status: ${lastStatus}`)
     }
 
     const fetchCommands = async (
@@ -643,6 +671,17 @@ const MessageReceiver = () => {
 
     let isReportingStatus = false
     let isStatusReportQueued = false
+    let activeSpeechReportChain = Promise.resolve()
+
+    const enqueueActiveSpeechReport = (
+      activeSpeech: { id: string; text: string } | null
+    ) => {
+      activeSpeechReportChain = activeSpeechReportChain
+        .then(() => reportActiveSpeech(activeSpeech))
+        .catch((error) =>
+          logger.error('Error reporting active speech status:', error)
+        )
+    }
 
     const drainReceiver = createOrderedReceiverDrainRunner({
       fetchCommands: () => fetchCommands(receiverId, 'receiver'),
@@ -691,6 +730,9 @@ const MessageReceiver = () => {
           state.activeSpeech?.id !== previousState.activeSpeech?.id
         ) {
           void safeReportStatus()
+        }
+        if (state.activeSpeech?.id !== previousState.activeSpeech?.id) {
+          enqueueActiveSpeechReport(state.activeSpeech)
         }
       }
     )

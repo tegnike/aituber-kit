@@ -471,13 +471,37 @@ export const dequeueCommands = (clientId: string): QueuedCommand[] => {
   return commands
 }
 
+const emitSpeechChunkTransition = (
+  clientId: string,
+  previousSpeech: ClientStatus['activeSpeech'],
+  nextSpeech: ClientStatus['activeSpeech']
+) => {
+  if (previousSpeech?.id === nextSpeech?.id) return
+  if (previousSpeech) {
+    emitApiEvent(clientId, 'speech_chunk_ended', {
+      speechChunkId: previousSpeech.id,
+    })
+  }
+  if (nextSpeech) {
+    emitApiEvent(clientId, 'speech_chunk_started', {
+      speechChunkId: nextSpeech.id,
+      text: nextSpeech.text,
+    })
+  }
+}
+
 export const updateClientStatus = (
   clientId: string,
   status: Omit<ClientStatus, 'clientId' | 'lastSeenAt'>
 ): ClientStatus => {
   const previousStatus = getGatewayState().statusesPerClient[clientId]
+  const activeSpeech =
+    status.activeSpeech === undefined
+      ? (previousStatus?.activeSpeech ?? null)
+      : status.activeSpeech
   const nextStatus: ClientStatus = {
     ...status,
+    activeSpeech,
     clientId,
     lastSeenAt: Date.now(),
   }
@@ -504,21 +528,11 @@ export const updateClientStatus = (
     )
   }
 
-  const previousSpeech = previousStatus?.activeSpeech ?? null
-  const nextSpeech = nextStatus.activeSpeech ?? null
-  if (previousSpeech?.id !== nextSpeech?.id) {
-    if (previousSpeech) {
-      emitApiEvent(clientId, 'speech_chunk_ended', {
-        speechChunkId: previousSpeech.id,
-      })
-    }
-    if (nextSpeech) {
-      emitApiEvent(clientId, 'speech_chunk_started', {
-        speechChunkId: nextSpeech.id,
-        text: nextSpeech.text,
-      })
-    }
-  }
+  emitSpeechChunkTransition(
+    clientId,
+    previousStatus?.activeSpeech ?? null,
+    nextStatus.activeSpeech ?? null
+  )
 
   const previousPresentation = previousStatus?.presentation
   const presentation = nextStatus.presentation
@@ -569,6 +583,25 @@ export const updateClientStatus = (
     }
   }
 
+  return nextStatus
+}
+
+export const updateClientActiveSpeech = (
+  clientId: string,
+  activeSpeech: ClientStatus['activeSpeech']
+): ClientStatus | null => {
+  const previousStatus = getGatewayState().statusesPerClient[clientId]
+  if (!previousStatus) return null
+
+  const previousSpeech = previousStatus.activeSpeech ?? null
+  const nextSpeech = activeSpeech ?? null
+  const nextStatus: ClientStatus = {
+    ...previousStatus,
+    activeSpeech: nextSpeech,
+    lastSeenAt: Date.now(),
+  }
+  getGatewayState().statusesPerClient[clientId] = nextStatus
+  emitSpeechChunkTransition(clientId, previousSpeech, nextSpeech)
   return nextStatus
 }
 
