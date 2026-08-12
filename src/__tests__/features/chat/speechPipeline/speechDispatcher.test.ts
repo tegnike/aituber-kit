@@ -138,4 +138,21 @@ describe('speechDispatcher', () => {
     expect(mockHomeState.decrementChatProcessingCount).toHaveBeenCalled()
     expect(homeStore.setState).toHaveBeenLastCalledWith({ slideMessages: [] })
   })
+
+  it('発話文と異なる表示文を字幕へ維持する', () => {
+    const d = createSpeechDispatcher('session-1', {
+      displayMessage: 'Bunkerkidsを紹介します。',
+    })
+    d.dispatch(speech('バンカーキッズを紹介します。'))
+    const [, , onStart, onComplete] = (speakCharacter as jest.Mock).mock
+      .calls[0]
+
+    onStart()
+    expect(homeStore.setState).toHaveBeenCalledWith({
+      slideMessages: ['Bunkerkidsを紹介します。'],
+    })
+
+    onComplete()
+    expect(homeStore.setState).toHaveBeenLastCalledWith({ slideMessages: [] })
+  })
 })

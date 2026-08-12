@@ -6,7 +6,10 @@ import presentationStore, {
   finishCurrentPresentationNarration,
 } from '@/features/stores/presentation'
 import { serializeExternalPresentationMarkdown } from '@/features/presentation/externalPresentationMarkdown'
-import { getPresentationSpeechText } from '@/features/presentation/presentationText'
+import {
+  getPresentationDisplayNarration,
+  getPresentationSpeechText,
+} from '@/features/presentation/presentationText'
 import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import { SpeakQueue } from '@/features/messages/speakQueue'
@@ -174,7 +177,9 @@ const Slides: React.FC<SlidesProps> = ({
       return
     }
 
-    void speakMessageHandler(speechText)
+    void speakMessageHandler(speechText, {
+      displayMessage: getPresentationDisplayNarration(current.slide),
+    })
       .catch((error) => {
         logger.error('Presentation narration failed:', error)
       })

@@ -27,6 +27,10 @@ export type SpeechDispatcher = {
   readonly disabled: boolean
 }
 
+export type SpeechDispatcherOptions = {
+  displayMessage?: string
+}
+
 /**
  * 応答セッション1回分の発話ディスパッチャ。
  *
@@ -37,13 +41,17 @@ export type SpeechDispatcher = {
  *   他セッション向けならトークンを追従して発話を継続する
  * - 自分より新しい応答セッションが登録されたら無効化
  */
-export const createSpeechDispatcher = (sessionId: string): SpeechDispatcher => {
+export const createSpeechDispatcher = (
+  sessionId: string,
+  options: SpeechDispatcherOptions = {}
+): SpeechDispatcher => {
   latestResponseSessionId = sessionId
   let capturedToken: number | null = null
   let disabled = false
   let anyDispatched = false
   // スライド字幕はこの応答の発話中文リストで全置換する（旧refベース実装の踏襲）
   const slideMessages: string[] = []
+  let activeDisplaySegments = 0
 
   const dispatch = (event: SpeechEvent): boolean => {
     if (disabled) return false
@@ -70,7 +78,15 @@ export const createSpeechDispatcher = (sessionId: string): SpeechDispatcher => {
     // ガード3: 発話可否（記号・空白のみは発話しない）
     if (!isSpeakableText(event.text)) return false
 
-    speakOne(sessionId, event, slideMessages)
+    speakOne(sessionId, event, slideMessages, options.displayMessage, {
+      start: () => {
+        activeDisplaySegments += 1
+      },
+      complete: () => {
+        activeDisplaySegments = Math.max(0, activeDisplaySegments - 1)
+        return activeDisplaySegments
+      },
+    })
     anyDispatched = true
     return true
   }
@@ -91,7 +107,9 @@ export const createSpeechDispatcher = (sessionId: string): SpeechDispatcher => {
 const speakOne = (
   sessionId: string,
   event: SpeechEvent,
-  slideMessages: string[]
+  slideMessages: string[],
+  displayMessage: string | undefined,
+  displaySegments: { start: () => void; complete: () => number }
 ) => {
   const hs = homeStore.getState()
   const emotion = event.emotionTag.includes('[')
@@ -107,13 +125,23 @@ const speakOne = (
     },
     () => {
       hs.incrementChatProcessingCount()
-      slideMessages.push(event.text)
-      homeStore.setState({ slideMessages: [...slideMessages] })
+      if (displayMessage) {
+        displaySegments.start()
+        homeStore.setState({ slideMessages: [displayMessage] })
+      } else {
+        slideMessages.push(event.text)
+        homeStore.setState({ slideMessages: [...slideMessages] })
+      }
     },
     () => {
       hs.decrementChatProcessingCount()
-      slideMessages.shift()
-      homeStore.setState({ slideMessages: [...slideMessages] })
+      if (displayMessage) {
+        const remaining = displaySegments.complete()
+        if (remaining === 0) homeStore.setState({ slideMessages: [] })
+      } else {
+        slideMessages.shift()
+        homeStore.setState({ slideMessages: [...slideMessages] })
+      }
     }
   )
 }
