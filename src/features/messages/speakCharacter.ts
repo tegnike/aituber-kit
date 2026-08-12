@@ -29,9 +29,11 @@ import {
   containsEnglish,
 } from '@/utils/textProcessing'
 import { markConversationLatency } from '@/features/chat/conversationLatency'
+import { createConcurrencyLimiter } from './concurrencyLimiter'
 
 const speakQueue = SpeakQueue.getInstance()
 const SYNTHESIS_START_GAP_MS = 250
+const MAX_CONCURRENT_SYNTHESIS = 3
 
 type SynthesizedSpeech =
   | {
@@ -237,6 +239,9 @@ async function synthesizeVoice(
 }
 
 const createSpeakCharacter = () => {
+  const acquireSynthesisSlot = createConcurrencyLimiter(
+    MAX_CONCURRENT_SYNTHESIS
+  )
   let lastSynthesisStartAt = 0
   let currentSessionId: string | null = null
   let nextSynthesisOrder = 0
@@ -353,28 +358,29 @@ const createSpeakCharacter = () => {
         await wait(waitTime)
       }
 
-      // ボタン停止でキャンセルされた場合はここで終了
-      if (SpeakQueue.currentStopToken !== initialToken) {
-        return null
-      }
-
-      if (
-        processedMessage &&
-        ss.changeEnglishToJapanese &&
-        ss.selectLanguage === 'ja' &&
-        containsEnglish(processedMessage)
-      ) {
-        try {
-          const convertedText =
-            await asyncConvertEnglishToJapaneseReading(processedMessage)
-          talk.message = convertedText
-        } catch (error) {
-          logger.error('Error converting English to Japanese:', error)
-        }
-      }
-
-      let audio: SynthesizedSpeech | null
+      const releaseSynthesisSlot = await acquireSynthesisSlot()
       try {
+        // ボタン停止でキャンセルされた場合はここで終了
+        if (SpeakQueue.currentStopToken !== initialToken) {
+          return null
+        }
+
+        if (
+          processedMessage &&
+          ss.changeEnglishToJapanese &&
+          ss.selectLanguage === 'ja' &&
+          containsEnglish(processedMessage)
+        ) {
+          try {
+            const convertedText =
+              await asyncConvertEnglishToJapaneseReading(processedMessage)
+            talk.message = convertedText
+          } catch (error) {
+            logger.error('Error converting English to Japanese:', error)
+          }
+        }
+
+        let audio: SynthesizedSpeech | null
         if (talk.message == '' && talk.buffer) {
           audio = {
             kind: 'buffer',
@@ -427,19 +433,20 @@ const createSpeakCharacter = () => {
         } else {
           audio = null
         }
+        return {
+          sessionId,
+          audio,
+          talk,
+          displayText,
+          onPlaybackStart,
+          onComplete: guardedOnComplete,
+          tokenAtStart: initialToken,
+        }
       } catch (error) {
         handleTTSError(error, ss.selectVoice)
         return null
-      }
-
-      return {
-        sessionId,
-        audio,
-        talk,
-        displayText,
-        onPlaybackStart,
-        onComplete: guardedOnComplete,
-        tokenAtStart: initialToken,
+      } finally {
+        releaseSynthesisSlot()
       }
     })()
 

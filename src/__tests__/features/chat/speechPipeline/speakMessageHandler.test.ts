@@ -86,4 +86,39 @@ describe('speakMessageHandler', () => {
       expect.any(Function)
     )
   })
+
+  it('読み置換で読点分割が増えても表示文を同じ句読点位置へ割り当てる', async () => {
+    await speakMessageHandler(
+      '最初に見た目を分けます。ピーエヌジーチューバーは、声に合わせてピーエヌジー画像を動かす表示方法で、これだけではコメントを理解して返事を作ることはできません。',
+      {
+        speechSessionId: 'presentation-pngtuber',
+        displayMessage:
+          '最初に見た目を分けます。PNGtuberは、声に合わせてPNG画像を動かす表示方法で、これだけではコメントを理解して返事を作ることはできません。',
+      }
+    )
+
+    expect(
+      (speakCharacter as jest.Mock).mock.calls.map((call) => ({
+        speech: call[1].message,
+        display: call[4],
+      }))
+    ).toEqual([
+      {
+        speech: '最初に見た目を分けます。',
+        display: '最初に見た目を分けます。',
+      },
+      {
+        speech: 'ピーエヌジーチューバーは、',
+        display: 'PNGtuberは、',
+      },
+      {
+        speech: '声に合わせてピーエヌジー画像を動かす表示方法で、',
+        display: '声に合わせてPNG画像を動かす表示方法で、',
+      },
+      {
+        speech: 'これだけではコメントを理解して返事を作ることはできません。',
+        display: 'これだけではコメントを理解して返事を作ることはできません。',
+      },
+    ])
+  })
 })
