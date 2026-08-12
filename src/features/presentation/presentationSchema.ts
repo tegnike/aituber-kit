@@ -7,6 +7,7 @@ export const PRESENTATION_LIMITS = {
   slides: 200,
   markdown: 50_000,
   narration: 10_000,
+  speechText: 10_000,
   qaBrief: 100_000,
   sources: 500,
   notes: 10_000,
@@ -70,6 +71,7 @@ const slideSchema = z.object({
       'Markdown cannot contain standalone slide separators'
     ),
   narration: z.string().max(PRESENTATION_LIMITS.narration).optional(),
+  speechText: z.string().max(PRESENTATION_LIMITS.speechText).optional(),
   notes: z.string().max(PRESENTATION_LIMITS.notes).optional(),
   pauseAfter: z.boolean().optional(),
   assets: z

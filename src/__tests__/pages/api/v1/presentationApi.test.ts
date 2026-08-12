@@ -23,7 +23,14 @@ const createManifest = (): PresentationManifestV1 => ({
     {
       id: 'section-1',
       title: 'Section',
-      slides: [{ id: 'slide-1', markdown: '# Test', narration: 'Hello' }],
+      slides: [
+        {
+          id: 'slide-1',
+          markdown: '# Test',
+          narration: 'Bunkerkidsを紹介します。',
+          speechText: 'バンカーキッズを紹介します。',
+        },
+      ],
     },
   ],
 })
@@ -94,6 +101,12 @@ describe('external presentation API', () => {
         ok: true,
         presentation: expect.objectContaining({ presentationId: 'api-test' }),
         contentHash: expect.stringMatching(/^sha256:/),
+      })
+    )
+    expect(fetched._json.presentation.sections[0].slides[0]).toEqual(
+      expect.objectContaining({
+        narration: 'Bunkerkidsを紹介します。',
+        speechText: 'バンカーキッズを紹介します。',
       })
     )
   })

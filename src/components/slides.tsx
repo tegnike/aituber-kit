@@ -6,6 +6,7 @@ import presentationStore, {
   finishCurrentPresentationNarration,
 } from '@/features/stores/presentation'
 import { serializeExternalPresentationMarkdown } from '@/features/presentation/externalPresentationMarkdown'
+import { getPresentationSpeechText } from '@/features/presentation/presentationText'
 import homeStore from '@/features/stores/home'
 import { speakMessageHandler } from '@/features/chat/handlers'
 import { SpeakQueue } from '@/features/messages/speakQueue'
@@ -166,14 +167,14 @@ const Slides: React.FC<SlidesProps> = ({
 
     narrationKeyRef.current = key
     narrationObservedRef.current = false
-    const narration = current.slide.narration?.trim() ?? ''
-    if (!narration) {
+    const speechText = getPresentationSpeechText(current.slide)
+    if (!speechText) {
       narrationKeyRef.current = null
       finishCurrentPresentationNarration()
       return
     }
 
-    void speakMessageHandler(narration)
+    void speakMessageHandler(speechText)
       .catch((error) => {
         logger.error('Presentation narration failed:', error)
       })
