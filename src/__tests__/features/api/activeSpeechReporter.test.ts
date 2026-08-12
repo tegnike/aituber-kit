@@ -42,7 +42,7 @@ describe('createActiveSpeechStatusCoordinator', () => {
       .fn<Promise<boolean>, []>()
       .mockResolvedValueOnce(false)
       .mockResolvedValueOnce(true)
-    const reportActiveSpeech = jest.fn().mockResolvedValue(undefined)
+    const reportActiveSpeech = jest.fn().mockResolvedValue(true)
     const getActiveSpeech = jest.fn(() => activeSpeech)
     const coordinator = createActiveSpeechStatusCoordinator({
       reportStatus,
@@ -59,13 +59,13 @@ describe('createActiveSpeechStatusCoordinator', () => {
 
     expect(reportActiveSpeech).toHaveBeenCalledTimes(1)
     expect(reportActiveSpeech).toHaveBeenCalledWith(activeSpeech)
-    expect(getActiveSpeech).toHaveBeenCalledTimes(1)
+    expect(getActiveSpeech).not.toHaveBeenCalled()
   })
 
   it('reports later speech transitions immediately after initialization', async () => {
     const initialSpeech = { id: 'speech-1', text: '最初の発話です。' }
     const nextSpeech = { id: 'speech-2', text: '次の発話です。' }
-    const reportActiveSpeech = jest.fn().mockResolvedValue(undefined)
+    const reportActiveSpeech = jest.fn().mockResolvedValue(true)
     const coordinator = createActiveSpeechStatusCoordinator({
       reportStatus: jest.fn().mockResolvedValue(true),
       reportActiveSpeech,
@@ -79,5 +79,25 @@ describe('createActiveSpeechStatusCoordinator', () => {
       initialSpeech,
       nextSpeech,
     ])
+  })
+
+  it('retries initialization when the initial speech delivery fails', async () => {
+    const activeSpeech = { id: 'speech-1', text: '最初の発話です。' }
+    const reportActiveSpeech = jest
+      .fn<Promise<boolean>, [typeof activeSpeech]>()
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true)
+    const coordinator = createActiveSpeechStatusCoordinator({
+      reportStatus: jest.fn().mockResolvedValue(true),
+      reportActiveSpeech,
+      getActiveSpeech: () => activeSpeech,
+    })
+
+    await coordinator.reportClientStatus()
+    await coordinator.reportClientStatus()
+
+    expect(reportActiveSpeech).toHaveBeenCalledTimes(2)
+    expect(reportActiveSpeech).toHaveBeenNthCalledWith(1, activeSpeech)
+    expect(reportActiveSpeech).toHaveBeenNthCalledWith(2, activeSpeech)
   })
 })

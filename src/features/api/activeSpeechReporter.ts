@@ -23,22 +23,44 @@ export const createActiveSpeechStatusCoordinator = ({
   getActiveSpeech,
 }: {
   reportStatus: () => Promise<boolean>
-  reportActiveSpeech: (activeSpeech: ActiveSpeech) => Promise<void>
+  reportActiveSpeech: (activeSpeech: ActiveSpeech) => Promise<boolean>
   getActiveSpeech: () => ActiveSpeech
 }) => {
   let statusInitialized = false
+  let hasPendingSpeech = false
+  let pendingSpeech: ActiveSpeech = null
 
   return {
     async reportClientStatus() {
       const reported = await reportStatus()
       if (reported && !statusInitialized) {
+        const initialSpeech = hasPendingSpeech
+          ? pendingSpeech
+          : getActiveSpeech()
+        hasPendingSpeech = false
+        const delivered = await reportActiveSpeech(initialSpeech)
+        if (!delivered) {
+          if (!hasPendingSpeech) {
+            pendingSpeech = initialSpeech
+            hasPendingSpeech = true
+          }
+          return
+        }
         statusInitialized = true
-        await reportActiveSpeech(getActiveSpeech())
+        if (hasPendingSpeech) {
+          const latestSpeech = pendingSpeech
+          hasPendingSpeech = false
+          await reportActiveSpeech(latestSpeech)
+        }
       }
     },
     reportSpeechTransition(activeSpeech: ActiveSpeech) {
-      if (!statusInitialized) return Promise.resolve()
-      return reportActiveSpeech(activeSpeech)
+      if (!statusInitialized) {
+        pendingSpeech = activeSpeech
+        hasPendingSpeech = true
+        return Promise.resolve()
+      }
+      return reportActiveSpeech(activeSpeech).then(() => undefined)
     },
   }
 }

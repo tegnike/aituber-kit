@@ -685,19 +685,18 @@ const MessageReceiver = () => {
 
     let isReportingStatus = false
     let isStatusReportQueued = false
-    const activeSpeechReporter = createActiveSpeechReporter(
-      async (activeSpeech, version) => {
-        try {
-          await reportActiveSpeech(activeSpeech, version)
-        } catch (error) {
-          logger.error('Error reporting active speech status:', error)
-        }
-      }
-    )
+    const activeSpeechReporter = createActiveSpeechReporter(reportActiveSpeech)
     const activeSpeechStatusCoordinator = createActiveSpeechStatusCoordinator({
       reportStatus: () => reportStatus(receiverId, 'receiver'),
-      reportActiveSpeech: (activeSpeech) =>
-        activeSpeechReporter.enqueue(activeSpeech),
+      reportActiveSpeech: async (activeSpeech) => {
+        try {
+          await activeSpeechReporter.enqueue(activeSpeech)
+          return true
+        } catch (error) {
+          logger.error('Error reporting active speech status:', error)
+          return false
+        }
+      },
       getActiveSpeech: () => homeStore.getState().activeSpeech,
     })
 
