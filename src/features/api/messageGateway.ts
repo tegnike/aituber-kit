@@ -143,6 +143,7 @@ interface ClientQueue {
 interface MessageGatewayState {
   queuesPerClient: Record<string, ClientQueue>
   statusesPerClient: Record<string, ClientStatus>
+  activeSpeechVersionsPerClient: Record<string, number>
   responseCallbacks: Record<
     string,
     ResponseCallback & { expiresAt: number; claimed: boolean }
@@ -180,6 +181,7 @@ const getGatewayState = (): MessageGatewayState => {
     globalState.__aituberKitMessageGateway = {
       queuesPerClient: {},
       statusesPerClient: {},
+      activeSpeechVersionsPerClient: {},
       responseCallbacks: {},
       recentEvents: [],
       eventListeners: [],
@@ -267,6 +269,7 @@ export const cleanupClientQueues = () => {
   for (const clientId of Object.keys(state.statusesPerClient)) {
     if (now - state.statusesPerClient[clientId].lastSeenAt > CLIENT_TIMEOUT) {
       delete state.statusesPerClient[clientId]
+      delete state.activeSpeechVersionsPerClient[clientId]
     }
   }
   for (const handle of Object.keys(state.responseCallbacks)) {
@@ -588,10 +591,21 @@ export const updateClientStatus = (
 
 export const updateClientActiveSpeech = (
   clientId: string,
-  activeSpeech: ClientStatus['activeSpeech']
+  activeSpeech: ClientStatus['activeSpeech'],
+  version?: number
 ): ClientStatus | null => {
-  const previousStatus = getGatewayState().statusesPerClient[clientId]
+  const state = getGatewayState()
+  const previousStatus = state.statusesPerClient[clientId]
   if (!previousStatus) return null
+  if (
+    version !== undefined &&
+    version <= (state.activeSpeechVersionsPerClient[clientId] ?? -1)
+  ) {
+    return previousStatus
+  }
+  if (version !== undefined) {
+    state.activeSpeechVersionsPerClient[clientId] = version
+  }
 
   const previousSpeech = previousStatus.activeSpeech ?? null
   const nextSpeech = activeSpeech ?? null
@@ -600,7 +614,7 @@ export const updateClientActiveSpeech = (
     activeSpeech: nextSpeech,
     lastSeenAt: Date.now(),
   }
-  getGatewayState().statusesPerClient[clientId] = nextStatus
+  state.statusesPerClient[clientId] = nextStatus
   emitSpeechChunkTransition(clientId, previousSpeech, nextSpeech)
   return nextStatus
 }
@@ -662,6 +676,7 @@ export const __resetMessageGatewayForTests = () => {
 
   state.queuesPerClient = {}
   state.statusesPerClient = {}
+  state.activeSpeechVersionsPerClient = {}
   state.responseCallbacks = {}
   state.recentEvents = []
   state.eventListeners = []

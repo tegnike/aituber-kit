@@ -87,8 +87,9 @@ function createDeferred<T>() {
 }
 
 const flushPromises = async () => {
-  await Promise.resolve()
-  await Promise.resolve()
+  for (let index = 0; index < 8; index += 1) {
+    await Promise.resolve()
+  }
 }
 
 describe('speakCharacter concurrency', () => {
@@ -136,6 +137,27 @@ describe('speakCharacter concurrency', () => {
       sessionId: 'session-1',
       talk: expect.objectContaining({ message: 'second' }),
     })
+  })
+
+  it('forwards the display callback to the actual playback start', async () => {
+    const onPlaybackStart = jest.fn()
+    mockSynthesizeVoicevoxApi.mockResolvedValueOnce(new ArrayBuffer(1))
+
+    speakCharacter(
+      'session-playback',
+      { message: 'spoken', emotion: 'neutral' },
+      undefined,
+      undefined,
+      'displayed',
+      onPlaybackStart
+    )
+    await flushPromises()
+
+    expect(onPlaybackStart).not.toHaveBeenCalled()
+    const queuedTask = mockAddTask.mock.calls[0][0]
+    queuedTask.onPlaybackStart()
+
+    expect(onPlaybackStart).toHaveBeenCalledTimes(1)
   })
 
   it('drops old synthesis results after a session switch', async () => {
