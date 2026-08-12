@@ -885,6 +885,133 @@ describe('/api/v1 external API', () => {
     ])
   })
 
+  it('reports active speech through the lightweight client endpoint', () => {
+    const {
+      getRecentApiEvents,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const speechStatus = require('@/pages/api/v1/client/speech-status').default
+
+    updateClientStatus('client1', {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: true,
+      activeSpeech: null,
+    })
+
+    const startedRes = createMockRes()
+    speechStatus(
+      createMockReq({
+        method: 'POST',
+        headers: { authorization: 'Bearer test-api-key' },
+        query: { receiverId: 'client1' },
+        body: {
+          activeSpeech: {
+            id: 'speech-fast-1',
+            text: '再生開始と同時に表示します。',
+          },
+        },
+      }),
+      startedRes
+    )
+    expect(startedRes._status).toBe(200)
+
+    const endedRes = createMockRes()
+    speechStatus(
+      createMockReq({
+        method: 'POST',
+        headers: { authorization: 'Bearer test-api-key' },
+        query: { receiverId: 'client1' },
+        body: { activeSpeech: null },
+      }),
+      endedRes
+    )
+    expect(endedRes._status).toBe(200)
+
+    expect(
+      getRecentApiEvents('client1').filter((event: { type: string }) =>
+        event.type.startsWith('speech_chunk_')
+      )
+    ).toEqual([
+      expect.objectContaining({
+        type: 'speech_chunk_started',
+        payload: {
+          speechChunkId: 'speech-fast-1',
+          text: '再生開始と同時に表示します。',
+        },
+      }),
+      expect.objectContaining({
+        type: 'speech_chunk_ended',
+        payload: { speechChunkId: 'speech-fast-1' },
+      }),
+    ])
+  })
+
+  it('rejects malformed active speech without ending the current chunk', () => {
+    const {
+      getClientStatus,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const speechStatus = require('@/pages/api/v1/client/speech-status').default
+    updateClientStatus('client1', {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: true,
+      activeSpeech: { id: 'speech-current', text: '再生中です。' },
+    })
+
+    const res = createMockRes()
+    speechStatus(
+      createMockReq({
+        method: 'POST',
+        headers: { authorization: 'Bearer test-api-key' },
+        query: { receiverId: 'client1' },
+        body: { activeSpeech: { id: 'missing-text' } },
+      }),
+      res
+    )
+
+    expect(res._status).toBe(400)
+    expect(getClientStatus('client1').activeSpeech).toEqual({
+      id: 'speech-current',
+      text: '再生中です。',
+    })
+  })
+
+  it('does not overwrite active speech when a general status omits it', () => {
+    const {
+      getClientStatus,
+      getRecentApiEvents,
+      updateClientActiveSpeech,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const baseStatus = {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: true,
+    }
+
+    updateClientStatus('client1', baseStatus)
+    updateClientActiveSpeech('client1', {
+      id: 'speech-current',
+      text: '現在再生しているチャンクです。',
+    })
+    updateClientStatus('client1', {
+      ...baseStatus,
+      modelType: 'vrm',
+    })
+
+    expect(getClientStatus('client1').activeSpeech).toEqual({
+      id: 'speech-current',
+      text: '現在再生しているチャンクです。',
+    })
+    expect(
+      getRecentApiEvents('client1').filter(
+        (event: { type: string }) => event.type === 'speech_chunk_ended'
+      )
+    ).toHaveLength(0)
+  })
+
   it('emits slide_changed only after a presentation finishes loading', () => {
     const {
       getRecentApiEvents,

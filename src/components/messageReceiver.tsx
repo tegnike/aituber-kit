@@ -504,7 +504,6 @@ const MessageReceiver = () => {
                   }),
               connected: true,
               isSpeaking: hs.isSpeaking,
-              activeSpeech: hs.activeSpeech,
               chatProcessing: hs.chatProcessing,
               messageReceiverEnabled: ss.messageReceiverEnabled,
               modelType: ss.modelType,
@@ -543,6 +542,42 @@ const MessageReceiver = () => {
       } catch (error) {
         logger.error('Error reporting client status:', error)
       }
+    }
+
+    const reportActiveSpeech = async (
+      activeSpeech: { id: string; text: string } | null
+    ) => {
+      const authHeaders = getClientApiHeaders()
+      if (!authHeaders) return
+      let lastError: Error | null = null
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          const response = await fetch(
+            `/api/v1/client/speech-status/?receiverId=${encodeURIComponent(receiverId)}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...authHeaders,
+              },
+              body: JSON.stringify({ activeSpeech }),
+            }
+          )
+          if (response.ok) return
+          lastError = new Error(`HTTP error! status: ${response.status}`)
+        } catch (error) {
+          lastError =
+            error instanceof Error
+              ? error
+              : new Error('Active speech status request failed')
+        }
+        if (attempt < 2) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, 50 * (attempt + 1))
+          )
+        }
+      }
+      throw lastError ?? new Error('Active speech status request failed')
     }
 
     const fetchCommands = async (
@@ -643,6 +678,17 @@ const MessageReceiver = () => {
 
     let isReportingStatus = false
     let isStatusReportQueued = false
+    let activeSpeechReportChain = Promise.resolve()
+
+    const enqueueActiveSpeechReport = (
+      activeSpeech: { id: string; text: string } | null
+    ) => {
+      activeSpeechReportChain = activeSpeechReportChain
+        .then(() => reportActiveSpeech(activeSpeech))
+        .catch((error) =>
+          logger.error('Error reporting active speech status:', error)
+        )
+    }
 
     const drainReceiver = createOrderedReceiverDrainRunner({
       fetchCommands: () => fetchCommands(receiverId, 'receiver'),
@@ -692,6 +738,9 @@ const MessageReceiver = () => {
         ) {
           void safeReportStatus()
         }
+        if (state.activeSpeech?.id !== previousState.activeSpeech?.id) {
+          enqueueActiveSpeechReport(state.activeSpeech)
+        }
       }
     )
 
@@ -732,7 +781,9 @@ const MessageReceiver = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     void drainAllReceivers()
-    void safeReportStatus()
+    void safeReportStatus().then(() =>
+      enqueueActiveSpeechReport(homeStore.getState().activeSpeech)
+    )
 
     if (document.visibilityState === 'visible' && document.hasFocus()) {
       claimClientTabLeadership()
