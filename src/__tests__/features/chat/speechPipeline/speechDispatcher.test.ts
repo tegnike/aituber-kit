@@ -143,16 +143,23 @@ describe('speechDispatcher', () => {
     const d = createSpeechDispatcher('session-1', {
       displayMessage: 'Bunkerkidsを紹介します。',
     })
-    d.dispatch(speech('バンカーキッズを紹介します。'))
-    const [, , onStart, onComplete] = (speakCharacter as jest.Mock).mock
-      .calls[0]
+    d.dispatch(speech('バンカーキッズを'))
+    d.dispatch(speech('紹介します。'))
+    const [, , firstOnStart, firstOnComplete] = (speakCharacter as jest.Mock)
+      .mock.calls[0]
+    const [, , secondOnStart, secondOnComplete] = (speakCharacter as jest.Mock)
+      .mock.calls[1]
 
-    onStart()
+    firstOnStart()
+    secondOnStart()
     expect(homeStore.setState).toHaveBeenCalledWith({
       slideMessages: ['Bunkerkidsを紹介します。'],
     })
+    ;(homeStore.setState as jest.Mock).mockClear()
+    firstOnComplete()
+    expect(homeStore.setState).not.toHaveBeenCalledWith({ slideMessages: [] })
 
-    onComplete()
+    secondOnComplete()
     expect(homeStore.setState).toHaveBeenLastCalledWith({ slideMessages: [] })
   })
 
