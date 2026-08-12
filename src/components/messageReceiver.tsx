@@ -41,6 +41,7 @@ import {
   subscribeReceiverEventStream,
 } from '@/features/api/receiverEventStream'
 import { createAssignmentReconciliationRunner } from '@/features/presentation/assignmentReconciliation'
+import { createActiveSpeechReporter } from '@/features/api/activeSpeechReporter'
 
 const CLIENT_TAB_LEASE_DURATION = 5000
 const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
@@ -678,17 +679,16 @@ const MessageReceiver = () => {
 
     let isReportingStatus = false
     let isStatusReportQueued = false
-    let activeSpeechReportChain = Promise.resolve()
-
-    const enqueueActiveSpeechReport = (
-      activeSpeech: { id: string; text: string } | null
-    ) => {
-      activeSpeechReportChain = activeSpeechReportChain
-        .then(() => reportActiveSpeech(activeSpeech))
-        .catch((error) =>
+    let activeSpeechReporterReady = false
+    const activeSpeechReporter = createActiveSpeechReporter(
+      async (activeSpeech) => {
+        try {
+          await reportActiveSpeech(activeSpeech)
+        } catch (error) {
           logger.error('Error reporting active speech status:', error)
-        )
-    }
+        }
+      }
+    )
 
     const drainReceiver = createOrderedReceiverDrainRunner({
       fetchCommands: () => fetchCommands(receiverId, 'receiver'),
@@ -708,6 +708,7 @@ const MessageReceiver = () => {
     }
 
     const safeReportStatus = async () => {
+      if (!activeSpeechReporterReady) return
       isStatusReportQueued = true
       if (isReportingStatus) return
       isReportingStatus = true
@@ -739,7 +740,7 @@ const MessageReceiver = () => {
           void safeReportStatus()
         }
         if (state.activeSpeech?.id !== previousState.activeSpeech?.id) {
-          enqueueActiveSpeechReport(state.activeSpeech)
+          void activeSpeechReporter.enqueue(state.activeSpeech)
         }
       }
     )
@@ -781,9 +782,12 @@ const MessageReceiver = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     void drainAllReceivers()
-    void safeReportStatus().then(() =>
-      enqueueActiveSpeechReport(homeStore.getState().activeSpeech)
-    )
+    void activeSpeechReporter
+      .enqueue(homeStore.getState().activeSpeech)
+      .then(() => {
+        activeSpeechReporterReady = true
+        return safeReportStatus()
+      })
 
     if (document.visibilityState === 'visible' && document.hasFocus()) {
       claimClientTabLeadership()

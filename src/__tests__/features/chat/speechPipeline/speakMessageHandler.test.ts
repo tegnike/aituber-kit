@@ -46,7 +46,8 @@ describe('speakMessageHandler', () => {
       expect.objectContaining({ message: 'バンカーキッズを紹介します。' }),
       expect.any(Function),
       expect.any(Function),
-      'Bunkerkidsを紹介します。'
+      'Bunkerkidsを紹介します。',
+      expect.any(Function)
     )
     expect(speakCharacter).toHaveBeenNthCalledWith(
       2,
@@ -54,7 +55,8 @@ describe('speakMessageHandler', () => {
       expect.objectContaining({ message: '次はウィフです。' }),
       expect.any(Function),
       expect.any(Function),
-      '次はWHIFです。'
+      '次はWHIFです。',
+      expect.any(Function)
     )
   })
 
@@ -71,7 +73,8 @@ describe('speakMessageHandler', () => {
       expect.objectContaining({ message: '一文目です。' }),
       expect.any(Function),
       expect.any(Function),
-      ''
+      '',
+      expect.any(Function)
     )
     expect(speakCharacter).toHaveBeenNthCalledWith(
       2,
@@ -79,7 +82,8 @@ describe('speakMessageHandler', () => {
       expect.objectContaining({ message: '二文目です。' }),
       expect.any(Function),
       expect.any(Function),
-      ''
+      '',
+      expect.any(Function)
     )
   })
 })
