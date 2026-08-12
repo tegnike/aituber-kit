@@ -48,6 +48,29 @@ describe('createAssignmentReconciliationRunner', () => {
     expect(reconciled).toEqual([assignment(false), null])
     expect(onError).not.toHaveBeenCalled()
   })
+
+  it('失敗した世代を無限再試行せず次の割当を処理する', async () => {
+    const reconciled: Array<PresentationAssignment | null> = []
+    const onError = jest.fn()
+    const runner = createAssignmentReconciliationRunner(async (value) => {
+      reconciled.push(value)
+      if (reconciled.length === 1) throw new Error('load failed')
+    }, onError)
+
+    runner(assignment(false))
+    await waitFor(() => onError.mock.calls.length === 1)
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(reconciled).toEqual([assignment(false)])
+
+    runner(assignment(true, 'presentation-2'))
+    await waitFor(() => reconciled.length === 2)
+
+    expect(reconciled).toEqual([
+      assignment(false),
+      assignment(true, 'presentation-2'),
+    ])
+    expect(onError).toHaveBeenCalledTimes(1)
+  })
 })
 
 const waitFor = async (condition: () => boolean) => {

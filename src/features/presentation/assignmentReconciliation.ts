@@ -18,11 +18,14 @@ export const createAssignmentReconciliationRunner = (
     try {
       while (pending && pending.generation > completedGeneration) {
         const current = pending
-        await reconcile(current.assignment)
-        completedGeneration = current.generation
+        try {
+          await reconcile(current.assignment)
+        } catch (error) {
+          onError(error)
+        } finally {
+          completedGeneration = current.generation
+        }
       }
-    } catch (error) {
-      onError(error)
     } finally {
       running = false
       if (pending && pending.generation > completedGeneration) void drain()
