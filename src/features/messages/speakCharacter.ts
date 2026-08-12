@@ -49,6 +49,7 @@ type PendingSpeakResult = {
   sessionId: string
   audio: SynthesizedSpeech | null
   talk: Talk
+  displayText?: string
   onComplete?: () => void
   tokenAtStart: number
 }
@@ -275,6 +276,7 @@ const createSpeakCharacter = () => {
       void speakQueue.addTask({
         sessionId: result.sessionId,
         talk: result.talk,
+        displayText: result.displayText,
         ...result.audio,
         onPlaybackStart: () =>
           markConversationLatency(result.sessionId, 'playback_started'),
@@ -287,7 +289,8 @@ const createSpeakCharacter = () => {
     sessionId: string,
     talk: Talk,
     onStart?: () => void,
-    onComplete?: () => void
+    onComplete?: () => void,
+    displayText?: string
   ) => {
     let called = false
     const ss = settingsStore.getState()
@@ -429,6 +432,7 @@ const createSpeakCharacter = () => {
         sessionId,
         audio,
         talk,
+        displayText,
         onComplete: guardedOnComplete,
         tokenAtStart: initialToken,
       }
@@ -445,6 +449,7 @@ const createSpeakCharacter = () => {
           sessionId,
           audio: result?.audio ?? null,
           talk,
+          displayText,
           onComplete: guardedOnComplete,
           tokenAtStart: result?.tokenAtStart ?? initialToken,
         })

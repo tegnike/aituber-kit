@@ -43,7 +43,8 @@ describe('speakMessageHandler', () => {
       'presentation-1',
       expect.objectContaining({ message: 'バンカーキッズを紹介します。' }),
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Function),
+      'Bunkerkidsを紹介します。'
     )
   })
 })

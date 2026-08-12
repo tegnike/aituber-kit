@@ -145,10 +145,15 @@ describe('speechDispatcher', () => {
     })
     d.dispatch(speech('バンカーキッズを'))
     d.dispatch(speech('紹介します。'))
-    const [, , firstOnStart, firstOnComplete] = (speakCharacter as jest.Mock)
-      .mock.calls[0]
-    const [, , secondOnStart, secondOnComplete] = (speakCharacter as jest.Mock)
-      .mock.calls[1]
+    const [, , firstOnStart, firstOnComplete, firstDisplayText] = (
+      speakCharacter as jest.Mock
+    ).mock.calls[0]
+    const [, , secondOnStart, secondOnComplete, secondDisplayText] = (
+      speakCharacter as jest.Mock
+    ).mock.calls[1]
+
+    expect(firstDisplayText).toBe('Bunkerkidsを紹介します。')
+    expect(secondDisplayText).toBe('Bunkerkidsを紹介します。')
 
     firstOnStart()
     secondOnStart()
@@ -166,8 +171,10 @@ describe('speechDispatcher', () => {
   it('空の表示文を発話文へフォールバックしない', () => {
     const d = createSpeechDispatcher('session-1', { displayMessage: '' })
     d.dispatch(speech('バンカーキッズを紹介します。'))
-    const [, , onStart, onComplete] = (speakCharacter as jest.Mock).mock
-      .calls[0]
+    const [, , onStart, onComplete, displayText] = (speakCharacter as jest.Mock)
+      .mock.calls[0]
+
+    expect(displayText).toBe('')
 
     onStart()
     expect(homeStore.setState).toHaveBeenCalledWith({ slideMessages: [''] })

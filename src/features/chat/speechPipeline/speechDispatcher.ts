@@ -116,32 +116,35 @@ const speakOne = (
     ? (event.emotionTag.slice(1, -1).toLowerCase() as EmotionType)
     : 'neutral'
 
-  speakCharacter(
-    sessionId,
-    {
-      message: event.text,
-      emotion,
-      motion: event.motionTag || undefined,
-    },
-    () => {
-      hs.incrementChatProcessingCount()
-      if (displayMessage !== undefined) {
-        displaySegments.start()
-        homeStore.setState({ slideMessages: [displayMessage] })
-      } else {
-        slideMessages.push(event.text)
-        homeStore.setState({ slideMessages: [...slideMessages] })
-      }
-    },
-    () => {
-      hs.decrementChatProcessingCount()
-      if (displayMessage !== undefined) {
-        const remaining = displaySegments.complete()
-        if (remaining === 0) homeStore.setState({ slideMessages: [] })
-      } else {
-        slideMessages.shift()
-        homeStore.setState({ slideMessages: [...slideMessages] })
-      }
+  const talk = {
+    message: event.text,
+    emotion,
+    motion: event.motionTag || undefined,
+  }
+  const onStart = () => {
+    hs.incrementChatProcessingCount()
+    if (displayMessage !== undefined) {
+      displaySegments.start()
+      homeStore.setState({ slideMessages: [displayMessage] })
+    } else {
+      slideMessages.push(event.text)
+      homeStore.setState({ slideMessages: [...slideMessages] })
     }
-  )
+  }
+  const onComplete = () => {
+    hs.decrementChatProcessingCount()
+    if (displayMessage !== undefined) {
+      const remaining = displaySegments.complete()
+      if (remaining === 0) homeStore.setState({ slideMessages: [] })
+    } else {
+      slideMessages.shift()
+      homeStore.setState({ slideMessages: [...slideMessages] })
+    }
+  }
+
+  if (displayMessage !== undefined) {
+    speakCharacter(sessionId, talk, onStart, onComplete, displayMessage)
+  } else {
+    speakCharacter(sessionId, talk, onStart, onComplete)
+  }
 }
