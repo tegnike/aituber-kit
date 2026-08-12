@@ -125,7 +125,7 @@ const speakOne = (
     },
     () => {
       hs.incrementChatProcessingCount()
-      if (displayMessage) {
+      if (displayMessage !== undefined) {
         displaySegments.start()
         homeStore.setState({ slideMessages: [displayMessage] })
       } else {
@@ -135,7 +135,7 @@ const speakOne = (
     },
     () => {
       hs.decrementChatProcessingCount()
-      if (displayMessage) {
+      if (displayMessage !== undefined) {
         const remaining = displaySegments.complete()
         if (remaining === 0) homeStore.setState({ slideMessages: [] })
       } else {

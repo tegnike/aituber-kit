@@ -1,5 +1,5 @@
-import type { PresentationDocument } from './presentationTypes'
-import { getPresentationDisplayNarration } from './presentationText'
+import type { PresentationDocument } from '@/features/presentation/presentationTypes'
+import { getPresentationDisplayNarration } from '@/features/presentation/presentationText'
 
 const escapeXml = (value: string) =>
   value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')

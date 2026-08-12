@@ -1,4 +1,4 @@
-import type { PresentationSlideV1 } from './presentationTypes'
+import type { PresentationSlideV1 } from '@/features/presentation/presentationTypes'
 
 export const getPresentationDisplayNarration = (
   slide: Pick<PresentationSlideV1, 'narration' | 'speechText'>

@@ -128,6 +128,10 @@ describe('external presentation domain', () => {
     oversizedNarration.sections[0].slides[0].narration = 'x'.repeat(10_001)
     expect(validateExternalPresentation(oversizedNarration).ok).toBe(false)
 
+    const maxSpeechText = createManifest()
+    maxSpeechText.sections[0].slides[0].speechText = 'x'.repeat(10_000)
+    expect(validateExternalPresentation(maxSpeechText).ok).toBe(true)
+
     const oversizedSpeechText = createManifest()
     oversizedSpeechText.sections[0].slides[0].speechText = 'x'.repeat(10_001)
     expect(validateExternalPresentation(oversizedSpeechText).ok).toBe(false)

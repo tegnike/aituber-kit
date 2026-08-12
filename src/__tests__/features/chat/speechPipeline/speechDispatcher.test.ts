@@ -155,4 +155,17 @@ describe('speechDispatcher', () => {
     onComplete()
     expect(homeStore.setState).toHaveBeenLastCalledWith({ slideMessages: [] })
   })
+
+  it('空の表示文を発話文へフォールバックしない', () => {
+    const d = createSpeechDispatcher('session-1', { displayMessage: '' })
+    d.dispatch(speech('バンカーキッズを紹介します。'))
+    const [, , onStart, onComplete] = (speakCharacter as jest.Mock).mock
+      .calls[0]
+
+    onStart()
+    expect(homeStore.setState).toHaveBeenCalledWith({ slideMessages: [''] })
+
+    onComplete()
+    expect(homeStore.setState).toHaveBeenLastCalledWith({ slideMessages: [] })
+  })
 })

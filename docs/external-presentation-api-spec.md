@@ -241,6 +241,7 @@ export interface PresentationSourceV1 {
 | Slide総数                  |         200 |
 | 1 SlideのMarkdown          |  50,000文字 |
 | 1 SlideのNarration         |  10,000文字 |
+| 1 SlideのSpeechText        |  10,000文字 |
 | 1 SlideのNotes             |  10,000文字 |
 | 1 SlideのAsset数           |          20 |
 | 1 SectionのQ&A Brief       | 100,000文字 |
