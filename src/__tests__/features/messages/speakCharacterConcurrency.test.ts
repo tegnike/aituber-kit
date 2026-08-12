@@ -87,8 +87,9 @@ function createDeferred<T>() {
 }
 
 const flushPromises = async () => {
-  await Promise.resolve()
-  await Promise.resolve()
+  for (let index = 0; index < 8; index += 1) {
+    await Promise.resolve()
+  }
 }
 
 describe('speakCharacter concurrency', () => {
