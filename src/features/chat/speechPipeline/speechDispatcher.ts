@@ -78,7 +78,10 @@ export const createSpeechDispatcher = (
     // ガード3: 発話可否（記号・空白のみは発話しない）
     if (!isSpeakableText(event.text)) return false
 
-    const displayMessage = options.displayMessages?.[displayMessageIndex]
+    const displayMessage =
+      options.displayMessages === undefined
+        ? undefined
+        : (options.displayMessages[displayMessageIndex] ?? '')
     displayMessageIndex += 1
     speakOne(sessionId, event, slideMessages, displayMessage)
     anyDispatched = true

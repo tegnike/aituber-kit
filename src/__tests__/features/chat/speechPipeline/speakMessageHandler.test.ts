@@ -57,4 +57,29 @@ describe('speakMessageHandler', () => {
       '次はWHIFです。'
     )
   })
+
+  it('空の表示文を複数の発話セグメントでも維持する', async () => {
+    await speakMessageHandler('一文目です。二文目です。', {
+      speechSessionId: 'presentation-empty-display',
+      displayMessage: '',
+    })
+
+    expect(speakCharacter).toHaveBeenCalledTimes(2)
+    expect(speakCharacter).toHaveBeenNthCalledWith(
+      1,
+      'presentation-empty-display',
+      expect.objectContaining({ message: '一文目です。' }),
+      expect.any(Function),
+      expect.any(Function),
+      ''
+    )
+    expect(speakCharacter).toHaveBeenNthCalledWith(
+      2,
+      'presentation-empty-display',
+      expect.objectContaining({ message: '二文目です。' }),
+      expect.any(Function),
+      expect.any(Function),
+      ''
+    )
+  })
 })

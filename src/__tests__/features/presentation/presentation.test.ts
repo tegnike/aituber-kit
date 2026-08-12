@@ -78,6 +78,18 @@ describe('external presentation domain', () => {
     expect(getPresentationSpeechText({ narration: '従来の原稿' })).toBe(
       '従来の原稿'
     )
+    expect(
+      getPresentationDisplayNarration({
+        narration: '',
+        speechText: '発話だけ',
+      })
+    ).toBe('')
+    expect(
+      getPresentationSpeechText({
+        speechText: '',
+        narration: '表示だけ',
+      })
+    ).toBe('')
   })
 
   it.each([
