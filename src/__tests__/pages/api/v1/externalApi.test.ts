@@ -1012,6 +1012,38 @@ describe('/api/v1 external API', () => {
     ).toHaveLength(0)
   })
 
+  it('ignores an older active speech report that arrives late', () => {
+    const {
+      getClientStatus,
+      getRecentApiEvents,
+      updateClientActiveSpeech,
+      updateClientStatus,
+    } = require('@/features/api/messageGateway')
+    const staleSpeech = {
+      id: 'speech-stale',
+      text: 'すでに終了した発話です。',
+    }
+
+    updateClientStatus('client1', {
+      connected: true,
+      chatProcessing: false,
+      isSpeaking: true,
+      activeSpeech: null,
+    })
+    updateClientActiveSpeech('client1', staleSpeech, 10)
+    updateClientActiveSpeech('client1', null, 11)
+    updateClientActiveSpeech('client1', staleSpeech, 10)
+
+    expect(getClientStatus('client1').activeSpeech).toBeNull()
+    expect(
+      getRecentApiEvents('client1')
+        .filter((event: { type: string }) =>
+          event.type.startsWith('speech_chunk_')
+        )
+        .map((event: { type: string }) => event.type)
+    ).toEqual(['speech_chunk_started', 'speech_chunk_ended'])
+  })
+
   it('emits slide_changed only after a presentation finishes loading', () => {
     const {
       getRecentApiEvents,

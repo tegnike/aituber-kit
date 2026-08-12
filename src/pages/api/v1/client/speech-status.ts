@@ -24,7 +24,14 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     value && typeof value.id === 'string' && typeof value.text === 'string'
       ? { id: value.id, text: value.text }
       : null
-  const status = updateClientActiveSpeech(clientId, activeSpeech)
+  const version = req.body?.version
+  if (
+    version !== undefined &&
+    (!Number.isSafeInteger(version) || version < 0)
+  ) {
+    return res.status(400).json({ error: 'version is invalid' })
+  }
+  const status = updateClientActiveSpeech(clientId, activeSpeech, version)
   if (!status) {
     return res.status(409).json({ error: 'Client status is not initialized' })
   }

@@ -546,7 +546,8 @@ const MessageReceiver = () => {
     }
 
     const reportActiveSpeech = async (
-      activeSpeech: { id: string; text: string } | null
+      activeSpeech: { id: string; text: string } | null,
+      version: number
     ) => {
       const authHeaders = getClientApiHeaders()
       if (!authHeaders) return
@@ -561,7 +562,7 @@ const MessageReceiver = () => {
                 'Content-Type': 'application/json',
                 ...authHeaders,
               },
-              body: JSON.stringify({ activeSpeech }),
+              body: JSON.stringify({ activeSpeech, version }),
             }
           )
           if (response.ok) return
@@ -681,9 +682,9 @@ const MessageReceiver = () => {
     let isStatusReportQueued = false
     let activeSpeechReporterReady = false
     const activeSpeechReporter = createActiveSpeechReporter(
-      async (activeSpeech) => {
+      async (activeSpeech, version) => {
         try {
-          await reportActiveSpeech(activeSpeech)
+          await reportActiveSpeech(activeSpeech, version)
         } catch (error) {
           logger.error('Error reporting active speech status:', error)
         }
