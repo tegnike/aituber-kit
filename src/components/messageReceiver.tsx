@@ -40,6 +40,7 @@ import {
   createOrderedReceiverDrainRunner,
   subscribeReceiverEventStream,
 } from '@/features/api/receiverEventStream'
+import { createAssignmentReconciliationRunner } from '@/features/presentation/assignmentReconciliation'
 
 const CLIENT_TAB_LEASE_DURATION = 5000
 const CLIENT_TAB_LEASE_REFRESH_INTERVAL = 2000
@@ -458,6 +459,11 @@ const MessageReceiver = () => {
       }
     }
 
+    const scheduleAssignmentReconciliation =
+      createAssignmentReconciliationRunner(reconcileAssignment, (error) =>
+        logger.error('Error reconciling presentation assignment:', error)
+      )
+
     const reportStatus = async (
       targetId: string,
       mode: 'receiver' | 'legacy'
@@ -526,10 +532,13 @@ const MessageReceiver = () => {
           const previouslyAssigned = receiverHasAssignment
           receiverHasAssignment = Boolean(assignment)
           if (assignment || previouslyAssigned) {
-            await reconcileAssignment(assignment)
+            // Assignment loading can take several seconds. Keep only the
+            // latest assignment in a separate serial drain so activeSpeech
+            // reports are not delayed and autoStart/unload updates are kept.
+            scheduleAssignmentReconciliation(assignment)
           }
         } else if (!receiverHasAssignment) {
-          await reconcileAssignment(assignment)
+          scheduleAssignmentReconciliation(assignment)
         }
       } catch (error) {
         logger.error('Error reporting client status:', error)
