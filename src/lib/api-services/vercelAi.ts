@@ -102,6 +102,12 @@ export function createAIRegistry(
         apiKey: params.apiKey,
       }) as unknown as ReturnType<typeof createOpenAI>
       break
+    case 'orcarouter':
+      providers.orcarouter = createOpenAI({
+        baseURL: 'https://api.orcarouter.ai/v1',
+        apiKey: params.apiKey,
+      })
+      break
     case 'lmstudio':
       providers.lmstudio = createOpenAICompatible({
         name: 'lmstudio',
