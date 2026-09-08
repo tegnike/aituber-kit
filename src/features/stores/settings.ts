@@ -207,6 +207,8 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  screenLightingEnabled: boolean
+  screenLightingStrength: number
   poseAdjustMode: boolean
   selectedPNGTuberPath: string
   pngTuberSensitivity: number
@@ -566,6 +568,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   })(),
   lightingIntensity:
     parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
+  screenLightingEnabled: false,
+  screenLightingStrength: (() => {
+    const strength = parseFloat(
+      process.env.NEXT_PUBLIC_SCREEN_LIGHTING_STRENGTH || '1.0'
+    )
+    return Number.isFinite(strength) ? strength : 1.0
+  })(),
   poseAdjustMode: false,
 
   // General
@@ -1220,6 +1229,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   characterPosition: state.characterPosition,
   characterRotation: state.characterRotation,
   lightingIntensity: state.lightingIntensity,
+  screenLightingStrength: state.screenLightingStrength,
   modelType: state.modelType,
   selectedPNGTuberPath: state.selectedPNGTuberPath,
   pngTuberSensitivity: state.pngTuberSensitivity,

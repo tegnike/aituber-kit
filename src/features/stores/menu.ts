@@ -20,6 +20,7 @@ type SettingsTabKey =
 interface MenuState {
   showWebcam: boolean
   showCapture: boolean
+  screenLightingCaptureOwned: boolean
   fileInput: HTMLInputElement | null
   slideVisible: boolean
   thumbnailVisible: boolean
@@ -30,6 +31,7 @@ interface MenuState {
 const menuStore = create<MenuState>((set, get) => ({
   showWebcam: false,
   showCapture: false,
+  screenLightingCaptureOwned: false,
   fileInput: null,
   slideVisible: false,
   thumbnailVisible: false,

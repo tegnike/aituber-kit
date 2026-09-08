@@ -33,8 +33,13 @@ const Home = () => {
   const captureStatus = homeStore((s) => s.captureStatus)
   const backgroundImageUrl = settingsStore((s) => s.backgroundImageUrl)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
+  const screenLightingEnabled = settingsStore((s) => s.screenLightingEnabled)
+  const modelType = settingsStore((s) => s.modelType)
+  const screenLightingActive = modelType === 'vrm' && screenLightingEnabled
+  const useCapturedScene =
+    captureStatus && (useVideoAsBackground || screenLightingActive)
   const bgUrl =
-    (webcamStatus || captureStatus) && useVideoAsBackground
+    (webcamStatus && useVideoAsBackground) || useCapturedScene
       ? ''
       : backgroundImageUrl === 'green'
         ? ''
@@ -106,7 +111,7 @@ const Home = () => {
   }, [characterPresets, t])
 
   const backgroundStyle =
-    (webcamStatus || captureStatus) && useVideoAsBackground
+    (webcamStatus && useVideoAsBackground) || useCapturedScene
       ? {}
       : backgroundImageUrl === 'green'
         ? { backgroundColor: '#00FF00' }
