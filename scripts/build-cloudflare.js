@@ -17,7 +17,6 @@
 const fs = require('fs')
 const path = require('path')
 const { execSync } = require('child_process')
-const { prepareVrmFallbacks } = require('./cloudflare-vrm-fallbacks')
 
 const projectRoot = path.join(__dirname, '..')
 const publicDir = path.join(projectRoot, 'public')
@@ -218,7 +217,6 @@ function main() {
   try {
     console.log('\n=== Running build pipeline ===')
     run('node scripts/generate-asset-manifest.js')
-    const vrmRedirects = prepareVrmFallbacks(projectRoot, stashed)
     run('node scripts/patch-react-dom-server-edge.js')
     run('node scripts/patch-opennext-canvas.js')
     run('npx @opennextjs/cloudflare build', {
@@ -227,13 +225,6 @@ function main() {
         NEXT_PUBLIC_RESTRICTED_MODE: 'true',
       },
     })
-
-    if (vrmRedirects) {
-      fs.appendFileSync(
-        path.join(projectRoot, '.open-next/assets/_redirects'),
-        '\n' + vrmRedirects
-      )
-    }
 
     // 後続処理
     if (doPreview) {
