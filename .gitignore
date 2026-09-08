@@ -55,6 +55,7 @@ public/scripts/live2dcubismcore.min.js
 
 # VRM files
 /public/vrm/*
+!/public/vrm/README.md
 !/public/vrm/AvatarSample_A.vrm
 !/public/vrm/AvatarSample_B.vrm
 !/public/vrm/AvatarSample_C.vrm
