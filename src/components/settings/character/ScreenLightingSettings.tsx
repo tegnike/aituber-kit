@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
 
-import homeStore from '@/features/stores/home'
-import menuStore from '@/features/stores/menu'
+import { settingsFieldWidth } from '@/components/settings/formStyles'
+import { ToggleSwitch } from '@/components/toggleSwitch'
 import settingsStore from '@/features/stores/settings'
-import { ToggleSwitch } from '../../toggleSwitch'
+import {
+  disableScreenLighting,
+  enableScreenLighting,
+} from '@/features/vrmViewer/screenLightingCapture'
 
 interface ScreenLightingSettingsProps {
   enabled: boolean
@@ -17,46 +20,12 @@ export const ScreenLightingSettings = ({
   const { t } = useTranslation()
 
   const setEnabled = (nextEnabled: boolean) => {
-    const { screenLightingCaptureOwned } = menuStore.getState()
-    const { captureStatus } = homeStore.getState()
-
     if (nextEnabled) {
-      settingsStore.setState({
-        screenLightingEnabled: true,
-        ...(captureStatus
-          ? {}
-          : {
-              hideVideoDisplay: false,
-              useVideoAsBackground: false,
-            }),
-      })
-      menuStore.setState({
-        showCapture: true,
-        showWebcam: false,
-        screenLightingCaptureOwned: !captureStatus,
-      })
-      homeStore.setState({ webcamStatus: false })
+      enableScreenLighting()
       return
     }
 
-    settingsStore.setState({
-      screenLightingEnabled: false,
-      ...(screenLightingCaptureOwned
-        ? {
-            hideVideoDisplay: false,
-            useVideoAsBackground: false,
-          }
-        : {}),
-    })
-    menuStore.setState(
-      screenLightingCaptureOwned
-        ? {
-            showCapture: false,
-            screenLightingCaptureOwned: false,
-          }
-        : { screenLightingCaptureOwned: false }
-    )
-    homeStore.getState().viewer.resetScreenLighting()
+    disableScreenLighting()
   }
 
   return (
@@ -81,13 +50,14 @@ export const ScreenLightingSettings = ({
             max="2.0"
             step="0.1"
             value={strength}
+            aria-label={t('ScreenLightingStrength')}
             data-testid="screen-lighting-strength"
             onChange={(event) =>
               settingsStore.setState({
                 screenLightingStrength: parseFloat(event.target.value),
               })
             }
-            className="mt-2 mb-2 input-range"
+            className={`mt-2 mb-2 input-range ${settingsFieldWidth.full}`}
           />
           <div className="text-xs text-text2">
             {t('ScreenLightingCaptureHint')}

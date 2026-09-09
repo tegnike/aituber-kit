@@ -48,6 +48,7 @@ describe('Capture lifecycle', () => {
     menuStore.setState({
       showCapture: true,
       screenLightingCaptureOwned: false,
+      screenLightingPreviousDisplaySettings: null,
     })
     settingsStore.setState({
       hideVideoDisplay: true,
@@ -100,7 +101,13 @@ describe('Capture lifecycle', () => {
   })
 
   it('integrates lighting-owned capture into the scene', async () => {
-    menuStore.setState({ screenLightingCaptureOwned: true })
+    menuStore.setState({
+      screenLightingCaptureOwned: true,
+      screenLightingPreviousDisplaySettings: {
+        hideVideoDisplay: true,
+        useVideoAsBackground: true,
+      },
+    })
     settingsStore.setState({ screenLightingEnabled: true })
 
     render(<Capture />)
@@ -118,7 +125,13 @@ describe('Capture lifecycle', () => {
   })
 
   it('does not integrate lighting capture for a non-VRM model', async () => {
-    menuStore.setState({ screenLightingCaptureOwned: true })
+    menuStore.setState({
+      screenLightingCaptureOwned: true,
+      screenLightingPreviousDisplaySettings: {
+        hideVideoDisplay: true,
+        useVideoAsBackground: true,
+      },
+    })
     settingsStore.setState({
       screenLightingEnabled: true,
       modelType: 'live2d',
@@ -130,5 +143,73 @@ describe('Capture lifecycle', () => {
       expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalled()
     })
     expect(screen.getByTestId('scene-integration')).toHaveTextContent('no')
+  })
+
+  it('restores display settings when a lighting-owned capture is stopped', async () => {
+    menuStore.setState({
+      screenLightingCaptureOwned: true,
+      screenLightingPreviousDisplaySettings: {
+        hideVideoDisplay: true,
+        useVideoAsBackground: true,
+      },
+    })
+    settingsStore.setState({
+      screenLightingEnabled: true,
+      hideVideoDisplay: false,
+      useVideoAsBackground: false,
+    })
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalled()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'stop source' }))
+
+    expect(settingsStore.getState()).toMatchObject({
+      screenLightingEnabled: false,
+      hideVideoDisplay: true,
+      useVideoAsBackground: true,
+    })
+    expect(menuStore.getState()).toMatchObject({
+      showCapture: false,
+      screenLightingCaptureOwned: false,
+      screenLightingPreviousDisplaySettings: null,
+    })
+  })
+
+  it('restores display settings when lighting capture permission is denied', async () => {
+    menuStore.setState({
+      screenLightingCaptureOwned: true,
+      screenLightingPreviousDisplaySettings: {
+        hideVideoDisplay: true,
+        useVideoAsBackground: true,
+      },
+    })
+    settingsStore.setState({
+      screenLightingEnabled: true,
+      hideVideoDisplay: false,
+      useVideoAsBackground: false,
+    })
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: {
+        getDisplayMedia: jest.fn().mockRejectedValue(new Error('denied')),
+      },
+    })
+
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(settingsStore.getState()).toMatchObject({
+        screenLightingEnabled: false,
+        hideVideoDisplay: true,
+        useVideoAsBackground: true,
+      })
+    })
+    expect(menuStore.getState()).toMatchObject({
+      showCapture: false,
+      screenLightingCaptureOwned: false,
+      screenLightingPreviousDisplaySettings: null,
+    })
   })
 })

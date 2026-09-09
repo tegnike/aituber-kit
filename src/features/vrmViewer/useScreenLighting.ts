@@ -2,7 +2,7 @@ import { RefObject, useEffect } from 'react'
 
 import homeStore from '@/features/stores/home'
 import settingsStore from '@/features/stores/settings'
-import { analyzeScreenLighting } from './screenLighting'
+import { analyzeScreenLighting } from '@/features/vrmViewer/screenLighting'
 
 const SAMPLE_WIDTH = 16
 const SAMPLE_HEIGHT = 9

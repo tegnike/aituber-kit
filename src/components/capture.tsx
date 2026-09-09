@@ -5,6 +5,7 @@ import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import CaptureService from '@/features/gameCommentary/captureService'
 import { getDisplayMediaOptions } from '@/features/vrmViewer/screenLighting'
+import { disableScreenLighting } from '@/features/vrmViewer/screenLightingCapture'
 import { useScreenLighting } from '@/features/vrmViewer/useScreenLighting'
 import { VideoDisplay } from './common/VideoDisplay'
 
@@ -49,7 +50,14 @@ const Capture = () => {
   }, [])
 
   const stopCapture = useCallback(() => {
+    const { screenLightingCaptureOwned } = menuStore.getState()
     cleanupStream()
+
+    if (screenLightingCaptureOwned) {
+      disableScreenLighting()
+      return
+    }
+
     settingsStore.setState({
       hideVideoDisplay: false,
       useVideoAsBackground: false,
@@ -126,11 +134,7 @@ const Capture = () => {
       cleanupStream()
       const { screenLightingCaptureOwned } = menuStore.getState()
       if (screenLightingCaptureOwned) {
-        settingsStore.setState({ screenLightingEnabled: false })
-        menuStore.setState({
-          showCapture: false,
-          screenLightingCaptureOwned: false,
-        })
+        disableScreenLighting()
       }
     }
   }, [setupStream, cleanupStream])
@@ -160,6 +164,9 @@ const Capture = () => {
     } catch (error) {
       logger.error('Error capturing display:', error)
       cleanupStream()
+      if (menuStore.getState().screenLightingCaptureOwned) {
+        disableScreenLighting()
+      }
     }
   }
 

@@ -49,7 +49,6 @@ const Home = () => {
   const externalControlEnabled = Boolean(
     clientId && process.env.NEXT_PUBLIC_AITUBERKIT_API_KEY
   )
-  const modelType = settingsStore((s) => s.modelType)
   const { isLive2DEnabled } = useLive2DEnabled()
   const characterPreset1 = settingsStore((s) => s.characterPreset1)
   const characterPreset2 = settingsStore((s) => s.characterPreset2)
