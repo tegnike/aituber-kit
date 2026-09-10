@@ -168,7 +168,9 @@ export interface EnqueueMessagesParams {
 }
 
 const CLIENT_TIMEOUT = 1000 * 60 * 5
-const ACTIVE_RECEIVER_WINDOW = 1000 * 10
+// Background Chrome tabs may throttle the 2-second status heartbeat for tens
+// of seconds. Keep the receiver selectable across that normal throttling gap.
+const ACTIVE_RECEIVER_WINDOW = 1000 * 90
 const RESPONSE_CALLBACK_TIMEOUT = 1000 * 60 * 30
 const RECENT_EVENT_LIMIT = 100
 
