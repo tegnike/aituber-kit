@@ -107,17 +107,24 @@ export function computeDisabledConditions(
 
   return {
     conversationContinuityMode:
-      !multiModalAvail || state.slideMode || state.externalLinkageMode,
-    slideMode: !multiModalAvail,
-    speechRecognitionModeSwitcher: state.realtimeAPIMode || state.audioMode,
-    voiceSettings: state.realtimeAPIMode || state.audioMode,
-    temperatureMaxTokens: state.realtimeAPIMode || state.audioMode,
+      state.liveMode ||
+      !multiModalAvail ||
+      state.slideMode ||
+      state.externalLinkageMode,
+    slideMode: state.liveMode || !multiModalAvail,
+    speechRecognitionModeSwitcher:
+      state.liveMode || state.realtimeAPIMode || state.audioMode,
+    voiceSettings: state.liveMode || state.realtimeAPIMode || state.audioMode,
+    temperatureMaxTokens:
+      state.liveMode || state.realtimeAPIMode || state.audioMode,
     idleModeEnabled:
+      state.liveMode ||
       state.realtimeAPIMode ||
       state.audioMode ||
       state.externalLinkageMode ||
       state.slideMode,
     presenceDetectionEnabled:
+      state.liveMode ||
       state.realtimeAPIMode ||
       state.audioMode ||
       state.externalLinkageMode ||

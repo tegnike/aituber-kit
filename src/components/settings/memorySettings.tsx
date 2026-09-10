@@ -1,3 +1,4 @@
+import { LIVE_HISTORY_MAX_MESSAGES } from '@/features/live/history'
 /**
  * MemorySettings Component
  *
@@ -58,6 +59,7 @@ const MemorySettings = () => {
   const memoryMaxContextTokens = settingsStore((s) => s.memoryMaxContextTokens)
   const openaiKey = settingsStore((s) => s.openaiKey)
   const selectAIService = settingsStore((s) => s.selectAIService)
+  const liveMode = settingsStore((s) => s.liveMode)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
 
   // 会話履歴
@@ -633,7 +635,11 @@ const MemorySettings = () => {
           </div>
           <div className="my-2 text-sm whitespace-pre-wrap">
             {selectAIService !== 'dify'
-              ? t('ConversationHistoryInfo', { count: maxPastMessages })
+              ? t(liveMode ? 'Live.HistoryInfo' : 'ConversationHistoryInfo', {
+                  count: liveMode
+                    ? Math.min(maxPastMessages, LIVE_HISTORY_MAX_MESSAGES)
+                    : maxPastMessages,
+                })
               : t('DifyInfo2')}
           </div>
 
@@ -647,12 +653,20 @@ const MemorySettings = () => {
                 <input
                   type="number"
                   min="1"
-                  max="9999"
+                  max={liveMode ? LIVE_HISTORY_MAX_MESSAGES : 9999}
                   className="w-24 px-4 py-2 bg-white border border-gray-300 rounded-lg"
-                  value={maxPastMessages}
+                  value={
+                    liveMode
+                      ? Math.min(maxPastMessages, LIVE_HISTORY_MAX_MESSAGES)
+                      : maxPastMessages
+                  }
                   onChange={(e) => {
                     const value = parseInt(e.target.value)
-                    if (!Number.isNaN(value) && value >= 1 && value <= 9999) {
+                    if (
+                      !Number.isNaN(value) &&
+                      value >= 1 &&
+                      value <= (liveMode ? LIVE_HISTORY_MAX_MESSAGES : 9999)
+                    ) {
                       settingsStore.setState({ maxPastMessages: value })
                     }
                   }}

@@ -792,3 +792,33 @@ describe('disabled条件 (computeDisabledConditions)', () => {
     expect(conditions.presenceDetectionEnabled).toBe(true)
   })
 })
+
+describe('GPT-Live exclusions', () => {
+  it('disables competing modes and keeps the ordinary model selection', () => {
+    const prev = createBaseState({
+      realtimeAPIMode: true,
+      youtubeMode: true,
+      idleModeEnabled: true,
+    })
+    const { corrections } = computeExclusions({ liveMode: true }, prev)
+    expect(corrections).toMatchObject({
+      realtimeAPIMode: false,
+      youtubeMode: false,
+      idleModeEnabled: false,
+      continuousMicListeningMode: false,
+    })
+  })
+  it.each([
+    { realtimeAPIMode: true },
+    { audioMode: true },
+    { selectAIService: 'anthropic' },
+    { speechRecognitionMode: 'live-transcription' },
+    { youtubeMode: true },
+  ])('leaves Live when another mode is selected', (incoming) => {
+    const { corrections } = computeExclusions(
+      incoming as Partial<SettingsState>,
+      createBaseState({ liveMode: true })
+    )
+    expect(corrections.liveMode).toBe(false)
+  })
+})

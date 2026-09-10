@@ -360,6 +360,12 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   /**
    * 音声データを処理
    */
+  public setExternalAudioLevel(volume: number): void {
+    this.setMouthState(
+      volume > 0.35 ? 'open' : volume > 0.08 ? 'half' : 'closed'
+    )
+  }
+
   private handleAudioData(data: VolumeAnalyzerData): void {
     if (!data) return
 
