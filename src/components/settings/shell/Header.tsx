@@ -21,6 +21,8 @@ export const Header = ({ onClickClose }: HeaderProps) => {
   const settingsSearchQuery = menuStore((state) => state.settingsSearchQuery)
   const [showMobileSearch, setShowMobileSearch] = useState(false)
   const youtubeMode = settingsStore((s) => s.youtubeMode)
+  const liveMode = settingsStore((s) => s.liveMode)
+  const liveVoice = settingsStore((s) => s.liveVoice)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const audioMode = settingsStore((s) => s.audioMode)
   const slideMode = settingsStore((s) => s.slideMode)
@@ -32,6 +34,7 @@ export const Header = ({ onClickClose }: HeaderProps) => {
   const kioskModeEnabled = settingsStore((s) => s.kioskModeEnabled)
   const gameCommentaryEnabled = settingsStore((s) => s.gameCommentaryEnabled)
   const modeItems: ModeStatusItem[] = [
+    { label: 'GPT-Live', active: liveMode, tab: 'ai' },
     { label: t('SettingsModeYoutube'), active: youtubeMode, tab: 'youtube' },
     {
       label: t('SettingsModeRealtimeAPI'),
@@ -140,8 +143,12 @@ export const Header = ({ onClickClose }: HeaderProps) => {
         />
         <StatusChip
           label={t('SettingsVoice')}
-          value={formatStatusValue(selectVoice)}
-          onClick={() => openHeaderTab('voice')}
+          value={
+            liveMode
+              ? `GPT-Live (${liveVoice})`
+              : formatStatusValue(selectVoice)
+          }
+          onClick={() => openHeaderTab(liveMode ? 'ai' : 'voice')}
         />
         <ModeStatusSummary items={modeItems} onSelect={openHeaderTab} />
         <a

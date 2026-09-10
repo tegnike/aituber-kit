@@ -28,6 +28,7 @@ export const Form = ({ focusOnMount = true }: Props) => {
   const customModel = settingsStore((s) => s.customModel)
   const gameCommentaryEnabled = settingsStore((s) => s.gameCommentaryEnabled)
   const gameCommentaryPlaying = settingsStore((s) => s.gameCommentaryPlaying)
+  const liveMode = settingsStore((s) => s.liveMode)
   const [delayedText, setDelayedText] = useState('')
   const handleSendChat = handleSendChatFn()
 
@@ -101,8 +102,8 @@ export const Form = ({ focusOnMount = true }: Props) => {
     <SlideText />
   ) : (
     <>
-      <PresetQuestionButtons onSelectQuestion={hookSendChat} />
-      {showInputForm && (
+      {!liveMode && <PresetQuestionButtons onSelectQuestion={hookSendChat} />}
+      {(showInputForm || liveMode) && (
         <MessageInputContainer
           focusOnMount={focusOnMount}
           onChatProcessStart={hookSendChat}

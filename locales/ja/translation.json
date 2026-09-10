@@ -913,5 +913,41 @@
     "send": "実行",
     "response": "レスポンス",
     "noResponse": "まだレスポンスはありません。"
+  },
+  "Live": {
+    "Description": "聞きながら話せる音声会話モードです。音声はGPT-Live-1、推論は別のOpenAIモデルが担当します。音声は接続時間、推論とWeb検索は別途課金されます。",
+    "SettingsHint": "会話画面の「会話を開始」でマイクに接続します。設定の変更は次の接続から適用されます。通常の音声合成・音声認識設定は使用しません。",
+    "Voice": "GPT-Liveの声",
+    "VoicePresentation": {
+      "Female": "女性",
+      "Male": "男性",
+      "Unspecified": "未公表"
+    },
+    "HistoryInfo": "接続開始時に直近最大{{count}}件を渡します。GPT-Liveの上限は128件・合計8,192トークンです。文字数での切り捨ては行いません。トークン上限を超えた場合は件数を減らして再接続してください。",
+    "HistoryLimitExceeded": "会話履歴がGPT-Liveの上限（合計8,192トークン）を超えています。「過去のメッセージ保持数」を減らすか、履歴を整理して再接続してください。",
+    "InstructionsLimitExceeded": "システムプロンプトがGPT-Liveの上限（アプリが追加する指示を含め16,384トークン）を超えています。プロンプトを短くして再接続してください。",
+    "TokenLimitExceeded": "GPT-Liveのトークン上限を超えています。履歴件数またはシステムプロンプトを減らして再接続してください。",
+    "PromptHint": "AI設定のシステムプロンプトを、音声と推論の両方に適用します。変更は次の接続から反映されます。GPT-Liveのプロンプト上限はアプリの追加指示を含め16,384トークンです。",
+    "Backend": "推論モデル（Responses API対応）",
+    "WebSearch": "推論モデルのWeb検索",
+    "Start": "会話を開始",
+    "Stop": "会話を終了",
+    "Playback": "GPT-Live音声の再生",
+    "BackendBusy": "推論モデルが処理中です…",
+    "ConnectionError": "接続できませんでした。マイクの許可とネットワーク接続を確認してください。",
+    "ServerSecretAccessDenied": "サーバー側のAPIキー利用が許可されていません。サーバーのアクセス設定を確認するか、設定画面にOpenAI APIキーを入力してください。",
+    "SessionError": "セッションを作成できませんでした。OpenAI APIキー、GPT-Liveへのアクセス権、推論モデル名を確認してください。",
+    "ServerError": "GPT-Liveがエラーを返しました。会話を終了して再接続してください。",
+    "UnconfirmedClose": "接続が終了しました。サーバーからの終了確認と最終利用時間は取得できていません。",
+    "PlaybackBlocked": "音声を再生できませんでした。音声の再生ボタンを押してください。",
+    "BackendError": "推論モデルの処理が完了しませんでした。設定と利用状況を確認してください。",
+    "State": {
+      "idle": "音声で会話する",
+      "connecting": "接続中…",
+      "connected": "会話中・マイクON",
+      "closing": "終了を確認中…",
+      "closed": "会話を終了しました",
+      "error": "接続が終了しました"
+    }
   }
 }
