@@ -3,12 +3,14 @@ import { render, screen } from '@testing-library/react'
 import { Form } from '@/components/form'
 
 let mockShowInputForm = true
+let mockLiveMode = false
 
 jest.mock('@/features/stores/settings', () => ({
   __esModule: true,
   default: (selector: (state: Record<string, unknown>) => unknown) =>
     selector({
       slideMode: false,
+      liveMode: mockLiveMode,
       showInputForm: mockShowInputForm,
       selectAIService: 'openai',
       selectAIModel: 'gpt-4',
@@ -65,6 +67,7 @@ jest.mock('@/components/slideText', () => ({
 describe('Form visibility', () => {
   beforeEach(() => {
     mockShowInputForm = true
+    mockLiveMode = false
   })
 
   it('shows the message input when enabled', () => {
@@ -80,4 +83,12 @@ describe('Form visibility', () => {
     expect(screen.queryByTestId('message-input')).toBeNull()
     expect(screen.getByTestId('preset-questions')).toBeTruthy()
   })
+})
+
+it('keeps live controls mounted when the ordinary input is hidden', () => {
+  mockShowInputForm = false
+  mockLiveMode = true
+  render(<Form />)
+  expect(screen.getByTestId('message-input')).toBeTruthy()
+  expect(screen.queryByTestId('preset-questions')).toBeNull()
 })

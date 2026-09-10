@@ -1,3 +1,4 @@
+import { LiveConversation } from './liveConversation'
 import { useEffect } from 'react'
 import { MessageInput } from '@/components/messageInput'
 import homeStore from '@/features/stores/home'
@@ -10,7 +11,16 @@ type Props = {
   onChatProcessStart: (text: string) => void
 }
 
-export const MessageInputContainer = ({
+export const MessageInputContainer = (props: Props) => {
+  const liveMode = settingsStore((s) => s.liveMode)
+  return liveMode ? (
+    <LiveConversation />
+  ) : (
+    <StandardMessageInputContainer {...props} />
+  )
+}
+
+const StandardMessageInputContainer = ({
   focusOnMount = true,
   onChatProcessStart,
 }: Props) => {

@@ -31,6 +31,24 @@ export const routePolicies = {
     restrictedBehavior: 'none',
     waf: { embedAllowed: true },
   },
+  '/api/ai/live-session': {
+    path: '/api/ai/live-session',
+    featureName: 'ai/live-session',
+    methods: ['POST'],
+    resources: ['server-secret'],
+    secret: {
+      kind: 'pairs',
+      pairs: [
+        {
+          source: 'body',
+          key: 'apiKey',
+          envVars: ['OPENAI_KEY', 'OPENAI_API_KEY'],
+        },
+      ],
+    },
+    restrictedBehavior: 'none',
+    waf: { embedAllowed: true },
+  },
   '/api/ai/realtime-client-secret': {
     path: '/api/ai/realtime-client-secret',
     featureName: 'ai/realtime-client-secret',

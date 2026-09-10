@@ -1,3 +1,9 @@
+import { computeExclusions } from './exclusionEngine'
+import {
+  DEFAULT_LIVE_BACKEND,
+  liveVoices,
+  type LiveVoice,
+} from '@/features/live/config'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
@@ -246,6 +252,10 @@ interface General {
   showQuickMenu: boolean
   externalLinkageMode: boolean
   externalLinkageUrl: string
+  liveMode: boolean
+  liveVoice: LiveVoice
+  liveBackendModel: string
+  liveWebSearch: boolean
   realtimeAPIMode: boolean
   realtimeAPIModeContentType: RealtimeAPIModeContentType
   realtimeAPIModeVoice: RealtimeAPIModeVoice | RealtimeAPIModeAzureVoice
@@ -588,6 +598,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   externalLinkageMode: process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_MODE === 'true',
   externalLinkageUrl:
     process.env.NEXT_PUBLIC_EXTERNAL_LINKAGE_URL || 'ws://localhost:8000/ws',
+  liveMode: process.env.NEXT_PUBLIC_LIVE_MODE === 'true',
+  liveVoice:
+    liveVoices.find((voice) => voice === process.env.NEXT_PUBLIC_LIVE_VOICE) ||
+    'marin',
+  liveBackendModel:
+    process.env.NEXT_PUBLIC_LIVE_BACKEND_MODEL || DEFAULT_LIVE_BACKEND,
+  liveWebSearch: process.env.NEXT_PUBLIC_LIVE_WEB_SEARCH === 'true',
   realtimeAPIMode:
     process.env.NEXT_PUBLIC_REALTIME_API_MODE === 'true' &&
     ['openai', 'azure'].includes(
@@ -1071,6 +1088,11 @@ export const runSettingsMigrations = (
   return migrated as Partial<SettingsState>
 }
 
+const normalizeLiveSettings = (state: SettingsState): SettingsState =>
+  state.liveMode
+    ? { ...state, ...computeExclusions({ liveMode: true }, state).corrections }
+    : state
+
 const mergePersistedSettings = (
   persistedState: unknown,
   currentState: SettingsState
@@ -1081,13 +1103,13 @@ const mergePersistedSettings = (
   }
 
   if (process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES === 'true') {
-    return {
+    return normalizeLiveSettings({
       ...mergedState,
       ...getInitialValuesFromEnv(),
-    }
+    })
   }
 
-  return mergedState
+  return normalizeLiveSettings(mergedState)
 }
 
 export const selectPersistedSettings = (state: SettingsState) => ({
@@ -1198,6 +1220,10 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   voiceInputShortcut: state.voiceInputShortcut,
   externalLinkageMode: state.externalLinkageMode,
   externalLinkageUrl: state.externalLinkageUrl,
+  liveMode: state.liveMode,
+  liveVoice: state.liveVoice,
+  liveBackendModel: state.liveBackendModel,
+  liveWebSearch: state.liveWebSearch,
   realtimeAPIMode: state.realtimeAPIMode,
   realtimeAPIModeContentType: state.realtimeAPIModeContentType,
   realtimeAPIModeVoice: state.realtimeAPIModeVoice,
@@ -1339,7 +1365,7 @@ export type PersistedSettings = ReturnType<typeof selectPersistedSettings>
 
 const settingsStore = create<SettingsState>()(
   exclusivityMiddleware(
-    persist(() => getInitialValuesFromEnv(), {
+    persist(() => normalizeLiveSettings(getInitialValuesFromEnv()), {
       name: 'aitube-kit-settings',
       version: CURRENT_SETTINGS_VERSION,
       migrate: (persistedState, storedVersion) =>

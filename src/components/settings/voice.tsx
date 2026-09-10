@@ -23,6 +23,7 @@ const Voice = () => {
   const elevenlabsApiKey = settingsStore((s) => s.elevenlabsApiKey)
   const cartesiaApiKey = settingsStore((s) => s.cartesiaApiKey)
 
+  const liveMode = settingsStore((s) => s.liveMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const audioMode = settingsStore((s) => s.audioMode)
 
@@ -90,6 +91,8 @@ const Voice = () => {
   const azureTTSKey = settingsStore((s) => s.azureTTSKey)
   const azureTTSEndpoint = settingsStore((s) => s.azureTTSEndpoint)
   const { t } = useTranslation()
+
+  if (liveMode) return <p>{t('Live.SettingsHint')}</p>
 
   // 追加: realtimeAPIMode または audioMode が true の場合にメッセージを表示
   if (realtimeAPIMode || audioMode) {

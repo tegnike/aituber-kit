@@ -24,6 +24,7 @@ const SpeechInput = () => {
     (s) => s.continuousMicListeningMode
   )
   const initialSpeechTimeout = settingsStore((s) => s.initialSpeechTimeout)
+  const liveMode = settingsStore((s) => s.liveMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
   const audioMode = settingsStore((s) => s.audioMode)
   const voiceInputShortcut =
@@ -33,6 +34,8 @@ const SpeechInput = () => {
     DEFAULT_SETTINGS_TOGGLE_SHORTCUT
 
   const { t } = useTranslation()
+
+  if (liveMode) return <p>{t('Live.SettingsHint')}</p>
 
   const whisperModels: { value: WhisperTranscriptionModel; label: string }[] =
     getOpenAIWhisperModels().map((m) => ({

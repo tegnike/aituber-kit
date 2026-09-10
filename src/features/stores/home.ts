@@ -245,6 +245,9 @@ const homeStore = create<HomeState>()(
               id: messageId,
               role: message.role,
               content: message.content,
+              ...(message.liveTranscript && {
+                liveTranscript: message.liveTranscript,
+              }),
               ...(message.audio && { audio: message.audio }),
               ...(message.timestamp && { timestamp: message.timestamp }),
               ...(message.userName && { userName: message.userName }),

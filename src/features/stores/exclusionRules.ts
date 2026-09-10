@@ -43,6 +43,54 @@ const JA_ONLY_VOICES: AIVoice[] = [
 ]
 
 export const exclusionRules: ExclusionRule[] = [
+  {
+    id: 'live-incompatible-mode',
+    description:
+      '別の入力・自動発話モードやAIサービスへ切り替えたらGPT-Liveを停止',
+    trigger: (incoming, merged) =>
+      merged.liveMode &&
+      ((wasSet(incoming, 'selectAIService') &&
+        merged.selectAIService !== 'openai') ||
+        (wasSet(incoming, 'speechRecognitionMode') &&
+          merged.speechRecognitionMode !== 'browser') ||
+        (
+          [
+            'realtimeAPIMode',
+            'audioMode',
+            'externalLinkageMode',
+            'slideMode',
+            'youtubeMode',
+            'idleModeEnabled',
+            'presenceDetectionEnabled',
+            'gameCommentaryEnabled',
+            'conversationContinuityMode',
+            'messageReceiverEnabled',
+          ] as const
+        ).some((key) => incoming[key] === true)),
+    apply: () => ({ liveMode: false }),
+  },
+  {
+    id: 'live-on',
+    description: 'GPT-Liveのマイクと発話を他の入力・自動発話モードから分離',
+    trigger: (_incoming, merged) => merged.liveMode === true,
+    apply: () => ({
+      selectAIService: 'openai',
+      realtimeAPIMode: false,
+      audioMode: false,
+      externalLinkageMode: false,
+      slideMode: false,
+      youtubeMode: false,
+      idleModeEnabled: false,
+      presenceDetectionEnabled: false,
+      gameCommentaryEnabled: false,
+      gameCommentaryPlaying: false,
+      conversationContinuityMode: false,
+      messageReceiverEnabled: false,
+      continuousMicListeningMode: false,
+      speechRecognitionMode: 'browser',
+    }),
+    crossStoreEffects: () => [{ store: 'slide', state: { isPlaying: false } }],
+  },
   // Rule 1: externalLinkageMode ON
   {
     id: 'externalLinkage-on',

@@ -4,6 +4,7 @@ export type Message = {
   content?:
     | string
     | [{ type: 'text'; text: string }, { type: 'image'; image: string }] // マルチモーダル拡張
+  liveTranscript?: { delta: string; start_ms: number; end_ms: number }[]
   audio?: { id: string }
   timestamp?: string
   embedding?: number[] // メモリ機能用のembedding

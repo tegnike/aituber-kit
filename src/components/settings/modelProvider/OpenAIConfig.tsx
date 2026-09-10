@@ -1,3 +1,4 @@
+import { LiveConfig } from './LiveConfig'
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
 import settingsStore from '@/features/stores/settings'
@@ -53,6 +54,7 @@ export const OpenAIConfig = ({
   updateMultiModalModeForModel,
 }: OpenAIConfigProps) => {
   const { t } = useTranslation()
+  const liveMode = settingsStore((s) => s.liveMode)
 
   const handleRealtimeAPIModeChange = useCallback((newMode: boolean) => {
     settingsStore.setState({ realtimeAPIMode: newMode })
@@ -99,6 +101,8 @@ export const OpenAIConfig = ({
         linkUrl="https://platform.openai.com/account/api-keys"
         linkLabel="OpenAI Platform"
       />
+
+      <LiveConfig />
 
       <div className="my-6">
         <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
@@ -242,7 +246,7 @@ export const OpenAIConfig = ({
         </>
       )}
 
-      {!realtimeAPIMode && !audioMode && (
+      {!liveMode && !realtimeAPIMode && !audioMode && (
         <>
           <ModelSelector
             aiService="openai"
