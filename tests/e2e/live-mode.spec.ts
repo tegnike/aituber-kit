@@ -10,7 +10,7 @@ import {
 
 test('GPT-Live settings, independent subtitles, and graceful stop', async ({
   page,
-}) => {
+}, testInfo) => {
   await prepareApp(page, {
     settings: {
       selectLanguage: 'ja',
@@ -119,14 +119,14 @@ test('GPT-Live settings, independent subtitles, and graceful stop', async ({
       )
     )
     .toEqual(['こんにちは', 'はい、聞こえています。'])
-  await page.screenshot({ path: '/tmp/aituber-live-ui.png' })
+  await page.screenshot({ path: testInfo.outputPath('live-ui.png') })
   await page.setViewportSize({ width: 390, height: 844 })
   const panel = page.getByTestId('live-conversation')
   await expect(panel).toBeVisible()
   await expect
     .poll(async () => (await panel.boundingBox())!.height)
     .toBeLessThan(110)
-  await page.screenshot({ path: '/tmp/aituber-live-mobile.png' })
+  await page.screenshot({ path: testInfo.outputPath('live-mobile.png') })
   await page.getByRole('button', { name: '会話を終了', exact: true }).click()
   await expect(
     page.getByRole('status').filter({ hasText: '会話を終了しました' })

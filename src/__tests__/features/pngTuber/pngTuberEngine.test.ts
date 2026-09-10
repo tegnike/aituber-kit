@@ -514,6 +514,9 @@ describe('PNGTuberEngine インスタンス動作', () => {
   // privateフィールドの検証用に内部状態の型を宣言しておく
   // （プロパティ名はコンパイル時に保証されないが、as anyの散在を避けて一箇所に集約する）
   type EngineInternals = {
+    mouthState: MouthState
+    mouthSprites: Record<string, HTMLImageElement>
+    lastMouthChange: number
     sensitivity: number
     chromaKeyEnabled: boolean
     chromaKeyTolerance: number
@@ -543,6 +546,21 @@ describe('PNGTuberEngine インスタンス動作', () => {
 
   beforeEach(() => {
     engine = createEngine()
+  })
+
+  it('closes immediately on zero volume even inside the mouth transition interval', () => {
+    const state = internals(engine)
+    state.mouthSprites = {
+      open: document.createElement('img'),
+      closed: document.createElement('img'),
+    }
+    state.mouthState = 'open'
+    state.lastMouthChange = performance.now()
+    engine.setExternalAudioLevel(0)
+    expect(state.mouthState).toBe('closed')
+    const lastChange = state.lastMouthChange
+    engine.setExternalAudioLevel(0)
+    expect(state.lastMouthChange).toBe(lastChange)
   })
 
   describe('setSensitivity', () => {

@@ -103,7 +103,7 @@ export const Form = ({ focusOnMount = true }: Props) => {
   ) : (
     <>
       {!liveMode && <PresetQuestionButtons onSelectQuestion={hookSendChat} />}
-      {showInputForm && (
+      {(showInputForm || liveMode) && (
         <MessageInputContainer
           focusOnMount={focusOnMount}
           onChatProcessStart={hookSendChat}
