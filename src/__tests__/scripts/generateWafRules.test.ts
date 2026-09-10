@@ -35,13 +35,14 @@ type WafRule = {
  *   （audioモードのサーバー中継ルート。docs/audio-mode-auth-design.md）
  * - 2026-07-08 Realtime API ephemeral化:
  *   `/api/ai/realtime-client-secret` を embed許可集合へ追加
+ * - GPT-Live: `/api/ai/live-session` を embed許可集合へ追加
  */
 const LEGACY_RULES: WafRule[] = [
   {
     ref: 'aituberkit-nikechan-embed-skip',
     description: 'AITuberKit: allow embedded widget on nikechan.com',
     expression:
-      '(http.host in {"aituberkit.com" "www.aituberkit.com"} and ((http.referer contains "https://nikechan.com" and starts_with(http.request.uri.path, "/embed")) or ((http.referer contains "https://aituberkit.com/" or http.referer contains "https://www.aituberkit.com/") and (starts_with(http.request.uri.path, "/vrm/") or starts_with(http.request.uri.path, "/live2d/") or starts_with(http.request.uri.path, "/pngtuber/") or starts_with(http.request.uri.path, "/models/") or starts_with(http.request.uri.path, "/poses/") or ends_with(http.request.uri.path, ".vrma"))) or (http.request.method eq "POST" and (http.referer contains "https://aituberkit.com/embed" or http.referer contains "https://www.aituberkit.com/embed") and http.request.uri.path in {"/api/ai/audio" "/api/ai/custom" "/api/ai/realtime-client-secret" "/api/ai/vercel" "/api/tts-aivis-cloud-api" "/api/save-chat-log"})))',
+      '(http.host in {"aituberkit.com" "www.aituberkit.com"} and ((http.referer contains "https://nikechan.com" and starts_with(http.request.uri.path, "/embed")) or ((http.referer contains "https://aituberkit.com/" or http.referer contains "https://www.aituberkit.com/") and (starts_with(http.request.uri.path, "/vrm/") or starts_with(http.request.uri.path, "/live2d/") or starts_with(http.request.uri.path, "/pngtuber/") or starts_with(http.request.uri.path, "/models/") or starts_with(http.request.uri.path, "/poses/") or ends_with(http.request.uri.path, ".vrma"))) or (http.request.method eq "POST" and (http.referer contains "https://aituberkit.com/embed" or http.referer contains "https://www.aituberkit.com/embed") and http.request.uri.path in {"/api/ai/audio" "/api/ai/custom" "/api/ai/live-session" "/api/ai/realtime-client-secret" "/api/ai/vercel" "/api/tts-aivis-cloud-api" "/api/save-chat-log"})))',
     action: 'skip',
     action_parameters: {
       ruleset: 'current',
