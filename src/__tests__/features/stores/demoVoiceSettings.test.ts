@@ -50,3 +50,27 @@ test('persisted demo settings cannot restore disabled voice modes', async () => 
     youtubeMode: true,
   })
 })
+
+test.each([
+  ['', 'custom-api'],
+  ['user-owned-key', 'openai'],
+])(
+  'restores the external agent only for keyless persisted OpenAI settings',
+  async (openaiKey, expectedService) => {
+    process.env.NEXT_PUBLIC_SELECT_AI_SERVICE = 'custom-api'
+    localStorage.setItem(
+      'aitube-kit-settings',
+      JSON.stringify({
+        version: CURRENT_SETTINGS_VERSION,
+        state: {
+          selectAIService: 'openai',
+          openaiKey,
+          selectVoice: 'aivis_cloud_api',
+        },
+      })
+    )
+    await settingsStore.persist.rehydrate()
+    expect(settingsStore.getState().selectAIService).toBe(expectedService)
+    expect(settingsStore.getState().selectVoice).toBe('aivis_cloud_api')
+  }
+)

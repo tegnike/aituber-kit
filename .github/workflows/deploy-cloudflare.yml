@@ -87,6 +87,7 @@ jobs:
             upsert_env_secret "$key" ""
           done
           upsert_env_secret NEXT_PUBLIC_DEMO_MODE true
+          upsert_env_secret NEXT_PUBLIC_SELECT_AI_SERVICE custom-api
           upsert_env_secret ANTHROPIC_API_KEY "$ANTHROPIC_API_KEY"
           upsert_env_secret CUSTOM_API_URL "$CUSTOM_API_URL"
           upsert_env_secret CUSTOM_API_HEADERS "$CUSTOM_API_HEADERS"

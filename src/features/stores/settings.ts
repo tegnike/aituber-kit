@@ -1,4 +1,4 @@
-import { restrictDemoVoiceSettings } from '@/utils/demoMode'
+import { isDemoMode, restrictDemoVoiceSettings } from '@/utils/demoMode'
 import { computeExclusions } from './exclusionEngine'
 import {
   DEFAULT_LIVE_BACKEND,
@@ -1091,6 +1091,16 @@ export const runSettingsMigrations = (
 
 const normalizeLiveSettings = (input: SettingsState): SettingsState => {
   const state = restrictDemoVoiceSettings(input)
+  // Older demo visitors persisted the previous OpenAI default without a key.
+  // Restore the configured external agent, while preserving user-provided keys.
+  if (
+    isDemoMode() &&
+    process.env.NEXT_PUBLIC_SELECT_AI_SERVICE === 'custom-api' &&
+    state.selectAIService === 'openai' &&
+    !state.openaiKey
+  ) {
+    return { ...state, selectAIService: 'custom-api' }
+  }
   return state.liveMode
     ? { ...state, ...computeExclusions({ liveMode: true }, state).corrections }
     : state
