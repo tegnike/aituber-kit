@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 export type LiveState =
   | 'idle'
   | 'connecting'
@@ -63,6 +64,10 @@ export class LiveSession {
   }
 
   async start(configuration: Record<string, unknown>) {
+    if (isDemoMode()) {
+      this.fail()
+      return
+    }
     if (this.state !== 'idle') return
     this.update('connecting')
     this.startupTimer = setTimeout(() => this.fail(), 45000)

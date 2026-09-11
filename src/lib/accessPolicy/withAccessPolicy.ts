@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 /**
  * 統一アクセスポリシーのエントリポイント
  *
@@ -176,6 +177,18 @@ export function withAccessPolicy(
     // 1. メソッド検査
     if (!policy.methods.includes((req.method || '') as ApiHttpMethod)) {
       return sendMethodNotAllowed(res)
+    }
+
+    if (
+      isDemoMode() &&
+      (policy.demoBehavior === 'deny' ||
+        (policy.demoBehavior === 'deny-realtime-conversation' &&
+          req.body?.sessionType !== 'transcription'))
+    ) {
+      return res.status(403).json({
+        error: 'Feature disabled in demo mode',
+        errorCode: 'FeatureDisabledInDemoMode',
+      })
     }
 
     // 2. 制限モード

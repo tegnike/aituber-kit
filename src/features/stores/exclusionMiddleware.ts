@@ -1,3 +1,4 @@
+import { restrictDemoVoiceSettings } from '@/utils/demoMode'
 import type { StateCreator, StoreMutatorIdentifier } from 'zustand'
 import type { SettingsState } from './settings'
 import { computeExclusions, type ExclusionResult } from './exclusionEngine'
@@ -17,8 +18,9 @@ function applyRules(
     | ((state: SettingsState) => Partial<SettingsState>),
   currentState: SettingsState
 ): ExclusionResult & { resolved: Partial<SettingsState> } {
-  const resolved =
+  const resolved = restrictDemoVoiceSettings(
     typeof partial === 'function' ? partial(currentState) : partial
+  )
 
   if (!resolved || typeof resolved !== 'object') {
     return {

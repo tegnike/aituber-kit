@@ -14,6 +14,7 @@ import type { RoutePolicy } from './types'
 
 export const routePolicies = {
   '/api/ai/audio': {
+    demoBehavior: 'deny',
     path: '/api/ai/audio',
     featureName: 'ai/audio',
     methods: ['POST'],
@@ -32,6 +33,7 @@ export const routePolicies = {
     waf: { embedAllowed: true },
   },
   '/api/ai/live-session': {
+    demoBehavior: 'deny',
     path: '/api/ai/live-session',
     featureName: 'ai/live-session',
     methods: ['POST'],
@@ -50,6 +52,7 @@ export const routePolicies = {
     waf: { embedAllowed: true },
   },
   '/api/ai/realtime-client-secret': {
+    demoBehavior: 'deny-realtime-conversation',
     path: '/api/ai/realtime-client-secret',
     featureName: 'ai/realtime-client-secret',
     methods: ['POST'],
@@ -287,6 +290,7 @@ export const routePolicies = {
     restrictedBehavior: 'deny',
   },
   '/api/openAITTS': {
+    demoBehavior: 'deny',
     path: '/api/openAITTS',
     featureName: 'openAITTS',
     methods: ['POST'],
