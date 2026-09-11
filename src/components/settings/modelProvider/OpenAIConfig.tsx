@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 import { LiveConfig } from './LiveConfig'
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
@@ -102,31 +103,35 @@ export const OpenAIConfig = ({
         linkLabel="OpenAI Platform"
       />
 
-      <LiveConfig />
+      {!isDemoMode() && (
+        <>
+          <LiveConfig />
 
-      <div className="my-6">
-        <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
-        <div className="my-2">
-          <ToggleSwitch
-            enabled={realtimeAPIMode}
-            onChange={handleRealtimeAPIModeChange}
-            testId="realtime-api-mode-toggle"
-          />
-        </div>
-      </div>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
+            <div className="my-2">
+              <ToggleSwitch
+                enabled={realtimeAPIMode}
+                onChange={handleRealtimeAPIModeChange}
+                testId="realtime-api-mode-toggle"
+              />
+            </div>
+          </div>
 
-      <div className="my-6">
-        <div className="my-4 text-xl font-bold">{t('AudioMode')}</div>
-        <div className="my-2">
-          <ToggleSwitch
-            enabled={audioMode}
-            onChange={handleAudioModeChange}
-            testId="audio-mode-toggle"
-          />
-        </div>
-      </div>
+          <div className="my-6">
+            <div className="my-4 text-xl font-bold">{t('AudioMode')}</div>
+            <div className="my-2">
+              <ToggleSwitch
+                enabled={audioMode}
+                onChange={handleAudioModeChange}
+                testId="audio-mode-toggle"
+              />
+            </div>
+          </div>
+        </>
+      )}
 
-      {realtimeAPIMode && (
+      {!isDemoMode() && realtimeAPIMode && (
         <>
           <div className="my-4 font-bold">
             {t('RealtimeAPIModeContentType')}
@@ -192,7 +197,7 @@ export const OpenAIConfig = ({
         </>
       )}
 
-      {audioMode && (
+      {!isDemoMode() && audioMode && (
         <>
           <div className="my-4 font-bold">
             {t('RealtimeAPIModeContentType')}

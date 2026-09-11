@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 import { useTranslation } from 'react-i18next'
 import settingsStore from '@/features/stores/settings'
 import {
@@ -14,6 +15,7 @@ export const LiveConfig = () => {
   const voice = settingsStore((s) => s.liveVoice)
   const backend = settingsStore((s) => s.liveBackendModel)
   const webSearch = settingsStore((s) => s.liveWebSearch)
+  if (isDemoMode()) return null
   return (
     <div className="my-6">
       <div className="my-4 text-xl font-bold">GPT-Live-1</div>

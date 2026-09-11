@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
 import settingsStore from '@/features/stores/settings'
@@ -84,15 +85,19 @@ export const AzureConfig = ({
       </div>
 
       <div className="my-6">
-        <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
-        <div className="my-2">
-          <ToggleSwitch
-            enabled={realtimeAPIMode}
-            onChange={handleRealtimeAPIModeChange}
-          />
-        </div>
+        {!isDemoMode() && (
+          <div className="my-4 text-xl font-bold">{t('RealtimeAPIMode')}</div>
+        )}
+        {!isDemoMode() && (
+          <div className="my-2">
+            <ToggleSwitch
+              enabled={realtimeAPIMode}
+              onChange={handleRealtimeAPIModeChange}
+            />
+          </div>
+        )}
 
-        {realtimeAPIMode && (
+        {!isDemoMode() && realtimeAPIMode && (
           <>
             <div className="my-4 font-bold">
               {t('RealtimeAPIModeContentType')}

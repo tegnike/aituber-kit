@@ -82,7 +82,12 @@ jobs:
             fi
             printf '%s=%s\n' "$key" "$value" >> .env.local
           }
-          upsert_env_secret OPENAI_API_KEY "$OPENAI_API_KEY"
+          # Demo uses the external agent and Aivis Cloud. Never ship OpenAI keys.
+          for key in OPENAI_API_KEY OPENAI_KEY OPENAI_TTS_KEY OPENAI_EMBEDDING_KEY NEXT_PUBLIC_OPENAI_API_KEY NEXT_PUBLIC_OPENAI_KEY; do
+            upsert_env_secret "$key" ""
+          done
+          upsert_env_secret NEXT_PUBLIC_DEMO_MODE true
+          upsert_env_secret NEXT_PUBLIC_SELECT_AI_SERVICE custom-api
           upsert_env_secret ANTHROPIC_API_KEY "$ANTHROPIC_API_KEY"
           upsert_env_secret CUSTOM_API_URL "$CUSTOM_API_URL"
           upsert_env_secret CUSTOM_API_HEADERS "$CUSTOM_API_HEADERS"
@@ -102,7 +107,6 @@ jobs:
         env:
           CLOUDFLARE_ENV_FILE: ${{ secrets.CLOUDFLARE_ENV_FILE }}
           CLOUDFLARE_PUBLIC_ENV_APPEND: ${{ secrets.CLOUDFLARE_PUBLIC_ENV_APPEND }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CUSTOM_API_URL: ${{ secrets.CUSTOM_API_URL }}
           CUSTOM_API_HEADERS: ${{ secrets.CUSTOM_API_HEADERS }}
