@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 import { useTranslation } from 'react-i18next'
 
 import { AIVoice } from '@/features/constants/settings'
@@ -38,7 +39,9 @@ export const VoiceEngineSelector = ({
           <option value="gsvitts">{t('UsingGSVITTS')}</option>
           <option value="elevenlabs">{t('UsingElevenLabs')}</option>
           <option value="cartesia">{t('UsingCartesia')}</option>
-          <option value="openai">{t('UsingOpenAITTS')}</option>
+          {!isDemoMode() && (
+            <option value="openai">{t('UsingOpenAITTS')}</option>
+          )}
           <option value="azure">{t('UsingAzureTTS')}</option>
         </select>
       </div>

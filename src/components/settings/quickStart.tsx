@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 import { logger } from '@/lib/logger'
 import { useTranslation } from 'react-i18next'
 import i18n from 'i18next'
@@ -916,7 +917,9 @@ const QuickStart = () => {
             <option value="gsvitts">{t('UsingGSVITTS')}</option>
             <option value="elevenlabs">{t('UsingElevenLabs')}</option>
             <option value="cartesia">{t('UsingCartesia')}</option>
-            <option value="openai">{t('UsingOpenAITTS')}</option>
+            {!isDemoMode() && (
+              <option value="openai">{t('UsingOpenAITTS')}</option>
+            )}
             <option value="azure">{t('UsingAzureTTS')}</option>
           </select>
         </LabeledField>

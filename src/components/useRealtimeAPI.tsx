@@ -1,3 +1,4 @@
+import { isDemoMode } from '@/utils/demoMode'
 import { logger } from '@/lib/logger'
 import { useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -306,6 +307,7 @@ const useRealtimeAPI = ({ handleReceiveTextFromRt }: Params) => {
   const onClose = useCallback((event: Event) => {}, [])
 
   const connectWebsocket = async (): Promise<WebSocket | null> => {
+    if (isDemoMode()) return null
     const wsManager = webSocketStore.getState().wsManager
     if (wsManager?.isConnected()) return wsManager.websocket
 

@@ -1,3 +1,4 @@
+import { restrictDemoVoiceSettings } from '@/utils/demoMode'
 import { computeExclusions } from './exclusionEngine'
 import {
   DEFAULT_LIVE_BACKEND,
@@ -1088,10 +1089,12 @@ export const runSettingsMigrations = (
   return migrated as Partial<SettingsState>
 }
 
-const normalizeLiveSettings = (state: SettingsState): SettingsState =>
-  state.liveMode
+const normalizeLiveSettings = (input: SettingsState): SettingsState => {
+  const state = restrictDemoVoiceSettings(input)
+  return state.liveMode
     ? { ...state, ...computeExclusions({ liveMode: true }, state).corrections }
     : state
+}
 
 const mergePersistedSettings = (
   persistedState: unknown,

@@ -89,6 +89,8 @@ export type WafPolicy = {
 }
 
 export type RoutePolicy = {
+  /** Demo-only voice restrictions; transcription remains independently available. */
+  demoBehavior?: 'deny' | 'deny-realtime-conversation'
   /** '/api/...' 形式。src/pages/api 配下のファイルパスと一致すること（静的テストで検証） */
   path: string
   /** guardServerSecretAccess の featureName（現行値を維持） */
