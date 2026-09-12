@@ -406,7 +406,7 @@ npm run deploy:cloudflare
 
 ## Star历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.com/#tegnike/aituber-kit&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=tegnike/aituber-kit&type=Date)](https://star-history.dera.page/#tegnike/aituber-kit&Date)
 
 ## 致谢
 
