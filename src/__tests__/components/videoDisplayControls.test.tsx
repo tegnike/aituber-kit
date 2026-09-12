@@ -44,4 +44,21 @@ describe('VideoDisplay controls', () => {
 
     expect(onStopSource).toHaveBeenCalledTimes(1)
   })
+
+  it('integrates a lighting capture into the scene without controls', () => {
+    renderVideoDisplay({
+      integrateIntoScene: true,
+      onStopSource: jest.fn(),
+    })
+
+    expect(screen.getByTestId('scene-background-video')).toBeInTheDocument()
+    expect(screen.queryByLabelText('StopScreenShare')).toBeNull()
+    expect(screen.queryByLabelText('HideVideoPreview')).toBeNull()
+    expect(screen.queryByLabelText('ShowVideoDisplay')).toBeNull()
+    expect(
+      document
+        .querySelector('video:not([data-testid="scene-background-video"])')
+        ?.closest('[aria-hidden]')
+    ).toHaveAttribute('aria-hidden', 'true')
+  })
 })

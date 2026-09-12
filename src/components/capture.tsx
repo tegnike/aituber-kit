@@ -4,6 +4,9 @@ import homeStore from '@/features/stores/home'
 import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 import CaptureService from '@/features/gameCommentary/captureService'
+import { getDisplayMediaOptions } from '@/features/vrmViewer/screenLighting'
+import { disableScreenLighting } from '@/features/vrmViewer/screenLightingCapture'
+import { useScreenLighting } from '@/features/vrmViewer/useScreenLighting'
 import { VideoDisplay } from './common/VideoDisplay'
 
 const Capture = () => {
@@ -13,6 +16,16 @@ const Capture = () => {
 
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false)
   const [showPermissionModal, setShowPermissionModal] = useState<boolean>(true)
+  const screenLightingEnabled = settingsStore(
+    (state) => state.screenLightingEnabled
+  )
+  const screenLightingCaptureOwned = menuStore(
+    (state) => state.screenLightingCaptureOwned
+  )
+  const modelType = settingsStore((state) => state.modelType)
+  const screenLightingActive = modelType === 'vrm' && screenLightingEnabled
+
+  useScreenLighting(videoRef, screenLightingActive)
 
   // 初回のみ許可を要求するために useRef で状態を保持
   const requestCapturePermissionAttempted = useRef<boolean>(false)
@@ -29,6 +42,7 @@ const Capture = () => {
 
     // CaptureServiceのキャプチャ関数を解除
     CaptureService.getInstance().registerCaptureFunction(null)
+    homeStore.getState().viewer.resetScreenLighting()
 
     if (videoRef.current) {
       videoRef.current.srcObject = null
@@ -36,12 +50,23 @@ const Capture = () => {
   }, [])
 
   const stopCapture = useCallback(() => {
+    const { screenLightingCaptureOwned } = menuStore.getState()
     cleanupStream()
+
+    if (screenLightingCaptureOwned) {
+      disableScreenLighting()
+      return
+    }
+
     settingsStore.setState({
       hideVideoDisplay: false,
       useVideoAsBackground: false,
+      screenLightingEnabled: false,
     })
-    menuStore.setState({ showCapture: false })
+    menuStore.setState({
+      showCapture: false,
+      screenLightingCaptureOwned: false,
+    })
   }, [cleanupStream])
 
   // ストリームの設定を一元管理する関数
@@ -96,9 +121,10 @@ const Capture = () => {
       if (!navigator.mediaDevices) {
         throw new Error('Media Devices API non supported.')
       }
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-      })
+      const { screenLightingCaptureOwned } = menuStore.getState()
+      const stream = await navigator.mediaDevices.getDisplayMedia(
+        getDisplayMediaOptions(screenLightingCaptureOwned)
+      )
       await setupStream(stream)
       setPermissionGranted(true)
       setShowPermissionModal(false)
@@ -106,6 +132,10 @@ const Capture = () => {
       logger.error('Error capturing display:', error)
       setShowPermissionModal(true)
       cleanupStream()
+      const { screenLightingCaptureOwned } = menuStore.getState()
+      if (screenLightingCaptureOwned) {
+        disableScreenLighting()
+      }
     }
   }, [setupStream, cleanupStream])
 
@@ -126,13 +156,17 @@ const Capture = () => {
 
     // 新たに画面共有を開始
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-      })
+      const { screenLightingCaptureOwned } = menuStore.getState()
+      const stream = await navigator.mediaDevices.getDisplayMedia(
+        getDisplayMediaOptions(screenLightingCaptureOwned)
+      )
       await setupStream(stream)
     } catch (error) {
       logger.error('Error capturing display:', error)
       cleanupStream()
+      if (menuStore.getState().screenLightingCaptureOwned) {
+        disableScreenLighting()
+      }
     }
   }
 
@@ -146,6 +180,7 @@ const Capture = () => {
     <VideoDisplay
       videoRef={videoRef}
       mediaStream={mediaStreamRef.current}
+      integrateIntoScene={screenLightingActive}
       onToggleSource={startCapture}
       onStopSource={stopCapture}
       toggleSourceIcon="24/Reload"
