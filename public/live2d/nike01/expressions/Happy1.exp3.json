@@ -3,13 +3,13 @@
   "FadeInTime": 0.25,
   "Parameters": [
     {
-      "Id": "ParamEyeRSmile",
+      "Id": "ParamHairpinChange",
       "Value": 1,
       "Blend": "Add"
     },
     {
-      "Id": "ParamEyeLSmile",
-      "Value": 1,
+      "Id": "ParamBodyAngleY",
+      "Value": 10,
       "Blend": "Add"
     },
     {
@@ -23,7 +23,12 @@
       "Blend": "Add"
     },
     {
-      "Id": "ParamHairpinChange",
+      "Id": "ParamEyeLSmile",
+      "Value": 1,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamEyeRSmile",
       "Value": 1,
       "Blend": "Add"
     }

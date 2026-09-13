@@ -57,6 +57,34 @@
       {
         "Name": "NoSmile",
         "File": "expressions/NoSmile.exp3.json"
+      },
+      {
+        "Name": "FocusSpeech",
+        "File": "expressions/FocusSpeech.exp3.json"
+      },
+      {
+        "Name": "HairpinChange",
+        "File": "expressions/HairpinChange.exp3.json"
+      },
+      {
+        "Name": "Happy1",
+        "File": "expressions/Happy1.exp3.json"
+      },
+      {
+        "Name": "Normal",
+        "File": "expressions/Normal.exp3.json"
+      },
+      {
+        "Name": "SadLean",
+        "File": "expressions/SadLean.exp3.json"
+      },
+      {
+        "Name": "Smile",
+        "File": "expressions/Smile.exp3.json"
+      },
+      {
+        "Name": "SuperSmile",
+        "File": "expressions/SuperSmile.exp3.json"
       }
     ],
     "Motions": {

@@ -1,25 +1,25 @@
 {
   "Type": "Live2D Expression",
-  "FadeInTime": 0.25,
+  "FadeInTime": 0.75,
   "Parameters": [
     {
-      "Id": "ParamEyeRSmile",
+      "Id": "ParamAngleZ",
+      "Value": 14.471,
+      "Blend": "Add"
+    },
+    {
+      "Id": "ParamTroubleBrows",
       "Value": 1,
       "Blend": "Add"
     },
     {
-      "Id": "ParamEyeLSmile",
-      "Value": 1,
+      "Id": "ParamHeMouth",
+      "Value": 0.929,
       "Blend": "Add"
     },
     {
-      "Id": "ParamEyeLOpen",
-      "Value": -1,
-      "Blend": "Add"
-    },
-    {
-      "Id": "ParamEyeROpen",
-      "Value": -1,
+      "Id": "ParamMouthOpenY",
+      "Value": 0.259,
       "Blend": "Add"
     },
     {
