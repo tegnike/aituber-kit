@@ -454,6 +454,8 @@ AITuberKitの発展にご協力いただき、ありがとうございます。�
 - [ロゴの利用規約](./docs/logo_licence.md)
 - [VRMおよびLive2Dモデルの利用規約](./docs/character_model_licence.md)
 
+同梱するAIニケちゃんのモデルには、AITuberKit本体とは別の利用条件が適用されます。[VRMの利用案内](./public/vrm/README.md)と[Live2Dの利用案内](./public/live2d/README.md)を必ずご確認ください。**Live2Dは画像生成・AIへの入力・参照・学習・変換が禁止**です（テクスチャ、表示画像・動画・スクリーンショット等も含む）。商用利用・改変・再配布も禁止されており、AITuberKitの商用ライセンスで許可されるものではありません。
+
 ## 優先実装について
 
 本プロジェクトでは、有償での機能優先実装を受け付けています。
