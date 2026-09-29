@@ -51,9 +51,7 @@ function getTrackedFiles(subdir) {
       encoding: 'utf8',
       maxBuffer: 10 * 1024 * 1024,
     })
-    return output
-      .split('\n')
-      .filter((line) => line && shouldInclude(line))
+    return output.split('\n').filter((line) => line && shouldInclude(line))
   } catch (e) {
     console.warn(
       `generate-asset-manifest: Warning: Could not list tracked files for ${subdir}:`,
@@ -243,18 +241,8 @@ function generateSlides() {
     }
 
     // slides.md + theme.css → Marpit変換
-    const slidesPath = path.join(
-      publicDir,
-      'slides',
-      folderName,
-      'slides.md'
-    )
-    const themePath = path.join(
-      publicDir,
-      'slides',
-      folderName,
-      'theme.css'
-    )
+    const slidesPath = path.join(publicDir, 'slides', folderName, 'slides.md')
+    const themePath = path.join(publicDir, 'slides', folderName, 'theme.css')
     try {
       const { Marpit } = require('@marp-team/marpit')
       const markdown = fs.readFileSync(slidesPath, 'utf-8')
@@ -283,21 +271,57 @@ function generateSlides() {
   return { folders: validFolders, supplements, rendered }
 }
 
-// --- メイン ---
+// --- ポーズ ---
 
-const manifest = {
-  vrm: generateVrmList(),
-  backgrounds: generateBackgroundList(),
-  live2d: generateLive2dList(),
-  pngtuber: generatePngtuberList(),
-  slides: generateSlides(),
+function generatePoseList() {
+  return getTrackedFiles('poses')
+    .filter((file) => file.endsWith('.json'))
+    .flatMap((file) => {
+      try {
+        const pose = JSON.parse(
+          fs.readFileSync(path.join(projectRoot, file), 'utf8')
+        )
+        if ((pose.specVersion && pose.bones) || (pose.version && pose.pose)) {
+          return [
+            {
+              name: path.basename(file, '.json'),
+              path: file.replace(/^public/, ''),
+            },
+          ]
+        }
+      } catch (error) {
+        console.warn(
+          `generate-asset-manifest: Invalid pose: ${file}`,
+          error.message
+        )
+      }
+      return []
+    })
 }
 
-fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n')
+// --- メイン ---
 
-console.log('generate-asset-manifest: Generated asset manifest:')
-console.log(`  vrm: ${manifest.vrm.length} files`)
-console.log(`  backgrounds: ${manifest.backgrounds.length} files`)
-console.log(`  live2d: ${manifest.live2d.length} models`)
-console.log(`  pngtuber: ${manifest.pngtuber.length} models`)
-console.log(`  slides: ${manifest.slides.folders.length} folders`)
+function generateManifest() {
+  return {
+    vrm: generateVrmList(),
+    backgrounds: generateBackgroundList(),
+    live2d: generateLive2dList(),
+    pngtuber: generatePngtuberList(),
+    poses: generatePoseList(),
+    slides: generateSlides(),
+  }
+}
+
+if (require.main === module) {
+  const manifest = generateManifest()
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n')
+  console.log('generate-asset-manifest: Generated asset manifest:')
+  console.log(`  vrm: ${manifest.vrm.length} files`)
+  console.log(`  backgrounds: ${manifest.backgrounds.length} files`)
+  console.log(`  live2d: ${manifest.live2d.length} models`)
+  console.log(`  pngtuber: ${manifest.pngtuber.length} models`)
+  console.log(`  poses: ${manifest.poses.length} files`)
+  console.log(`  slides: ${manifest.slides.folders.length} folders`)
+}
+
+module.exports = { generateManifest }

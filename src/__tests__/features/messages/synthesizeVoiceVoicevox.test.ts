@@ -1,5 +1,10 @@
 import { synthesizeVoiceVoicevoxApi } from '@/features/messages/synthesizeVoiceVoicevox'
 import type { Talk } from '@/features/messages/messages'
+import { synthesizeVoicevoxInBrowser } from '@/features/messages/voicevoxBrowserClient'
+
+jest.mock('@/features/messages/voicevoxBrowserClient', () => ({
+  synthesizeVoicevoxInBrowser: jest.fn(),
+}))
 
 const mockFetch = jest.fn()
 global.fetch = mockFetch
@@ -12,6 +17,7 @@ describe('synthesizeVoiceVoicevoxApi', () => {
 
   beforeEach(() => {
     mockFetch.mockReset()
+    ;(synthesizeVoicevoxInBrowser as jest.Mock).mockReset()
   })
 
   it('should send correct request to /api/tts-voicevox', async () => {
@@ -61,6 +67,25 @@ describe('synthesizeVoiceVoicevoxApi', () => {
     )
 
     expect(result).toBe(mockBuffer)
+  })
+
+  it('uses the browser client only when browser connection mode is selected', async () => {
+    const mockBuffer = new ArrayBuffer(16)
+    ;(synthesizeVoicevoxInBrowser as jest.Mock).mockResolvedValue(mockBuffer)
+
+    await expect(
+      synthesizeVoiceVoicevoxApi(mockTalk, '46', 1.2, 0.1, 1.1, '', 'browser')
+    ).resolves.toBe(mockBuffer)
+
+    expect(synthesizeVoicevoxInBrowser).toHaveBeenCalledWith(
+      'Hello world',
+      '46',
+      1.2,
+      0.1,
+      1.1,
+      ''
+    )
+    expect(mockFetch).not.toHaveBeenCalled()
   })
 
   it('should throw with status code on non-ok response', async () => {

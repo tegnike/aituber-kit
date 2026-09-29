@@ -116,6 +116,8 @@ export type AIVoice =
   | 'openai'
   | 'azure'
 
+export type VoicevoxConnectionMode = 'server' | 'browser'
+
 export type Language = (typeof LANGUAGES)[number]
 
 export const LANGUAGES = [

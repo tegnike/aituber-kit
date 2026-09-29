@@ -1,5 +1,7 @@
 # AITuberKit
 
+このforkは花詩ましょの配信用です。[VercelとWindowsのセットアップ](docs/masho-vercel-windows.md)を参照してください。
+
 <img style="max-width: 100%;" src="./public/ogp.png">
 
 <p align="center"><strong>AIキャラ構築のオールインワンツールキット</strong></p>

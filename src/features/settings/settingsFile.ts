@@ -151,6 +151,7 @@ const matchesTopLevelType = (
 const constrainedSettingSchemas = new Map<keyof PersistedSettings, z.ZodType>([
   ['selectAIService', z.enum(AI_SERVICES)],
   ['modelType', z.enum(['vrm', 'live2d', 'pngtuber'])],
+  ['voicevoxConnectionMode', z.enum(['server', 'browser'])],
   ['temperature', z.number().min(0).max(2)],
   ['maxPastMessages', z.number().int().min(1).max(9999)],
 ])

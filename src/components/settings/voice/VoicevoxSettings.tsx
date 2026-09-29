@@ -7,6 +7,8 @@ import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 import { Link } from '../../link'
 import speakers from '../../speakers.json'
 import { getSpeakerUpdateErrorMessage } from './speakerUpdateError'
+import { getVoicevoxSpeakersInBrowser } from '@/features/messages/voicevoxBrowserClient'
+import type { VoicevoxConnectionMode } from '@/features/constants/settings'
 import {
   settingsActionWidth,
   settingsControlClass,
@@ -19,6 +21,7 @@ interface VoicevoxSettingsProps {
   voicevoxSpeed: number
   voicevoxPitch: number
   voicevoxIntonation: number
+  voicevoxConnectionMode: VoicevoxConnectionMode
 }
 
 export const VoicevoxSettings = ({
@@ -28,6 +31,7 @@ export const VoicevoxSettings = ({
   voicevoxSpeed,
   voicevoxPitch,
   voicevoxIntonation,
+  voicevoxConnectionMode,
 }: VoicevoxSettingsProps) => {
   const { t } = useTranslation()
   const { isRestrictedMode } = useRestrictedMode()
@@ -64,6 +68,27 @@ export const VoicevoxSettings = ({
           url="https://voicevox.hiroshiba.jp/"
           label="https://voicevox.hiroshiba.jp/"
         />
+      </div>
+      <div className="mt-4 font-bold">{t('VoicevoxConnectionMode')}</div>
+      <div className="mt-2">
+        <select
+          value={voicevoxConnectionMode}
+          aria-label={t('VoicevoxConnectionMode')}
+          onChange={(e) =>
+            settingsStore.setState({
+              voicevoxConnectionMode: e.target.value as VoicevoxConnectionMode,
+            })
+          }
+          className={settingsControlClass.medium}
+        >
+          <option value="server">{t('VoicevoxConnectionModeServer')}</option>
+          <option value="browser">{t('VoicevoxConnectionModeBrowser')}</option>
+        </select>
+        {voicevoxConnectionMode === 'browser' && (
+          <p className="mt-2 text-sm whitespace-pre-wrap">
+            {t('VoicevoxConnectionModeBrowserInfo')}
+          </p>
+        )}
       </div>
       <div className="mt-4 font-bold">{t('VoicevoxServerUrl')}</div>
       <div className="mt-2">
@@ -105,29 +130,40 @@ export const VoicevoxSettings = ({
             setIsUpdatingVoicevoxSpeakers(true)
             setVoicevoxSpeakersUpdateError('')
             try {
-              const response = await fetch(
-                '/api/update-voicevox-speakers?serverUrl=' +
-                  encodeURIComponent(voicevoxServerUrl),
-                { method: 'POST' }
-              )
-              if (response.ok) {
-                const updatedSpeakersResponse = await fetch(
-                  `/speakers.json?ts=${Date.now()}`
+              if (voicevoxConnectionMode === 'browser') {
+                setSpeakers_voicevox(
+                  await getVoicevoxSpeakersInBrowser(voicevoxServerUrl)
                 )
-                const updatedSpeakers = await updatedSpeakersResponse.json()
-                setSpeakers_voicevox(updatedSpeakers)
               } else {
-                setVoicevoxSpeakersUpdateError(
-                  await getSpeakerUpdateErrorMessage(response)
+                const response = await fetch(
+                  '/api/update-voicevox-speakers?serverUrl=' +
+                    encodeURIComponent(voicevoxServerUrl),
+                  { method: 'POST' }
                 )
+                if (response.ok) {
+                  const updatedSpeakersResponse = await fetch(
+                    `/speakers.json?ts=${Date.now()}`
+                  )
+                  const updatedSpeakers = await updatedSpeakersResponse.json()
+                  setSpeakers_voicevox(updatedSpeakers)
+                } else {
+                  setVoicevoxSpeakersUpdateError(
+                    await getSpeakerUpdateErrorMessage(response)
+                  )
+                }
               }
             } catch (error) {
-              setVoicevoxSpeakersUpdateError(t('NetworkError'))
+              setVoicevoxSpeakersUpdateError(
+                error instanceof Error ? error.message : t('NetworkError')
+              )
             } finally {
               setIsUpdatingVoicevoxSpeakers(false)
             }
           }}
-          disabled={isUpdatingVoicevoxSpeakers || isRestrictedMode}
+          disabled={
+            isUpdatingVoicevoxSpeakers ||
+            (isRestrictedMode && voicevoxConnectionMode === 'server')
+          }
           className={`${settingsActionWidth} flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-theme transition-colors duration-200 hover:bg-primary-hover active:bg-primary-press disabled:cursor-not-allowed disabled:bg-primary-disabled`}
         >
           <svg

@@ -8,6 +8,8 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Voice from '@/components/settings/voice'
 import settingsStore from '@/features/stores/settings'
+import { getVoicevoxSpeakersInBrowser } from '@/features/messages/voicevoxBrowserClient'
+import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 
 // Mock stores
 jest.mock('@/features/stores/settings', () => ({
@@ -50,6 +52,14 @@ jest.mock('@/features/messages/speakCharacter', () => ({
   testVoice: jest.fn(),
 }))
 
+jest.mock('@/features/messages/voicevoxBrowserClient', () => ({
+  getVoicevoxSpeakersInBrowser: jest.fn(),
+}))
+
+jest.mock('@/hooks/useRestrictedMode', () => ({
+  useRestrictedMode: jest.fn(() => ({ isRestrictedMode: false })),
+}))
+
 // Mock aiModels
 jest.mock('@/features/constants/aiModels', () => ({
   getOpenAITTSModels: jest.fn(() => ['tts-1', 'tts-1-hd']),
@@ -81,6 +91,7 @@ const defaultVoiceState = {
   voicevoxPitch: 0.0,
   voicevoxIntonation: 1.0,
   voicevoxServerUrl: '',
+  voicevoxConnectionMode: 'server' as const,
   aivisSpeechSpeaker: '',
   aivisSpeechSpeed: 1.0,
   aivisSpeechPitch: 0.0,
@@ -126,6 +137,9 @@ describe('Voice Settings', () => {
 
     mockSettingsStore.mockImplementation((selector) => {
       return selector(defaultVoiceState as any)
+    })
+    ;(useRestrictedMode as jest.Mock).mockReturnValue({
+      isRestrictedMode: false,
     })
   })
 
@@ -177,6 +191,9 @@ describe('Voice Settings', () => {
 
       expect(screen.getByText('VoicevoxServerUrl')).toBeTruthy()
       expect(screen.getByText('SpeakerSelection')).toBeTruthy()
+      expect(
+        screen.getByRole('combobox', { name: 'VoicevoxConnectionMode' })
+      ).toBeTruthy()
     })
 
     it('should request speaker updates with POST', async () => {
@@ -225,6 +242,64 @@ describe('Voice Settings', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/サーバー側リソース利用の許可/)).toBeTruthy()
+      })
+    })
+
+    it('allows speaker updates in restricted mode when the browser connects directly', async () => {
+      mockSettingsStore.mockImplementation((selector) =>
+        selector({
+          ...defaultVoiceState,
+          voicevoxConnectionMode: 'browser',
+        } as any)
+      )
+      ;(useRestrictedMode as jest.Mock).mockReturnValue({
+        isRestrictedMode: true,
+      })
+      ;(getVoicevoxSpeakersInBrowser as jest.Mock).mockResolvedValue([
+        { id: 46, speaker: '小夜/SAYO/ノーマル' },
+      ])
+
+      render(<Voice />)
+
+      const updateButton = screen.getByRole('button', {
+        name: 'UpdateSpeakerList',
+      })
+      expect(updateButton).toBeEnabled()
+      fireEvent.click(updateButton)
+
+      await waitFor(() => {
+        expect(getVoicevoxSpeakersInBrowser).toHaveBeenCalledWith('')
+      })
+    })
+
+    it('disables server speaker updates in restricted mode', () => {
+      ;(useRestrictedMode as jest.Mock).mockReturnValue({
+        isRestrictedMode: true,
+      })
+
+      render(<Voice />)
+
+      expect(
+        screen.getByRole('button', { name: 'UpdateSpeakerList' })
+      ).toBeDisabled()
+    })
+
+    it('displays browser connection errors', async () => {
+      mockSettingsStore.mockImplementation((selector) =>
+        selector({
+          ...defaultVoiceState,
+          voicevoxConnectionMode: 'browser',
+        } as any)
+      )
+      ;(getVoicevoxSpeakersInBrowser as jest.Mock).mockRejectedValue(
+        new Error('VOICEVOXに接続できません')
+      )
+
+      render(<Voice />)
+      fireEvent.click(screen.getByRole('button', { name: 'UpdateSpeakerList' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('VOICEVOXに接続できません')).toBeTruthy()
       })
     })
   })

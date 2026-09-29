@@ -103,6 +103,7 @@ const QuickStart = () => {
   const googleTtsType = settingsStore((s) => s.googleTtsType)
   const voicevoxSpeaker = settingsStore((s) => s.voicevoxSpeaker)
   const voicevoxServerUrl = settingsStore((s) => s.voicevoxServerUrl)
+  const voicevoxConnectionMode = settingsStore((s) => s.voicevoxConnectionMode)
   const aivisSpeechSpeaker = settingsStore((s) => s.aivisSpeechSpeaker)
   const aivisSpeechServerUrl = settingsStore((s) => s.aivisSpeechServerUrl)
   const aivisCloudApiKey = settingsStore((s) => s.aivisCloudApiKey)
@@ -366,6 +367,27 @@ const QuickStart = () => {
       case 'voicevox':
         return (
           <div className={quickGridClassName}>
+            <LabeledField label={t('VoicevoxConnectionMode')}>
+              <select
+                className={inputClassName}
+                value={voicevoxConnectionMode}
+                aria-label={t('VoicevoxConnectionMode')}
+                onChange={(e) =>
+                  settingsStore.setState({
+                    voicevoxConnectionMode: e.target.value as
+                      | 'server'
+                      | 'browser',
+                  })
+                }
+              >
+                <option value="server">
+                  {t('VoicevoxConnectionModeServer')}
+                </option>
+                <option value="browser">
+                  {t('VoicevoxConnectionModeBrowser')}
+                </option>
+              </select>
+            </LabeledField>
             <LabeledField label={t('VoicevoxServerUrl')}>
               <input
                 className={inputClassName}

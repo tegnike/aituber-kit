@@ -35,6 +35,7 @@ const Voice = () => {
   const voicevoxPitch = settingsStore((s) => s.voicevoxPitch)
   const voicevoxIntonation = settingsStore((s) => s.voicevoxIntonation)
   const voicevoxServerUrl = settingsStore((s) => s.voicevoxServerUrl)
+  const voicevoxConnectionMode = settingsStore((s) => s.voicevoxConnectionMode)
   const aivisSpeechSpeaker = settingsStore((s) => s.aivisSpeechSpeaker)
   const aivisSpeechSpeed = settingsStore((s) => s.aivisSpeechSpeed)
   const aivisSpeechPitch = settingsStore((s) => s.aivisSpeechPitch)
@@ -136,6 +137,7 @@ const Voice = () => {
                 voicevoxSpeed={voicevoxSpeed}
                 voicevoxPitch={voicevoxPitch}
                 voicevoxIntonation={voicevoxIntonation}
+                voicevoxConnectionMode={voicevoxConnectionMode}
               />
             )
           } else if (selectVoice === 'google') {

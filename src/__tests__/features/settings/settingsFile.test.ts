@@ -320,6 +320,7 @@ describe('settings file export and import', () => {
   it.each([
     ['selectAIService', 'not-a-service'],
     ['modelType', 'unknown'],
+    ['voicevoxConnectionMode', 'remote'],
     ['temperature', -0.01],
     ['temperature', 2.01],
     ['maxPastMessages', 0],

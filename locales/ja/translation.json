@@ -192,7 +192,6 @@
   "AivisSpeechServerUrl": "AivisSpeech サーバーURL",
   "NoClientIDSet": "クライアントIDが設定されていません",
   "UpdateSpeakerList": "話者リストを更新",
-  "Updating": "更新中...",
   "NetworkError": "ネットワークエラーが発生しました",
   "UsingGoogleTTS": "Google Text-to-Speechを使用する",
   "UsingStyleBertVITS2": "Style-Bert-VITS2を使用する",
@@ -337,7 +336,6 @@
   "ChatLogModeAssistant": "回答欄",
   "ChatLogModeChatLog": "会話ログ",
   "ChatLogModeHidden": "非表示",
-  "AttachImage": "画像を添付",
   "ShowCharacterName": "回答欄にキャラクター名を表示する",
   "ShowControlPanel": "操作パネルを表示する",
   "ShowControlPanelInfo": "操作パネルを非表示にしても、下のショートカットで設定画面を表示できます。\nスマホ・タブレットでは、画面左上を長押し（約1秒）して表示できます。",
@@ -592,6 +590,10 @@
     "FileInfo": "使用したいPNGTuberアセットのフォルダを、public/pngtuber に配置してください。各フォルダには以下のファイルが必要です：\n・*_mouthless_h264.mp4（口なし背景動画）\n・mouth_track.json（口の位置トラッキングデータ）\n・mouth/フォルダ（口スプライト：closed.png, open.png が必須、half.png, e.png, u.png はオプション）",
     "Sensitivity": "感度",
     "SensitivityInfo": "リップシンクの音量感度を調整します。値が大きいほど小さな音にも反応します。",
+    "SampleAudio": "サンプル音声で口パクを確認",
+    "SampleAudioPlaying": "サンプル音声を再生中…",
+    "SampleAudioUnavailable": "PNGTuberモデルの読み込み完了後に試せます。",
+    "SampleAudioFailed": "サンプル音声を再生できませんでした。",
     "ChromaKey": "クロマキー（背景透過）を有効にする",
     "ChromaKeyEnabled": "クロマキーを有効にする",
     "ChromaKeyColor": "キーカラー（透過する色）",
@@ -949,5 +951,9 @@
       "closed": "会話を終了しました",
       "error": "接続が終了しました"
     }
-  }
+  },
+  "VoicevoxConnectionMode": "接続方式",
+  "VoicevoxConnectionModeServer": "サーバー経由（既定）",
+  "VoicevoxConnectionModeBrowser": "このPCのブラウザから直接",
+  "VoicevoxConnectionModeBrowserInfo": "同じPCでVOICEVOXを起動し、接続許可を設定します。詳しくはセットアップ手順を確認してください。"
 }

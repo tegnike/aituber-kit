@@ -15,6 +15,10 @@ import {
   IPNGTuberEngine,
 } from './pngTuberTypes'
 import * as pngTuberMath from './pngTuberMath'
+import {
+  createPNGTuberMouthMorph,
+  PNGTuberMouthMorph,
+} from './pngTuberMouthMorph'
 
 export class PNGTuberEngine implements IPNGTuberEngine {
   // DOM要素
@@ -32,15 +36,21 @@ export class PNGTuberEngine implements IPNGTuberEngine {
 
   // データ
   private trackData: MouthTrackData | null = null
+  private assetLoadGeneration = 0
   private mouthSprites: Partial<MouthSprites> = {}
   private mouthSpriteUrls: Partial<MouthSpriteUrls> = {}
   private activeSprite: HTMLImageElement | null = null
+  private smoothMouthEnabled =
+    process.env.NEXT_PUBLIC_PNGTUBER_SMOOTH_MOUTH === 'true'
+  private mouthMorph: PNGTuberMouthMorph | null = null
+  private lastMouthRenderAt: number | null = null
 
   // 音声関連
   private audioContext: AudioContext | null = null
   private audioWorkletReady: Promise<void> | null = null
   private workletNode: AudioWorkletNode | null = null
   private currentSource: AudioBufferSourceNode | null = null
+  private audioPlaybackGeneration = 0
   private volume = 0
   private smoothedHighRatio = 0
   private sensitivity = 50
@@ -60,6 +70,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   // ループ用
   private isRunning = false
   private animationId: number | null = null
+  private videoFrameCallbackId: number | null = null
   private resizeObserver: ResizeObserver | null = null
 
   // 再生完了コールバック
@@ -81,10 +92,22 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    * アセットを読み込む
    */
   async loadAsset(assetPath: string): Promise<void> {
+    const generation = ++this.assetLoadGeneration
     try {
+      // 読み込み中は旧モデルのready状態や口モーフを残さない。
+      this.stopAudio()
+      this.trackData = null
+      this.mouthSprites = {}
+      this.mouthSpriteUrls = {}
+      this.activeSprite = null
+      this.mouthMorph = null
+      this.lastMouthRenderAt = null
+
       // APIからアセット情報を取得
       const response = await fetch('/api/get-pngtuber-list')
+      if (generation !== this.assetLoadGeneration) return
       const assets = await response.json()
+      if (generation !== this.assetLoadGeneration) return
       const asset = assets.find((a: { path: string }) => a.path === assetPath)
 
       if (!asset) {
@@ -113,6 +136,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
         }
         this.video.load()
       })
+      if (generation !== this.assetLoadGeneration) return
 
       // キャンバスサイズを動画に合わせる
       const videoWidth = this.video.videoWidth || 1
@@ -136,7 +160,9 @@ export class PNGTuberEngine implements IPNGTuberEngine {
 
       // トラッキングデータの読み込み
       const trackResponse = await fetch(`${asset.path}/${asset.mouthTrack}`)
-      this.trackData = await trackResponse.json()
+      const trackData = await trackResponse.json()
+      if (generation !== this.assetLoadGeneration) return
+      this.trackData = trackData
 
       // 口スプライトの読み込み
       this.mouthSprites = {}
@@ -156,6 +182,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
             const img = await this.loadImage(
               `${asset.path}/mouth/${spriteName}`
             )
+            if (generation !== this.assetLoadGeneration) return
             this.mouthSprites[key] = img
             this.mouthSpriteUrls[key] = img.src
           } catch {
@@ -168,6 +195,10 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       }
 
       // 初期状態をセット
+      this.mouthMorph = this.smoothMouthEnabled
+        ? createPNGTuberMouthMorph(this.mouthSprites)
+        : null
+      this.lastMouthRenderAt = null
       this.setMouthState('closed', true)
 
       logger.log(
@@ -223,7 +254,10 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     onFinish?: () => void,
     onStart?: () => void
   ): Promise<void> {
+    const generation = ++this.audioPlaybackGeneration
     await this.initAudioContext()
+
+    if (generation !== this.audioPlaybackGeneration) return
 
     if (!this.audioContext) {
       throw new Error('AudioContext not initialized')
@@ -247,7 +281,13 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       decodedAudio.getChannelData(0).set(floatData)
     }
 
-    await this.playAudioWithLipSync(decodedAudio, onFinish, onStart)
+    if (generation !== this.audioPlaybackGeneration) return
+    await this.startAudioWithLipSync(
+      decodedAudio,
+      onFinish,
+      onStart,
+      generation
+    )
   }
 
   /**
@@ -258,8 +298,19 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     onFinish?: () => void,
     onStart?: () => void
   ): Promise<void> {
+    const generation = ++this.audioPlaybackGeneration
+    await this.startAudioWithLipSync(audioBuffer, onFinish, onStart, generation)
+  }
+
+  private async startAudioWithLipSync(
+    audioBuffer: AudioBuffer,
+    onFinish: (() => void) | undefined,
+    onStart: (() => void) | undefined,
+    generation: number
+  ): Promise<void> {
     await this.initAudioContext()
 
+    if (generation !== this.audioPlaybackGeneration) return
     if (!this.audioContext) {
       throw new Error('AudioContext not initialized')
     }
@@ -269,11 +320,12 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       logger.log('[PNGTuber] AudioContext is suspended, resuming...')
       await this.audioContext.resume()
     }
+    if (generation !== this.audioPlaybackGeneration) return
 
     logger.log('[PNGTuber] Playing audio, duration:', audioBuffer.duration)
 
     // 前の再生を停止
-    this.stopAudio()
+    this.stopAudio(false)
 
     this.onAudioFinishCallback = onFinish || null
 
@@ -291,18 +343,26 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     }
 
     // ソースノードを作成
-    this.currentSource = this.audioContext.createBufferSource()
-    this.currentSource.buffer = audioBuffer
+    const source = this.audioContext.createBufferSource()
+    this.currentSource = source
+    source.buffer = audioBuffer
 
     // 接続: source → worklet → gain → destination
-    this.currentSource.connect(this.workletNode)
+    source.connect(this.workletNode)
     this.workletNode.connect(gainNode)
     gainNode.connect(this.audioContext.destination)
 
     // 再生終了時の処理
-    this.currentSource.onended = () => {
+    source.onended = () => {
+      if (
+        this.currentSource !== source ||
+        generation !== this.audioPlaybackGeneration
+      )
+        return
       logger.log('[PNGTuber] Audio playback ended')
-      this.resetMouth()
+      this.currentSource = null
+      this.resetAudioStats()
+      this.setMouthState('closed', false, true)
       if (this.onAudioFinishCallback) {
         this.onAudioFinishCallback()
         this.onAudioFinishCallback = null
@@ -310,7 +370,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     }
 
     // 再生開始
-    this.currentSource.start()
+    source.start()
     onStart?.()
     logger.log(
       '[PNGTuber] Audio started, context state:',
@@ -321,15 +381,17 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   /**
    * 音声を停止
    */
-  stopAudio(): void {
+  stopAudio(invalidatePlayback = true): void {
+    if (invalidatePlayback) this.audioPlaybackGeneration++
     if (this.currentSource) {
+      const source = this.currentSource
+      this.currentSource = null
       try {
-        this.currentSource.stop()
-        this.currentSource.disconnect()
+        source.stop()
+        source.disconnect()
       } catch {
         // ignore
       }
-      this.currentSource = null
     }
 
     if (this.workletNode) {
@@ -343,6 +405,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     }
 
     this.resetAudioStats()
+    this.setMouthState('closed', true)
     this.onAudioFinishCallback = null
   }
 
@@ -504,7 +567,11 @@ export class PNGTuberEngine implements IPNGTuberEngine {
   /**
    * 口の状態を設定
    */
-  private setMouthState(state: MouthState, force = false): void {
+  private setMouthState(
+    state: MouthState,
+    force = false,
+    bypassTransitionInterval = false
+  ): void {
     const sprite =
       this.mouthSprites[state] ||
       this.mouthSprites.open ||
@@ -514,6 +581,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     const now = performance.now()
     if (
       !force &&
+      !bypassTransitionInterval &&
       state !== this.mouthState &&
       now - this.lastMouthChange < this.mouthChangeMinMs
     ) {
@@ -524,6 +592,10 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       this.mouthState = state
       this.activeSprite = sprite
       this.lastMouthChange = now
+      if (force && this.mouthMorph) {
+        this.mouthMorph.reset(state)
+        this.lastMouthRenderAt = null
+      }
     }
   }
 
@@ -540,6 +612,12 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    */
   setSensitivity(value: number): void {
     this.sensitivity = Math.max(0, Math.min(100, value))
+  }
+
+  isAssetReady(): boolean {
+    return Boolean(
+      this.trackData && this.mouthSprites.closed && this.mouthSprites.open
+    )
   }
 
   /**
@@ -609,6 +687,14 @@ export class PNGTuberEngine implements IPNGTuberEngine {
       cancelAnimationFrame(this.animationId)
       this.animationId = null
     }
+    if (this.videoFrameCallbackId !== null) {
+      ;(
+        this.video as HTMLVideoElement & {
+          cancelVideoFrameCallback?: (id: number) => void
+        }
+      ).cancelVideoFrameCallback?.(this.videoFrameCallbackId)
+      this.videoFrameCallbackId = null
+    }
   }
 
   /**
@@ -621,16 +707,17 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     if ('requestVideoFrameCallback' in this.video) {
       const onFrame = () => {
         if (!this.isRunning) return
+        this.videoFrameCallbackId = null
         this.renderFrame()
-        ;(
+        this.videoFrameCallbackId = (
           this.video as HTMLVideoElement & {
-            requestVideoFrameCallback: (callback: () => void) => void
+            requestVideoFrameCallback: (callback: () => void) => number
           }
         ).requestVideoFrameCallback(onFrame)
       }
-      ;(
+      this.videoFrameCallbackId = (
         this.video as HTMLVideoElement & {
-          requestVideoFrameCallback: (callback: () => void) => void
+          requestVideoFrameCallback: (callback: () => void) => number
         }
       ).requestVideoFrameCallback(onFrame)
     } else {
@@ -736,8 +823,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     const frame = data.frames[frameIndex]
     if (!frame || !frame.valid) return
 
-    const sprite =
-      this.activeSprite || this.mouthSprites.open || this.mouthSprites.closed
+    const sprite = this.getRenderedMouthSprite()
     if (!sprite) return
 
     const quad = frame.quad
@@ -745,16 +831,47 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     this.drawWarpedSpriteOnCtx(this.mainCtx, sprite, adjustedQuad)
   }
 
+  /** 有効時だけ各動画フレームで連続モーフを更新する。 */
+  private getRenderedMouthSprite(): CanvasImageSource | null {
+    if (this.mouthMorph) {
+      const now = performance.now()
+      const deltaSeconds =
+        this.lastMouthRenderAt === null
+          ? 0
+          : (now - this.lastMouthRenderAt) / 1000
+      this.lastMouthRenderAt = now
+      return this.mouthMorph.frame(this.mouthState, deltaSeconds)
+    }
+    return (
+      this.activeSprite ||
+      this.mouthSprites.open ||
+      this.mouthSprites.closed ||
+      null
+    )
+  }
+
+  private getImageDimensions(image: CanvasImageSource): [number, number] {
+    const sized = image as CanvasImageSource & {
+      naturalWidth?: number
+      naturalHeight?: number
+      width?: number
+      height?: number
+    }
+    return [
+      sized.naturalWidth || sized.width || 0,
+      sized.naturalHeight || sized.height || 0,
+    ]
+  }
+
   /**
    * 指定したContextにワープしたスプライトを描画
    */
   private drawWarpedSpriteOnCtx(
     ctx: CanvasRenderingContext2D,
-    sprite: HTMLImageElement,
+    sprite: CanvasImageSource,
     quad: [number, number][]
   ): void {
-    const sw = sprite.naturalWidth || sprite.width
-    const sh = sprite.naturalHeight || sprite.height
+    const [sw, sh] = this.getImageDimensions(sprite)
     if (!sw || !sh) return
 
     // ソース座標
@@ -779,7 +896,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    */
   private drawTriangleOnCtx(
     ctx: CanvasRenderingContext2D,
-    image: HTMLImageElement,
+    image: CanvasImageSource,
     s0: [number, number],
     s1: [number, number],
     s2: [number, number],
@@ -836,8 +953,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     ctx.clearRect(0, 0, this.mouthCanvas.width, this.mouthCanvas.height)
     if (!frame || !frame.valid) return
 
-    const sprite =
-      this.activeSprite || this.mouthSprites.open || this.mouthSprites.closed
+    const sprite = this.getRenderedMouthSprite()
     if (!sprite) return
 
     const quad = frame.quad
@@ -864,12 +980,11 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    * スプライトをワープして描画
    */
   private drawWarpedSprite(
-    sprite: HTMLImageElement,
+    sprite: CanvasImageSource,
     quad: [number, number][]
   ): void {
     if (!this.mouthCtx) return
-    const sw = sprite.naturalWidth || sprite.width
-    const sh = sprite.naturalHeight || sprite.height
+    const [sw, sh] = this.getImageDimensions(sprite)
     if (!sw || !sh) return
 
     // ソース座標
@@ -893,7 +1008,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    * 三角形を描画
    */
   private drawTriangle(
-    image: HTMLImageElement,
+    image: CanvasImageSource,
     s0: [number, number],
     s1: [number, number],
     s2: [number, number],
@@ -940,6 +1055,7 @@ export class PNGTuberEngine implements IPNGTuberEngine {
    * クリーンアップ
    */
   destroy(): void {
+    this.assetLoadGeneration++
     this.stop()
     this.stopAudio()
 
@@ -957,6 +1073,8 @@ export class PNGTuberEngine implements IPNGTuberEngine {
     this.mouthSprites = {}
     this.mouthSpriteUrls = {}
     this.activeSprite = null
+    this.mouthMorph = null
+    this.lastMouthRenderAt = null
     this.trackData = null
   }
 }

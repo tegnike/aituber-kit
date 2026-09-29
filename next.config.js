@@ -3,6 +3,8 @@ const isRestrictedMode = process.env.NEXT_PUBLIC_RESTRICTED_MODE === 'true'
 
 const nextConfig = {
   reactStrictMode: true,
+  // 本番コードの型検査を維持し、Jest専用コードは個別の検証対象にする。
+  typescript: { tsconfigPath: 'tsconfig.build.json' },
   assetPrefix: process.env.BASE_PATH || '',
   basePath: process.env.BASE_PATH || '',
   trailingSlash: true,

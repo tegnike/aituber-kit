@@ -145,7 +145,8 @@ async function synthesizeVoice(
           ss.voicevoxSpeed,
           ss.voicevoxPitch,
           ss.voicevoxIntonation,
-          ss.voicevoxServerUrl
+          ss.voicevoxServerUrl,
+          ss.voicevoxConnectionMode
         )
       case 'google':
         return await synthesizeVoiceGoogleApi(

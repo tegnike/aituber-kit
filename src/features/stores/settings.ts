@@ -34,6 +34,7 @@ import {
 import {
   AIService,
   AIVoice,
+  VoicevoxConnectionMode,
   Language,
   OpenAITTSVoice,
   OpenAITTSModel,
@@ -122,6 +123,7 @@ interface ModelProvider extends Live2DSettings {
   voicevoxPitch: number
   voicevoxIntonation: number
   voicevoxServerUrl: string
+  voicevoxConnectionMode: VoicevoxConnectionMode
   aivisSpeechSpeaker: string
   aivisSpeechSpeed: number
   aivisSpeechPitch: number
@@ -397,6 +399,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   voicevoxIntonation:
     parseFloat(process.env.NEXT_PUBLIC_VOICEVOX_INTONATION || '1.0') || 1.0,
   voicevoxServerUrl: '',
+  voicevoxConnectionMode:
+    process.env.NEXT_PUBLIC_VOICEVOX_CONNECTION_MODE === 'browser'
+      ? 'browser'
+      : 'server',
   aivisSpeechSpeaker:
     process.env.NEXT_PUBLIC_AIVIS_SPEECH_SPEAKER || '888753760',
   aivisSpeechSpeed:
@@ -1157,6 +1163,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   voicevoxPitch: state.voicevoxPitch,
   voicevoxIntonation: state.voicevoxIntonation,
   voicevoxServerUrl: state.voicevoxServerUrl,
+  voicevoxConnectionMode: state.voicevoxConnectionMode,
   aivisSpeechSpeaker: state.aivisSpeechSpeaker,
   aivisSpeechSpeed: state.aivisSpeechSpeed,
   aivisSpeechPitch: state.aivisSpeechPitch,

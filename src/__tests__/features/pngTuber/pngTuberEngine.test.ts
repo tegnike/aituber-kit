@@ -16,12 +16,66 @@ import {
   selectMouthStateHQ,
 } from '@/features/pngTuber/pngTuberMath'
 import { PNGTuberEngine } from '@/features/pngTuber/pngTuberEngine'
+import { createPNGTuberMouthMorph } from '@/features/pngTuber/pngTuberMouthMorph'
 import {
   MouthState,
   MouthTrackData,
   MouthSpriteUrls,
   VolumeThresholds,
 } from '@/features/pngTuber/pngTuberTypes'
+
+describe('PNGTuber口モーフ', () => {
+  const makeSprite = (size = 256) => {
+    const image = document.createElement('img')
+    image.width = size
+    image.height = size
+    return image
+  }
+
+  const sprites = () => ({
+    closed: makeSprite(),
+    half: makeSprite(),
+    open: makeSprite(),
+    e: makeSprite(),
+    u: makeSprite(),
+  })
+
+  it('5種類すべてが256pxでないアセットは従来描画へフォールバックする', () => {
+    expect(createPNGTuberMouthMorph({ ...sprites(), e: undefined })).toBeNull()
+    expect(
+      createPNGTuberMouthMorph({ ...sprites(), half: makeSprite(128) })
+    ).toBeNull()
+  })
+
+  it('端点と45ms時定数の遷移を同じ出力canvasへ描画する', () => {
+    const originalGetContext = HTMLCanvasElement.prototype.getContext
+    const putImageData = jest.fn()
+    const context = {
+      clearRect: jest.fn(),
+      drawImage: jest.fn(),
+      getImageData: jest.fn(() => ({
+        data: new Uint8ClampedArray(256 * 256 * 4).fill(255),
+      })),
+      createImageData: jest.fn(() => ({
+        data: new Uint8ClampedArray(256 * 256 * 4),
+      })),
+      putImageData,
+    }
+    HTMLCanvasElement.prototype.getContext = jest
+      .fn()
+      .mockReturnValue(context) as typeof originalGetContext
+    try {
+      const morph = createPNGTuberMouthMorph(sprites())
+      expect(morph).not.toBeNull()
+      expect(morph!.reset('closed')).toBe(morph!.canvas)
+      expect(morph!.frame('open', 0.045)).toBe(morph!.canvas)
+      expect(putImageData).toHaveBeenCalled()
+      expect(morph!.reset('open')).toBe(morph!.canvas)
+    } finally {
+      HTMLCanvasElement.prototype.getContext = originalGetContext
+    }
+  })
+})
 
 type Point = [number, number]
 type Quad = [Point, Point, Point, Point]
@@ -526,7 +580,14 @@ describe('PNGTuberEngine インスタンス動作', () => {
     noiseFloor: number
     levelPeak: number
     smoothedHighRatio: number
+    audioPlaybackGeneration: number
+    videoFrameCallbackId: number | null
     resetAudioStats(): void
+    setMouthState(
+      state: MouthState,
+      force?: boolean,
+      bypassTransitionInterval?: boolean
+    ): void
   }
 
   const internals = (e: PNGTuberEngine): EngineInternals =>
@@ -561,6 +622,34 @@ describe('PNGTuberEngine インスタンス動作', () => {
     const lastChange = state.lastMouthChange
     engine.setExternalAudioLevel(0)
     expect(state.lastMouthChange).toBe(lastChange)
+  })
+
+  it('発話終了は直前の口変更から45ms未満でも、モーフをsnapせずclosedへ遷移する', () => {
+    const state = internals(engine)
+    state.mouthSprites = {
+      open: document.createElement('img'),
+      closed: document.createElement('img'),
+    }
+    state.mouthState = 'open'
+    state.lastMouthChange = performance.now()
+    state.setMouthState('closed', false, true)
+    expect(state.mouthState).toBe('closed')
+  })
+
+  it('stopAudioはdecode待ちの再生世代を無効化する', () => {
+    const before = internals(engine).audioPlaybackGeneration
+    engine.stopAudio()
+    expect(internals(engine).audioPlaybackGeneration).toBe(before + 1)
+  })
+
+  it('stopは予約済みrequestVideoFrameCallbackをcancelする', () => {
+    const cancelVideoFrameCallback = jest.fn()
+    const video = (engine as unknown as { video: HTMLVideoElement }).video
+    Object.assign(video, { cancelVideoFrameCallback, pause: jest.fn() })
+    internals(engine).videoFrameCallbackId = 42
+    engine.stop()
+    expect(cancelVideoFrameCallback).toHaveBeenCalledWith(42)
+    expect(internals(engine).videoFrameCallbackId).toBeNull()
   })
 
   describe('setSensitivity', () => {

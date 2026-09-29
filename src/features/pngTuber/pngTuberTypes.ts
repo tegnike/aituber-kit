@@ -96,11 +96,13 @@ export interface IPNGTuberEngine {
   start(): void
   stop(): void
   setSensitivity(value: number): void
+  isAssetReady(): boolean
   setChromaKeySettings(enabled: boolean, color: string, tolerance: number): void
   playAudioFromBuffer(
     audioData: ArrayBuffer,
     isNeedDecode: boolean,
-    onFinish?: () => void
+    onFinish?: () => void,
+    onStart?: () => void
   ): Promise<void>
   playAudioWithLipSync(
     audioBuffer: AudioBuffer,

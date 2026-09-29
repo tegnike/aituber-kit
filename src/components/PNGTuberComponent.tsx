@@ -71,13 +71,13 @@ const PNGTuberComponent = (): JSX.Element => {
     const engine = engineRef.current
     if (!engine || !selectedPNGTuberPath) return
 
-    // 既に同じパスがロード済みの場合はスキップ
-    if (loadedPath === selectedPNGTuberPath) return
-
     let cancelled = false
 
     // 新しいアセットを読み込む前に既存のレンダーループを停止
     engine.stop()
+    engine.stopAudio()
+    // 直前の表情へ戻した場合も、途中で破棄されたアセットを必ず読み直す。
+    setLoadedPath(null)
     setError(null)
 
     engine
@@ -97,7 +97,7 @@ const PNGTuberComponent = (): JSX.Element => {
     return () => {
       cancelled = true
     }
-  }, [selectedPNGTuberPath, loadedPath])
+  }, [selectedPNGTuberPath])
 
   // 感度を更新
   useEffect(() => {

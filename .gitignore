@@ -71,6 +71,8 @@ public/scripts/live2dcubismcore.min.js
 public/pngtuber/*
 !public/pngtuber/nike01
 !public/pngtuber/nike02
+# 花詩ましょの配信用素材
+!public/pngtuber/hanauta-masho*/
 
 /public/images/uploaded/*
 !/public/images/placed/.keep

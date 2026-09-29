@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import homeStore from '@/features/stores/home'
+import toastStore from '@/features/stores/toast'
 import menuStore from '@/features/stores/menu'
 import settingsStore, { SettingsState } from '@/features/stores/settings'
 import { TextButton } from '../../textButton'
@@ -48,6 +49,13 @@ export const CharacterModelSection = ({
   const chromaKeyVideoRef = useRef<HTMLVideoElement>(null)
   const chromaKeyCanvasRef = useRef<HTMLCanvasElement>(null)
   const [chromaKeyVideoUrl, setChromaKeyVideoUrl] = useState<string>('')
+  const [isSampleAudioPlaying, setIsSampleAudioPlaying] = useState(false)
+  const [isPNGTuberReady, setIsPNGTuberReady] = useState(false)
+  const sampleAudioAbortRef = useRef<AbortController | null>(null)
+  const sampleAudioTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sampleAudioPlaybackIdRef = useRef<symbol | null>(null)
+  const sampleAudioViewerRef =
+    useRef<ReturnType<typeof homeStore.getState>['pngTuberViewer']>(null)
 
   // 選択されたPNGTuberの動画URLを取得
   useEffect(() => {
@@ -121,6 +129,105 @@ export const CharacterModelSection = ({
         logger.error('Error fetching PNGTuber list:', error)
       })
   }, [])
+
+  useEffect(() => {
+    return () => {
+      sampleAudioAbortRef.current?.abort()
+      if (sampleAudioTimerRef.current) clearTimeout(sampleAudioTimerRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    sampleAudioAbortRef.current?.abort()
+    sampleAudioViewerRef.current?.stopAudio()
+    sampleAudioViewerRef.current = null
+    if (sampleAudioTimerRef.current) clearTimeout(sampleAudioTimerRef.current)
+    sampleAudioPlaybackIdRef.current = null
+    setIsSampleAudioPlaying(false)
+    setIsPNGTuberReady(false)
+  }, [selectedPNGTuberPath])
+
+  useEffect(() => {
+    const refresh = () =>
+      setIsPNGTuberReady(
+        Boolean(homeStore.getState().pngTuberViewer?.isAssetReady())
+      )
+    refresh()
+    const timer = window.setInterval(refresh, 250)
+    return () => window.clearInterval(timer)
+  }, [selectedPNGTuberPath])
+
+  const handleSampleAudio = async () => {
+    const viewer = homeStore.getState().pngTuberViewer
+    if (!viewer || isSampleAudioPlaying) {
+      if (!viewer) {
+        toastStore.getState().addToast({
+          message: t('PNGTuber.SampleAudioUnavailable'),
+          type: 'info',
+          duration: 3000,
+        })
+      }
+      return
+    }
+
+    const controller = new AbortController()
+    const playbackId = Symbol('pngtuber-sample-audio')
+    sampleAudioAbortRef.current?.abort()
+    sampleAudioAbortRef.current = controller
+    sampleAudioViewerRef.current = viewer
+    sampleAudioPlaybackIdRef.current = playbackId
+    setIsSampleAudioPlaying(true)
+    let started = false
+    try {
+      viewer.stopAudio()
+      const response = await fetch('/voice_test.wav', {
+        signal: controller.signal,
+      })
+      if (!response.ok)
+        throw new Error(`Failed to fetch sample audio: ${response.status}`)
+      const buffer = await response.arrayBuffer()
+      if (
+        controller.signal.aborted ||
+        homeStore.getState().pngTuberViewer !== viewer
+      )
+        return
+      await viewer.playAudioFromBuffer(
+        buffer,
+        true,
+        () => {
+          if (
+            !controller.signal.aborted &&
+            sampleAudioPlaybackIdRef.current === playbackId
+          ) {
+            if (sampleAudioTimerRef.current)
+              clearTimeout(sampleAudioTimerRef.current)
+            setIsSampleAudioPlaying(false)
+          }
+        },
+        () => {
+          started = true
+        }
+      )
+      if (controller.signal.aborted || !started) return
+      // 他の発話が再生を置き換えた場合にも設定ボタンが永久にdisabledにならないようにする。
+      sampleAudioTimerRef.current = setTimeout(() => {
+        if (sampleAudioPlaybackIdRef.current === playbackId) {
+          setIsSampleAudioPlaying(false)
+        }
+      }, 5000)
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        logger.error('Failed to play PNGTuber sample audio:', error)
+        toastStore.getState().addToast({
+          message: t('PNGTuber.SampleAudioFailed'),
+          type: 'error',
+          duration: 4000,
+        })
+      }
+    } finally {
+      if (!controller.signal.aborted && !started) setIsSampleAudioPlaying(false)
+    }
+  }
 
   const handleVrmUpload = async (file: File) => {
     const formData = new FormData()
@@ -297,6 +404,23 @@ export const CharacterModelSection = ({
               </option>
             ))}
           </select>
+          <div className="my-3">
+            <TextButton
+              onClick={handleSampleAudio}
+              disabled={
+                isSampleAudioPlaying ||
+                !isPNGTuberReady ||
+                !selectedPNGTuberPath ||
+                !pngTuberModels.some(
+                  (model) => model.path === selectedPNGTuberPath
+                )
+              }
+            >
+              {isSampleAudioPlaying
+                ? t('PNGTuber.SampleAudioPlaying')
+                : t('PNGTuber.SampleAudio')}
+            </TextButton>
+          </div>
           <div className="my-4">
             <div className="font-bold">
               {t('PNGTuber.Sensitivity')}: {pngTuberSensitivity}

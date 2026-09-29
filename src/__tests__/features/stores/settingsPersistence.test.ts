@@ -109,6 +109,21 @@ describe('settingsStore persistence', () => {
     expect(persisted.state.voiceInputShortcut).toBe('Space')
   })
 
+  it('persists and rehydrates the VOICEVOX browser connection mode', () => {
+    process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES = 'false'
+    const settingsStore = loadStore()
+
+    settingsStore.setState({ voicevoxConnectionMode: 'browser' })
+
+    const persisted = JSON.parse(localStorage.getItem(storageKey) ?? '{}')
+    expect(persisted.state.voicevoxConnectionMode).toBe('browser')
+
+    const reloadedSettingsStore = loadStore()
+    expect(reloadedSettingsStore.getState().voicevoxConnectionMode).toBe(
+      'browser'
+    )
+  })
+
   it('persists user-configurable settings previously omitted from storage', () => {
     process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES = 'false'
     const settingsStore = loadStore()
