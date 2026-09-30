@@ -16,6 +16,7 @@ import Slides from './slides'
 import Capture from './capture'
 import { isMultiModalAvailable } from '@/features/constants/aiModels'
 import { AIService } from '@/features/constants/settings'
+import { disableScreenLighting } from '@/features/vrmViewer/screenLightingCapture'
 import { getLatestAssistantMessage } from '@/utils/assistantMessageUtils'
 import { useKioskMode } from '@/hooks/useKioskMode'
 import {
@@ -267,6 +268,16 @@ export const Menu = () => {
   }, [gameCommentaryPlaying, showCapture])
 
   const toggleCapture = useCallback(() => {
+    const screenLightingWasEnabled =
+      settingsStore.getState().screenLightingEnabled
+    const screenLightingCaptureOwned =
+      menuStore.getState().screenLightingCaptureOwned
+
+    if (showCapture && screenLightingWasEnabled) {
+      disableScreenLighting()
+      if (screenLightingCaptureOwned) return
+    }
+
     menuStore.setState(({ showCapture }) => ({ showCapture: !showCapture }))
     menuStore.setState({ showWebcam: false }) // Captureを表示するときWebcamを非表示にする
     if (!showCapture) {
@@ -275,6 +286,9 @@ export const Menu = () => {
   }, [showCapture])
 
   const toggleWebcam = useCallback(() => {
+    if (settingsStore.getState().screenLightingEnabled) {
+      disableScreenLighting()
+    }
     menuStore.setState(({ showWebcam }) => ({ showWebcam: !showWebcam }))
     menuStore.setState({ showCapture: false }) // Webcamを表示するときCaptureを非表示にする
     if (!showWebcam) {

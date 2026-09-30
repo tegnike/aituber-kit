@@ -20,6 +20,7 @@ import {
 interface VideoDisplayProps {
   videoRef: React.RefObject<HTMLVideoElement>
   mediaStream?: MediaStream | null
+  integrateIntoScene?: boolean
   onCapture?: () => void
   onToggleSource?: () => void
   onStopSource?: () => void
@@ -34,6 +35,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
     {
       videoRef,
       mediaStream,
+      integrateIntoScene = false,
       onCapture,
       onToggleSource,
       onStopSource,
@@ -104,8 +106,12 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
       aspectRatio: true,
       onResize: handleResize,
     })
-    const showBackgroundVideo = useVideoAsBackground && !hideVideoDisplay
-    const showFloatingPreview = !useVideoAsBackground && !hideVideoDisplay
+    const useBackgroundDisplay = useVideoAsBackground || integrateIntoScene
+    const hideCaptureVisuals = hideVideoDisplay || integrateIntoScene
+    const showBackgroundVideo =
+      integrateIntoScene || (useVideoAsBackground && !hideVideoDisplay)
+    const showFloatingPreview =
+      !integrateIntoScene && !useVideoAsBackground && !hideVideoDisplay
 
     const handleVideoResizeStart = useCallback(
       (e: React.MouseEvent, direction: string) => {
@@ -341,6 +347,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
         {showBackgroundVideo && (
           <video
             ref={backgroundVideoRef}
+            data-testid="scene-background-video"
             autoPlay
             playsInline
             muted
@@ -350,18 +357,18 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
         <div
           ref={ref}
           className={`fixed z-10 ${className} ${
-            hideVideoDisplay
+            hideCaptureVisuals
               ? 'pointer-events-none opacity-0 -left-[10000px] -top-[10000px]'
-              : `right-4 top-4 ${useVideoAsBackground ? 'pointer-events-none' : ''}`
+              : `right-4 top-4 ${useBackgroundDisplay ? 'pointer-events-none' : ''}`
           }`}
           style={{
             ...dragStyle,
-            width: useVideoAsBackground ? 'auto' : `${size.width}px`,
-            height: useVideoAsBackground ? 'auto' : `${size.height}px`,
-            maxWidth: useVideoAsBackground ? '70%' : 'none',
-            maxHeight: useVideoAsBackground ? '40vh' : 'none',
+            width: useBackgroundDisplay ? 'auto' : `${size.width}px`,
+            height: useBackgroundDisplay ? 'auto' : `${size.height}px`,
+            maxWidth: useBackgroundDisplay ? '70%' : 'none',
+            maxHeight: useBackgroundDisplay ? '40vh' : 'none',
           }}
-          aria-hidden={hideVideoDisplay}
+          aria-hidden={hideCaptureVisuals}
         >
           <div
             ref={containerRef}
@@ -380,7 +387,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
               playsInline
               muted
               className={`w-full h-full object-contain object-top bg-black ${
-                useVideoAsBackground ? 'invisible' : ''
+                useBackgroundDisplay ? 'invisible' : ''
               }`}
             />
             {/* Resize handles */}
@@ -504,7 +511,7 @@ export const VideoDisplay = forwardRef<HTMLDivElement, VideoDisplayProps>(
             )}
           </div>
         </div>
-        {(useVideoAsBackground || hideVideoDisplay) && (
+        {!integrateIntoScene && (useVideoAsBackground || hideVideoDisplay) && (
           <div className="fixed top-5 right-5 z-40 pointer-events-auto flex items-center gap-2">
             {onStopSource && (
               <IconButton
