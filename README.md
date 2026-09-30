@@ -121,6 +121,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - xAI
 - DeepSeek
 - OpenRouter
+- OrcaRouter
 
 ### 対応音声合成エンジン
 

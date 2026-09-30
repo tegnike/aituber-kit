@@ -6,6 +6,7 @@ import { AIService } from '@/features/constants/settings'
 const multiModalToggleOnlyServices = new Set<AIService>([
   'azure',
   'openrouter',
+  'orcarouter',
   'lmstudio',
   'ollama',
   'custom-api',

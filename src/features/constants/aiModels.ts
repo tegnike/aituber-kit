@@ -652,6 +652,7 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
   ],
   deepseek: [{ name: 'deepseek-chat' }, { name: 'deepseek-reasoner' }],
   openrouter: [],
+  orcarouter: [],
   lmstudio: [],
   ollama: [],
   dify: [],
@@ -843,9 +844,14 @@ export function isMultiModalModelWithToggle(
 ): boolean {
   // 一部のサービスではモデル単位での判定ができないため、トグルボタンの状態のみで判定
   if (
-    ['azure', 'openrouter', 'lmstudio', 'ollama', 'custom-api'].includes(
-      service
-    )
+    [
+      'azure',
+      'openrouter',
+      'orcarouter',
+      'lmstudio',
+      'ollama',
+      'custom-api',
+    ].includes(service)
   ) {
     return enableMultiModal
   }
