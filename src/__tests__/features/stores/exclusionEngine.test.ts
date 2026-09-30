@@ -309,6 +309,32 @@ describe('排他エンジン (computeExclusions)', () => {
 
       expect(corrections.selectVoice).toBeUndefined()
     })
+
+    it('gsvitts（GPT-SoVITS）は中国語・英語・韓国語では変更しない', () => {
+      for (const lang of ['zh-CN', 'zh-TW', 'en', 'ko'] as const) {
+        const prev = createBaseState({
+          selectLanguage: 'ja',
+          selectVoice: 'gsvitts',
+        })
+        const { corrections } = computeExclusions(
+          { selectLanguage: lang },
+          prev
+        )
+
+        expect(corrections.selectVoice).toBeUndefined()
+      }
+    })
+
+    it('gsvitts（GPT-SoVITS）は非対応言語ではgoogle TTSに変更される', () => {
+      const prev = createBaseState({
+        selectLanguage: 'ja',
+        selectVoice: 'gsvitts',
+      })
+      const incoming = { selectLanguage: 'fr' as const }
+      const { corrections } = computeExclusions(incoming, prev)
+
+      expect(corrections.selectVoice).toBe('google')
+    })
   })
 
   describe('Rule 12: google-searchGrounding', () => {
