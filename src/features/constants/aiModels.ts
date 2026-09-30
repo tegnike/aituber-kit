@@ -359,6 +359,11 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
       reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
     },
     {
+      name: 'gemini-3.5-flash-lite',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
       name: 'gemini-3.1-pro-preview',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high'],
@@ -879,6 +884,7 @@ export function isMultiModalAvailable(
 
 export const googleSearchGroundingModels = [
   'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
   'gemini-3.1-pro-preview',
   'gemini-3.1-pro-preview-customtools',
   'gemini-3.1-flash-lite-preview',

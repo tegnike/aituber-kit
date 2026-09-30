@@ -59,6 +59,9 @@ jest.mock('@ai-sdk/anthropic', () => ({
 
 jest.mock('@ai-sdk/google', () => ({
   createGoogleGenerativeAI: jest.fn().mockReturnValue(jest.fn()),
+  google: {
+    tools: { googleSearch: jest.fn().mockReturnValue('google-search-tool') },
+  },
 }))
 
 const mockStreamText = streamText as jest.MockedFunction<typeof streamText>
@@ -115,20 +118,51 @@ describe('vercelAi service helpers', () => {
       expect(mockLanguageModel).toHaveBeenCalledWith('openai:gpt-4o')
       expect(model).toBe('mock-model')
     })
+  })
 
-    it('uses provider directly when options are provided', () => {
-      const model = getLanguageModel(
-        mockRegistry as any,
-        'google',
-        'gemini-pro',
-        {
-          useSearchGrounding: true,
-        }
-      )
-      expect(mockRegistry.google).toHaveBeenCalledWith('gemini-pro', {
-        useSearchGrounding: true,
+  describe('streamAiText search grounding', () => {
+    const mockStreamOk = () =>
+      mockStreamText.mockResolvedValue({
+        toUIMessageStreamResponse: jest
+          .fn()
+          .mockReturnValue(new Response('stream-body')),
+      } as any)
+
+    it('passes google_search tool for google when searchGrounding is on', async () => {
+      mockStreamOk()
+      await streamAiText({
+        model: 'gemini-3.5-flash-lite',
+        registry: mockRegistry as any,
+        service: 'google',
+        messages: testMessages,
+        temperature: 1,
+        maxTokens: 100,
+        searchGrounding: true,
       })
-      expect(model).toBe('google-model')
+
+      expect(mockLanguageModel).toHaveBeenCalledWith(
+        'google:gemini-3.5-flash-lite'
+      )
+      expect(mockStreamText).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tools: { google_search: 'google-search-tool' },
+        })
+      )
+    })
+
+    it('does not pass tools for non-google services', async () => {
+      mockStreamOk()
+      await streamAiText({
+        model: 'gpt-4o-mini',
+        registry: mockRegistry as any,
+        service: 'openai',
+        messages: testMessages,
+        temperature: 1,
+        maxTokens: 100,
+        searchGrounding: true,
+      })
+
+      expect(mockStreamText.mock.calls[0][0]).not.toHaveProperty('tools')
     })
   })
 
@@ -148,7 +182,6 @@ describe('vercelAi service helpers', () => {
         messages: testMessages,
         temperature: 0.2,
         maxTokens: 150,
-        options: {},
       })
 
       expect(mockStreamText).toHaveBeenCalledWith({
@@ -178,7 +211,6 @@ describe('vercelAi service helpers', () => {
         messages: testMessages,
         temperature: 0.2,
         maxTokens: 150,
-        options: {},
         providerOptions,
       })
 
@@ -206,7 +238,6 @@ describe('vercelAi service helpers', () => {
         messages: testMessages,
         temperature: 0.2,
         maxTokens: 150,
-        options: {},
       })
 
       expect(mockStreamText).toHaveBeenCalledWith({

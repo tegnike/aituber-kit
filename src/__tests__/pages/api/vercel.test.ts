@@ -467,10 +467,7 @@ describe('/api/ai/vercel handler', () => {
       messages: [{ role: 'user', content: 'hello' }],
       temperature: 0.8,
       maxTokens: 500,
-      options: {
-        useSearchGrounding: true,
-        dynamicRetrievalConfig: { dynamicThreshold: 0.42 },
-      },
+      searchGrounding: true,
       providerOptions: undefined,
     })
   })
