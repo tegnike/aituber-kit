@@ -103,10 +103,13 @@ export function createAIRegistry(
       }) as unknown as ReturnType<typeof createOpenAI>
       break
     case 'orcarouter':
-      providers.orcarouter = createOpenAI({
+      // createOpenAIはResponses API（/v1/responses）を使うため、
+      // Chat Completions APIで通信するOpenAI互換プロバイダーとして登録する
+      providers.orcarouter = createOpenAICompatible({
+        name: 'orcarouter',
         baseURL: 'https://api.orcarouter.ai/v1',
         apiKey: params.apiKey,
-      })
+      }) as unknown as ReturnType<typeof createOpenAI>
       break
     case 'lmstudio':
       providers.lmstudio = createOpenAICompatible({

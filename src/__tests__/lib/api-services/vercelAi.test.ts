@@ -6,6 +6,7 @@ import {
 } from '@/lib/api-services/vercelAi'
 import { Message } from '@/features/messages/messages'
 import { streamText, generateText, createProviderRegistry } from 'ai'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 
 class TestResponse {
   public status: number
@@ -51,6 +52,10 @@ jest.mock('ai', () => {
 
 jest.mock('@ai-sdk/openai', () => ({
   createOpenAI: jest.fn().mockReturnValue(jest.fn()),
+}))
+
+jest.mock('@ai-sdk/openai-compatible', () => ({
+  createOpenAICompatible: jest.fn().mockReturnValue(jest.fn()),
 }))
 
 jest.mock('@ai-sdk/anthropic', () => ({
@@ -103,6 +108,16 @@ describe('vercelAi service helpers', () => {
     it('creates registry for google service', () => {
       const registry = createAIRegistry('google', { apiKey: 'google-key' })
       expect(registry).toBeDefined()
+      expect(mockCreateProviderRegistry).toHaveBeenCalled()
+    })
+
+    it('creates orcarouter registry as an OpenAI-compatible provider', () => {
+      createAIRegistry('orcarouter', { apiKey: 'test-key' })
+      expect(createOpenAICompatible).toHaveBeenCalledWith({
+        name: 'orcarouter',
+        baseURL: 'https://api.orcarouter.ai/v1',
+        apiKey: 'test-key',
+      })
       expect(mockCreateProviderRegistry).toHaveBeenCalled()
     })
 
