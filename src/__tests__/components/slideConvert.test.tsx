@@ -5,7 +5,7 @@
  */
 
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import SlideConvert from '@/components/settings/slideConvert'
 import settingsStore from '@/features/stores/settings'
 
@@ -26,6 +26,7 @@ jest.mock('@/features/stores/settings', () => ({
       fireworksKey: '',
       deepseekKey: '',
       openrouterKey: '',
+      api_routeKey: 'api-route-test-key',
       difyKey: '',
     })),
     setState: jest.fn(),
@@ -48,9 +49,15 @@ jest.mock('react-i18next', () => ({
 
 // Mock aiModels
 jest.mock('@/features/constants/aiModels', () => ({
-  getDefaultModel: jest.fn(() => 'gpt-4o'),
-  getMultiModalModels: jest.fn(() => ['gpt-4o', 'gpt-4o-mini']),
-  isMultiModalAvailable: jest.fn(() => true),
+  getDefaultModel: jest.fn((service) =>
+    service === 'api_route' ? '' : 'gpt-4o'
+  ),
+  getMultiModalModels: jest.fn((service) =>
+    service === 'api_route' ? [] : ['gpt-4o', 'gpt-4o-mini']
+  ),
+  isMultiModalAvailable: jest.fn((service, _model, enabled) =>
+    service === 'api_route' ? enabled : true
+  ),
 }))
 
 // Mock TextButton
@@ -73,6 +80,11 @@ const mockSettingsStore = settingsStore as jest.MockedFunction<
 
 describe('SlideConvert', () => {
   const mockOnFolderUpdate = jest.fn()
+  const originalFetch = global.fetch
+
+  afterEach(() => {
+    global.fetch = originalFetch
+  })
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -137,4 +149,80 @@ describe('SlideConvert', () => {
     )
     expect(submitButton).toBeTruthy()
   })
+
+  const useApiRoute = (model = 'openai/gpt-4o', enableMultiModal = true) => {
+    mockSettingsStore.mockImplementation((selector) =>
+      selector({
+        selectAIService: 'api_route',
+        selectLanguage: 'ja',
+        selectAIModel: model,
+        enableMultiModal,
+        customModel: false,
+      } as any)
+    )
+  }
+
+  const submitPdf = () => {
+    fireEvent.change(document.getElementById('fileInput')!, {
+      target: {
+        files: [new File(['pdf'], 'slides.pdf', { type: 'application/pdf' })],
+      },
+    })
+    fireEvent.change(screen.getByPlaceholderText('Folder Name'), {
+      target: { value: 'api-route-slides' },
+    })
+    fireEvent.submit(screen.getByText('PdfConvertButton').closest('form')!)
+  }
+
+  it('submits an editable API Route model, key and multimodal toggle', async () => {
+    useApiRoute()
+    global.fetch = jest.fn().mockResolvedValue({ ok: true })
+    render(<SlideConvert onFolderUpdate={mockOnFolderUpdate} />)
+
+    const modelInput = screen.getByRole('textbox', {
+      name: 'PdfConvertModelSelect',
+    })
+    expect(modelInput).toHaveValue('openai/gpt-4o')
+    fireEvent.change(modelInput, {
+      target: { value: 'google/gemini-2.5-flash' },
+    })
+    submitPdf()
+
+    await waitFor(() => expect(mockOnFolderUpdate).toHaveBeenCalledTimes(1))
+    expect(global.fetch).toHaveBeenCalledWith('/api/convertSlide', {
+      method: 'POST',
+      body: expect.any(FormData),
+    })
+    const body = (global.fetch as jest.Mock).mock.calls[0][1].body as FormData
+    expect(body.get('aiService')).toBe('api_route')
+    expect(body.get('apiKey')).toBe('api-route-test-key')
+    expect(body.get('model')).toBe('google/gemini-2.5-flash')
+    expect(body.get('enableMultiModal')).toBe('true')
+  })
+
+  it('updates the API Route conversion model when the selected model changes', () => {
+    useApiRoute()
+    const { rerender } = render(
+      <SlideConvert onFolderUpdate={mockOnFolderUpdate} />
+    )
+    useApiRoute('anthropic/claude-sonnet-4-6')
+    rerender(<SlideConvert onFolderUpdate={mockOnFolderUpdate} />)
+    expect(
+      screen.getByRole('textbox', { name: 'PdfConvertModelSelect' })
+    ).toHaveValue('anthropic/claude-sonnet-4-6')
+  })
+
+  it.each([
+    ['', true],
+    ['openai/gpt-4o', false],
+  ])(
+    'does not submit with model %s and multimodal enabled %s',
+    (model, enabled) => {
+      useApiRoute(model, enabled)
+      global.fetch = jest.fn()
+      render(<SlideConvert onFolderUpdate={mockOnFolderUpdate} />)
+      submitPdf()
+      expect(global.fetch).not.toHaveBeenCalled()
+    }
+  )
 })

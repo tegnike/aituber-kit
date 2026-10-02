@@ -6,6 +6,7 @@ import path from 'path'
 import { createCanvas } from 'canvas'
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
 import { createOpenAI } from '@ai-sdk/openai'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateObject, GenerateObjectResult } from 'ai'
@@ -165,14 +166,19 @@ export async function createSlideLine(
   aiService: string,
   model: string,
   selectLanguage: string,
-  previousResult: string | null
+  previousResult: string | null,
+  enableMultiModal: boolean = false
 ): Promise<SlideLineResponse> {
   const additionalPrompt = previousResult
     ? `Previous slide content: ${previousResult}`
     : 'This is the first slide.'
 
   // マルチモーダル対応のチェック
-  if (!isMultiModalModel(aiService as AIService, model)) {
+  const supportsMultiModal =
+    aiService === 'api_route'
+      ? enableMultiModal && !!model
+      : isMultiModalModel(aiService as AIService, model)
+  if (!supportsMultiModal) {
     throw new Error(`Model ${model} does not support multimodal features`)
   }
 
@@ -180,6 +186,12 @@ export async function createSlideLine(
     openai: () => createOpenAI({ apiKey }),
     anthropic: () => createAnthropic({ apiKey }),
     google: () => createGoogleGenerativeAI({ apiKey }),
+    api_route: () =>
+      createOpenAICompatible({
+        name: 'api_route',
+        baseURL: 'https://global.api-route.com/v1',
+        apiKey,
+      }),
     // 他のプロバイダーは必要に応じて追加
   }
 
@@ -276,6 +288,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const apiKey = getField('apiKey')
     const model = getField('model')
     const selectLanguage = getField('selectLanguage')
+    const enableMultiModal = getField('enableMultiModal') === 'true'
 
     if (!file) {
       res.status(400).send('No file uploaded')
@@ -316,7 +329,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             aiService,
             model,
             language,
-            previousResult
+            previousResult,
+            enableMultiModal
           )
           slideLine.page = i // ページ番号を追加
           scriptList.push(slideLine)

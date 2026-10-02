@@ -28,9 +28,10 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
   const [model, setModel] = useState<string>('')
 
   useEffect(() => {
-    const defaultModel = getDefaultModel(aiService)
+    const defaultModel =
+      aiService === 'api_route' ? selectAIModel : getDefaultModel(aiService)
     setModel(defaultModel)
-  }, [aiService])
+  }, [aiService, selectAIModel])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [selectedFileName, setSelectedFileName] = useState<string>('')
@@ -99,6 +100,9 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     formData.append('apiKey', apiKey)
     formData.append('model', model)
     formData.append('selectLanguage', selectLanguage)
+    if (aiService === 'api_route') {
+      formData.append('enableMultiModal', String(enableMultiModal))
+    }
 
     const response = await fetch('/api/convertSlide', {
       method: 'POST',
@@ -165,18 +169,29 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           className={settingsControlClass.medium}
         />
         <div className="my-4 font-bold">{t('PdfConvertModelSelect')}</div>
-        <select
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          className={settingsControlClass.medium}
-        >
-          {aiService &&
-            getMultiModalModels(aiService).map((model) => (
-              <option key={model} value={model}>
-                {model}
-              </option>
-            ))}
-        </select>
+        {aiService === 'api_route' ? (
+          <input
+            type="text"
+            aria-label={t('PdfConvertModelSelect')}
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            required
+            className={settingsControlClass.medium}
+          />
+        ) : (
+          <select
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            className={settingsControlClass.medium}
+          >
+            {aiService &&
+              getMultiModalModels(aiService).map((model) => (
+                <option key={model} value={model}>
+                  {model}
+                </option>
+              ))}
+          </select>
+        )}
         <div className="mt-4">
           <TextButton type="submit" disabled={isLoading}>
             {isLoading ? t('PdfConvertLoading') : t('PdfConvertButton')}
