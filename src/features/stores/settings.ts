@@ -78,6 +78,7 @@ interface APIKeys {
   deepseekKey: string
   openrouterKey: string
   orcarouterKey: string
+  api_routeKey: string
   lmstudioKey: string
   ollamaKey: string
   koeiromapKey: string
@@ -372,6 +373,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   deepseekKey: '',
   openrouterKey: '',
   orcarouterKey: '',
+  api_routeKey: '',
   lmstudioKey: '',
   ollamaKey: '',
   koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
@@ -1151,6 +1153,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   deepseekKey: state.deepseekKey,
   openrouterKey: state.openrouterKey,
   orcarouterKey: state.orcarouterKey,
+  api_routeKey: state.api_routeKey,
   lmstudioKey: state.lmstudioKey,
   ollamaKey: state.ollamaKey,
   koeiromapKey: state.koeiromapKey,

@@ -1,6 +1,7 @@
 import { generateObject } from 'ai'
 import { isMultiModalModel } from '@/features/constants/aiModels'
 import { createOpenAI } from '@ai-sdk/openai'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { TextDecoder, TextEncoder } from 'util'
@@ -26,6 +27,10 @@ jest.mock('ai', () => {
 
 jest.mock('@ai-sdk/openai', () => ({
   createOpenAI: jest.fn(),
+}))
+
+jest.mock('@ai-sdk/openai-compatible', () => ({
+  createOpenAICompatible: jest.fn(),
 }))
 
 jest.mock('@ai-sdk/anthropic', () => ({
@@ -129,5 +134,60 @@ describe('createSlideLine', () => {
     await expect(
       createSlideLine(baseImage, 'key', 'google', 'gemini', 'English', null)
     ).rejects.toThrow('does not support multimodal features')
+  })
+
+  it('uses API Route Chat Completions for a user-selected vision model', async () => {
+    mockIsMultiModalModel.mockReturnValue(false)
+    const modelFactory = jest.fn().mockReturnValue('api-route-vision-model')
+    jest.mocked(createOpenAICompatible).mockReturnValue(modelFactory as any)
+    mockGenerateObject.mockResolvedValue({
+      object: { line: 'a', notes: 'b' },
+    } as any)
+
+    const result = await createSlideLine(
+      baseImage,
+      'api-route-key',
+      'api_route',
+      'openai/gpt-4o',
+      'English',
+      null,
+      true
+    )
+
+    expect(createOpenAICompatible).toHaveBeenCalledWith({
+      name: 'api_route',
+      baseURL: 'https://global.api-route.com/v1',
+      apiKey: 'api-route-key',
+    })
+    expect(modelFactory).toHaveBeenCalledWith('openai/gpt-4o')
+    expect(mockCreateOpenAI).not.toHaveBeenCalled()
+    expect(mockGenerateObject).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: 'api-route-vision-model',
+        messages: expect.arrayContaining([
+          expect.objectContaining({
+            role: 'user',
+            content: expect.arrayContaining([
+              expect.objectContaining({ type: 'image', image: baseImage }),
+            ]),
+          }),
+        ]),
+      })
+    )
+    expect(result).toEqual({ line: 'a', notes: 'b' })
+  })
+
+  it('rejects API Route conversion when multimodal is disabled', async () => {
+    await expect(
+      createSlideLine(
+        baseImage,
+        'key',
+        'api_route',
+        'openai/gpt-4o',
+        'English',
+        null
+      )
+    ).rejects.toThrow('does not support multimodal features')
+    expect(createOpenAICompatible).not.toHaveBeenCalled()
   })
 })

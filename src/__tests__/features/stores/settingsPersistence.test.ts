@@ -109,6 +109,24 @@ describe('settingsStore persistence', () => {
     expect(persisted.state.voiceInputShortcut).toBe('Space')
   })
 
+  it('restores the API Route selection, model and browser-entered key', () => {
+    process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES = 'false'
+    const settingsStore = loadStore()
+    settingsStore.setState({
+      selectAIService: 'api_route',
+      selectAIModel: 'gpt-6.1-sol',
+      api_routeKey: 'browser-route-key',
+    })
+    const reloadedStore = loadStore()
+    expect(reloadedStore.getState()).toEqual(
+      expect.objectContaining({
+        selectAIService: 'api_route',
+        selectAIModel: 'gpt-6.1-sol',
+        api_routeKey: 'browser-route-key',
+      })
+    )
+  })
+
   it('persists user-configurable settings previously omitted from storage', () => {
     process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES = 'false'
     const settingsStore = loadStore()

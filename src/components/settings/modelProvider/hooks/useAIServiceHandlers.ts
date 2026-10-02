@@ -7,6 +7,7 @@ const multiModalToggleOnlyServices = new Set<AIService>([
   'azure',
   'openrouter',
   'orcarouter',
+  'api_route',
   'lmstudio',
   'ollama',
   'custom-api',
