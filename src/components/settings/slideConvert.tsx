@@ -82,7 +82,12 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     else if (aiService === 'api_route') apiKey = settings.api_routeKey
     else if (aiService === 'dify') apiKey = settings.difyKey
 
-    if (!file || !folderName || !apiKey || !model) {
+    if (
+      !file ||
+      !folderName ||
+      (!apiKey && aiService !== 'api_route') ||
+      !model
+    ) {
       addToast({
         message: t('PdfConvertSubmitError'),
         type: 'error',

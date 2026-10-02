@@ -212,6 +212,22 @@ describe('SlideConvert', () => {
     ).toHaveValue('anthropic/claude-sonnet-4-6')
   })
 
+  it('allows API Route requests with no browser key for server-side resolution', async () => {
+    useApiRoute()
+    const currentSettings = settingsStore.getState()
+    jest.mocked(settingsStore.getState).mockReturnValueOnce({
+      ...currentSettings,
+      api_routeKey: '',
+    })
+    global.fetch = jest.fn().mockResolvedValue({ ok: true })
+    render(<SlideConvert onFolderUpdate={mockOnFolderUpdate} />)
+    submitPdf()
+    await waitFor(() => expect(mockOnFolderUpdate).toHaveBeenCalledTimes(1))
+    const body = (global.fetch as jest.Mock).mock.calls[0][1].body as FormData
+    expect(body.get('apiKey')).toBe('')
+    expect(body.get('model')).toBe('openai/gpt-4o')
+  })
+
   it.each([
     ['', true],
     ['openai/gpt-4o', false],

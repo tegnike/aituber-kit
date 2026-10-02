@@ -15,6 +15,7 @@ import { z } from 'zod'
 import { AIService } from '@/features/constants/settings'
 import { isMultiModalModel } from '@/features/constants/aiModels'
 import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
+import type { PolicyGate } from '@/lib/accessPolicy/withAccessPolicy'
 import { routePolicies } from '@/lib/accessPolicy/routePolicies'
 
 // NOTE: createOpenAI/createAnthropic/createGoogleGenerativeAI はそれぞれ
@@ -268,7 +269,11 @@ export async function createSlideLine(
   return response.object as unknown as SlideLineResponse
 }
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  gate: PolicyGate
+) {
   const form = formidable({ multiples: true })
 
   form.parse(req, async (err, fields, files) => {
@@ -285,10 +290,21 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const file = Array.isArray(files.file) ? files.file[0] : files.file
     const folderName = getField('folderName')
     const aiService = getField('aiService')
-    const apiKey = getField('apiKey')
+    let apiKey = getField('apiKey')
     const model = getField('model')
     const selectLanguage = getField('selectLanguage')
     const enableMultiModal = getField('enableMultiModal') === 'true'
+
+    let usesServerSecret = false
+    if (aiService === 'api_route' && !apiKey) {
+      apiKey = process.env.API_ROUTE_KEY || process.env.API_ROUTE_API_KEY || ''
+      usesServerSecret = Boolean(apiKey)
+    }
+    if (!gate.guardServerSecret(usesServerSecret)) return
+    if (aiService === 'api_route' && !apiKey) {
+      res.status(400).json({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' })
+      return
+    }
 
     if (!file) {
       res.status(400).send('No file uploaded')
