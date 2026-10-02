@@ -186,6 +186,8 @@ const QuickStart = () => {
         return modelState.openrouterKey
       case 'orcarouter':
         return modelState.orcarouterKey
+      case 'api_route':
+        return modelState.api_routeKey
       case 'dify':
         return modelState.difyKey
       default:
@@ -233,6 +235,9 @@ const QuickStart = () => {
         break
       case 'orcarouter':
         settingsStore.setState({ orcarouterKey: value })
+        break
+      case 'api_route':
+        settingsStore.setState({ api_routeKey: value })
         break
       case 'dify':
         settingsStore.setState({ difyKey: value })
@@ -327,6 +332,19 @@ const QuickStart = () => {
                 value={modelState.selectAIModel}
                 onChange={(e) => handleModelChange(e.target.value)}
                 placeholder="openai/gpt-4o-mini"
+              />
+            </LabeledField>
+          </div>
+        )
+      case 'api_route':
+        return (
+          <div className={quickGridClassName}>
+            <LabeledField label={t('SelectModel')}>
+              <input
+                className={inputClassName}
+                value={modelState.selectAIModel}
+                onChange={(e) => handleModelChange(e.target.value)}
+                placeholder="gpt-6.1-sol"
               />
             </LabeledField>
           </div>

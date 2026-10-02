@@ -78,6 +78,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     else if (aiService === 'deepseek') apiKey = settings.deepseekKey
     else if (aiService === 'openrouter') apiKey = settings.openrouterKey
     else if (aiService === 'orcarouter') apiKey = settings.orcarouterKey
+    else if (aiService === 'api_route') apiKey = settings.api_routeKey
     else if (aiService === 'dify') apiKey = settings.difyKey
 
     if (!file || !folderName || !apiKey || !model) {

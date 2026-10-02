@@ -34,15 +34,18 @@ describe('useAIServiceHandlers', () => {
     })
   })
 
-  it('preserves the multimodal toggle for services whose model capability is user-controlled', () => {
-    const { result } = renderHook(() => useAIServiceHandlers())
+  it.each(['openrouter', 'api_route'] as const)(
+    'preserves the multimodal toggle for %s',
+    (service) => {
+      const { result } = renderHook(() => useAIServiceHandlers())
 
-    act(() => {
-      result.current.updateMultiModalModeForModel('openrouter', 'custom-model')
-    })
+      act(() => {
+        result.current.updateMultiModalModeForModel(service, 'custom-model')
+      })
 
-    expect(mockedSettingsStore.setState).not.toHaveBeenCalled()
-  })
+      expect(mockedSettingsStore.setState).not.toHaveBeenCalled()
+    }
+  )
 
   it('disables multimodal for unsupported predefined models', () => {
     const { result } = renderHook(() => useAIServiceHandlers())

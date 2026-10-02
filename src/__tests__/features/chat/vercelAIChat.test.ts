@@ -94,6 +94,29 @@ describe('vercelAIChat', () => {
   }
 
   describe('getVercelAIChatResponse', () => {
+    it('sends the selected API Route key and unmodified model ID', async () => {
+      const getState = settingsStore.getState as jest.Mock
+      getState.mockReturnValue({
+        ...getState(),
+        selectAIService: 'api_route',
+        api_routeKey: 'route-key',
+        selectAIModel: 'gpt-6.1-sol',
+      })
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ text: 'response' }),
+      })
+      await getVercelAIChatResponse(testMessages)
+      expect(mockFetch.mock.calls[0][0]).toBe('/api/ai/vercel')
+      expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toEqual(
+        expect.objectContaining({
+          aiService: 'api_route',
+          apiKey: 'route-key',
+          model: 'gpt-6.1-sol',
+        })
+      )
+    })
+
     it('正常なレスポンスを処理する', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
