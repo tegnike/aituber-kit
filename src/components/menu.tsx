@@ -268,17 +268,12 @@ export const Menu = () => {
   }, [gameCommentaryPlaying, showCapture])
 
   const toggleCapture = useCallback(() => {
-    const screenLightingWasEnabled =
-      settingsStore.getState().screenLightingEnabled
-    const screenLightingCaptureOwned =
-      menuStore.getState().screenLightingCaptureOwned
-
-    if (showCapture && screenLightingWasEnabled) {
+    if (showCapture && settingsStore.getState().screenLightingEnabled) {
       disableScreenLighting()
-      if (screenLightingCaptureOwned) return
     }
 
-    menuStore.setState(({ showCapture }) => ({ showCapture: !showCapture }))
+    // disableScreenLighting がキャプチャを閉じている場合があるため、押下時の値から反転する
+    menuStore.setState({ showCapture: !showCapture })
     menuStore.setState({ showWebcam: false }) // Captureを表示するときWebcamを非表示にする
     if (!showCapture) {
       homeStore.setState({ webcamStatus: false }) // Ensure webcam status is false when enabling capture

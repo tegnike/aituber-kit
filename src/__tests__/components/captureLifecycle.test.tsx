@@ -48,12 +48,13 @@ describe('Capture lifecycle', () => {
     menuStore.setState({
       showCapture: true,
       screenLightingCaptureOwned: false,
-      screenLightingPreviousDisplaySettings: null,
     })
     settingsStore.setState({
       hideVideoDisplay: true,
       useVideoAsBackground: true,
       modelType: 'vrm',
+      screenLightingEnabled: false,
+      gameCommentaryPlaying: false,
     })
 
     const { stream, track } = createMediaStreamMock()
@@ -101,13 +102,7 @@ describe('Capture lifecycle', () => {
   })
 
   it('integrates lighting-owned capture into the scene', async () => {
-    menuStore.setState({
-      screenLightingCaptureOwned: true,
-      screenLightingPreviousDisplaySettings: {
-        hideVideoDisplay: true,
-        useVideoAsBackground: true,
-      },
-    })
+    menuStore.setState({ screenLightingCaptureOwned: true })
     settingsStore.setState({ screenLightingEnabled: true })
 
     render(<Capture />)
@@ -125,13 +120,7 @@ describe('Capture lifecycle', () => {
   })
 
   it('does not integrate lighting capture for a non-VRM model', async () => {
-    menuStore.setState({
-      screenLightingCaptureOwned: true,
-      screenLightingPreviousDisplaySettings: {
-        hideVideoDisplay: true,
-        useVideoAsBackground: true,
-      },
-    })
+    menuStore.setState({ screenLightingCaptureOwned: true })
     settingsStore.setState({
       screenLightingEnabled: true,
       modelType: 'live2d',
@@ -145,19 +134,9 @@ describe('Capture lifecycle', () => {
     expect(screen.getByTestId('scene-integration')).toHaveTextContent('no')
   })
 
-  it('restores display settings when a lighting-owned capture is stopped', async () => {
-    menuStore.setState({
-      screenLightingCaptureOwned: true,
-      screenLightingPreviousDisplaySettings: {
-        hideVideoDisplay: true,
-        useVideoAsBackground: true,
-      },
-    })
-    settingsStore.setState({
-      screenLightingEnabled: true,
-      hideVideoDisplay: false,
-      useVideoAsBackground: false,
-    })
+  it('keeps display settings when a lighting-owned capture is stopped', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({ screenLightingEnabled: true })
     render(<Capture />)
 
     await waitFor(() => {
@@ -173,23 +152,12 @@ describe('Capture lifecycle', () => {
     expect(menuStore.getState()).toMatchObject({
       showCapture: false,
       screenLightingCaptureOwned: false,
-      screenLightingPreviousDisplaySettings: null,
     })
   })
 
-  it('restores display settings when lighting capture permission is denied', async () => {
-    menuStore.setState({
-      screenLightingCaptureOwned: true,
-      screenLightingPreviousDisplaySettings: {
-        hideVideoDisplay: true,
-        useVideoAsBackground: true,
-      },
-    })
-    settingsStore.setState({
-      screenLightingEnabled: true,
-      hideVideoDisplay: false,
-      useVideoAsBackground: false,
-    })
+  it('keeps display settings when lighting capture permission is denied', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({ screenLightingEnabled: true })
     Object.defineProperty(navigator, 'mediaDevices', {
       configurable: true,
       value: {
@@ -209,7 +177,26 @@ describe('Capture lifecycle', () => {
     expect(menuStore.getState()).toMatchObject({
       showCapture: false,
       screenLightingCaptureOwned: false,
-      screenLightingPreviousDisplaySettings: null,
+    })
+  })
+
+  it('closes a lighting-owned capture when stopped during game commentary', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({
+      screenLightingEnabled: true,
+      gameCommentaryPlaying: true,
+    })
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalled()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'stop source' }))
+
+    expect(settingsStore.getState().screenLightingEnabled).toBe(false)
+    expect(menuStore.getState()).toMatchObject({
+      showCapture: false,
+      screenLightingCaptureOwned: false,
     })
   })
 })

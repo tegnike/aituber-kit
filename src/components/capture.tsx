@@ -55,6 +55,7 @@ const Capture = () => {
 
     if (screenLightingCaptureOwned) {
       disableScreenLighting()
+      menuStore.setState({ showCapture: false })
       return
     }
 

@@ -18,7 +18,6 @@ describe('ScreenLightingSettings', () => {
       showCapture: false,
       showWebcam: true,
       screenLightingCaptureOwned: false,
-      screenLightingPreviousDisplaySettings: null,
     })
     homeStore.setState({ webcamStatus: true, captureStatus: false })
     settingsStore.setState({
@@ -26,32 +25,29 @@ describe('ScreenLightingSettings', () => {
       screenLightingStrength: 1,
       hideVideoDisplay: true,
       useVideoAsBackground: true,
+      gameCommentaryPlaying: false,
     })
   })
 
-  it('starts a dedicated capture and remembers the display settings', () => {
+  it('starts a dedicated capture without changing the display settings', () => {
     render(<ScreenLightingSettings enabled={false} strength={1} />)
 
     fireEvent.click(screen.getByTestId('screen-lighting-toggle'))
 
     expect(settingsStore.getState()).toMatchObject({
       screenLightingEnabled: true,
-      hideVideoDisplay: false,
-      useVideoAsBackground: false,
+      hideVideoDisplay: true,
+      useVideoAsBackground: true,
     })
     expect(menuStore.getState()).toMatchObject({
       showCapture: true,
       showWebcam: false,
       screenLightingCaptureOwned: true,
-      screenLightingPreviousDisplaySettings: {
-        hideVideoDisplay: true,
-        useVideoAsBackground: true,
-      },
     })
     expect(homeStore.getState().webcamStatus).toBe(false)
   })
 
-  it('restores the display settings when its dedicated capture is disabled', () => {
+  it('closes its dedicated capture and keeps the display settings when disabled', () => {
     const { rerender } = render(
       <ScreenLightingSettings enabled={false} strength={1} />
     )
@@ -68,7 +64,6 @@ describe('ScreenLightingSettings', () => {
     expect(menuStore.getState()).toMatchObject({
       showCapture: false,
       screenLightingCaptureOwned: false,
-      screenLightingPreviousDisplaySettings: null,
     })
   })
 
@@ -89,7 +84,36 @@ describe('ScreenLightingSettings', () => {
     expect(menuStore.getState()).toMatchObject({
       showCapture: true,
       screenLightingCaptureOwned: false,
-      screenLightingPreviousDisplaySettings: null,
+    })
+  })
+
+  it('keeps display settings changed while lighting is enabled', () => {
+    const { rerender } = render(
+      <ScreenLightingSettings enabled={false} strength={1} />
+    )
+    fireEvent.click(screen.getByTestId('screen-lighting-toggle'))
+    settingsStore.setState({ useVideoAsBackground: false })
+    rerender(<ScreenLightingSettings enabled={true} strength={1} />)
+
+    fireEvent.click(screen.getByTestId('screen-lighting-toggle'))
+
+    expect(settingsStore.getState().useVideoAsBackground).toBe(false)
+  })
+
+  it('keeps its dedicated capture open during game commentary', () => {
+    const { rerender } = render(
+      <ScreenLightingSettings enabled={false} strength={1} />
+    )
+    fireEvent.click(screen.getByTestId('screen-lighting-toggle'))
+    settingsStore.setState({ gameCommentaryPlaying: true })
+    rerender(<ScreenLightingSettings enabled={true} strength={1} />)
+
+    fireEvent.click(screen.getByTestId('screen-lighting-toggle'))
+
+    expect(settingsStore.getState().screenLightingEnabled).toBe(false)
+    expect(menuStore.getState()).toMatchObject({
+      showCapture: true,
+      screenLightingCaptureOwned: false,
     })
   })
 
