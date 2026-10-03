@@ -58,6 +58,8 @@ export const SENSITIVE_SETTINGS_KEYS = [
   'fireworksKey',
   'deepseekKey',
   'openrouterKey',
+  'orcarouterKey',
+  'apirouteKey',
   'lmstudioKey',
   'ollamaKey',
   'koeiromapKey',
