@@ -122,7 +122,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - DeepSeek
 - OpenRouter
 - OrcaRouter
-- [API Route](https://www.api-route.com)
+- API Route
 
 ### 対応音声合成エンジン
 
@@ -468,9 +468,3 @@ AITuberKitの発展にご協力いただき、ありがとうございます。�
 - この優先実装は商用ライセンスとは別の取り組みです。実装された機能を商用利用する場合は、別途商用ライセンスの取得が必要です。
 
 詳細については、support@aituberkit.com までお問い合わせください。
-
-### API Route の設定
-
-AI設定またはクイックスタートで「API Route」を選択し、[ダッシュボード](https://www.api-route.com/api-keys)で作成したAPIキーと、キーで利用可能なモデル識別子（例：`gpt-6.1-sol`）を入力します。モデル識別子は認証付きの `GET https://global.api-route.com/v1/models` で確認でき、接頭辞を付けずにそのまま使用します。推論には残高が必要です。画像対応モデルを使う場合のみ、マルチモーダルを有効にしてください。
-
-自分のサーバーで運用する場合、ブラウザにキーを設定する代わりにサーバー専用の `APIROUTE_API_KEY` を利用できます。サーバーキーへのアクセスには既存のアクセス制御が適用されます。
