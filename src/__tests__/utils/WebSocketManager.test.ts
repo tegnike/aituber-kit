@@ -132,7 +132,7 @@ describe('WebSocketManager', () => {
       const asyncConnect = jest.fn(
         () =>
           new Promise<WebSocket | null>((resolve) => {
-            resolveConnect = resolve as (ws: MockWebSocket) => void
+            resolveConnect = resolve as unknown as (ws: MockWebSocket) => void
           })
       )
       const manager = new WebSocketManager(mockT, handlers, asyncConnect)

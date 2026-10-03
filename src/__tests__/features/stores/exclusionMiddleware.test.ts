@@ -79,9 +79,11 @@ describe('exclusivityMiddleware', () => {
   })
 
   function setupMiddleware() {
-    const config = jest.fn((set: unknown, get: unknown) => {
-      return { wrappedSet: set, wrappedGet: get }
-    })
+    const config = jest.fn(
+      (set: (...args: unknown[]) => unknown, get: unknown) => {
+        return { wrappedSet: set, wrappedGet: get }
+      }
+    )
 
     const wrapped = exclusivityMiddleware(config as never)
     const result = wrapped(mockSet, mockGet, mockApi as never)

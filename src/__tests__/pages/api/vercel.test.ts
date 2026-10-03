@@ -282,7 +282,7 @@ describe('/api/ai/vercel handler', () => {
           maxTokens: 10,
         },
       })
-      req.socket.remoteAddress = '127.0.0.1'
+      Object.assign(req.socket, { remoteAddress: '127.0.0.1' })
 
       await handler(req as any, res as any)
 
@@ -321,7 +321,7 @@ describe('/api/ai/vercel handler', () => {
           maxTokens: 10,
         },
       })
-      req.socket.remoteAddress = '127.0.0.1'
+      Object.assign(req.socket, { remoteAddress: '127.0.0.1' })
 
       await handler(req as any, res as any)
 
@@ -349,7 +349,7 @@ describe('/api/ai/vercel handler', () => {
         maxTokens: 10,
       },
     })
-    req.socket.remoteAddress = '198.51.100.20'
+    Object.assign(req.socket, { remoteAddress: '198.51.100.20' })
 
     await handler(req as any, res as any)
 

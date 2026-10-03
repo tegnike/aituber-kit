@@ -133,9 +133,15 @@ describe('LipSync PCM16 streaming', () => {
         })
       ),
       createBufferSource: jest.fn(() => {
-        const source = {
+        const source: {
+          buffer: null
+          onended: (() => void) | null
+          connect: jest.Mock
+          start: jest.Mock
+          stop: jest.Mock
+        } = {
           buffer: null,
-          onended: null as (() => void) | null,
+          onended: null,
           connect: jest.fn(),
           start: jest.fn(),
           stop: jest.fn(() => source.onended?.()),

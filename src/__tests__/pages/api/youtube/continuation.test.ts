@@ -147,7 +147,7 @@ describe('/api/youtube/continuation handler', () => {
           localLlmUrl,
         }),
       })
-      req.socket.remoteAddress = '127.0.0.1'
+      Object.assign(req.socket, { remoteAddress: '127.0.0.1' })
 
       await handler(req as any, res as any)
 
@@ -172,7 +172,7 @@ describe('/api/youtube/continuation handler', () => {
         localLlmUrl: 'http://127.0.0.1:11434',
       }),
     })
-    req.socket.remoteAddress = '198.51.100.20'
+    Object.assign(req.socket, { remoteAddress: '198.51.100.20' })
 
     await handler(req as any, res as any)
 

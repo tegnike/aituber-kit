@@ -1,4 +1,5 @@
 import { createMocks } from 'node-mocks-http'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import uploadImage from '@/pages/api/upload-image'
 import { IMAGE_CONSTANTS } from '@/constants/images'
 import fs from 'fs'
@@ -29,7 +30,7 @@ describe('/api/upload-image', () => {
   })
 
   it('should reject non-POST requests', async () => {
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'GET',
     })
 
@@ -48,7 +49,7 @@ describe('/api/upload-image', () => {
     }
     formidable.default.mockReturnValue(mockForm)
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
     })
 
@@ -78,7 +79,7 @@ describe('/api/upload-image', () => {
     }
     formidable.default.mockReturnValue(mockForm)
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
     })
 
@@ -109,7 +110,7 @@ describe('/api/upload-image', () => {
     }
     formidable.default.mockReturnValue(mockForm)
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
     })
 
@@ -143,7 +144,7 @@ describe('/api/upload-image', () => {
     mockFs.existsSync.mockReturnValue(true)
     mockFs.promises.copyFile = jest.fn().mockResolvedValue(undefined)
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
     })
 
@@ -179,7 +180,7 @@ describe('/api/upload-image', () => {
     mockFs.existsSync.mockReturnValue(true)
     mockFs.promises.copyFile = jest.fn().mockResolvedValue(undefined)
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
     })
 
@@ -213,7 +214,7 @@ describe('/api/upload-image', () => {
       .fn()
       .mockRejectedValue(new Error('Copy failed'))
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'POST',
     })
 

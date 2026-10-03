@@ -69,7 +69,7 @@ jest.mock('@ai-sdk/google', () => ({
   },
 }))
 
-const mockStreamText = streamText as jest.MockedFunction<typeof streamText>
+const mockStreamText = streamText as unknown as jest.Mock
 const mockGenerateText = generateText as jest.MockedFunction<
   typeof generateText
 >

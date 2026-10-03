@@ -8,7 +8,14 @@ describe('clientTabLeadership', () => {
   it('randomUUIDが使えない環境でもTab IDを生成する', () => {
     expect(createClientTabId(null, 1234, 0.5)).toBe('tab-1234-i')
     expect(
-      createClientTabId({ randomUUID: () => 'native-uuid' }, 1234, 0.5)
+      createClientTabId(
+        { randomUUID: () => 'native-uuid' } as unknown as Pick<
+          Crypto,
+          'randomUUID'
+        >,
+        1234,
+        0.5
+      )
     ).toBe('native-uuid')
   })
 

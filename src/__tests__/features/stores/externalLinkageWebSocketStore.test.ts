@@ -16,11 +16,12 @@ jest.mock('@/utils/ExternalLinkageWebSocketManager', () => ({
   })),
 }))
 
+import type { TFunction } from 'i18next'
 import externalLinkageWebSocketStore from '@/features/stores/externalLinkageWebSocketStore'
 import { ExternalLinkageWebSocketManager } from '@/utils/ExternalLinkageWebSocketManager'
 
 describe('externalLinkageWebSocketStore', () => {
-  const mockT = jest.fn((key: string) => key)
+  const mockT = jest.fn((key: string) => key) as unknown as TFunction
   const mockHandlers = {
     onOpen: jest.fn(),
     onMessage: jest.fn(),

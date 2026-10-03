@@ -335,8 +335,12 @@ describe('messageSelectors', () => {
       }
 
       const result = messageSelectors.sanitizeMessageForStorage(message)
-      expect(result.content[0].text).toBe('テキストと画像')
-      expect(result.content[1].image).toBe('[image data omitted]')
+      const content = result.content as [
+        { type: 'text'; text: string },
+        { type: 'image'; image: string },
+      ]
+      expect(content[0].text).toBe('テキストと画像')
+      expect(content[1].image).toBe('[image data omitted]')
     })
 
     it('通常のテキストメッセージはそのまま返す', () => {

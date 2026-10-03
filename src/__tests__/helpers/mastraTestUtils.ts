@@ -63,3 +63,15 @@ export const baseExecuteParams = {
   abortSignal: new AbortController().signal,
   writer: {} as any,
 }
+
+/** ステップを共通パラメータで実行し、出力スキーマの型で結果を返す */
+export const executeStep = async <TOutput>(
+  step: {
+    outputSchema: {
+      readonly '~standard': { readonly types?: { readonly output: TOutput } }
+    }
+    execute: (params: any) => unknown
+  },
+  inputData: unknown
+): Promise<TOutput> =>
+  (await step.execute({ inputData, ...baseExecuteParams })) as TOutput

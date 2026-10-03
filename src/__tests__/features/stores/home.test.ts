@@ -47,7 +47,7 @@ describe('homeStore', () => {
 
   afterEach(() => {
     jest.restoreAllMocks()
-    delete (global as typeof globalThis & { fetch?: jest.Mock }).fetch
+    delete (global as { fetch?: unknown }).fetch
   })
 
   describe('chatProcessingCount', () => {

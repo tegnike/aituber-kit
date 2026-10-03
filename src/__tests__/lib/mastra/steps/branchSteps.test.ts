@@ -11,7 +11,7 @@ import { buildSleepStep } from '@/lib/mastra/steps/buildSleep'
 import { buildContinueNoCommentStep } from '@/lib/mastra/steps/buildContinueNoComment'
 import { buildDoNothingStep } from '@/lib/mastra/steps/buildDoNothing'
 import {
-  baseExecuteParams,
+  executeStep,
   buildEvaluateOutput,
 } from '../../../helpers/mastraTestUtils'
 
@@ -32,10 +32,7 @@ describe('branch steps', () => {
     it('returns process_messages action with incremented continuationCount', async () => {
       const input = buildEvaluateOutput({ continuationCount: 0 })
 
-      const result = await buildContinuationStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildContinuationStep, input)
 
       expect(result.action).toBe('process_messages')
       expect(result.messages).toBeDefined()
@@ -50,10 +47,7 @@ describe('branch steps', () => {
         systemPrompt: 'テスト用キャラクター設定',
       })
 
-      const result = await buildContinuationStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildContinuationStep, input)
 
       expect(result.messages![0].content).toContain('テスト用キャラクター設定')
     })
@@ -63,10 +57,7 @@ describe('branch steps', () => {
         promptContinuation: 'カスタム継続ガイドライン',
       })
 
-      const result = await buildContinuationStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildContinuationStep, input)
 
       expect(result.messages![0].content).toContain('カスタム継続ガイドライン')
     })
@@ -89,10 +80,7 @@ describe('branch steps', () => {
         ],
       })
 
-      const result = await selectBestCommentStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(selectBestCommentStep, input)
 
       expect(result.action).toBe('send_comment')
       expect(result.comment).toBe('いい天気だね')
@@ -112,10 +100,7 @@ describe('branch steps', () => {
         ],
       })
 
-      const result = await selectBestCommentStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(selectBestCommentStep, input)
 
       expect(result.action).toBe('send_comment')
       expect(result.comment).toBe('いい天気だね')
@@ -134,10 +119,7 @@ describe('branch steps', () => {
         ],
       })
 
-      const result = await selectBestCommentStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(selectBestCommentStep, input)
 
       expect(result.comment).toBe('明日は雨？')
       expect(result.userName).toBe('user2')
@@ -155,10 +137,7 @@ describe('branch steps', () => {
         ],
       })
 
-      const result = await selectBestCommentStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(selectBestCommentStep, input)
 
       expect(result.comment).toBe('明日は雨？')
       expect(result.userName).toBe('user2')
@@ -176,10 +155,7 @@ describe('branch steps', () => {
         promptSelectComment: 'カスタム選択プロンプト',
       })
 
-      await selectBestCommentStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      await executeStep(selectBestCommentStep, input)
 
       const callArgs = mockGenerateText.mock.calls[0][0] as any
       expect(callArgs.messages[0].role).toBe('system')
@@ -199,10 +175,7 @@ describe('branch steps', () => {
 
       const input = buildEvaluateOutput({ newNoCommentCount: 3 })
 
-      const result = await generateNewTopicStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(generateNewTopicStep, input)
 
       expect(result.action).toBe('process_messages')
       expect(result.messages).toBeDefined()
@@ -221,10 +194,7 @@ describe('branch steps', () => {
         promptNewTopic: 'カスタムトピック生成プロンプト',
       })
 
-      await generateNewTopicStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      await executeStep(generateNewTopicStep, input)
 
       const callArgs = mockGenerateText.mock.calls[0][0] as any
       expect(callArgs.messages[0].role).toBe('system')
@@ -240,10 +210,7 @@ describe('branch steps', () => {
 
       const input = buildEvaluateOutput({ newNoCommentCount: 3 })
 
-      const result = await generateNewTopicStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(generateNewTopicStep, input)
 
       expect(result.messages![0].content).toContain(
         '話題を「最近見た映画」に切り替える'
@@ -259,10 +226,7 @@ describe('branch steps', () => {
     it('returns sleep action with sleepMode=true', async () => {
       const input = buildEvaluateOutput({ newNoCommentCount: 6 })
 
-      const result = await buildSleepStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildSleepStep, input)
 
       expect(result.action).toBe('sleep')
       expect(result.messages).toBeDefined()
@@ -279,10 +243,7 @@ describe('branch steps', () => {
         promptSleep: 'カスタムスリープガイドライン',
       })
 
-      const result = await buildSleepStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildSleepStep, input)
 
       expect(result.messages![0].content).toContain(
         'カスタムスリープガイドライン'
@@ -298,10 +259,7 @@ describe('branch steps', () => {
     it('returns process_messages action', async () => {
       const input = buildEvaluateOutput({ newNoCommentCount: 1 })
 
-      const result = await buildContinueNoCommentStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildContinueNoCommentStep, input)
 
       expect(result.action).toBe('process_messages')
       expect(result.messages).toBeDefined()
@@ -316,10 +274,7 @@ describe('branch steps', () => {
         promptContinuation: 'カスタム継続ガイドライン',
       })
 
-      const result = await buildContinueNoCommentStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildContinueNoCommentStep, input)
 
       expect(result.messages![0].content).toContain('カスタム継続ガイドライン')
     })
@@ -336,10 +291,7 @@ describe('branch steps', () => {
         sleepMode: true,
       })
 
-      const result = await buildDoNothingStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildDoNothingStep, input)
 
       expect(result.action).toBe('do_nothing')
       expect(result.stateUpdates.noCommentCount).toBe(7)
@@ -353,10 +305,7 @@ describe('branch steps', () => {
         sleepMode: true,
       })
 
-      const result = await buildDoNothingStep.execute({
-        inputData: input,
-        ...baseExecuteParams,
-      } as any)
+      const result = await executeStep(buildDoNothingStep, input)
 
       expect(result.action).toBe('do_nothing')
       expect(result.stateUpdates.noCommentCount).toBe(8)

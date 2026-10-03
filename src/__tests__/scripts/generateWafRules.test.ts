@@ -15,6 +15,7 @@
 import { execFileSync } from 'child_process'
 import path from 'path'
 import { routePolicies } from '@/lib/accessPolicy/routePolicies'
+import type { RoutePolicy } from '@/lib/accessPolicy/types'
 
 type WafRule = {
   ref: string
@@ -137,7 +138,7 @@ describe('generate-waf-rules.mjs', () => {
   })
 
   it('derives challenge API paths from routePolicies waf.challenge flags', () => {
-    const expected = Object.values(routePolicies)
+    const expected = Object.values<RoutePolicy>(routePolicies)
       .filter((policy) => policy.waf?.challenge)
       .map((policy) => policy.path)
       .sort()
@@ -151,7 +152,7 @@ describe('generate-waf-rules.mjs', () => {
   })
 
   it('derives embed-allowed API paths from routePolicies waf.embedAllowed flags', () => {
-    const expected = Object.values(routePolicies)
+    const expected = Object.values<RoutePolicy>(routePolicies)
       .filter((policy) => policy.waf?.embedAllowed)
       .map((policy) => policy.path)
       .sort()

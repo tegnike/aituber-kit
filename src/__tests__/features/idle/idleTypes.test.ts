@@ -97,8 +97,11 @@ describe('Idle Mode Types', () => {
         idleDefaultEmotion: 'neutral',
         idleTimePeriodEnabled: false,
         idleTimePeriodMorning: 'おはようございます！',
+        idleTimePeriodMorningEmotion: 'happy',
         idleTimePeriodAfternoon: 'こんにちは！',
+        idleTimePeriodAfternoonEmotion: 'happy',
         idleTimePeriodEvening: 'こんばんは！',
+        idleTimePeriodEveningEmotion: 'happy',
         idleAiGenerationEnabled: false,
         idleAiPromptTemplate:
           '展示会の来場者に向けて、親しみやすい一言を生成してください。',

@@ -160,7 +160,7 @@ describe('useVoiceRecognition', () => {
     mockLiveTranscription.isListening = false
 
     // settingsStoreのモックをデフォルト状態に戻す
-    const mockSettingsStore = settingsStore as jest.Mock
+    const mockSettingsStore = settingsStore as unknown as jest.Mock
     mockSettingsStore.mockImplementation((selector) => {
       const state = {
         selectLanguage: 'ja',
@@ -273,7 +273,7 @@ describe('useVoiceRecognition', () => {
 
     it('1.1.4: マウント時useEffectがstale closureを防止すること', async () => {
       // continuousMicListeningModeをtrueに設定
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -312,7 +312,7 @@ describe('useVoiceRecognition', () => {
   describe('handleSpeakCompletionコールバックの安定化 (Task 2.1)', () => {
     it('2.1.1: handleSpeakCompletionがcurrentHookRef経由でstartListeningを呼び出すこと', async () => {
       // continuousMicListeningModeをtrueに設定
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -344,7 +344,7 @@ describe('useVoiceRecognition', () => {
 
     it('2.1.2: handleSpeakCompletionの依存配列にcurrentHookが含まれないこと', async () => {
       // continuousMicListeningModeをtrueに設定
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -413,7 +413,7 @@ describe('useVoiceRecognition', () => {
   describe('常時マイク入力モード監視useEffectの安定化 (Task 3.1)', () => {
     it('3.1.1: 依存配列にcurrentHookが含まれないこと（無限ループ防止）', async () => {
       // continuousMicListeningModeをtrueに設定
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -463,7 +463,7 @@ describe('useVoiceRecognition', () => {
     })
 
     it('3.1.2: currentHookRef経由でisListeningとstartListeningを使用すること', async () => {
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -499,7 +499,7 @@ describe('useVoiceRecognition', () => {
     })
 
     it('3.1.3: 依存配列がcontinuousMicListeningModeとspeechRecognitionModeのみであること', async () => {
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -649,7 +649,7 @@ describe('useVoiceRecognition', () => {
         noSpeechTimeout: 2,
         voiceInputShortcut: 'Control+Space',
       }
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) =>
         selector ? selector(state) : state
       )
@@ -1020,7 +1020,7 @@ describe('useVoiceRecognition', () => {
       expect(result.current.isListening).toBe(false)
 
       // whisperモードに変更
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -1040,7 +1040,7 @@ describe('useVoiceRecognition', () => {
     })
 
     it('realtimeAPIModeがONの場合にrealtimeAPIフックが使用されること', async () => {
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       mockSettingsStore.mockImplementation((selector) => {
         const state = {
           selectLanguage: 'ja',
@@ -1064,7 +1064,7 @@ describe('useVoiceRecognition', () => {
     })
 
     it('live-transcriptionモードではAltキーを離しても重複送信しないこと', async () => {
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       const state = {
         selectLanguage: 'ja',
         speechRecognitionMode: 'live-transcription',
@@ -1098,7 +1098,7 @@ describe('useVoiceRecognition', () => {
     })
 
     it('realtime API使用中は保存されたlive-transcription設定でAltキー送信を抑止しない', async () => {
-      const mockSettingsStore = settingsStore as jest.Mock
+      const mockSettingsStore = settingsStore as unknown as jest.Mock
       const state = {
         selectLanguage: 'ja',
         speechRecognitionMode: 'live-transcription',

@@ -1,4 +1,5 @@
 import { createMocks } from 'node-mocks-http'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import deleteImage from '@/pages/api/delete-image'
 import fs from 'fs'
 import path from 'path'
@@ -18,7 +19,7 @@ describe('/api/delete-image', () => {
   })
 
   it('should reject non-DELETE requests', async () => {
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'GET',
     })
 
@@ -31,7 +32,7 @@ describe('/api/delete-image', () => {
   })
 
   it('should reject requests without filename', async () => {
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'DELETE',
       body: {},
     })
@@ -45,7 +46,7 @@ describe('/api/delete-image', () => {
   })
 
   it('should reject path traversal attempts', async () => {
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'DELETE',
       body: {
         filename: '../../../etc/passwd',
@@ -63,7 +64,7 @@ describe('/api/delete-image', () => {
   it('should handle non-existent files', async () => {
     mockFs.existsSync.mockReturnValue(false)
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'DELETE',
       body: {
         filename: 'test.jpg',
@@ -82,7 +83,7 @@ describe('/api/delete-image', () => {
     mockFs.existsSync.mockReturnValue(true)
     mockFs.promises.unlink = jest.fn().mockResolvedValue(undefined)
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'DELETE',
       body: {
         filename: 'test.jpg',
@@ -106,7 +107,7 @@ describe('/api/delete-image', () => {
       .fn()
       .mockRejectedValue(new Error('Delete failed'))
 
-    const { req, res } = createMocks({
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
       method: 'DELETE',
       body: {
         filename: 'test.jpg',

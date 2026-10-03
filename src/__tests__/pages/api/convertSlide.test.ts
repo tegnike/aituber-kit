@@ -7,7 +7,6 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { TextDecoder, TextEncoder } from 'util'
 
 if (typeof global.TextEncoder === 'undefined') {
-  // @ts-expect-error – polyfill TextEncoder required by formidable dependencies
   global.TextEncoder = TextEncoder
 }
 if (typeof global.TextDecoder === 'undefined') {
@@ -78,7 +77,9 @@ describe('createSlideLine', () => {
 
   it('invokes OpenAI models and returns parsed object', async () => {
     const modelFactory = jest.fn().mockReturnValue('openai-model')
-    mockCreateOpenAI.mockReturnValue(modelFactory)
+    mockCreateOpenAI.mockReturnValue(
+      modelFactory as unknown as ReturnType<typeof createOpenAI>
+    )
     mockGenerateObject.mockResolvedValue({
       object: { line: 'line', notes: 'notes' },
     } as any)
@@ -107,7 +108,9 @@ describe('createSlideLine', () => {
     const anthropicFactory = jest
       .fn()
       .mockReturnValue('anthropic-model-instance')
-    mockCreateAnthropic.mockReturnValue(anthropicFactory)
+    mockCreateAnthropic.mockReturnValue(
+      anthropicFactory as unknown as ReturnType<typeof createAnthropic>
+    )
     mockGenerateObject.mockResolvedValue({
       object: { line: 'a', notes: 'b' },
     } as any)

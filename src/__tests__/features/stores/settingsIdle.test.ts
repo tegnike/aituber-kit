@@ -5,7 +5,7 @@
  */
 
 import settingsStore from '@/features/stores/settings'
-import { DEFAULT_IDLE_CONFIG } from '@/features/idle/idleTypes'
+import { DEFAULT_IDLE_CONFIG, type IdlePhrase } from '@/features/idle/idleTypes'
 
 describe('Settings Store - Idle Mode Settings', () => {
   beforeEach(() => {
@@ -47,7 +47,7 @@ describe('Settings Store - Idle Mode Settings', () => {
     })
 
     it('should be updatable with phrases', () => {
-      const phrases = [
+      const phrases: IdlePhrase[] = [
         { id: '1', text: 'こんにちは！', emotion: 'happy', order: 0 },
         { id: '2', text: 'いらっしゃいませ！', emotion: 'neutral', order: 1 },
       ]

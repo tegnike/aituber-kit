@@ -14,11 +14,12 @@ jest.mock('@/utils/WebSocketManager', () => ({
   })),
 }))
 
+import type { TFunction } from 'i18next'
 import webSocketStore from '@/features/stores/websocketStore'
 import { WebSocketManager } from '@/utils/WebSocketManager'
 
 describe('webSocketStore', () => {
-  const mockT = jest.fn((key: string) => key)
+  const mockT = jest.fn((key: string) => key) as unknown as TFunction
   const mockHandlers = {
     onOpen: jest.fn(),
     onMessage: jest.fn(),
