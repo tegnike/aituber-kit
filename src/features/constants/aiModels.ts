@@ -359,6 +359,11 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
       reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
     },
     {
+      name: 'gemini-3.5-flash-lite',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
       name: 'gemini-3.1-pro-preview',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high'],
@@ -647,6 +652,8 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
   ],
   deepseek: [{ name: 'deepseek-chat' }, { name: 'deepseek-reasoner' }],
   openrouter: [],
+  orcarouter: [],
+  apiroute: [],
   lmstudio: [],
   ollama: [],
   dify: [],
@@ -838,9 +845,15 @@ export function isMultiModalModelWithToggle(
 ): boolean {
   // 一部のサービスではモデル単位での判定ができないため、トグルボタンの状態のみで判定
   if (
-    ['azure', 'openrouter', 'lmstudio', 'ollama', 'custom-api'].includes(
-      service
-    )
+    [
+      'azure',
+      'openrouter',
+      'orcarouter',
+      'apiroute',
+      'lmstudio',
+      'ollama',
+      'custom-api',
+    ].includes(service)
   ) {
     return enableMultiModal
   }
@@ -879,6 +892,7 @@ export function isMultiModalAvailable(
 
 export const googleSearchGroundingModels = [
   'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
   'gemini-3.1-pro-preview',
   'gemini-3.1-pro-preview-customtools',
   'gemini-3.1-flash-lite-preview',

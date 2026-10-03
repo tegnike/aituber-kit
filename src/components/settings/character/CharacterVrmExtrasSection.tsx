@@ -4,10 +4,13 @@ import homeStore from '@/features/stores/home'
 import settingsStore, { PoseConfigItem } from '@/features/stores/settings'
 import { ToggleSwitch } from '../../toggleSwitch'
 import { PoseConfigSettings } from './PoseConfigSettings'
+import { ScreenLightingSettings } from './ScreenLightingSettings'
 import { settingsControlClass } from '@/components/settings/formStyles'
 
 interface CharacterVrmExtrasSectionProps {
   lightingIntensity: number
+  screenLightingEnabled: boolean
+  screenLightingStrength: number
   poseAdjustMode: boolean
   thinkingPoseEnabled: boolean
   thinkingPoseId: string
@@ -16,6 +19,8 @@ interface CharacterVrmExtrasSectionProps {
 
 export const CharacterVrmExtrasSection = ({
   lightingIntensity,
+  screenLightingEnabled,
+  screenLightingStrength,
   poseAdjustMode,
   thinkingPoseEnabled,
   thinkingPoseId,
@@ -52,6 +57,11 @@ export const CharacterVrmExtrasSection = ({
           className="mt-2 mb-4 input-range"
         />
       </div>
+
+      <ScreenLightingSettings
+        enabled={screenLightingEnabled}
+        strength={screenLightingStrength}
+      />
 
       <PoseConfigSettings />
 

@@ -7,7 +7,7 @@ jest.mock('ai', () => ({
 // Import after mock
 import { evaluateStateStep } from '@/lib/mastra/steps/evaluateState'
 import {
-  baseExecuteParams,
+  executeStep,
   buildWorkflowInput as buildInput,
 } from '../../../helpers/mastraTestUtils'
 
@@ -33,10 +33,7 @@ describe('evaluateStateStep', () => {
       ],
     })
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.hasComments).toBe(true)
     expect(result.newNoCommentCount).toBe(0)
@@ -49,10 +46,7 @@ describe('evaluateStateStep', () => {
 
     const input = buildInput({ noCommentCount: 2 })
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.shouldContinue).toBe(false)
     expect(result.newNoCommentCount).toBe(3)
@@ -65,10 +59,7 @@ describe('evaluateStateStep', () => {
 
     const input = buildInput()
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.shouldContinue).toBe(true)
     expect(result.newNoCommentCount).toBe(1) // minimum 1
@@ -77,10 +68,7 @@ describe('evaluateStateStep', () => {
   it('skips continuation check in sleep mode', async () => {
     const input = buildInput({ sleepMode: true })
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.shouldContinue).toBe(false)
     expect(mockGenerateText).not.toHaveBeenCalled()
@@ -89,10 +77,7 @@ describe('evaluateStateStep', () => {
   it('skips continuation check when continuationCount >= 1', async () => {
     const input = buildInput({ continuationCount: 1 })
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.shouldContinue).toBe(false)
     expect(mockGenerateText).not.toHaveBeenCalled()
@@ -105,10 +90,7 @@ describe('evaluateStateStep', () => {
 
     const input = buildInput()
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.shouldContinue).toBe(false)
   })
@@ -118,10 +100,7 @@ describe('evaluateStateStep', () => {
 
     const input = buildInput()
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.shouldContinue).toBe(false)
     expect(result.newNoCommentCount).toBe(1)
@@ -130,10 +109,7 @@ describe('evaluateStateStep', () => {
   it('passes through input data', async () => {
     const input = buildInput({ noCommentCount: 5 })
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.chatLog).toEqual(input.chatLog)
     expect(result.systemPrompt).toBe(input.systemPrompt)
@@ -147,10 +123,7 @@ describe('evaluateStateStep', () => {
       chatLog: [{ role: 'user', content: 'hello' }],
     })
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(mockGenerateText).not.toHaveBeenCalled()
     expect(result.shouldContinue).toBe(false)
@@ -164,10 +137,7 @@ describe('evaluateStateStep', () => {
 
     const input = buildInput({ promptEvaluate: 'カスタム評価プロンプト' })
 
-    await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    await executeStep(evaluateStateStep, input)
 
     expect(mockGenerateText).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -187,10 +157,7 @@ describe('evaluateStateStep', () => {
       promptSleep: 'スリーププロンプト',
     })
 
-    const result = await evaluateStateStep.execute({
-      inputData: input,
-      ...baseExecuteParams,
-    } as any)
+    const result = await executeStep(evaluateStateStep, input)
 
     expect(result.promptContinuation).toBe('継続プロンプト')
     expect(result.promptSelectComment).toBe('選択プロンプト')

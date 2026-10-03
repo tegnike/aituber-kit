@@ -33,8 +33,13 @@ const Home = () => {
   const captureStatus = homeStore((s) => s.captureStatus)
   const backgroundImageUrl = settingsStore((s) => s.backgroundImageUrl)
   const useVideoAsBackground = settingsStore((s) => s.useVideoAsBackground)
+  const screenLightingEnabled = settingsStore((s) => s.screenLightingEnabled)
+  const modelType = settingsStore((s) => s.modelType)
+  const screenLightingActive = modelType === 'vrm' && screenLightingEnabled
+  const useCapturedScene =
+    captureStatus && (useVideoAsBackground || screenLightingActive)
   const bgUrl =
-    (webcamStatus || captureStatus) && useVideoAsBackground
+    (webcamStatus && useVideoAsBackground) || useCapturedScene
       ? ''
       : backgroundImageUrl === 'green'
         ? ''
@@ -44,7 +49,6 @@ const Home = () => {
   const externalControlEnabled = Boolean(
     clientId && process.env.NEXT_PUBLIC_AITUBERKIT_API_KEY
   )
-  const modelType = settingsStore((s) => s.modelType)
   const { isLive2DEnabled } = useLive2DEnabled()
   const characterPreset1 = settingsStore((s) => s.characterPreset1)
   const characterPreset2 = settingsStore((s) => s.characterPreset2)
@@ -106,7 +110,7 @@ const Home = () => {
   }, [characterPresets, t])
 
   const backgroundStyle =
-    (webcamStatus || captureStatus) && useVideoAsBackground
+    (webcamStatus && useVideoAsBackground) || useCapturedScene
       ? {}
       : backgroundImageUrl === 'green'
         ? { backgroundColor: '#00FF00' }

@@ -1,12 +1,12 @@
 import { generateObject } from 'ai'
 import { isMultiModalModel } from '@/features/constants/aiModels'
 import { createOpenAI } from '@ai-sdk/openai'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { TextDecoder, TextEncoder } from 'util'
 
 if (typeof global.TextEncoder === 'undefined') {
-  // @ts-expect-error – polyfill TextEncoder required by formidable dependencies
   global.TextEncoder = TextEncoder
 }
 if (typeof global.TextDecoder === 'undefined') {
@@ -26,6 +26,10 @@ jest.mock('ai', () => {
 
 jest.mock('@ai-sdk/openai', () => ({
   createOpenAI: jest.fn(),
+}))
+
+jest.mock('@ai-sdk/openai-compatible', () => ({
+  createOpenAICompatible: jest.fn(),
 }))
 
 jest.mock('@ai-sdk/anthropic', () => ({
@@ -73,7 +77,9 @@ describe('createSlideLine', () => {
 
   it('invokes OpenAI models and returns parsed object', async () => {
     const modelFactory = jest.fn().mockReturnValue('openai-model')
-    mockCreateOpenAI.mockReturnValue(modelFactory)
+    mockCreateOpenAI.mockReturnValue(
+      modelFactory as unknown as ReturnType<typeof createOpenAI>
+    )
     mockGenerateObject.mockResolvedValue({
       object: { line: 'line', notes: 'notes' },
     } as any)
@@ -102,7 +108,9 @@ describe('createSlideLine', () => {
     const anthropicFactory = jest
       .fn()
       .mockReturnValue('anthropic-model-instance')
-    mockCreateAnthropic.mockReturnValue(anthropicFactory)
+    mockCreateAnthropic.mockReturnValue(
+      anthropicFactory as unknown as ReturnType<typeof createAnthropic>
+    )
     mockGenerateObject.mockResolvedValue({
       object: { line: 'a', notes: 'b' },
     } as any)
@@ -129,5 +137,60 @@ describe('createSlideLine', () => {
     await expect(
       createSlideLine(baseImage, 'key', 'google', 'gemini', 'English', null)
     ).rejects.toThrow('does not support multimodal features')
+  })
+
+  it('uses API Route Chat Completions for a user-selected vision model', async () => {
+    mockIsMultiModalModel.mockReturnValue(false)
+    const modelFactory = jest.fn().mockReturnValue('api-route-vision-model')
+    jest.mocked(createOpenAICompatible).mockReturnValue(modelFactory as any)
+    mockGenerateObject.mockResolvedValue({
+      object: { line: 'a', notes: 'b' },
+    } as any)
+
+    const result = await createSlideLine(
+      baseImage,
+      'api-route-key',
+      'apiroute',
+      'openai/gpt-4o',
+      'English',
+      null,
+      true
+    )
+
+    expect(createOpenAICompatible).toHaveBeenCalledWith({
+      name: 'apiroute',
+      baseURL: 'https://global.api-route.com/v1',
+      apiKey: 'api-route-key',
+    })
+    expect(modelFactory).toHaveBeenCalledWith('openai/gpt-4o')
+    expect(mockCreateOpenAI).not.toHaveBeenCalled()
+    expect(mockGenerateObject).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: 'api-route-vision-model',
+        messages: expect.arrayContaining([
+          expect.objectContaining({
+            role: 'user',
+            content: expect.arrayContaining([
+              expect.objectContaining({ type: 'image', image: baseImage }),
+            ]),
+          }),
+        ]),
+      })
+    )
+    expect(result).toEqual({ line: 'a', notes: 'b' })
+  })
+
+  it('rejects API Route conversion when multimodal is disabled', async () => {
+    await expect(
+      createSlideLine(
+        baseImage,
+        'key',
+        'apiroute',
+        'openai/gpt-4o',
+        'English',
+        null
+      )
+    ).rejects.toThrow('does not support multimodal features')
+    expect(createOpenAICompatible).not.toHaveBeenCalled()
   })
 })

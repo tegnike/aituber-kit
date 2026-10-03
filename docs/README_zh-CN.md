@@ -121,6 +121,8 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 - xAI
 - DeepSeek
 - OpenRouter
+- OrcaRouter
+- API Route
 
 ### 支持的语音合成引擎
 

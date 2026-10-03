@@ -6,10 +6,21 @@ import menuStore from '@/features/stores/menu'
 import settingsStore from '@/features/stores/settings'
 
 jest.mock('@/components/common/VideoDisplay', () => ({
-  VideoDisplay: ({ onStopSource }: { onStopSource?: () => void }) => (
-    <button type="button" onClick={onStopSource}>
-      stop source
-    </button>
+  VideoDisplay: ({
+    onStopSource,
+    integrateIntoScene,
+  }: {
+    onStopSource?: () => void
+    integrateIntoScene?: boolean
+  }) => (
+    <>
+      <button type="button" onClick={onStopSource}>
+        stop source
+      </button>
+      <span data-testid="scene-integration">
+        {integrateIntoScene ? 'yes' : 'no'}
+      </span>
+    </>
   ),
 }))
 
@@ -34,10 +45,16 @@ describe('Capture lifecycle', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     homeStore.setState({ captureStatus: false })
-    menuStore.setState({ showCapture: true })
+    menuStore.setState({
+      showCapture: true,
+      screenLightingCaptureOwned: false,
+    })
     settingsStore.setState({
       hideVideoDisplay: true,
       useVideoAsBackground: true,
+      modelType: 'vrm',
+      screenLightingEnabled: false,
+      gameCommentaryPlaying: false,
     })
 
     const { stream, track } = createMediaStreamMock()
@@ -82,5 +99,104 @@ describe('Capture lifecycle', () => {
     expect(menuStore.getState().showCapture).toBe(false)
     expect(settingsStore.getState().hideVideoDisplay).toBe(false)
     expect(settingsStore.getState().useVideoAsBackground).toBe(false)
+  })
+
+  it('integrates lighting-owned capture into the scene', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({ screenLightingEnabled: true })
+
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalled()
+    })
+    expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalledWith(
+      expect.objectContaining({
+        selfBrowserSurface: 'exclude',
+        monitorTypeSurfaces: 'exclude',
+      })
+    )
+    expect(screen.getByTestId('scene-integration')).toHaveTextContent('yes')
+  })
+
+  it('does not integrate lighting capture for a non-VRM model', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({
+      screenLightingEnabled: true,
+      modelType: 'live2d',
+    })
+
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalled()
+    })
+    expect(screen.getByTestId('scene-integration')).toHaveTextContent('no')
+  })
+
+  it('keeps display settings when a lighting-owned capture is stopped', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({ screenLightingEnabled: true })
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalled()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'stop source' }))
+
+    expect(settingsStore.getState()).toMatchObject({
+      screenLightingEnabled: false,
+      hideVideoDisplay: true,
+      useVideoAsBackground: true,
+    })
+    expect(menuStore.getState()).toMatchObject({
+      showCapture: false,
+      screenLightingCaptureOwned: false,
+    })
+  })
+
+  it('keeps display settings when lighting capture permission is denied', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({ screenLightingEnabled: true })
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: {
+        getDisplayMedia: jest.fn().mockRejectedValue(new Error('denied')),
+      },
+    })
+
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(settingsStore.getState()).toMatchObject({
+        screenLightingEnabled: false,
+        hideVideoDisplay: true,
+        useVideoAsBackground: true,
+      })
+    })
+    expect(menuStore.getState()).toMatchObject({
+      showCapture: false,
+      screenLightingCaptureOwned: false,
+    })
+  })
+
+  it('closes a lighting-owned capture when stopped during game commentary', async () => {
+    menuStore.setState({ screenLightingCaptureOwned: true })
+    settingsStore.setState({
+      screenLightingEnabled: true,
+      gameCommentaryPlaying: true,
+    })
+    render(<Capture />)
+
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getDisplayMedia).toHaveBeenCalled()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'stop source' }))
+
+    expect(settingsStore.getState().screenLightingEnabled).toBe(false)
+    expect(menuStore.getState()).toMatchObject({
+      showCapture: false,
+      screenLightingCaptureOwned: false,
+    })
   })
 })

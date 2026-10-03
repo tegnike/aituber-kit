@@ -59,6 +59,16 @@ describe('settings file export and import', () => {
     expect(data.settings).not.toHaveProperty('kioskPasscode')
   })
 
+  it('treats every persisted API key as sensitive', () => {
+    const data = createSettingsFileData(false)
+
+    const leakedKeys = Object.keys(data.settings).filter((key) =>
+      /Key$/.test(key)
+    )
+
+    expect(leakedKeys).toEqual([])
+  })
+
   it('exports sensitive values when a complete backup is requested', () => {
     const data = createSettingsFileData(true)
 

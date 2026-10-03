@@ -103,7 +103,10 @@ describe('external presentation API', () => {
         contentHash: expect.stringMatching(/^sha256:/),
       })
     )
-    expect(fetched._json.presentation.sections[0].slides[0]).toEqual(
+    const fetchedBody = fetched._json as {
+      presentation: { sections: { slides: unknown[] }[] }
+    }
+    expect(fetchedBody.presentation.sections[0].slides[0]).toEqual(
       expect.objectContaining({
         narration: 'Bunkerkidsを紹介します。',
         speechText: 'バンカーキッズを紹介します。',

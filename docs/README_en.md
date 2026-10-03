@@ -121,6 +121,8 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - xAI
 - DeepSeek
 - OpenRouter
+- OrcaRouter
+- API Route
 
 ### Supported Voice Synthesis Engines
 

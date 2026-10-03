@@ -144,7 +144,7 @@ test.each([
     const res = createMockRes()
     await handler(createMockReq({ body }), res)
     expect(res._status).toBe(400)
-    expect(res._json.errorCode).toBe(errorCode)
+    expect((res._json as { errorCode: string }).errorCode).toBe(errorCode)
     expect(JSON.stringify(res._json)).not.toContain('private-text')
   }
 )

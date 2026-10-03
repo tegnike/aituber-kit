@@ -3,7 +3,7 @@ import { Message } from '@/features/messages/messages'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createXai } from '@ai-sdk/xai'
-import { createGoogleGenerativeAI } from '@ai-sdk/google'
+import { createGoogleGenerativeAI, google } from '@ai-sdk/google'
 import { createCohere } from '@ai-sdk/cohere'
 import { createMistral } from '@ai-sdk/mistral'
 import { createAzure } from '@ai-sdk/azure'
@@ -102,6 +102,24 @@ export function createAIRegistry(
         apiKey: params.apiKey,
       }) as unknown as ReturnType<typeof createOpenAI>
       break
+    case 'orcarouter':
+      // createOpenAIはResponses API（/v1/responses）を使うため、
+      // Chat Completions APIで通信するOpenAI互換プロバイダーとして登録する
+      providers.orcarouter = createOpenAICompatible({
+        name: 'orcarouter',
+        baseURL: 'https://api.orcarouter.ai/v1',
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
+    case 'apiroute':
+      // createOpenAIはResponses API（/v1/responses）を使うため、
+      // Chat Completions APIで通信するOpenAI互換プロバイダーとして登録する
+      providers.apiroute = createOpenAICompatible({
+        name: 'apiroute',
+        baseURL: 'https://global.api-route.com/v1',
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
     case 'lmstudio':
       providers.lmstudio = createOpenAICompatible({
         name: 'lmstudio',
@@ -128,22 +146,9 @@ export function createAIRegistry(
 export function getLanguageModel(
   registry: AIRegistry,
   service: VercelAIService,
-  model: string,
-  options?: Record<string, unknown>
+  model: string
 ): LanguageModel {
   const modelId = `${service}:${model}`
-
-  if (options && Object.keys(options).length > 0) {
-    // オプションがある場合（例：Google Search Grounding）
-    // registryから直接プロバイダーを取得してオプション付きでモデルを作成
-    const provider = (registry as unknown as Record<string, CallableFunction>)[
-      service
-    ]
-    if (provider) {
-      return provider(model, options) as LanguageModel
-    }
-  }
-
   return registry.languageModel(modelId as `${string}:${string}`)
 }
 
@@ -157,7 +162,7 @@ export async function streamAiText({
   messages,
   temperature,
   maxTokens,
-  options = {},
+  searchGrounding = false,
   providerOptions,
 }: {
   model: string
@@ -166,17 +171,23 @@ export async function streamAiText({
   messages: Message[]
   temperature: number
   maxTokens: number
-  options?: Record<string, unknown>
+  searchGrounding?: boolean
   providerOptions?: Record<string, Record<string, unknown>>
 }) {
   try {
-    const languageModel = getLanguageModel(registry, service, model, options)
+    const languageModel = getLanguageModel(registry, service, model)
+
+    // Google検索グラウンディング（@ai-sdk/google v2以降はprovider toolとして渡す）
+    const searchEnabled = service === 'google' && searchGrounding
 
     const result = await streamText({
       model: languageModel,
       messages: messages as ModelMessage[],
       temperature,
       maxOutputTokens: maxTokens,
+      ...(searchEnabled && {
+        tools: { google_search: google.tools.googleSearch({}) },
+      }),
       ...(providerOptions && {
         providerOptions: providerOptions as Parameters<
           typeof streamText

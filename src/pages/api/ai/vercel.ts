@@ -13,7 +13,6 @@ import {
   generateAiText,
 } from '@/lib/api-services/vercelAi'
 import { buildReasoningProviderOptions } from '@/lib/api-services/providerOptionsBuilder'
-import { googleSearchGroundingModels } from '@/features/constants/aiModels'
 import { pipeResponse } from '@/utils/pipeResponse'
 import { withAccessPolicy } from '@/lib/accessPolicy/withAccessPolicy'
 import type { PolicyGate } from '@/lib/accessPolicy/withAccessPolicy'
@@ -42,7 +41,6 @@ async function handler(
     azureEndpoint,
     stream,
     useSearchGrounding,
-    dynamicRetrievalThreshold,
     temperature = 1.0,
     maxTokens = 4096,
     reasoningMode = false,
@@ -135,27 +133,13 @@ async function handler(
     // メッセージの修正
     const modifiedMessages = modifyMessages(aiService, model, messages)
 
-    // Google検索接地オプションの設定
+    // Google検索グラウンディング
+    // Gemini 2.0以降は検索するかどうかをモデル自身が判断するため、
+    // dynamicRetrievalThreshold（Gemini 1.5用）は使わない
     const isUseSearchGrounding =
       aiService === 'google' &&
-      useSearchGrounding &&
+      Boolean(useSearchGrounding) &&
       modifiedMessages.every((msg) => typeof msg.content === 'string')
-
-    let options: Record<string, unknown> = {}
-    if (isUseSearchGrounding) {
-      options = {
-        useSearchGrounding: true,
-        ...(dynamicRetrievalThreshold !== undefined &&
-          modifiedModel &&
-          googleSearchGroundingModels.includes(
-            modifiedModel as (typeof googleSearchGroundingModels)[number]
-          ) && {
-            dynamicRetrievalConfig: {
-              dynamicThreshold: dynamicRetrievalThreshold,
-            },
-          }),
-      }
-    }
 
     // 推論モードのproviderOptionsを構築
     const providerOptions = buildReasoningProviderOptions(
@@ -177,7 +161,7 @@ async function handler(
         messages: modifiedMessages,
         temperature,
         maxTokens,
-        options,
+        searchGrounding: isUseSearchGrounding,
         providerOptions,
       })
     } else {

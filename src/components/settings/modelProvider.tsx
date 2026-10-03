@@ -10,6 +10,8 @@ import { OpenAIConfig } from './modelProvider/OpenAIConfig'
 import { GoogleConfig } from './modelProvider/GoogleConfig'
 import { AzureConfig } from './modelProvider/AzureConfig'
 import { OpenRouterConfig } from './modelProvider/OpenRouterConfig'
+import { OrcaRouterConfig } from './modelProvider/OrcaRouterConfig'
+import { APIRouteConfig } from './modelProvider/APIRouteConfig'
 import { MultiModalToggle } from './modelProvider/MultiModalToggle'
 import { useModelProviderState } from './modelProvider/hooks/useModelProviderState'
 import { useAIServiceHandlers } from './modelProvider/hooks/useAIServiceHandlers'
@@ -86,6 +88,24 @@ const ModelProvider = () => {
         return (
           <OpenRouterConfig
             openrouterKey={state.openrouterKey}
+            selectAIModel={state.selectAIModel}
+            enableMultiModal={state.enableMultiModal}
+          />
+        )
+
+      case 'orcarouter':
+        return (
+          <OrcaRouterConfig
+            orcarouterKey={state.orcarouterKey}
+            selectAIModel={state.selectAIModel}
+            enableMultiModal={state.enableMultiModal}
+          />
+        )
+
+      case 'apiroute':
+        return (
+          <APIRouteConfig
+            apirouteKey={state.apirouteKey}
             selectAIModel={state.selectAIModel}
             enableMultiModal={state.enableMultiModal}
           />
