@@ -27,7 +27,7 @@ export const aiServiceOptions: AIServiceConfig[] = [
   { value: 'deepseek', label: 'DeepSeek' },
   { value: 'openrouter', label: 'OpenRouter' },
   { value: 'orcarouter', label: 'OrcaRouter' },
-  { value: 'api_route', label: 'API Route' },
+  { value: 'apiroute', label: 'API Route' },
   { value: 'lmstudio', label: 'LM Studio' },
   { value: 'ollama', label: 'Ollama' },
   { value: 'dify', label: 'Dify' },
@@ -149,8 +149,8 @@ export const getServiceConfigByKey = (
     showMultiModalToggle: true,
     customModelValidation: false,
   },
-  api_route: {
-    value: 'api_route',
+  apiroute: {
+    value: 'apiroute',
     label: 'API Route',
     keyLabel: t('APIRouteAPIKeyLabel', 'API Route API Key'),
     keyPlaceholder: 'sk-...',

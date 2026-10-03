@@ -36,7 +36,7 @@ export const useModelProviderState = () => {
   const deepseekKey = settingsStore((s) => s.deepseekKey)
   const openrouterKey = settingsStore((s) => s.openrouterKey)
   const orcarouterKey = settingsStore((s) => s.orcarouterKey)
-  const api_routeKey = settingsStore((s) => s.api_routeKey)
+  const apirouteKey = settingsStore((s) => s.apirouteKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
@@ -117,7 +117,7 @@ export const useModelProviderState = () => {
     deepseekKey,
     openrouterKey,
     orcarouterKey,
-    api_routeKey,
+    apirouteKey,
     maxPastMessages,
     temperature,
     maxTokens,

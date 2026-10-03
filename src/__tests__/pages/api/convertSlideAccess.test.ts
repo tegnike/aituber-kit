@@ -54,8 +54,8 @@ describe('API Route slide conversion access', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     process.env = { ...originalEnv }
-    delete process.env.API_ROUTE_KEY
-    delete process.env.API_ROUTE_API_KEY
+    delete process.env.APIROUTE_KEY
+    delete process.env.APIROUTE_API_KEY
     process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'disabled'
   })
 
@@ -65,7 +65,7 @@ describe('API Route slide conversion access', () => {
 
   const convert = async (
     apiKey = '',
-    aiService = 'api_route',
+    aiService = 'apiroute',
     authorization = ''
   ) => {
     let parsed: Promise<unknown> = Promise.resolve()
@@ -96,7 +96,7 @@ describe('API Route slide conversion access', () => {
     return res
   }
 
-  it.each(['API_ROUTE_API_KEY', 'API_ROUTE_KEY'])(
+  it.each(['APIROUTE_API_KEY', 'APIROUTE_KEY'])(
     'resolves %s only on the server',
     async (envName) => {
       process.env[envName] = 'server-only-test-key'
@@ -112,14 +112,14 @@ describe('API Route slide conversion access', () => {
     }
   )
 
-  it.each(['api_route', 'openai'])(
+  it.each(['apiroute', 'openai'])(
     'preserves client-key requests for %s when server secrets are disabled',
     async (service) => {
-      process.env.API_ROUTE_API_KEY = 'unused-server-key'
+      process.env.APIROUTE_API_KEY = 'unused-server-key'
       const res = await convert('client-test-key', service)
       expect(res._getStatusCode()).toBe(200)
       expect(
-        service === 'api_route' ? createOpenAICompatible : createOpenAI
+        service === 'apiroute' ? createOpenAICompatible : createOpenAI
       ).toHaveBeenCalledWith(
         expect.objectContaining({ apiKey: 'client-test-key' })
       )
@@ -129,7 +129,7 @@ describe('API Route slide conversion access', () => {
   it.each(['disabled', 'protected'])(
     'blocks unauthorized server-key use in %s mode before reading the PDF',
     async (mode) => {
-      process.env.API_ROUTE_API_KEY = 'server-only-test-key'
+      process.env.APIROUTE_API_KEY = 'server-only-test-key'
       process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = mode
       process.env.AITUBERKIT_SERVER_SECRET_TOKEN = 'access-token'
       const res = await convert()
@@ -140,10 +140,10 @@ describe('API Route slide conversion access', () => {
   )
 
   it('allows authorized server-key requests in protected mode', async () => {
-    process.env.API_ROUTE_API_KEY = 'server-only-test-key'
+    process.env.APIROUTE_API_KEY = 'server-only-test-key'
     process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'protected'
     process.env.AITUBERKIT_SERVER_SECRET_TOKEN = 'access-token'
-    const res = await convert('', 'api_route', 'Bearer access-token')
+    const res = await convert('', 'apiroute', 'Bearer access-token')
     expect(res._getStatusCode()).toBe(200)
   })
 

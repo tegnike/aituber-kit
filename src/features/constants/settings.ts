@@ -18,7 +18,7 @@ export type VercelCloudAIService =
   | 'deepseek'
   | 'openrouter'
   | 'orcarouter'
-  | 'api_route'
+  | 'apiroute'
   | 'lmstudio'
   | 'ollama'
   | 'custom-api'
@@ -45,7 +45,7 @@ export const isVercelCloudAIService = (
     'deepseek',
     'openrouter',
     'orcarouter',
-    'api_route',
+    'apiroute',
   ]
   return cloudServices.includes(service as VercelCloudAIService)
 }
@@ -80,7 +80,7 @@ export const AI_SERVICES = [
   'deepseek',
   'openrouter',
   'orcarouter',
-  'api_route',
+  'apiroute',
   'lmstudio',
   'ollama',
   'custom-api',
@@ -102,7 +102,7 @@ export interface AIServiceConfig {
   fireworks: { key: string; model: string }
   openrouter: { key: string; model: string }
   orcarouter: { key: string; model: string }
-  api_route: { key: string; model: string }
+  apiroute: { key: string; model: string }
   dify: {
     key: string
     url: string

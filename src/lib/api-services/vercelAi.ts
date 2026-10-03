@@ -111,11 +111,11 @@ export function createAIRegistry(
         apiKey: params.apiKey,
       }) as unknown as ReturnType<typeof createOpenAI>
       break
-    case 'api_route':
+    case 'apiroute':
       // createOpenAIはResponses API（/v1/responses）を使うため、
       // Chat Completions APIで通信するOpenAI互換プロバイダーとして登録する
-      providers.api_route = createOpenAICompatible({
-        name: 'api_route',
+      providers.apiroute = createOpenAICompatible({
+        name: 'apiroute',
         baseURL: 'https://global.api-route.com/v1',
         apiKey: params.apiKey,
       }) as unknown as ReturnType<typeof createOpenAI>

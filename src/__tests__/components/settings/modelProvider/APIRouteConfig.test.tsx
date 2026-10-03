@@ -19,7 +19,7 @@ describe('APIRouteConfig', () => {
   const renderConfig = () =>
     render(
       <APIRouteConfig
-        api_routeKey="route-key"
+        apirouteKey="route-key"
         selectAIModel="gpt-6.1-sol"
         enableMultiModal={false}
       />
@@ -31,7 +31,7 @@ describe('APIRouteConfig', () => {
     expect(keyInput).toHaveAttribute('type', 'password')
     fireEvent.change(keyInput, { target: { value: 'new-route-key' } })
     expect(settingsStore.setState).toHaveBeenCalledWith({
-      api_routeKey: 'new-route-key',
+      apirouteKey: 'new-route-key',
     })
     expect(
       screen.getByRole('link', { name: 'API Route Dashboard' })

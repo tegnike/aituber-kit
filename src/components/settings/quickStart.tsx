@@ -186,8 +186,8 @@ const QuickStart = () => {
         return modelState.openrouterKey
       case 'orcarouter':
         return modelState.orcarouterKey
-      case 'api_route':
-        return modelState.api_routeKey
+      case 'apiroute':
+        return modelState.apirouteKey
       case 'dify':
         return modelState.difyKey
       default:
@@ -236,8 +236,8 @@ const QuickStart = () => {
       case 'orcarouter':
         settingsStore.setState({ orcarouterKey: value })
         break
-      case 'api_route':
-        settingsStore.setState({ api_routeKey: value })
+      case 'apiroute':
+        settingsStore.setState({ apirouteKey: value })
         break
       case 'dify':
         settingsStore.setState({ difyKey: value })
@@ -336,7 +336,7 @@ const QuickStart = () => {
             </LabeledField>
           </div>
         )
-      case 'api_route':
+      case 'apiroute':
         return (
           <div className={quickGridClassName}>
             <LabeledField label={t('SelectModel')}>

@@ -176,7 +176,7 @@ export async function createSlideLine(
 
   // マルチモーダル対応のチェック
   const supportsMultiModal =
-    aiService === 'api_route'
+    aiService === 'apiroute'
       ? enableMultiModal && !!model
       : isMultiModalModel(aiService as AIService, model)
   if (!supportsMultiModal) {
@@ -187,9 +187,9 @@ export async function createSlideLine(
     openai: () => createOpenAI({ apiKey }),
     anthropic: () => createAnthropic({ apiKey }),
     google: () => createGoogleGenerativeAI({ apiKey }),
-    api_route: () =>
+    apiroute: () =>
       createOpenAICompatible({
-        name: 'api_route',
+        name: 'apiroute',
         baseURL: 'https://global.api-route.com/v1',
         apiKey,
       }),
@@ -296,12 +296,12 @@ async function handler(
     const enableMultiModal = getField('enableMultiModal') === 'true'
 
     let usesServerSecret = false
-    if (aiService === 'api_route' && !apiKey) {
-      apiKey = process.env.API_ROUTE_KEY || process.env.API_ROUTE_API_KEY || ''
+    if (aiService === 'apiroute' && !apiKey) {
+      apiKey = process.env.APIROUTE_KEY || process.env.APIROUTE_API_KEY || ''
       usesServerSecret = Boolean(apiKey)
     }
     if (!gate.guardServerSecret(usesServerSecret)) return
-    if (aiService === 'api_route' && !apiKey) {
+    if (aiService === 'apiroute' && !apiKey) {
       res.status(400).json({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' })
       return
     }

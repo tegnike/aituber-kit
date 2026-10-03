@@ -147,7 +147,7 @@ describe('createSlideLine', () => {
     const result = await createSlideLine(
       baseImage,
       'api-route-key',
-      'api_route',
+      'apiroute',
       'openai/gpt-4o',
       'English',
       null,
@@ -155,7 +155,7 @@ describe('createSlideLine', () => {
     )
 
     expect(createOpenAICompatible).toHaveBeenCalledWith({
-      name: 'api_route',
+      name: 'apiroute',
       baseURL: 'https://global.api-route.com/v1',
       apiKey: 'api-route-key',
     })
@@ -182,7 +182,7 @@ describe('createSlideLine', () => {
       createSlideLine(
         baseImage,
         'key',
-        'api_route',
+        'apiroute',
         'openai/gpt-4o',
         'English',
         null

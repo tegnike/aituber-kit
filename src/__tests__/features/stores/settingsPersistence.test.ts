@@ -113,16 +113,16 @@ describe('settingsStore persistence', () => {
     process.env.NEXT_PUBLIC_ALWAYS_OVERRIDE_WITH_ENV_VARIABLES = 'false'
     const settingsStore = loadStore()
     settingsStore.setState({
-      selectAIService: 'api_route',
+      selectAIService: 'apiroute',
       selectAIModel: 'gpt-6.1-sol',
-      api_routeKey: 'browser-route-key',
+      apirouteKey: 'browser-route-key',
     })
     const reloadedStore = loadStore()
     expect(reloadedStore.getState()).toEqual(
       expect.objectContaining({
-        selectAIService: 'api_route',
+        selectAIService: 'apiroute',
         selectAIModel: 'gpt-6.1-sol',
-        api_routeKey: 'browser-route-key',
+        apirouteKey: 'browser-route-key',
       })
     )
   })

@@ -102,10 +102,10 @@ const ModelProvider = () => {
           />
         )
 
-      case 'api_route':
+      case 'apiroute':
         return (
           <APIRouteConfig
-            api_routeKey={state.api_routeKey}
+            apirouteKey={state.apirouteKey}
             selectAIModel={state.selectAIModel}
             enableMultiModal={state.enableMultiModal}
           />

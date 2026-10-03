@@ -6,13 +6,13 @@ import { MultiModalToggle } from './MultiModalToggle'
 import { settingsControlClass } from '@/components/settings/formStyles'
 
 interface APIRouteConfigProps {
-  api_routeKey: string
+  apirouteKey: string
   selectAIModel: string
   enableMultiModal: boolean
 }
 
 export const APIRouteConfig = ({
-  api_routeKey,
+  apirouteKey,
   selectAIModel,
   enableMultiModal,
 }: APIRouteConfigProps) => {
@@ -26,8 +26,8 @@ export const APIRouteConfig = ({
     <>
       <ApiKeyInput
         label={t('APIRouteAPIKeyLabel', 'API Route API Key')}
-        value={api_routeKey}
-        onChange={(value) => settingsStore.setState({ api_routeKey: value })}
+        value={apirouteKey}
+        onChange={(value) => settingsStore.setState({ apirouteKey: value })}
         linkUrl="https://www.api-route.com/api-keys"
         linkLabel={t('APIRouteDashboardLink', 'API Route Dashboard')}
       />

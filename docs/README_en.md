@@ -470,4 +470,4 @@ For details, please contact support@aituberkit.com.
 
 Select **API Route** in AI settings or Quick Start. Enter an API key from the [dashboard](https://www.api-route.com/api-keys) and a model ID available to that key, for example `gpt-6.1-sol`. Check model IDs using authenticated `GET https://global.api-route.com/v1/models`; enter the returned ID without adding a provider prefix. Inference requires account credit. Enable multimodal only when using an image-capable model.
 
-For a self-hosted deployment, you can set the server-only `API_ROUTE_API_KEY` instead of entering a key in the browser. Existing access controls apply to requests using the server key.
+For a self-hosted deployment, you can set the server-only `APIROUTE_API_KEY` instead of entering a key in the browser. Existing access controls apply to requests using the server key.

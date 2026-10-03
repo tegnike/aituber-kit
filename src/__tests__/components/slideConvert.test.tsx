@@ -26,7 +26,7 @@ jest.mock('@/features/stores/settings', () => ({
       fireworksKey: '',
       deepseekKey: '',
       openrouterKey: '',
-      api_routeKey: 'api-route-test-key',
+      apirouteKey: 'api-route-test-key',
       difyKey: '',
     })),
     setState: jest.fn(),
@@ -50,13 +50,13 @@ jest.mock('react-i18next', () => ({
 // Mock aiModels
 jest.mock('@/features/constants/aiModels', () => ({
   getDefaultModel: jest.fn((service) =>
-    service === 'api_route' ? '' : 'gpt-4o'
+    service === 'apiroute' ? '' : 'gpt-4o'
   ),
   getMultiModalModels: jest.fn((service) =>
-    service === 'api_route' ? [] : ['gpt-4o', 'gpt-4o-mini']
+    service === 'apiroute' ? [] : ['gpt-4o', 'gpt-4o-mini']
   ),
   isMultiModalAvailable: jest.fn((service, _model, enabled) =>
-    service === 'api_route' ? enabled : true
+    service === 'apiroute' ? enabled : true
   ),
 }))
 
@@ -153,7 +153,7 @@ describe('SlideConvert', () => {
   const useApiRoute = (model = 'openai/gpt-4o', enableMultiModal = true) => {
     mockSettingsStore.mockImplementation((selector) =>
       selector({
-        selectAIService: 'api_route',
+        selectAIService: 'apiroute',
         selectLanguage: 'ja',
         selectAIModel: model,
         enableMultiModal,
@@ -194,7 +194,7 @@ describe('SlideConvert', () => {
       body: expect.any(FormData),
     })
     const body = (global.fetch as jest.Mock).mock.calls[0][1].body as FormData
-    expect(body.get('aiService')).toBe('api_route')
+    expect(body.get('aiService')).toBe('apiroute')
     expect(body.get('apiKey')).toBe('api-route-test-key')
     expect(body.get('model')).toBe('google/gemini-2.5-flash')
     expect(body.get('enableMultiModal')).toBe('true')
@@ -217,7 +217,7 @@ describe('SlideConvert', () => {
     const currentSettings = settingsStore.getState()
     jest.mocked(settingsStore.getState).mockReturnValueOnce({
       ...currentSettings,
-      api_routeKey: '',
+      apirouteKey: '',
     })
     global.fetch = jest.fn().mockResolvedValue({ ok: true })
     render(<SlideConvert onFolderUpdate={mockOnFolderUpdate} />)

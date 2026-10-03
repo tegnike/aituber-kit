@@ -34,7 +34,7 @@ describe('useAIServiceHandlers', () => {
     })
   })
 
-  it.each(['openrouter', 'api_route'] as const)(
+  it.each(['openrouter', 'apiroute'] as const)(
     'preserves the multimodal toggle for %s',
     (service) => {
       const { result } = renderHook(() => useAIServiceHandlers())

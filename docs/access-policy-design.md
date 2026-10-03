@@ -149,7 +149,7 @@ interface RoutePolicy {
 | `/api/whisper`                                | `bodyParser: false`。multipart手動パース後でないと `openaiKey` が得られない                                                                   |
 | `/api/stylebertvits2`                         | `STYLEBERTVITS2_API_KEY` の解決が「サーバー設定URL使用時のみ」に条件結合 + RunPod専用例外。URL検証もルート内の既存実装を維持                  |
 | `/api/difyChat`                               | 実装時に判明（移行エージェントの等価性検証で検出）: `apiKey` の解決が「クライアントURL不使用時のみ」に条件結合しており pairs では非等価になる |
-| `/api/convertSlide`                           | multipart手動パース後に `aiService` が得られ、`api_route` かつ `apiKey` 未指定の場合のみ `API_ROUTE_KEY` / `API_ROUTE_API_KEY` を使う         |
+| `/api/convertSlide`                           | multipart手動パース後に `aiService` が得られ、`apiroute` かつ `apiKey` 未指定の場合のみ `APIROUTE_KEY` / `APIROUTE_API_KEY` を使う            |
 
 ### 4.2 withAccessPolicy（エントリポイント）
 
@@ -239,7 +239,7 @@ resources列の略記: **SS**=server-secret, **SU**=server-url, **FR**=fs-read, 
 | /api/azureOpenAITTS           | POST      | SS                 | pairs: apiKey→AZURE_TTS_KEY, endpoint→AZURE_TTS_ENDPOINT         | none                                                | —                |
 | /api/cartesia                 | POST      | SS                 | pairs: apiKey→CARTESIA_API_KEY, voiceId→CARTESIA_VOICE_ID        | none                                                | —                |
 | /api/convertMarkdown          | POST      | FR                 | none                                                             | in-route                                            | —                |
-| /api/convertSlide             | POST      | FW, SS             | dynamic（api_routeのみapiKey未指定時にサーバーキー）             | deny                                                | —                |
+| /api/convertSlide             | POST      | FW, SS             | dynamic（apirouteのみapiKey未指定時にサーバーキー）              | deny                                                | —                |
 | /api/delete-image             | DELETE    | FW                 | none                                                             | deny                                                | —                |
 | /api/difyChat                 | POST      | SS, SU             | dynamic（apiKey解決が「クライアントURL不使用時のみ」に条件結合） | none                                                | —                |
 | /api/elevenLabs               | POST      | SS                 | pairs: apiKey→ELEVENLABS_API_KEY, voiceId→ELEVENLABS_VOICE_ID    | none                                                | —                |

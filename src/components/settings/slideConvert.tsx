@@ -29,7 +29,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
 
   useEffect(() => {
     const defaultModel =
-      aiService === 'api_route' ? selectAIModel : getDefaultModel(aiService)
+      aiService === 'apiroute' ? selectAIModel : getDefaultModel(aiService)
     setModel(defaultModel)
   }, [aiService, selectAIModel])
 
@@ -79,13 +79,13 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     else if (aiService === 'deepseek') apiKey = settings.deepseekKey
     else if (aiService === 'openrouter') apiKey = settings.openrouterKey
     else if (aiService === 'orcarouter') apiKey = settings.orcarouterKey
-    else if (aiService === 'api_route') apiKey = settings.api_routeKey
+    else if (aiService === 'apiroute') apiKey = settings.apirouteKey
     else if (aiService === 'dify') apiKey = settings.difyKey
 
     if (
       !file ||
       !folderName ||
-      (!apiKey && aiService !== 'api_route') ||
+      (!apiKey && aiService !== 'apiroute') ||
       !model
     ) {
       addToast({
@@ -105,7 +105,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     formData.append('apiKey', apiKey)
     formData.append('model', model)
     formData.append('selectLanguage', selectLanguage)
-    if (aiService === 'api_route') {
+    if (aiService === 'apiroute') {
       formData.append('enableMultiModal', String(enableMultiModal))
     }
 
@@ -174,7 +174,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
           className={settingsControlClass.medium}
         />
         <div className="my-4 font-bold">{t('PdfConvertModelSelect')}</div>
-        {aiService === 'api_route' ? (
+        {aiService === 'apiroute' ? (
           <input
             type="text"
             aria-label={t('PdfConvertModelSelect')}

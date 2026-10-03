@@ -180,8 +180,8 @@ describe('/api/ai/vercel handler', () => {
 
   describe('API Route credentials', () => {
     beforeEach(() => {
-      delete process.env.API_ROUTE_KEY
-      delete process.env.API_ROUTE_API_KEY
+      delete process.env.APIROUTE_KEY
+      delete process.env.APIROUTE_API_KEY
       mockModifyMessages.mockReturnValue([
         { role: 'user', content: 'hi' },
       ] as any)
@@ -196,7 +196,7 @@ describe('/api/ai/vercel handler', () => {
         body: {
           messages: [],
           apiKey,
-          aiService: 'api_route',
+          aiService: 'apiroute',
           model,
           stream: false,
         },
@@ -212,7 +212,7 @@ describe('/api/ai/vercel handler', () => {
     })
 
     it('guards a server key using the existing access policy', async () => {
-      process.env.API_ROUTE_API_KEY = 'server-route-key'
+      process.env.APIROUTE_API_KEY = 'server-route-key'
       const { req, res } = request()
       await handler(req as any, res as any)
       expect(res._getStatusCode()).toBe(403)
@@ -221,27 +221,27 @@ describe('/api/ai/vercel handler', () => {
     })
 
     it('uses the server key when access is explicitly allowed', async () => {
-      process.env.API_ROUTE_API_KEY = 'server-route-key'
+      process.env.APIROUTE_API_KEY = 'server-route-key'
       process.env.AITUBERKIT_SERVER_SECRET_ACCESS_MODE = 'unprotected'
       const { req, res } = request()
       await handler(req as any, res as any)
       expect(res._getStatusCode()).toBe(200)
       expect(mockCreateAIRegistry).toHaveBeenCalledWith(
-        'api_route',
+        'apiroute',
         expect.objectContaining({ apiKey: 'server-route-key' })
       )
       expect(mockGenerateAiText).toHaveBeenCalledWith(
-        expect.objectContaining({ service: 'api_route', model: 'gpt-6.1-sol' })
+        expect.objectContaining({ service: 'apiroute', model: 'gpt-6.1-sol' })
       )
     })
 
     it('prefers the user key over the server key', async () => {
-      process.env.API_ROUTE_API_KEY = 'server-route-key'
+      process.env.APIROUTE_API_KEY = 'server-route-key'
       const { req, res } = request('user-route-key')
       await handler(req as any, res as any)
       expect(res._getStatusCode()).toBe(200)
       expect(mockCreateAIRegistry).toHaveBeenCalledWith(
-        'api_route',
+        'apiroute',
         expect.objectContaining({ apiKey: 'user-route-key' })
       )
     })

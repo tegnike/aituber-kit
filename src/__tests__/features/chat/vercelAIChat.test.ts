@@ -98,8 +98,8 @@ describe('vercelAIChat', () => {
       const getState = settingsStore.getState as jest.Mock
       getState.mockReturnValue({
         ...getState(),
-        selectAIService: 'api_route',
-        api_routeKey: 'route-key',
+        selectAIService: 'apiroute',
+        apirouteKey: 'route-key',
         selectAIModel: 'gpt-6.1-sol',
       })
       mockFetch.mockResolvedValueOnce({
@@ -110,7 +110,7 @@ describe('vercelAIChat', () => {
       expect(mockFetch.mock.calls[0][0]).toBe('/api/ai/vercel')
       expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toEqual(
         expect.objectContaining({
-          aiService: 'api_route',
+          aiService: 'apiroute',
           apiKey: 'route-key',
           model: 'gpt-6.1-sol',
         })

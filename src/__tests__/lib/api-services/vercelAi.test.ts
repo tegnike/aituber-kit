@@ -122,14 +122,14 @@ describe('vercelAi service helpers', () => {
     })
 
     it('routes API Route models unchanged through the compatible registry', () => {
-      const registry = createAIRegistry('api_route', { apiKey: 'route-key' })
+      const registry = createAIRegistry('apiroute', { apiKey: 'route-key' })
       expect(createOpenAICompatible).toHaveBeenCalledWith({
-        name: 'api_route',
+        name: 'apiroute',
         baseURL: 'https://global.api-route.com/v1',
         apiKey: 'route-key',
       })
-      getLanguageModel(registry as any, 'api_route', 'gpt-6.1-sol')
-      expect(mockLanguageModel).toHaveBeenCalledWith('api_route:gpt-6.1-sol')
+      getLanguageModel(registry as any, 'apiroute', 'gpt-6.1-sol')
+      expect(mockLanguageModel).toHaveBeenCalledWith('apiroute:gpt-6.1-sol')
     })
 
     it('returns null for custom-api service', () => {

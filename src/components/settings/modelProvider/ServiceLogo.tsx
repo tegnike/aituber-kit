@@ -15,7 +15,7 @@ const aiServiceLogos: Record<AIService, string> = {
   deepseek: '/images/ai-logos/deepseek.svg',
   openrouter: '/images/ai-logos/openrouter.svg',
   orcarouter: '/images/ai-logos/orcarouter.svg',
-  api_route: '/images/ai-logos/api-route.png',
+  apiroute: '/images/ai-logos/api-route.png',
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',
