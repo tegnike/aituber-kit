@@ -588,7 +588,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     const strength = parseFloat(
       process.env.NEXT_PUBLIC_SCREEN_LIGHTING_STRENGTH || '1.0'
     )
-    return Number.isFinite(strength) ? strength : 1.0
+    return Number.isFinite(strength) ? Math.min(Math.max(strength, 0), 2) : 1.0
   })(),
   poseAdjustMode: false,
 
