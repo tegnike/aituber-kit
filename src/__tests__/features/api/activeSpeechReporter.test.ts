@@ -84,7 +84,7 @@ describe('createActiveSpeechStatusCoordinator', () => {
   it('retries initialization when the initial speech delivery fails', async () => {
     const activeSpeech = { id: 'speech-1', text: '最初の発話です。' }
     const reportActiveSpeech = jest
-      .fn<Promise<boolean>, [typeof activeSpeech]>()
+      .fn<Promise<boolean>, [typeof activeSpeech | null]>()
       .mockResolvedValueOnce(false)
       .mockResolvedValueOnce(true)
     const coordinator = createActiveSpeechStatusCoordinator({

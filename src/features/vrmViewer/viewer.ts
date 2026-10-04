@@ -5,6 +5,7 @@ import { buildUrl } from '@/utils/buildUrl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import settingsStore from '@/features/stores/settings'
 import { reportViewerError } from '@/components/common/ErrorBoundary'
+import type { ScreenLightingSample } from './screenLighting'
 
 /**
  * three.jsを使った3Dビューワー
@@ -23,6 +24,7 @@ export class Viewer {
   private _cameraControls?: OrbitControls
   private _directionalLight?: THREE.DirectionalLight
   private _ambientLight?: THREE.AmbientLight
+  private _screenLightingActive = false
   private _loadVrmRequestId = 0
 
   constructor() {
@@ -304,6 +306,88 @@ export class Viewer {
    * ライトの強度を更新する
    */
   public updateLightingIntensity(intensity: number) {
+    if (this._directionalLight) {
+      this._directionalLight.intensity = 1.8 * intensity
+    }
+    if (this._ambientLight) {
+      this._ambientLight.intensity = 1.2 * intensity
+    }
+  }
+
+  /**
+   * 画面キャプチャから得た色と明るさをVRMのライトへ滑らかに反映する。
+   */
+  public updateScreenLighting(sample: ScreenLightingSample, strength: number) {
+    if (!this._directionalLight || !this._ambientLight) return
+
+    this._screenLightingActive = true
+
+    const effectStrength = THREE.MathUtils.clamp(strength, 0, 2)
+    const colorMix = THREE.MathUtils.clamp(effectStrength * 0.65, 0, 1)
+    const brightnessMix = THREE.MathUtils.clamp(effectStrength * 0.7, 0, 1)
+    const baseIntensity = settingsStore.getState().lightingIntensity
+    const ambientSource = new THREE.Color(
+      sample.ambientColor.r,
+      sample.ambientColor.g,
+      sample.ambientColor.b
+    ).convertSRGBToLinear()
+    const keySource = new THREE.Color(
+      sample.keyColor.r,
+      sample.keyColor.g,
+      sample.keyColor.b
+    ).convertSRGBToLinear()
+    const targetAmbientColor = new THREE.Color(0xffffff).lerp(
+      ambientSource,
+      colorMix
+    )
+    const targetKeyColor = new THREE.Color(0xffffff).lerp(keySource, colorMix)
+    const targetAmbientIntensity =
+      1.2 *
+      baseIntensity *
+      THREE.MathUtils.lerp(
+        1,
+        0.35 + THREE.MathUtils.clamp(sample.luminance, 0, 1) * 1.45,
+        brightnessMix
+      )
+    const targetKeyIntensity =
+      1.8 *
+      baseIntensity *
+      THREE.MathUtils.lerp(
+        1,
+        0.25 + THREE.MathUtils.clamp(sample.keyLuminance, 0, 1) * 1.75,
+        brightnessMix
+      )
+    const targetDirection = new THREE.Vector3(
+      sample.direction.x * 1.4,
+      0.7 + sample.direction.y * 0.7,
+      1
+    ).normalize()
+
+    this._ambientLight.color.lerp(targetAmbientColor, 0.38)
+    this._directionalLight.color.lerp(targetKeyColor, 0.38)
+    this._ambientLight.intensity = THREE.MathUtils.lerp(
+      this._ambientLight.intensity,
+      targetAmbientIntensity,
+      0.32
+    )
+    this._directionalLight.intensity = THREE.MathUtils.lerp(
+      this._directionalLight.intensity,
+      targetKeyIntensity,
+      0.32
+    )
+    this._directionalLight.position.lerp(targetDirection, 0.28).normalize()
+  }
+
+  /** 画面連動を止めた時に通常の白色照明へ戻す。 */
+  public resetScreenLighting() {
+    if (!this._screenLightingActive) return
+
+    this._screenLightingActive = false
+    const intensity = settingsStore.getState().lightingIntensity
+    this._directionalLight?.color.set(0xffffff)
+    this._ambientLight?.color.set(0xffffff)
+    this._directionalLight?.position.set(1, 1, 1).normalize()
+
     if (this._directionalLight) {
       this._directionalLight.intensity = 1.8 * intensity
     }

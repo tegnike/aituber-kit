@@ -40,6 +40,8 @@ describe('aiModels', () => {
     'fireworks',
     'deepseek',
     'openrouter',
+    'orcarouter',
+    'apiroute',
     'lmstudio',
     'ollama',
     'dify',
@@ -49,6 +51,8 @@ describe('aiModels', () => {
   const emptyServices: AIService[] = [
     'azure',
     'openrouter',
+    'orcarouter',
+    'apiroute',
     'lmstudio',
     'ollama',
     'dify',
@@ -222,6 +226,8 @@ describe('aiModels', () => {
     const bypassServices: AIService[] = [
       'azure',
       'openrouter',
+      'orcarouter',
+      'apiroute',
       'lmstudio',
       'ollama',
       'custom-api',

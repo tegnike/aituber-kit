@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run type check
+        run: npm run typecheck
+
       - name: Run ESLint
         run: |
           npm run lint

@@ -19,7 +19,8 @@ const mockSpeakCharacter = jest.fn(
   }
 )
 jest.mock('@/features/messages/speakCharacter', () => ({
-  speakCharacter: (...args: unknown[]) => mockSpeakCharacter(...args),
+  speakCharacter: (...args: Parameters<typeof mockSpeakCharacter>) =>
+    mockSpeakCharacter(...args),
 }))
 
 // Mock SpeakQueue

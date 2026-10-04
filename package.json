@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
     "electron": "wait-on http://localhost:3000 && electron ./electron.mjs",
     "desktop": "NEXT_PUBLIC_BACKGROUND_IMAGE_PATH=\"\" run-p dev electron",
     "test": "jest",

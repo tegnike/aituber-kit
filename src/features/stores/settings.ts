@@ -77,6 +77,8 @@ interface APIKeys {
   fireworksKey: string
   deepseekKey: string
   openrouterKey: string
+  orcarouterKey: string
+  apirouteKey: string
   lmstudioKey: string
   ollamaKey: string
   koeiromapKey: string
@@ -214,6 +216,8 @@ interface Character {
     z: number
   }
   lightingIntensity: number
+  screenLightingEnabled: boolean
+  screenLightingStrength: number
   poseAdjustMode: boolean
   selectedPNGTuberPath: string
   pngTuberSensitivity: number
@@ -368,6 +372,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   difyKey: '',
   deepseekKey: '',
   openrouterKey: '',
+  orcarouterKey: '',
+  apirouteKey: '',
   lmstudioKey: '',
   ollamaKey: '',
   koeiromapKey: process.env.NEXT_PUBLIC_KOEIROMAP_KEY || '',
@@ -577,6 +583,13 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   })(),
   lightingIntensity:
     parseFloat(process.env.NEXT_PUBLIC_LIGHTING_INTENSITY || '1.0') || 1.0,
+  screenLightingEnabled: false,
+  screenLightingStrength: (() => {
+    const strength = parseFloat(
+      process.env.NEXT_PUBLIC_SCREEN_LIGHTING_STRENGTH || '1.0'
+    )
+    return Number.isFinite(strength) ? Math.min(Math.max(strength, 0), 2) : 1.0
+  })(),
   poseAdjustMode: false,
 
   // General
@@ -1139,6 +1152,8 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   difyKey: state.difyKey,
   deepseekKey: state.deepseekKey,
   openrouterKey: state.openrouterKey,
+  orcarouterKey: state.orcarouterKey,
+  apirouteKey: state.apirouteKey,
   lmstudioKey: state.lmstudioKey,
   ollamaKey: state.ollamaKey,
   koeiromapKey: state.koeiromapKey,
@@ -1259,6 +1274,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   characterPosition: state.characterPosition,
   characterRotation: state.characterRotation,
   lightingIntensity: state.lightingIntensity,
+  screenLightingStrength: state.screenLightingStrength,
   modelType: state.modelType,
   selectedPNGTuberPath: state.selectedPNGTuberPath,
   pngTuberSensitivity: state.pngTuberSensitivity,

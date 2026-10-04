@@ -9,7 +9,9 @@ import { generateGameCommentary } from '@/features/gameCommentary/generateGameCo
 import { analyzeGameCommentaryScene } from '@/features/gameCommentary/analyzeGameCommentaryScene'
 import { SpeakQueue } from '@/features/messages/speakQueue'
 
-const mockCaptureFrame = jest.fn(() => 'data:image/jpeg;base64,test')
+const mockCaptureFrame = jest.fn<string | Promise<string>, []>(
+  () => 'data:image/jpeg;base64,test'
+)
 const mockCaptureAvailable = jest.fn(() => true)
 const mockGenerateGameCommentary = generateGameCommentary as jest.Mock
 const mockAnalyzeGameCommentaryScene = analyzeGameCommentaryScene as jest.Mock

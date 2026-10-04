@@ -6,7 +6,12 @@ import {
   isReasoningModel,
   getReasoningEfforts,
 } from '../constants/aiModels'
-import type { AIService, AIVoice, ReasoningEffort } from '../constants/settings'
+import type {
+  AIService,
+  AIVoice,
+  Language,
+  ReasoningEffort,
+} from '../constants/settings'
 
 export interface CrossStoreEffect {
   store: 'menu' | 'home' | 'slide'
@@ -39,8 +44,14 @@ const JA_ONLY_VOICES: AIVoice[] = [
   'koeiromap',
   'aivis_speech',
   'aivis_cloud_api',
-  'gsvitts',
 ]
+
+// GPT-SoVITS（GSVI TTS）は日本語以外に中国語・英語・韓国語も話せる
+const GSVI_LANGUAGES: Language[] = ['ja', 'zh-CN', 'zh-TW', 'en', 'ko']
+
+const isVoiceUnsupported = (voice: AIVoice, language: Language) =>
+  (language !== 'ja' && JA_ONLY_VOICES.includes(voice)) ||
+  (voice === 'gsvitts' && !GSVI_LANGUAGES.includes(language))
 
 export const exclusionRules: ExclusionRule[] = [
   {
@@ -266,14 +277,14 @@ export const exclusionRules: ExclusionRule[] = [
     }),
   },
 
-  // Rule 11: 言語が非日本語 + 日本語専用Voice
+  // Rule 11: 言語が非日本語 + 日本語専用Voice（GSVIは対応言語以外）
   {
     id: 'language-nonJa-jaVoice',
-    description: '非日本語で日本語専用Voice選択時にgoogle TTSに変更',
+    description:
+      '非日本語で日本語専用Voice（GSVIは対応言語以外）選択時にgoogle TTSに変更',
     trigger: (incoming, merged) =>
       (wasSet(incoming, 'selectLanguage') || wasSet(incoming, 'selectVoice')) &&
-      merged.selectLanguage !== 'ja' &&
-      JA_ONLY_VOICES.includes(merged.selectVoice),
+      isVoiceUnsupported(merged.selectVoice, merged.selectLanguage),
     apply: () => ({
       selectVoice: 'google' as const,
     }),

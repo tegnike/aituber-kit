@@ -37,7 +37,7 @@ describe('homeStore persistence debounce', () => {
     jest.useRealTimers()
     jest.restoreAllMocks()
     localStorage.clear()
-    delete (global as typeof globalThis & { fetch?: jest.Mock }).fetch
+    delete (global as { fetch?: unknown }).fetch
   })
 
   it('debounces repeated chat log persistence during streaming updates', async () => {

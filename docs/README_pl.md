@@ -121,6 +121,8 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 - xAI
 - DeepSeek
 - OpenRouter
+- OrcaRouter
+- API Route
 
 ### Obsługiwane silniki syntezy mowy
 

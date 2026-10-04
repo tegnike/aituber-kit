@@ -14,6 +14,8 @@ const aiServiceLogos: Record<AIService, string> = {
   fireworks: '/images/ai-logos/fireworks.svg',
   deepseek: '/images/ai-logos/deepseek.svg',
   openrouter: '/images/ai-logos/openrouter.svg',
+  orcarouter: '/images/ai-logos/orcarouter.svg',
+  apiroute: '/images/ai-logos/api-route.svg',
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',

@@ -136,8 +136,8 @@ export const routePolicies = {
     featureName: 'convertSlide',
     restrictedFeatureName: 'convert-slide',
     methods: ['POST'],
-    resources: ['fs-write', 'client-proxy'],
-    secret: { kind: 'none' },
+    resources: ['fs-write', 'server-secret'],
+    secret: { kind: 'dynamic' },
     restrictedBehavior: 'deny',
   },
   '/api/delete-image': {

@@ -37,6 +37,8 @@ const Character = () => {
     customPresetName5,
     selectedPresetIndex,
     lightingIntensity,
+    screenLightingEnabled,
+    screenLightingStrength,
     poseAdjustMode,
     thinkingPoseEnabled,
     thinkingPoseId,
@@ -89,6 +91,8 @@ const Character = () => {
         {modelType === 'vrm' && (
           <CharacterVrmExtrasSection
             lightingIntensity={lightingIntensity}
+            screenLightingEnabled={screenLightingEnabled}
+            screenLightingStrength={screenLightingStrength}
             poseAdjustMode={poseAdjustMode}
             thinkingPoseEnabled={thinkingPoseEnabled}
             thinkingPoseId={thinkingPoseId}
