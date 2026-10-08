@@ -123,6 +123,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - OpenRouter
 - OrcaRouter
 - API Route
+- Opper
 
 ### 対応音声合成エンジン
 
