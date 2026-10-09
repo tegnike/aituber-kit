@@ -12,6 +12,7 @@ import { AzureConfig } from './modelProvider/AzureConfig'
 import { OpenRouterConfig } from './modelProvider/OpenRouterConfig'
 import { OrcaRouterConfig } from './modelProvider/OrcaRouterConfig'
 import { APIRouteConfig } from './modelProvider/APIRouteConfig'
+import { OpperConfig } from './modelProvider/OpperConfig'
 import { MultiModalToggle } from './modelProvider/MultiModalToggle'
 import { useModelProviderState } from './modelProvider/hooks/useModelProviderState'
 import { useAIServiceHandlers } from './modelProvider/hooks/useAIServiceHandlers'
@@ -106,6 +107,15 @@ const ModelProvider = () => {
         return (
           <APIRouteConfig
             apirouteKey={state.apirouteKey}
+            selectAIModel={state.selectAIModel}
+            enableMultiModal={state.enableMultiModal}
+          />
+        )
+
+      case 'opper':
+        return (
+          <OpperConfig
+            opperKey={state.opperKey}
             selectAIModel={state.selectAIModel}
             enableMultiModal={state.enableMultiModal}
           />

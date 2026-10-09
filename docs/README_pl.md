@@ -123,6 +123,7 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 - OpenRouter
 - OrcaRouter
 - API Route
+- Opper
 
 ### Obsługiwane silniki syntezy mowy
 
