@@ -16,6 +16,7 @@ const aiServiceLogos: Record<AIService, string> = {
   openrouter: '/images/ai-logos/openrouter.svg',
   orcarouter: '/images/ai-logos/orcarouter.svg',
   apiroute: '/images/ai-logos/api-route.svg',
+  cheaperinference: '/images/ai-logos/cheaperinference.svg',
   lmstudio: '/images/ai-logos/lmstudio.svg',
   ollama: '/images/ai-logos/ollama.svg',
   dify: '/images/ai-logos/dify.svg',

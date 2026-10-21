@@ -36,6 +36,7 @@ export async function getAIChatResponseStream(
     case 'openrouter':
     case 'orcarouter':
     case 'apiroute':
+    case 'cheaperinference':
     case 'lmstudio':
     case 'ollama':
     case 'custom-api':
