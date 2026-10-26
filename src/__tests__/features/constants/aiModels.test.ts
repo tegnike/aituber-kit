@@ -112,8 +112,8 @@ describe('aiModels', () => {
       expect(getDefaultModel('xai')).toBe('grok-4')
     })
 
-    it('should return llama-3.3-70b-versatile for groq', () => {
-      expect(getDefaultModel('groq')).toBe('llama-3.3-70b-versatile')
+    it('should return openai/gpt-oss-120b for groq', () => {
+      expect(getDefaultModel('groq')).toBe('openai/gpt-oss-120b')
     })
 
     it('should return empty string for services without defaults', () => {

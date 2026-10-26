@@ -535,9 +535,10 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
   ],
   groq: [
     { name: 'llama-3.1-8b-instant' },
-    { name: 'llama-3.3-70b-versatile', isDefault: true },
+    { name: 'llama-3.3-70b-versatile' },
     {
       name: 'openai/gpt-oss-120b',
+      isDefault: true,
       reasoningEfforts: ['low', 'medium', 'high'],
     },
     { name: 'openai/gpt-oss-20b', reasoningEfforts: ['low', 'medium', 'high'] },
