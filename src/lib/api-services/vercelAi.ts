@@ -120,6 +120,15 @@ export function createAIRegistry(
         apiKey: params.apiKey,
       }) as unknown as ReturnType<typeof createOpenAI>
       break
+    case 'runcrate':
+      // createOpenAIはResponses API（/v1/responses）を使うため、
+      // Chat Completions APIで通信するOpenAI互換プロバイダーとして登録する
+      providers.runcrate = createOpenAICompatible({
+        name: 'runcrate',
+        baseURL: 'https://api.runcrate.ai/v1',
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
     case 'lmstudio':
       providers.lmstudio = createOpenAICompatible({
         name: 'lmstudio',
