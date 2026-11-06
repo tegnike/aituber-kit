@@ -159,6 +159,24 @@ describe('settingsStore versioned migration', () => {
     }
   )
 
+  it('migrates version 8 data away from the retired DeepSeek model names', () => {
+    setPersisted(
+      { selectAIService: 'deepseek', selectAIModel: 'deepseek-chat' },
+      8
+    )
+
+    expect(loadStore().getState().selectAIModel).toBe('deepseek-flash')
+  })
+
+  it('keeps other services when migrating version 8 data', () => {
+    setPersisted(
+      { selectAIService: 'openrouter', selectAIModel: 'deepseek-chat' },
+      8
+    )
+
+    expect(loadStore().getState().selectAIModel).toBe('deepseek-chat')
+  })
+
   it('does not run migration steps for already-current data', () => {
     setPersisted(
       {

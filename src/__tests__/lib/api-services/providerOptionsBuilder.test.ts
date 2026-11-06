@@ -12,6 +12,18 @@ describe('buildReasoningProviderOptions', () => {
     expect(result).toBeUndefined()
   })
 
+  it('disables DeepSeek thinking when reasoningMode is false', () => {
+    expect(
+      buildReasoningProviderOptions(
+        'deepseek',
+        'deepseek-flash',
+        false,
+        'medium',
+        8192
+      )
+    ).toEqual({ deepseek: { thinking: { type: 'disabled' } } })
+  })
+
   it('returns undefined for unsupported service', () => {
     const result = buildReasoningProviderOptions(
       'dify',

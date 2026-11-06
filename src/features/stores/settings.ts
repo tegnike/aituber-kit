@@ -1078,6 +1078,18 @@ const settingsMigrationSteps: Record<number, SettingsMigrationStep> = {
     }
     return migrated
   },
+  9: (state) => {
+    const migrated = { ...state }
+    // DeepSeekの旧モデル名は廃止されたため、現行の既定モデルへ移行する
+    if (
+      migrated.selectAIService === 'deepseek' &&
+      (migrated.selectAIModel === 'deepseek-chat' ||
+        migrated.selectAIModel === 'deepseek-reasoner')
+    ) {
+      migrated.selectAIModel = 'deepseek-flash'
+    }
+    return migrated
+  },
 }
 
 export const CURRENT_SETTINGS_VERSION = Object.keys(

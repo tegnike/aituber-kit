@@ -616,6 +616,7 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'sonar' },
   ],
   fireworks: [
+    { name: 'accounts/fireworks/models/deepseek-v4p1-flash', isDefault: true },
     { name: 'accounts/fireworks/models/deepseek-v3' },
     { name: 'accounts/fireworks/models/llama-v3p3-70b-instruct' },
     { name: 'accounts/fireworks/models/llama-v3p2-3b-instruct' },
@@ -650,7 +651,10 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     },
     { name: 'accounts/fireworks/models/minimax-m2' },
   ],
-  deepseek: [{ name: 'deepseek-chat' }, { name: 'deepseek-reasoner' }],
+  deepseek: [
+    { name: 'deepseek-flash', isDefault: true },
+    { name: 'deepseek-v4-pro' },
+  ],
   openrouter: [],
   orcarouter: [],
   apiroute: [],

@@ -104,9 +104,18 @@ describe('aiModels', () => {
       expect(getDefaultModel('google')).toBe('gemini-2.5-flash')
     })
 
-    it('should fall back to the first listed model when none is marked as default', () => {
-      expect(getDefaultModel('deepseek')).toBe('deepseek-chat')
-      expect(getDefaultModel('fireworks')).toBe(getModels('fireworks')[0])
+    it('should return current models for deepseek and fireworks', () => {
+      expect(getDefaultModel('deepseek')).toBe('deepseek-flash')
+      expect(getDefaultModel('fireworks')).toBe(
+        'accounts/fireworks/models/deepseek-v4p1-flash'
+      )
+    })
+
+    it('should return a listed model for every service that has models', () => {
+      for (const [service, models] of Object.entries(aiModels)) {
+        if (models.length === 0) continue
+        expect(models).toContain(getDefaultModel(service as AIService))
+      }
     })
 
     it('should return empty string for azure (no predefined models)', () => {
@@ -214,7 +223,7 @@ describe('aiModels', () => {
       expect(isMultiModalModel('groq', 'gemma2-9b-it')).toBe(false)
       expect(isMultiModalModel('cohere', 'command')).toBe(false)
       expect(isMultiModalModel('xai', 'grok-4-fast-non-reasoning')).toBe(false)
-      expect(isMultiModalModel('deepseek', 'deepseek-chat')).toBe(false)
+      expect(isMultiModalModel('deepseek', 'deepseek-flash')).toBe(false)
     })
 
     it('should return false for unknown models', () => {
