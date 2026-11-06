@@ -616,6 +616,11 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'sonar' },
   ],
   fireworks: [
+    {
+      name: 'accounts/fireworks/models/deepseek-v4p1-flash',
+      isDefault: true,
+      multiModal: true,
+    },
     { name: 'accounts/fireworks/models/deepseek-v3' },
     { name: 'accounts/fireworks/models/llama-v3p3-70b-instruct' },
     { name: 'accounts/fireworks/models/llama-v3p2-3b-instruct' },
@@ -650,7 +655,14 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     },
     { name: 'accounts/fireworks/models/minimax-m2' },
   ],
-  deepseek: [{ name: 'deepseek-chat' }, { name: 'deepseek-reasoner' }],
+  deepseek: [
+    {
+      name: 'deepseek-flash',
+      isDefault: true,
+      reasoningEfforts: ['high', 'max'],
+    },
+    { name: 'deepseek-v4-pro', reasoningEfforts: ['high', 'max'] },
+  ],
   openrouter: [],
   orcarouter: [],
   apiroute: [],
@@ -680,7 +692,7 @@ export const defaultModels: Record<
   ...Object.fromEntries(
     Object.entries(modelDefinitions).map(([service, models]) => [
       service,
-      models.find((model) => model.isDefault)?.name || '',
+      models.find((model) => model.isDefault)?.name || models[0]?.name || '',
     ])
   ),
   openaiAudio: 'gpt-audio-mini',
@@ -942,6 +954,7 @@ const serviceReasoningDefaults: Partial<
   google: { efforts: ['low', 'medium', 'high'], tokenBudget: true },
   xai: { efforts: ['low', 'high'], tokenBudget: false },
   groq: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
+  deepseek: { efforts: ['high', 'max'], tokenBudget: false },
   cohere: { efforts: [], tokenBudget: true },
   ollama: { efforts: ['none', 'low', 'medium', 'high'], tokenBudget: false },
 }

@@ -1078,6 +1078,32 @@ const settingsMigrationSteps: Record<number, SettingsMigrationStep> = {
     }
     return migrated
   },
+  9: (state) => {
+    const migrated = { ...state }
+    // DeepSeekの旧モデル名は廃止されたため、現行の既定モデルへ移行する
+    if (migrated.selectAIService === 'deepseek') {
+      if (migrated.selectAIModel === 'deepseek-reasoner') {
+        // 旧モデルは常に思考していたので、移行後も思考を有効にする
+        migrated.reasoningMode = true
+        migrated.reasoningEffort = 'high'
+      }
+      if (
+        migrated.selectAIModel === 'deepseek-chat' ||
+        migrated.selectAIModel === 'deepseek-reasoner'
+      ) {
+        migrated.selectAIModel = 'deepseek-flash'
+      }
+    }
+    // 既定モデルがなかった頃の設定には、空のモデル名が保存されている
+    if (
+      (migrated.selectAIService === 'deepseek' ||
+        migrated.selectAIService === 'fireworks') &&
+      migrated.selectAIModel === ''
+    ) {
+      migrated.selectAIModel = defaultModels[migrated.selectAIService]
+    }
+    return migrated
+  },
 }
 
 export const CURRENT_SETTINGS_VERSION = Object.keys(
