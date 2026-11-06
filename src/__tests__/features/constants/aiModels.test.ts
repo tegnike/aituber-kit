@@ -111,6 +111,20 @@ describe('aiModels', () => {
       )
     })
 
+    it('should expose reasoning settings for deepseek models', () => {
+      expect(isReasoningModel('deepseek', 'deepseek-flash')).toBe(true)
+      expect(getReasoningEfforts('deepseek', 'deepseek-v4-pro')).toEqual([
+        'high',
+        'max',
+      ])
+    })
+
+    it('should allow images on the default fireworks model', () => {
+      expect(isMultiModalModel('fireworks', getDefaultModel('fireworks'))).toBe(
+        true
+      )
+    })
+
     it('should return a listed model for every service that has models', () => {
       for (const [service, models] of Object.entries(aiModels)) {
         if (models.length === 0) continue

@@ -168,6 +168,45 @@ describe('settingsStore versioned migration', () => {
     expect(loadStore().getState().selectAIModel).toBe('deepseek-flash')
   })
 
+  it('keeps thinking enabled when migrating deepseek-reasoner', () => {
+    setPersisted(
+      {
+        selectAIService: 'deepseek',
+        selectAIModel: 'deepseek-reasoner',
+        reasoningMode: false,
+      },
+      8
+    )
+
+    const state = loadStore().getState()
+    expect(state.selectAIModel).toBe('deepseek-flash')
+    expect(state.reasoningMode).toBe(true)
+    expect(state.reasoningEffort).toBe('high')
+  })
+
+  it.each([
+    ['deepseek', 'deepseek-flash'],
+    ['fireworks', 'accounts/fireworks/models/deepseek-v4p1-flash'],
+  ])('fills the empty model saved for %s', (service, model) => {
+    setPersisted({ selectAIService: service, selectAIModel: '' }, 8)
+
+    expect(loadStore().getState().selectAIModel).toBe(model)
+  })
+
+  it('keeps a model the user already chose when migrating version 8 data', () => {
+    setPersisted(
+      {
+        selectAIService: 'fireworks',
+        selectAIModel: 'accounts/fireworks/models/kimi-k2p5',
+      },
+      8
+    )
+
+    expect(loadStore().getState().selectAIModel).toBe(
+      'accounts/fireworks/models/kimi-k2p5'
+    )
+  })
+
   it('keeps other services when migrating version 8 data', () => {
     setPersisted(
       { selectAIService: 'openrouter', selectAIModel: 'deepseek-chat' },

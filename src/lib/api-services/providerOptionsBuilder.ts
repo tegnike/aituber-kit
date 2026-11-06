@@ -43,6 +43,9 @@ export function buildReasoningProviderOptions(
     case 'azure':
       return { azure: { reasoningEffort } }
 
+    case 'deepseek':
+      return { deepseek: { thinking: { type: 'enabled' }, reasoningEffort } }
+
     case 'xai':
       return { xai: { reasoningEffort } }
 

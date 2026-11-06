@@ -24,6 +24,20 @@ describe('buildReasoningProviderOptions', () => {
     ).toEqual({ deepseek: { thinking: { type: 'disabled' } } })
   })
 
+  it('enables DeepSeek thinking with the selected effort', () => {
+    expect(
+      buildReasoningProviderOptions(
+        'deepseek',
+        'deepseek-flash',
+        true,
+        'max',
+        8192
+      )
+    ).toEqual({
+      deepseek: { thinking: { type: 'enabled' }, reasoningEffort: 'max' },
+    })
+  })
+
   it('returns undefined for unsupported service', () => {
     const result = buildReasoningProviderOptions(
       'dify',
