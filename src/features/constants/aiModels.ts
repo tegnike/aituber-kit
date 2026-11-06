@@ -680,7 +680,7 @@ export const defaultModels: Record<
   ...Object.fromEntries(
     Object.entries(modelDefinitions).map(([service, models]) => [
       service,
-      models.find((model) => model.isDefault)?.name || '',
+      models.find((model) => model.isDefault)?.name || models[0]?.name || '',
     ])
   ),
   openaiAudio: 'gpt-audio-mini',

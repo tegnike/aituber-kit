@@ -104,6 +104,11 @@ describe('aiModels', () => {
       expect(getDefaultModel('google')).toBe('gemini-2.5-flash')
     })
 
+    it('should fall back to the first listed model when none is marked as default', () => {
+      expect(getDefaultModel('deepseek')).toBe('deepseek-chat')
+      expect(getDefaultModel('fireworks')).toBe(getModels('fireworks')[0])
+    })
+
     it('should return empty string for azure (no predefined models)', () => {
       expect(getDefaultModel('azure')).toBe('')
     })
