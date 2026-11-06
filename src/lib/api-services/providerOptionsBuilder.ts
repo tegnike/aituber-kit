@@ -43,8 +43,22 @@ export function buildReasoningProviderOptions(
     case 'azure':
       return { azure: { reasoningEffort } }
 
-    case 'deepseek':
-      return { deepseek: { thinking: { type: 'enabled' }, reasoningEffort } }
+    case 'deepseek': {
+      // 他のモデル向けに保存された値（none等）はDeepSeekでは使えない
+      const supportedEfforts: readonly string[] = getReasoningEfforts(
+        'deepseek',
+        model,
+        customModel
+      )
+      return {
+        deepseek: {
+          thinking: { type: 'enabled' },
+          reasoningEffort: supportedEfforts.includes(reasoningEffort)
+            ? reasoningEffort
+            : 'high',
+        },
+      }
+    }
 
     case 'xai':
       return { xai: { reasoningEffort } }

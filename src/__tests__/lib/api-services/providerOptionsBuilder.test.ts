@@ -38,6 +38,23 @@ describe('buildReasoningProviderOptions', () => {
     })
   })
 
+  it.each(['none', 'minimal', 'medium'])(
+    'replaces the unsupported DeepSeek effort %s with high',
+    (effort) => {
+      expect(
+        buildReasoningProviderOptions(
+          'deepseek',
+          'deepseek-flash',
+          true,
+          effort,
+          8192
+        )
+      ).toEqual({
+        deepseek: { thinking: { type: 'enabled' }, reasoningEffort: 'high' },
+      })
+    }
+  )
+
   it('returns undefined for unsupported service', () => {
     const result = buildReasoningProviderOptions(
       'dify',
