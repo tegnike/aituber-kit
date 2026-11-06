@@ -3,6 +3,8 @@ const isRestrictedMode = process.env.NEXT_PUBLIC_RESTRICTED_MODE === 'true'
 
 const nextConfig = {
   reactStrictMode: true,
+  // next devがAGENTS.mdへ説明を自動で書き足すのを止める
+  agentRules: false,
   assetPrefix: process.env.BASE_PATH || '',
   basePath: process.env.BASE_PATH || '',
   trailingSlash: true,
@@ -16,6 +18,7 @@ const nextConfig = {
     outputFileTracingExcludes: {
       '*': [
         './node_modules/canvas/**/*',
+        './node_modules/electron/**/*',
         './public/**/*',
         './scripts/**/*',
         './logs/**/*',
@@ -28,6 +31,8 @@ const nextConfig = {
         './node_modules/@posthog/core/dist/logs/**/*',
         './node_modules/unist-util-visit-parents/lib/color*.js',
         './node_modules/vfile/lib/min*.js',
+        // Next.js 16はconsole-file.jsから読み込むが、devフォルダはトレースされない
+        './node_modules/next/dist/server/dev/browser-logs/file-logger.js',
       ],
     },
   }),

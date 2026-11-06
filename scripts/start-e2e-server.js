@@ -21,7 +21,7 @@ log(`[e2e-server] npm user agent: ${process.env.npm_config_user_agent || '(unset
 fs.rmSync(nextBuildDir, { recursive: true, force: true })
 log(`[e2e-server] removed stale Next.js build dir: ${nextBuildDir}`)
 
-const child = spawn(process.execPath, [nextBin, 'dev', '-p', port], {
+const child = spawn(process.execPath, [nextBin, 'dev', '--webpack', '-p', port], {
   cwd: root,
   stdio: 'inherit',
   env: {
