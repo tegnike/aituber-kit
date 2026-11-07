@@ -123,6 +123,7 @@ AITuberKit 是一個開源工具包，任何人都可以輕鬆構建能與 AI �
 - OpenRouter
 - OrcaRouter
 - API Route
+- Opper
 
 ### 支援的語音合成引擎
 
