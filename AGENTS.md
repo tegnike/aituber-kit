@@ -40,8 +40,8 @@ cp .env.example .env  # 環境変数を設定
 
 ### 技術スタック
 
-- **フレームワーク**: Next.js ^15.5.9 + React 18.3.1
-- **言語**: TypeScript 5.0.2（strictモード）
+- **フレームワーク**: Next.js ^16.4.5 + React 18.3.1
+- **言語**: TypeScript 5.6.3（strictモード）
 - **スタイリング**: Tailwind CSS ^3.4.19（CSS変数ベースの6テーマ対応、darkMode: class）
 - **状態管理**: Zustand 4.5.4（persist + 排他制御ミドルウェア）
 - **AI SDK**: Vercel AI SDK ^6.0.6 + 各プロバイダーSDK

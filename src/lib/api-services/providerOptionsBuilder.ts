@@ -14,7 +14,12 @@ export function buildReasoningProviderOptions(
   reasoningTokenBudget: number,
   customModel: boolean = false
 ): Record<string, Record<string, unknown>> | undefined {
-  if (!reasoningMode) return undefined
+  if (!reasoningMode) {
+    // DeepSeekは思考が既定で有効なので、オフのときは明示的に止める
+    return service === 'deepseek'
+      ? { deepseek: { thinking: { type: 'disabled' } } }
+      : undefined
+  }
 
   switch (service) {
     case 'openai': {
@@ -37,6 +42,23 @@ export function buildReasoningProviderOptions(
 
     case 'azure':
       return { azure: { reasoningEffort } }
+
+    case 'deepseek': {
+      // 他のモデル向けに保存された値（none等）はDeepSeekでは使えない
+      const supportedEfforts: readonly string[] = getReasoningEfforts(
+        'deepseek',
+        model,
+        customModel
+      )
+      return {
+        deepseek: {
+          thinking: { type: 'enabled' },
+          reasoningEffort: supportedEfforts.includes(reasoningEffort)
+            ? reasoningEffort
+            : 'high',
+        },
+      }
+    }
 
     case 'xai':
       return { xai: { reasoningEffort } }
