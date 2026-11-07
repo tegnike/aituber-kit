@@ -8,6 +8,8 @@ jest.mock('@/features/stores/settings', () => ({
   },
 }))
 
+jest.mock('@/lib/i18n', () => ({}))
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) =>
