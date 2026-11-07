@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import settingsStore from '@/features/stores/settings'
+import '@/lib/i18n'
 import { useTranslation } from 'react-i18next'
 import {
   BoltIcon,
