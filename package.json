@@ -4,9 +4,9 @@
   "private": true,
   "packageManager": "npm@11.12.1",
   "scripts": {
-    "dev": "node scripts/print-startup-logo.js && next dev",
-    "dev-https": "node scripts/print-startup-logo.js && next dev --experimental-https",
-    "build": "next build",
+    "dev": "node scripts/print-startup-logo.js && next dev --webpack",
+    "dev-https": "node scripts/print-startup-logo.js && next dev --webpack --experimental-https",
+    "build": "next build --webpack",
     "start": "node scripts/print-startup-logo.js && next start",
     "export": "next export",
     "lint": "eslint .",
@@ -53,7 +53,7 @@
     "@heroicons/react": "^2.1.5",
     "@marp-team/marpit": "^3.2.1",
     "@mastra/core": "^1.1.0",
-    "@opennextjs/cloudflare": "^1.16.4",
+    "@opennextjs/cloudflare": "^1.20.16",
     "@openrouter/ai-sdk-provider": "^2.1.1",
     "@pixiv/three-vrm": "^3.4.4",
     "@supabase/supabase-js": "^2.89.0",
@@ -69,7 +69,7 @@
     "i18next": "^23.6.0",
     "idb": "^8.0.3",
     "lodash": "^4.17.21",
-    "next": "^15.5.10",
+    "next": "^16.4.5",
     "openai": "^4.104.0",
     "pdfjs-dist": "^4.5.136",
     "pixi-live2d-display-lipsyncpatch": "^0.5.0-ls-8",
@@ -122,10 +122,10 @@
     "style-loader": "^4.0.0",
     "tailwindcss": "^3.4.19",
     "ts-jest": "^29.4.6",
-    "typescript": "5.0.2",
+    "typescript": "5.6.3",
     "wait-on": "^7.2.0",
     "web-streams-polyfill": "^4.2.0",
-    "wrangler": "^4.64.0"
+    "wrangler": "^4.158.0"
   },
   "engines": {
     "node": "24.x",
