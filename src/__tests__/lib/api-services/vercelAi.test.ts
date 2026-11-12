@@ -132,6 +132,23 @@ describe('vercelAi service helpers', () => {
       expect(mockLanguageModel).toHaveBeenCalledWith('apiroute:gpt-6.1-sol')
     })
 
+    it('creates runcrate registry as an OpenAI-compatible provider', () => {
+      const registry = createAIRegistry('runcrate', { apiKey: 'rc-key' })
+      expect(createOpenAICompatible).toHaveBeenCalledWith({
+        name: 'runcrate',
+        baseURL: 'https://api.runcrate.ai/v1',
+        apiKey: 'rc-key',
+      })
+      getLanguageModel(
+        registry as any,
+        'runcrate',
+        'deepseek-ai/DeepSeek-V4.1-Flash'
+      )
+      expect(mockLanguageModel).toHaveBeenCalledWith(
+        'runcrate:deepseek-ai/DeepSeek-V4.1-Flash'
+      )
+    })
+
     it('returns null for custom-api service', () => {
       const registry = createAIRegistry('custom-api', {})
       expect(registry).toBeNull()
