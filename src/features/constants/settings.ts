@@ -19,6 +19,7 @@ export type VercelCloudAIService =
   | 'openrouter'
   | 'orcarouter'
   | 'apiroute'
+  | 'cheaperinference'
   | 'lmstudio'
   | 'ollama'
   | 'custom-api'
@@ -46,6 +47,7 @@ export const isVercelCloudAIService = (
     'openrouter',
     'orcarouter',
     'apiroute',
+    'cheaperinference',
   ]
   return cloudServices.includes(service as VercelCloudAIService)
 }
@@ -81,6 +83,7 @@ export const AI_SERVICES = [
   'openrouter',
   'orcarouter',
   'apiroute',
+  'cheaperinference',
   'lmstudio',
   'ollama',
   'custom-api',
@@ -103,6 +106,7 @@ export interface AIServiceConfig {
   openrouter: { key: string; model: string }
   orcarouter: { key: string; model: string }
   apiroute: { key: string; model: string }
+  cheaperinference: { key: string; model: string }
   dify: {
     key: string
     url: string

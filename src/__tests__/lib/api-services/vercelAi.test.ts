@@ -132,6 +132,16 @@ describe('vercelAi service helpers', () => {
       expect(mockLanguageModel).toHaveBeenCalledWith('apiroute:gpt-6.1-sol')
     })
 
+    it('creates cheaperinference registry as an OpenAI-compatible provider', () => {
+      createAIRegistry('cheaperinference', { apiKey: 'test-key' })
+      expect(createOpenAICompatible).toHaveBeenCalledWith({
+        name: 'cheaperinference',
+        baseURL: 'https://api.cheaperinference.com/v1',
+        apiKey: 'test-key',
+      })
+      expect(mockCreateProviderRegistry).toHaveBeenCalled()
+    })
+
     it('returns null for custom-api service', () => {
       const registry = createAIRegistry('custom-api', {})
       expect(registry).toBeNull()
