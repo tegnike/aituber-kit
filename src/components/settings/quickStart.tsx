@@ -188,6 +188,8 @@ const QuickStart = () => {
         return modelState.orcarouterKey
       case 'apiroute':
         return modelState.apirouteKey
+      case 'opper':
+        return modelState.opperKey
       case 'dify':
         return modelState.difyKey
       default:
@@ -238,6 +240,9 @@ const QuickStart = () => {
         break
       case 'apiroute':
         settingsStore.setState({ apirouteKey: value })
+        break
+      case 'opper':
+        settingsStore.setState({ opperKey: value })
         break
       case 'dify':
         settingsStore.setState({ difyKey: value })
@@ -345,6 +350,19 @@ const QuickStart = () => {
                 value={modelState.selectAIModel}
                 onChange={(e) => handleModelChange(e.target.value)}
                 placeholder="gpt-6.1-sol"
+              />
+            </LabeledField>
+          </div>
+        )
+      case 'opper':
+        return (
+          <div className={quickGridClassName}>
+            <LabeledField label={t('SelectModel')}>
+              <input
+                className={inputClassName}
+                value={modelState.selectAIModel}
+                onChange={(e) => handleModelChange(e.target.value)}
+                placeholder="claude-sonnet-4-6"
               />
             </LabeledField>
           </div>
