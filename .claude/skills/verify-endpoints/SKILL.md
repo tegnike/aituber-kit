@@ -86,13 +86,13 @@ curl -s -w "\n%{http_code}" -X POST http://localhost:3000/api/ai/vercel/ \
 | Anthropic  | `anthropic`  | `claude-sonnet-4-5`                                 |
 | Google     | `google`     | `gemini-2.5-flash`                                  |
 | Azure      | `azure`      | ※ endpointのdeployment名を使用                      |
-| xAI        | `xai`        | `grok-4`                                            |
+| xAI        | `xai`        | `grok-4.20-0309-non-reasoning`                      |
 | Groq       | `groq`       | `llama-3.3-70b-versatile`                           |
 | Cohere     | `cohere`     | `command-a-03-2025`                                 |
 | Mistral AI | `mistralai`  | `mistral-large-latest`                              |
-| Perplexity | `perplexity` | `sonar-pro`                                         |
-| Fireworks  | `fireworks`  | `accounts/fireworks/models/llama-v3p3-70b-instruct` |
-| DeepSeek   | `deepseek`   | `deepseek-chat`                                     |
+| Perplexity | `perplexity` | `low`                                               |
+| Fireworks  | `fireworks`  | `accounts/fireworks/models/deepseek-v4p1-flash`     |
+| DeepSeek   | `deepseek`   | `deepseek-flash`                                    |
 | OpenRouter | `openrouter` | `openai/gpt-4.1-mini`                               |
 
 **判定基準：**
