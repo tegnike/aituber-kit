@@ -53,7 +53,10 @@ import {
   migrateOpenAITranscriptionModel,
   openAIWhisperModels,
 } from '../constants/aiModels'
-import { migrateOpenAIModelName } from '@/utils/modelMigration'
+import {
+  migrateOpenAIModelName,
+  migrateRetiredModelName,
+} from '@/utils/modelMigration'
 import {
   DEFAULT_SETTINGS_TOGGLE_SHORTCUT,
   DEFAULT_VOICE_INPUT_SHORTCUT,
@@ -1101,6 +1104,24 @@ const settingsMigrationSteps: Record<number, SettingsMigrationStep> = {
       migrated.selectAIModel === ''
     ) {
       migrated.selectAIModel = defaultModels[migrated.selectAIService]
+    }
+    return migrated
+  },
+  10: (state) => {
+    const migrated = { ...state }
+    const service = migrated.selectAIService
+    const model = migrated.selectAIModel
+    if (typeof service !== 'string' || typeof model !== 'string') {
+      return migrated
+    }
+    // Sonar APIは終了済みのため、カスタムモデル入力でも移行する。
+    // それ以外はモデル一覧から外れたものだけを移行し、手入力の値は尊重する
+    if (service === 'perplexity' || !migrated.customModel) {
+      migrated.selectAIModel = migrateRetiredModelName(
+        service,
+        model,
+        defaultModels.xai
+      )
     }
     return migrated
   },

@@ -33,12 +33,16 @@ describe('isReasoningModel', () => {
       expect(isReasoningModel('google', 'gemini-2.5-flash')).toBe(true)
     })
 
-    it('xAI grok-4は推論対応', () => {
-      expect(isReasoningModel('xai', 'grok-4')).toBe(true)
+    it('xAI grok-4.6は推論対応', () => {
+      expect(isReasoningModel('xai', 'grok-4.6')).toBe(true)
     })
 
-    it('xAI grok-3は推論対応', () => {
-      expect(isReasoningModel('xai', 'grok-3')).toBe(true)
+    it('xAI grok-4.20-0309-reasoningは推論対応', () => {
+      expect(isReasoningModel('xai', 'grok-4.20-0309-reasoning')).toBe(true)
+    })
+
+    it('OpenAI gpt-6-lunaは推論対応', () => {
+      expect(isReasoningModel('openai', 'gpt-6-luna')).toBe(true)
     })
 
     it('Groq openai/gpt-oss-20bは推論対応', () => {
@@ -79,8 +83,14 @@ describe('isReasoningModel', () => {
       expect(isReasoningModel('xai', 'grok-2')).toBe(false)
     })
 
-    it('xAI grok-4-fast-non-reasoningは推論非対応', () => {
-      expect(isReasoningModel('xai', 'grok-4-fast-non-reasoning')).toBe(false)
+    it('xAI grok-4.20-0309-non-reasoningは推論非対応', () => {
+      expect(isReasoningModel('xai', 'grok-4.20-0309-non-reasoning')).toBe(
+        false
+      )
+    })
+
+    it('一覧から外れたxAI grok-4は推論非対応', () => {
+      expect(isReasoningModel('xai', 'grok-4')).toBe(false)
     })
 
     it('Groq llama-3.3-70b-versatileは推論非対応', () => {
@@ -120,8 +130,20 @@ describe('isReasoningModel', () => {
 describe('getReasoningEfforts', () => {
   const openAIReasoningEfforts = [
     [
-      ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna'],
-      ['none', 'low', 'medium', 'high', 'xhigh'],
+      [
+        'gpt-6.1-terra',
+        'gpt-6-sol',
+        'gpt-6-luna',
+        'gpt-5.6',
+        'gpt-5.6-sol',
+        'gpt-5.6-terra',
+        'gpt-5.6-luna',
+      ],
+      ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+    ],
+    [
+      ['gpt-6.1-sol', 'gpt-6-astra'],
+      ['low', 'medium', 'high', 'xhigh', 'max'],
     ],
     [
       ['gpt-5.5', 'gpt-5.5-2026-04-23'],
@@ -223,8 +245,52 @@ describe('getReasoningEfforts', () => {
     expect(getReasoningEfforts('google', 'gemini-2.5-flash')).toEqual([])
   })
 
-  it('xAI grok-4はlow/highの2択', () => {
-    expect(getReasoningEfforts('xai', 'grok-4')).toEqual(['low', 'high'])
+  it('xAI grok-4.6はlow/medium/high/xhighの4択', () => {
+    expect(getReasoningEfforts('xai', 'grok-4.6')).toEqual([
+      'low',
+      'medium',
+      'high',
+      'xhigh',
+    ])
+  })
+
+  it('xAI grok-4.20-0309-reasoningはeffort指定不可', () => {
+    expect(getReasoningEfforts('xai', 'grok-4.20-0309-reasoning')).toEqual([])
+  })
+
+  it('Anthropic claude-opus-4-8はadaptive thinkingのeffortを持つ', () => {
+    expect(getReasoningEfforts('anthropic', 'claude-opus-4-8')).toEqual([
+      'low',
+      'medium',
+      'high',
+      'xhigh',
+      'max',
+    ])
+  })
+
+  it('Google gemini-4-hydrogenはxhighまで選べる', () => {
+    expect(getReasoningEfforts('google', 'gemini-4-hydrogen')).toEqual([
+      'low',
+      'medium',
+      'high',
+      'xhigh',
+    ])
+  })
+
+  it('Google gemini-3.8-flashはminimalを含まない', () => {
+    expect(getReasoningEfforts('google', 'gemini-3.8-flash')).toEqual([
+      'low',
+      'medium',
+      'high',
+    ])
+  })
+
+  it('Mistral zai-glm-5-3はlow/high/max', () => {
+    expect(getReasoningEfforts('mistralai', 'zai-glm-5-3')).toEqual([
+      'low',
+      'high',
+      'max',
+    ])
   })
 
   it('xAI grok-2は空配列（推論非対応）', () => {
@@ -259,12 +325,14 @@ describe('getReasoningEfforts', () => {
         'medium',
         'high',
         'xhigh',
+        'max',
       ])
     })
 
-    it('xAIカスタムモデルはlow/high', () => {
+    it('xAIカスタムモデルはlow/medium/high', () => {
       expect(getReasoningEfforts('xai', 'custom', true)).toEqual([
         'low',
+        'medium',
         'high',
       ])
     })
@@ -314,8 +382,14 @@ describe('needsReasoningTokenBudget', () => {
     expect(needsReasoningTokenBudget('openai', 'gpt-5')).toBe(false)
   })
 
-  it('xAI grok-4はtokenBudget不要', () => {
-    expect(needsReasoningTokenBudget('xai', 'grok-4')).toBe(false)
+  it('xAI grok-4.6はtokenBudget不要', () => {
+    expect(needsReasoningTokenBudget('xai', 'grok-4.6')).toBe(false)
+  })
+
+  it('Anthropic claude-sonnet-4-6はadaptive thinkingのためtokenBudget不要', () => {
+    expect(needsReasoningTokenBudget('anthropic', 'claude-sonnet-4-6')).toBe(
+      false
+    )
   })
 
   describe('カスタムモデルのフォールバック', () => {

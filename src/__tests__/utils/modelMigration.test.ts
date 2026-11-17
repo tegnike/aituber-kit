@@ -1,4 +1,7 @@
-import { migrateOpenAIModelName } from '@/utils/modelMigration'
+import {
+  migrateOpenAIModelName,
+  migrateRetiredModelName,
+} from '@/utils/modelMigration'
 
 describe('migrateOpenAIModelName', () => {
   const legacyMappings: [string, string][] = [
@@ -34,4 +37,32 @@ describe('migrateOpenAIModelName', () => {
   it('should return empty string unchanged', () => {
     expect(migrateOpenAIModelName('')).toBe('')
   })
+})
+
+describe('migrateRetiredModelName', () => {
+  it('migrates registered retired models', () => {
+    expect(migrateRetiredModelName('perplexity', 'sonar-pro', 'x')).toBe('low')
+    expect(
+      migrateRetiredModelName(
+        'fireworks',
+        'accounts/fireworks/models/kimi-k2p5',
+        'x'
+      )
+    ).toBe('accounts/fireworks/models/kimi-k2p6')
+    expect(migrateRetiredModelName('xai', 'grok-4', 'grok-default')).toBe(
+      'grok-default'
+    )
+  })
+
+  it.each(['perplexity', 'fireworks', 'xai'])(
+    'keeps inherited property names such as __proto__ for %s',
+    (service) => {
+      expect(migrateRetiredModelName(service, '__proto__', 'x')).toBe(
+        '__proto__'
+      )
+      expect(migrateRetiredModelName(service, 'constructor', 'x')).toBe(
+        'constructor'
+      )
+    }
+  )
 })

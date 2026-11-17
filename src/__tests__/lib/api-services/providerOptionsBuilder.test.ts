@@ -24,6 +24,38 @@ describe('buildReasoningProviderOptions', () => {
     ).toEqual({ deepseek: { thinking: { type: 'disabled' } } })
   })
 
+  it('disables thinking for Claude models that think by default', () => {
+    expect(
+      buildReasoningProviderOptions(
+        'anthropic',
+        'claude-sonnet-5',
+        false,
+        'medium',
+        8192
+      )
+    ).toEqual({ anthropic: { thinking: { type: 'disabled' } } })
+  })
+
+  it('does not send disabled thinking to always-thinking Claude models', () => {
+    for (const model of ['claude-opus-5-5', 'claude-sonnet-5-5']) {
+      expect(
+        buildReasoningProviderOptions('anthropic', model, false, 'medium', 8192)
+      ).toBeUndefined()
+    }
+  })
+
+  it('leaves Claude models with thinking off by default unchanged', () => {
+    expect(
+      buildReasoningProviderOptions(
+        'anthropic',
+        'claude-sonnet-4-6',
+        false,
+        'medium',
+        8192
+      )
+    ).toBeUndefined()
+  })
+
   it('enables DeepSeek thinking with the selected effort', () => {
     expect(
       buildReasoningProviderOptions(
@@ -154,7 +186,7 @@ describe('buildReasoningProviderOptions', () => {
     it('returns xai providerOptions with reasoningEffort', () => {
       const result = buildReasoningProviderOptions(
         'xai',
-        'grok-3-mini',
+        'grok-4.5',
         true,
         'medium',
         8192
@@ -162,6 +194,56 @@ describe('buildReasoningProviderOptions', () => {
       expect(result).toEqual({
         xai: { reasoningEffort: 'medium' },
       })
+    })
+
+    it('omits reasoningEffort for models that do not accept it', () => {
+      const result = buildReasoningProviderOptions(
+        'xai',
+        'grok-4.20-0309-reasoning',
+        true,
+        'medium',
+        8192
+      )
+      expect(result).toBeUndefined()
+    })
+
+    it('replaces an unsupported effort with a supported one', () => {
+      const result = buildReasoningProviderOptions(
+        'xai',
+        'grok-4.3',
+        true,
+        'xhigh',
+        8192
+      )
+      expect(result).toEqual({
+        xai: { reasoningEffort: 'medium' },
+      })
+    })
+  })
+
+  describe('Mistral', () => {
+    it('returns mistral-namespaced reasoningEffort', () => {
+      const result = buildReasoningProviderOptions(
+        'mistralai',
+        'zai-glm-5-3',
+        true,
+        'medium',
+        8192
+      )
+      expect(result).toEqual({
+        mistral: { reasoningEffort: 'high' },
+      })
+    })
+
+    it('does not send effort for always-reasoning Magistral models', () => {
+      const result = buildReasoningProviderOptions(
+        'mistralai',
+        'magistral-medium-latest',
+        true,
+        'high',
+        8192
+      )
+      expect(result).toBeUndefined()
     })
   })
 
@@ -224,6 +306,38 @@ describe('buildReasoningProviderOptions', () => {
         },
       })
     })
+
+    it('uses adaptive thinking with effort for claude-opus-4-6 and later', () => {
+      const result = buildReasoningProviderOptions(
+        'anthropic',
+        'claude-opus-4-8',
+        true,
+        'xhigh',
+        12000
+      )
+      expect(result).toEqual({
+        anthropic: {
+          thinking: { type: 'adaptive', display: 'summarized' },
+          effort: 'xhigh',
+        },
+      })
+    })
+
+    it('replaces an effort that claude-sonnet-4-6 does not support', () => {
+      const result = buildReasoningProviderOptions(
+        'anthropic',
+        'claude-sonnet-4-6',
+        true,
+        'max',
+        12000
+      )
+      expect(result).toEqual({
+        anthropic: {
+          thinking: { type: 'adaptive', display: 'summarized' },
+          effort: 'medium',
+        },
+      })
+    })
   })
 
   describe('Cohere', () => {
@@ -268,6 +382,42 @@ describe('buildReasoningProviderOptions', () => {
         'gemini-3-pro-preview',
         true,
         'high',
+        8192
+      )
+      expect(result).toEqual({
+        google: {
+          thinkingConfig: {
+            thinkingLevel: 'high',
+            includeThoughts: true,
+          },
+        },
+      })
+    })
+
+    it('returns thinkingLevel for Gemini 4 series', () => {
+      const result = buildReasoningProviderOptions(
+        'google',
+        'gemini-4-hydrogen',
+        true,
+        'xhigh',
+        8192
+      )
+      expect(result).toEqual({
+        google: {
+          thinkingConfig: {
+            thinkingLevel: 'xhigh',
+            includeThoughts: true,
+          },
+        },
+      })
+    })
+
+    it('replaces a thinkingLevel the Gemini model does not support', () => {
+      const result = buildReasoningProviderOptions(
+        'google',
+        'gemini-3-pro-preview',
+        true,
+        'xhigh',
         8192
       )
       expect(result).toEqual({
