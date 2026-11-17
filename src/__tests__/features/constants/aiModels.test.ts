@@ -144,8 +144,8 @@ describe('aiModels', () => {
       expect(getDefaultModel('perplexity')).toBe('low')
     })
 
-    it('should return llama-3.3-70b-versatile for groq', () => {
-      expect(getDefaultModel('groq')).toBe('llama-3.3-70b-versatile')
+    it('should return openai/gpt-oss-120b for groq', () => {
+      expect(getDefaultModel('groq')).toBe('openai/gpt-oss-120b')
     })
 
     it('should return empty string for services without defaults', () => {
