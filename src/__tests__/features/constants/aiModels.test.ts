@@ -206,8 +206,10 @@ describe('aiModels', () => {
       expect(models.length).toBeLessThan(allModels.length)
       expect(models).not.toContain('grok-build-0.1')
       expect(models).not.toContain('grok-4.20-multi-agent-0309')
+      expect(models).toContain('grok-4.7')
       expect(models).toContain('grok-4.6')
       expect(models).toContain('grok-4.5')
+      expect(models).toContain('grok-4.3')
     })
 
     it('should return subset for groq (most are not multimodal)', () => {

@@ -24,6 +24,38 @@ describe('buildReasoningProviderOptions', () => {
     ).toEqual({ deepseek: { thinking: { type: 'disabled' } } })
   })
 
+  it('disables thinking for Claude models that think by default', () => {
+    expect(
+      buildReasoningProviderOptions(
+        'anthropic',
+        'claude-sonnet-5',
+        false,
+        'medium',
+        8192
+      )
+    ).toEqual({ anthropic: { thinking: { type: 'disabled' } } })
+  })
+
+  it('does not send disabled thinking to always-thinking Claude models', () => {
+    for (const model of ['claude-opus-5-5', 'claude-sonnet-5-5']) {
+      expect(
+        buildReasoningProviderOptions('anthropic', model, false, 'medium', 8192)
+      ).toBeUndefined()
+    }
+  })
+
+  it('leaves Claude models with thinking off by default unchanged', () => {
+    expect(
+      buildReasoningProviderOptions(
+        'anthropic',
+        'claude-sonnet-4-6',
+        false,
+        'medium',
+        8192
+      )
+    ).toBeUndefined()
+  })
+
   it('enables DeepSeek thinking with the selected effort', () => {
     expect(
       buildReasoningProviderOptions(
@@ -285,7 +317,7 @@ describe('buildReasoningProviderOptions', () => {
       )
       expect(result).toEqual({
         anthropic: {
-          thinking: { type: 'adaptive' },
+          thinking: { type: 'adaptive', display: 'summarized' },
           effort: 'xhigh',
         },
       })
@@ -301,7 +333,7 @@ describe('buildReasoningProviderOptions', () => {
       )
       expect(result).toEqual({
         anthropic: {
-          thinking: { type: 'adaptive' },
+          thinking: { type: 'adaptive', display: 'summarized' },
           effort: 'medium',
         },
       })
