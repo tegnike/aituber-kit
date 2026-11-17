@@ -27,19 +27,49 @@ interface ModelInfo {
 const modelDefinitions: Record<AIService, ModelInfo[]> = {
   openai: [
     {
+      name: 'gpt-6.1-sol',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'gpt-6.1-terra',
+      multiModal: true,
+      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'gpt-6-astra',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'gpt-6-sol',
+      multiModal: true,
+      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'gpt-6-luna',
+      multiModal: true,
+      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'gpt-5.6',
+      multiModal: true,
+      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
       name: 'gpt-5.6-sol',
       multiModal: true,
-      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh'],
+      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
     },
     {
       name: 'gpt-5.6-terra',
       multiModal: true,
-      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh'],
+      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
     },
     {
       name: 'gpt-5.6-luna',
       multiModal: true,
-      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh'],
+      reasoningEfforts: ['none', 'low', 'medium', 'high', 'xhigh', 'max'],
     },
     {
       name: 'gpt-5.5',
@@ -246,37 +276,68 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
       reasoningEfforts: ['low', 'medium', 'high'],
     },
   ],
+  // reasoningTokenBudgetを持たないモデルはadaptive thinking + effortで制御する
   anthropic: [
+    {
+      name: 'claude-fable-5-2',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'claude-fable-5-1',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
     {
       name: 'claude-fable-5',
       multiModal: true,
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'claude-opus-5-5',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'claude-opus-5',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'claude-sonnet-5-5',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'claude-sonnet-5',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+    },
+    {
+      name: 'claude-haiku-5-5',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
     },
     {
       name: 'claude-opus-4-8',
       multiModal: true,
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
     },
     {
       name: 'claude-opus-4-7',
       multiModal: true,
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
     },
     {
       name: 'claude-opus-4-6',
       multiModal: true,
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'max'],
     },
     {
       name: 'claude-sonnet-4-6',
       multiModal: true,
       isDefault: true,
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
+      reasoningEfforts: ['low', 'medium', 'high'],
     },
     {
       name: 'claude-opus-4-5',
@@ -353,6 +414,37 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'claude-3-haiku-20240307', multiModal: true },
   ],
   google: [
+    {
+      name: 'gemini-4-hydrogen',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh'],
+    },
+    {
+      name: 'gemini-4-argon',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high'],
+    },
+    {
+      name: 'gemini-4-carbon',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high'],
+    },
+    {
+      name: 'gemini-3.8-flash',
+      multiModal: true,
+      // 公式ドキュメント上、gemini-3.8-flashはminimalを受け付けない
+      reasoningEfforts: ['low', 'medium', 'high'],
+    },
+    {
+      name: 'gemini-3.7-flash',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
+    {
+      name: 'gemini-3.6-flash',
+      multiModal: true,
+      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+    },
     {
       name: 'gemini-3.5-flash',
       multiModal: true,
@@ -473,6 +565,7 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'gemini-flash-lite-latest', multiModal: true },
     { name: 'deep-research-pro-preview-12-2025', multiModal: true },
     { name: 'nano-banana-pro-preview', multiModal: true },
+    { name: 'gemini-nano-banana-2.1', multiModal: true },
     { name: 'aqa' },
     { name: 'gemini-robotics-er-1.5-preview', multiModal: true },
     { name: 'gemma-3-1b-it' },
@@ -483,55 +576,42 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'gemma-3-27b-it' },
   ],
   azure: [],
+  // xAIの現行ラインナップ（@ai-sdk/xaiで旧モデルIDは整理済み）
+  // reasoningEfforts: [] は推論モデルだがreasoningEffortを受け付けないモデル
   xai: [
+    {
+      name: 'grok-4.7',
+      reasoningEfforts: ['low', 'medium', 'high'],
+    },
+    {
+      name: 'grok-4.6',
+      multiModal: true,
+      reasoningEfforts: ['low', 'medium', 'high', 'xhigh'],
+    },
     {
       name: 'grok-4.5',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high'],
     },
     {
-      name: 'grok-4-1-fast-reasoning',
-      reasoningEfforts: ['low', 'high'],
+      name: 'grok-4.3',
+      reasoningEfforts: ['none', 'low', 'medium', 'high'],
     },
-    { name: 'grok-4-1-fast-non-reasoning' },
-    { name: 'grok-4-fast-non-reasoning' },
-    { name: 'grok-4-fast-reasoning', reasoningEfforts: ['low', 'high'] },
-    { name: 'grok-4.20-0309-non-reasoning' },
-    { name: 'grok-4.20-0309-reasoning', reasoningEfforts: ['low', 'high'] },
-    { name: 'grok-4.20-multi-agent-0309', reasoningEfforts: ['low', 'high'] },
-    { name: 'grok-code-fast-1' },
     {
-      name: 'grok-4',
+      name: 'grok-4.20-0309-reasoning',
+      multiModal: true,
+      reasoningEfforts: [],
+    },
+    {
+      name: 'grok-4.20-0309-non-reasoning',
       multiModal: true,
       isDefault: true,
-      reasoningEfforts: ['low', 'high'],
     },
     {
-      name: 'grok-4-0709',
-      multiModal: true,
-      reasoningEfforts: ['low', 'high'],
+      name: 'grok-4.20-multi-agent-0309',
+      reasoningEfforts: ['low', 'medium', 'high'],
     },
-    {
-      name: 'grok-4-latest',
-      multiModal: true,
-      reasoningEfforts: ['low', 'high'],
-    },
-    { name: 'grok-3', multiModal: true, reasoningEfforts: ['low', 'high'] },
-    {
-      name: 'grok-3-latest',
-      multiModal: true,
-      reasoningEfforts: ['low', 'high'],
-    },
-    {
-      name: 'grok-3-mini',
-      multiModal: true,
-      reasoningEfforts: ['low', 'high'],
-    },
-    {
-      name: 'grok-3-mini-latest',
-      multiModal: true,
-      reasoningEfforts: ['low', 'high'],
-    },
+    { name: 'grok-build-0.1' },
   ],
   groq: [
     { name: 'llama-3.1-8b-instant' },
@@ -585,35 +665,33 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     { name: 'mistral-small-2506' },
     { name: 'pixtral-large-latest', multiModal: true },
     { name: 'mistral-medium-3.5' },
-    { name: 'mistral-small-latest' },
-    { name: 'mistral-small-2603' },
     {
-      name: 'magistral-medium-latest',
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
+      name: 'mistral-small-latest',
+      reasoningEfforts: ['none', 'high'],
     },
     {
-      name: 'magistral-small-latest',
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
+      name: 'mistral-small-2603',
+      reasoningEfforts: ['none', 'high'],
     },
-    {
-      name: 'magistral-medium-2509',
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
-    },
-    {
-      name: 'magistral-small-2509',
-      reasoningEfforts: [],
-      reasoningTokenBudget: true,
-    },
+    // Magistralは常に推論するため、effortは送らない
+    { name: 'magistral-medium-latest', reasoningEfforts: [] },
+    { name: 'magistral-small-latest', reasoningEfforts: [] },
+    { name: 'magistral-medium-2509', reasoningEfforts: [] },
+    { name: 'magistral-small-2509', reasoningEfforts: [] },
+    // Z.ai GLM（Mistral経由）は推論を無効化できない
+    { name: 'zai-glm-latest', reasoningEfforts: ['low', 'high', 'max'] },
+    { name: 'zai-glm-5-3', reasoningEfforts: ['low', 'high', 'max'] },
+    { name: 'zai-glm-5-3-flash', reasoningEfforts: ['low', 'high', 'max'] },
+    { name: 'zai-glm-5', reasoningEfforts: ['low', 'high', 'max'] },
   ],
+  // Sonar APIは2026-09-27に終了したため、Agent APIのプリセットを使う
   perplexity: [
-    { name: 'sonar-deep-research' },
-    { name: 'sonar-reasoning-pro' },
-    { name: 'sonar-reasoning' },
-    { name: 'sonar-pro', multiModal: true, isDefault: true },
-    { name: 'sonar' },
+    { name: 'fast', multiModal: true },
+    { name: 'low', multiModal: true, isDefault: true },
+    { name: 'medium', multiModal: true },
+    { name: 'high', multiModal: true },
+    { name: 'xhigh', multiModal: true },
+    { name: 'perplexity/sonar' },
   ],
   fireworks: [
     {
@@ -649,7 +727,8 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
       reasoningTokenBudget: true,
     },
     {
-      name: 'accounts/fireworks/models/kimi-k2p5',
+      name: 'accounts/fireworks/models/kimi-k2p6',
+      multiModal: true,
       reasoningEfforts: [],
       reasoningTokenBudget: true,
     },
@@ -661,7 +740,13 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
       isDefault: true,
       reasoningEfforts: ['high', 'max'],
     },
+    { name: 'deepseek-v4-flash', reasoningEfforts: ['high', 'max'] },
     { name: 'deepseek-v4-pro', reasoningEfforts: ['high', 'max'] },
+    {
+      name: 'deepseek-v4-flash-vision-exp',
+      multiModal: true,
+      reasoningEfforts: ['high', 'max'],
+    },
   ],
   openrouter: [],
   orcarouter: [],
@@ -903,6 +988,12 @@ export function isMultiModalAvailable(
 }
 
 export const googleSearchGroundingModels = [
+  'gemini-4-hydrogen',
+  'gemini-4-argon',
+  'gemini-4-carbon',
+  'gemini-3.8-flash',
+  'gemini-3.7-flash',
+  'gemini-3.6-flash',
   'gemini-3.5-flash',
   'gemini-3.5-flash-lite',
   'gemini-3.1-pro-preview',
@@ -946,15 +1037,16 @@ const serviceReasoningDefaults: Partial<
   Record<AIService, { efforts: ReasoningEffort[]; tokenBudget: boolean }>
 > = {
   openai: {
-    efforts: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'],
+    efforts: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'],
     tokenBudget: false,
   },
   azure: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
   anthropic: { efforts: [], tokenBudget: true },
   google: { efforts: ['low', 'medium', 'high'], tokenBudget: true },
-  xai: { efforts: ['low', 'high'], tokenBudget: false },
+  xai: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
   groq: { efforts: ['low', 'medium', 'high'], tokenBudget: false },
   deepseek: { efforts: ['high', 'max'], tokenBudget: false },
+  mistralai: { efforts: ['none', 'low', 'high', 'max'], tokenBudget: false },
   cohere: { efforts: [], tokenBudget: true },
   ollama: { efforts: ['none', 'low', 'medium', 'high'], tokenBudget: false },
 }

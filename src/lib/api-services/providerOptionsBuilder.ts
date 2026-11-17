@@ -1,4 +1,35 @@
-import { getReasoningEfforts } from '@/features/constants/aiModels'
+import {
+  getReasoningEfforts,
+  needsReasoningTokenBudget,
+} from '@/features/constants/aiModels'
+
+/**
+ * モデルが受け付けないeffort値を、受け付ける値に置き換える
+ * （別モデル用に保存されたeffortがそのまま送られるのを防ぐ）
+ */
+function normalizeEffort(
+  supportedEfforts: readonly string[],
+  reasoningEffort: string
+): string {
+  if (
+    supportedEfforts.length === 0 ||
+    supportedEfforts.includes(reasoningEffort)
+  ) {
+    return reasoningEffort
+  }
+  // 推論モードONで'none'に落ちないよう、medium → high → 先頭の有効値の順に選ぶ
+  if (supportedEfforts.includes('medium')) return 'medium'
+  if (supportedEfforts.includes('high')) return 'high'
+  return (
+    supportedEfforts.find((effort) => effort !== 'none') ?? supportedEfforts[0]
+  )
+}
+
+/** gemini-3以降はthinkingLevel、2.5以前はthinkingBudgetで制御する */
+function usesGoogleThinkingLevel(model: string): boolean {
+  const match = /^gemini-(\d+)/.exec(model)
+  return match != null && Number(match[1]) >= 3
+}
 
 /**
  * 推論モードのproviderOptionsを組み立てるビルダー
@@ -24,17 +55,9 @@ export function buildReasoningProviderOptions(
   switch (service) {
     case 'openai': {
       const supportedEfforts = getReasoningEfforts('openai', model, customModel)
-      const normalizedEffort =
-        supportedEfforts.length > 0 &&
-        !(supportedEfforts as readonly string[]).includes(reasoningEffort)
-          ? supportedEfforts.includes('medium')
-            ? 'medium'
-            : supportedEfforts[0]
-          : reasoningEffort
-
       return {
         openai: {
-          reasoningEffort: normalizedEffort,
+          reasoningEffort: normalizeEffort(supportedEfforts, reasoningEffort),
           reasoningSummary: 'detailed',
         },
       }
@@ -60,8 +83,30 @@ export function buildReasoningProviderOptions(
       }
     }
 
-    case 'xai':
-      return { xai: { reasoningEffort } }
+    case 'xai': {
+      // grok-4.20-0309-reasoning等はreasoningEffortを受け付けない
+      const supportedEfforts = getReasoningEfforts('xai', model, customModel)
+      if (supportedEfforts.length === 0) return undefined
+      return {
+        xai: {
+          reasoningEffort: normalizeEffort(supportedEfforts, reasoningEffort),
+        },
+      }
+    }
+
+    case 'mistralai': {
+      const supportedEfforts = getReasoningEfforts(
+        'mistralai',
+        model,
+        customModel
+      )
+      if (supportedEfforts.length === 0) return undefined
+      return {
+        mistral: {
+          reasoningEffort: normalizeEffort(supportedEfforts, reasoningEffort),
+        },
+      }
+    }
 
     case 'groq':
       // GroqはcreateOpenAI互換のため、providerOptionsキーはopenai
@@ -72,12 +117,34 @@ export function buildReasoningProviderOptions(
       return { openai: { reasoningEffort } }
 
     case 'anthropic': {
+      const supportedEfforts = getReasoningEfforts(
+        'anthropic',
+        model,
+        customModel
+      )
+      const usesTokenBudget = needsReasoningTokenBudget(
+        'anthropic',
+        model,
+        customModel
+      )
+      // claude-sonnet-4-6 / claude-opus-4-6以降はadaptive thinking + effortで制御する
+      if (!usesTokenBudget && supportedEfforts.length > 0) {
+        return {
+          anthropic: {
+            thinking: { type: 'adaptive' },
+            effort: normalizeEffort(supportedEfforts, reasoningEffort),
+          },
+        }
+      }
       const anthropicOptions: Record<string, unknown> = {
         thinking: { type: 'enabled', budgetTokens: reasoningTokenBudget },
       }
-      // effort parameter is only supported by Claude Opus 4.5
-      if (model.includes('opus-4-5')) {
-        anthropicOptions.effort = reasoningEffort
+      // claude-opus-4-5はtokenBudgetとeffortを併用できる
+      if (supportedEfforts.length > 0) {
+        anthropicOptions.effort = normalizeEffort(
+          supportedEfforts,
+          reasoningEffort
+        )
       }
       return { anthropic: anthropicOptions }
     }
@@ -101,12 +168,16 @@ export function buildReasoningProviderOptions(
       }
 
     case 'google': {
-      const isGoogle3Series = model.startsWith('gemini-3')
-      if (isGoogle3Series) {
+      if (usesGoogleThinkingLevel(model)) {
+        const supportedEfforts = getReasoningEfforts(
+          'google',
+          model,
+          customModel
+        )
         return {
           google: {
             thinkingConfig: {
-              thinkingLevel: reasoningEffort,
+              thinkingLevel: normalizeEffort(supportedEfforts, reasoningEffort),
               includeThoughts: true,
             },
           },
