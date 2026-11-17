@@ -241,7 +241,7 @@ description, based, character, ai, voice, speechInput, youtube, slide, images, m
   - 作業ディレクトリかその上位に `CLAUDE.md`・`.claude/CLAUDE.md`・`CLAUDE.local.md` があると、既定設定では `AGENTS.md` を読まない。ローカルで併用したい場合は `/config` の Project instructions を `claude-md-and-agents-md` にする
 - プロジェクトスキルの正本は `.agents/skills/<skill-name>/` に置く
 - Claude Code は `.claude/skills/` からしかスキルを読まないため、`.claude/skills/<skill-name>` は正本へのシンボリックリンクにする（例: `ln -s ../../.agents/skills/<skill-name> .claude/skills/<skill-name>`）。内容をコピーして二重管理しない
-- Windows でシンボリックリンクがテキストファイルとしてチェックアウトされた場合は、開発者モードを有効にして `git config core.symlinks true` を設定し、`git checkout -- .claude/skills` で取り直す。有効にできない環境では `.agents/skills/<skill-name>` を `.claude/skills/<skill-name>` にローカルでコピーして使い、コピーはコミットしない
+- Windows でシンボリックリンクがテキストファイルとしてチェックアウトされた場合は、開発者モードを有効にして `git config core.symlinks true` を設定し、`git checkout -- .claude/skills` で取り直す。有効にできない環境では、テキストファイルになった `.claude/skills/<skill-name>` を削除してから `.agents/skills/<skill-name>` を同じ場所にローカルでコピーして使い、コピーはコミットしない
 
 ### 言語ファイル更新ルール
 
