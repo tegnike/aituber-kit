@@ -132,6 +132,19 @@ describe('vercelAi service helpers', () => {
       expect(mockLanguageModel).toHaveBeenCalledWith('apiroute:gpt-6.1-sol')
     })
 
+    it('creates cloudgpu registry as an OpenAI-compatible provider', () => {
+      const registry = createAIRegistry('cloudgpu', { apiKey: 'cg-key' })
+      expect(createOpenAICompatible).toHaveBeenCalledWith({
+        name: 'cloudgpu',
+        baseURL: 'https://cloudgpu.app/v1',
+        apiKey: 'cg-key',
+      })
+      getLanguageModel(registry as any, 'cloudgpu', 'deepseek-v4-flash')
+      expect(mockLanguageModel).toHaveBeenCalledWith(
+        'cloudgpu:deepseek-v4-flash'
+      )
+    })
+
     it('returns null for custom-api service', () => {
       const registry = createAIRegistry('custom-api', {})
       expect(registry).toBeNull()

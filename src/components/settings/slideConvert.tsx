@@ -80,6 +80,7 @@ const SlideConvert: React.FC<SlideConvertProps> = ({ onFolderUpdate }) => {
     else if (aiService === 'openrouter') apiKey = settings.openrouterKey
     else if (aiService === 'orcarouter') apiKey = settings.orcarouterKey
     else if (aiService === 'apiroute') apiKey = settings.apirouteKey
+    else if (aiService === 'cloudgpu') apiKey = settings.cloudgpuKey
     else if (aiService === 'dify') apiKey = settings.difyKey
 
     if (
