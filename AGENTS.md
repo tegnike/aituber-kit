@@ -1,6 +1,6 @@
 # AGENTS.md
 
-このファイルは、Codex (Codex.ai/code) がこのリポジトリのコードを扱う際のガイダンスを提供します。
+このファイルは、Claude Code・CodexなどのAIコーディングエージェントがこのリポジトリのコードを扱う際のガイダンスを提供します。
 
 ## プロジェクト概要
 
@@ -101,7 +101,7 @@ src/
 | `openAIAudioChat.ts`              | openai（audioMode時）                                                                                                                     |
 | `difyChat.ts`                     | dify                                                                                                                                      |
 
-**サーバー側**: `/api/ai/vercel.ts`（Edge Runtime、`createAIRegistry`で動的プロバイダー登録）
+**サーバー側**: `/api/ai/vercel.ts`（Node.jsランタイム、`createAIRegistry`で動的プロバイダー登録）
 
 **モデル管理** (`/src/features/constants/aiModels.ts`):
 
@@ -233,6 +233,12 @@ description, based, character, ai, voice, speechInput, youtube, slide, images, m
 - 複合行では主入力を`flex-1`、補助選択肢や単位入力を固定幅にしてよい。狭い画面で窮屈になる場合は縦積みに切り替える
 - 操作ボタンはPCでは内容幅を基本とし、モバイルで必要な場合のみ`w-full sm:w-auto`を使用する
 - 追加・変更時は、条件分岐で表示されるフォームも含めてPC幅とモバイル幅を確認する
+
+### エージェント向けファイルの管理
+
+- プロジェクトの指示は `AGENTS.md` に一本化する。Claude Code も `CLAUDE.md` がなければ `AGENTS.md` を読むため、`CLAUDE.md` は作成しない
+- プロジェクトスキルの正本は `.agents/skills/<skill-name>/` に置く
+- Claude Code は `.claude/skills/` からしかスキルを読まないため、`.claude/skills/<skill-name>` は正本へのシンボリックリンクにする（例: `ln -s ../../.agents/skills/<skill-name> .claude/skills/<skill-name>`）。内容をコピーして二重管理しない
 
 ### 言語ファイル更新ルール
 

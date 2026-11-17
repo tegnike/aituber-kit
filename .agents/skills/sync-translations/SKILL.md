@@ -8,10 +8,6 @@ user-invocable: true
 
 日本語の翻訳ファイル（`locales/ja/translation.json`）をマスターとして、他の言語ファイルに不足しているキーを同期します。
 
-## 保守方針
-
-この `.agents/skills/sync-translations/SKILL.md` を現在のエージェント向け手順の正本として扱います。`.claude/skills/sync-translations/SKILL.md` は既存Claude環境向けの互換コピーで、Codex/AgentTools向けの手順更新はまず `.agents/` 側へ反映します。
-
 ## 対象言語
 
 以下の15言語ファイルを更新対象とします：
