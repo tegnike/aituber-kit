@@ -136,8 +136,12 @@ describe('aiModels', () => {
       expect(getDefaultModel('azure')).toBe('')
     })
 
-    it('should return grok-4 for xai', () => {
-      expect(getDefaultModel('xai')).toBe('grok-4')
+    it('should return grok-4.20-0309-non-reasoning for xai', () => {
+      expect(getDefaultModel('xai')).toBe('grok-4.20-0309-non-reasoning')
+    })
+
+    it('should return the low Agent API preset for perplexity', () => {
+      expect(getDefaultModel('perplexity')).toBe('low')
     })
 
     it('should return llama-3.3-70b-versatile for groq', () => {
@@ -200,10 +204,9 @@ describe('aiModels', () => {
       const models = getMultiModalModels('xai')
       const allModels = getModels('xai')
       expect(models.length).toBeLessThan(allModels.length)
-      expect(models).not.toContain('grok-4-fast-non-reasoning')
-      expect(models).not.toContain('grok-4-fast-reasoning')
-      expect(models).not.toContain('grok-code-fast-1')
-      expect(models).toContain('grok-4')
+      expect(models).not.toContain('grok-build-0.1')
+      expect(models).not.toContain('grok-4.20-multi-agent-0309')
+      expect(models).toContain('grok-4.6')
       expect(models).toContain('grok-4.5')
     })
 
@@ -351,6 +354,7 @@ describe('aiModels', () => {
           'medium',
           'high',
           'xhigh',
+          'max',
         ])
       }
 

@@ -197,14 +197,44 @@ describe('settingsStore versioned migration', () => {
     setPersisted(
       {
         selectAIService: 'fireworks',
-        selectAIModel: 'accounts/fireworks/models/kimi-k2p5',
+        selectAIModel: 'accounts/fireworks/models/kimi-k2-thinking',
       },
       8
     )
 
     expect(loadStore().getState().selectAIModel).toBe(
-      'accounts/fireworks/models/kimi-k2p5'
+      'accounts/fireworks/models/kimi-k2-thinking'
     )
+  })
+
+  it('moves Perplexity Sonar models to Agent API presets in version 10', () => {
+    setPersisted(
+      {
+        selectAIService: 'perplexity',
+        selectAIModel: 'sonar-pro',
+        customModel: true,
+      },
+      9
+    )
+
+    expect(loadStore().getState().selectAIModel).toBe('low')
+  })
+
+  it('moves retired xAI models to the default model in version 10', () => {
+    setPersisted({ selectAIService: 'xai', selectAIModel: 'grok-4' }, 9)
+
+    expect(loadStore().getState().selectAIModel).toBe(
+      'grok-4.20-0309-non-reasoning'
+    )
+  })
+
+  it('keeps a custom xAI model name in version 10', () => {
+    setPersisted(
+      { selectAIService: 'xai', selectAIModel: 'grok-4', customModel: true },
+      9
+    )
+
+    expect(loadStore().getState().selectAIModel).toBe('grok-4')
   })
 
   it('keeps other services when migrating version 8 data', () => {
