@@ -432,7 +432,8 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     {
       name: 'gemini-3.8-flash',
       multiModal: true,
-      reasoningEfforts: ['minimal', 'low', 'medium', 'high'],
+      // 公式ドキュメント上、gemini-3.8-flashはminimalを受け付けない
+      reasoningEfforts: ['low', 'medium', 'high'],
     },
     {
       name: 'gemini-3.7-flash',

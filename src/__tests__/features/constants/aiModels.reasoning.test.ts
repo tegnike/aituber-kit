@@ -277,6 +277,14 @@ describe('getReasoningEfforts', () => {
     ])
   })
 
+  it('Google gemini-3.8-flashはminimalを含まない', () => {
+    expect(getReasoningEfforts('google', 'gemini-3.8-flash')).toEqual([
+      'low',
+      'medium',
+      'high',
+    ])
+  })
+
   it('Mistral zai-glm-5-3はlow/high/max', () => {
     expect(getReasoningEfforts('mistralai', 'zai-glm-5-3')).toEqual([
       'low',
