@@ -55,6 +55,15 @@ const RETIRED_FIREWORKS_MODELS: Record<string, string> = {
   'accounts/fireworks/models/kimi-k2p5': 'accounts/fireworks/models/kimi-k2p6',
 }
 
+// '__proto__' など継承プロパティ名を移行対象と誤認しないよう、自身のキーだけを見る
+const lookupOwn = (
+  table: Record<string, string>,
+  modelName: string
+): string | undefined =>
+  Object.prototype.hasOwnProperty.call(table, modelName)
+    ? table[modelName]
+    : undefined
+
 /**
  * 提供終了・モデル一覧から外れたモデル名を後継モデルへ置き換える
  * @param service AIサービス名
@@ -71,9 +80,9 @@ export const migrateRetiredModelName = (
     case 'xai':
       return RETIRED_XAI_MODELS.has(modelName) ? xaiDefaultModel : modelName
     case 'perplexity':
-      return SONAR_TO_AGENT_PRESET[modelName] ?? modelName
+      return lookupOwn(SONAR_TO_AGENT_PRESET, modelName) ?? modelName
     case 'fireworks':
-      return RETIRED_FIREWORKS_MODELS[modelName] ?? modelName
+      return lookupOwn(RETIRED_FIREWORKS_MODELS, modelName) ?? modelName
     default:
       return modelName
   }

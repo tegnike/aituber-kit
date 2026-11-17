@@ -19,6 +19,12 @@ interface ModelInfo {
   reasoningEfforts?: ReasoningEffort[]
   /** tokenBudget設定が利用可能か */
   reasoningTokenBudget?: boolean
+  /**
+   * 推論設定を送らないときも思考するモデル。
+   * - 'disableable': 既定で思考するが、明示的に無効化できる
+   * - 'always': 常に思考し、無効化できない
+   */
+  reasoningByDefault?: 'disableable' | 'always'
 }
 
 /**
@@ -282,41 +288,49 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
       name: 'claude-fable-5-2',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'always',
     },
     {
       name: 'claude-fable-5-1',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'always',
     },
     {
       name: 'claude-fable-5',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'always',
     },
     {
       name: 'claude-opus-5-5',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'always',
     },
     {
       name: 'claude-opus-5',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'disableable',
     },
     {
       name: 'claude-sonnet-5-5',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'always',
     },
     {
       name: 'claude-sonnet-5',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'disableable',
     },
     {
       name: 'claude-haiku-5-5',
       multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+      reasoningByDefault: 'disableable',
     },
     {
       name: 'claude-opus-4-8',
@@ -581,6 +595,7 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
   xai: [
     {
       name: 'grok-4.7',
+      multiModal: true,
       reasoningEfforts: ['low', 'medium', 'high'],
     },
     {
@@ -595,6 +610,7 @@ const modelDefinitions: Record<AIService, ModelInfo[]> = {
     },
     {
       name: 'grok-4.3',
+      multiModal: true,
       reasoningEfforts: ['none', 'low', 'medium', 'high'],
     },
     {
@@ -1059,6 +1075,19 @@ function findModelInfo(
   model: string
 ): ModelInfo | undefined {
   return modelDefinitions[service]?.find((m) => m.name === model)
+}
+
+/**
+ * 推論設定を送らないときの思考の扱いを取得する
+ * @param service AIサービス名
+ * @param model モデル名
+ * @returns 既定で思考する場合は 'disableable' または 'always'
+ */
+export function getReasoningByDefault(
+  service: AIService,
+  model: string
+): ModelInfo['reasoningByDefault'] {
+  return findModelInfo(service, model)?.reasoningByDefault
 }
 
 /**

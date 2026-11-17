@@ -1,4 +1,5 @@
 import {
+  getReasoningByDefault,
   getReasoningEfforts,
   needsReasoningTokenBudget,
 } from '@/features/constants/aiModels'
@@ -47,9 +48,18 @@ export function buildReasoningProviderOptions(
 ): Record<string, Record<string, unknown>> | undefined {
   if (!reasoningMode) {
     // DeepSeekは思考が既定で有効なので、オフのときは明示的に止める
-    return service === 'deepseek'
-      ? { deepseek: { thinking: { type: 'disabled' } } }
-      : undefined
+    if (service === 'deepseek') {
+      return { deepseek: { thinking: { type: 'disabled' } } }
+    }
+    // Claude 5系の一部も既定で思考する。無効化できないモデルには送らない
+    if (
+      service === 'anthropic' &&
+      !customModel &&
+      getReasoningByDefault('anthropic', model) === 'disableable'
+    ) {
+      return { anthropic: { thinking: { type: 'disabled' } } }
+    }
+    return undefined
   }
 
   switch (service) {
@@ -128,10 +138,11 @@ export function buildReasoningProviderOptions(
         customModel
       )
       // claude-sonnet-4-6 / claude-opus-4-6以降はadaptive thinking + effortで制御する
+      // claude-opus-4-7以降は思考テキストの既定が'omitted'（空）なので要約を明示する
       if (!usesTokenBudget && supportedEfforts.length > 0) {
         return {
           anthropic: {
-            thinking: { type: 'adaptive' },
+            thinking: { type: 'adaptive', display: 'summarized' },
             effort: normalizeEffort(supportedEfforts, reasoningEffort),
           },
         }
