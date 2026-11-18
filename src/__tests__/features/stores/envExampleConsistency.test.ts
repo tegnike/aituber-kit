@@ -18,6 +18,9 @@ import path from 'path'
 const ENV_EXAMPLE_PATH = path.join(process.cwd(), '.env.example')
 const SRC_DIR = path.join(process.cwd(), 'src')
 
+// BASE_PATH から next.config.js がクライアント用に生成する。
+const GENERATED_BY_NEXT = new Set(['NEXT_PUBLIC_BASE_PATH'])
+
 // .env.example にのみ存在してよい（コードから直接参照されない）変数。
 // 追加する場合は理由をコメントで明記すること。
 const ALLOWED_UNREFERENCED_IN_CODE: string[] = []
@@ -67,7 +70,7 @@ describe('.env.example / NEXT_PUBLIC_* consistency', () => {
 
   it('should not reference NEXT_PUBLIC_* variables missing from .env.example', () => {
     const missing = Array.from(referencedVars)
-      .filter((v) => !declaredVars.has(v))
+      .filter((v) => !declaredVars.has(v) && !GENERATED_BY_NEXT.has(v))
       .sort()
 
     expect(missing).toEqual([])
