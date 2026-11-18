@@ -9,7 +9,7 @@ export class LipSync {
   public readonly timeDomainData: Float32Array
   private userInteracted: boolean = false
   private waitingForInteraction: boolean = false
-  private pendingPlaybacks: Array<() => void> = []
+  private pendingPlaybacks: Array<{ start(): void; cancel(): void }> = []
   private forceStart: boolean = false
   private currentSource: AudioBufferSourceNode | null = null
   private currentStreamReader: ReadableStreamDefaultReader<Uint8Array> | null =
@@ -92,7 +92,7 @@ export class LipSync {
       )
       const playbacks = [...this.pendingPlaybacks]
       this.pendingPlaybacks = []
-      playbacks.forEach((playback) => playback())
+      playbacks.forEach((playback) => playback.start())
     }
   }
 
@@ -163,18 +163,24 @@ export class LipSync {
     const queuedGeneration = this.streamPlaybackGeneration
     // AudioContextが準備できているか確認
     const isReady = await this.ensureAudioContextReady()
+    if (queuedGeneration !== this.streamPlaybackGeneration) {
+      onEnded?.()
+      return
+    }
 
     if (!isReady) {
       // ユーザーインタラクションを待つ
-      this.pendingPlaybacks.push(() => {
-        if (queuedGeneration !== this.streamPlaybackGeneration) return
-        this.playFromArrayBuffer(
-          buffer,
-          onEnded,
-          isNeedDecode,
-          sampleRate,
-          onStarted
-        )
+      this.pendingPlaybacks.push({
+        start: () => {
+          void this.playFromArrayBuffer(
+            buffer,
+            onEnded,
+            isNeedDecode,
+            sampleRate,
+            onStarted
+          )
+        },
+        cancel: () => onEnded?.(),
       })
       return
     }
@@ -214,6 +220,11 @@ export class LipSync {
         }
       }
 
+      if (queuedGeneration !== this.streamPlaybackGeneration) {
+        onEnded?.()
+        return
+      }
+
       const bufferSource = this.audio.createBufferSource()
       // 再生中ソースを保持し、終了時にクリア
       this.currentSource = bufferSource
@@ -221,24 +232,21 @@ export class LipSync {
 
       bufferSource.connect(this.audio.destination)
       bufferSource.connect(this.analyser)
-      bufferSource.start()
-      onStarted?.()
-      if (onEnded) {
-        bufferSource.addEventListener('ended', onEnded)
-      }
-
-      // 再生終了後にクリア
       bufferSource.onended = () => {
         if (this.currentSource === bufferSource) this.currentSource = null
         onEnded?.()
       }
+      bufferSource.start()
+      onStarted?.()
     } catch (error) {
       logger.error('Failed to play audio:', error)
       if (onEnded) {
         onEnded()
       }
       // ensure currentSource cleared on error
-      this.currentSource = null
+      if (queuedGeneration === this.streamPlaybackGeneration) {
+        this.currentSource = null
+      }
     }
   }
 
@@ -255,22 +263,26 @@ export class LipSync {
   ): Promise<void> {
     const queuedGeneration = this.streamPlaybackGeneration
     const isReady = await this.ensureAudioContextReady()
+    const cancelStream = () =>
+      stream.cancel('playback superseded').catch(() => {})
+    if (queuedGeneration !== this.streamPlaybackGeneration) {
+      await cancelStream()
+      return
+    }
     if (!isReady) {
-      await new Promise<void>((resolve) => {
-        this.pendingPlaybacks.push(() => {
-          if (queuedGeneration !== this.streamPlaybackGeneration) {
-            void stream
-              .cancel('playback superseded')
-              .catch(() => {})
-              .finally(resolve)
-            return
-          }
-          void this.playPcm16Stream(
-            stream,
-            onEnded,
-            sampleRate,
-            onStarted
-          ).finally(resolve)
+      await new Promise<void>((resolve, reject) => {
+        this.pendingPlaybacks.push({
+          start: () => {
+            void this.playPcm16Stream(
+              stream,
+              onEnded,
+              sampleRate,
+              onStarted
+            ).then(resolve, reject)
+          },
+          cancel: () => {
+            void cancelStream().then(resolve)
+          },
         })
       })
       return
@@ -464,6 +476,9 @@ export class LipSync {
    */
   public stopCurrentPlayback() {
     this.streamPlaybackGeneration++
+    const pending = this.pendingPlaybacks
+    this.pendingPlaybacks = []
+    pending.forEach((playback) => playback.cancel())
     if (this.currentStreamReader) {
       void this.currentStreamReader.cancel().catch(() => {})
       this.currentStreamReader = null
