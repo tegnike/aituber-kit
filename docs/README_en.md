@@ -123,6 +123,7 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - OpenRouter
 - OrcaRouter
 - API Route
+- Cheaper Inference
 
 ### Supported Voice Synthesis Engines
 
