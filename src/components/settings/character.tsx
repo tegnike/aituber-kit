@@ -81,7 +81,7 @@ const Character = () => {
         />
 
         {/* Character Position Controls - VRM/Live2D only (PNGTuber uses scale/offset in viewer) */}
-        {modelType !== 'pngtuber' && (
+        {(modelType === 'vrm' || modelType === 'live2d') && (
           <CharacterPositionSection
             modelType={modelType}
             fixedCharacterPosition={fixedCharacterPosition}

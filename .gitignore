@@ -67,6 +67,9 @@ public/scripts/live2dcubismcore.min.js
 /public/backgrounds/*
 !/public/backgrounds/bg-c.png
 
+# LivLiv models (user-supplied; do not commit character packages)
+/public/livliv/*
+
 # PNGTuber files
 public/pngtuber/*
 !public/pngtuber/nike01

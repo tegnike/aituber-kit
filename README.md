@@ -103,6 +103,7 @@ AITuberKitは、誰でも簡単にAIキャラクターとチャットできるWe
 - **3Dモデル**: VRMファイル（モーションタグによるポーズ・ジェスチャー制御に対応）
 - **2Dモデル**: Live2Dファイル（Cubism 3以降）
 - **動くPngTuber**: 動画ベースのキャラクター表示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
+- **LivLiv**: .livlivファイル（[LivLiv Player](https://github.com/livliv-dev/player)）。LivLivのキャラクターは同梱せず、AITuberKitのライセンス（商用ライセンスを含む）の対象外です（[利用条件](https://github.com/livliv-dev/player/blob/main/characters/LICENSE.md)）
 
 ### 対応LLM
 

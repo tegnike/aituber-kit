@@ -9,6 +9,7 @@ import ModalImage from '@/components/modalImage'
 import VrmViewer from '@/components/vrmViewer'
 import Live2DViewer from '@/components/live2DViewer'
 import PNGTuberViewer from '@/components/pngTuberViewer'
+import LivLivViewer from '@/components/livlivViewer'
 import { Toasts } from '@/components/toasts'
 import { WebSocketManager } from '@/components/websocketManager'
 import CharacterPresetMenu from '@/components/characterPresetMenu'
@@ -125,6 +126,8 @@ const Home = () => {
         <Live2DViewer />
       ) : modelType === 'pngtuber' ? (
         <PNGTuberViewer />
+      ) : modelType === 'livliv' ? (
+        <LivLivViewer />
       ) : (
         <VrmViewer />
       )}

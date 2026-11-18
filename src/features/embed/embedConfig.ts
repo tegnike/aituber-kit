@@ -1,7 +1,11 @@
 import { logger } from '@/lib/logger'
+import {
+  CHARACTER_MODEL_TYPES,
+  type CharacterModelType,
+} from '@/features/constants/modelType'
 import type { SettingsState, PresetQuestion } from '@/features/stores/settings'
 
-export type EmbedModelType = 'vrm' | 'live2d' | 'pngtuber'
+export type EmbedModelType = CharacterModelType
 
 export type EmbedConfig = {
   id?: string
@@ -12,6 +16,7 @@ export type EmbedConfig = {
   selectedVrmPath?: string
   selectedLive2DPath?: string
   selectedPNGTuberPath?: string
+  selectedLivlivPath?: string
   showAssistantText?: boolean
   showCharacterName?: boolean
   showPresetQuestions?: boolean
@@ -23,7 +28,7 @@ export type EmbedConfig = {
 
 type EmbedConfigMap = Record<string, EmbedConfig>
 
-const MODEL_TYPES: EmbedModelType[] = ['vrm', 'live2d', 'pngtuber']
+const MODEL_TYPES: readonly EmbedModelType[] = CHARACTER_MODEL_TYPES
 const COLOR_THEMES: SettingsState['colorTheme'][] = [
   'default',
   'cool',
@@ -93,6 +98,7 @@ export const getEmbedOverridesFromSearchParams = (
     selectedVrmPath: params.get('selectedVrmPath') || undefined,
     selectedLive2DPath: params.get('selectedLive2DPath') || undefined,
     selectedPNGTuberPath: params.get('selectedPNGTuberPath') || undefined,
+    selectedLivlivPath: params.get('selectedLivlivPath') || undefined,
     showAssistantText: parseBoolean(params.get('showAssistantText')),
     showCharacterName: parseBoolean(params.get('showCharacterName')),
     showPresetQuestions: parseBoolean(params.get('showPresetQuestions')),

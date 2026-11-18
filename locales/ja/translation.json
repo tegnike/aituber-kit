@@ -592,6 +592,17 @@
       "clap": "拍手、称賛"
     }
   },
+  "LivLiv": {
+    "FileInfo": "開いたファイルはこのブラウザに保存されます。すべての端末で使うモデルは、.livliv ファイルまたは model.json を含むフォルダを public/livliv に配置してください。",
+    "OpenModel": ".livliv を開く",
+    "ChooseModel": "モデルを選択",
+    "NoModel": "モデルを選ぶか、.livliv をドロップしてください。",
+    "Characters": "LivLiv のキャラクター",
+    "WebGLUnsupported": "LivLiv の表示には WebGL 2 が必要です。",
+    "LoadError": "LivLiv モデルを読み込めませんでした。",
+    "ImportError": ".livliv ファイルを開けませんでした。",
+    "ListError": "LivLiv のモデル一覧を読み込めませんでした。"
+  },
   "PNGTuber": {
     "FileInfo": "使用したいPNGTuberアセットのフォルダを、public/pngtuber に配置してください。各フォルダには以下のファイルが必要です：\n・*_mouthless_h264.mp4（口なし背景動画）\n・mouth_track.json（口の位置トラッキングデータ）\n・mouth/フォルダ（口スプライト：closed.png, open.png が必須、half.png, e.png, u.png はオプション）",
     "Sensitivity": "感度",
