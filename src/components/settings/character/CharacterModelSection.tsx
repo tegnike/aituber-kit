@@ -10,6 +10,7 @@ import { ToggleSwitch } from '../../toggleSwitch'
 import { useLive2DEnabled } from '@/hooks/useLive2DEnabled'
 import { useRestrictedMode } from '@/hooks/useRestrictedMode'
 import { Live2DSettingsForm } from './Live2DSettingsForm'
+import { LivLivModelSettings } from './LivLivModelSettings'
 import { settingsControlClass } from '@/components/settings/formStyles'
 
 interface CharacterModelSectionProps {
@@ -156,9 +157,9 @@ export const CharacterModelSection = ({
         {t('CharacterModelInfo')}
       </div>
 
-      <div className="flex mb-2">
+      <div className="mb-2 flex flex-wrap gap-2">
         <button
-          className={`px-4 py-2 rounded-lg mr-2 ${
+          className={`px-4 py-2 rounded-lg ${
             modelType === 'vrm'
               ? 'bg-primary text-theme'
               : 'bg-white hover:bg-white-hover'
@@ -168,7 +169,7 @@ export const CharacterModelSection = ({
           VRM
         </button>
         <button
-          className={`px-4 py-2 rounded-lg mr-2 ${
+          className={`px-4 py-2 rounded-lg ${
             modelType === 'live2d'
               ? 'bg-primary text-theme'
               : 'bg-white hover:bg-white-hover'
@@ -186,6 +187,16 @@ export const CharacterModelSection = ({
           onClick={() => settingsStore.setState({ modelType: 'pngtuber' })}
         >
           {i18n.language === 'ja' ? '動くPNGTuber' : 'MotionPNGTuber'}
+        </button>
+        <button
+          className={`px-4 py-2 rounded-lg ${
+            modelType === 'livliv'
+              ? 'bg-primary text-theme'
+              : 'bg-white hover:bg-white-hover'
+          }`}
+          onClick={() => settingsStore.setState({ modelType: 'livliv' })}
+        >
+          LivLiv
         </button>
       </div>
 
@@ -263,6 +274,8 @@ export const CharacterModelSection = ({
           </div>
         </>
       )}
+
+      {modelType === 'livliv' && <LivLivModelSettings />}
 
       {modelType === 'pngtuber' && (
         <>

@@ -247,6 +247,7 @@ resources列の略記: **SS**=server-secret, **SU**=server-url, **FR**=fs-read, 
 | /api/get-background-list      | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-image-list           | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-live2d-list          | GET       | FR                 | none                                                             | in-route                                            | —                |
+| /api/get-livliv-list          | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-pngtuber-list        | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-pose-list            | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-vrm-list             | GET       | FR                 | none                                                             | in-route                                            | —                |

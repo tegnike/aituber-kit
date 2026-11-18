@@ -20,6 +20,7 @@ export class LivePlayback {
   private closed = false
   private vrm = homeStore.getState().viewer.model
   private png = homeStore.getState().pngTuberViewer
+  private livliv = homeStore.getState().livlivPlayer
   private live2d = homeStore.getState().live2dViewer
   private get internal() {
     return this.live2d?.internalModel as unknown as Live2DInternal | undefined
@@ -61,6 +62,10 @@ export class LivePlayback {
         this.png?.setExternalAudioLevel(0)
         this.png = home.pngTuberViewer
       }
+      if (this.livliv !== home.livlivPlayer) {
+        if (this.livliv) this.livliv.params.mouthOpen = 0
+        this.livliv = home.livlivPlayer
+      }
       if (this.live2d !== home.live2dViewer) {
         this.internal?.off('beforeModelUpdate', this.updateMouth)
         this.live2d = home.live2dViewer
@@ -75,6 +80,7 @@ export class LivePlayback {
         this.audio.paused || this.audio.muted ? 0 : Math.min(1, rms * 8)
       if (this.vrm) this.vrm.externalLipSyncVolume = this.volume
       this.png?.setExternalAudioLevel(this.volume)
+      if (this.livliv) this.livliv.params.mouthOpen = this.volume
       const speaking = this.volume > 0.02
       if (homeStore.getState().isSpeaking !== speaking)
         homeStore.setState({ isSpeaking: speaking })
@@ -95,6 +101,7 @@ export class LivePlayback {
     this.updateMouth()
     if (this.vrm) this.vrm.externalLipSyncVolume = null
     this.png?.setExternalAudioLevel(0)
+    if (this.livliv) this.livliv.params.mouthOpen = 0
     this.audio.pause()
     this.audio.srcObject = null
     void this.context.close().catch(() => {})
