@@ -123,6 +123,7 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - OpenRouter
 - OrcaRouter
 - API Route
+- Opper
 
 ### 지원 음성 합성 엔진
 

@@ -121,6 +121,16 @@ describe('vercelAi service helpers', () => {
       expect(mockCreateProviderRegistry).toHaveBeenCalled()
     })
 
+    it('creates opper registry as an OpenAI-compatible provider', () => {
+      createAIRegistry('opper', { apiKey: 'test-key' })
+      expect(createOpenAICompatible).toHaveBeenCalledWith({
+        name: 'opper',
+        baseURL: 'https://api.opper.ai/v3/compat',
+        apiKey: 'test-key',
+      })
+      expect(mockCreateProviderRegistry).toHaveBeenCalled()
+    })
+
     it('routes API Route models unchanged through the compatible registry', () => {
       const registry = createAIRegistry('apiroute', { apiKey: 'route-key' })
       expect(createOpenAICompatible).toHaveBeenCalledWith({

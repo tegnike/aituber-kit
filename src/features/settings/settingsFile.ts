@@ -60,6 +60,7 @@ export const SENSITIVE_SETTINGS_KEYS = [
   'openrouterKey',
   'orcarouterKey',
   'apirouteKey',
+  'opperKey',
   'lmstudioKey',
   'ollamaKey',
   'koeiromapKey',
