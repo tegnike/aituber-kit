@@ -122,6 +122,8 @@ const QuickStart = () => {
   const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId)
   const cartesiaApiKey = settingsStore((s) => s.cartesiaApiKey)
   const cartesiaVoiceId = settingsStore((s) => s.cartesiaVoiceId)
+  const waffleApiKey = settingsStore((s) => s.waffleApiKey)
+  const waffleVoiceId = settingsStore((s) => s.waffleVoiceId)
   const openaiTTSVoice = settingsStore((s) => s.openaiTTSVoice)
   const openaiTTSModel = settingsStore((s) => s.openaiTTSModel)
   const azureTTSKey = settingsStore((s) => s.azureTTSKey)
@@ -681,6 +683,32 @@ const QuickStart = () => {
             </LabeledField>
           </div>
         )
+      case 'waffle':
+        return (
+          <div className={quickGridClassName}>
+            <LabeledField label={t('APIKey')}>
+              <input
+                className={inputClassName}
+                type="password"
+                value={waffleApiKey}
+                onChange={(e) =>
+                  settingsStore.setState({ waffleApiKey: e.target.value })
+                }
+                placeholder="awp_..."
+              />
+            </LabeledField>
+            <LabeledField label={t('WaffleVoiceId')}>
+              <input
+                className={inputClassName}
+                value={waffleVoiceId}
+                onChange={(e) =>
+                  settingsStore.setState({ waffleVoiceId: e.target.value })
+                }
+                placeholder="builtin_voice_062"
+              />
+            </LabeledField>
+          </div>
+        )
       case 'openai':
         return (
           <div className={quickGridClassName}>
@@ -953,6 +981,7 @@ const QuickStart = () => {
             <option value="gsvitts">{t('UsingGSVITTS')}</option>
             <option value="elevenlabs">{t('UsingElevenLabs')}</option>
             <option value="cartesia">{t('UsingCartesia')}</option>
+            <option value="waffle">{t('UsingWaffle')}</option>
             {!isDemoMode() && (
               <option value="openai">{t('UsingOpenAITTS')}</option>
             )}

@@ -88,6 +88,7 @@ interface APIKeys {
   youtubeApiKey: string
   elevenlabsApiKey: string
   cartesiaApiKey: string
+  waffleApiKey: string
   azureEndpoint: string
   azureTTSKey: string
   azureTTSEndpoint: string
@@ -158,6 +159,7 @@ interface ModelProvider extends Live2DSettings {
   gsviTtsSpeechRate: number
   elevenlabsVoiceId: string
   cartesiaVoiceId: string
+  waffleVoiceId: string
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
@@ -383,6 +385,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
   elevenlabsApiKey: '',
   cartesiaApiKey: '',
+  waffleApiKey: '',
   azureEndpoint: process.env.NEXT_PUBLIC_AZURE_ENDPOINT || '',
 
   // Model Provider
@@ -471,6 +474,9 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') || 1.0,
   elevenlabsVoiceId: process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID || '',
   cartesiaVoiceId: process.env.NEXT_PUBLIC_CARTESIA_VOICE_ID || '',
+  // 内蔵ボイス「凪」。どのワークスペースの API キーでも使える
+  waffleVoiceId:
+    process.env.NEXT_PUBLIC_ANIWAFFLE_VOICE_ID || 'builtin_voice_062',
   openaiTTSVoice:
     (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) || 'shimmer',
   openaiTTSModel:
@@ -1207,6 +1213,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   youtubeApiKey: state.youtubeApiKey,
   elevenlabsApiKey: state.elevenlabsApiKey,
   cartesiaApiKey: state.cartesiaApiKey,
+  waffleApiKey: state.waffleApiKey,
   azureEndpoint: state.azureEndpoint,
   selectAIService: state.selectAIService,
   selectAIModel: state.selectAIModel,
@@ -1250,6 +1257,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   gsviTtsSpeechRate: state.gsviTtsSpeechRate,
   elevenlabsVoiceId: state.elevenlabsVoiceId,
   cartesiaVoiceId: state.cartesiaVoiceId,
+  waffleVoiceId: state.waffleVoiceId,
   difyUrl: state.difyUrl,
   difyConversationId: state.difyConversationId,
   youtubeMode: state.youtubeMode,

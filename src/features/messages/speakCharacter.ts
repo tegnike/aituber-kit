@@ -10,6 +10,7 @@ import {
   synthesizeVoiceElevenlabsStreamApi,
 } from './synthesizeVoiceElevenlabs'
 import { synthesizeVoiceCartesiaApi } from './synthesizeVoiceCartesia'
+import { synthesizeVoiceWaffleApi } from './synthesizeVoiceWaffle'
 import { synthesizeVoiceGoogleApi } from './synthesizeVoiceGoogle'
 import { synthesizeVoiceVoicevoxApi } from './synthesizeVoiceVoicevox'
 import { synthesizeVoiceAivisSpeechApi } from './synthesizeVoiceAivisSpeech'
@@ -212,6 +213,12 @@ async function synthesizeVoice(
           ss.cartesiaApiKey,
           ss.cartesiaVoiceId,
           ss.selectLanguage
+        )
+      case 'waffle':
+        return await synthesizeVoiceWaffleApi(
+          talk,
+          ss.waffleApiKey,
+          ss.waffleVoiceId
         )
       case 'openai':
         return await synthesizeVoiceOpenAIApi(
@@ -534,6 +541,7 @@ export const testVoice = async (voiceType: AIVoice, customText?: string) => {
     gsvitts: 'GSVI TTSを使用します',
     elevenlabs: 'ElevenLabsを使用します',
     cartesia: 'Cartesiaを使用します',
+    waffle: 'Waffleを使用します',
     openai: 'OpenAI TTSを使用します',
     azure: 'Azure TTSを使用します',
   }

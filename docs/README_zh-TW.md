@@ -133,6 +133,7 @@ AITuberKit 是一個開源工具包，任何人都可以輕鬆構建能與 AI �
 - AivisSpeech
 - Aivis Cloud API
 - Cartesia
+- Waffle (Aniwaffle)
 - GSVI TTS
 - ElevenLabs
 - OpenAI

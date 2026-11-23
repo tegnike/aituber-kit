@@ -133,6 +133,7 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - AivisSpeech
 - Aivis Cloud API
 - Cartesia
+- Waffle (Aniwaffle)
 - GSVI TTS
 - ElevenLabs
 - OpenAI

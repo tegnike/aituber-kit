@@ -172,6 +172,7 @@ const defaultHarmlessApiMocks: Record<string, NetworkMockResponse> = {
   '/api/stylebertvits2': { contentType: 'audio/wav', body: emptyAudioBody },
   '/api/elevenLabs': { contentType: 'audio/wav', body: emptyAudioBody },
   '/api/cartesia': { contentType: 'audio/wav', body: emptyAudioBody },
+  '/api/tts-waffle': { contentType: 'audio/wav', body: emptyAudioBody },
 }
 
 const unhandledApiMock: NetworkMockResponseInit = {
