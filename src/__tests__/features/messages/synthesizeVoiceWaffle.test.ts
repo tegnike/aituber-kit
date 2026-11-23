@@ -58,18 +58,18 @@ describe('synthesizeVoiceWaffleApi', () => {
     mockFetch.mockReset()
   })
 
-  it('should throw when apiKey is missing', async () => {
-    await expect(
-      synthesizeVoiceWaffleApi(mockTalk, '', 'voice-id')
-    ).rejects.toThrow('WaffleのAPIキーが設定されていません')
-    expect(mockFetch).not.toHaveBeenCalled()
-  })
+  it('should leave an empty apiKey and voiceId to the server', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      arrayBuffer: async () => new ArrayBuffer(8),
+    })
 
-  it('should throw when voiceId is missing', async () => {
-    await expect(synthesizeVoiceWaffleApi(mockTalk, 'key', '')).rejects.toThrow(
-      'WaffleのボイスIDが設定されていません'
+    await synthesizeVoiceWaffleApi(mockTalk, '', '')
+
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+    expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toEqual(
+      expect.objectContaining({ apiKey: '', voiceId: '' })
     )
-    expect(mockFetch).not.toHaveBeenCalled()
   })
 
   it('should stay silent when nothing is left to speak', async () => {

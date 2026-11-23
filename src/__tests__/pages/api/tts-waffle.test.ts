@@ -52,15 +52,62 @@ describe('/api/tts-waffle', () => {
     expect(global.fetch).not.toHaveBeenCalled()
   })
 
-  it('should respond 400 json when voice ID is missing', async () => {
+  it('should fall back to the built-in voice when voice ID is missing', async () => {
+    ;(global.fetch as jest.Mock).mockResolvedValue(pcmResponse(8))
+
     const req = createMockReq({ body: { message: 'hello', apiKey: 'key' } })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(200)
+    const requestBody = JSON.parse(
+      (global.fetch as jest.Mock).mock.calls[0][1].body
+    )
+    expect(requestBody.voice_id).toBe('builtin_voice_062')
+  })
+
+  it('should use ANIWAFFLE_VOICE_ID with a client API key without the guard', async () => {
+    process.env.ANIWAFFLE_VOICE_ID = 'server-voice'
+    ;(global.fetch as jest.Mock).mockResolvedValue(pcmResponse(8))
+
+    const req = createMockReq({
+      body: { message: 'hello', apiKey: 'key', voiceId: '' },
+    })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(200)
+    const requestBody = JSON.parse(
+      (global.fetch as jest.Mock).mock.calls[0][1].body
+    )
+    expect(requestBody.voice_id).toBe('server-voice')
+  })
+
+  it('should respond 400 json when the body is null', async () => {
+    const req = createMockReq({ body: null })
     const res = createMockRes()
 
     await handler(req, res)
 
     expect(res._status).toBe(400)
     expect(res._json).toEqual({
-      error: 'Empty Voice ID',
+      error: 'Empty API Key',
+      errorCode: 'EmptyAPIKey',
+    })
+    expect(global.fetch).not.toHaveBeenCalled()
+  })
+
+  it('should respond 400 json when message is missing', async () => {
+    const req = createMockReq({ body: { apiKey: 'key' } })
+    const res = createMockRes()
+
+    await handler(req, res)
+
+    expect(res._status).toBe(400)
+    expect(res._json).toEqual({
+      error: 'Empty message',
       errorCode: 'EMPTY_PROPERTY',
     })
     expect(global.fetch).not.toHaveBeenCalled()
