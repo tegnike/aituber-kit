@@ -120,6 +120,15 @@ export function createAIRegistry(
         apiKey: params.apiKey,
       }) as unknown as ReturnType<typeof createOpenAI>
       break
+    case 'opper':
+      // createOpenAIはResponses API（/v1/responses）を使うため、
+      // Chat Completions APIで通信するOpenAI互換プロバイダーとして登録する
+      providers.opper = createOpenAICompatible({
+        name: 'opper',
+        baseURL: 'https://api.opper.ai/v3/compat',
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
     case 'lmstudio':
       providers.lmstudio = createOpenAICompatible({
         name: 'lmstudio',
