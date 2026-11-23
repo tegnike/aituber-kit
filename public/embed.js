@@ -62,6 +62,7 @@
       selectedVrmPath: getOption(options, element, 'selectedVrmPath'),
       selectedLive2DPath: getOption(options, element, 'selectedLive2DPath'),
       selectedPNGTuberPath: getOption(options, element, 'selectedPNGTuberPath'),
+      selectedLivlivPath: getOption(options, element, 'selectedLivlivPath'),
       showAssistantText: getOption(options, element, 'showAssistantText'),
       showCharacterName: getOption(options, element, 'showCharacterName'),
       showPresetQuestions: getOption(options, element, 'showPresetQuestions'),
