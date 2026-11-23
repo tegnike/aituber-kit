@@ -293,7 +293,7 @@
   "WaffleInfo": "Using the Waffle API by Aniwaffle: expressive, Japanese-first speech synthesis. The character's emotion (happy, angry, sad, surprised) is applied to the voice automatically. Please obtain the API key from the URL below.",
   "WaffleApiKey": "Waffle API Key",
   "WaffleVoiceId": "Waffle Voice ID",
-  "WaffleVoiceIdInfo": "Defaults to the built-in voice \"Nagi\". To use another voice, open it in Studio and select More actions › Copy ID. See the URL below for details.",
+  "WaffleVoiceIdInfo": "If left empty, the voice set on the server (ANIWAFFLE_VOICE_ID) is used. If none is set, the built-in voice \"Nagi\" is used. To use another voice, open it in Studio and select More actions › Copy ID. See the URL below for details.",
   "CharacterName": "Character Name",
   "UserDisplayName": "User Display Name",
   "ShowAssistantText": "Show answer field",

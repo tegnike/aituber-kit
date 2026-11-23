@@ -293,7 +293,7 @@
   "WaffleInfo": "正在使用 Aniwaffle 的 Waffle API。這是專注於日語、情感豐富的語音合成。角色的情感（喜悅、憤怒、悲傷、驚訝）會自動反映在聲音的演繹中。請從以下URL取得API金鑰。",
   "WaffleApiKey": "Waffle API金鑰",
   "WaffleVoiceId": "Waffle 語音ID",
-  "WaffleVoiceIdInfo": "留空時會使用內建語音「凪」。若要使用其他語音，請在 Studio 中開啟該語音，透過「More actions › Copy ID」複製ID。詳情請參閱以下URL。",
+  "WaffleVoiceIdInfo": "留空時會使用伺服器上設定的語音（ANIWAFFLE_VOICE_ID）。若未設定，則使用內建語音「凪」。若要使用其他語音，請在 Studio 中開啟該語音，透過「More actions › Copy ID」複製ID。詳情請參閱以下URL。",
   "CharacterName": "角色名稱",
   "UserDisplayName": "使用者顯示名稱",
   "ShowAssistantText": "顯示回答區域",

@@ -293,7 +293,7 @@
   "WaffleInfo": "Se está utilizando la API de Waffle de Aniwaffle: una síntesis de voz expresiva, especializada en japonés. La emoción del personaje (alegría, enfado, tristeza, sorpresa) se aplica automáticamente a la voz. Obtenga la clave API desde la URL de abajo.",
   "WaffleApiKey": "Clave API de Waffle",
   "WaffleVoiceId": "ID de voz de Waffle",
-  "WaffleVoiceIdInfo": "Si se deja vacío, se usa la voz integrada «Nagi». Para usar otra voz, ábrala en Studio y seleccione «More actions › Copy ID» para copiar su ID. Consulte la URL de abajo para más detalles.",
+  "WaffleVoiceIdInfo": "Si se deja vacío, se usa la voz configurada en el servidor (ANIWAFFLE_VOICE_ID). Si no hay ninguna configurada, se usa la voz integrada «Nagi». Para usar otra voz, ábrala en Studio y seleccione «More actions › Copy ID» para copiar su ID. Consulte la URL de abajo para más detalles.",
   "CharacterName": "Nombre del personaje",
   "UserDisplayName": "Nombre para mostrar del usuario",
   "ShowAssistantText": "Mostrar la caja de respuesta",

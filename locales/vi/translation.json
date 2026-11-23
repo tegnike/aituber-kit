@@ -293,7 +293,7 @@
   "WaffleInfo": "Đang sử dụng Waffle API của Aniwaffle: công nghệ tổng hợp giọng nói giàu cảm xúc, chuyên về tiếng Nhật. Cảm xúc của nhân vật (vui, giận, buồn, ngạc nhiên) được tự động thể hiện trong giọng nói. Vui lòng lấy khóa API từ URL bên dưới.",
   "WaffleApiKey": "Khóa API Waffle",
   "WaffleVoiceId": "ID giọng nói Waffle",
-  "WaffleVoiceIdInfo": "Nếu để trống, giọng tích hợp \"Nagi\" sẽ được sử dụng. Để dùng giọng khác, hãy mở giọng đó trong Studio và chọn \"More actions › Copy ID\" để sao chép ID. Xem URL bên dưới để biết chi tiết.",
+  "WaffleVoiceIdInfo": "Nếu để trống, giọng được đặt trên máy chủ (ANIWAFFLE_VOICE_ID) sẽ được sử dụng. Nếu chưa đặt, giọng tích hợp \"Nagi\" sẽ được sử dụng. Để dùng giọng khác, hãy mở giọng đó trong Studio và chọn \"More actions › Copy ID\" để sao chép ID. Xem URL bên dưới để biết chi tiết.",
   "CharacterName": "Tên nhân vật",
   "UserDisplayName": "Tên hiển thị của người dùng",
   "ShowAssistantText": "Hiển thị hộp trả lời",

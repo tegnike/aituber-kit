@@ -10,6 +10,7 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
+import { clampLivLivScale } from '@/features/livliv/livlivView'
 import {
   CharacterModelType,
   isCharacterModelType,
@@ -739,7 +740,9 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     ? process.env.NEXT_PUBLIC_MODEL_TYPE
     : 'vrm',
   selectedLivlivPath: process.env.NEXT_PUBLIC_SELECTED_LIVLIV_PATH || '',
-  livlivScale: parseFloat(process.env.NEXT_PUBLIC_LIVLIV_SCALE || '1.0') || 1.0,
+  livlivScale: clampLivLivScale(
+    parseFloat(process.env.NEXT_PUBLIC_LIVLIV_SCALE || '1.0') || 1.0
+  ),
   livlivOffsetX:
     parseFloat(process.env.NEXT_PUBLIC_LIVLIV_OFFSET_X || '0') || 0,
   livlivOffsetY:
