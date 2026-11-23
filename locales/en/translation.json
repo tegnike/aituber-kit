@@ -962,5 +962,19 @@
       "wave": "Waving, greeting",
       "clap": "Clapping, praise"
     }
+  },
+  "LivLiv": {
+    "FileInfo": "Files you open are saved in this browser. For models used on every device, place a .livliv file or a folder containing model.json in public/livliv.",
+    "OpenModel": "Open .livliv",
+    "ChooseModel": "Choose a model",
+    "NoModel": "Choose a model or drop a .livliv file.",
+    "Characters": "LivLiv characters",
+    "WebGLUnsupported": "WebGL 2 is required to display LivLiv.",
+    "LoadError": "Failed to load the LivLiv model.",
+    "ImportError": "Failed to open the .livliv file.",
+    "ListError": "Failed to load the LivLiv model list.",
+    "PositionSize": "Position and Size",
+    "PositionInfo": "Can be moved by dragging. On PC, you can zoom in and out with the mouse wheel.",
+    "ResetPosition": "Reset Position and Size"
   }
 }

@@ -289,6 +289,11 @@
   "CartesiaApiKey": "Cartesia API 키",
   "CartesiaVoiceId": "Cartesia 보이스ID",
   "CartesiaVoiceIdInfo": "보이스 ID는 아래 URL에서 선택해 주세요.",
+  "UsingWaffle": "Waffle 사용",
+  "WaffleInfo": "Aniwaffle의 Waffle API를 사용하고 있습니다. 일본어에 특화된, 감정 표현이 풍부한 음성 합성입니다. 캐릭터의 감정(기쁨, 분노, 슬픔, 놀람)은 자동으로 목소리 연기에 반영됩니다. API 키는 아래 URL에서 발급받으세요.",
+  "WaffleApiKey": "Waffle API 키",
+  "WaffleVoiceId": "Waffle 보이스 ID",
+  "WaffleVoiceIdInfo": "비워 두면 내장 보이스 \"나기(凪)\"를 사용합니다. 다른 보이스를 사용하려면 Studio에서 보이스를 열고 \"More actions › Copy ID\"로 ID를 복사하세요. 자세한 내용은 아래 URL을 참조하세요.",
   "CharacterName": "캐릭터 이름",
   "UserDisplayName": "사용자 표시 이름",
   "ShowAssistantText": "답변란 표시하기",
@@ -957,5 +962,19 @@
       "wave": "손 흔들기, 인사",
       "clap": "박수, 칭찬"
     }
+  },
+  "LivLiv": {
+    "FileInfo": "연 파일은 이 브라우저에 저장됩니다. 모든 기기에서 사용할 모델은 .livliv 파일 또는 model.json이 포함된 폴더를 public/livliv에 배치하세요.",
+    "OpenModel": ".livliv 열기",
+    "ChooseModel": "모델 선택",
+    "NoModel": "모델을 선택하거나 .livliv 파일을 드롭하세요.",
+    "Characters": "LivLiv 캐릭터",
+    "WebGLUnsupported": "LivLiv를 표시하려면 WebGL 2가 필요합니다.",
+    "LoadError": "LivLiv 모델을 불러올 수 없습니다.",
+    "ImportError": ".livliv 파일을 열 수 없습니다.",
+    "ListError": "LivLiv 모델 목록을 불러올 수 없습니다.",
+    "PositionSize": "위치 및 크기",
+    "PositionInfo": "드래그하여 이동할 수 있습니다. PC에서는 마우스 휠로 확대/축소할 수 있습니다.",
+    "ResetPosition": "위치 및 크기 재설정"
   }
 }

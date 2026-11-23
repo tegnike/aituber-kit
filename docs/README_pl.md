@@ -103,6 +103,7 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 - **Modele 3D**: Pliki VRM (obsługuje kontrolę pozy i gestów za pomocą tagów ruchu)
 - **Modele 2D**: Pliki Live2D (Cubism 3 i nowsze)
 - **Motion PNGTuber**: Wyświetlanie postaci oparte na wideo ([MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber))
+- **LivLiv**: pliki .livliv ([LivLiv Player](https://github.com/livliv-dev/player)). Postacie nie są dołączone i nie są objęte licencją AITuberKit. Wyróżnione postacie stworzone przez LivLiv można wykorzystywać w osobistych transmisjach i filmach, także tych przynoszących dochód z platform. Komercyjne wykorzystanie przez firmę lub organizację oraz postacie innych autorów podlegają własnym warunkom. AITuberKit nie wyświetla na ekranie logo LivLiv, a ta informacja pełni rolę podania autorstwa. Takie potraktowanie logo dotyczy wyłącznie AITuberKit i nie zmienia licencji Playera. Własne oznaczenie tekstowe użytkownika oraz oznaczenia stron trzecich pozostają na ekranie.
 
 ### Obsługiwane LLM
 
