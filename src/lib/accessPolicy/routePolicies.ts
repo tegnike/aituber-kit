@@ -127,11 +127,19 @@ export const routePolicies = {
     featureName: 'waffle',
     methods: ['POST'],
     resources: ['server-secret'],
+    // ボイスIDは空が既定のため、自前のAPIキーを送るクライアントが
+    // ANIWAFFLE_VOICE_ID の設定だけでガード対象にならないよう、
+    // voiceId のペアは apiKey 未指定時のみ評価する
     secret: {
       kind: 'pairs',
       pairs: [
         { source: 'body', key: 'apiKey', envVars: ['ANIWAFFLE_API_KEY'] },
-        { source: 'body', key: 'voiceId', envVars: ['ANIWAFFLE_VOICE_ID'] },
+        {
+          source: 'body',
+          key: 'voiceId',
+          envVars: ['ANIWAFFLE_VOICE_ID'],
+          onlyIfAbsent: { source: 'body', key: 'apiKey' },
+        },
       ],
     },
     restrictedBehavior: 'none',

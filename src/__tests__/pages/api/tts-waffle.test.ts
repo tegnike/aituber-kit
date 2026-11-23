@@ -67,14 +67,12 @@ describe('/api/tts-waffle', () => {
     expect(requestBody.voice_id).toBe('builtin_voice_062')
   })
 
-  it('should prefer ANIWAFFLE_VOICE_ID over the built-in voice', async () => {
-    const { headers } = mockServerSecretGuard('demo')
+  it('should use ANIWAFFLE_VOICE_ID with a client API key without the guard', async () => {
     process.env.ANIWAFFLE_VOICE_ID = 'server-voice'
     ;(global.fetch as jest.Mock).mockResolvedValue(pcmResponse(8))
 
     const req = createMockReq({
       body: { message: 'hello', apiKey: 'key', voiceId: '' },
-      headers,
     })
     const res = createMockRes()
 
