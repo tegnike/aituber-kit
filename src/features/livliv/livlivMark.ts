@@ -6,6 +6,10 @@ import type { ModelSource } from '@livliv-dev/player'
  * kind が livliv のとき（精選キャラクターは右下、無料プランはキャラクターの上にも）だけ none にする。
  * 旧形式では文字列 "LivLiv" が同じロゴを指す。利用者自身の文字（kind: text や別の文字列）は残す。
  * 変える必要がなければ null を返し、呼び出し側は元のバイト列をそのまま使う。
+ *
+ * ロゴを外す根拠: LivLiv の開発者が「AITuberKit では LivLiv ロゴを配信画面に表示する必要は
+ * ない」と回答し、この処理自体も同じ開発者が実装した。
+ * https://github.com/tegnike/aituber-kit/pull/639#issuecomment-7102830591
  */
 export function manifestWithoutLivLivServiceLogo(text: string): string | null {
   let parsed: unknown
