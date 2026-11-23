@@ -27,6 +27,11 @@ describe('livlivScaleAfterWheel', () => {
     expect(livlivScaleAfterWheel(2.95, -1000)).toBe(3)
     expect(livlivScaleAfterWheel(0.15, 1000)).toBe(0.1)
   })
+
+  it('starts from the displayed size when the stored scale is out of range', () => {
+    expect(livlivScaleAfterWheel(10, 100)).toBeCloseTo(2.9)
+    expect(livlivScaleAfterWheel(0.01, -100)).toBeCloseTo(0.2)
+  })
 })
 
 describe('livlivOffsetAfterDrag', () => {
