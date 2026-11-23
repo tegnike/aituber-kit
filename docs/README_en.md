@@ -133,6 +133,7 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - AivisSpeech
 - Aivis Cloud API
 - Cartesia
+- Waffle (Aniwaffle)
 - GSVI TTS
 - ElevenLabs
 - OpenAI

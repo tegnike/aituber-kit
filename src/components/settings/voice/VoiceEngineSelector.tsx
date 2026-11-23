@@ -39,6 +39,7 @@ export const VoiceEngineSelector = ({
           <option value="gsvitts">{t('UsingGSVITTS')}</option>
           <option value="elevenlabs">{t('UsingElevenLabs')}</option>
           <option value="cartesia">{t('UsingCartesia')}</option>
+          <option value="waffle">{t('UsingWaffle')}</option>
           {!isDemoMode() && (
             <option value="openai">{t('UsingOpenAITTS')}</option>
           )}

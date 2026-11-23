@@ -122,6 +122,20 @@ export const routePolicies = {
     },
     restrictedBehavior: 'none',
   },
+  '/api/tts-waffle': {
+    path: '/api/tts-waffle',
+    featureName: 'waffle',
+    methods: ['POST'],
+    resources: ['server-secret'],
+    secret: {
+      kind: 'pairs',
+      pairs: [
+        { source: 'body', key: 'apiKey', envVars: ['ANIWAFFLE_API_KEY'] },
+        { source: 'body', key: 'voiceId', envVars: ['ANIWAFFLE_VOICE_ID'] },
+      ],
+    },
+    restrictedBehavior: 'none',
+  },
   '/api/convertMarkdown': {
     path: '/api/convertMarkdown',
     featureName: 'convertMarkdown',

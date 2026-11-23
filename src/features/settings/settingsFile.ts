@@ -66,6 +66,7 @@ export const SENSITIVE_SETTINGS_KEYS = [
   'youtubeApiKey',
   'elevenlabsApiKey',
   'cartesiaApiKey',
+  'waffleApiKey',
   'aivisCloudApiKey',
   'stylebertvits2ApiKey',
   'azureTTSKey',

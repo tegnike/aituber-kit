@@ -121,6 +121,7 @@ export type AIVoice =
   | 'gsvitts'
   | 'elevenlabs'
   | 'cartesia'
+  | 'waffle'
   | 'openai'
   | 'azure'
 

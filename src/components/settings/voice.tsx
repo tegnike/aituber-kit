@@ -13,6 +13,7 @@ import {
   GsviTtsSettings,
   ElevenLabsSettings,
   CartesiaSettings,
+  WaffleSettings,
   OpenAITTSSettings,
   AzureTTSSettings,
   TestVoiceSection,
@@ -22,6 +23,7 @@ const Voice = () => {
   const koeiromapKey = settingsStore((s) => s.koeiromapKey)
   const elevenlabsApiKey = settingsStore((s) => s.elevenlabsApiKey)
   const cartesiaApiKey = settingsStore((s) => s.cartesiaApiKey)
+  const waffleApiKey = settingsStore((s) => s.waffleApiKey)
 
   const liveMode = settingsStore((s) => s.liveMode)
   const realtimeAPIMode = settingsStore((s) => s.realtimeAPIMode)
@@ -84,6 +86,7 @@ const Voice = () => {
   const gsviTtsSpeechRate = settingsStore((s) => s.gsviTtsSpeechRate)
   const elevenlabsVoiceId = settingsStore((s) => s.elevenlabsVoiceId)
   const cartesiaVoiceId = settingsStore((s) => s.cartesiaVoiceId)
+  const waffleVoiceId = settingsStore((s) => s.waffleVoiceId)
   const openaiAPIKey = settingsStore((s) => s.openaiKey)
   const openaiTTSVoice = settingsStore((s) => s.openaiTTSVoice)
   const openaiTTSModel = settingsStore((s) => s.openaiTTSModel)
@@ -202,6 +205,13 @@ const Voice = () => {
               <CartesiaSettings
                 cartesiaApiKey={cartesiaApiKey}
                 cartesiaVoiceId={cartesiaVoiceId}
+              />
+            )
+          } else if (selectVoice === 'waffle') {
+            return (
+              <WaffleSettings
+                waffleApiKey={waffleApiKey}
+                waffleVoiceId={waffleVoiceId}
               />
             )
           } else if (selectVoice === 'openai') {
