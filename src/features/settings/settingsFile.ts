@@ -61,6 +61,7 @@ export const SENSITIVE_SETTINGS_KEYS = [
   'openrouterKey',
   'orcarouterKey',
   'apirouteKey',
+  'cloudgpuKey',
   'lmstudioKey',
   'ollamaKey',
   'koeiromapKey',

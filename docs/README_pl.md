@@ -124,6 +124,7 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 - OpenRouter
 - OrcaRouter
 - API Route
+- CloudGPU
 
 ### Obsługiwane silniki syntezy mowy
 

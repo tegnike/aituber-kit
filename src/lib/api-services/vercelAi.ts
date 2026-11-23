@@ -120,6 +120,15 @@ export function createAIRegistry(
         apiKey: params.apiKey,
       }) as unknown as ReturnType<typeof createOpenAI>
       break
+    case 'cloudgpu':
+      // createOpenAIはResponses API（/v1/responses）を使うため、
+      // Chat Completions APIで通信するOpenAI互換プロバイダーとして登録する
+      providers.cloudgpu = createOpenAICompatible({
+        name: 'cloudgpu',
+        baseURL: 'https://cloudgpu.app/v1',
+        apiKey: params.apiKey,
+      }) as unknown as ReturnType<typeof createOpenAI>
+      break
     case 'lmstudio':
       providers.lmstudio = createOpenAICompatible({
         name: 'lmstudio',

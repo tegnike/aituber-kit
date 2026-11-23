@@ -124,6 +124,7 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - OpenRouter
 - OrcaRouter
 - API Route
+- CloudGPU
 
 ### Supported Voice Synthesis Engines
 
