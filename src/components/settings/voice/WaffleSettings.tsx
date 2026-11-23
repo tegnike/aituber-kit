@@ -20,7 +20,11 @@ export const WaffleSettings = ({
   waffleVoiceId,
 }: WaffleSettingsProps) => {
   const { t } = useTranslation()
-  const [voices, setVoices] = useState<WaffleVoice[]>([])
+  // 取得に使った API キーと一緒に持ち、キーが変わったら前のキーの一覧は使わない
+  const [voiceList, setVoiceList] = useState<{
+    apiKey: string
+    voices: WaffleVoice[]
+  }>({ apiKey: '', voices: [] })
   const [isUpdatingVoices, setIsUpdatingVoices] = useState(false)
   const [voicesUpdateError, setVoicesUpdateError] = useState('')
   const latestRequest = useRef(0)
@@ -41,7 +45,7 @@ export const WaffleSettings = ({
         if (response.ok) {
           const data = (await response.json()) as { voices?: WaffleVoice[] }
           if (requestId !== latestRequest.current) return
-          setVoices(data.voices ?? [])
+          setVoiceList({ apiKey, voices: data.voices ?? [] })
         } else {
           const message = await getSpeakerUpdateErrorMessage(response)
           if (requestId !== latestRequest.current) return
@@ -63,6 +67,7 @@ export const WaffleSettings = ({
     if (apiKey.trim()) void updateVoices(apiKey)
   }, [updateVoices])
 
+  const voices = voiceList.apiKey === waffleApiKey ? voiceList.voices : []
   const isListedVoice = voices.some(({ id }) => id === waffleVoiceId)
 
   return (
