@@ -17,9 +17,12 @@ export const clampLivLivScale = (scale: number) =>
     ? Math.max(LIVLIV_SCALE_MIN, Math.min(LIVLIV_SCALE_MAX, scale))
     : 1
 
-/** ホイール操作後の拡大率。PNGTuber と同じ感度にしている。 */
+/**
+ * ホイール操作後の拡大率。PNGTuber と同じ感度にしている。
+ * 保存された値が範囲外でも、表示中の大きさ（範囲内に収めた値）を基準にする。
+ */
 export const livlivScaleAfterWheel = (scale: number, deltaY: number) =>
-  clampLivLivScale(scale + deltaY * -0.001)
+  clampLivLivScale(clampLivLivScale(scale) + deltaY * -0.001)
 
 /** ドラッグした画面上の距離（px）を、キャンバスに対する割合の位置へ直す。 */
 export function livlivOffsetAfterDrag(
