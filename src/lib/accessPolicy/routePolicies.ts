@@ -136,6 +136,19 @@ export const routePolicies = {
     },
     restrictedBehavior: 'none',
   },
+  '/api/waffle-voices': {
+    path: '/api/waffle-voices',
+    featureName: 'waffle-voices',
+    methods: ['POST'],
+    resources: ['server-secret'],
+    secret: {
+      kind: 'pairs',
+      pairs: [
+        { source: 'body', key: 'apiKey', envVars: ['ANIWAFFLE_API_KEY'] },
+      ],
+    },
+    restrictedBehavior: 'none',
+  },
   '/api/convertMarkdown': {
     path: '/api/convertMarkdown',
     featureName: 'convertMarkdown',
