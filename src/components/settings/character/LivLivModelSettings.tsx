@@ -118,6 +118,25 @@ export function LivLivModelSettings() {
         </a>
       </div>
       <p className="my-2 whitespace-pre-wrap text-sm">{t('LivLiv.FileInfo')}</p>
+
+      {/* 位置・サイズリセットボタン */}
+      <div className="my-6">
+        <div className="font-bold mb-2">{t('LivLiv.PositionSize')}</div>
+        <div className="text-sm text-gray-600 mb-4">
+          {t('LivLiv.PositionInfo')}
+        </div>
+        <TextButton
+          onClick={() => {
+            settingsStore.setState({
+              livlivScale: 1.0,
+              livlivOffsetX: 0,
+              livlivOffsetY: 0,
+            })
+          }}
+        >
+          {t('LivLiv.ResetPosition')}
+        </TextButton>
+      </div>
     </>
   )
 }
