@@ -103,6 +103,7 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - **3D 모델**: VRM 파일(모션 태그를 통한 포즈 및 제스처 제어 지원)
 - **2D 모델**: Live2D 파일(Cubism 3 이상)
 - **모션 PNGTuber**: 동영상 기반 캐릭터 표시([MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber))
+- **LivLiv**: .livliv 파일([LivLiv Player](https://github.com/livliv-dev/player)). 캐릭터는 포함되어 있지 않으며 AITuberKit 라이선스의 대상이 아닙니다. LivLiv가 제작한 추천 캐릭터는 개인 방송·영상(플랫폼 수익 포함)에 사용할 수 있습니다. 기업이나 단체의 상업적 이용과 다른 제작자의 캐릭터는 각각의 조건을 따릅니다. AITuberKit에서는 LivLiv의 화면 로고를 표시하지 않으며, 이 문구를 크레딧으로 합니다. 이 로고 취급은 AITuberKit에만 해당하며 Player의 라이선스는 변경하지 않았습니다. 이용자 본인의 문자 표기와 제3자의 표기는 그대로 표시됩니다.
 
 ### 지원 LLM
 
@@ -133,6 +134,7 @@ AITuberKit은 누구나 쉽게 AI 캐릭터와 채팅할 수 있는 웹 애플�
 - AivisSpeech
 - Aivis Cloud API
 - Cartesia
+- Waffle (Aniwaffle)
 - GSVI TTS
 - ElevenLabs
 - OpenAI

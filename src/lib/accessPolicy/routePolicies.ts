@@ -122,6 +122,41 @@ export const routePolicies = {
     },
     restrictedBehavior: 'none',
   },
+  '/api/tts-waffle': {
+    path: '/api/tts-waffle',
+    featureName: 'waffle',
+    methods: ['POST'],
+    resources: ['server-secret'],
+    // ボイスIDは空が既定のため、自前のAPIキーを送るクライアントが
+    // ANIWAFFLE_VOICE_ID の設定だけでガード対象にならないよう、
+    // voiceId のペアは apiKey 未指定時のみ評価する
+    secret: {
+      kind: 'pairs',
+      pairs: [
+        { source: 'body', key: 'apiKey', envVars: ['ANIWAFFLE_API_KEY'] },
+        {
+          source: 'body',
+          key: 'voiceId',
+          envVars: ['ANIWAFFLE_VOICE_ID'],
+          onlyIfAbsent: { source: 'body', key: 'apiKey' },
+        },
+      ],
+    },
+    restrictedBehavior: 'none',
+  },
+  '/api/waffle-voices': {
+    path: '/api/waffle-voices',
+    featureName: 'waffle-voices',
+    methods: ['POST'],
+    resources: ['server-secret'],
+    secret: {
+      kind: 'pairs',
+      pairs: [
+        { source: 'body', key: 'apiKey', envVars: ['ANIWAFFLE_API_KEY'] },
+      ],
+    },
+    restrictedBehavior: 'none',
+  },
   '/api/convertMarkdown': {
     path: '/api/convertMarkdown',
     featureName: 'convertMarkdown',
@@ -218,6 +253,14 @@ export const routePolicies = {
   '/api/get-live2d-list': {
     path: '/api/get-live2d-list',
     featureName: 'get-live2d-list',
+    methods: ['GET'],
+    resources: ['fs-read'],
+    secret: { kind: 'none' },
+    restrictedBehavior: 'in-route',
+  },
+  '/api/get-livliv-list': {
+    path: '/api/get-livliv-list',
+    featureName: 'get-livliv-list',
     methods: ['GET'],
     resources: ['fs-read'],
     secret: { kind: 'none' },

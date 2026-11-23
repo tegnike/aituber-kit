@@ -201,10 +201,91 @@ describe('LipSync PCM16 streaming', () => {
 
     await Promise.resolve()
     lipSync.stopCurrentPlayback()
-    window.dispatchEvent(new Event('click'))
     await playback
+    window.dispatchEvent(new Event('click'))
 
     expect(createBufferSource).not.toHaveBeenCalled()
     expect(cancel).toHaveBeenCalledWith('playback superseded')
+  })
+
+  it('cancels a stream stopped before the audio context resumes', async () => {
+    let finishResume!: () => void
+    const resumed = new Promise<void>((resolve) => {
+      finishResume = resolve
+    })
+    const context = {
+      state: 'suspended',
+      createAnalyser: jest.fn(),
+      createBufferSource: jest.fn(),
+      resume: jest.fn(() => resumed),
+    }
+    const cancel = jest.fn()
+    const lipSync = new LipSync(context as unknown as AudioContext, {
+      forceStart: true,
+    })
+    const playback = lipSync.playPcm16Stream(
+      new ReadableStream<Uint8Array>({ cancel })
+    )
+
+    lipSync.stopCurrentPlayback()
+    finishResume()
+    await playback
+
+    expect(context.createBufferSource).not.toHaveBeenCalled()
+    expect(cancel).toHaveBeenCalledWith('playback superseded')
+  })
+})
+
+describe('LipSync buffer playback', () => {
+  it('calls onEnded once when a buffer finishes', async () => {
+    const source = Object.assign(new EventTarget(), {
+      buffer: null as AudioBuffer | null,
+      connect: jest.fn(),
+      start: jest.fn(),
+      onended: null as (() => void) | null,
+    })
+    source.addEventListener('ended', () => source.onended?.())
+    const context = {
+      state: 'running',
+      destination: {},
+      createAnalyser: jest.fn(),
+      createBufferSource: jest.fn(() => source),
+      decodeAudioData: jest.fn(async () => ({}) as AudioBuffer),
+    }
+    const onEnded = jest.fn()
+    const lipSync = new LipSync(context as unknown as AudioContext)
+
+    await lipSync.playFromArrayBuffer(new ArrayBuffer(8), onEnded)
+    source.dispatchEvent(new Event('ended'))
+
+    expect(source.start).toHaveBeenCalledTimes(1)
+    expect(onEnded).toHaveBeenCalledTimes(1)
+  })
+
+  it('settles an audio buffer stopped during decoding without starting it', async () => {
+    let finishDecode!: (buffer: AudioBuffer) => void
+    const onEnded = jest.fn()
+    const context = {
+      state: 'running',
+      createAnalyser: jest.fn(),
+      createBufferSource: jest.fn(),
+      decodeAudioData: jest.fn(
+        () =>
+          new Promise<AudioBuffer>((resolve) => {
+            finishDecode = resolve
+          })
+      ),
+    }
+    const lipSync = new LipSync(context as unknown as AudioContext)
+    const playback = lipSync.playFromArrayBuffer(new ArrayBuffer(8), onEnded)
+    await Promise.resolve()
+    expect(context.decodeAudioData).toHaveBeenCalled()
+
+    lipSync.stopCurrentPlayback()
+    finishDecode({} as AudioBuffer)
+    await playback
+
+    expect(context.createBufferSource).not.toHaveBeenCalled()
+    expect(onEnded).toHaveBeenCalledTimes(1)
   })
 })

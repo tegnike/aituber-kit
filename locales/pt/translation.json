@@ -289,6 +289,11 @@
   "CartesiaApiKey": "Chave API Cartesia",
   "CartesiaVoiceId": "Cartesia ID de voz",
   "CartesiaVoiceIdInfo": "Por favor, selecione o ID de voz no URL abaixo.",
+  "UsingWaffle": "Usar Waffle",
+  "WaffleInfo": "Usando a API Waffle da Aniwaffle: uma síntese de voz expressiva, especializada em japonês. A emoção do personagem (alegria, raiva, tristeza, surpresa) é aplicada automaticamente à voz. Obtenha a chave de API no URL abaixo.",
+  "WaffleApiKey": "Chave de API do Waffle",
+  "WaffleVoiceId": "ID de voz do Waffle",
+  "WaffleVoiceIdInfo": "Se ficar em branco, é usada a voz definida no servidor (ANIWAFFLE_VOICE_ID). Se nenhuma estiver definida, é usada a voz integrada \"Nagi\". Para usar outra voz, abra-a no Studio e selecione \"More actions › Copy ID\" para copiar o ID. Consulte o URL abaixo para mais detalhes.",
   "CharacterName": "Nome do personagem",
   "UserDisplayName": "Nome de exibição do usuário",
   "ShowAssistantText": "Mostrar campo de resposta",
@@ -957,5 +962,19 @@
       "wave": "Acenar, saudação",
       "clap": "Palmas, elogio"
     }
+  },
+  "LivLiv": {
+    "FileInfo": "Os arquivos abertos são salvos neste navegador. Para modelos usados em todos os dispositivos, coloque um arquivo .livliv ou uma pasta contendo model.json em public/livliv.",
+    "OpenModel": "Abrir .livliv",
+    "ChooseModel": "Selecionar modelo",
+    "NoModel": "Selecione um modelo ou solte um arquivo .livliv.",
+    "Characters": "Personagens do LivLiv",
+    "WebGLUnsupported": "É necessário WebGL 2 para exibir o LivLiv.",
+    "LoadError": "Não foi possível carregar o modelo LivLiv.",
+    "ImportError": "Não foi possível abrir o arquivo .livliv.",
+    "ListError": "Não foi possível carregar a lista de modelos do LivLiv.",
+    "PositionSize": "Posição e tamanho",
+    "PositionInfo": "Pode ser movido arrastando. No PC, você pode ampliar/reduzir com a roda do mouse.",
+    "ResetPosition": "Redefinir posição e tamanho"
   }
 }

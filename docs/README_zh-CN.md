@@ -103,6 +103,7 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 - **3D模型**：VRM文件（支持通过运动标签控制姿势和手势）
 - **2D模型**：Live2D文件（Cubism 3及以后版本）
 - **动态PNGTuber**：基于视频的角色显示（[MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber)）
+- **LivLiv**：.livliv 文件（[LivLiv Player](https://github.com/livliv-dev/player)）。角色不随本项目提供，也不在 AITuberKit 许可的范围内。LivLiv 制作的精选角色可用于个人直播和视频（包括平台收入）。公司或组织的商业使用，以及其他作者的角色，遵循各自的条款。AITuberKit 不在画面上显示 LivLiv 的徽标，以本说明作为署名。此徽标的处理方式仅适用于 AITuberKit，并未更改 Player 的许可。使用者自己的文字标记和第三方的标记会保留。
 
 ### 支持的LLM
 
@@ -133,6 +134,7 @@ AITuberKit是一个开源工具包，任何人都可以轻松构建能与AI角�
 - AivisSpeech
 - Aivis Cloud API
 - Cartesia
+- Waffle (Aniwaffle)
 - GSVI TTS
 - ElevenLabs
 - OpenAI

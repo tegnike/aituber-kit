@@ -289,6 +289,11 @@
   "CartesiaApiKey": "Cartesia API कुंजी",
   "CartesiaVoiceId": "Cartesia वॉइस ID",
   "CartesiaVoiceIdInfo": "वॉइस आईडी कृपया नीचे दिए गए URL से चुनें।",
+  "UsingWaffle": "Waffle का उपयोग करें",
+  "WaffleInfo": "Aniwaffle के Waffle API का उपयोग किया जा रहा है। यह जापानी भाषा पर केंद्रित, भावपूर्ण वाक् संश्लेषण है। कैरेक्टर की भावना (खुशी, गुस्सा, दुख, आश्चर्य) आवाज़ में अपने आप झलकती है। कृपया नीचे दिए गए URL से API कुंजी प्राप्त करें।",
+  "WaffleApiKey": "Waffle API कुंजी",
+  "WaffleVoiceId": "Waffle वॉइस ID",
+  "WaffleVoiceIdInfo": "खाली छोड़ने पर सर्वर पर सेट की गई आवाज़ (ANIWAFFLE_VOICE_ID) का उपयोग होता है। अगर वह सेट नहीं है, तो अंतर्निहित आवाज़ \"Nagi\" का उपयोग होता है। कोई दूसरी आवाज़ इस्तेमाल करने के लिए, उसे Studio में खोलें और \"More actions › Copy ID\" से ID कॉपी करें। विवरण के लिए नीचे दिया गया URL देखें।",
   "CharacterName": "किरदार का नाम",
   "UserDisplayName": "उपयोगकर्ता प्रदर्शन नाम",
   "ShowAssistantText": "उत्तर फ़ील्ड दिखाएं",
@@ -957,5 +962,19 @@
       "wave": "हाथ हिलाना, अभिवादन",
       "clap": "ताली बजाना, प्रशंसा"
     }
+  },
+  "LivLiv": {
+    "FileInfo": "खोली गई फ़ाइलें इस ब्राउज़र में सहेजी जाती हैं। सभी डिवाइस पर इस्तेमाल होने वाले मॉडल के लिए, .livliv फ़ाइल या model.json वाला फ़ोल्डर public/livliv में रखें।",
+    "OpenModel": ".livliv खोलें",
+    "ChooseModel": "मॉडल चुनें",
+    "NoModel": "मॉडल चुनें या .livliv फ़ाइल यहाँ छोड़ें।",
+    "Characters": "LivLiv के कैरेक्टर",
+    "WebGLUnsupported": "LivLiv दिखाने के लिए WebGL 2 आवश्यक है।",
+    "LoadError": "LivLiv मॉडल लोड नहीं हो सका।",
+    "ImportError": ".livliv फ़ाइल नहीं खुल सकी।",
+    "ListError": "LivLiv की मॉडल सूची लोड नहीं हो सकी।",
+    "PositionSize": "स्थिति और आकार",
+    "PositionInfo": "इसे ड्रैग करके ले जाया जा सकता है। पीसी पर, माउस व्हील से ज़ूम इन/आउट किया जा सकता है।",
+    "ResetPosition": "स्थिति और आकार रीसेट करें"
   }
 }

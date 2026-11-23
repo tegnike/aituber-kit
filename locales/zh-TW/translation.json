@@ -289,6 +289,11 @@
   "CartesiaApiKey": "Cartesia API金鑰",
   "CartesiaVoiceId": "Cartesia 語音ID",
   "CartesiaVoiceIdInfo": "請從以下URL選擇語音ID。",
+  "UsingWaffle": "使用Waffle",
+  "WaffleInfo": "正在使用 Aniwaffle 的 Waffle API。這是專注於日語、情感豐富的語音合成。角色的情感（喜悅、憤怒、悲傷、驚訝）會自動反映在聲音的演繹中。請從以下URL取得API金鑰。",
+  "WaffleApiKey": "Waffle API金鑰",
+  "WaffleVoiceId": "Waffle 語音ID",
+  "WaffleVoiceIdInfo": "留空時會使用伺服器上設定的語音（ANIWAFFLE_VOICE_ID）。若未設定，則使用內建語音「凪」。若要使用其他語音，請在 Studio 中開啟該語音，透過「More actions › Copy ID」複製ID。詳情請參閱以下URL。",
   "CharacterName": "角色名稱",
   "UserDisplayName": "使用者顯示名稱",
   "ShowAssistantText": "顯示回答區域",
@@ -957,5 +962,19 @@
       "wave": "揮手、打招呼",
       "clap": "拍手、讚賞"
     }
+  },
+  "LivLiv": {
+    "FileInfo": "開啟的檔案會儲存在此瀏覽器中。若要在所有裝置上使用模型，請將 .livliv 檔案或包含 model.json 的資料夾放入 public/livliv。",
+    "OpenModel": "開啟 .livliv",
+    "ChooseModel": "選擇模型",
+    "NoModel": "請選擇模型，或拖放 .livliv 檔案。",
+    "Characters": "LivLiv 的角色",
+    "WebGLUnsupported": "顯示 LivLiv 需要 WebGL 2。",
+    "LoadError": "無法載入 LivLiv 模型。",
+    "ImportError": "無法開啟 .livliv 檔案。",
+    "ListError": "無法載入 LivLiv 的模型列表。",
+    "PositionSize": "位置和大小",
+    "PositionInfo": "可拖曳移動。PC 端可使用滑鼠滾輪放大/縮小。",
+    "ResetPosition": "重置位置和大小"
   }
 }

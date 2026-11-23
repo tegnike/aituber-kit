@@ -247,6 +247,7 @@ resources列の略記: **SS**=server-secret, **SU**=server-url, **FR**=fs-read, 
 | /api/get-background-list      | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-image-list           | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-live2d-list          | GET       | FR                 | none                                                             | in-route                                            | —                |
+| /api/get-livliv-list          | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-pngtuber-list        | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-pose-list            | GET       | FR                 | none                                                             | in-route                                            | —                |
 | /api/get-vrm-list             | GET       | FR                 | none                                                             | in-route                                            | —                |
@@ -264,6 +265,7 @@ resources列の略記: **SS**=server-secret, **SU**=server-url, **FR**=fs-read, 
 | /api/tts-gsvi                 | POST      | SS, SU             | pairs: serverUrl→GSVI_TTS_URL                                    | none                                                | —                |
 | /api/tts-koeiromap            | POST      | CP                 | none                                                             | none                                                | —                |
 | /api/tts-voicevox             | POST      | SS, SU             | pairs: serverUrl→VOICEVOX_SERVER_URL                             | none                                                | —                |
+| /api/tts-waffle               | POST      | SS                 | pairs: apiKey→ANIWAFFLE_API_KEY, voiceId→ANIWAFFLE_VOICE_ID      | none                                                | —                |
 | /api/update-aivis-speakers    | POST      | FW, SS, SU         | always                                                           | deny                                                | —                |
 | /api/update-pose-rotation     | POST      | FW                 | none                                                             | deny                                                | —                |
 | /api/update-voicevox-speakers | POST      | FW, SS, SU         | always                                                           | deny                                                | —                |
@@ -271,6 +273,7 @@ resources列の略記: **SS**=server-secret, **SU**=server-url, **FR**=fs-read, 
 | /api/upload-background        | POST      | FW                 | none                                                             | deny                                                | —                |
 | /api/upload-image             | POST      | FW                 | none                                                             | deny                                                | —                |
 | /api/upload-vrm-list          | POST      | FW                 | none                                                             | deny                                                | —                |
+| /api/waffle-voices            | POST      | SS                 | pairs: apiKey→ANIWAFFLE_API_KEY                                  | none                                                | —                |
 | /api/whisper                  | POST      | SS                 | dynamic（bodyParser: false）                                     | none                                                | —                |
 | /api/youtube/continuation     | POST      | SS, SU             | dynamic                                                          | none                                                | —                |
 | /api/v1/chat                  | POST      | EC                 | none                                                             | deny                                                | —                |

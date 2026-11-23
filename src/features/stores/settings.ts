@@ -10,6 +10,11 @@ import { persist } from 'zustand/middleware'
 import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
+import { clampLivLivScale } from '@/features/livliv/livlivView'
+import {
+  CharacterModelType,
+  isCharacterModelType,
+} from '@/features/constants/modelType'
 import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
@@ -88,6 +93,7 @@ interface APIKeys {
   youtubeApiKey: string
   elevenlabsApiKey: string
   cartesiaApiKey: string
+  waffleApiKey: string
   azureEndpoint: string
   azureTTSKey: string
   azureTTSEndpoint: string
@@ -158,6 +164,7 @@ interface ModelProvider extends Live2DSettings {
   gsviTtsSpeechRate: number
   elevenlabsVoiceId: string
   cartesiaVoiceId: string
+  waffleVoiceId: string
   openaiTTSVoice: OpenAITTSVoice
   openaiTTSModel: OpenAITTSModel
   openaiTTSSpeed: number
@@ -223,6 +230,10 @@ interface Character {
   screenLightingStrength: number
   poseAdjustMode: boolean
   selectedPNGTuberPath: string
+  selectedLivlivPath: string
+  livlivScale: number
+  livlivOffsetX: number
+  livlivOffsetY: number
   pngTuberSensitivity: number
   pngTuberChromaKeyEnabled: boolean
   pngTuberChromaKeyColor: string
@@ -306,7 +317,7 @@ interface General {
 }
 
 interface ModelType {
-  modelType: 'vrm' | 'live2d' | 'pngtuber'
+  modelType: CharacterModelType
 }
 
 // Presence detection sensitivity type
@@ -383,6 +394,7 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   youtubeApiKey: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY || '',
   elevenlabsApiKey: '',
   cartesiaApiKey: '',
+  waffleApiKey: '',
   azureEndpoint: process.env.NEXT_PUBLIC_AZURE_ENDPOINT || '',
 
   // Model Provider
@@ -471,6 +483,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') || 1.0,
   elevenlabsVoiceId: process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID || '',
   cartesiaVoiceId: process.env.NEXT_PUBLIC_CARTESIA_VOICE_ID || '',
+  // 空のときはサーバー側で ANIWAFFLE_VOICE_ID、なければ内蔵ボイス「凪」を使う
+  waffleVoiceId: process.env.NEXT_PUBLIC_ANIWAFFLE_VOICE_ID || '',
   openaiTTSVoice:
     (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) || 'shimmer',
   openaiTTSModel:
@@ -722,12 +736,17 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
   // Settings
-  modelType:
-    (process.env.NEXT_PUBLIC_MODEL_TYPE as
-      | 'vrm'
-      | 'live2d'
-      | 'pngtuber'
-      | undefined) || 'vrm',
+  modelType: isCharacterModelType(process.env.NEXT_PUBLIC_MODEL_TYPE)
+    ? process.env.NEXT_PUBLIC_MODEL_TYPE
+    : 'vrm',
+  selectedLivlivPath: process.env.NEXT_PUBLIC_SELECTED_LIVLIV_PATH || '',
+  livlivScale: clampLivLivScale(
+    parseFloat(process.env.NEXT_PUBLIC_LIVLIV_SCALE || '1.0') || 1.0
+  ),
+  livlivOffsetX:
+    parseFloat(process.env.NEXT_PUBLIC_LIVLIV_OFFSET_X || '0') || 0,
+  livlivOffsetY:
+    parseFloat(process.env.NEXT_PUBLIC_LIVLIV_OFFSET_Y || '0') || 0,
   selectedPNGTuberPath:
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
   pngTuberSensitivity:
@@ -1207,6 +1226,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   youtubeApiKey: state.youtubeApiKey,
   elevenlabsApiKey: state.elevenlabsApiKey,
   cartesiaApiKey: state.cartesiaApiKey,
+  waffleApiKey: state.waffleApiKey,
   azureEndpoint: state.azureEndpoint,
   selectAIService: state.selectAIService,
   selectAIModel: state.selectAIModel,
@@ -1250,6 +1270,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   gsviTtsSpeechRate: state.gsviTtsSpeechRate,
   elevenlabsVoiceId: state.elevenlabsVoiceId,
   cartesiaVoiceId: state.cartesiaVoiceId,
+  waffleVoiceId: state.waffleVoiceId,
   difyUrl: state.difyUrl,
   difyConversationId: state.difyConversationId,
   youtubeMode: state.youtubeMode,
@@ -1323,6 +1344,10 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   lightingIntensity: state.lightingIntensity,
   screenLightingStrength: state.screenLightingStrength,
   modelType: state.modelType,
+  selectedLivlivPath: state.selectedLivlivPath,
+  livlivScale: state.livlivScale,
+  livlivOffsetX: state.livlivOffsetX,
+  livlivOffsetY: state.livlivOffsetY,
   selectedPNGTuberPath: state.selectedPNGTuberPath,
   pngTuberSensitivity: state.pngTuberSensitivity,
   pngTuberChromaKeyEnabled: state.pngTuberChromaKeyEnabled,

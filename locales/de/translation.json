@@ -289,6 +289,11 @@
   "CartesiaApiKey": "Cartesia API-Schlüssel",
   "CartesiaVoiceId": "Cartesia Voice-ID",
   "CartesiaVoiceIdInfo": "Bitte wählen Sie die Voice-ID über die folgende URL aus.",
+  "UsingWaffle": "Waffle verwenden",
+  "WaffleInfo": "Es wird die Waffle API von Aniwaffle verwendet: eine ausdrucksstarke, auf Japanisch spezialisierte Sprachsynthese. Die Emotion des Charakters (Freude, Wut, Trauer, Überraschung) wird automatisch auf die Stimme übertragen. Bitte beziehen Sie den API-Schlüssel über die unten stehende URL.",
+  "WaffleApiKey": "Waffle API-Schlüssel",
+  "WaffleVoiceId": "Waffle Stimmen-ID",
+  "WaffleVoiceIdInfo": "Ist das Feld leer, wird die auf dem Server festgelegte Stimme (ANIWAFFLE_VOICE_ID) verwendet. Ist keine festgelegt, wird die integrierte Stimme „Nagi“ verwendet. Um eine andere Stimme zu verwenden, öffnen Sie sie in Studio und kopieren Sie die ID über „More actions › Copy ID“. Details finden Sie unter der unten stehenden URL.",
   "CharacterName": "Charaktername",
   "UserDisplayName": "Benutzeranzeigename",
   "ShowAssistantText": "Antwortbereich anzeigen",
@@ -957,5 +962,19 @@
       "wave": "Winken, Begrüßung",
       "clap": "Klatschen, Lob"
     }
+  },
+  "LivLiv": {
+    "FileInfo": "Geöffnete Dateien werden in diesem Browser gespeichert. Für Modelle, die auf allen Geräten verwendet werden, legen Sie eine .livliv-Datei oder einen Ordner mit model.json in public/livliv ab.",
+    "OpenModel": ".livliv öffnen",
+    "ChooseModel": "Modell auswählen",
+    "NoModel": "Wählen Sie ein Modell aus oder legen Sie eine .livliv-Datei hier ab.",
+    "Characters": "LivLiv-Charaktere",
+    "WebGLUnsupported": "Für die Anzeige von LivLiv wird WebGL 2 benötigt.",
+    "LoadError": "Das LivLiv-Modell konnte nicht geladen werden.",
+    "ImportError": "Die .livliv-Datei konnte nicht geöffnet werden.",
+    "ListError": "Die LivLiv-Modellliste konnte nicht geladen werden.",
+    "PositionSize": "Position und Größe",
+    "PositionInfo": "Kann per Drag & Drop verschoben werden. Auf dem PC kann es mit dem Mausrad vergrößert/verkleinert werden.",
+    "ResetPosition": "Position und Größe zurücksetzen"
   }
 }

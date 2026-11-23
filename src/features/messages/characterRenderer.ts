@@ -3,14 +3,16 @@ import settingsStore from '@/features/stores/settings'
 import { Talk } from './messages'
 import { Live2DHandler } from './live2dHandler'
 import { PNGTuberHandler } from '@/features/pngTuber/pngTuberHandler'
+import { livlivRenderer } from '@/features/livliv/livlivRuntime'
 
 export type PlaybackObserver = {
   onPlaybackStart?: () => void
 }
 
 /**
- * VRM / Live2D / PNGTuber の3実装が慣習のみで共有していた speak() 系メソッドの共通インターフェース。
+ * VRM / Live2D / PNGTuber / LivLiv が共有する speak() 系メソッドの共通インターフェース。
  * PNGTuberは talk.emotion / talk.motion を無視するが、型としては同じシグネチャで受け取る（対応しないだけ）。
+ * LivLiv は感情タグを setExpression に渡し、モーションタグは使わない。
  */
 export interface CharacterRenderer {
   speak(
@@ -56,6 +58,10 @@ export function getCharacterRenderer(): CharacterRenderer | null {
       stopSpeaking: () => PNGTuberHandler.stopSpeaking(),
       resetToIdle: () => PNGTuberHandler.resetToIdle(),
     }
+  }
+
+  if (ss.modelType === 'livliv') {
+    return livlivRenderer
   }
 
   const model = homeStore.getState().viewer.model
