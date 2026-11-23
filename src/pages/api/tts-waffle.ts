@@ -4,6 +4,8 @@ import { routePolicies } from '@/lib/accessPolicy/routePolicies'
 
 const WAFFLE_TTS_URL = 'https://aniwaffle.com/v1/tts'
 const SAMPLE_RATE = 48000
+// 内蔵ボイス「凪」。どのワークスペースの API キーでも使える
+const DEFAULT_VOICE_ID = 'builtin_voice_062'
 
 type Data = {
   error?: string
@@ -36,19 +38,20 @@ function pcmToWav(pcm: Buffer, sampleRate: number, channels: number): Buffer {
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const body = req.body as RequestBody
+  const body = (req.body ?? {}) as Partial<RequestBody>
   const message = body.message
-  const voiceId = body.voiceId || process.env.ANIWAFFLE_VOICE_ID
+  const voiceId =
+    body.voiceId || process.env.ANIWAFFLE_VOICE_ID || DEFAULT_VOICE_ID
   const apiKey = body.apiKey || process.env.ANIWAFFLE_API_KEY
 
   if (!apiKey) {
     res.status(400).json({ error: 'Empty API Key', errorCode: 'EmptyAPIKey' })
     return
   }
-  if (!voiceId) {
+  if (typeof message !== 'string' || !message.trim()) {
     res
       .status(400)
-      .json({ error: 'Empty Voice ID', errorCode: 'EMPTY_PROPERTY' })
+      .json({ error: 'Empty message', errorCode: 'EMPTY_PROPERTY' })
     return
   }
 

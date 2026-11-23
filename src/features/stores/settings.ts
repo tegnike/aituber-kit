@@ -474,9 +474,8 @@ const getInitialValuesFromEnv = (): SettingsState => ({
     parseFloat(process.env.NEXT_PUBLIC_GSVI_TTS_SPEECH_RATE || '1.0') || 1.0,
   elevenlabsVoiceId: process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID || '',
   cartesiaVoiceId: process.env.NEXT_PUBLIC_CARTESIA_VOICE_ID || '',
-  // 内蔵ボイス「凪」。どのワークスペースの API キーでも使える
-  waffleVoiceId:
-    process.env.NEXT_PUBLIC_ANIWAFFLE_VOICE_ID || 'builtin_voice_062',
+  // 空のときはサーバー側で ANIWAFFLE_VOICE_ID、なければ内蔵ボイス「凪」を使う
+  waffleVoiceId: process.env.NEXT_PUBLIC_ANIWAFFLE_VOICE_ID || '',
   openaiTTSVoice:
     (process.env.NEXT_PUBLIC_OPENAI_TTS_VOICE as OpenAITTSVoice) || 'shimmer',
   openaiTTSModel:

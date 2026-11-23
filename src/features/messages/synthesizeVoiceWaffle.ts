@@ -39,13 +39,8 @@ export async function synthesizeVoiceWaffleApi(
   apiKey: string,
   voiceId: string
 ): Promise<ArrayBuffer | null> {
-  if (!apiKey.trim()) {
-    throw new Error('WaffleのAPIキーが設定されていません')
-  }
-  if (!voiceId.trim()) {
-    throw new Error('WaffleのボイスIDが設定されていません')
-  }
-
+  // APIキーとボイスIDが空でもそのまま送る。サーバー側が環境変数
+  // （ANIWAFFLE_API_KEY / ANIWAFFLE_VOICE_ID）や内蔵ボイスで補う。
   const text = toWaffleText(talk)
   // 「[笑]」だけの文などは読み上げる内容がないので無音にする
   if (!text) return null
