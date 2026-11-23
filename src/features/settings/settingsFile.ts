@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { CHARACTER_MODEL_TYPES } from '@/features/constants/modelType'
 import { AI_SERVICES } from '@/features/constants/settings'
 import settingsStore, {
   CURRENT_SETTINGS_VERSION,
@@ -153,7 +154,7 @@ const matchesTopLevelType = (
 
 const constrainedSettingSchemas = new Map<keyof PersistedSettings, z.ZodType>([
   ['selectAIService', z.enum(AI_SERVICES)],
-  ['modelType', z.enum(['vrm', 'live2d', 'pngtuber'])],
+  ['modelType', z.enum(CHARACTER_MODEL_TYPES)],
   ['temperature', z.number().min(0).max(2)],
   ['maxPastMessages', z.number().int().min(1).max(9999)],
 ])

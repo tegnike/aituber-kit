@@ -258,6 +258,14 @@ export const routePolicies = {
     secret: { kind: 'none' },
     restrictedBehavior: 'in-route',
   },
+  '/api/get-livliv-list': {
+    path: '/api/get-livliv-list',
+    featureName: 'get-livliv-list',
+    methods: ['GET'],
+    resources: ['fs-read'],
+    secret: { kind: 'none' },
+    restrictedBehavior: 'in-route',
+  },
   '/api/get-pngtuber-list': {
     path: '/api/get-pngtuber-list',
     featureName: 'get-pngtuber-list',

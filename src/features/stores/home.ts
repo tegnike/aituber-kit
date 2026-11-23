@@ -12,6 +12,7 @@ import type { SanitizedMessage } from '../messages/messageSelectors'
 import { PresenceState, PresenceError } from '@/features/presence/presenceTypes'
 import { isRestrictedMode } from '@/utils/restrictedMode'
 import { PNGTuberEngine } from '@/features/pngTuber/pngTuberEngine'
+import type { Player as LivLivPlayer } from '@livliv-dev/player'
 
 // Live2DComponent が Object.assign で位置制御関数を合成した Live2D モデル
 type Live2DViewer = InstanceType<typeof Live2DModel> & {
@@ -31,6 +32,7 @@ export interface TransientState {
   viewer: Viewer
   live2dViewer: Live2DViewer | null
   pngTuberViewer: PNGTuberEngine | null
+  livlivPlayer: LivLivPlayer | null
   slideMessages: string[]
   activeSpeech: { id: string; text: string } | null
   chatProcessing: boolean
@@ -200,6 +202,7 @@ const homeStore = create<HomeState>()(
       viewer: new Viewer(),
       live2dViewer: null,
       pngTuberViewer: null,
+      livlivPlayer: null,
       slideMessages: [],
       activeSpeech: null,
       chatProcessing: false,

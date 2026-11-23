@@ -103,6 +103,7 @@ For detailed usage and configuration instructions, please visit the [Documentati
 - **3D Models**: VRM files (supports pose and gesture control via motion tags)
 - **2D Models**: Live2D files (Cubism 3 and later)
 - **Motion PNGTuber**: Video-based character display ([MotionPNGTuber](https://github.com/rotejin/MotionPNGTuber))
+- **LivLiv**: .livliv files ([LivLiv Player](https://github.com/livliv-dev/player)). Characters are not bundled and are outside the AITuberKit license. Featured characters made by LivLiv may be used in personal streams and videos, including ones that earn platform revenue. Commercial use by a company or organization, and characters by other authors, follow their own terms. AITuberKit leaves LivLiv's on-screen logo off and uses this note as the credit. That logo permission is only for AITuberKit and leaves the Player license unchanged. A viewer's own text mark, and any third-party mark, stays on screen.
 
 ### Supported LLMs
 

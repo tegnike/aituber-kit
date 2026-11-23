@@ -105,6 +105,7 @@ export const getTabGroups = (t: (key: string) => string): TabGroup[] => [
           'vrm',
           'live2d',
           'pngtuber',
+          'livliv',
           'キャラクター',
           'プロンプト',
           'モデル',

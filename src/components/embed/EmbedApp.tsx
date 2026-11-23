@@ -9,6 +9,7 @@ import Live2DViewer from '@/components/live2DViewer'
 import { MemoryServiceInitializer } from '@/components/memoryServiceInitializer'
 import ModalImage from '@/components/modalImage'
 import PNGTuberViewer from '@/components/pngTuberViewer'
+import LivLivViewer from '@/components/livlivViewer'
 import { Toasts } from '@/components/toasts'
 import VrmViewer from '@/components/vrmViewer'
 import {
@@ -59,6 +60,8 @@ const applyEmbedConfig = (embedId?: string) => {
       config.selectedLive2DPath ?? defaultSettings.selectedLive2DPath,
     selectedPNGTuberPath:
       config.selectedPNGTuberPath ?? defaultSettings.selectedPNGTuberPath,
+    selectedLivlivPath:
+      config.selectedLivlivPath ?? defaultSettings.selectedLivlivPath,
     showAssistantText:
       config.showAssistantText ?? defaultSettings.showAssistantText,
     showCharacterName:
@@ -168,6 +171,8 @@ export const EmbedApp = ({ embedId }: Props) => {
           <Live2DViewer />
         ) : modelType === 'pngtuber' ? (
           <PNGTuberViewer />
+        ) : modelType === 'livliv' ? (
+          <LivLivViewer />
         ) : (
           <VrmViewer />
         )}

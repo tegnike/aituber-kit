@@ -30,6 +30,7 @@ jest.mock('@/features/pngTuber/pngTuberHandler', () => ({
   },
 }))
 
+import { livlivRenderer } from '@/features/livliv/livlivRuntime'
 import { getCharacterRenderer } from '@/features/messages/characterRenderer'
 import type { Talk } from '@/features/messages/messages'
 
@@ -65,6 +66,11 @@ describe('getCharacterRenderer', () => {
     expect(mockPNGSpeak).toHaveBeenCalledWith(buffer, talk, true)
     expect(mockPNGStopSpeaking).toHaveBeenCalled()
     expect(mockPNGResetToIdle).toHaveBeenCalled()
+  })
+
+  it('selects the LivLiv speech renderer before a canvas is ready', () => {
+    mockSettingsGetState.mockReturnValue({ modelType: 'livliv' })
+    expect(getCharacterRenderer()).toBe(livlivRenderer)
   })
 
   it('dispatches to the VRM viewer model when modelType is vrm', async () => {

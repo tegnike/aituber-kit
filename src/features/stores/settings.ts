@@ -11,6 +11,10 @@ import { exclusivityMiddleware } from './exclusionMiddleware'
 
 import { KoeiroParam, DEFAULT_PARAM } from '@/features/constants/koeiroParam'
 import {
+  CharacterModelType,
+  isCharacterModelType,
+} from '@/features/constants/modelType'
+import {
   MemoryConfig,
   DEFAULT_MEMORY_CONFIG,
 } from '@/features/memory/memoryTypes'
@@ -225,6 +229,7 @@ interface Character {
   screenLightingStrength: number
   poseAdjustMode: boolean
   selectedPNGTuberPath: string
+  selectedLivlivPath: string
   pngTuberSensitivity: number
   pngTuberChromaKeyEnabled: boolean
   pngTuberChromaKeyColor: string
@@ -308,7 +313,7 @@ interface General {
 }
 
 interface ModelType {
-  modelType: 'vrm' | 'live2d' | 'pngtuber'
+  modelType: CharacterModelType
 }
 
 // Presence detection sensitivity type
@@ -727,12 +732,10 @@ const getInitialValuesFromEnv = (): SettingsState => ({
   customModel: process.env.NEXT_PUBLIC_CUSTOM_MODEL === 'true',
 
   // Settings
-  modelType:
-    (process.env.NEXT_PUBLIC_MODEL_TYPE as
-      | 'vrm'
-      | 'live2d'
-      | 'pngtuber'
-      | undefined) || 'vrm',
+  modelType: isCharacterModelType(process.env.NEXT_PUBLIC_MODEL_TYPE)
+    ? process.env.NEXT_PUBLIC_MODEL_TYPE
+    : 'vrm',
+  selectedLivlivPath: process.env.NEXT_PUBLIC_SELECTED_LIVLIV_PATH || '',
   selectedPNGTuberPath:
     process.env.NEXT_PUBLIC_SELECTED_PNGTUBER_PATH || '/pngtuber/nike01',
   pngTuberSensitivity:
@@ -1330,6 +1333,7 @@ export const selectPersistedSettings = (state: SettingsState) => ({
   lightingIntensity: state.lightingIntensity,
   screenLightingStrength: state.screenLightingStrength,
   modelType: state.modelType,
+  selectedLivlivPath: state.selectedLivlivPath,
   selectedPNGTuberPath: state.selectedPNGTuberPath,
   pngTuberSensitivity: state.pngTuberSensitivity,
   pngTuberChromaKeyEnabled: state.pngTuberChromaKeyEnabled,
