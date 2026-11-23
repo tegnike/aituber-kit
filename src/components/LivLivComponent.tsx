@@ -12,6 +12,11 @@ import {
   bindLivLivMouth,
 } from '@/features/livliv/livlivRuntime'
 import {
+  applyLivLivPlacement,
+  livlivOffsetAfterDrag,
+  livlivScaleAfterWheel,
+} from '@/features/livliv/livlivView'
+import {
   isLivLivFileName,
   reportLivLivModelError,
   resolveLivLivModel,
@@ -19,6 +24,7 @@ import {
   useLocalLivLivRevision,
 } from '@/features/livliv/models'
 import homeStore from '@/features/stores/home'
+import settingsStore from '@/features/stores/settings'
 import { logger } from '@/lib/logger'
 
 function attachImage(file: File) {
@@ -38,7 +44,11 @@ export default function LivLivComponent({
 }) {
   const { t } = useTranslation()
   const revision = useLocalLivLivRevision()
+  const stageRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const livlivScale = settingsStore((s) => s.livlivScale)
+  const livlivOffsetX = settingsStore((s) => s.livlivOffsetX)
+  const livlivOffsetY = settingsStore((s) => s.livlivOffsetY)
   const [player, setPlayer] = useState<Player | null>(null)
   const [canvasVersion, setCanvasVersion] = useState(0)
   const [initError, setInitError] = useState<string | null>(null)
@@ -137,6 +147,88 @@ export default function LivLivComponent({
     return () => controller.abort()
   }, [player, selectedPath, revision])
 
+  // 保存された位置とサイズを Player の view へ反映する
+  useEffect(() => {
+    if (!player) return
+    applyLivLivPlacement(player.view, {
+      scale: livlivScale,
+      offsetX: livlivOffsetX,
+      offsetY: livlivOffsetY,
+    })
+  }, [player, livlivScale, livlivOffsetX, livlivOffsetY])
+
+  // ホイールで拡大・縮小、ドラッグで移動（PNGTuber と同じ操作）
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!stage || !player) return
+
+    let drag: {
+      pointerId: number
+      startX: number
+      startY: number
+      origin: { offsetX: number; offsetY: number }
+      current: { offsetX: number; offsetY: number }
+    } | null = null
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault()
+      settingsStore.setState({
+        livlivScale: livlivScaleAfterWheel(
+          settingsStore.getState().livlivScale,
+          event.deltaY
+        ),
+      })
+    }
+    const handlePointerDown = (event: PointerEvent) => {
+      if (event.button !== 0 || drag) return
+      const { livlivOffsetX: offsetX, livlivOffsetY: offsetY } =
+        settingsStore.getState()
+      const origin = { offsetX, offsetY }
+      drag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        origin,
+        current: origin,
+      }
+    }
+    const handlePointerMove = (event: PointerEvent) => {
+      if (!drag || event.pointerId !== drag.pointerId) return
+      drag.current = livlivOffsetAfterDrag(
+        drag.origin,
+        event.clientX - drag.startX,
+        event.clientY - drag.startY,
+        stage.clientWidth,
+        stage.clientHeight
+      )
+      // ドラッグ中は view へ直接書き、保存は指を離したときに1回だけ行う
+      player.view.x = drag.current.offsetX
+      player.view.y = drag.current.offsetY
+    }
+    const handlePointerUp = (event: PointerEvent) => {
+      if (!drag || event.pointerId !== drag.pointerId) return
+      const { current } = drag
+      drag = null
+      settingsStore.setState({
+        livlivOffsetX: current.offsetX,
+        livlivOffsetY: current.offsetY,
+      })
+    }
+
+    stage.addEventListener('wheel', handleWheel, { passive: false })
+    stage.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerUp)
+    return () => {
+      stage.removeEventListener('wheel', handleWheel)
+      stage.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', handlePointerUp)
+      window.removeEventListener('pointercancel', handlePointerUp)
+    }
+  }, [player])
+
   const message = hasModel ? initError : 'LivLiv.NoModel'
   const loading =
     hasModel &&
@@ -148,7 +240,8 @@ export default function LivLivComponent({
 
   return (
     <div
-      className="relative h-full w-full"
+      ref={stageRef}
+      className="relative h-full w-full cursor-grab touch-none active:cursor-grabbing"
       data-testid="livliv-stage"
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => {
