@@ -25,16 +25,17 @@ export const WaffleSettings = ({
     apiKey: string
     voices: WaffleVoice[]
   }>({ apiKey: '', voices: [] })
-  const [isUpdatingVoices, setIsUpdatingVoices] = useState(false)
-  const [voicesUpdateError, setVoicesUpdateError] = useState('')
+  // 取得中・エラーも同じく、どのキーの取得かを持つ（null は取得していない）
+  const [updatingApiKey, setUpdatingApiKey] = useState<string | null>(null)
+  const [updateError, setUpdateError] = useState({ apiKey: '', message: '' })
   const latestRequest = useRef(0)
 
   // ボイス一覧は API キーごとに異なるため、その都度 Waffle から取得する
   const updateVoices = useCallback(
     async (apiKey: string) => {
       const requestId = ++latestRequest.current
-      setIsUpdatingVoices(true)
-      setVoicesUpdateError('')
+      setUpdatingApiKey(apiKey)
+      setUpdateError({ apiKey, message: '' })
       try {
         const response = await fetch('/api/waffle-voices', {
           method: 'POST',
@@ -49,13 +50,13 @@ export const WaffleSettings = ({
         } else {
           const message = await getSpeakerUpdateErrorMessage(response)
           if (requestId !== latestRequest.current) return
-          setVoicesUpdateError(message)
+          setUpdateError({ apiKey, message })
         }
       } catch {
         if (requestId !== latestRequest.current) return
-        setVoicesUpdateError(t('NetworkError'))
+        setUpdateError({ apiKey, message: t('NetworkError') })
       } finally {
-        if (requestId === latestRequest.current) setIsUpdatingVoices(false)
+        if (requestId === latestRequest.current) setUpdatingApiKey(null)
       }
     },
     [t]
@@ -68,6 +69,9 @@ export const WaffleSettings = ({
   }, [updateVoices])
 
   const voices = voiceList.apiKey === waffleApiKey ? voiceList.voices : []
+  const isUpdatingVoices = updatingApiKey === waffleApiKey
+  const voicesUpdateError =
+    updateError.apiKey === waffleApiKey ? updateError.message : ''
   const isListedVoice = voices.some(({ id }) => id === waffleVoiceId)
 
   return (
