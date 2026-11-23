@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { reportViewerError } from '@/components/common/ErrorBoundary'
 import ModelLoadingOverlay from '@/components/modelLoadingOverlay'
+import { prepareLivLivPlaybackSource } from '@/features/livliv/livlivMark'
 import {
   applyLivLivExpression,
   bindLivLivMouth,
@@ -116,7 +117,10 @@ export default function LivLivComponent({
     void resolveLivLivModel(selectedPath)
       .then(async (source) => {
         if (signal.aborted) return
-        const model = await player.load(source, { signal })
+        // 0.5.1 はロゴを消す設定を持たない。サービスロゴだけをメモリ上で none にして渡す。
+        const playback = await prepareLivLivPlaybackSource(source, signal)
+        if (signal.aborted) return
+        const model = await player.load(playback, { signal })
         if (signal.aborted) return
         player.view.fit = model.fullBody ? 'knee' : 'frame'
         applyLivLivExpression(player)
