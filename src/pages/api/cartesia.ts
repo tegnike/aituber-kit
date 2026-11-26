@@ -42,7 +42,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
         'Cartesia-Version': '2025-04-16',
       },
       body: JSON.stringify({
-        model_id: 'sonic-turbo',
+        model_id: 'sonic-3.6',
         transcript: message,
         voice: {
           mode: 'id',
