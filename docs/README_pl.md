@@ -124,6 +124,7 @@ Szczegółowe instrukcje użytkowania i konfiguracji można znaleźć w [dokumen
 - OpenRouter
 - OrcaRouter
 - API Route
+- Cheaper Inference
 
 ### Obsługiwane silniki syntezy mowy
 

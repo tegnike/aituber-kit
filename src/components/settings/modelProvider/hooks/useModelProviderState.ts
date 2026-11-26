@@ -37,6 +37,7 @@ export const useModelProviderState = () => {
   const openrouterKey = settingsStore((s) => s.openrouterKey)
   const orcarouterKey = settingsStore((s) => s.orcarouterKey)
   const apirouteKey = settingsStore((s) => s.apirouteKey)
+  const cheaperinferenceKey = settingsStore((s) => s.cheaperinferenceKey)
   const maxPastMessages = settingsStore((s) => s.maxPastMessages)
   const temperature = settingsStore((s) => s.temperature)
   const maxTokens = settingsStore((s) => s.maxTokens)
@@ -118,6 +119,7 @@ export const useModelProviderState = () => {
     openrouterKey,
     orcarouterKey,
     apirouteKey,
+    cheaperinferenceKey,
     maxPastMessages,
     temperature,
     maxTokens,
